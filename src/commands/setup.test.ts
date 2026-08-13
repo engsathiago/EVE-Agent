@@ -1,17 +1,17 @@
 // Setup command tests cover local setup initialization and next-step messaging.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { withTempHome } from "openclaw/plugin-sdk/test-env";
+import { withTempHome } from "eve-agent/plugin-sdk/test-env";
 import { describe, expect, it, vi } from "vitest";
 import { setupCommand } from "./setup.js";
 
 function createSetupDeps(home: string) {
-  const configPath = path.join(home, ".openclaw", "openclaw.json");
+  const configPath = path.join(home, ".eve", "eve.json");
   return {
     createConfigIO: () => ({ configPath }),
     ensureAgentWorkspace: vi.fn(
       async (params?: { dir?: string; skipOptionalBootstrapFiles?: string[] }) => ({
-        dir: params?.dir ?? path.join(home, ".openclaw", "workspace"),
+        dir: params?.dir ?? path.join(home, ".eve", "workspace"),
       }),
     ),
     formatConfigPath: (value: string) => value,
@@ -22,7 +22,7 @@ function createSetupDeps(home: string) {
       },
     ),
     mkdir: vi.fn(async () => {}),
-    resolveSessionTranscriptsDir: vi.fn(() => path.join(home, ".openclaw", "sessions")),
+    resolveSessionTranscriptsDir: vi.fn(() => path.join(home, ".eve", "sessions")),
     replaceConfigFile: vi.fn(async ({ nextConfig }: { nextConfig: unknown }) => {
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, JSON.stringify(nextConfig, null, 2));
@@ -53,11 +53,11 @@ describe("setupCommand", () => {
         exit: vi.fn(),
       };
       const deps = createSetupDeps(home);
-      const workspace = path.join(home, ".openclaw", "workspace");
+      const workspace = path.join(home, ".eve", "workspace");
 
       await setupCommand({ workspace }, runtime, deps);
 
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".eve", "eve.json");
       const raw = JSON.parse(await fs.readFile(configPath, "utf-8")) as unknown;
 
       expect(raw).toStrictEqual({
@@ -87,9 +87,9 @@ describe("setupCommand", () => {
       expect(runtime.log.mock.calls.map((call) => String(call[0])).slice(-5)).toStrictEqual([
         "",
         "Setup complete: config, workspace, and session directories are ready.",
-        "Next guided path: openclaw onboard.",
-        "Next targeted changes: openclaw configure for models, channels, Gateway, plugins, skills, and health checks.",
-        "Add a chat channel later: openclaw channels add.",
+        "Next guided path: eve onboard.",
+        "Next targeted changes: eve configure for models, channels, Gateway, plugins, skills, and health checks.",
+        "Add a chat channel later: eve channels add.",
       ]);
     });
   });
@@ -101,8 +101,8 @@ describe("setupCommand", () => {
         error: vi.fn(),
         exit: vi.fn(),
       };
-      const configDir = path.join(home, ".openclaw");
-      const configPath = path.join(configDir, "openclaw.json");
+      const configDir = path.join(home, ".eve");
+      const configPath = path.join(configDir, "eve.json");
       const workspace = path.join(home, "custom-workspace");
       const deps = createSetupDeps(home);
 
@@ -137,8 +137,8 @@ describe("setupCommand", () => {
         error: vi.fn(),
         exit: vi.fn(),
       };
-      const configDir = path.join(home, ".openclaw");
-      const configPath = path.join(configDir, "openclaw.json");
+      const configDir = path.join(home, ".eve");
+      const configPath = path.join(configDir, "eve.json");
       const deps = createSetupDeps(home);
       const workspace = path.join(home, "custom-workspace");
 
@@ -171,10 +171,10 @@ describe("setupCommand", () => {
         error: vi.fn(),
         exit: vi.fn(),
       };
-      const configDir = path.join(home, ".openclaw");
-      const configPath = path.join(configDir, "openclaw.json");
+      const configDir = path.join(home, ".eve");
+      const configPath = path.join(configDir, "eve.json");
       const deps = createSetupDeps(home);
-      const workspace = path.join(home, ".openclaw", "workspace");
+      const workspace = path.join(home, ".eve", "workspace");
 
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(configPath, '"not-an-object"', "utf-8");

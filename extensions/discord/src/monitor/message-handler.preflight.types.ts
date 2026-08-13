@@ -1,10 +1,10 @@
 // Discord type declarations define plugin contracts.
-import type { InboundEventKind } from "openclaw/plugin-sdk/channel-inbound";
-import type { ChannelBotLoopProtectionFacts } from "openclaw/plugin-sdk/channel-inbound";
-import type { OpenClawConfig, ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
-import type { SessionBindingRecord } from "openclaw/plugin-sdk/conversation-runtime";
-import type { HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
+import type { InboundEventKind } from "eve-agent/plugin-sdk/channel-inbound";
+import type { ChannelBotLoopProtectionFacts } from "eve-agent/plugin-sdk/channel-inbound";
+import type { EVEConfig, ReplyToMode } from "eve-agent/plugin-sdk/config-contracts";
+import type { SessionBindingRecord } from "eve-agent/plugin-sdk/conversation-runtime";
+import type { HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
+import type { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
 import type { ChannelType, Client, User } from "../internal/discord.js";
 import type { DiscordChannelConfigResolved, DiscordGuildEntryResolved } from "./allow-list.js";
 import type { DiscordChannelInfo } from "./message-utils.js";
@@ -15,15 +15,15 @@ import type { DiscordSenderIdentity } from "./sender-identity.js";
 export type { DiscordSenderIdentity } from "./sender-identity.js";
 import type { DiscordThreadChannel } from "./threading.js";
 
-type LoadedConfig = OpenClawConfig;
-export type RuntimeEnv = import("openclaw/plugin-sdk/runtime-env").RuntimeEnv;
+type LoadedConfig = EVEConfig;
+export type RuntimeEnv = import("eve-agent/plugin-sdk/runtime-env").RuntimeEnv;
 
 export type DiscordMessageEvent = import("./listeners.js").DiscordMessageEvent;
 
 type DiscordMessagePreflightSharedFields = {
   cfg: LoadedConfig;
   discordConfig: NonNullable<
-    import("openclaw/plugin-sdk/config-contracts").OpenClawConfig["channels"]
+    import("eve-agent/plugin-sdk/config-contracts").EVEConfig["channels"]
   >["discord"];
   accountId: string;
   token: string;

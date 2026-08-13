@@ -1,8 +1,8 @@
 // Slack plugin module implements prepare dm history behavior.
-import { formatInboundEnvelope } from "openclaw/plugin-sdk/channel-inbound";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatInboundEnvelope } from "eve-agent/plugin-sdk/channel-inbound";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { ResolvedSlackAccount } from "../../accounts.js";
 import type { SlackMonitorContext } from "../context.js";
 import { resolveSlackTimestampMs } from "./timestamp.js";
@@ -39,7 +39,7 @@ export async function resolveSlackDmHistoryContext(params: {
   currentMessageTs?: string;
   limit: number;
   envelopeOptions: ReturnType<
-    typeof import("openclaw/plugin-sdk/channel-inbound").resolveEnvelopeFormatOptions
+    typeof import("eve-agent/plugin-sdk/channel-inbound").resolveEnvelopeFormatOptions
   >;
 }): Promise<{ body: string | undefined; inboundHistory: SlackDmHistoryEntry[] | undefined }> {
   const maxMessages = Math.max(0, Math.floor(params.limit));

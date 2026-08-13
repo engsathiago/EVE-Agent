@@ -1,12 +1,12 @@
-# OpenClaw Kimi Coding Provider
+# EVE Kimi Coding Provider
 
-Official OpenClaw provider plugin for Kimi Coding.
+Official EVE provider plugin for Kimi Coding.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/kimi-provider
-openclaw gateway restart
+eve plugins install @eve/kimi-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/moonshot> for setup and configuration.
+See <https://docs.eve.ai/providers/moonshot> for setup and configuration.

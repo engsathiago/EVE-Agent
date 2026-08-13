@@ -1,9 +1,9 @@
-// Applies persisted state migrations across OpenClaw config files.
+// Applies persisted state migrations across EVE config files.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { writeAcpSessionMetaForMigration } from "../acp/runtime/session-meta.js";
 import { resolveDefaultAgentId } from "../agents/agent-scope.js";
 import {
@@ -22,7 +22,7 @@ import { saveSessionStore } from "../config/sessions.js";
 import { canonicalizeMainSessionAlias } from "../config/sessions/main-session.js";
 import { resolveAllAgentSessionStoreTargetsSync } from "../config/sessions/targets.js";
 import type { SessionScope } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import {
   countPluginStateLiveEntries,
@@ -55,12 +55,12 @@ import {
   parseAgentSessionKey,
 } from "../routing/session-key.js";
 import { normalizeSessionKeyPreservingOpaquePeerIds } from "../sessions/session-key-utils.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
 import {
-  detectOpenClawStateDatabaseSchemaMigrations,
-  repairOpenClawStateDatabaseSchema,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  detectEVEStateDatabaseSchemaMigrations,
+  repairEVEStateDatabaseSchema,
+  runEVEStateWriteTransaction,
+} from "../state/eve-state-db.js";
 import { assertNoSymlinkParentsSync } from "./fs-safe-advanced.js";
 import { expandHomePrefix, resolveRequiredHomeDir } from "./home-dir.js";
 import {
@@ -176,7 +176,7 @@ type LegacyPluginStateSidecarRow = {
   expires_at: number | bigint | null;
 };
 
-type LegacyPluginStateImportDatabase = Pick<OpenClawStateKyselyDatabase, "plugin_state_entries">;
+type LegacyPluginStateImportDatabase = Pick<EVEStateKyselyDatabase, "plugin_state_entries">;
 type SqliteBindRow = Record<string, SQLInputValue>;
 
 type DetectedPluginDoctorStateMigrationPlan = {
@@ -259,7 +259,7 @@ function resolveDefaultExecApprovalsStateDir(
   env: NodeJS.ProcessEnv,
   homedir: () => string,
 ): string {
-  return path.join(resolveRequiredHomeDir(env, homedir), ".openclaw");
+  return path.join(resolveRequiredHomeDir(env, homedir), ".eve");
 }
 
 function resolveDefaultExecApprovalsPath(env: NodeJS.ProcessEnv, homedir: () => string): string {
@@ -285,7 +285,7 @@ function detectLegacyExecApprovalsMigration(params: {
     sourcePath,
     targetPath,
     hasLegacy:
-      Boolean(params.env.OPENCLAW_STATE_DIR?.trim()) &&
+      Boolean(params.env.EVE_STATE_DIR?.trim()) &&
       path.resolve(sourcePath) !== path.resolve(targetPath) &&
       fileExists(sourcePath) &&
       !fileExists(targetPath),
@@ -1008,7 +1008,7 @@ async function migrateLegacyTaskRunsSidecar(params: {
     let importedTasks = 0;
     let importedDeliveryStates = 0;
     let skippedOrphanDeliveryStates = 0;
-    runOpenClawStateWriteTransaction(
+    runEVEStateWriteTransaction(
       ({ db }) => {
         const taskColumns = [
           "runtime",
@@ -1078,7 +1078,7 @@ async function migrateLegacyTaskRunsSidecar(params: {
           throw new LegacyTaskStateSidecarConflictError(conflicts);
         }
       },
-      { env: { ...process.env, OPENCLAW_STATE_DIR: params.stateDir } },
+      { env: { ...process.env, EVE_STATE_DIR: params.stateDir } },
     );
     if (importedTasks > 0) {
       changes.push(
@@ -1141,7 +1141,7 @@ async function migrateLegacyFlowRunsSidecar(params: {
   try {
     const conflicts: string[] = [];
     let imported = 0;
-    runOpenClawStateWriteTransaction(
+    runEVEStateWriteTransaction(
       ({ db }) => {
         const columns = [
           "shape",
@@ -1180,7 +1180,7 @@ async function migrateLegacyFlowRunsSidecar(params: {
           throw new LegacyTaskStateSidecarConflictError(conflicts);
         }
       },
-      { env: { ...process.env, OPENCLAW_STATE_DIR: params.stateDir } },
+      { env: { ...process.env, EVE_STATE_DIR: params.stateDir } },
     );
     if (imported > 0) {
       changes.push(
@@ -1405,7 +1405,7 @@ async function migrateLegacyDeliveryQueues(params: {
     let skipped = 0;
     const conflicts: string[] = [];
     try {
-      runOpenClawStateWriteTransaction(
+      runEVEStateWriteTransaction(
         ({ db }) => {
           const insert = db.prepare(
             `
@@ -1457,7 +1457,7 @@ async function migrateLegacyDeliveryQueues(params: {
             imported++;
           }
         },
-        { env: { ...process.env, OPENCLAW_STATE_DIR: params.stateDir } },
+        { env: { ...process.env, EVE_STATE_DIR: params.stateDir } },
       );
     } catch (err) {
       warnings.push(`Failed migrating ${queue.label} ${queueDir}: ${String(err)}`);
@@ -1526,7 +1526,7 @@ async function migrateLegacyPluginStateSidecar(params: {
     let imported = 0;
     let skippedExpired = 0;
     const now = Date.now();
-    runOpenClawStateWriteTransaction(
+    runEVEStateWriteTransaction(
       ({ db }) => {
         const stateDb = getNodeSqliteKysely<LegacyPluginStateImportDatabase>(db);
         for (const row of rows) {
@@ -1586,7 +1586,7 @@ async function migrateLegacyPluginStateSidecar(params: {
           imported += 1;
         }
       },
-      { env: { ...process.env, OPENCLAW_STATE_DIR: params.stateDir } },
+      { env: { ...process.env, EVE_STATE_DIR: params.stateDir } },
     );
     if (imported > 0) {
       changes.push(
@@ -1701,15 +1701,15 @@ async function withPluginStateImportEnv<T>(
   if (!plan.stateDir) {
     return await run();
   }
-  const previous = process.env.OPENCLAW_STATE_DIR;
-  process.env.OPENCLAW_STATE_DIR = plan.stateDir;
+  const previous = process.env.EVE_STATE_DIR;
+  process.env.EVE_STATE_DIR = plan.stateDir;
   try {
     return await run();
   } finally {
     if (previous === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = previous;
+      process.env.EVE_STATE_DIR = previous;
     }
   }
 }
@@ -2559,7 +2559,7 @@ export async function autoMigrateLegacyStateDir(params: {
   const env = params.env ?? process.env;
   const warnings: string[] = [];
   const changes: string[] = [];
-  const hasCustomStateDir = Boolean(env.OPENCLAW_STATE_DIR?.trim());
+  const hasCustomStateDir = Boolean(env.EVE_STATE_DIR?.trim());
   const targetDir = hasCustomStateDir ? resolveStateDir(env, homedir) : resolveNewStateDir(homedir);
   const migratePluginInstallIndex = async () => {
     const result = await migrateLegacyInstalledPluginIndex({ stateDir: targetDir });
@@ -2697,7 +2697,7 @@ export async function autoMigrateLegacyStateDir(params: {
           `State dir moved but failed to link legacy path (${legacyDir ?? "unknown"} → ${targetDir}): ${String(fallbackErr)}`,
         );
         warnings.push(
-          `Rollback failed; set OPENCLAW_STATE_DIR=${targetDir} to avoid split state: ${String(rollbackErr)}`,
+          `Rollback failed; set EVE_STATE_DIR=${targetDir} to avoid split state: ${String(rollbackErr)}`,
         );
         changes.push(`State dir: ${legacyDir ?? "unknown"} → ${targetDir}`);
       }
@@ -2752,7 +2752,7 @@ export async function autoMigrateLegacyTaskStateSidecars(params: {
 }
 
 async function collectChannelLegacyStateMigrationPlans(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir: string;
   oauthDir: string;
@@ -2782,7 +2782,7 @@ async function collectChannelLegacyStateMigrationPlans(params: {
 }
 
 async function collectPluginDoctorStateMigrationPlans(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir: string;
   oauthDir: string;
@@ -2825,7 +2825,7 @@ function createPluginDoctorStateMigrationContext(
 }
 
 export async function detectLegacyStateMigrations(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   homedir?: () => string;
 }): Promise<LegacyStateDetection> {
@@ -2887,8 +2887,8 @@ export async function detectLegacyStateMigrations(params: {
   const pluginInstallIndexPath = resolveLegacyInstalledPluginIndexStorePath({ stateDir });
   const hasPluginInstallIndex = fileExists(pluginInstallIndexPath);
   const debugProxyCaptureSidecar = detectLegacyDebugProxyCaptureSidecar(stateDir, env);
-  const stateSchemaMigrations = detectOpenClawStateDatabaseSchemaMigrations({
-    env: { ...env, OPENCLAW_STATE_DIR: stateDir },
+  const stateSchemaMigrations = detectEVEStateDatabaseSchemaMigrations({
+    env: { ...env, EVE_STATE_DIR: stateDir },
   });
   const taskRunsSidecarPath = resolveLegacyTaskRunsSidecarPath(stateDir);
   const flowRunsSidecarPath = resolveLegacyFlowRunsSidecarPath(stateDir);
@@ -3131,7 +3131,7 @@ async function migrateLegacySessions(
       }
     } else {
       warnings.push(
-        `Target sessions store unreadable; left untouched to avoid overwriting at ${detected.sessions.targetStorePath}. Run openclaw doctor --fix to archive it and retry the legacy merge.`,
+        `Target sessions store unreadable; left untouched to avoid overwriting at ${detected.sessions.targetStorePath}. Run eve doctor --fix to archive it and retry the legacy merge.`,
       );
     }
   }
@@ -3299,7 +3299,7 @@ export async function migrateLegacyAgentDir(
 
 async function runPluginDoctorStateMigrationPlans(params: {
   detected: LegacyStateDetection;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<{ changes: string[]; warnings: string[] }> {
   const changes: string[] = [];
   const warnings: string[] = [];
@@ -3519,14 +3519,14 @@ function migrateLegacyStateSchema(detected: LegacyStateDetection): {
   changes: string[];
   warnings: string[];
 } {
-  return repairOpenClawStateDatabaseSchema({
-    env: { ...process.env, OPENCLAW_STATE_DIR: detected.stateDir },
+  return repairEVEStateDatabaseSchema({
+    env: { ...process.env, EVE_STATE_DIR: detected.stateDir },
   });
 }
 
 export async function runLegacyStateMigrations(params: {
   detected: LegacyStateDetection;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   now?: () => number;
   recoverCorruptTargetStore?: boolean;
 }): Promise<{ changes: string[]; warnings: string[] }> {
@@ -3560,14 +3560,14 @@ export async function runLegacyStateMigrations(params: {
     ? { changes: [], warnings: [] }
     : await runPluginDoctorStateMigrationPlans({
         detected,
-        config: params.config ?? ({} as OpenClawConfig),
+        config: params.config ?? ({} as EVEConfig),
       });
   const sessions = await migrateLegacySessions(detected, now, {
     recoverCorruptTargetStore: params.recoverCorruptTargetStore,
   });
   const acpSessionMetadata = await migrateLegacyAcpSessionMetadata({
-    cfg: params.config ?? ({} as OpenClawConfig),
-    env: { ...process.env, OPENCLAW_STATE_DIR: detected.stateDir },
+    cfg: params.config ?? ({} as EVEConfig),
+    env: { ...process.env, EVE_STATE_DIR: detected.stateDir },
     now,
   });
   const agentDir = await migrateLegacyAgentDir(detected, now);
@@ -3620,7 +3620,7 @@ export async function runLegacyStateMigrations(params: {
  * Safe to run multiple times (idempotent). See #29683.
  */
 export async function migrateOrphanedSessionKeys(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
 }): Promise<{ changes: string[]; warnings: string[] }> {
   const changes: string[] = [];
@@ -3753,7 +3753,7 @@ export async function migrateOrphanedSessionKeys(params: {
 }
 
 async function migrateLegacyAcpSessionMetadata(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   now?: () => number;
 }): Promise<{ changes: string[]; warnings: string[] }> {
@@ -3840,7 +3840,7 @@ function resolveStorePathFromTemplate(
 }
 
 export async function autoMigrateLegacyState(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   homedir?: () => string;
   log?: MigrationLogger;
@@ -3864,8 +3864,8 @@ export async function autoMigrateLegacyState(params: {
     log: params.log,
   });
   const stateDir = resolveStateDir(env, params.homedir ?? os.homedir);
-  const stateSchema = repairOpenClawStateDatabaseSchema({
-    env: { ...env, OPENCLAW_STATE_DIR: stateDir },
+  const stateSchema = repairEVEStateDatabaseSchema({
+    env: { ...env, EVE_STATE_DIR: stateDir },
   });
 
   // Canonicalize orphaned session keys regardless of whether legacy migration
@@ -3900,7 +3900,7 @@ export async function autoMigrateLegacyState(params: {
     env,
     homedir: params.homedir,
   });
-  const hasCustomAgentDir = env.OPENCLAW_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim();
+  const hasCustomAgentDir = env.EVE_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim();
   if (hasCustomAgentDir) {
     const pluginStateSidecar = await migrateLegacyPluginStateSidecar({
       stateDir: detected.stateDir,

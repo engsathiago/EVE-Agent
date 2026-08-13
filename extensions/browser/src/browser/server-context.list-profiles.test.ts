@@ -25,7 +25,7 @@ describe("browser server-context listProfiles", () => {
 
     expect(isChromeReachable).toHaveBeenCalledWith("http://127.0.0.1:18800", 200, undefined);
     expect(profiles).toHaveLength(1);
-    expect(profiles[0]?.name).toBe("openclaw");
+    expect(profiles[0]?.name).toBe("eve");
     expect(profiles[0]?.running).toBe(true);
   });
 
@@ -38,7 +38,7 @@ describe("browser server-context listProfiles", () => {
         cdpIsLoopback: true,
         cdpPort: 9222,
         color: "#00AA00",
-        driver: "openclaw",
+        driver: "eve",
         headless: false,
         attachOnly: true,
       },
@@ -67,12 +67,12 @@ describe("browser server-context listProfiles", () => {
     const state = makeBrowserServerState({
       profile: {
         name: "manual-cdp",
-        cdpUrl: "http://openclaw:relay-token@127.0.0.1:9222",
+        cdpUrl: "http://eve:relay-token@127.0.0.1:9222",
         cdpHost: "127.0.0.1",
         cdpIsLoopback: true,
         cdpPort: 9222,
         color: "#00AA00",
-        driver: "openclaw",
+        driver: "eve",
         headless: false,
         attachOnly: true,
       },
@@ -88,7 +88,7 @@ describe("browser server-context listProfiles", () => {
     const profiles = await ctx.listProfiles();
 
     expect(isChromeReachable).toHaveBeenCalledWith(
-      "http://openclaw:relay-token@127.0.0.1:9222",
+      "http://eve:relay-token@127.0.0.1:9222",
       state.resolved.remoteCdpTimeoutMs,
       undefined,
     );

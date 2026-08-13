@@ -6,8 +6,8 @@
 import {
   sanitizeInlineImageBase64,
   sanitizeInlineImageDataUrlForStorage,
-} from "@openclaw/media-core/inline-image-data-url";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/media-core/inline-image-data-url";
+import type { EVEConfig } from "../config/types.eve.js";
 import { readLoggingConfig } from "../logging/config.js";
 import {
   getDefaultRedactPatterns,
@@ -20,7 +20,7 @@ function resolveTranscriptRedactPatterns(patterns?: string[]) {
   return patterns && patterns.length > 0 ? [...patterns, ...getDefaultRedactPatterns()] : undefined;
 }
 
-function redactTranscriptOptions(cfg?: OpenClawConfig) {
+function redactTranscriptOptions(cfg?: EVEConfig) {
   const configuredLogging = readLoggingConfig();
   const mode = cfg?.logging?.redactSensitive ?? configuredLogging?.redactSensitive;
   const patterns = resolveTranscriptRedactPatterns(
@@ -35,11 +35,11 @@ function redactTranscriptOptions(cfg?: OpenClawConfig) {
   };
 }
 
-function isTranscriptRedactionDisabled(cfg?: OpenClawConfig): boolean {
+function isTranscriptRedactionDisabled(cfg?: EVEConfig): boolean {
   return (cfg?.logging?.redactSensitive ?? readLoggingConfig()?.redactSensitive) === "off";
 }
 
-function redactTranscriptText(value: string, cfg?: OpenClawConfig): string {
+function redactTranscriptText(value: string, cfg?: EVEConfig): string {
   if (cfg?.logging?.redactSensitive === "off") {
     return value;
   }
@@ -49,7 +49,7 @@ function redactTranscriptText(value: string, cfg?: OpenClawConfig): string {
 function redactTranscriptStructuredFieldValue(
   key: string,
   value: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): string {
   if (cfg?.logging?.redactSensitive === "off") {
     return value;
@@ -200,23 +200,23 @@ const OPENAI_RESPONSES_APIS = new Set([
   "openai-responses",
   "azure-openai-responses",
   "openai-chatgpt-responses",
-  "openclaw-openai-responses-transport",
-  "openclaw-azure-openai-responses-transport",
+  "eve-openai-responses-transport",
+  "eve-azure-openai-responses-transport",
 ]);
 const GOOGLE_REASONING_APIS = new Set([
   "google-generative-ai",
   "google-vertex",
   "google-gemini-cli",
-  "openclaw-google-generative-ai-transport",
+  "eve-google-generative-ai-transport",
 ]);
 const ANTHROPIC_REASONING_APIS = new Set([
   "anthropic-messages",
   "bedrock-converse-stream",
-  "openclaw-anthropic-messages-transport",
+  "eve-anthropic-messages-transport",
 ]);
 const OPENAI_COMPLETIONS_APIS = new Set([
   "openai-completions",
-  "openclaw-openai-completions-transport",
+  "eve-openai-completions-transport",
 ]);
 const OPAQUE_REPLAY_TOKEN_RE = /^[A-Za-z0-9+/_-]+={0,2}$/;
 const OPENAI_REPLAY_CONTEXT_HASH_RE = /^[a-f0-9]{16}$/;
@@ -250,7 +250,7 @@ function isCustomProviderRoute(route: TranscriptAssistantRoute | undefined): boo
 
 function isGitHubCopilotResponsesRoute(route: TranscriptAssistantRoute | undefined): boolean {
   return (
-    (route?.api === "openai-responses" || route?.api === "openclaw-openai-responses-transport") &&
+    (route?.api === "openai-responses" || route?.api === "eve-openai-responses-transport") &&
     route.provider === "github-copilot"
   );
 }
@@ -327,7 +327,7 @@ const OPENAI_REASONING_REPLAY_METADATA_KEYS = new Set([
   "sessionHash",
   "authProfileHash",
 ]);
-const OPENAI_REASONING_REPLAY_METADATA_KEY = "__openclaw_replay";
+const OPENAI_REASONING_REPLAY_METADATA_KEY = "__eve_replay";
 
 function sanitizeOpenAIReasoningReplayMetadata(
   value: unknown,
@@ -507,7 +507,7 @@ function sanitizeOpenAICompletionsToolSignature(value: string): string | undefin
 
 function redactTranscriptStructuredValue(
   value: unknown,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   fieldKey?: string,
   seen: WeakSet<object> = new WeakSet<object>(),
   preserveImageDataUrlFields = false,
@@ -577,7 +577,7 @@ function redactTranscriptStructuredValue(
       (isOpenAIResponsesRoute(currentAssistantRoute) ||
         isCustomProviderRoute(currentAssistantRoute)) &&
       source.type === "thinking" &&
-      key === "openclawReasoningReplay"
+      key === "eveReasoningReplay"
     ) {
       const sanitizedMetadata = sanitizeOpenAIReasoningReplayMetadata(item, currentAssistantRoute);
       if (sanitizedMetadata !== undefined) {
@@ -677,7 +677,7 @@ function redactTranscriptStructuredValue(
 }
 
 /** Return a redacted transcript message according to logging config. */
-export function redactTranscriptMessage(message: AgentMessage, cfg?: OpenClawConfig): AgentMessage {
+export function redactTranscriptMessage(message: AgentMessage, cfg?: EVEConfig): AgentMessage {
   if (isTranscriptRedactionDisabled(cfg)) {
     return message;
   }

@@ -86,7 +86,7 @@ describe("requireValidConfigSnapshot", () => {
       [
         "Plugin compatibility: 1 notice.",
         "- legacy-plugin still uses legacy before_agent_start; keep regression coverage on this plugin, and prefer before_model_resolve/before_prompt_build for new work.",
-        "Review: openclaw doctor",
+        "Review: eve doctor",
       ].join("\n"),
     );
   });
@@ -139,7 +139,7 @@ describe("requireValidConfigSnapshot", () => {
     expect(runtime.error).toHaveBeenCalledWith(
       "Fix: This is a plugin packaging issue, not a local config problem.\nUpdate or reinstall the plugin after the publisher ships compiled JavaScript, or disable/uninstall the plugin until then.",
     );
-    expect(runtime.error).not.toHaveBeenCalledWith("Fix: openclaw doctor --fix");
+    expect(runtime.error).not.toHaveBeenCalledWith("Fix: eve doctor --fix");
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 
@@ -156,7 +156,7 @@ describe("requireValidConfigSnapshot", () => {
     const config = await requireValidConfigSnapshot(runtime);
 
     expect(config).toBeNull();
-    expect(runtime.error).toHaveBeenCalledWith("Fix: openclaw doctor --fix");
+    expect(runtime.error).toHaveBeenCalledWith("Fix: eve doctor --fix");
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 });

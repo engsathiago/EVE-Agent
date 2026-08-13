@@ -1,5 +1,5 @@
 // Gmi provider module implements model/runtime integration.
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
 import { GMI_BASE_URL, GMI_MODEL_CATALOG, buildGmiModelDefinition } from "./models.js";
 
 export function buildGmiProvider(): ModelProviderConfig {

@@ -10,9 +10,9 @@
  * Separated from gateway.ts for testability and to keep handleMessage thin.
  */
 
-import { buildChannelInboundEventContext } from "openclaw/plugin-sdk/channel-inbound";
-import { isSilentReplyPayloadText, SILENT_REPLY_TOKEN } from "openclaw/plugin-sdk/reply-chunking";
-import type { FinalizedMsgContext } from "openclaw/plugin-sdk/reply-runtime";
+import { buildChannelInboundEventContext } from "eve-agent/plugin-sdk/channel-inbound";
+import { isSilentReplyPayloadText, SILENT_REPLY_TOKEN } from "eve-agent/plugin-sdk/reply-chunking";
+import type { FinalizedMsgContext } from "eve-agent/plugin-sdk/reply-runtime";
 import { createQQBotMarkdownChunker } from "../messaging/markdown-table-chunking.js";
 import {
   parseAndSendMediaTags,

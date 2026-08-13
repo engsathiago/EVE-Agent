@@ -1,7 +1,7 @@
 // Mattermost tests cover monitor plugin behavior.
-import { createClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+import { createClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../runtime-api.js";
+import type { EVEConfig } from "../../runtime-api.js";
 import { resolveMattermostAccount } from "./accounts.js";
 import * as clientModule from "./client.js";
 import type { MattermostClient } from "./client.js";
@@ -78,7 +78,7 @@ beforeEach(() => {
   updateMattermostPostSpy.mockResolvedValue({ id: "patched" } as never);
 });
 
-function evaluateMentionGateForMessage(params: { cfg: OpenClawConfig; threadRootId?: string }) {
+function evaluateMentionGateForMessage(params: { cfg: EVEConfig; threadRootId?: string }) {
   const account = resolveMattermostAccount({ cfg: params.cfg, accountId: "default" });
   const resolver = vi.fn(resolveRequireMentionForTest);
   const input: MattermostMentionGateInput = {
@@ -119,7 +119,7 @@ function mockCallArg(
 
 describe("mattermost mention gating", () => {
   it("accepts unmentioned root channel posts in onmessage mode", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         mattermost: {
           chatmode: "onmessage",
@@ -142,7 +142,7 @@ describe("mattermost mention gating", () => {
   });
 
   it("accepts unmentioned thread replies in onmessage mode", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         mattermost: {
           chatmode: "onmessage",
@@ -164,7 +164,7 @@ describe("mattermost mention gating", () => {
   });
 
   it("rejects unmentioned channel posts in oncall mode", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         mattermost: {
           chatmode: "oncall",
@@ -290,7 +290,7 @@ describe("canFinalizeMattermostPreviewInPlace", () => {
 });
 
 describe("shouldUpdateMattermostDraftToolProgress", () => {
-  type MattermostConfig = NonNullable<NonNullable<OpenClawConfig["channels"]>["mattermost"]>;
+  type MattermostConfig = NonNullable<NonNullable<EVEConfig["channels"]>["mattermost"]>;
 
   function resolveToolProgressEnabled(mattermostConfig: MattermostConfig) {
     const account = resolveMattermostAccount({
@@ -337,7 +337,7 @@ describe("shouldUpdateMattermostDraftToolProgress", () => {
 });
 
 describe("shouldSuppressMattermostDefaultToolProgressMessages", () => {
-  type MattermostConfig = NonNullable<NonNullable<OpenClawConfig["channels"]>["mattermost"]>;
+  type MattermostConfig = NonNullable<NonNullable<EVEConfig["channels"]>["mattermost"]>;
 
   function resolveSuppressDefaultProgress(mattermostConfig: MattermostConfig) {
     const account = resolveMattermostAccount({

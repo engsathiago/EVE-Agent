@@ -3,9 +3,9 @@ import {
   hasSensitiveUrlHintTag,
   isSensitiveUrlConfigPath,
   redactSensitiveUrlLikeString,
-} from "@openclaw/net-policy/redact-sensitive-url";
-import { isRecord as isObjectRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/net-policy/redact-sensitive-url";
+import { isRecord as isObjectRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { ConfigUiHints } from "../shared/config-ui-hints-types.js";
 import {
@@ -14,7 +14,7 @@ import {
 } from "./redact-snapshot.raw.js";
 import { isSecretRefShape, redactSecretRefId } from "./redact-snapshot.secret-ref.js";
 import { isSensitiveConfigPath } from "./sensitive-paths.js";
-import type { ConfigFileSnapshot } from "./types.openclaw.js";
+import type { ConfigFileSnapshot } from "./types.eve.js";
 
 const log = createSubsystemLogger("config/redaction");
 const ENV_VAR_PLACEHOLDER_PATTERN = /^\$\{[^}]*\}$/;
@@ -88,7 +88,7 @@ function isExplicitlyNonSensitivePath(hints: ConfigUiHints | undefined, paths: s
  * sentinel and restore the original value from the on-disk config, so a
  * round-trip through the Web UI does not corrupt credentials.
  */
-export const REDACTED_SENTINEL = "__OPENCLAW_REDACTED__";
+export const REDACTED_SENTINEL = "__EVE_REDACTED__";
 
 function isSecretRefWithProvider(
   value: Record<string, unknown>,

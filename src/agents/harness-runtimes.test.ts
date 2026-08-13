@@ -1,6 +1,6 @@
 // Covers config scanning for agent harness runtime requirements.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { collectConfiguredAgentHarnessRuntimes } from "./harness-runtimes.js";
 
 describe("collectConfiguredAgentHarnessRuntimes", () => {
@@ -14,7 +14,7 @@ describe("collectConfiguredAgentHarnessRuntimes", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(collectConfiguredAgentHarnessRuntimes(config)).toEqual(["codex"]);
   });
@@ -32,7 +32,7 @@ describe("collectConfiguredAgentHarnessRuntimes", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       collectConfiguredAgentHarnessRuntimes(config, {
@@ -56,22 +56,22 @@ describe("collectConfiguredAgentHarnessRuntimes", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(collectConfiguredAgentHarnessRuntimes(config)).toEqual(["codex"]);
   });
 
-  it("respects explicit OpenClaw runtime policy on selectable OpenAI agent models", () => {
+  it("respects explicit EVE runtime policy on selectable OpenAI agent models", () => {
     const config = {
       agents: {
         defaults: {
           model: { primary: "anthropic/claude-sonnet-4-6" },
           models: {
-            "openai/gpt-5.5": { agentRuntime: { id: "openclaw" } },
+            "openai/gpt-5.5": { agentRuntime: { id: "eve" } },
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(collectConfiguredAgentHarnessRuntimes(config)).toEqual([]);
   });
@@ -95,7 +95,7 @@ describe("collectConfiguredAgentHarnessRuntimes", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(collectConfiguredAgentHarnessRuntimes(config)).toEqual([]);
   });
@@ -119,7 +119,7 @@ describe("collectConfiguredAgentHarnessRuntimes", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(collectConfiguredAgentHarnessRuntimes(config)).toEqual(["claude"]);
   });

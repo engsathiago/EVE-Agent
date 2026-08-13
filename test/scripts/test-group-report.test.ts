@@ -24,7 +24,7 @@ import {
 import { withEnv } from "../../src/test-utils/env.js";
 
 function makeTempDir() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-test-group-report-"));
+  return fs.mkdtempSync(path.join(os.tmpdir(), "eve-test-group-report-"));
 }
 
 function isProcessAlive(pid: number): boolean {
@@ -646,7 +646,7 @@ describe("scripts/test-group-report child process guard", () => {
       return;
     }
 
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-test-group-report-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-test-group-report-"));
     const markerPath = path.join(tempDir, "marker.txt");
     try {
       const result = await spawnText(
@@ -858,7 +858,7 @@ describe("scripts/test-group-report child process guard", () => {
   });
 
   it("streams large child output to a log path without retaining it", async () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-test-group-report-log-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-test-group-report-log-"));
     const logPath = path.join(tempDir, "child.log");
     try {
       const result = await spawnText(
@@ -918,7 +918,7 @@ describe("scripts/test-group-report child process guard", () => {
   });
 
   it("stops streamed child output after the configured log cap", async () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-test-group-report-log-cap-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-test-group-report-log-cap-"));
     const logPath = path.join(tempDir, "child.log");
     try {
       const result = await spawnText(
@@ -956,7 +956,7 @@ describe("scripts/test-group-report child process guard", () => {
 describe("scripts/test-group-report run plans", () => {
   it("caps Vitest workers for full-suite profiling by default", () => {
     expect(resolveFullSuiteVitestEnv(parseTestGroupReportArgs(["--full-suite"]), {})).toEqual({
-      OPENCLAW_VITEST_MAX_WORKERS: "2",
+      EVE_VITEST_MAX_WORKERS: "2",
     });
   });
 
@@ -964,19 +964,19 @@ describe("scripts/test-group-report run plans", () => {
     expect(
       resolveFullSuiteVitestEnv(parseTestGroupReportArgs(["--full-suite"]), {}, "commands"),
     ).toEqual({
-      OPENCLAW_VITEST_MAX_WORKERS: "1",
+      EVE_VITEST_MAX_WORKERS: "1",
     });
   });
 
   it("preserves explicit Vitest worker budgets for full-suite profiling", () => {
     expect(
       resolveFullSuiteVitestEnv(parseTestGroupReportArgs(["--full-suite"]), {
-        OPENCLAW_VITEST_MAX_WORKERS: "2",
+        EVE_VITEST_MAX_WORKERS: "2",
       }),
     ).toEqual({});
     expect(
       resolveFullSuiteVitestEnv(parseTestGroupReportArgs(["--full-suite"]), {
-        OPENCLAW_TEST_WORKERS: "2",
+        EVE_TEST_WORKERS: "2",
       }),
     ).toEqual({});
   });
@@ -1006,7 +1006,7 @@ describe("scripts/test-group-report run plans", () => {
       { cwd: "/repo", env: {} },
     );
 
-    expect(specs.map((spec) => spec.env.OPENCLAW_VITEST_FS_MODULE_CACHE_PATH)).toEqual([
+    expect(specs.map((spec) => spec.env.EVE_VITEST_FS_MODULE_CACHE_PATH)).toEqual([
       path.join("/repo", "node_modules", ".experimental-vitest-cache", "0-a.ts"),
       path.join("/repo", "node_modules", ".experimental-vitest-cache", "1-b.ts"),
     ]);
@@ -1015,8 +1015,8 @@ describe("scripts/test-group-report run plans", () => {
   it("uses leaf configs for full-suite profiling without requiring parallel env", () => {
     withEnv(
       {
-        OPENCLAW_TEST_PROJECTS_PARALLEL: undefined,
-        OPENCLAW_TEST_PROJECTS_LEAF_SHARDS: undefined,
+        EVE_TEST_PROJECTS_PARALLEL: undefined,
+        EVE_TEST_PROJECTS_LEAF_SHARDS: undefined,
       },
       () => {
         const plans = resolveRunPlans(parseTestGroupReportArgs(["--full-suite"]));
@@ -1032,7 +1032,7 @@ describe("scripts/test-group-report run plans", () => {
   });
 
   it("preserves full-suite shard file args and unique report labels", () => {
-    withEnv({ OPENCLAW_TEST_PROJECTS_PARALLEL: "6" }, () => {
+    withEnv({ EVE_TEST_PROJECTS_PARALLEL: "6" }, () => {
       const plans = resolveRunPlans(parseTestGroupReportArgs(["--full-suite"]));
       const gatewayServerPlans = plans.filter(
         (plan) => plan.config === "test/vitest/vitest.gateway-server.config.ts",

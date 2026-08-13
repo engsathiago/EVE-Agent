@@ -1,8 +1,8 @@
 /**
  * Gateway loop for polling ClickClack backlog events, opening the realtime
- * websocket, and dispatching user messages into OpenClaw.
+ * websocket, and dispatching user messages into EVE.
  */
-import type { ChannelGatewayContext } from "openclaw/plugin-sdk/channel-contract";
+import type { ChannelGatewayContext } from "eve-agent/plugin-sdk/channel-contract";
 import type { RawData } from "ws";
 import { resolveClickClackInboundAccess } from "./access.js";
 import { resolveClickClackAccount } from "./accounts.js";

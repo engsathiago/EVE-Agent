@@ -30,11 +30,11 @@ import type {
   ToolCallLocation,
   ToolKind,
 } from "@agentclientprotocol/sdk";
-import { readBool, readNonNegativeInteger, readString } from "@openclaw/acp-core/meta";
-import { defaultAcpSessionStore, type AcpSessionStore } from "@openclaw/acp-core/session";
-import { toAcpSessionLineageMeta } from "@openclaw/acp-core/session-lineage-meta";
-import { timestampMsToIsoString } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { readBool, readNonNegativeInteger, readString } from "@eve/acp-core/meta";
+import { defaultAcpSessionStore, type AcpSessionStore } from "@eve/acp-core/session";
+import { toAcpSessionLineageMeta } from "@eve/acp-core/session-lineage-meta";
+import { timestampMsToIsoString } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { EventFrame } from "../../packages/gateway-protocol/src/index.js";
 import type { GatewayClient } from "../gateway/client.js";
 import type { GatewaySessionRow, SessionsListResult } from "../gateway/session-utils.js";
@@ -193,7 +193,7 @@ function buildSystemInputProvenance(originSessionId: string) {
     kind: "external_user" as const,
     originSessionId,
     sourceChannel: "acp",
-    sourceTool: "openclaw_acp",
+    sourceTool: "eve_acp",
   };
 }
 
@@ -204,7 +204,7 @@ function buildSystemProvenanceReceipt(params: {
 }) {
   return [
     "[Source Receipt]",
-    "bridge=openclaw-acp",
+    "bridge=eve-acp",
     `originHost=${os.hostname()}`,
     `originCwd=${shortenHomePath(params.cwd)}`,
     `acpSessionId=${params.sessionId}`,
@@ -223,7 +223,7 @@ function hasExplicitSessionRouting(
   );
 }
 
-/** ACP Agent implementation backed by the OpenClaw Gateway and replay ledger. */
+/** ACP Agent implementation backed by the EVE Gateway and replay ledger. */
 export class AcpGatewayAgent implements Agent {
   private connection: AgentSideConnection;
   private gateway: GatewayClient;
@@ -1673,7 +1673,7 @@ export class AcpGatewayAgent implements Agent {
       return;
     }
     throw new Error(
-      "ACP bridge mode does not support per-session MCP servers. Configure MCP on the OpenClaw gateway or agent instead.",
+      "ACP bridge mode does not support per-session MCP servers. Configure MCP on the EVE gateway or agent instead.",
     );
   }
 

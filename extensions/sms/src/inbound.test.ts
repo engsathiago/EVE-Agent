@@ -126,7 +126,7 @@ describe("dispatchSmsInboundEvent", () => {
       sessionKey: "agent:main:sms:direct:+15551234567",
     });
     buildContext.mockReturnValue({ SessionKey: "agent:main:sms:direct:+15551234567" });
-    resolveStorePath.mockReturnValue("/tmp/openclaw-sessions");
+    resolveStorePath.mockReturnValue("/tmp/eve-sessions");
 
     await dispatchSmsInboundEvent({
       cfg: {},

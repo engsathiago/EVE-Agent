@@ -30,7 +30,7 @@ export type FireAndForgetBoundedHookOptions = {
 
 const getFireAndForgetHookState = () =>
   resolveGlobalSingleton<FireAndForgetHookState>(
-    Symbol.for("openclaw.fireAndForgetHookState"),
+    Symbol.for("eve.fireAndForgetHookState"),
     () => ({
       active: 0,
       queue: [],

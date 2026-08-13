@@ -1,6 +1,6 @@
 /**
  * @deprecated Compatibility facade for published Lark/Zalo packages that imported
- * command authorization through `openclaw/plugin-sdk/zalouser`.
+ * command authorization through `eve-agent/plugin-sdk/zalouser`.
  */
 export {
   resolveSenderCommandAuthorization,

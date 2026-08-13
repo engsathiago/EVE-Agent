@@ -17,7 +17,7 @@ import {
   PLUGIN_MODEL_CATALOG_GENERATED_BY,
 } from "./plugin-model-catalog.js";
 
-const planOpenClawModelsJsonMock = vi.fn();
+const planEVEModelsJsonMock = vi.fn();
 const writePrivateStoreTextWriteMock = vi.fn();
 let actualPrivateFileStore:
   | typeof import("../infra/private-file-store.js").privateFileStore
@@ -25,7 +25,7 @@ let actualPrivateFileStore:
 
 installModelsConfigTestHooks();
 
-let ensureOpenClawModelsJson: typeof import("./models-config.js").ensureOpenClawModelsJson;
+let ensureEVEModelsJson: typeof import("./models-config.js").ensureEVEModelsJson;
 let clearCurrentPluginMetadataSnapshot: typeof import("../plugins/current-plugin-metadata-snapshot.js").clearCurrentPluginMetadataSnapshot;
 let setCurrentPluginMetadataSnapshot: typeof import("../plugins/current-plugin-metadata-snapshot.js").setCurrentPluginMetadataSnapshot;
 
@@ -90,8 +90,8 @@ function planParamsAt(callIndex: number): {
   providerDiscoveryTimeoutMs?: number;
   workspaceDir?: string;
 } {
-  // Planner call shape is the contract between ensureOpenClawModelsJson and planning.
-  const call = planOpenClawModelsJsonMock.mock.calls[callIndex];
+  // Planner call shape is the contract between ensureEVEModelsJson and planning.
+  const call = planEVEModelsJsonMock.mock.calls[callIndex];
   if (!call) {
     throw new Error(`expected models planner call #${callIndex + 1}`);
   }
@@ -105,7 +105,7 @@ function planParamsAt(callIndex: number): {
 
 beforeAll(async () => {
   vi.doMock("./models-config.plan.js", () => ({
-    planOpenClawModelsJson: (...args: unknown[]) => planOpenClawModelsJsonMock(...args),
+    planEVEModelsJson: (...args: unknown[]) => planEVEModelsJsonMock(...args),
   }));
   vi.doMock("../infra/private-file-store.js", async () => {
     const actual = await vi.importActual<typeof import("../infra/private-file-store.js")>(
@@ -128,7 +128,7 @@ beforeAll(async () => {
       },
     };
   });
-  ({ ensureOpenClawModelsJson } = await import("./models-config.js"));
+  ({ ensureEVEModelsJson } = await import("./models-config.js"));
   ({ clearCurrentPluginMetadataSnapshot, setCurrentPluginMetadataSnapshot } =
     await import("../plugins/current-plugin-metadata-snapshot.js"));
 });
@@ -148,7 +148,7 @@ beforeEach(() => {
         );
       },
     );
-  planOpenClawModelsJsonMock
+  planEVEModelsJsonMock
     .mockReset()
     .mockImplementation(async (params: { cfg?: typeof CUSTOM_PROXY_MODELS_CONFIG }) => ({
       action: "write",
@@ -163,7 +163,7 @@ describe("models-config write serialization", () => {
       setCurrentPluginMetadataSnapshot(snapshot, { config: {} });
       const agentDir = path.join(home, "agent-non-default");
 
-      await ensureOpenClawModelsJson({}, agentDir);
+      await ensureEVEModelsJson({}, agentDir);
 
       const params = planParamsAt(0);
       expect(params.pluginMetadataSnapshot).not.toBe(snapshot);
@@ -177,7 +177,7 @@ describe("models-config write serialization", () => {
       setCurrentPluginMetadataSnapshot(snapshot, { config: {} });
       const agentDir = path.join(home, "agent-non-default");
 
-      await ensureOpenClawModelsJson({}, agentDir, { workspaceDir });
+      await ensureEVEModelsJson({}, agentDir, { workspaceDir });
 
       const params = planParamsAt(0);
       expect(params.workspaceDir).toBe(workspaceDir);
@@ -192,7 +192,7 @@ describe("models-config write serialization", () => {
       setCurrentPluginMetadataSnapshot(snapshot, { config: {} });
       const agentDir = path.join(home, "agent-non-default");
 
-      await ensureOpenClawModelsJson({}, agentDir, {
+      await ensureEVEModelsJson({}, agentDir, {
         workspaceDir,
         providerDiscoveryProviderIds: ["google"],
       });
@@ -210,12 +210,12 @@ describe("models-config write serialization", () => {
         },
       };
 
-      const result = await ensureOpenClawModelsJson(cfg);
+      const result = await ensureEVEModelsJson(cfg);
 
-      expect(result.agentDir).toBe(path.join(home, ".openclaw", "agents", "ops", "agent"));
+      expect(result.agentDir).toBe(path.join(home, ".eve", "agents", "ops", "agent"));
       await expect(fs.access(path.join(result.agentDir, "models.json"))).resolves.toBeUndefined();
       await expectMissingPath(
-        fs.access(path.join(home, ".openclaw", "agents", "main", "agent", "models.json")),
+        fs.access(path.join(home, ".eve", "agents", "main", "agent", "models.json")),
       );
     });
   });
@@ -223,7 +223,7 @@ describe("models-config write serialization", () => {
   it("writes plugin-owned model catalogs beside the agent plugin state", async () => {
     await withModelsTempHome(async (home) => {
       const agentDir = path.join(home, "agent");
-      planOpenClawModelsJsonMock.mockImplementation(async () => ({
+      planEVEModelsJsonMock.mockImplementation(async () => ({
         action: "write",
         contents: `${JSON.stringify({ providers: {} }, null, 2)}\n`,
         pluginCatalogWrites: {
@@ -245,7 +245,7 @@ describe("models-config write serialization", () => {
         },
       }));
 
-      await ensureOpenClawModelsJson({}, agentDir);
+      await ensureEVEModelsJson({}, agentDir);
 
       const root = JSON.parse(await fs.readFile(path.join(agentDir, "models.json"), "utf8")) as {
         providers?: Record<string, unknown>;
@@ -277,7 +277,7 @@ describe("models-config write serialization", () => {
           2,
         )}\n`,
       );
-      planOpenClawModelsJsonMock.mockImplementation(async () => ({
+      planEVEModelsJsonMock.mockImplementation(async () => ({
         action: "noop",
         pluginCatalogWrites: {},
       }));
@@ -287,7 +287,7 @@ describe("models-config write serialization", () => {
         `${JSON.stringify({ providers: {} })}\n`,
       );
 
-      const result = await ensureOpenClawModelsJson({}, agentDir);
+      const result = await ensureEVEModelsJson({}, agentDir);
 
       expect(result.wrote).toBe(true);
       await expect(fs.access(staleCatalog)).rejects.toMatchObject({ code: "ENOENT" });
@@ -307,9 +307,9 @@ describe("models-config write serialization", () => {
           2,
         )}\n`,
       );
-      planOpenClawModelsJsonMock.mockImplementation(async () => ({ action: "skip" }));
+      planEVEModelsJsonMock.mockImplementation(async () => ({ action: "skip" }));
 
-      const result = await ensureOpenClawModelsJson({}, agentDir);
+      const result = await ensureEVEModelsJson({}, agentDir);
 
       expect(result.wrote).toBe(false);
       await expect(fs.access(catalogPath)).resolves.toBeUndefined();
@@ -318,18 +318,18 @@ describe("models-config write serialization", () => {
 
   it("does not reuse scoped startup discovery cache for a different provider scope", async () => {
     await withModelsTempHome(async (home) => {
-      planOpenClawModelsJsonMock.mockImplementation(async () => ({ action: "skip" }));
+      planEVEModelsJsonMock.mockImplementation(async () => ({ action: "skip" }));
       const agentDir = path.join(home, "agent");
-      await ensureOpenClawModelsJson({}, agentDir, {
+      await ensureEVEModelsJson({}, agentDir, {
         providerDiscoveryProviderIds: ["openai"],
         providerDiscoveryTimeoutMs: 5000,
       });
-      await ensureOpenClawModelsJson({}, agentDir, {
+      await ensureEVEModelsJson({}, agentDir, {
         providerDiscoveryProviderIds: ["anthropic"],
         providerDiscoveryTimeoutMs: 5000,
       });
 
-      expect(planOpenClawModelsJsonMock).toHaveBeenCalledTimes(2);
+      expect(planEVEModelsJsonMock).toHaveBeenCalledTimes(2);
       const params = planParamsAt(1);
       expect(params.providerDiscoveryProviderIds).toEqual(["anthropic"]);
       expect(params.providerDiscoveryTimeoutMs).toBe(5000);
@@ -338,41 +338,41 @@ describe("models-config write serialization", () => {
 
   it("keeps the ready cache warm after models.json is written", async () => {
     await withModelsTempHome(async () => {
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
 
-      expect(planOpenClawModelsJsonMock).toHaveBeenCalledTimes(1);
+      expect(planEVEModelsJsonMock).toHaveBeenCalledTimes(1);
     });
   });
 
   it("invalidates the ready cache when models.json changes externally", async () => {
     await withModelsTempHome(async () => {
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
 
       const modelPath = path.join(resolveDefaultAgentDir({}), "models.json");
       await fs.writeFile(modelPath, `${JSON.stringify({ external: true })}\n`, "utf8");
       const externalMtime = new Date(Date.now() + 2000);
       await fs.utimes(modelPath, externalMtime, externalMtime);
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
 
-      expect(planOpenClawModelsJsonMock).toHaveBeenCalledTimes(2);
+      expect(planEVEModelsJsonMock).toHaveBeenCalledTimes(2);
     });
   });
 
   it("keeps distinct config fingerprints cached without evicting each other", async () => {
     await withModelsTempHome(async () => {
-      planOpenClawModelsJsonMock.mockImplementation(async () => ({ action: "noop" }));
+      planEVEModelsJsonMock.mockImplementation(async () => ({ action: "noop" }));
       const first = structuredClone(CUSTOM_PROXY_MODELS_CONFIG);
       const second = structuredClone(CUSTOM_PROXY_MODELS_CONFIG);
       first.agents = { defaults: { model: "openai/gpt-5.4" } };
       second.agents = { defaults: { model: "anthropic/claude-sonnet-4-5" } };
 
-      await ensureOpenClawModelsJson(first);
-      await ensureOpenClawModelsJson(second);
-      await ensureOpenClawModelsJson(first);
+      await ensureEVEModelsJson(first);
+      await ensureEVEModelsJson(second);
+      await ensureEVEModelsJson(first);
 
-      expect(planOpenClawModelsJsonMock).toHaveBeenCalledTimes(2);
+      expect(planEVEModelsJsonMock).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -431,8 +431,8 @@ describe("models-config write serialization", () => {
       );
 
       const writes = Promise.all([
-        ensureOpenClawModelsJson(first),
-        ensureOpenClawModelsJson(second),
+        ensureEVEModelsJson(first),
+        ensureEVEModelsJson(second),
       ]);
       await firstModelsWriteStarted;
       await Promise.resolve();

@@ -1,7 +1,7 @@
-/** Manifest-backed model catalog row loaders for `openclaw models list`. */
-import { normalizeModelCatalogProviderId } from "@openclaw/model-catalog-core/model-catalog-refs";
-import type { NormalizedModelCatalogRow } from "@openclaw/model-catalog-core/model-catalog-types";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+/** Manifest-backed model catalog row loaders for `eve models list`. */
+import { normalizeModelCatalogProviderId } from "@eve/model-catalog-core/model-catalog-refs";
+import type { NormalizedModelCatalogRow } from "@eve/model-catalog-core/model-catalog-types";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { planManifestModelCatalogRows } from "../../model-catalog/index.js";
 import { loadManifestMetadataSnapshot } from "../../plugins/manifest-contract-eligibility.js";
 import type { PluginManifestRegistry } from "../../plugins/manifest-registry.js";
@@ -16,7 +16,7 @@ import {
 type ManifestCatalogRowsForListMode = "static-authoritative" | "supplemental";
 
 function loadManifestCatalogRowsForPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   index: PluginRegistrySnapshot;
   registry: PluginManifestRegistry;
@@ -54,7 +54,7 @@ function loadManifestCatalogRowsForPluginIds(params: {
 }
 
 function resolveConventionModelCatalogPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   index: PluginRegistrySnapshot;
   providerFilter: string;
 }): readonly string[] {
@@ -76,7 +76,7 @@ function resolveConventionModelCatalogPluginIds(params: {
 }
 
 function resolveDeclaredModelCatalogPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   index: PluginRegistrySnapshot;
   providerFilter: string;
 }): readonly string[] {
@@ -89,7 +89,7 @@ function resolveDeclaredModelCatalogPluginIds(params: {
 }
 
 function loadManifestCatalogRowsForList(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   providerFilter?: string;
   env?: NodeJS.ProcessEnv;
   mode?: ManifestCatalogRowsForListMode;
@@ -148,7 +148,7 @@ function loadManifestCatalogRowsForList(params: {
 
 /** Loads authoritative static manifest catalog rows for model-list output. */
 export function loadStaticManifestCatalogRowsForList(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   providerFilter?: string;
   env?: NodeJS.ProcessEnv;
   metadataSnapshot?: PluginMetadataSnapshot;
@@ -161,7 +161,7 @@ export function loadStaticManifestCatalogRowsForList(params: {
 
 /** Loads supplemental non-runtime manifest catalog rows for fallback list sources. */
 export function loadSupplementalManifestCatalogRowsForList(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   providerFilter?: string;
   env?: NodeJS.ProcessEnv;
   metadataSnapshot?: PluginMetadataSnapshot;

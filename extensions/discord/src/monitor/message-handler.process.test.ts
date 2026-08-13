@@ -1,13 +1,13 @@
 // Discord tests cover message handler.process plugin behavior.
 import { MessageFlags } from "discord-api-types/v10";
-import { DEFAULT_EMOJIS, DEFAULT_TIMING } from "openclaw/plugin-sdk/channel-feedback";
+import { DEFAULT_EMOJIS, DEFAULT_TIMING } from "eve-agent/plugin-sdk/channel-feedback";
 import {
   recordChannelBotPairLoopAndCheckSuppression,
   type ChannelBotLoopProtectionFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-dispatch-runtime";
-import { setReplyPayloadMetadata } from "openclaw/plugin-sdk/reply-payload-testing";
-import * as runtimeEnvModule from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-dispatch-runtime";
+import { setReplyPayloadMetadata } from "eve-agent/plugin-sdk/reply-payload-testing";
+import * as runtimeEnvModule from "eve-agent/plugin-sdk/runtime-env";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiscordMessagePreflightContext } from "./message-handler.preflight.js";
 
@@ -59,7 +59,7 @@ const createDiscordDraftStream = deliveryMocks.createDiscordDraftStream;
 function createNonTerminalToolWarningPayload(): ReplyPayload {
   return setReplyPayloadMetadata(
     {
-      text: "⚠️ 🛠️ `run openclaw definitely-not-a-real-subcommand (agent)` failed",
+      text: "⚠️ 🛠️ `run eve definitely-not-a-real-subcommand (agent)` failed",
       isError: true,
     },
     { nonTerminalToolErrorWarning: true },
@@ -212,7 +212,7 @@ const configSessionsMocks = vi.hoisted(() => ({
     (sessionFile: string) => Promise<{ text: string; timestamp?: number } | undefined>
   >(async () => undefined),
   resolveAndPersistSessionFile: vi.fn<(params?: unknown) => Promise<{ sessionFile: string }>>(
-    async () => ({ sessionFile: "/tmp/openclaw-discord-process-test-session.jsonl" }),
+    async () => ({ sessionFile: "/tmp/eve-discord-process-test-session.jsonl" }),
   ),
   resolveSessionStoreEntry: vi.fn<
     (params: { store: Record<string, unknown>; sessionKey?: string }) => { existing?: unknown }
@@ -220,7 +220,7 @@ const configSessionsMocks = vi.hoisted(() => ({
     existing: params.sessionKey ? params.store[params.sessionKey] : undefined,
   })),
   resolveStorePath: vi.fn<(path?: unknown, opts?: unknown) => string>(
-    () => "/tmp/openclaw-discord-process-test-sessions.json",
+    () => "/tmp/eve-discord-process-test-sessions.json",
   ),
 }));
 const loadSessionStore = configSessionsMocks.loadSessionStore;
@@ -252,7 +252,7 @@ let formatDiscordReplySkip: typeof import("./message-handler.process.js").format
 let notifyDiscordInboundEventOutboundSuccess: typeof import("../inbound-event-delivery.js").notifyDiscordInboundEventOutboundSuccess;
 let createDiscordReplyTypingFeedback: typeof import("./reply-typing-feedback.js").createDiscordReplyTypingFeedback;
 
-vi.mock("openclaw/plugin-sdk/reply-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/reply-runtime", () => ({
   dispatchReplyWithBufferedBlockDispatcher: async (params: {
     dispatcherOptions: {
       beforeDeliver?: (
@@ -370,7 +370,7 @@ vi.mock("openclaw/plugin-sdk/reply-runtime", () => ({
   },
 }));
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/conversation-runtime", () => ({
   recordInboundSession: (...args: unknown[]) => recordInboundSession(...args),
   resolvePinnedMainDmOwnerFromAllowlist: (params: {
     dmScope?: string | null;
@@ -399,7 +399,7 @@ vi.mock("openclaw/plugin-sdk/conversation-runtime", () => ({
     bindingId.split(":").at(-1) ?? bindingId,
 }));
 
-vi.mock("openclaw/plugin-sdk/session-store-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/session-store-runtime", () => ({
   loadSessionStore: (storePath: string, opts?: unknown) =>
     configSessionsMocks.loadSessionStore(storePath, opts),
   readSessionUpdatedAt: (params?: unknown) => configSessionsMocks.readSessionUpdatedAt(params),
@@ -518,12 +518,12 @@ beforeEach(() => {
   readSessionUpdatedAt.mockReturnValue(undefined);
   readLatestAssistantTextFromSessionTranscript.mockResolvedValue(undefined);
   resolveAndPersistSessionFile.mockResolvedValue({
-    sessionFile: "/tmp/openclaw-discord-process-test-session.jsonl",
+    sessionFile: "/tmp/eve-discord-process-test-session.jsonl",
   });
   resolveSessionStoreEntry.mockImplementation((params) => ({
     existing: params.sessionKey ? params.store[params.sessionKey] : undefined,
   }));
-  resolveStorePath.mockReturnValue("/tmp/openclaw-discord-process-test-sessions.json");
+  resolveStorePath.mockReturnValue("/tmp/eve-discord-process-test-sessions.json");
   threadBindingTesting.resetThreadBindingsForTests();
 });
 
@@ -1155,7 +1155,7 @@ describe("processDiscordMessage ack reactions", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 
@@ -1181,7 +1181,7 @@ describe("processDiscordMessage ack reactions", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 
@@ -1213,7 +1213,7 @@ describe("processDiscordMessage ack reactions", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 
@@ -1241,7 +1241,7 @@ describe("processDiscordMessage ack reactions", () => {
           ackReaction: "👀",
           removeAckAfterReply: true,
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 
@@ -1265,7 +1265,7 @@ describe("processDiscordMessage ack reactions", () => {
             enabled: false,
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 
@@ -1328,7 +1328,7 @@ describe("processDiscordMessage session routing", () => {
       cfg: {
         channels: { discord: { contextVisibility: "allowlist" } },
         messages: { ackReaction: "👀" },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       author: {
         id: "U1",
@@ -1395,7 +1395,7 @@ describe("processDiscordMessage session routing", () => {
       cfg: {
         channels: { discord: { contextVisibility: "all" } },
         messages: { ackReaction: "👀" },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       discordRestFetch: fetchImpl,
       message: {
@@ -1479,7 +1479,7 @@ describe("processDiscordMessage session routing", () => {
       cfg: {
         messages: { ackReaction: "👀" },
         session: {
-          store: "/tmp/openclaw-discord-process-test-sessions.json",
+          store: "/tmp/eve-discord-process-test-sessions.json",
           dmScope: "main",
         },
       },
@@ -1546,7 +1546,7 @@ describe("processDiscordMessage session routing", () => {
         messages: {
           groupChat: { visibleReplies: "message_tool" },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -1574,7 +1574,7 @@ describe("processDiscordMessage session routing", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -1609,7 +1609,7 @@ describe("processDiscordMessage session routing", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -1649,7 +1649,7 @@ describe("processDiscordMessage session routing", () => {
             timing: { debounceMs: 0 },
           },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -1813,7 +1813,7 @@ describe("processDiscordMessage session routing", () => {
               visibleReplies: "message_tool",
             },
           },
-          session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+          session: { store: "/tmp/eve-discord-process-test-sessions.json" },
         },
         route: BASE_CHANNEL_ROUTE,
       }),
@@ -1832,7 +1832,7 @@ describe("processDiscordMessage session routing", () => {
               visibleReplies: "automatic",
             },
           },
-          session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+          session: { store: "/tmp/eve-discord-process-test-sessions.json" },
         },
         route: BASE_CHANNEL_ROUTE,
       }),
@@ -1850,7 +1850,7 @@ describe("processDiscordMessage session routing", () => {
 
   it("prefers bound session keys and sets MessageThreadId for bound thread messages", async () => {
     const threadBindings = createThreadBindingManager({
-      cfg: {} as import("openclaw/plugin-sdk/config-contracts").OpenClawConfig,
+      cfg: {} as import("eve-agent/plugin-sdk/config-contracts").EVEConfig,
       accountId: "default",
       persist: false,
       enableSweeper: false,
@@ -1986,7 +1986,7 @@ describe("processDiscordMessage draft streaming", () => {
     return await createAutomaticSourceDeliveryContext({
       cfg: {
         messages: { ackReaction: "👀" },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
         channels: {
           discord: {
             draftChunk: { minChars: 1, maxChars: 5, breakPreference: "newline" },
@@ -2207,7 +2207,7 @@ describe("processDiscordMessage draft streaming", () => {
         messages: {
           groupChat: { visibleReplies: "message_tool" },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -2236,7 +2236,7 @@ describe("processDiscordMessage draft streaming", () => {
           groupChat: { visibleReplies: "message_tool" },
           statusReactions: { enabled: true, timing: { debounceMs: 0 } },
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
       route: BASE_CHANNEL_ROUTE,
     });
@@ -2339,7 +2339,7 @@ describe("processDiscordMessage draft streaming", () => {
     const ctx = await createAutomaticSourceDeliveryContext({
       cfg: {
         messages: { ackReaction: "👀" },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
         channels: {
           discord: {
             maxLinesPerMessage: 120,
@@ -3749,7 +3749,7 @@ describe("processDiscordMessage deliver-lambda abort logging", () => {
         messages: {
           ackReaction: "👀",
         },
-        session: { store: "/tmp/openclaw-discord-process-test-sessions.json" },
+        session: { store: "/tmp/eve-discord-process-test-sessions.json" },
       },
     });
 

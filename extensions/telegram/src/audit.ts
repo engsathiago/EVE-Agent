@@ -1,6 +1,6 @@
 // Telegram plugin module implements audit behavior.
-import type { TelegramGroupConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { TelegramGroupConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 export type {
   AuditTelegramGroupMembershipParams,
   TelegramGroupMembershipAudit,

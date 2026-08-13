@@ -1,17 +1,17 @@
 /**
  * Persists and normalizes the Codex app-server thread binding associated with
- * an OpenClaw session file.
+ * an EVE session file.
  */
 import { AsyncLocalStorage } from "node:async_hooks";
 import fs from "node:fs/promises";
-import { embeddedAgentLog } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   ensureAuthProfileStore,
   resolveDefaultAgentDir,
   resolveProviderIdForAuth,
   type AuthProfileStore,
-} from "openclaw/plugin-sdk/agent-runtime";
-import { type FileLockOptions, withFileLock } from "openclaw/plugin-sdk/file-lock";
+} from "eve-agent/plugin-sdk/agent-runtime";
+import { type FileLockOptions, withFileLock } from "eve-agent/plugin-sdk/file-lock";
 import {
   CODEX_PLUGINS_MARKETPLACE_NAME,
   normalizeCodexServiceTier,
@@ -54,7 +54,7 @@ export type CodexAppServerAuthProfileLookup = {
   config?: ProviderAuthAliasConfig;
 };
 
-/** Durable sidecar binding connecting an OpenClaw session file to a Codex thread. */
+/** Durable sidecar binding connecting an EVE session file to a Codex thread. */
 export type CodexAppServerThreadBinding = {
   schemaVersion: 2;
   threadId: string;

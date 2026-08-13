@@ -2,11 +2,11 @@
 import { realpathSync } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
-  readOpenClawManagedNpmRootOverrides,
+  readEVEManagedNpmRootOverrides,
   syncManagedNpmRootPeerDependencies,
 } from "../infra/npm-managed-root.js";
 import { createSafeNpmInstallEnv } from "../infra/safe-package-install.js";
@@ -17,7 +17,7 @@ import {
   resolvePluginInstallDir,
   resolvePluginNpmProjectsDir,
 } from "./install-paths.js";
-import { relinkOpenClawPeerDependenciesInManagedNpmRoot } from "./plugin-peer-link.js";
+import { relinkEVEPeerDependenciesInManagedNpmRoot } from "./plugin-peer-link.js";
 import { defaultSlotIdForKey } from "./slots.js";
 
 export type UninstallActions = {
@@ -96,7 +96,7 @@ export function formatUninstallSlotResetPreview(slotKey: "memory" | "contextEngi
 export type UninstallPluginResult =
   | {
       ok: true;
-      config: OpenClawConfig;
+      config: EVEConfig;
       pluginId: string;
       actions: UninstallActions;
       warnings: string[];
@@ -120,7 +120,7 @@ export type PluginUninstallDirectoryRemoval = {
 export type PluginUninstallPlanResult =
   | {
       ok: true;
-      config: OpenClawConfig;
+      config: EVEConfig;
       pluginId: string;
       actions: UninstallActions;
       directoryRemoval: PluginUninstallDirectoryRemoval | null;
@@ -382,10 +382,10 @@ function isPathInsideOrEqual(parent: string, child: string): boolean {
  * and owned channel config.
  */
 export function removePluginFromConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   pluginId: string,
   opts?: { channelIds?: string[] },
-): { config: OpenClawConfig; actions: Omit<UninstallActions, "directory"> } {
+): { config: EVEConfig; actions: Omit<UninstallActions, "directory"> } {
   const actions = createEmptyConfigUninstallActions();
 
   const pluginsConfig = cfg.plugins ?? {};
@@ -514,17 +514,17 @@ export function removePluginFromConfig(
     }
   }
 
-  const config: OpenClawConfig = {
+  const config: EVEConfig = {
     ...cfg,
     plugins: Object.keys(cleanedPlugins).length > 0 ? cleanedPlugins : undefined,
-    channels: channels as OpenClawConfig["channels"],
+    channels: channels as EVEConfig["channels"],
   };
 
   return { config, actions };
 }
 
 export type UninstallPluginParams = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   pluginId: string;
   channelIds?: string[];
   deleteFiles?: boolean;
@@ -674,7 +674,7 @@ export async function applyPluginUninstallDirectoryRemoval(
       );
     }
     try {
-      const managedOverrides = await readOpenClawManagedNpmRootOverrides();
+      const managedOverrides = await readEVEManagedNpmRootOverrides();
       const syncedPeerDependencies = await syncManagedNpmRootPeerDependencies({
         npmRoot: removal.cleanup.npmRoot,
         managedOverrides,
@@ -719,7 +719,7 @@ export async function applyPluginUninstallDirectoryRemoval(
       );
     }
     try {
-      await relinkOpenClawPeerDependenciesInManagedNpmRoot({
+      await relinkEVEPeerDependenciesInManagedNpmRoot({
         npmRoot: removal.cleanup.npmRoot,
         logger: {
           warn: (message) => warnings.push(message),

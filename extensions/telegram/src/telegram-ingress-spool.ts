@@ -7,8 +7,8 @@ import type {
   ChannelIngressQueueClaim,
   ChannelIngressQueueClaimRef,
   ChannelIngressQueueRecord,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { resolveStateDir } from "eve-agent/plugin-sdk/state-paths";
 import { getTelegramRuntime } from "./runtime.js";
 import { normalizeTelegramStateAccountId } from "./state-account-id.js";
 

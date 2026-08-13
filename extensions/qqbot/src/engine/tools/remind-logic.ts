@@ -1,5 +1,5 @@
 // Qqbot plugin module implements remind logic behavior.
-import { resolveExpiresAtMsFromDurationMs } from "openclaw/plugin-sdk/number-runtime";
+import { resolveExpiresAtMsFromDurationMs } from "eve-agent/plugin-sdk/number-runtime";
 
 /**
  * QQBot reminder tool core logic.

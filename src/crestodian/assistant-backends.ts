@@ -1,5 +1,5 @@
 // Crestodian planner backends choose safe local model runners available on this host.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { CrestodianOverview } from "./overview.js";
 
 /**
@@ -17,7 +17,7 @@ type CrestodianLocalPlannerBackend = {
   runner: "cli" | "embedded";
   provider: string;
   model: string;
-  buildConfig: (workspaceDir: string) => OpenClawConfig;
+  buildConfig: (workspaceDir: string) => EVEConfig;
 };
 
 const CLAUDE_CLI_BACKEND: CrestodianLocalPlannerBackend = {
@@ -53,7 +53,7 @@ export function selectCrestodianLocalPlannerBackends(
   return backends;
 }
 
-function buildCliPlannerConfig(workspaceDir: string, modelRef: string): OpenClawConfig {
+function buildCliPlannerConfig(workspaceDir: string, modelRef: string): EVEConfig {
   return {
     agents: {
       defaults: {
@@ -64,7 +64,7 @@ function buildCliPlannerConfig(workspaceDir: string, modelRef: string): OpenClaw
   };
 }
 
-function buildCodexAppServerPlannerConfig(workspaceDir: string): OpenClawConfig {
+function buildCodexAppServerPlannerConfig(workspaceDir: string): EVEConfig {
   return {
     agents: {
       defaults: {

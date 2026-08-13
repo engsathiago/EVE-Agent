@@ -1,11 +1,11 @@
 ---
-summary: "CLI reference for `openclaw health` (gateway health snapshot via RPC)"
+summary: "CLI reference for `eve health` (gateway health snapshot via RPC)"
 read_when:
   - You want to quickly check the running Gateway's health
 title: "Health"
 ---
 
-# `openclaw health`
+# `eve health`
 
 Fetch health from the running Gateway.
 
@@ -21,16 +21,16 @@ Fetch health from the running Gateway.
 Examples:
 
 ```bash
-openclaw health
-openclaw health --json
-openclaw health --timeout 2500
-openclaw health --verbose
-openclaw health --debug
+eve health
+eve health --json
+eve health --timeout 2500
+eve health --verbose
+eve health --debug
 ```
 
 Notes:
 
-- Default `openclaw health` asks the running gateway for its health snapshot. When the
+- Default `eve health` asks the running gateway for its health snapshot. When the
   gateway already has a fresh cached snapshot, it can return that cached payload and
   refresh in the background.
 - `--verbose` forces a live probe, prints gateway connection details, and expands the

@@ -13,7 +13,7 @@ import {
   cleanupTrackedTempDirs,
   makeTrackedTempDir,
 } from "../../../plugins/test-helpers/fs-fixtures.js";
-import { runOpenClawStateWriteTransaction } from "../../../state/openclaw-state-db.js";
+import { runEVEStateWriteTransaction } from "../../../state/eve-state-db.js";
 import {
   DISABLE_PLUGIN_REGISTRY_MIGRATION_ENV,
   FORCE_PLUGIN_REGISTRY_MIGRATION_ENV,
@@ -28,13 +28,13 @@ afterEach(() => {
 });
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-plugin-registry-migration", tempDirs);
+  return makeTrackedTempDir("eve-plugin-registry-migration", tempDirs);
 }
 
 function hermeticEnv(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return {
-    OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
-    OPENCLAW_VERSION: "2026.4.25",
+    EVE_BUNDLED_PLUGINS_DIR: undefined,
+    EVE_VERSION: "2026.4.25",
     VITEST: "true",
     ...overrides,
   };
@@ -52,7 +52,7 @@ function createCandidate(
     "utf8",
   );
   fs.writeFileSync(
-    path.join(rootDir, "openclaw.plugin.json"),
+    path.join(rootDir, "eve.plugin.json"),
     JSON.stringify({
       id,
       name: id,
@@ -124,7 +124,7 @@ function requirePlugin(index: InstalledPluginIndex | null | undefined, pluginId:
 }
 
 function insertStalePersistedIndexRow(stateDir: string) {
-  runOpenClawStateWriteTransaction(
+  runEVEStateWriteTransaction(
     ({ db }) => {
       db.prepare(
         `
@@ -140,7 +140,7 @@ function insertStalePersistedIndexRow(stateDir: string) {
         `,
       ).run();
     },
-    { env: { ...process.env, OPENCLAW_STATE_DIR: stateDir } },
+    { env: { ...process.env, EVE_STATE_DIR: stateDir } },
   );
 }
 

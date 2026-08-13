@@ -1,5 +1,5 @@
 ---
-summary: "Advanced setup and development workflows for OpenClaw"
+summary: "Advanced setup and development workflows for EVE"
 read_when:
   - Setting up a new machine
   - You want "latest + greatest" without breaking your personal setup
@@ -15,14 +15,14 @@ For onboarding details, see [Onboarding (CLI)](/start/wizard).
 
 Pick a setup workflow based on how often you want updates and whether you want to run the Gateway yourself:
 
-- **Tailoring lives outside the repo:** keep your config and workspace in `~/.openclaw/openclaw.json` and `~/.openclaw/workspace/` so repo updates don't touch them.
+- **Tailoring lives outside the repo:** keep your config and workspace in `~/.eve/eve.json` and `~/.eve/workspace/` so repo updates don't touch them.
 - **Stable workflow (recommended for most):** install the macOS app and let it run the bundled Gateway.
 - **Bleeding edge workflow (dev):** run the Gateway yourself via `pnpm gateway:watch`, then let the macOS app attach in Local mode.
 
 ## Prereqs (from source)
 
 - Node 24 recommended (Node 22 LTS, currently `22.19+`, still supported)
-- `pnpm` required for source checkouts. OpenClaw loads bundled plugins from the
+- `pnpm` required for source checkouts. EVE loads bundled plugins from the
   `extensions/*` pnpm workspace packages in dev mode, so root `npm install` does
   not prepare the full source tree.
 - Docker (optional; only for containerized setup/e2e - see [Docker](/install/docker))
@@ -31,51 +31,51 @@ Pick a setup workflow based on how often you want updates and whether you want t
 
 If you want "100% tailored to me" _and_ easy updates, keep your customization in:
 
-- **Config:** `~/.openclaw/openclaw.json` (JSON/JSON5-ish)
-- **Workspace:** `~/.openclaw/workspace` (skills, prompts, memories; make it a private git repo)
+- **Config:** `~/.eve/eve.json` (JSON/JSON5-ish)
+- **Workspace:** `~/.eve/workspace` (skills, prompts, memories; make it a private git repo)
 
 Bootstrap once:
 
 ```bash
-openclaw setup
+eve setup
 ```
 
 From inside this repo, use the local CLI entry:
 
 ```bash
-openclaw setup
+eve setup
 ```
 
-If you don't have a global install yet, run it via `pnpm openclaw setup`.
+If you don't have a global install yet, run it via `pnpm eve setup`.
 
 ## Run the Gateway from this repo
 
 After `pnpm build`, you can run the packaged CLI directly:
 
 ```bash
-node openclaw.mjs gateway --port 18789 --verbose
+node eve.mjs gateway --port 18789 --verbose
 ```
 
 ## Stable workflow (macOS app first)
 
-1. Install + launch **OpenClaw.app** (menu bar).
+1. Install + launch **EVE.app** (menu bar).
 2. Complete the onboarding/permissions checklist (TCC prompts).
 3. Ensure Gateway is **Local** and running (the app manages it).
 4. Link surfaces (example: WhatsApp):
 
 ```bash
-openclaw channels login
+eve channels login
 ```
 
 5. Sanity check:
 
 ```bash
-openclaw health
+eve health
 ```
 
 If onboarding is not available in your build:
 
-- Run `openclaw setup`, then `openclaw channels login`, then start the Gateway manually (`openclaw gateway`).
+- Run `eve setup`, then `eve channels login`, then start the Gateway manually (`eve gateway`).
 
 ## Bleeding edge workflow (Gateway in a terminal)
 
@@ -93,26 +93,26 @@ If you also want the macOS app on the bleeding edge:
 
 ```bash
 pnpm install
-# First run only (or after resetting local OpenClaw config/workspace)
-pnpm openclaw setup
+# First run only (or after resetting local EVE config/workspace)
+pnpm eve setup
 pnpm gateway:watch
 ```
 
 `gateway:watch` starts or restarts the Gateway watch process in a named tmux
 session and auto-attaches from interactive terminals. Non-interactive shells stay
-detached and print `tmux attach -t openclaw-gateway-watch-main`; use
-`OPENCLAW_GATEWAY_WATCH_ATTACH=0 pnpm gateway:watch` to keep an interactive run
+detached and print `tmux attach -t eve-gateway-watch-main`; use
+`EVE_GATEWAY_WATCH_ATTACH=0 pnpm gateway:watch` to keep an interactive run
 detached, or `pnpm gateway:watch:raw` for foreground watch mode. The watcher
 reloads on relevant source, config, and bundled-plugin metadata changes. If the
 watched Gateway exits during startup, `gateway:watch` runs
-`openclaw doctor --fix --non-interactive` once and retries; set
-`OPENCLAW_GATEWAY_WATCH_AUTO_DOCTOR=0` to disable that dev-only repair pass.
-`pnpm openclaw setup` is the one-time local config/workspace initialization step for a fresh checkout.
+`eve doctor --fix --non-interactive` once and retries; set
+`EVE_GATEWAY_WATCH_AUTO_DOCTOR=0` to disable that dev-only repair pass.
+`pnpm eve setup` is the one-time local config/workspace initialization step for a fresh checkout.
 `pnpm gateway:watch` does not rebuild `dist/control-ui`, so rerun `pnpm ui:build` after `ui/` changes or use `pnpm ui:dev` while developing the Control UI.
 
 ### 2) Point the macOS app at your running Gateway
 
-In **OpenClaw.app**:
+In **EVE.app**:
 
 - Connection Mode: **Local**
   The app will attach to the running gateway on the configured port.
@@ -123,37 +123,37 @@ In **OpenClaw.app**:
 - Or via CLI:
 
 ```bash
-openclaw health
+eve health
 ```
 
 ### Common footguns
 
 - **Wrong port:** Gateway WS defaults to `ws://127.0.0.1:18789`; keep app + CLI on the same port.
 - **Where state lives:**
-  - Channel/provider state: `~/.openclaw/credentials/`
-  - Model auth profiles: `~/.openclaw/agents/<agentId>/agent/auth-profiles.json`
-  - Sessions: `~/.openclaw/agents/<agentId>/sessions/`
-  - Logs: `/tmp/openclaw/`
+  - Channel/provider state: `~/.eve/credentials/`
+  - Model auth profiles: `~/.eve/agents/<agentId>/agent/auth-profiles.json`
+  - Sessions: `~/.eve/agents/<agentId>/sessions/`
+  - Logs: `/tmp/eve/`
 
 ## Credential storage map
 
 Use this when debugging auth or deciding what to back up:
 
-- **WhatsApp**: `~/.openclaw/credentials/whatsapp/<accountId>/creds.json`
+- **WhatsApp**: `~/.eve/credentials/whatsapp/<accountId>/creds.json`
 - **Telegram bot token**: config/env or `channels.telegram.tokenFile` (regular file only; symlinks rejected)
 - **Discord bot token**: config/env or SecretRef (env/file/exec providers)
 - **Slack tokens**: config/env (`channels.slack.*`)
 - **Pairing allowlists**:
-  - `~/.openclaw/credentials/<channel>-allowFrom.json` (default account)
-  - `~/.openclaw/credentials/<channel>-<accountId>-allowFrom.json` (non-default accounts)
-- **Model auth profiles**: `~/.openclaw/agents/<agentId>/agent/auth-profiles.json`
-- **File-backed secrets payload (optional)**: `~/.openclaw/secrets.json`
-- **Legacy OAuth import**: `~/.openclaw/credentials/oauth.json`
+  - `~/.eve/credentials/<channel>-allowFrom.json` (default account)
+  - `~/.eve/credentials/<channel>-<accountId>-allowFrom.json` (non-default accounts)
+- **Model auth profiles**: `~/.eve/agents/<agentId>/agent/auth-profiles.json`
+- **File-backed secrets payload (optional)**: `~/.eve/secrets.json`
+- **Legacy OAuth import**: `~/.eve/credentials/oauth.json`
   More detail: [Security](/gateway/security#credential-storage-map).
 
 ## Updating (without wrecking your setup)
 
-- Keep `~/.openclaw/workspace` and `~/.openclaw/` as "your stuff"; don't put personal prompts/config into the `openclaw` repo.
+- Keep `~/.eve/workspace` and `~/.eve/` as "your stuff"; don't put personal prompts/config into the `eve` repo.
 - Updating source: `git pull` + `pnpm install` + keep using `pnpm gateway:watch`.
 
 ## Linux (systemd user service)
@@ -174,5 +174,5 @@ user service (no lingering needed). See [Gateway runbook](/gateway) for the syst
 - [Gateway runbook](/gateway) (flags, supervision, ports)
 - [Gateway configuration](/gateway/configuration) (config schema + examples)
 - [Discord](/channels/discord) and [Telegram](/channels/telegram) (reply tags + replyToMode settings)
-- [OpenClaw assistant setup](/start/openclaw)
+- [EVE assistant setup](/start/eve)
 - [macOS app](/platforms/macos) (gateway lifecycle)

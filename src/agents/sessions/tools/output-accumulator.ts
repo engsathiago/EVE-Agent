@@ -61,7 +61,7 @@ export class OutputAccumulator {
     this.maxLines = options.maxLines ?? DEFAULT_MAX_LINES;
     this.maxBytes = options.maxBytes ?? DEFAULT_MAX_BYTES;
     this.maxRollingBytes = Math.max(this.maxBytes * 2, 1);
-    this.tempFilePrefix = options.tempFilePrefix ?? "openclaw-output";
+    this.tempFilePrefix = options.tempFilePrefix ?? "eve-output";
   }
 
   append(data: Buffer): void {

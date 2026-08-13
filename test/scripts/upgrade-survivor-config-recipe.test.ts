@@ -4,8 +4,8 @@ import {
   CONFIG_COMMAND_MAX_BUFFER_BYTES,
   CONFIG_COMMAND_TIMEOUT_MS,
   isReleaseBefore,
-  resolveUpgradeSurvivorOpenClawCommand,
-  runUpgradeSurvivorOpenClawStep,
+  resolveUpgradeSurvivorEVECommand,
+  runUpgradeSurvivorEVEStep,
 } from "../../scripts/e2e/lib/upgrade-survivor/config-recipe.mjs";
 
 describe("upgrade survivor config recipe command resolution", () => {
@@ -18,9 +18,9 @@ describe("upgrade survivor config recipe command resolution", () => {
     expect(isReleaseBefore("2026.3.9007199254740993", "2026.4.0")).toBe(false);
   });
 
-  it("wraps Windows openclaw npm shims through cmd.exe", () => {
+  it("wraps Windows eve npm shims through cmd.exe", () => {
     expect(
-      resolveUpgradeSurvivorOpenClawCommand(
+      resolveUpgradeSurvivorEVECommand(
         ["config", "set", "models.providers.openai", '{"apiKey":"sk test"}', "--strict-json"],
         {
           comSpec: String.raw`C:\Windows\System32\cmd.exe`,
@@ -32,36 +32,36 @@ describe("upgrade survivor config recipe command resolution", () => {
         "/d",
         "/s",
         "/c",
-        'openclaw.cmd config set models.providers.openai "{""apiKey"":""sk test""}" --strict-json',
+        'eve.cmd config set models.providers.openai "{""apiKey"":""sk test""}" --strict-json',
       ],
       command: String.raw`C:\Windows\System32\cmd.exe`,
       commandLabel:
-        'openclaw config set models.providers.openai {"apiKey":"sk test"} --strict-json',
+        'eve config set models.providers.openai {"apiKey":"sk test"} --strict-json',
       shell: false,
       windowsVerbatimArguments: true,
     });
   });
 
-  it("keeps POSIX openclaw invocations direct", () => {
+  it("keeps POSIX eve invocations direct", () => {
     expect(
-      resolveUpgradeSurvivorOpenClawCommand(["config", "validate"], {
+      resolveUpgradeSurvivorEVECommand(["config", "validate"], {
         platform: "linux",
       }),
     ).toEqual({
       args: ["config", "validate"],
-      command: "openclaw",
-      commandLabel: "openclaw config validate",
+      command: "eve",
+      commandLabel: "eve config validate",
       shell: false,
     });
   });
 
   it("bounds baseline config commands and reports spawn errors", () => {
     const calls: unknown[] = [];
-    const timeoutError = Object.assign(new Error("spawnSync openclaw ETIMEDOUT"), {
+    const timeoutError = Object.assign(new Error("spawnSync eve ETIMEDOUT"), {
       code: "ETIMEDOUT",
     });
 
-    const outcome = runUpgradeSurvivorOpenClawStep(
+    const outcome = runUpgradeSurvivorEVEStep(
       {
         argv: ["config", "validate"],
         id: "validate",
@@ -84,7 +84,7 @@ describe("upgrade survivor config recipe command resolution", () => {
     expect(calls).toHaveLength(1);
     expect(calls[0]).toMatchObject({
       args: ["config", "validate"],
-      command: "openclaw",
+      command: "eve",
       options: {
         killSignal: "SIGTERM",
         maxBuffer: CONFIG_COMMAND_MAX_BUFFER_BYTES,
@@ -92,9 +92,9 @@ describe("upgrade survivor config recipe command resolution", () => {
       },
     });
     expect(outcome).toMatchObject({
-      command: "openclaw config validate",
+      command: "eve config validate",
       errorCode: "ETIMEDOUT",
-      errorMessage: "spawnSync openclaw ETIMEDOUT",
+      errorMessage: "spawnSync eve ETIMEDOUT",
       ok: false,
       signal: "SIGTERM",
       status: null,

@@ -1,6 +1,6 @@
 // Runtime plan build tests cover the assembled agent runtime policy object:
 // auth, transport, tools, prompt, delivery, transcript, and observability.
-import { createParameterFreeTool } from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+import { createParameterFreeTool } from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { resetConfigRuntimeState, setRuntimeConfigSnapshot } from "../../config/config.js";
 import {
@@ -105,7 +105,7 @@ describe("AgentRuntimePlan", () => {
       modelId: "gpt-5.4",
       modelApi: "openai-responses",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       model: gpt54Model,
     });
 
@@ -131,7 +131,7 @@ describe("AgentRuntimePlan", () => {
       authProfileProvider: "openai",
       sessionAuthProfileId: "openai:work",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       model: {
         ...gpt54Model,
         baseUrl: "https://api.openai.com/v1",
@@ -189,13 +189,13 @@ describe("AgentRuntimePlan", () => {
     expect(plan.observability.harnessId).toBe("codex");
   });
 
-  it("keeps OpenClaw-owned tool-schema normalization reachable from the plan", () => {
+  it("keeps EVE-owned tool-schema normalization reachable from the plan", () => {
     const plan = buildAgentRuntimePlan({
       provider: "openai",
       modelId: "gpt-5.4",
       modelApi: "openai-responses",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       model: {
         ...gpt54Model,
         baseUrl: "https://api.openai.com/v1",
@@ -220,7 +220,7 @@ describe("AgentRuntimePlan", () => {
       authProfileMode: "api_key",
       sessionAuthProfileId: "openai:work",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
     });
 
     expect(plan.auth.providerForAuth).toBe("openai");
@@ -241,7 +241,7 @@ describe("AgentRuntimePlan", () => {
       sessionAuthProfileId: "openai:work",
       sessionAuthProfileCandidateIds: ["openai:work", "openai:backup"],
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
     });
 
     expect(plan.auth.forwardedAuthProfileId).toBe("openai:work");
@@ -259,23 +259,23 @@ describe("AgentRuntimePlan", () => {
       authProfileMode: "oauth",
       sessionAuthProfileId: "openai:work",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
     });
 
     expect(plan.auth.forwardedAuthProfileId).toBe("openai:work");
   });
 
-  it("forwards OpenAI Codex profiles for explicit OpenAI OpenClaw runs", () => {
+  it("forwards OpenAI Codex profiles for explicit OpenAI EVE runs", () => {
     const plan = buildAgentRuntimePlan({
       provider: "openai",
       modelId: "gpt-5.4",
       modelApi: "openai-responses",
-      harnessId: "openclaw",
-      harnessRuntime: "openclaw",
+      harnessId: "eve",
+      harnessRuntime: "eve",
       authProfileProvider: "openai",
       sessionAuthProfileId: "openai:work",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
     });
 
     expect(plan.auth.providerForAuth).toBe("openai");
@@ -300,7 +300,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       providerRuntimeHandle,
     });
 
@@ -337,7 +337,7 @@ describe("AgentRuntimePlan", () => {
     };
     const resolvedHandle: ProviderRuntimePluginHandle = {
       ...suppliedHandle,
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       env: process.env,
       plugin: {} as never,
     };
@@ -348,7 +348,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       providerRuntimeHandle: suppliedHandle,
     });
 
@@ -364,7 +364,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: suppliedHandle.config,
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       env: process.env,
       applyAutoEnable: undefined,
       bundledProviderVitestCompat: undefined,
@@ -386,7 +386,7 @@ describe("AgentRuntimePlan", () => {
     };
     const resolvedHandle: ProviderRuntimePluginHandle = {
       provider: "openai",
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       env: process.env,
       plugin: {} as never,
     };
@@ -397,7 +397,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       providerRuntimeHandle: suppliedHandle,
     });
 
@@ -411,7 +411,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: {},
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       env: process.env,
       applyAutoEnable: undefined,
       bundledProviderVitestCompat: undefined,
@@ -432,7 +432,7 @@ describe("AgentRuntimePlan", () => {
       provider: "openai",
       modelId: "gpt-5.4",
       config: runtimeConfig,
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
     });
 
     expect(manifestMocks.loadManifestMetadataSnapshot).not.toHaveBeenCalled();
@@ -441,7 +441,7 @@ describe("AgentRuntimePlan", () => {
 
     expect(manifestMocks.loadManifestMetadataSnapshot).toHaveBeenCalledWith({
       config: sourceConfig,
-      workspaceDir: "/tmp/openclaw-runtime-plan",
+      workspaceDir: "/tmp/eve-runtime-plan",
       env: process.env,
     });
   });

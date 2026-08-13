@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/document-extract-plugin",
+  "name": "@eve/document-extract-plugin",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw local document extraction plugin",
+  "description": "EVE local document extraction plugin",
   "type": "module",
   "dependencies": {
     "clawpdf": "0.3.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

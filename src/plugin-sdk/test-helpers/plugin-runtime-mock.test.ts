@@ -1,7 +1,7 @@
 /**
  * Tests plugin runtime mock helpers stay aligned with channel runtime contracts.
  */
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
+import { createPluginRuntimeMock } from "eve-agent/plugin-sdk/channel-test-helpers";
 import { describe, expect, it, vi } from "vitest";
 
 describe("createPluginRuntimeMock", () => {
@@ -40,7 +40,7 @@ describe("createPluginRuntimeMock", () => {
     });
     const resolveTurn = vi.fn(async () => ({
       channel,
-      storePath: "/tmp/openclaw-test",
+      storePath: "/tmp/eve-test",
       routeSessionKey: "agent:main:test:direct:u1",
       ctxPayload: {
         Body: "hello",
@@ -69,7 +69,7 @@ describe("createPluginRuntimeMock", () => {
     );
     expect(recordInboundSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        storePath: "/tmp/openclaw-test",
+        storePath: "/tmp/eve-test",
         sessionKey: "agent:main:test:direct:u1",
       }),
     );

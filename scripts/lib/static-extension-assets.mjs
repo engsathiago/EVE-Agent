@@ -93,7 +93,7 @@ function listDistExtensionPackageDirs(rootDir, fsImpl) {
 }
 
 function readPackageStaticAssetEntries(packageJson) {
-  const entries = packageJson.openclaw?.build?.staticAssets;
+  const entries = packageJson.eve?.build?.staticAssets;
   return Array.isArray(entries) ? entries : [];
 }
 

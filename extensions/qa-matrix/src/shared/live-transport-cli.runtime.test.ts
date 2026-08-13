@@ -2,7 +2,7 @@
 import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { startLiveTransportQaOutputTee } from "openclaw/plugin-sdk/qa-runtime";
+import { startLiveTransportQaOutputTee } from "eve-agent/plugin-sdk/qa-runtime";
 import { afterEach, describe, expect, it } from "vitest";
 
 const tmpDirs: string[] = [];

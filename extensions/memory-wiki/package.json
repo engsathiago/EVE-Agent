@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/memory-wiki",
+  "name": "@eve/memory-wiki",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw persistent wiki plugin",
+  "description": "EVE persistent wiki plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.1.39",
@@ -10,18 +10,18 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

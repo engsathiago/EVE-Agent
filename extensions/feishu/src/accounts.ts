@@ -1,14 +1,14 @@
 // Feishu plugin module implements accounts behavior.
 import {
   DEFAULT_ACCOUNT_ID,
-  type OpenClawConfig as ClawdbotConfig,
+  type EVEConfig as ClawdbotConfig,
   createAccountListHelpers,
   hasConfiguredAccountValue,
   normalizeAccountId,
   normalizeOptionalAccountId,
   resolveMergedAccountConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { coerceSecretRef } from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/account-resolution";
+import { coerceSecretRef } from "eve-agent/plugin-sdk/provider-auth";
 import { normalizeString } from "./comment-shared.js";
 import type {
   FeishuConfig,

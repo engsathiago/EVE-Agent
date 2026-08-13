@@ -5,9 +5,9 @@ import { PassThrough } from "node:stream";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinnedLookup } from "../infra/net/ssrf.js";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../test-utils/eve-test-state.js";
 import { saveMediaSource, setMediaStoreNetworkDepsForTest } from "./store.js";
 
 const mockRequest = vi.fn();
@@ -118,12 +118,12 @@ async function expectRedirectSaveFailure(expectedMessage: string) {
 }
 
 describe("media store redirects", () => {
-  let testState: OpenClawTestState;
+  let testState: EVETestState;
 
   beforeAll(async () => {
-    testState = await createOpenClawTestState({
+    testState = await createEVETestState({
       layout: "state-only",
-      prefix: "openclaw-media-store-redirect-",
+      prefix: "eve-media-store-redirect-",
     });
   });
 
@@ -194,7 +194,7 @@ describe("media store redirects", () => {
       Cookie: "session=abc",
       "X-Api-Key": "custom-secret",
       Accept: "text/plain",
-      "User-Agent": "OpenClaw-Test/1.0",
+      "User-Agent": "EVE-Test/1.0",
     });
 
     expect(mockRequest).toHaveBeenCalledTimes(2);
@@ -203,7 +203,7 @@ describe("media store redirects", () => {
     expect(secondHeaders.get("cookie")).toBeNull();
     expect(secondHeaders.get("x-api-key")).toBeNull();
     expect(secondHeaders.get("accept")).toBe("text/plain");
-    expect(secondHeaders.get("user-agent")).toBe("OpenClaw-Test/1.0");
+    expect(secondHeaders.get("user-agent")).toBe("EVE-Test/1.0");
   });
 
   it("keeps headers when a redirect stays on the same origin", async () => {

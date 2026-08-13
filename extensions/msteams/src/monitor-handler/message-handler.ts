@@ -1,25 +1,25 @@
 // Msteams plugin module implements message handler behavior.
-import { formatAllowlistMatchMeta } from "openclaw/plugin-sdk/allow-from";
+import { formatAllowlistMatchMeta } from "eve-agent/plugin-sdk/allow-from";
 import {
   buildChannelInboundEventContext,
   logInboundDrop,
   resolveInboundMentionDecision,
   resolveInboundSessionEnvelopeContext,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   dispatchReplyFromConfigWithSettledDispatcher,
   hasFinalInboundReplyDispatch,
   resolveInboundReplyDispatchCounts,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   filterSupplementalContextItems,
   resolveChannelContextVisibilityMode,
-} from "openclaw/plugin-sdk/context-visibility-runtime";
+} from "eve-agent/plugin-sdk/context-visibility-runtime";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   createChannelHistoryWindow,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
+} from "eve-agent/plugin-sdk/reply-history";
 import {
   buildMSTeamsAttachmentPlaceholder,
   buildMSTeamsMediaPayload,

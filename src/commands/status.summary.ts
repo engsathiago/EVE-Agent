@@ -9,7 +9,7 @@ import { hasSessionAutoModelFallbackProvenance } from "../config/sessions/model-
 import { resolveStorePath } from "../config/sessions/paths.js";
 import { listSessionEntries } from "../config/sessions/session-accessor.js";
 import { resolveSessionTotalTokens, type SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { resolveCronJobsStorePath } from "../cron/store.js";
 import { listGatewayAgentsBasic } from "../gateway/agent-list.js";
 import { resolveHeartbeatSummaryForAgent } from "../infra/heartbeat-summary.js";
@@ -221,8 +221,8 @@ export async function getStatusSummary(
   options: {
     includeSensitive?: boolean;
     includeChannelSummary?: boolean;
-    config?: OpenClawConfig;
-    sourceConfig?: OpenClawConfig;
+    config?: EVEConfig;
+    sourceConfig?: EVEConfig;
   } = {},
 ): Promise<StatusSummary> {
   const { includeSensitive = true, includeChannelSummary = true } = options;

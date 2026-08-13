@@ -1,7 +1,7 @@
 /**
  * Doctor contract for the copilot extension.
  *
- * Mirrors {@link ../codex/doctor-contract-api.ts} so `openclaw doctor`
+ * Mirrors {@link ../codex/doctor-contract-api.ts} so `eve doctor`
  * can:
  *   - Reason about which session-state belongs to this extension
  *     (sessionRouteStateOwners) for cleanup of stale state across
@@ -21,8 +21,8 @@
  * keeps this file purely declarative.
  */
 
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { DoctorSessionRouteStateOwner } from "openclaw/plugin-sdk/runtime-doctor";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { DoctorSessionRouteStateOwner } from "eve-agent/plugin-sdk/runtime-doctor";
 
 type LegacyConfigRule = {
   path: string[];
@@ -32,8 +32,8 @@ type LegacyConfigRule = {
 
 export const legacyConfigRules: LegacyConfigRule[] = [];
 
-export function normalizeCompatibilityConfig({ cfg }: { cfg: OpenClawConfig }): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfig({ cfg }: { cfg: EVEConfig }): {
+  config: EVEConfig;
   changes: string[];
 } {
   return { config: cfg, changes: [] };

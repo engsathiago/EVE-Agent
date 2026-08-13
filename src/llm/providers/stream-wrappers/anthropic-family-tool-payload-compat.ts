@@ -1,5 +1,5 @@
 // Anthropic-family tool payload compatibility wraps provider tool payload shapes.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { StreamFn } from "../../../agents/runtime/index.js";
 import { projectRuntimeToolInputSchema } from "../../../agents/tool-schema-json-projection.js";
 import { streamSimple } from "../../stream.js";

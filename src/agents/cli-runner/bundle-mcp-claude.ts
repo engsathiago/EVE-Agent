@@ -1,7 +1,7 @@
 /**
- * Claude CLI argument helpers for OpenClaw-managed bundle MCP config.
+ * Claude CLI argument helpers for EVE-managed bundle MCP config.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 
 /** Find an existing Claude `--mcp-config` argument value. */
 export function findClaudeMcpConfigPath(args?: string[]): string | undefined {
@@ -20,7 +20,7 @@ export function findClaudeMcpConfigPath(args?: string[]): string | undefined {
   return undefined;
 }
 
-/** Return Claude args with OpenClaw's strict MCP config path injected. */
+/** Return Claude args with EVE's strict MCP config path injected. */
 export function injectClaudeMcpConfigArgs(
   args: string[] | undefined,
   mcpConfigPath: string,

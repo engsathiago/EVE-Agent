@@ -1,6 +1,6 @@
 // Embedded run helper tests cover final assistant text extraction and error
 // metadata assembly shared by normal exits and failure paths.
-import type { AssistantMessage } from "openclaw/plugin-sdk/llm";
+import type { AssistantMessage } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import { createUsageAccumulator } from "../usage-accumulator.js";
 import {

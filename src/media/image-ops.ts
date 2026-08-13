@@ -10,11 +10,11 @@ import {
   type ImageMetadata,
 } from "rastermill";
 import { resolveSystemBin } from "../infra/resolve-system-bin.js";
-import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 
 export type { ImageMetadata, ImageProbe };
 
-/** OpenClaw-facing image backend availability error, preserving the failed operation and causes. */
+/** EVE-facing image backend availability error, preserving the failed operation and causes. */
 export class ImageProcessorUnavailableError extends Error {
   readonly code = "IMAGE_PROCESSOR_UNAVAILABLE";
   readonly operation: string;
@@ -51,7 +51,7 @@ export const IMAGE_REDUCE_QUALITY_STEPS = [85, 75, 65, 55, 45, 35] as const;
 /** Shared input/output pixel cap for Rastermill-backed image operations. */
 export const MAX_IMAGE_INPUT_PIXELS = 25_000_000;
 
-/** Creates a Rastermill processor with OpenClaw temp-dir, pixel-limit, and command trust policy. */
+/** Creates a Rastermill processor with EVE temp-dir, pixel-limit, and command trust policy. */
 export function createImageProcessor() {
   return createRastermill({
     execution: "auto",
@@ -60,15 +60,15 @@ export function createImageProcessor() {
       outputPixels: MAX_IMAGE_INPUT_PIXELS,
     },
     temp: {
-      rootDir: resolvePreferredOpenClawTmpDir(),
-      prefix: "openclaw-img-",
+      rootDir: resolvePreferredEVETmpDir(),
+      prefix: "eve-img-",
     },
     commandResolver: (command) =>
       resolveSystemBin(command, { trust: command === "powershell" ? "strict" : "standard" }),
   });
 }
 
-/** Detects either OpenClaw's wrapper error or Rastermill's native unavailable error. */
+/** Detects either EVE's wrapper error or Rastermill's native unavailable error. */
 export function isImageProcessorUnavailableError(err: unknown): boolean {
   return err instanceof ImageProcessorUnavailableError || isRastermillUnavailableError(err);
 }

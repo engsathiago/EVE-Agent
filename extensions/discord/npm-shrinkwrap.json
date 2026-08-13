@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/discord",
+  "name": "@eve/discord",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/discord",
+      "name": "@eve/discord",
       "version": "2026.6.8",
       "dependencies": {
         "@discordjs/voice": "0.19.2",
@@ -16,10 +16,10 @@
         "ws": "8.21.0"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

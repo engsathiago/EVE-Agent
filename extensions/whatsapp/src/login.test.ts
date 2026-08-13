@@ -1,6 +1,6 @@
 // Whatsapp tests cover login plugin behavior.
 import { EventEmitter } from "node:events";
-import { resetLogger, setLoggerOverride, success } from "openclaw/plugin-sdk/runtime-env";
+import { resetLogger, setLoggerOverride, success } from "eve-agent/plugin-sdk/runtime-env";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderQrPngBase64 } from "./qr-image.js";
 
@@ -87,7 +87,7 @@ describe("web login", () => {
 
 describe("renderQrPngBase64", () => {
   it("renders a PNG data payload", async () => {
-    const b64 = await renderQrPngBase64("openclaw");
+    const b64 = await renderQrPngBase64("eve");
     const buf = Buffer.from(b64, "base64");
     expect(buf.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
   });

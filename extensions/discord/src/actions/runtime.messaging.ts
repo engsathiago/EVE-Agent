@@ -1,6 +1,6 @@
 // Discord plugin module implements runtime.messaging behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import type { ActionGate, DiscordActionConfig, OpenClawConfig } from "../runtime-api.js";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
+import type { ActionGate, DiscordActionConfig, EVEConfig } from "../runtime-api.js";
 import { handleDiscordMessageManagementAction } from "./runtime.messaging.messages.js";
 import { handleDiscordReactionMessagingAction } from "./runtime.messaging.reactions.js";
 import { handleDiscordMessageSendAction } from "./runtime.messaging.send.js";
@@ -14,7 +14,7 @@ export async function handleDiscordMessagingAction(
   action: string,
   params: Record<string, unknown>,
   isActionEnabled: ActionGate<DiscordActionConfig>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options?: DiscordMessagingActionOptions,
 ): Promise<AgentToolResult<unknown>> {
   if (!cfg) {

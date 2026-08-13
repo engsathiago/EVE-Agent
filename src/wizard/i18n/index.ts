@@ -50,7 +50,7 @@ export function resolveWizardLocale(value: string | undefined): WizardLocale {
 }
 
 export function resolveWizardLocaleFromEnv(env: NodeJS.ProcessEnv = process.env): WizardLocale {
-  return resolveWizardLocale(env.OPENCLAW_LOCALE ?? env.LC_ALL ?? env.LC_MESSAGES ?? env.LANG);
+  return resolveWizardLocale(env.EVE_LOCALE ?? env.LC_ALL ?? env.LC_MESSAGES ?? env.LANG);
 }
 
 function readKey(map: WizardTranslationMap, key: string): string | undefined {

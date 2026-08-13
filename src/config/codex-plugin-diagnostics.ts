@@ -1,6 +1,6 @@
 // Builds diagnostics for Codex plugin config and provider wiring.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import {
   AUTO_AGENT_RUNTIME_ID,
   normalizeOptionalAgentRuntimeId,
@@ -9,7 +9,7 @@ import { resolveModelRuntimePolicy } from "../agents/model-runtime-policy.js";
 import { openAIProviderUsesCodexRuntimeByDefault } from "../agents/openai-routing.js";
 import type { AgentModelEntryConfig } from "./types.agent-defaults.js";
 import type { AgentRuntimePolicyConfig } from "./types.agents-shared.js";
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { EVEConfig } from "./types.eve.js";
 
 const CODEX_PLUGIN_ID = "codex";
 const OPENAI_PROVIDER_ID = "openai";
@@ -23,7 +23,7 @@ function isCodexRuntimeSelection(raw?: string | null): boolean {
 }
 
 function isOpenAiCodexDefaultRuntimeSelection(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   raw?: string | null;
 }): boolean {
   const runtime = normalizeRuntimeId(params.raw);
@@ -34,7 +34,7 @@ function isOpenAiCodexDefaultRuntimeSelection(params: {
     return false;
   }
   // "auto"/"default" only means Codex for the official OpenAI route.
-  // Custom OpenAI-compatible base URLs stay on the OpenClaw runtime path.
+  // Custom OpenAI-compatible base URLs stay on the EVE runtime path.
   return openAIProviderUsesCodexRuntimeByDefault({
     provider: OPENAI_PROVIDER_ID,
     config: params.cfg,
@@ -51,7 +51,7 @@ function parseProviderModelRef(raw: string): { provider: string; model: string }
   return provider && model ? { provider, model } : null;
 }
 
-function codexPluginEntryEnabled(cfg: OpenClawConfig): boolean | undefined {
+function codexPluginEntryEnabled(cfg: EVEConfig): boolean | undefined {
   for (const [pluginId, entry] of Object.entries(cfg.plugins?.entries ?? {})) {
     if (normalizeLowercaseStringOrEmpty(pluginId) === CODEX_PLUGIN_ID) {
       return entry?.enabled;
@@ -60,7 +60,7 @@ function codexPluginEntryEnabled(cfg: OpenClawConfig): boolean | undefined {
   return undefined;
 }
 
-function openAiProviderRuntimePolicy(cfg: OpenClawConfig): AgentRuntimePolicyConfig | undefined {
+function openAiProviderRuntimePolicy(cfg: EVEConfig): AgentRuntimePolicyConfig | undefined {
   for (const [providerId, providerConfig] of Object.entries(cfg.models?.providers ?? {})) {
     if (normalizeProviderId(providerId) === OPENAI_PROVIDER_ID) {
       return providerConfig?.agentRuntime?.id?.trim() ? providerConfig.agentRuntime : undefined;
@@ -69,7 +69,7 @@ function openAiProviderRuntimePolicy(cfg: OpenClawConfig): AgentRuntimePolicyCon
   return undefined;
 }
 
-function listConfiguredAgentIds(cfg: OpenClawConfig): Array<string | undefined> {
+function listConfiguredAgentIds(cfg: EVEConfig): Array<string | undefined> {
   const ids: Array<string | undefined> = [undefined];
   for (const agent of cfg.agents?.list ?? []) {
     if (typeof agent.id === "string" && agent.id.trim()) {
@@ -80,7 +80,7 @@ function listConfiguredAgentIds(cfg: OpenClawConfig): Array<string | undefined> 
 }
 
 function openAiProviderModelCanResolveToCodexDefault(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelId: string;
 }): boolean {
   // Provider model rows are below exact agent model policies in runtime
@@ -98,7 +98,7 @@ function openAiProviderModelCanResolveToCodexDefault(params: {
   );
 }
 
-function openAiHasCodexDefaultRuntimePolicy(cfg: OpenClawConfig): boolean {
+function openAiHasCodexDefaultRuntimePolicy(cfg: EVEConfig): boolean {
   for (const [providerId, providerConfig] of Object.entries(cfg.models?.providers ?? {})) {
     if (normalizeProviderId(providerId) !== OPENAI_PROVIDER_ID) {
       continue;
@@ -106,7 +106,7 @@ function openAiHasCodexDefaultRuntimePolicy(cfg: OpenClawConfig): boolean {
     if (isCodexRuntimeSelection(providerConfig?.agentRuntime?.id)) {
       return true;
     }
-    // A model-scoped explicit "auto"/"default" overrides provider-wide PI/OpenClaw
+    // A model-scoped explicit "auto"/"default" overrides provider-wide PI/EVE
     // policy and falls back to the official OpenAI Codex runtime default.
     if (
       providerConfig?.models?.some(
@@ -129,7 +129,7 @@ function openAiHasCodexDefaultRuntimePolicy(cfg: OpenClawConfig): boolean {
 }
 
 function agentModelsHaveCodexDefaultRuntimePolicy(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   models: Record<string, AgentModelEntryConfig> | undefined,
 ): boolean {
   for (const [modelRef, modelConfig] of Object.entries(models ?? {})) {
@@ -164,7 +164,7 @@ function openAiWildcardRuntimePolicy(
 }
 
 function openAiDefaultRouteRuntimePolicy(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): AgentRuntimePolicyConfig | undefined {
   // This mirrors the default-route slice of resolveModelRuntimePolicy: a global
   // OpenAI wildcard policy is more specific than the provider-level policy.
@@ -173,11 +173,11 @@ function openAiDefaultRouteRuntimePolicy(
   );
 }
 
-function openAiDefaultRouteKeepsCodexUnavailable(cfg: OpenClawConfig): boolean {
+function openAiDefaultRouteKeepsCodexUnavailable(cfg: EVEConfig): boolean {
   const policy = openAiDefaultRouteRuntimePolicy(cfg);
   if (!policy?.id?.trim()) {
     // With no explicit runtime policy, the OpenAI route only needs Codex on the
-    // official OpenAI endpoint. OpenAI-compatible proxies stay on OpenClaw.
+    // official OpenAI endpoint. OpenAI-compatible proxies stay on EVE.
     return !openAIProviderUsesCodexRuntimeByDefault({
       provider: OPENAI_PROVIDER_ID,
       config: cfg,
@@ -194,7 +194,7 @@ function openAiDefaultRouteKeepsCodexUnavailable(cfg: OpenClawConfig): boolean {
  * Route-specific Codex selections still win; this only answers the missing-plugin
  * diagnostic question for OpenAI defaults and OpenAI-compatible proxy configs.
  */
-export function configExplicitlyKeepsCodexUnavailableForOpenAi(cfg: OpenClawConfig): boolean {
+export function configExplicitlyKeepsCodexUnavailableForOpenAi(cfg: EVEConfig): boolean {
   if (openAiHasCodexDefaultRuntimePolicy(cfg)) {
     return false;
   }
@@ -205,9 +205,9 @@ export function configExplicitlyKeepsCodexUnavailableForOpenAi(cfg: OpenClawConf
  * Suppresses missing Codex plugin diagnostics when config makes Codex optional.
  *
  * Explicitly enabled entries still warn so operator intent is honored even when
- * all default routes would otherwise stay on the OpenClaw runtime.
+ * all default routes would otherwise stay on the EVE runtime.
  */
-export function shouldSuppressMissingCodexPluginDiagnostics(cfg: OpenClawConfig): boolean {
+export function shouldSuppressMissingCodexPluginDiagnostics(cfg: EVEConfig): boolean {
   const entryEnabled = codexPluginEntryEnabled(cfg);
   if (entryEnabled === true) {
     return false;

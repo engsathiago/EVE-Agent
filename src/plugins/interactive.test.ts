@@ -487,7 +487,7 @@ describe("plugin interactive handlers", () => {
 
   it("hydrates legacy interactive state shapes before clearing handlers", async () => {
     const globalStore = globalThis as Record<PropertyKey, unknown>;
-    const stateKey = Symbol.for("openclaw.pluginInteractiveState");
+    const stateKey = Symbol.for("eve.pluginInteractiveState");
     const originalState = globalStore[stateKey];
 
     globalStore[stateKey] = {

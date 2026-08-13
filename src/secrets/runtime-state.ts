@@ -11,7 +11,7 @@ import {
   setRuntimeConfigSnapshotRefreshHandler,
   type RuntimeConfigSnapshotRefreshHandler,
 } from "../config/runtime-snapshot.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import type { PluginOrigin } from "../plugins/plugin-origin.types.js";
 import type { SecretResolverWarning } from "./runtime-shared.js";
@@ -23,8 +23,8 @@ import type { RuntimeWebToolsMetadata } from "./runtime-web-tools.types.js";
 
 /** Prepared secrets runtime snapshot activated for fast secret resolution. */
 export type PreparedSecretsRuntimeSnapshot = {
-  sourceConfig: OpenClawConfig;
-  config: OpenClawConfig;
+  sourceConfig: EVEConfig;
+  config: EVEConfig;
   authStores: Array<{ agentDir: string; store: AuthProfileStore }>;
   warnings: SecretResolverWarning[];
   webTools: RuntimeWebToolsMetadata;

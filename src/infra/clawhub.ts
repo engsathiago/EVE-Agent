@@ -3,12 +3,12 @@ import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { readResponseWithLimit } from "@openclaw/media-core/read-response-with-limit";
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { parseStrictPositiveInteger } from "./parse-finite-number.js";
 import { isAtLeast, parseSemver } from "./runtime-guard.js";
 import { compareComparableSemver, parseComparableSemver } from "./semver-compare.js";
@@ -22,10 +22,10 @@ const SKILL_CARD_MAX_BYTES = 256 * 1024;
 
 export type ClawHubPackageFamily = "skill" | "code-plugin" | "bundle-plugin";
 export type ClawHubPackageChannel = "official" | "community" | "private";
-// Keep aligned with @openclaw/plugin-package-contract ExternalPluginCompatibility.
+// Keep aligned with @eve/plugin-package-contract ExternalPluginCompatibility.
 export type ClawHubPackageCompatibility = {
   pluginApiRange?: string;
-  builtWithOpenClawVersion?: string;
+  builtWithEVEVersion?: string;
   pluginSdkVersion?: string;
   minGatewayVersion?: string;
 };
@@ -398,7 +398,7 @@ export class ClawHubRequestError extends Error {
 
 function normalizeBaseUrl(baseUrl?: string): string {
   const envValue =
-    normalizeOptionalString(process.env.OPENCLAW_CLAWHUB_URL) ||
+    normalizeOptionalString(process.env.EVE_CLAWHUB_URL) ||
     normalizeOptionalString(process.env.CLAWHUB_URL) ||
     DEFAULT_CLAWHUB_URL;
   const value = (normalizeOptionalString(baseUrl) || envValue).replace(/\/+$/, "");
@@ -407,7 +407,7 @@ function normalizeBaseUrl(baseUrl?: string): string {
 
 function normalizeGitHubCodeloadBaseUrl(): string {
   const value =
-    normalizeOptionalString(process.env.OPENCLAW_CLAWHUB_GITHUB_CODELOAD_BASE_URL) ||
+    normalizeOptionalString(process.env.EVE_CLAWHUB_GITHUB_CODELOAD_BASE_URL) ||
     normalizeOptionalString(process.env.CLAWHUB_GITHUB_CODELOAD_BASE_URL) ||
     DEFAULT_GITHUB_CODELOAD_URL;
   return value.replace(/\/+$/, "") || DEFAULT_GITHUB_CODELOAD_URL;
@@ -432,7 +432,7 @@ function extractTokenFromClawHubConfig(value: unknown): string | undefined {
 
 function resolveClawHubConfigPaths(): string[] {
   const explicit =
-    normalizeOptionalString(process.env.OPENCLAW_CLAWHUB_CONFIG_PATH) ||
+    normalizeOptionalString(process.env.EVE_CLAWHUB_CONFIG_PATH) ||
     normalizeOptionalString(process.env.CLAWHUB_CONFIG_PATH) ||
     normalizeOptionalString(process.env.CLAWDHUB_CONFIG_PATH); // legacy misspelling from older clawhub CLI builds; keep for back-compat
   if (explicit) {
@@ -456,7 +456,7 @@ function resolveClawHubConfigPaths(): string[] {
 
 export async function resolveClawHubAuthToken(): Promise<string | undefined> {
   const envToken =
-    normalizeOptionalString(process.env.OPENCLAW_CLAWHUB_TOKEN) ||
+    normalizeOptionalString(process.env.EVE_CLAWHUB_TOKEN) ||
     normalizeOptionalString(process.env.CLAWHUB_TOKEN) ||
     normalizeOptionalString(process.env.CLAWHUB_AUTH_TOKEN);
   if (envToken) {
@@ -524,13 +524,13 @@ function shouldPreservePluginApiPrereleaseFloor(target: string): boolean {
 }
 
 function normalizePluginApiVersionForComparator(version: string, target: string): string {
-  const normalizedCorrection = normalizeOpenClawNumericCorrectionForPluginApi(version);
+  const normalizedCorrection = normalizeEVENumericCorrectionForPluginApi(version);
   if (normalizedCorrection) {
     return normalizedCorrection;
   }
   return shouldPreservePluginApiPrereleaseFloor(target)
     ? version
-    : normalizeOpenClawReleaseSuffixForPluginApi(version);
+    : normalizeEVEReleaseSuffixForPluginApi(version);
 }
 
 function satisfiesComparator(version: string, token: string): boolean {
@@ -588,18 +588,18 @@ function satisfiesSemverRange(version: string, range: string): boolean {
   return tokens.every((token) => satisfiesComparator(version, token));
 }
 
-const OPENCLAW_RELEASE_SUFFIX_PATTERN =
+const EVE_RELEASE_SUFFIX_PATTERN =
   /^[vV]?(\d{4}\.[1-9]\d?\.[1-9]\d*)(?:-\d+|-(?:alpha|beta|rc)\.\d+)$/i;
-const OPENCLAW_NUMERIC_CORRECTION_PATTERN = /^[vV]?(\d{4}\.[1-9]\d?\.[1-9]\d*)-\d+$/;
+const EVE_NUMERIC_CORRECTION_PATTERN = /^[vV]?(\d{4}\.[1-9]\d?\.[1-9]\d*)-\d+$/;
 
-function normalizeOpenClawNumericCorrectionForPluginApi(
+function normalizeEVENumericCorrectionForPluginApi(
   pluginApiVersion: string,
 ): string | undefined {
-  return OPENCLAW_NUMERIC_CORRECTION_PATTERN.exec(pluginApiVersion.trim())?.[1];
+  return EVE_NUMERIC_CORRECTION_PATTERN.exec(pluginApiVersion.trim())?.[1];
 }
 
-function normalizeOpenClawReleaseSuffixForPluginApi(pluginApiVersion: string): string {
-  const match = OPENCLAW_RELEASE_SUFFIX_PATTERN.exec(pluginApiVersion.trim());
+function normalizeEVEReleaseSuffixForPluginApi(pluginApiVersion: string): string {
+  const match = EVE_RELEASE_SUFFIX_PATTERN.exec(pluginApiVersion.trim());
   return match?.[1] ?? pluginApiVersion;
 }
 
@@ -1148,7 +1148,7 @@ export async function downloadClawHubPackageArchive(params: {
     const rawSpecVersion = response.headers.get("X-ClawHub-ClawPack-Spec-Version");
     const specVersion = parseStrictPositiveInteger(rawSpecVersion);
     const target = await createTempDownloadTarget({
-      prefix: "openclaw-clawhub-clawpack",
+      prefix: "eve-clawhub-clawpack",
       fileName: npmTarballName,
       tmpDir: os.tmpdir(),
     });
@@ -1191,7 +1191,7 @@ export async function downloadClawHubPackageArchive(params: {
   });
   const sha256Hex = formatSha256Hex(bytes);
   const target = await createTempDownloadTarget({
-    prefix: "openclaw-clawhub-package",
+    prefix: "eve-clawhub-package",
     fileName: `${params.name}.zip`,
     tmpDir: os.tmpdir(),
   });
@@ -1238,7 +1238,7 @@ export async function downloadClawHubSkillArchive(params: {
   });
   const sha256Hex = formatSha256Hex(bytes);
   const target = await createTempDownloadTarget({
-    prefix: "openclaw-clawhub-skill",
+    prefix: "eve-clawhub-skill",
     fileName: `${params.slug}.zip`,
     tmpDir: os.tmpdir(),
   });
@@ -1281,7 +1281,7 @@ export async function downloadClawHubSkillArchiveUrl(params: {
   });
   const sha256Hex = formatSha256Hex(bytes);
   const target = await createTempDownloadTarget({
-    prefix: "openclaw-clawhub-skill",
+    prefix: "eve-clawhub-skill",
     fileName: "skill.zip",
     tmpDir: os.tmpdir(),
   });
@@ -1318,7 +1318,7 @@ export async function downloadClawHubGitHubSkillArchive(params: {
   });
   const sha256Hex = formatSha256Hex(bytes);
   const target = await createTempDownloadTarget({
-    prefix: "openclaw-clawhub-github-skill",
+    prefix: "eve-clawhub-github-skill",
     fileName: `${params.commit}.zip`,
     tmpDir: os.tmpdir(),
   });

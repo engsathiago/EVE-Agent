@@ -1,5 +1,5 @@
 // Telegram plugin module implements account throttler behavior.
-import { parseStrictInteger } from "openclaw/plugin-sdk/number-runtime";
+import { parseStrictInteger } from "eve-agent/plugin-sdk/number-runtime";
 import { apiThrottler } from "./bot.runtime.js";
 
 type ApiThrottlerTransformer = ReturnType<typeof apiThrottler>;

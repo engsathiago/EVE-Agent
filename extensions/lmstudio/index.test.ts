@@ -1,8 +1,8 @@
 // Lmstudio tests cover index plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/plugin-entry";
-import { capturePluginRegistration } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { CUSTOM_LOCAL_AUTH_MARKER } from "openclaw/plugin-sdk/provider-auth";
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { EVEConfig } from "eve-agent/plugin-sdk/plugin-entry";
+import { capturePluginRegistration } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { CUSTOM_LOCAL_AUTH_MARKER } from "eve-agent/plugin-sdk/provider-auth";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 import { LMSTUDIO_LOCAL_API_KEY_PLACEHOLDER } from "./src/defaults.js";
@@ -168,12 +168,12 @@ describe("lmstudio plugin", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       provider?.augmentModelCatalog?.({
         config,
-        agentDir: "/tmp/openclaw",
+        agentDir: "/tmp/eve",
         env: {},
         entries: [],
       }),

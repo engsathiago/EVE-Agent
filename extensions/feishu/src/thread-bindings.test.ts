@@ -1,12 +1,12 @@
 // Feishu tests cover thread bindings plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { getSessionBindingService } from "openclaw/plugin-sdk/conversation-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { getSessionBindingService } from "eve-agent/plugin-sdk/conversation-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { testing, createFeishuThreadBindingManager } from "./thread-bindings.js";
 
 const baseCfg = {
   session: { mainKey: "main", scope: "per-sender" },
-} satisfies OpenClawConfig;
+} satisfies EVEConfig;
 
 describe("Feishu thread bindings", () => {
   beforeEach(() => {

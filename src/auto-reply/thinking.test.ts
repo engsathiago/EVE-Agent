@@ -313,7 +313,7 @@ describe("listThinkingLevels", () => {
   });
 
   it("exposes Claude Opus xhigh on custom anthropic-messages providers without a plugin profile", () => {
-    // Regression for openclaw#91975: a renamed provider serving Claude Opus over
+    // Regression for eve#91975: a renamed provider serving Claude Opus over
     // anthropic-messages used to fall back to a base profile (no xhigh) and silently
     // clamp `--thinking xhigh` to `off`.
     const catalog = [

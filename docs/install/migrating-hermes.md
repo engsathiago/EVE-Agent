@@ -1,16 +1,16 @@
 ---
-summary: "Move from Hermes to OpenClaw with a previewed, reversible import"
+summary: "Move from Hermes to EVE with a previewed, reversible import"
 read_when:
   - You are coming from Hermes and want to keep your model config, prompts, memory, and skills
-  - You want to know what OpenClaw imports automatically and what stays archive-only
+  - You want to know what EVE imports automatically and what stays archive-only
   - You need a clean, scripted migration path (CI, fresh laptop, automation)
 title: "Migrating from Hermes"
 ---
 
-OpenClaw imports Hermes state through a bundled migration provider. The provider previews everything before changing state, redacts secrets in plans and reports, and creates a verified backup before apply.
+EVE imports Hermes state through a bundled migration provider. The provider previews everything before changing state, redacts secrets in plans and reports, and creates a verified backup before apply.
 
 <Note>
-Imports require a fresh OpenClaw setup. If you already have local OpenClaw state, reset config, credentials, sessions, and the workspace first, or use `openclaw migrate` directly with `--overwrite` after reviewing the plan.
+Imports require a fresh EVE setup. If you already have local EVE state, reset config, credentials, sessions, and the workspace first, or use `eve migrate` directly with `--overwrite` after reviewing the plan.
 </Note>
 
 ## Two ways to import
@@ -20,22 +20,22 @@ Imports require a fresh OpenClaw setup. If you already have local OpenClaw state
     The fastest path. The wizard detects Hermes at `~/.hermes` and shows a preview before applying.
 
     ```bash
-    openclaw onboard --flow import
+    eve onboard --flow import
     ```
 
     Or point at a specific source:
 
     ```bash
-    openclaw onboard --import-from hermes --import-source ~/.hermes
+    eve onboard --import-from hermes --import-source ~/.hermes
     ```
 
   </Tab>
   <Tab title="CLI">
-    Use `openclaw migrate` for scripted or repeatable runs. See [`openclaw migrate`](/cli/migrate) for the full reference.
+    Use `eve migrate` for scripted or repeatable runs. See [`eve migrate`](/cli/migrate) for the full reference.
 
     ```bash
-    openclaw migrate hermes --dry-run    # preview only
-    openclaw migrate apply hermes --yes  # apply with confirmation skipped
+    eve migrate hermes --dry-run    # preview only
+    eve migrate apply hermes --yes  # apply with confirmation skipped
     ```
 
     Add `--from <path>` when Hermes lives outside `~/.hermes`.
@@ -55,24 +55,24 @@ Imports require a fresh OpenClaw setup. If you already have local OpenClaw state
     MCP server definitions from `mcp_servers` or `mcp.servers`.
   </Accordion>
   <Accordion title="Workspace files">
-    - `SOUL.md` and `AGENTS.md` are copied into the OpenClaw agent workspace.
-    - `memories/MEMORY.md` and `memories/USER.md` are **appended** to the matching OpenClaw memory files instead of overwriting them.
+    - `SOUL.md` and `AGENTS.md` are copied into the EVE agent workspace.
+    - `memories/MEMORY.md` and `memories/USER.md` are **appended** to the matching EVE memory files instead of overwriting them.
 
   </Accordion>
   <Accordion title="Memory configuration">
-    Memory config defaults for OpenClaw file memory. External memory providers such as Honcho are recorded as archive or manual-review items so you can move them deliberately.
+    Memory config defaults for EVE file memory. External memory providers such as Honcho are recorded as archive or manual-review items so you can move them deliberately.
   </Accordion>
   <Accordion title="Skills">
     Skills with a `SKILL.md` file under `skills/<name>/` are copied, along with per-skill config values from `skills.config`.
   </Accordion>
   <Accordion title="Auth credentials">
-    Interactive `openclaw migrate` asks before importing auth credentials, with yes selected by default. Accepted imports include OpenCode OpenAI OAuth credentials from OpenCode `auth.json`, OpenCode and GitHub Copilot entries from OpenCode `auth.json`, and the [supported `.env` keys](/cli/migrate#supported-env-keys). Hermes `auth.json` OAuth entries are legacy state and are surfaced as manual reauth/doctor work instead of imported into live auth. Use `--include-secrets` for non-interactive `openclaw migrate` credential import, `--no-auth-credentials` to skip it, or onboarding `--import-secrets` when importing from the onboarding wizard.
+    Interactive `eve migrate` asks before importing auth credentials, with yes selected by default. Accepted imports include OpenCode OpenAI OAuth credentials from OpenCode `auth.json`, OpenCode and GitHub Copilot entries from OpenCode `auth.json`, and the [supported `.env` keys](/cli/migrate#supported-env-keys). Hermes `auth.json` OAuth entries are legacy state and are surfaced as manual reauth/doctor work instead of imported into live auth. Use `--include-secrets` for non-interactive `eve migrate` credential import, `--no-auth-credentials` to skip it, or onboarding `--import-secrets` when importing from the onboarding wizard.
   </Accordion>
 </AccordionGroup>
 
 ## What stays archive-only
 
-The provider copies these into the migration report directory for manual review, but does **not** load them into live OpenClaw config or credentials:
+The provider copies these into the migration report directory for manual review, but does **not** load them into live EVE config or credentials:
 
 - `plugins/`
 - `sessions/`
@@ -81,14 +81,14 @@ The provider copies these into the migration report directory for manual review,
 - `mcp-tokens/`
 - `state.db`
 
-OpenClaw refuses to execute or trust this state automatically because the formats and trust assumptions can drift between systems. Move what you need by hand after reviewing the archive.
+EVE refuses to execute or trust this state automatically because the formats and trust assumptions can drift between systems. Move what you need by hand after reviewing the archive.
 
 ## Recommended flow
 
 <Steps>
   <Step title="Preview the plan">
     ```bash
-    openclaw migrate hermes --dry-run
+    eve migrate hermes --dry-run
     ```
 
     The plan lists everything that will change, including conflicts, skipped items, and any sensitive items. Plan output redacts nested secret-looking keys.
@@ -96,15 +96,15 @@ OpenClaw refuses to execute or trust this state automatically because the format
   </Step>
   <Step title="Apply with backup">
     ```bash
-    openclaw migrate apply hermes --yes
+    eve migrate apply hermes --yes
     ```
 
-    OpenClaw creates and verifies a backup before applying. This non-interactive example imports non-secret state. Run without `--yes` to answer the credential prompt, or add `--include-secrets` to include supported credentials in unattended runs.
+    EVE creates and verifies a backup before applying. This non-interactive example imports non-secret state. Run without `--yes` to answer the credential prompt, or add `--include-secrets` to include supported credentials in unattended runs.
 
   </Step>
   <Step title="Run doctor">
     ```bash
-    openclaw doctor
+    eve doctor
     ```
 
     [Doctor](/gateway/doctor) reapplies any pending config migrations and checks for issues introduced during the import.
@@ -112,8 +112,8 @@ OpenClaw refuses to execute or trust this state automatically because the format
   </Step>
   <Step title="Restart and verify">
     ```bash
-    openclaw gateway restart
-    openclaw status
+    eve gateway restart
+    eve status
     ```
 
     Confirm the gateway is healthy and your imported model, memory, and skills are loaded.
@@ -129,13 +129,13 @@ Apply refuses to continue when the plan reports conflicts (a file or config valu
 Rerun with `--overwrite` only when replacing the existing target is intentional. Providers may still write item-level backups for overwritten files in the migration report directory.
 </Warning>
 
-For a fresh OpenClaw install, conflicts are unusual. They typically appear when you re-run the import on a setup that already has user edits.
+For a fresh EVE install, conflicts are unusual. They typically appear when you re-run the import on a setup that already has user edits.
 
 If a conflict surfaces mid-apply (for example, an unexpected race on a config file), Hermes marks remaining dependent config items as `skipped` with reason `blocked by earlier apply conflict` instead of writing them partially. The migration report records each blocked item so you can resolve the original conflict and rerun the import.
 
 ## Secrets
 
-Interactive `openclaw migrate` asks whether to import detected auth credentials, with yes selected by default.
+Interactive `eve migrate` asks whether to import detected auth credentials, with yes selected by default.
 
 - Accepting the prompt imports OpenCode OpenAI OAuth credentials from OpenCode `auth.json`, OpenCode and GitHub Copilot entries from OpenCode `auth.json`, and the [supported `.env` keys](/cli/migrate#supported-env-keys). Hermes `auth.json` OAuth entries are reported for manual OpenAI reauth or doctor repair.
 - Use `--no-auth-credentials` or choose no at the prompt to import non-secret state only.
@@ -146,8 +146,8 @@ Interactive `openclaw migrate` asks whether to import detected auth credentials,
 ## JSON output for automation
 
 ```bash
-openclaw migrate hermes --dry-run --json
-openclaw migrate apply hermes --json --yes
+eve migrate hermes --dry-run --json
+eve migrate apply hermes --json --yes
 ```
 
 With `--json` and no `--yes`, apply prints the plan and does not mutate state. This is the safest mode for CI and shared scripts.
@@ -162,17 +162,17 @@ With `--json` and no `--yes`, apply prints the plan and does not mutate state. T
     Pass `--from /actual/path` (CLI) or `--import-source /actual/path` (onboarding).
   </Accordion>
   <Accordion title="Onboarding refuses to import on an existing setup">
-    Onboarding imports require a fresh setup. Either reset state and re-onboard, or use `openclaw migrate apply hermes` directly, which supports `--overwrite` and explicit backup control.
+    Onboarding imports require a fresh setup. Either reset state and re-onboard, or use `eve migrate apply hermes` directly, which supports `--overwrite` and explicit backup control.
   </Accordion>
   <Accordion title="API keys did not import">
-    Interactive `openclaw migrate` imports API keys only when you accept the credential prompt. Non-interactive `--yes` runs require `--include-secrets`; onboarding imports require `--import-secrets`. Only the [supported `.env` keys](/cli/migrate#supported-env-keys) are recognized; other variables in `.env` are ignored.
+    Interactive `eve migrate` imports API keys only when you accept the credential prompt. Non-interactive `--yes` runs require `--include-secrets`; onboarding imports require `--import-secrets`. Only the [supported `.env` keys](/cli/migrate#supported-env-keys) are recognized; other variables in `.env` are ignored.
   </Accordion>
 </AccordionGroup>
 
 ## Related
 
-- [`openclaw migrate`](/cli/migrate): full CLI reference, plugin contract, and JSON shapes.
+- [`eve migrate`](/cli/migrate): full CLI reference, plugin contract, and JSON shapes.
 - [Onboarding](/cli/onboard): wizard flow and non-interactive flags.
-- [Migrating](/install/migrating): move an OpenClaw install between machines.
+- [Migrating](/install/migrating): move an EVE install between machines.
 - [Doctor](/gateway/doctor): post-migration health check.
 - [Agent workspace](/concepts/agent-workspace): where `SOUL.md`, `AGENTS.md`, and memory files live.

@@ -1,8 +1,8 @@
 // Live verification for extra-params behavior against provider APIs.
-import type { Model } from "openclaw/plugin-sdk/llm";
-import { streamSimple } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
+import { streamSimple } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { applyExtraParamsToAgent } from "./embedded-agent-runner.js";
 import { isLiveTestEnabled } from "./live-test-helpers.js";
 import { isLiveAuthDrift, isLiveBillingDrift } from "./live-test-provider-drift.js";
@@ -32,7 +32,7 @@ describeLive("embedded agent extra params (live)", () => {
       maxTokens: 128_000,
     };
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           models: {

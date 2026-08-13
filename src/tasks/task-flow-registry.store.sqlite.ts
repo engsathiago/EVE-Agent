@@ -1,13 +1,13 @@
-// Persists managed task-flow records through the OpenClaw SQLite state database.
+// Persists managed task-flow records through the EVE SQLite state database.
 import type { DatabaseSync } from "node:sqlite";
 import type { Insertable, Selectable } from "kysely";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../infra/kysely-sync.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
 import {
-  closeOpenClawStateDatabase,
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  closeEVEStateDatabase,
+  openEVEStateDatabase,
+  runEVEStateWriteTransaction,
+} from "../state/eve-state-db.js";
 import type { TaskFlowRegistryStoreSnapshot } from "./task-flow-registry.store.types.js";
 import {
   parseOptionalTaskFlowSyncMode,
@@ -19,8 +19,8 @@ import {
 import { parseDeliveryContextJson } from "./task-registry.sqlite.shared.js";
 import { parseTaskNotifyPolicy } from "./task-registry.types.js";
 
-type FlowRunsTable = OpenClawStateKyselyDatabase["flow_runs"];
-type FlowRegistryStoreDatabase = Pick<OpenClawStateKyselyDatabase, "flow_runs">;
+type FlowRunsTable = EVEStateKyselyDatabase["flow_runs"];
+type FlowRegistryStoreDatabase = Pick<EVEStateKyselyDatabase, "flow_runs">;
 
 type FlowRegistryRow = Selectable<FlowRunsTable> & {
   sync_mode: string | null;
@@ -33,7 +33,7 @@ type FlowRegistryDatabase = {
   path: string;
 };
 
-// SQLite-backed task-flow store mirrors the in-process registry into openclaw-state.db.
+// SQLite-backed task-flow store mirrors the in-process registry into eve-state.db.
 let cachedDatabase: FlowRegistryDatabase | null = null;
 
 function normalizeNumber(value: number | bigint | null): number | undefined {
@@ -124,7 +124,7 @@ function getFlowRegistryKysely(db: DatabaseSync) {
 }
 
 function pruneFlowsNotInSnapshot(params: { db: DatabaseSync; ids: readonly string[] }) {
-  const tempTableName = "openclaw_live_flow_ids";
+  const tempTableName = "eve_live_flow_ids";
   params.db.exec(`CREATE TEMP TABLE IF NOT EXISTS ${tempTableName} (id TEXT PRIMARY KEY)`);
   params.db.exec(`DELETE FROM ${tempTableName}`);
   const insert = params.db.prepare(`INSERT OR IGNORE INTO ${tempTableName} (id) VALUES (?)`);
@@ -201,7 +201,7 @@ function upsertFlowRow(db: DatabaseSync, row: Insertable<FlowRunsTable>): void {
 }
 
 function openFlowRegistryDatabase(): FlowRegistryDatabase {
-  const database = openOpenClawStateDatabase();
+  const database = openEVEStateDatabase();
   const pathname = database.path;
   if (cachedDatabase && cachedDatabase.path === pathname && cachedDatabase.db.isOpen) {
     return cachedDatabase;
@@ -218,7 +218,7 @@ function openFlowRegistryDatabase(): FlowRegistryDatabase {
 
 function withWriteTransaction(write: (database: FlowRegistryDatabase) => void) {
   const database = openFlowRegistryDatabase();
-  runOpenClawStateWriteTransaction(() => {
+  runEVEStateWriteTransaction(() => {
     write(database);
   });
 }
@@ -263,5 +263,5 @@ export function deleteTaskFlowRegistryRecordFromSqlite(flowId: string) {
 
 export function closeTaskFlowRegistryDatabase() {
   cachedDatabase = null;
-  closeOpenClawStateDatabase();
+  closeEVEStateDatabase();
 }

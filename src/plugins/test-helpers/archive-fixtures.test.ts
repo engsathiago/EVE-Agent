@@ -6,7 +6,7 @@ import { expectNoReaddirSyncDuring } from "../../test-utils/fs-scan-assertions.j
 import { listFlatRootArchiveEntries } from "./archive-fixtures.js";
 import { createSuiteTempRootTracker } from "./fs-fixtures.js";
 
-const suiteTempRootTracker = createSuiteTempRootTracker("openclaw-plugin-archive-fixtures");
+const suiteTempRootTracker = createSuiteTempRootTracker("eve-plugin-archive-fixtures");
 
 afterAll(() => {
   suiteTempRootTracker.cleanup();

@@ -1,6 +1,6 @@
 // Codex plugin module implements conversation turn collector behavior.
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { asOptionalRecord as readRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { asOptionalRecord as readRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   readCodexNotificationThreadId,
   readCodexNotificationTurnId,

@@ -1,7 +1,7 @@
 // Codex tests cover client plugin behavior.
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import { embeddedAgentLog, OPENCLAW_VERSION } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog, EVE_VERSION } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   testing,
@@ -224,7 +224,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.125.0 (macOS; test)" },
+      result: { userAgent: "eve/0.125.0 (macOS; test)" },
     });
 
     await expect(initializing).resolves.toBeUndefined();
@@ -233,9 +233,9 @@ describe("CodexAppServerClient", () => {
       method: "initialize",
       params: {
         clientInfo: {
-          name: "openclaw",
-          title: "OpenClaw",
-          version: OPENCLAW_VERSION,
+          name: "eve",
+          title: "EVE",
+          version: EVE_VERSION,
         },
         capabilities: {
           experimentalApi: true,
@@ -250,7 +250,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.124.9 (macOS; test)" },
+      result: { userAgent: "eve/0.124.9 (macOS; test)" },
     });
 
     await expect(initializing).rejects.toThrow(
@@ -263,7 +263,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.125.0-alpha.2 (macOS; test)" },
+      result: { userAgent: "eve/0.125.0-alpha.2 (macOS; test)" },
     });
 
     await expect(initializing).rejects.toThrow(
@@ -276,7 +276,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.125.0+alpha.2 (macOS; test)" },
+      result: { userAgent: "eve/0.125.0+alpha.2 (macOS; test)" },
     });
 
     await expect(initializing).rejects.toThrow(
@@ -289,7 +289,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.126.0-alpha.1 (macOS; test)" },
+      result: { userAgent: "eve/0.126.0-alpha.1 (macOS; test)" },
     });
 
     await expect(initializing).resolves.toBeUndefined();
@@ -300,7 +300,7 @@ describe("CodexAppServerClient", () => {
     const { harness, initializing, outbound } = startInitialize();
     harness.send({
       id: outbound.id,
-      result: { userAgent: "openclaw/0.126.0+custom (macOS; test)" },
+      result: { userAgent: "eve/0.126.0+custom (macOS; test)" },
     });
 
     await expect(initializing).resolves.toBeUndefined();
@@ -452,13 +452,13 @@ describe("CodexAppServerClient", () => {
 
   it("reads the Codex version from the app-server user agent", () => {
     expect(readCodexVersionFromUserAgent("Codex Desktop/0.125.0")).toBe("0.125.0");
-    expect(readCodexVersionFromUserAgent("openclaw/0.125.0 (macOS; test)")).toBe("0.125.0");
+    expect(readCodexVersionFromUserAgent("eve/0.125.0 (macOS; test)")).toBe("0.125.0");
     expect(readCodexVersionFromUserAgent("codex_cli_rs/0.125.0-dev (linux; test)")).toBe(
       "0.125.0-dev",
     );
     expect(readCodexVersionFromUserAgent("Codex Desktop/not-a-version")).toBeUndefined();
     expect(readCodexVersionFromUserAgent("Codex Desktop/0.124")).toBeUndefined();
-    expect(readCodexVersionFromUserAgent("openclaw/0.125.0abc")).toBeUndefined();
+    expect(readCodexVersionFromUserAgent("eve/0.125.0abc")).toBeUndefined();
     expect(readCodexVersionFromUserAgent("missing-version")).toBeUndefined();
   });
 
@@ -504,7 +504,7 @@ describe("CodexAppServerClient", () => {
         contentItems: [
           {
             type: "inputText",
-            text: `OpenClaw dynamic tool call timed out after ${testing.CODEX_DYNAMIC_TOOL_SERVER_REQUEST_TIMEOUT_MS}ms before sending a response to Codex.`,
+            text: `EVE dynamic tool call timed out after ${testing.CODEX_DYNAMIC_TOOL_SERVER_REQUEST_TIMEOUT_MS}ms before sending a response to Codex.`,
           },
         ],
       },

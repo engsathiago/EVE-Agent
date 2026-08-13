@@ -1,6 +1,6 @@
 // Coverage for building compaction runtime context from active runner state.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { addSession, resetProcessRegistryForTests } from "../bash-process-registry.js";
 import { createProcessSessionFixture } from "../bash-process-registry.test-helpers.js";
 import {
@@ -27,7 +27,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
       workspaceDir: "/tmp/workspace",
       cwd: "/tmp/task-repo",
       agentDir: "/tmp/agent",
-      config: {} as unknown as OpenClawConfig,
+      config: {} as unknown as EVEConfig,
       senderIsOwner: true,
       senderId: "user-123",
       provider: "openai",
@@ -92,7 +92,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
       agentDir: "/tmp/agent",
       config: {
         agents: { defaults: { compaction: { model: "anthropic/claude-opus-4-6" } } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "ollama",
       modelId: "minimax-m2.7:cloud",
       authProfileId: "ollama:default",
@@ -110,7 +110,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
       agentDir: "/tmp/agent",
       config: {
         agents: { defaults: { compaction: { model: "gpt-4o" } } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-3.5-turbo",
       authProfileId: "openai:p1",
@@ -125,7 +125,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = buildEmbeddedCompactionRuntimeContext({
       workspaceDir: "/tmp/workspace",
       agentDir: "/tmp/agent",
-      config: {} as unknown as OpenClawConfig,
+      config: {} as unknown as EVEConfig,
       provider: "ollama",
       modelId: "minimax-m2.7:cloud",
       authProfileId: "ollama:default",
@@ -161,7 +161,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
       sessionKey: "agent:main:thread:1",
       workspaceDir: "/tmp/workspace",
       agentDir: "/tmp/agent",
-      config: {} as unknown as OpenClawConfig,
+      config: {} as unknown as EVEConfig,
     });
 
     try {
@@ -196,7 +196,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = buildEmbeddedCompactionRuntimeContext({
       workspaceDir: "/tmp/workspace",
       agentDir: "/tmp/agent",
-      config: {} as unknown as OpenClawConfig,
+      config: {} as unknown as EVEConfig,
     });
 
     expect(result.activeProcessSessions).toBeUndefined();
@@ -207,7 +207,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
       resolveEmbeddedCompactionTarget({
         config: {
           agents: { defaults: { compaction: { model: "anthropic/" } } },
-        } as unknown as OpenClawConfig,
+        } as unknown as EVEConfig,
         provider: "openai",
         modelId: "gpt-5.4",
         authProfileId: "openai:p1",
@@ -240,7 +240,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = resolveEmbeddedCompactionTarget({
       config: {
         auth: { order: { openai: ["openai:default"] } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       defaultProvider: "openai",
@@ -261,7 +261,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             openai: { models: [{ id: "gpt-5.5" }] },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       harnessRuntime: "codex",
@@ -279,7 +279,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = buildEmbeddedCompactionRuntimeContext({
       workspaceDir: "/tmp/workspace",
       agentDir: "/tmp/agent",
-      config: {} as unknown as OpenClawConfig,
+      config: {} as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       harnessRuntime: "codex",
@@ -288,7 +288,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     expect(result.runtimeProvider).toBeUndefined();
   });
 
-  it("preserves direct OpenAI compaction for the OpenClaw runtime", () => {
+  it("preserves direct OpenAI compaction for the EVE runtime", () => {
     const result = resolveEmbeddedCompactionTarget({
       config: {
         models: {
@@ -296,10 +296,10 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             openai: { models: [{ id: "gpt-5.5" }] },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
-      harnessRuntime: "openclaw",
+      harnessRuntime: "eve",
       defaultProvider: "openai",
       defaultModel: "gpt-5.5",
     });
@@ -318,7 +318,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             openai: { models: [{ id: "gpt-5.5" }] },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       harnessRuntime: "codex",
@@ -336,7 +336,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = resolveEmbeddedCompactionTarget({
       config: {
         agents: { defaults: { compaction: { model: "gpt-5.4" } } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -354,7 +354,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
     const result = resolveEmbeddedCompactionTarget({
       config: {
         agents: { defaults: { compaction: { model: "openai/gpt-5.4" } } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -377,7 +377,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
           },
         },
         agents: { defaults: { compaction: { model: "openai/gpt-5.4-mini" } } },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       harnessRuntime: "codex",
@@ -405,7 +405,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             compaction: { model: "gpt54mini" },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -430,7 +430,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             compaction: { model: "thinky" },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -456,7 +456,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             compaction: { model: "nonexistent-alias" },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -481,7 +481,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             compaction: { model: "summary" },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       authProfileId: "openai:default",
       defaultProvider: "openai",
       defaultModel: "gpt-5.5",
@@ -505,7 +505,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             compaction: { model: "gpt54mini" },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",
@@ -535,7 +535,7 @@ describe("buildEmbeddedCompactionRuntimeContext", () => {
             openai: { models: [{ id: "gpt-5.4-mini" }] },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       provider: "openai",
       modelId: "gpt-5.5",
       authProfileId: "openai:default",

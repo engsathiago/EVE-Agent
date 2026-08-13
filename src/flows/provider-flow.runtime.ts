@@ -1,6 +1,6 @@
 // Provider flow runtime helpers load provider setup behavior behind runtime imports.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import * as providerWizard from "../plugins/provider-wizard.js";
 import type { ProviderModelPickerEntry } from "../plugins/provider-wizard.js";
 import * as providersRuntime from "../plugins/providers.runtime.js";
@@ -20,7 +20,7 @@ type ProviderModelPickerFlowContribution = FlowContribution & {
 };
 
 function resolveProviderDocsById(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): Map<string, string> {
@@ -41,7 +41,7 @@ function resolveProviderDocsById(params?: {
 
 /** Resolves provider model-picker options without exposing contribution metadata. */
 export function resolveProviderModelPickerFlowEntries(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): ProviderModelPickerFlowEntry[] {
@@ -52,7 +52,7 @@ export function resolveProviderModelPickerFlowEntries(params?: {
 
 /** Resolves provider model-picker contributions with docs metadata for setup UIs. */
 export function resolveProviderModelPickerFlowContributions(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): ProviderModelPickerFlowContribution[] {

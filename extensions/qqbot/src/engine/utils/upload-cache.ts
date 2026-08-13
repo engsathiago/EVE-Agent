@@ -7,7 +7,7 @@ import * as crypto from "node:crypto";
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationSeconds,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import type { ChatScope } from "../types.js";
 import { debugLog } from "./log.js";
 

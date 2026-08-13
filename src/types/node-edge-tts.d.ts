@@ -13,7 +13,7 @@ declare module "node-edge-tts" {
     timeout?: number;
   };
 
-  /** Edge TTS class subset used by OpenClaw audio generation. */
+  /** Edge TTS class subset used by EVE audio generation. */
   export class EdgeTTS {
     constructor(options?: EdgeTTSOptions);
     ttsPromise(text: string, outputPath: string): Promise<void>;

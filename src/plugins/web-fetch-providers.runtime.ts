@@ -1,5 +1,5 @@
 /** Runtime resolver for plugin-contributed web fetch providers. */
-import { loadOpenClawPlugins } from "./loader.js";
+import { loadEVEPlugins } from "./loader.js";
 import type { PluginLoadOptions } from "./loader.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
 import type { PluginWebFetchProviderEntry } from "./types.js";
@@ -38,7 +38,7 @@ function resolveWebFetchCandidatePluginIds(params: {
 }
 
 function mapRegistryWebFetchProviders(params: {
-  registry: ReturnType<typeof loadOpenClawPlugins>;
+  registry: ReturnType<typeof loadEVEPlugins>;
   onlyPluginIds?: readonly string[];
 }): PluginWebFetchProviderEntry[] {
   return mapRegistryProviders({

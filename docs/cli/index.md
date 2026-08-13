@@ -1,22 +1,22 @@
 ---
-summary: "OpenClaw CLI index: command list, global flags, and links to per-command pages"
+summary: "EVE CLI index: command list, global flags, and links to per-command pages"
 read_when:
-  - Finding the right `openclaw` subcommand
+  - Finding the right `eve` subcommand
   - Looking up global flags or output styling rules
 title: "CLI reference"
 ---
 
-`openclaw` is the main CLI entry point. Each core command has either a
+`eve` is the main CLI entry point. Each core command has either a
 dedicated reference page or is documented with the command it aliases; this
 index lists the commands, the global flags, and the output styling rules that
 apply across the CLI.
 
 Use the setup commands by intent:
 
-- `openclaw setup` creates the baseline config and workspace without walking the full guided onboarding flow.
-- `openclaw onboard` is the full guided first-run path for gateway, model auth, workspace, channels, skills, and health.
-- `openclaw configure` changes targeted parts of an existing setup, such as model auth, gateway, channels, plugins, or skills.
-- `openclaw channels add` configures channel accounts after the baseline exists; run it without flags for guided channel setup or with channel-specific flags for scripts.
+- `eve setup` creates the baseline config and workspace without walking the full guided onboarding flow.
+- `eve onboard` is the full guided first-run path for gateway, model auth, workspace, channels, skills, and health.
+- `eve configure` changes targeted parts of an existing setup, such as model auth, gateway, channels, plugins, or skills.
+- `eve channels add` configures channel accounts after the baseline exists; run it without flags for guided channel setup or with channel-specific flags for scripts.
 
 ## Command pages
 
@@ -41,11 +41,11 @@ Use the setup commands by intent:
 
 | Flag                    | Purpose                                                               |
 | ----------------------- | --------------------------------------------------------------------- |
-| `--dev`                 | Isolate state under `~/.openclaw-dev` and shift default ports         |
-| `--profile <name>`      | Isolate state under `~/.openclaw-<name>`                              |
+| `--dev`                 | Isolate state under `~/.eve-dev` and shift default ports         |
+| `--profile <name>`      | Isolate state under `~/.eve-<name>`                              |
 | `--container <name>`    | Target a named container for execution                                |
 | `--no-color`            | Disable ANSI colors (`NO_COLOR=1` is also respected)                  |
-| `--update`              | Shorthand for [`openclaw update`](/cli/update) (source installs only) |
+| `--update`              | Shorthand for [`eve update`](/cli/update) (source installs only) |
 | `-V`, `--version`, `-v` | Print version and exit                                                |
 
 ## Output modes
@@ -63,7 +63,7 @@ Palette source of truth: `src/terminal/palette.ts`.
 <Accordion title="Full command tree">
 
 ```
-openclaw [--dev] [--profile <name>] <command>
+eve [--dev] [--profile <name>] <command>
   crestodian
   setup
   onboard
@@ -374,7 +374,7 @@ openclaw [--dev] [--profile <name>] <command>
 ```
 
 Plugins can add additional top-level commands, such as
-[`openclaw workboard`](/cli/workboard) or `openclaw voicecall`.
+[`eve workboard`](/cli/workboard) or `eve voicecall`.
 
 </Accordion>
 
@@ -391,7 +391,7 @@ Highlights:
 
 ## Usage tracking
 
-`openclaw status --usage` and the Control UI surface provider usage/quota when
+`eve status --usage` and the Control UI surface provider usage/quota when
 OAuth/API credentials are available. Data comes directly from provider usage
 endpoints and is normalized to `X% left`. Providers with current usage
 windows: Anthropic, GitHub Copilot, Gemini CLI, OpenAI Codex, MiniMax,

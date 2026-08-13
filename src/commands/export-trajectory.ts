@@ -109,7 +109,7 @@ export async function exportTrajectoryCommand(
   const sessionKey = resolvedOpts.sessionKey?.trim();
   if (!sessionKey) {
     runtime.error(
-      `--session-key is required. Run ${formatCliCommand("openclaw sessions")} to choose a session.`,
+      `--session-key is required. Run ${formatCliCommand("eve sessions")} to choose a session.`,
     );
     runtime.exit(1);
     return;
@@ -125,7 +125,7 @@ export async function exportTrajectoryCommand(
   });
   if (!entry?.sessionId) {
     runtime.error(
-      `Session not found: ${sessionKey}. Run ${formatCliCommand("openclaw sessions")} to see available sessions.`,
+      `Session not found: ${sessionKey}. Run ${formatCliCommand("eve sessions")} to see available sessions.`,
     );
     runtime.exit(1);
     return;
@@ -145,7 +145,7 @@ export async function exportTrajectoryCommand(
   }
   if (!(await pathExists(sessionFile))) {
     runtime.error(
-      `Session file not found for ${sessionKey}. Run ${formatCliCommand("openclaw doctor")} to inspect session storage.`,
+      `Session file not found for ${sessionKey}. Run ${formatCliCommand("eve doctor")} to inspect session storage.`,
     );
     runtime.exit(1);
     return;

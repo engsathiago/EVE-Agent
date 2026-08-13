@@ -1,4 +1,4 @@
-// Plugin Sdk Doc Metadata script supports OpenClaw repository automation.
+// Plugin Sdk Doc Metadata script supports EVE repository automation.
 export type PluginSdkDocCategory =
   | "channel"
   | "core"
@@ -149,5 +149,5 @@ export const pluginSdkDocMetadata = {
 export type PluginSdkDocEntrypoint = keyof typeof pluginSdkDocMetadata;
 
 export function resolvePluginSdkDocImportSpecifier(entrypoint: PluginSdkDocEntrypoint): string {
-  return entrypoint === "index" ? "openclaw/plugin-sdk" : `openclaw/plugin-sdk/${entrypoint}`;
+  return entrypoint === "index" ? "eve-agent/plugin-sdk" : `eve-agent/plugin-sdk/${entrypoint}`;
 }

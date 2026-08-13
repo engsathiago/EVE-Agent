@@ -3,7 +3,7 @@
  * routing, notification fanout, server request handlers, and version checks.
  */
 import { createInterface, type Interface as ReadlineInterface } from "node:readline";
-import { embeddedAgentLog, OPENCLAW_VERSION } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog, EVE_VERSION } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { resolveCodexAppServerRuntimeOptions, type CodexAppServerStartOptions } from "./config.js";
 import {
   type CodexAppServerRequestMethod,
@@ -194,9 +194,9 @@ export class CodexAppServerClient {
     // which matters when callers override the binary or app-server args.
     const response = await this.request("initialize", {
       clientInfo: {
-        name: "openclaw",
-        title: "OpenClaw",
-        version: OPENCLAW_VERSION,
+        name: "eve",
+        title: "EVE",
+        version: EVE_VERSION,
       },
       capabilities: {
         experimentalApi: true,
@@ -303,7 +303,7 @@ export class CodexAppServerClient {
     this.writeMessage({ method, params });
   }
 
-  /** Registers a handler for app-server requests sent back to OpenClaw. */
+  /** Registers a handler for app-server requests sent back to EVE. */
   addRequestHandler(handler: CodexServerRequestHandler): () => void {
     this.requestHandlers.add(handler);
     return () => this.requestHandlers.delete(handler);
@@ -565,7 +565,7 @@ function defaultServerRequestResponse(
       contentItems: [
         {
           type: "inputText",
-          text: "OpenClaw did not register a handler for this app-server tool call.",
+          text: "EVE did not register a handler for this app-server tool call.",
         },
       ],
       success: false,
@@ -583,7 +583,7 @@ function defaultServerRequestResponse(
   if (isCodexAppServerApprovalRequest(request.method)) {
     return {
       decision: "decline",
-      reason: "OpenClaw codex app-server bridge does not grant native approvals yet.",
+      reason: "EVE codex app-server bridge does not grant native approvals yet.",
     };
   }
   if (request.method === "item/tool/requestUserInput") {
@@ -617,7 +617,7 @@ function timeoutServerRequestResponse(
     contentItems: [
       {
         type: "inputText",
-        text: `OpenClaw dynamic tool call timed out after ${CODEX_DYNAMIC_TOOL_SERVER_REQUEST_TIMEOUT_MS}ms before sending a response to Codex.`,
+        text: `EVE dynamic tool call timed out after ${CODEX_DYNAMIC_TOOL_SERVER_REQUEST_TIMEOUT_MS}ms before sending a response to Codex.`,
       },
     ],
     success: false,
@@ -628,7 +628,7 @@ function assertSupportedCodexAppServerVersion(response: CodexInitializeResponse)
   const detectedVersion = readCodexVersionFromUserAgent(response.userAgent);
   if (!detectedVersion) {
     throw new Error(
-      `Codex app-server ${MIN_CODEX_APP_SERVER_VERSION} or newer is required, but OpenClaw could not determine the running Codex version. Update the configured Codex app-server binary, or remove custom command overrides to use the managed binary.`,
+      `Codex app-server ${MIN_CODEX_APP_SERVER_VERSION} or newer is required, but EVE could not determine the running Codex version. Update the configured Codex app-server binary, or remove custom command overrides to use the managed binary.`,
     );
   }
   if (compareCodexAppServerVersions(detectedVersion, MIN_CODEX_APP_SERVER_VERSION) < 0) {
@@ -664,7 +664,7 @@ function readNonEmptyInitializeString(value: string | undefined): string | undef
 /** Extracts the Codex version from the app-server initialize user-agent field. */
 export function readCodexVersionFromUserAgent(userAgent: string | undefined): string | undefined {
   // Codex returns `<originator>/<codex-version> ...`; the originator can be
-  // OpenClaw, Codex Desktop, or an env override, so only the slash-delimited
+  // EVE, Codex Desktop, or an env override, so only the slash-delimited
   // version in the leading product field is stable.
   const match = userAgent?.match(
     /^[^/]+\/(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)(?:[\s(]|$)/,
@@ -773,7 +773,7 @@ const CODEX_APP_SERVER_APPROVAL_REQUEST_METHODS = new Set([
   "item/permissions/requestApproval",
 ]);
 
-/** Returns true for app-server approval request methods OpenClaw can answer. */
+/** Returns true for app-server approval request methods EVE can answer. */
 export function isCodexAppServerApprovalRequest(method: string): boolean {
   return CODEX_APP_SERVER_APPROVAL_REQUEST_METHODS.has(method);
 }

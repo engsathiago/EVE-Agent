@@ -1,7 +1,7 @@
 // Shared param-validation helpers used by all four agent tools.
 // Goal: identical validation behavior + identical error shapes everywhere.
 
-import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
+import { readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
 
 type GatewayCallOptions = {
   gatewayUrl?: string;

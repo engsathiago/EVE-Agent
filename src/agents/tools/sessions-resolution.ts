@@ -3,12 +3,12 @@
  *
  * Normalizes display/internal/current-session aliases and resolves session-id inputs through Gateway.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   GATEWAY_CLIENT_IDS,
   normalizeGatewayClientId,
 } from "../../../packages/gateway-protocol/src/client-info.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { callGateway } from "../../gateway/call.js";
 import { GatewayClientRequestError } from "../../gateway/client.js";
 import { formatErrorMessage } from "../../infra/errors.js";
@@ -39,7 +39,7 @@ let sessionsResolutionDeps: {
   callGateway: GatewayCaller;
 } = defaultSessionsResolutionDeps;
 
-export function resolveMainSessionAlias(cfg: OpenClawConfig) {
+export function resolveMainSessionAlias(cfg: EVEConfig) {
   const mainKey = normalizeMainKey(cfg.session?.mainKey);
   const scope = cfg.session?.scope ?? "per-sender";
   const alias = scope === "global" ? "global" : mainKey;

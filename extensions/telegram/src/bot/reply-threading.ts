@@ -1,5 +1,5 @@
 // Telegram plugin module implements reply threading behavior.
-import type { ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
+import type { ReplyToMode } from "eve-agent/plugin-sdk/config-contracts";
 
 export type DeliveryProgress = {
   hasReplied: boolean;

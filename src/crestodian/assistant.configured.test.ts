@@ -5,7 +5,7 @@ import { planCrestodianCommandWithConfiguredModel } from "./assistant.js";
 describe("Crestodian configured-model planner", () => {
   it("skips the configured model path when no config file exists", async () => {
     const readConfigFileSnapshot = vi.fn(async () => ({
-      path: "/tmp/openclaw.json",
+      path: "/tmp/eve.json",
       exists: false,
       raw: null,
       parsed: {},
@@ -25,7 +25,7 @@ describe("Crestodian configured-model planner", () => {
         input: "please set up my model",
         overview: {
           config: {
-            path: "/tmp/openclaw.json",
+            path: "/tmp/eve.json",
             exists: false,
             valid: true,
             issues: [],
@@ -44,8 +44,8 @@ describe("Crestodian configured-model planner", () => {
             reachable: false,
           },
           references: {
-            docsUrl: "https://docs.openclaw.ai",
-            sourceUrl: "https://github.com/openclaw/openclaw",
+            docsUrl: "https://docs.eve.ai",
+            sourceUrl: "https://github.com/engsathiago/eve-agent",
           },
         },
         deps: {

@@ -1,5 +1,5 @@
 // Provider-runtime mock used by model resolution tests.
-import { lowercasePreservingWhitespace } from "@openclaw/normalization-core/string-coerce";
+import { lowercasePreservingWhitespace } from "@eve/normalization-core/string-coerce";
 import type { OpenRouterModelCapabilities } from "./openrouter-model-capabilities.js";
 
 const OPENAI_BASE_URL = "https://api.openai.com/v1";
@@ -677,14 +677,14 @@ export function createProviderRuntimeTestMock(options: ProviderRuntimeTestMockOp
         case "ollama":
           return (
             "Ollama requires authentication to be registered as a provider. " +
-            'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "openclaw configure". ' +
-            "See: https://docs.openclaw.ai/providers/ollama"
+            'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "eve configure". ' +
+            "See: https://docs.eve.ai/providers/ollama"
           );
         case "vllm":
           return (
             "vLLM requires authentication to be registered as a provider. " +
-            'Set VLLM_API_KEY (any value works) or run "openclaw configure". ' +
-            "See: https://docs.openclaw.ai/providers/vllm"
+            'Set VLLM_API_KEY (any value works) or run "eve configure". ' +
+            "See: https://docs.eve.ai/providers/vllm"
           );
         default:
           return undefined;

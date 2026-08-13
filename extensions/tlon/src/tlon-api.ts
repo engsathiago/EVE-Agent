@@ -2,8 +2,8 @@
 import crypto from "node:crypto";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { extensionForMime } from "openclaw/plugin-sdk/media-mime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { extensionForMime } from "eve-agent/plugin-sdk/media-mime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { authenticate } from "./urbit/auth.js";
 import { scryUrbitPath } from "./urbit/channel-ops.js";
 import { ssrfPolicyFromDangerouslyAllowPrivateNetwork } from "./urbit/context.js";

@@ -1,4 +1,4 @@
-import OpenClawKit
+import EVEKit
 import SwiftUI
 
 struct SettingsProTab: View {
@@ -11,7 +11,7 @@ struct SettingsProTab: View {
     @AppStorage("node.displayName") var displayName: String = "iOS Node"
     @AppStorage("node.instanceId") var instanceId: String = UUID().uuidString
     @AppStorage("camera.enabled") var cameraEnabled: Bool = true
-    @AppStorage("location.enabledMode") var locationModeRaw: String = OpenClawLocationMode.off.rawValue
+    @AppStorage("location.enabledMode") var locationModeRaw: String = EVELocationMode.off.rawValue
     @AppStorage("screen.preventSleep") var preventSleep: Bool = true
     @AppStorage("talk.enabled") var talkEnabled: Bool = false
     @AppStorage(TalkModeProviderSelection.storageKey) var talkProviderSelectionRaw: String =
@@ -52,7 +52,7 @@ struct SettingsProTab: View {
     @State var showResetOnboardingAlert = false
     @State var suppressCredentialPersist = false
     @State var locationStatusText: String?
-    @State var previousLocationModeRaw: String = OpenClawLocationMode.off.rawValue
+    @State var previousLocationModeRaw: String = EVELocationMode.off.rawValue
     @State var notificationStatus: SettingsNotificationStatus = .checking
     @State var diagnosticsLastRunText = "Not run"
     @State var diagnosticsIssueCount: Int?
@@ -60,12 +60,12 @@ struct SettingsProTab: View {
     @State private var navigationPath: [SettingsRoute] = []
     let initialRoute: SettingsRoute?
     let directRoute: SettingsRoute?
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
 
     init(
         initialRoute: SettingsRoute? = nil,
         directRoute: SettingsRoute? = nil,
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil)
+        headerLeadingAction: EVESidebarHeaderAction? = nil)
     {
         self.initialRoute = initialRoute
         self.directRoute = directRoute
@@ -90,7 +90,7 @@ struct SettingsProTab: View {
     private var settingsNavigationStack: some View {
         NavigationStack(path: self.$navigationPath) {
             ZStack {
-                OpenClawProBackground()
+                EVEProBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         self.settingsHeader

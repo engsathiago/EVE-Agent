@@ -40,7 +40,7 @@ function createRunVitestFs(params: { nodeModulesSymlink: boolean; bundledPlugin:
         normalized === "/repo/extensions" ||
         (params.bundledPlugin &&
           (normalized === "/repo/extensions/codex/package.json" ||
-            normalized === "/repo/extensions/codex/openclaw.plugin.json"))
+            normalized === "/repo/extensions/codex/eve.plugin.json"))
       );
     },
     lstatSync: (filePath: string) => {
@@ -107,11 +107,11 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestCliEntry({
         baseDir: "/repo",
-        env: { PNPM_CONFIG_MODULES_DIR: "/runner/openclaw-pnpm-node-modules" },
+        env: { PNPM_CONFIG_MODULES_DIR: "/runner/eve-pnpm-node-modules" },
         fsImpl: {
           existsSync: (filePath: string) =>
             filePath.replaceAll("\\", "/") ===
-            "/runner/openclaw-pnpm-node-modules/vitest/package.json",
+            "/runner/eve-pnpm-node-modules/vitest/package.json",
           symlinkSync: (target: string, path: string, type: string) => {
             symlinks.push({ target, path, type });
           },
@@ -124,12 +124,12 @@ describe("scripts/run-vitest", () => {
     ).toBe("/repo/node_modules/vitest/vitest.mjs");
     expect(symlinks).toEqual([
       {
-        target: "/runner/openclaw-pnpm-node-modules",
-        path: "/runner/openclaw-pnpm-node-modules/node_modules",
+        target: "/runner/eve-pnpm-node-modules",
+        path: "/runner/eve-pnpm-node-modules/node_modules",
         type: "junction",
       },
       {
-        target: "/runner/openclaw-pnpm-node-modules",
+        target: "/runner/eve-pnpm-node-modules",
         path: "/repo/node_modules",
         type: "junction",
       },
@@ -142,27 +142,27 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestCliEntry({
         baseDir: "/repo",
-        env: { npm_config_modules_dir: "/runner/openclaw-pnpm-node-modules" },
+        env: { npm_config_modules_dir: "/runner/eve-pnpm-node-modules" },
         fsImpl: {
           existsSync: (filePath: string) =>
             filePath.replaceAll("\\", "/") ===
-            "/runner/openclaw-pnpm-node-modules/vitest/package.json",
+            "/runner/eve-pnpm-node-modules/vitest/package.json",
           symlinkSync: (target: string, path: string, type: string) => {
             symlinks.push({ target, path, type });
           },
         },
         platform: "win32",
-        requireResolve: () => "/runner/openclaw-pnpm-node-modules/vitest/package.json",
+        requireResolve: () => "/runner/eve-pnpm-node-modules/vitest/package.json",
       }),
     ).toBe("/repo/node_modules/vitest/vitest.mjs");
     expect(symlinks).toEqual([
       {
-        target: "/runner/openclaw-pnpm-node-modules",
-        path: "/runner/openclaw-pnpm-node-modules/node_modules",
+        target: "/runner/eve-pnpm-node-modules",
+        path: "/runner/eve-pnpm-node-modules/node_modules",
         type: "junction",
       },
       {
-        target: "/runner/openclaw-pnpm-node-modules",
+        target: "/runner/eve-pnpm-node-modules",
         path: "/repo/node_modules",
         type: "junction",
       },
@@ -221,7 +221,7 @@ describe("scripts/run-vitest", () => {
   });
 
   it("keeps tooling-excluded explicit tests on existing routing", () => {
-    const argv = ["run", "test/scripts/openclaw-e2e-instance.test.ts"];
+    const argv = ["run", "test/scripts/eve-e2e-instance.test.ts"];
     expect(resolveImplicitVitestArgs(argv)).toBe(argv);
   });
 
@@ -455,7 +455,7 @@ describe("scripts/run-vitest", () => {
   it("allows opting back into Maglev explicitly", () => {
     expect(
       resolveVitestNodeArgs({
-        OPENCLAW_VITEST_ENABLE_MAGLEV: "1",
+        EVE_VITEST_ENABLE_MAGLEV: "1",
         PATH: "/usr/bin",
       }),
     ).toStrictEqual([]);
@@ -463,60 +463,60 @@ describe("scripts/run-vitest", () => {
 
   it("parses the optional no-output timeout env", () => {
     expect(resolveVitestNoOutputTimeoutMs({})).toBeNull();
-    expect(resolveVitestNoOutputTimeoutMs({ OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500" })).toBe(
+    expect(resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500" })).toBe(
       2500,
     );
     expect(
-      resolveVitestNoOutputTimeoutMs({ OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "0" }),
+      resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0" }),
     ).toBeNull();
     expect(
-      resolveVitestNoOutputTimeoutMs({ OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "1e3" }),
+      resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "1e3" }),
     ).toBeNull();
     expect(
-      resolveVitestNoOutputTimeoutMs({ OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500ms" }),
+      resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500ms" }),
     ).toBeNull();
   });
 
   it("defaults direct non-watch runs to the stall watchdog", () => {
     expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["run"])).toEqual({
       PATH: "/usr/bin",
-      OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+      EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
     });
     expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["run", "-t", "watch"])).toEqual({
       PATH: "/usr/bin",
-      OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+      EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
     });
     expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["--watch=false"])).toEqual({
       PATH: "/usr/bin",
-      OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+      EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
     });
     expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["--watch", "false"])).toEqual({
       PATH: "/usr/bin",
-      OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+      EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
     });
     expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["--no-watch"])).toEqual({
       PATH: "/usr/bin",
-      OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+      EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
     });
     expect(resolveRunVitestSpawnEnv({ CI: "true", PATH: "/usr/bin" }, ["src/foo.test.ts"])).toEqual(
       {
         CI: "true",
         PATH: "/usr/bin",
-        OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-        OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
+        EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+        EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "120000",
       },
     );
     expect(
-      resolveRunVitestSpawnEnv({ OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "0", PATH: "/usr/bin" }, [
+      resolveRunVitestSpawnEnv({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0", PATH: "/usr/bin" }, [
         "run",
       ]),
     ).toEqual({
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "0",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0",
       PATH: "/usr/bin",
     });
   });
@@ -534,8 +534,8 @@ describe("scripts/run-vitest", () => {
     ]) {
       expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["run", configArg])).toEqual({
         PATH: "/usr/bin",
-        OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-        OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: timeout,
+        EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+        EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: timeout,
       });
     }
     for (const configArg of [
@@ -545,8 +545,8 @@ describe("scripts/run-vitest", () => {
     ]) {
       expect(resolveRunVitestSpawnEnv({ PATH: "/usr/bin" }, ["run", configArg])).toEqual({
         PATH: "/usr/bin",
-        OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
-        OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: extraLongTimeout,
+        EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "30000",
+        EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: extraLongTimeout,
       });
     }
     expect(
@@ -626,15 +626,15 @@ describe("scripts/run-vitest", () => {
         },
       ),
     ).toEqual({
-      OPENCLAW_BUNDLED_PLUGINS_DIR: nodePath.join("/repo", "extensions"),
-      OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
+      EVE_BUNDLED_PLUGINS_DIR: nodePath.join("/repo", "extensions"),
+      EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
     });
   });
 
   it("keeps explicit bundled plugin env ahead of symlinked worktree defaults", () => {
     expect(
       resolveLinkedSourceBundledPluginsEnv(
-        { OPENCLAW_BUNDLED_PLUGINS_DIR: "/custom/extensions", PATH: "/usr/bin", PWD: "/repo" },
+        { EVE_BUNDLED_PLUGINS_DIR: "/custom/extensions", PATH: "/usr/bin", PWD: "/repo" },
         {
           baseDir: "/repo",
           fsImpl: createRunVitestFs({ nodeModulesSymlink: true, bundledPlugin: true }),
@@ -685,11 +685,11 @@ describe("scripts/run-vitest", () => {
     });
     expect(
       resolveTestProjectsRunnerEnv({
-        OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500",
+        EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500",
         PATH: "/usr/bin",
       }),
     ).toEqual({
-      OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500",
+      EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500",
       PATH: "/usr/bin",
     });
   });
@@ -715,11 +715,11 @@ describe("scripts/run-vitest", () => {
     );
     const childPidPath = nodePath.join(
       os.tmpdir(),
-      `openclaw-run-vitest-delegated-child-${process.pid}-${Date.now()}.pid`,
+      `eve-run-vitest-delegated-child-${process.pid}-${Date.now()}.pid`,
     );
     const descendantPidPath = nodePath.join(
       os.tmpdir(),
-      `openclaw-run-vitest-delegated-descendant-${process.pid}-${Date.now()}.pid`,
+      `eve-run-vitest-delegated-descendant-${process.pid}-${Date.now()}.pid`,
     );
 
     fs.writeFileSync(
@@ -730,8 +730,8 @@ describe("scripts/run-vitest", () => {
         'import { it } from "vitest";',
         'it("waits for wrapper termination", async () => {',
         '  const child = spawn(process.execPath, ["-e", "process.on(\\\'SIGTERM\\\', () => {}); setInterval(() => {}, 1000);"], { stdio: "ignore" });',
-        "  fs.writeFileSync(process.env.OPENCLAW_DELEGATED_SIGNAL_CHILD_PID!, String(process.pid));",
-        "  fs.writeFileSync(process.env.OPENCLAW_DELEGATED_SIGNAL_DESCENDANT_PID!, String(child.pid));",
+        "  fs.writeFileSync(process.env.EVE_DELEGATED_SIGNAL_CHILD_PID!, String(process.pid));",
+        "  fs.writeFileSync(process.env.EVE_DELEGATED_SIGNAL_DESCENDANT_PID!, String(child.pid));",
         "  await new Promise(() => {});",
         "});",
         "",
@@ -744,8 +744,8 @@ describe("scripts/run-vitest", () => {
       {
         env: {
           ...process.env,
-          OPENCLAW_DELEGATED_SIGNAL_CHILD_PID: childPidPath,
-          OPENCLAW_DELEGATED_SIGNAL_DESCENDANT_PID: descendantPidPath,
+          EVE_DELEGATED_SIGNAL_CHILD_PID: childPidPath,
+          EVE_DELEGATED_SIGNAL_DESCENDANT_PID: descendantPidPath,
         },
         stdio: "ignore",
       },
@@ -806,7 +806,7 @@ describe("scripts/run-vitest", () => {
         detached: true,
         stdio: ["ignore", "pipe", "pipe"],
       },
-      env: { OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS: "100" },
+      env: { EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "100" },
     });
 
     try {
@@ -823,13 +823,13 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestSpawnParams(
         {
-          OPENCLAW_LOCAL_CHECK: "0",
+          EVE_LOCAL_CHECK: "0",
           PATH: "/usr/bin",
         },
         "darwin",
       ).env,
     ).toEqual({
-      OPENCLAW_LOCAL_CHECK: "1",
+      EVE_LOCAL_CHECK: "1",
       PATH: "/usr/bin",
     });
   });
@@ -839,14 +839,14 @@ describe("scripts/run-vitest", () => {
       resolveVitestSpawnParams(
         {
           CI: "true",
-          OPENCLAW_LOCAL_CHECK: "0",
+          EVE_LOCAL_CHECK: "0",
           PATH: "/usr/bin",
         },
         "linux",
       ).env,
     ).toEqual({
       CI: "true",
-      OPENCLAW_LOCAL_CHECK: "0",
+      EVE_LOCAL_CHECK: "0",
       PATH: "/usr/bin",
     });
   });
@@ -855,13 +855,13 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestSpawnParams(
         {
-          OPENCLAW_TEST_PROJECTS_SERIAL: "1",
+          EVE_TEST_PROJECTS_SERIAL: "1",
           PATH: "/usr/bin",
         },
         "darwin",
       ).env,
     ).toEqual({
-      OPENCLAW_TEST_PROJECTS_SERIAL: "1",
+      EVE_TEST_PROJECTS_SERIAL: "1",
       PATH: "/usr/bin",
       RAYON_NUM_THREADS: "1",
       TOKIO_WORKER_THREADS: "1",
@@ -872,7 +872,7 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestSpawnParams(
         {
-          OPENCLAW_VITEST_MAX_WORKERS: "2",
+          EVE_VITEST_MAX_WORKERS: "2",
           PATH: "/usr/bin",
           RAYON_NUM_THREADS: "8",
           TOKIO_WORKER_THREADS: "6",
@@ -880,7 +880,7 @@ describe("scripts/run-vitest", () => {
         "darwin",
       ).env,
     ).toEqual({
-      OPENCLAW_VITEST_MAX_WORKERS: "2",
+      EVE_VITEST_MAX_WORKERS: "2",
       PATH: "/usr/bin",
       RAYON_NUM_THREADS: "8",
       TOKIO_WORKER_THREADS: "6",
@@ -891,15 +891,15 @@ describe("scripts/run-vitest", () => {
     expect(
       resolveVitestSpawnParams(
         {
-          OPENCLAW_TEST_PROJECTS_SERIAL: "1",
-          OPENCLAW_VITEST_MAX_WORKERS: "8x",
+          EVE_TEST_PROJECTS_SERIAL: "1",
+          EVE_VITEST_MAX_WORKERS: "8x",
           PATH: "/usr/bin",
         },
         "darwin",
       ).env,
     ).toEqual({
-      OPENCLAW_TEST_PROJECTS_SERIAL: "1",
-      OPENCLAW_VITEST_MAX_WORKERS: "8x",
+      EVE_TEST_PROJECTS_SERIAL: "1",
+      EVE_VITEST_MAX_WORKERS: "8x",
       PATH: "/usr/bin",
       RAYON_NUM_THREADS: "1",
       TOKIO_WORKER_THREADS: "1",
@@ -1058,10 +1058,10 @@ describe("scripts/run-vitest", () => {
 
   it("parses the optional watchdog heartbeat interval", () => {
     expect(
-      resolveVitestNoOutputHeartbeatMs({ OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "120000" }),
+      resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "120000" }),
     ).toBe(120000);
     expect(
-      resolveVitestNoOutputHeartbeatMs({ OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS: "0" }),
+      resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "0" }),
     ).toBeNull();
   });
 });

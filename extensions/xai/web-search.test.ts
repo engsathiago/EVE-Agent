@@ -1,8 +1,8 @@
 // Xai tests cover web search plugin behavior.
-import { createTestWizardPrompter } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { NON_ENV_SECRETREF_MARKER } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { createNonExitingRuntime } from "openclaw/plugin-sdk/runtime-env";
-import { withEnv, withEnvAsync, withFetchPreconnect } from "openclaw/plugin-sdk/test-env";
+import { createTestWizardPrompter } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { NON_ENV_SECRETREF_MARKER } from "eve-agent/plugin-sdk/provider-auth-runtime";
+import { createNonExitingRuntime } from "eve-agent/plugin-sdk/runtime-env";
+import { withEnv, withEnvAsync, withFetchPreconnect } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildXaiCatalogModels, resolveXaiCatalogEntry } from "./model-definitions.js";
 import { isModernXaiModel, resolveXaiForwardCompatModel } from "./provider-models.js";
@@ -21,8 +21,8 @@ const providerAuthMocks = vi.hoisted(() => ({
   listUsableProviderAuthProfileIds: vi.fn(() => ({ agentDir: "", profileIds: [] as string[] })),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth", async (importOriginal) => {
-  const original = await importOriginal<typeof import("openclaw/plugin-sdk/provider-auth")>();
+vi.mock("eve-agent/plugin-sdk/provider-auth", async (importOriginal) => {
+  const original = await importOriginal<typeof import("eve-agent/plugin-sdk/provider-auth")>();
   return {
     ...original,
     ensureAuthProfileStore: providerAuthMocks.ensureAuthProfileStore,
@@ -30,17 +30,17 @@ vi.mock("openclaw/plugin-sdk/provider-auth", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", async (importOriginal) => {
+vi.mock("eve-agent/plugin-sdk/provider-auth-runtime", async (importOriginal) => {
   const original =
-    await importOriginal<typeof import("openclaw/plugin-sdk/provider-auth-runtime")>();
+    await importOriginal<typeof import("eve-agent/plugin-sdk/provider-auth-runtime")>();
   return {
     ...original,
     resolveApiKeyForProvider: providerAuthRuntimeMocks.resolveApiKeyForProvider,
   };
 });
 
-vi.mock("openclaw/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const original = await importOriginal<typeof import("openclaw/plugin-sdk/provider-web-search")>();
+vi.mock("eve-agent/plugin-sdk/provider-web-search", async (importOriginal) => {
+  const original = await importOriginal<typeof import("eve-agent/plugin-sdk/provider-web-search")>();
   return {
     ...original,
     postTrustedWebToolsJson: async (
@@ -265,7 +265,7 @@ describe("xai web search config resolution", () => {
         throw new Error("expected xai web search tool");
       }
 
-      const result = await maybeTool.execute({ query: "OpenClaw" });
+      const result = await maybeTool.execute({ query: "EVE" });
       expect(result.error).toBe("missing_xai_api_key");
       expect(result.message).toContain("use web_fetch for a specific URL or the browser tool");
     });
@@ -283,7 +283,7 @@ describe("xai web search config resolution", () => {
     const tool = provider.createTool({
       config: {
         agents: {
-          list: [{ id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" }],
+          list: [{ id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" }],
         },
         plugins: {
           entries: {
@@ -302,12 +302,12 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    await tool.execute({ query: "OpenClaw Grok OAuth web search" });
+    await tool.execute({ query: "EVE Grok OAuth web search" });
 
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenCalledWith(
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-main-agent",
+        agentDir: "/tmp/eve-xai-main-agent",
       }),
     );
     expect(fetchCallHeader(mockFetch, 0, "Authorization")).toBe("Bearer oauth-web-search-token");
@@ -323,12 +323,12 @@ describe("xai web search config resolution", () => {
     const mockFetch = installXaiWebSearchFetch();
     const provider = createXaiWebSearchProvider();
     const tool = provider.createTool({
-      agentDir: "/tmp/openclaw-xai-active-agent",
+      agentDir: "/tmp/eve-xai-active-agent",
       config: {
         agents: {
           list: [
-            { id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" },
-            { id: "side", agentDir: "/tmp/openclaw-xai-active-agent" },
+            { id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" },
+            { id: "side", agentDir: "/tmp/eve-xai-active-agent" },
           ],
         },
       },
@@ -337,12 +337,12 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    await tool.execute({ query: "OpenClaw Grok active agent OAuth web search" });
+    await tool.execute({ query: "EVE Grok active agent OAuth web search" });
 
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenCalledWith(
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-active-agent",
+        agentDir: "/tmp/eve-xai-active-agent",
       }),
     );
     expect(fetchCallHeader(mockFetch, 0, "Authorization")).toBe("Bearer active-agent-oauth-token");
@@ -387,7 +387,7 @@ describe("xai web search config resolution", () => {
     const tool = provider.createTool({
       config: {
         agents: {
-          list: [{ id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" }],
+          list: [{ id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" }],
         },
         tools: {
           web: {
@@ -402,14 +402,14 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    const result = await tool.execute({ query: "OpenClaw Grok OAuth refresh test" });
+    const result = await tool.execute({ query: "EVE Grok OAuth refresh test" });
 
     expect(result.content).toContain("Fresh OAuth Grok answer");
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-main-agent",
+        agentDir: "/tmp/eve-xai-main-agent",
         profileId: "xai:default",
         lockedProfile: true,
         forceRefresh: true,
@@ -463,7 +463,7 @@ describe("xai web search config resolution", () => {
     const tool = provider.createTool({
       config: {
         agents: {
-          list: [{ id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" }],
+          list: [{ id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" }],
         },
         tools: {
           web: {
@@ -478,14 +478,14 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    const result = await tool.execute({ query: "OpenClaw Grok API fallback test" });
+    const result = await tool.execute({ query: "EVE Grok API fallback test" });
 
     expect(result.content).toContain("API key fallback Grok answer");
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenNthCalledWith(
       3,
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-main-agent",
+        agentDir: "/tmp/eve-xai-main-agent",
         credentialPrecedence: "env-first",
       }),
     );
@@ -519,7 +519,7 @@ describe("xai web search config resolution", () => {
         profileId: "xai:key",
       });
     providerAuthMocks.listUsableProviderAuthProfileIds.mockReturnValue({
-      agentDir: "/tmp/openclaw-xai-main-agent",
+      agentDir: "/tmp/eve-xai-main-agent",
       profileIds: ["xai:default", "xai:key"],
     });
     providerAuthMocks.ensureAuthProfileStore.mockReturnValue({
@@ -565,7 +565,7 @@ describe("xai web search config resolution", () => {
     const tool = provider.createTool({
       config: {
         agents: {
-          list: [{ id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" }],
+          list: [{ id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" }],
         },
         tools: {
           web: {
@@ -580,14 +580,14 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    const result = await tool.execute({ query: "OpenClaw Grok profile fallback test" });
+    const result = await tool.execute({ query: "EVE Grok profile fallback test" });
 
     expect(result.content).toContain("Profile API key Grok answer");
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenNthCalledWith(
       4,
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-main-agent",
+        agentDir: "/tmp/eve-xai-main-agent",
         profileId: "xai:key",
         lockedProfile: true,
       }),
@@ -633,7 +633,7 @@ describe("xai web search config resolution", () => {
     const tool = provider.createTool({
       config: {
         agents: {
-          list: [{ id: "main", default: true, agentDir: "/tmp/openclaw-xai-main-agent" }],
+          list: [{ id: "main", default: true, agentDir: "/tmp/eve-xai-main-agent" }],
         },
         tools: {
           web: {
@@ -648,14 +648,14 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    const result = await tool.execute({ query: "OpenClaw Grok API-key fallback test" });
+    const result = await tool.execute({ query: "EVE Grok API-key fallback test" });
 
     expect(result.content).toContain("Env fallback Grok answer");
     expect(providerAuthRuntimeMocks.resolveApiKeyForProvider).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         provider: "xai",
-        agentDir: "/tmp/openclaw-xai-main-agent",
+        agentDir: "/tmp/eve-xai-main-agent",
         credentialPrecedence: "env-first",
       }),
     );
@@ -841,7 +841,7 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected xAI web search tool");
     }
 
-    await tool.execute({ query: "OpenClaw Grok proxy test" });
+    await tool.execute({ query: "EVE Grok proxy test" });
 
     expect(firstFetchUrl(mockFetch)).toBe("https://api.x.ai/proxy/v1/responses");
   });
@@ -874,7 +874,7 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected tool definition");
     }
 
-    await expect(tool.execute({ query: "OpenClaw" })).rejects.toThrow(
+    await expect(tool.execute({ query: "EVE" })).rejects.toThrow(
       "xAI web search failed: malformed JSON response",
     );
   });
@@ -907,7 +907,7 @@ describe("xai web search config resolution", () => {
       throw new Error("Expected tool definition");
     }
 
-    await expect(tool.execute({ query: "OpenClaw" })).rejects.toThrow(
+    await expect(tool.execute({ query: "EVE" })).rejects.toThrow(
       "xAI web search failed: malformed JSON response",
     );
   });
@@ -1107,7 +1107,7 @@ describe("xai provider models", () => {
     });
   });
 
-  it("publishes the remaining Grok 3 family in the OpenClaw catalog", () => {
+  it("publishes the remaining Grok 3 family in the EVE catalog", () => {
     expectCatalogEntry("grok-3-mini-fast", {
       id: "grok-3-mini-fast",
       reasoning: true,

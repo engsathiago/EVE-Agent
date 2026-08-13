@@ -1,6 +1,6 @@
 // Gateway post-ready runtime services.
 // Starts delayed maintenance, cron, heartbeat, recovery, and pricing refresh work.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isVitestRuntimeEnv } from "../infra/env.js";
 import { startHeartbeatRunner, type HeartbeatRunner } from "../infra/heartbeat-runner.js";
 import type { PluginMetadataRegistryView } from "../plugins/plugin-metadata-snapshot.types.js";
@@ -133,7 +133,7 @@ export function scheduleGatewayPostReadyMaintenance(params: {
 }
 
 function recoverPendingOutboundDeliveries(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   log: GatewayRuntimeServiceLogger;
 }): void {
   // Recovery is best-effort background work; startup must continue even if outbound modules fail
@@ -175,7 +175,7 @@ function recoverPendingSessionDeliveries(params: {
 }
 
 function startGatewayModelPricingRefreshOnDemand(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   pluginLookUpTable?: PluginMetadataRegistryView;
   log: GatewayRuntimeServiceLogger;
 }): () => void {
@@ -212,7 +212,7 @@ function startGatewayModelPricingRefreshOnDemand(params: {
 /** Activates background gateway services after core runtime startup is ready. */
 export function activateGatewayScheduledServices(params: {
   minimalTestGateway: boolean;
-  cfgAtStart: OpenClawConfig;
+  cfgAtStart: EVEConfig;
   deps: import("../cli/deps.types.js").CliDeps;
   sessionDeliveryRecoveryMaxEnqueuedAt: number;
   cron: { start: () => Promise<void> };

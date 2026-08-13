@@ -6,7 +6,7 @@ runExtensionOxlint({
   roots: extensionChannelTestRoots,
   toolName: "oxlint-extension-channels",
   lockName: "oxlint-extension-channels",
-  tempDirPrefix: "openclaw-extension-channel-oxlint-",
+  tempDirPrefix: "eve-extension-channel-oxlint-",
   emptyMessage: "No extension channel files found.",
   allowEmpty: true,
 });

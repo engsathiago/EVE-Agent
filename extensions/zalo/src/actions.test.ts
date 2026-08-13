@@ -1,11 +1,11 @@
 // Zalo tests cover actions plugin behavior.
 import { describe, expect, it } from "vitest";
 import { zaloMessageActions } from "./actions.js";
-import type { OpenClawConfig } from "./runtime-api.js";
+import type { EVEConfig } from "./runtime-api.js";
 
 describe("zaloMessageActions.describeMessageTool", () => {
   it("honors the selected Zalo account during discovery", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         zalo: {
           enabled: true,

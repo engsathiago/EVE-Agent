@@ -6,14 +6,14 @@ import {
   type ChannelAccountEntry,
   type ResolverContext,
   type SecretDefaults,
-} from "openclaw/plugin-sdk/channel-secret-basic-runtime";
+} from "eve-agent/plugin-sdk/channel-secret-basic-runtime";
 
-export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
+export const secretTargetRegistryEntries: import("eve-agent/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
   [
     {
       id: "channels.nextcloud-talk.accounts.*.apiPassword",
       targetType: "channels.nextcloud-talk.accounts.*.apiPassword",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.nextcloud-talk.accounts.*.apiPassword",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -24,7 +24,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.nextcloud-talk.accounts.*.botSecret",
       targetType: "channels.nextcloud-talk.accounts.*.botSecret",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.nextcloud-talk.accounts.*.botSecret",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -35,7 +35,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.nextcloud-talk.apiPassword",
       targetType: "channels.nextcloud-talk.apiPassword",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.nextcloud-talk.apiPassword",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -46,7 +46,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.nextcloud-talk.botSecret",
       targetType: "channels.nextcloud-talk.botSecret",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.nextcloud-talk.botSecret",
       secretShape: "secret_input",
       expectedResolvedValue: "string",

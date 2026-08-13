@@ -1,4 +1,4 @@
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import { isGoogleVertexHostname } from "./provider-policy.js";
 import { resolveGoogleVertexBaseOrigin } from "./transport-stream.js";

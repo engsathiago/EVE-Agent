@@ -2,19 +2,19 @@
 import { getChannelPlugin } from "../../channels/plugins/index.js";
 import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
 import type { ChannelId, ChannelSetupInput } from "../../channels/plugins/types.public.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { normalizeAccountId } from "../../routing/session-key.js";
 
 type ChatChannel = ChannelId;
 
 /** Apply a display name to a channel account when the plugin supports account naming. */
 export function applyAccountName(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: ChatChannel;
   accountId: string;
   name?: string;
   plugin?: ChannelPlugin;
-}): OpenClawConfig {
+}): EVEConfig {
   const accountId = normalizeAccountId(params.accountId);
   const plugin = params.plugin ?? getChannelPlugin(params.channel);
   const apply = plugin?.setup?.applyAccountName;
@@ -23,12 +23,12 @@ export function applyAccountName(params: {
 
 /** Delegate account config mutation to the channel plugin setup contract. */
 export function applyChannelAccountConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: ChatChannel;
   accountId: string;
   input: ChannelSetupInput;
   plugin?: ChannelPlugin;
-}): OpenClawConfig {
+}): EVEConfig {
   const accountId = normalizeAccountId(params.accountId);
   const plugin = params.plugin ?? getChannelPlugin(params.channel);
   const apply = plugin?.setup?.applyAccountConfig;

@@ -19,7 +19,7 @@
 
 import { StaticAuthProvider } from "@twurple/auth";
 import { ChatClient } from "@twurple/chat";
-import { runStoppablePassiveMonitor } from "openclaw/plugin-sdk/extension-shared";
+import { runStoppablePassiveMonitor } from "eve-agent/plugin-sdk/extension-shared";
 import { describe, expect, it } from "vitest";
 
 const LIVE = process.env.TWITCH_LIVE_TEST === "1";

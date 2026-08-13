@@ -1,5 +1,5 @@
 // Provides shared helpers for plugin hook tests.
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { createHookRunner } from "./hooks.js";
 import type { PluginRegistry } from "./registry.js";
 import { createPluginRecord } from "./status.test-helpers.js";
@@ -71,7 +71,7 @@ export const TEST_PLUGIN_AGENT_CTX: PluginHookAgentContext = {
   agentId: "test-agent",
   sessionKey: "test-session",
   sessionId: "test-session-id",
-  workspaceDir: "/tmp/openclaw-test",
+  workspaceDir: "/tmp/eve-test",
   messageProvider: "test",
 };
 

@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { OnboardOptions } from "../commands/onboard-types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import type { MigrationProviderPlugin } from "../plugins/types.js";
 import type { RuntimeEnv } from "../runtime.js";
@@ -69,14 +69,14 @@ async function hasDirectoryEntries(candidate: string): Promise<boolean> {
   }
 }
 
-function hasMeaningfulConfig(config: OpenClawConfig): boolean {
+function hasMeaningfulConfig(config: EVEConfig): boolean {
   return Object.keys(config as Record<string, unknown>).some(
     (key) => !MEANINGFUL_CONFIG_IGNORED_KEYS.has(key),
   );
 }
 
 export async function inspectSetupMigrationFreshness(params: {
-  baseConfig: OpenClawConfig;
+  baseConfig: EVEConfig;
   stateDir: string;
   workspaceDir: string;
 }): Promise<{ fresh: boolean; reasons: string[] }> {
@@ -103,12 +103,12 @@ function assertFreshSetupMigrationTarget(freshness: {
 }): void {
   // Migration import is currently fresh-setup only unless an explicit env gate
   // opts into existing-target behavior.
-  if (freshness.fresh || process.env.OPENCLAW_MIGRATION_EXISTING_IMPORT === "1") {
+  if (freshness.fresh || process.env.EVE_MIGRATION_EXISTING_IMPORT === "1") {
     return;
   }
   throw new Error(
     [
-      "Migration import during onboarding requires a fresh OpenClaw setup.",
+      "Migration import during onboarding requires a fresh EVE setup.",
       "Create a fresh setup or reset config, credentials, sessions, and workspace before importing.",
       "Backup plus overwrite/merge imports are feature-gated for now.",
       "Existing setup:",
@@ -118,7 +118,7 @@ function assertFreshSetupMigrationTarget(freshness: {
 }
 
 export async function detectSetupMigrationSources(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   runtime: RuntimeEnv;
 }): Promise<SetupMigrationDetection[]> {
   const [
@@ -178,7 +178,7 @@ function resolveImportSourceDefault(params: {
 
 async function selectSetupMigrationProvider(params: {
   opts: OnboardOptions;
-  baseConfig: OpenClawConfig;
+  baseConfig: EVEConfig;
   detections: readonly SetupMigrationDetection[];
   prompter: WizardPrompter;
 }): Promise<{
@@ -232,11 +232,11 @@ async function selectSetupMigrationProvider(params: {
 
 export async function runSetupMigrationImport(params: {
   opts: OnboardOptions;
-  baseConfig: OpenClawConfig;
+  baseConfig: EVEConfig;
   detections: readonly SetupMigrationDetection[];
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
-  commitConfigFile: (config: OpenClawConfig) => Promise<OpenClawConfig>;
+  commitConfigFile: (config: EVEConfig) => Promise<EVEConfig>;
 }): Promise<void> {
   const [
     { applyLocalSetupWorkspaceConfig, applySkipBootstrapConfig },
@@ -325,7 +325,7 @@ export async function runSetupMigrationImport(params: {
   const reportDir = buildMigrationReportDir(providerId, stateDir);
   const backupPath = await createPreMigrationBackup({});
   // Commit base wizard metadata before applying migrations so generated reports
-  // can reference a concrete OpenClaw config target.
+  // can reference a concrete EVE config target.
   targetConfig = onboardHelpers.applyWizardMetadata(targetConfig, {
     command: "onboard",
     mode: "local",

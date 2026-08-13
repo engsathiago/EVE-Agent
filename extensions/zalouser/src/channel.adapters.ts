@@ -1,15 +1,15 @@
 // Zalouser plugin module implements channel.adapters behavior.
-import { createScopedDmSecurityResolver } from "openclaw/plugin-sdk/channel-config-helpers";
-import { defineChannelMessageAdapter } from "openclaw/plugin-sdk/channel-outbound";
-import { createPairingPrefixStripper } from "openclaw/plugin-sdk/channel-pairing";
+import { createScopedDmSecurityResolver } from "eve-agent/plugin-sdk/channel-config-helpers";
+import { defineChannelMessageAdapter } from "eve-agent/plugin-sdk/channel-outbound";
+import { createPairingPrefixStripper } from "eve-agent/plugin-sdk/channel-pairing";
 import {
   createEmptyChannelResult,
   createRawChannelSendResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
-import { createStaticReplyToModeResolver } from "openclaw/plugin-sdk/conversation-runtime";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-send-result";
+import { createStaticReplyToModeResolver } from "eve-agent/plugin-sdk/conversation-runtime";
+import { createLazyRuntimeModule } from "eve-agent/plugin-sdk/lazy-runtime";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   checkZcaAuthenticated,
   listZalouserAccountIds,
@@ -21,7 +21,7 @@ import type {
   ChannelGroupContext,
   ChannelMessageActionAdapter,
   GroupToolPolicyConfig,
-  OpenClawConfig,
+  EVEConfig,
 } from "./channel-api.js";
 import {
   DEFAULT_ACCOUNT_ID,
@@ -49,7 +49,7 @@ type ZalouserSendTextContext = {
   to: string;
   text: string;
   accountId?: string | null;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 };
 
 type ZalouserSendMediaContext = ZalouserSendTextContext & {
@@ -66,11 +66,11 @@ export function resolveZalouserQrProfile(accountId?: string | null): string {
   return normalized;
 }
 
-function resolveZalouserOutboundChunkMode(cfg: OpenClawConfig, accountId?: string) {
+function resolveZalouserOutboundChunkMode(cfg: EVEConfig, accountId?: string) {
   return getZalouserRuntime().channel.text.resolveChunkMode(cfg, "zalouser", accountId);
 }
 
-function resolveZalouserOutboundTextChunkLimit(cfg: OpenClawConfig, accountId?: string) {
+function resolveZalouserOutboundTextChunkLimit(cfg: EVEConfig, accountId?: string) {
   return getZalouserRuntime().channel.text.resolveTextChunkLimit(cfg, "zalouser", accountId, {
     fallbackLimit: ZALOUSER_TEXT_CHUNK_LIMIT,
   });
@@ -260,7 +260,7 @@ export const zalouserResolverAdapter = {
     kind,
     runtime,
   }: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId?: string | null;
     inputs: string[];
     kind: "user" | "group";
@@ -324,7 +324,7 @@ export const zalouserAuthAdapter = {
     accountId,
     runtime,
   }: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId?: string | null;
     runtime: RuntimeEnv;
   }) => {
@@ -380,7 +380,7 @@ export const zalouserPairingTextAdapter = {
   idLabel: "zalouserUserId",
   message: "Your pairing request has been approved.",
   normalizeAllowEntry: createPairingPrefixStripper(/^(zalouser|zlu):/i),
-  notify: async ({ cfg, id, message }: { cfg: OpenClawConfig; id: string; message: string }) => {
+  notify: async ({ cfg, id, message }: { cfg: EVEConfig; id: string; message: string }) => {
     const { sendMessageZalouser } = await loadZalouserChannelRuntime();
     const account = resolveZalouserAccountSync({ cfg });
     const authenticated = await checkZcaAuthenticated(account.profile);

@@ -3,15 +3,15 @@
  * allowlists, and display paths. Manifest policies are optional so tests can
  * isolate built-in normalization behavior.
  */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   collectManifestModelIdNormalizationPolicies,
   normalizeBuiltInProviderModelId,
   normalizeConfiguredProviderCatalogModelRef,
   normalizeConfiguredProviderCatalogModelId as normalizeConfiguredProviderCatalogModelIdShared,
   normalizeStaticProviderModelIdWithPolicies,
-} from "@openclaw/model-catalog-core/provider-model-id-normalization";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/model-catalog-core/provider-model-id-normalization";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { normalizeProviderModelIdWithManifest } from "../plugins/manifest-model-id-normalization.js";
 
 type StaticModelRef = {

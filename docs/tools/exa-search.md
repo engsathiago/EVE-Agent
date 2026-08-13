@@ -7,7 +7,7 @@ read_when:
 title: "Exa search"
 ---
 
-OpenClaw supports [Exa AI](https://exa.ai/) as a `web_search` provider. Exa
+EVE supports [Exa AI](https://exa.ai/) as a `web_search` provider. Exa
 offers neural, keyword, and hybrid search modes with built-in content
 extraction (highlights, text, summaries).
 
@@ -16,8 +16,8 @@ extraction (highlights, text, summaries).
 Install the official plugin, then restart Gateway:
 
 ```bash
-openclaw plugins install @openclaw/exa-plugin
-openclaw gateway restart
+eve plugins install @eve/exa-plugin
+eve gateway restart
 ```
 
 ## Get an API key
@@ -31,7 +31,7 @@ openclaw gateway restart
     Set `EXA_API_KEY` in the Gateway environment, or configure via:
 
     ```bash
-    openclaw configure --section web
+    eve configure --section web
     ```
 
   </Step>
@@ -47,7 +47,7 @@ openclaw gateway restart
         config: {
           webSearch: {
             apiKey: "exa-...", // optional if EXA_API_KEY is set
-            baseUrl: "https://api.exa.ai", // optional; OpenClaw appends /search
+            baseUrl: "https://api.exa.ai", // optional; EVE appends /search
           },
         },
       },
@@ -64,12 +64,12 @@ openclaw gateway restart
 ```
 
 **Environment alternative:** set `EXA_API_KEY` in the Gateway environment.
-For a gateway install, put it in `~/.openclaw/.env`.
+For a gateway install, put it in `~/.eve/.env`.
 
 ## Base URL override
 
 Set `plugins.entries.exa.config.webSearch.baseUrl` when Exa search requests
-should go through a compatible proxy or alternate Exa endpoint. OpenClaw
+should go through a compatible proxy or alternate Exa endpoint. EVE
 normalizes bare hosts by prepending `https://` and appends `/search` unless the
 path already ends there. The resolved endpoint is included in the search cache
 key, so results from different Exa endpoints are not shared.

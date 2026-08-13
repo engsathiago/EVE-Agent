@@ -9,7 +9,7 @@ Manage sandbox runtimes for isolated agent execution.
 
 ## Overview
 
-OpenClaw can run agents in isolated sandbox runtimes for security. The `sandbox` commands help you inspect and recreate those runtimes after updates or configuration changes.
+EVE can run agents in isolated sandbox runtimes for security. The `sandbox` commands help you inspect and recreate those runtimes after updates or configuration changes.
 
 Today that usually means:
 
@@ -20,30 +20,30 @@ Today that usually means:
 For `ssh` and OpenShell `remote`, recreate matters more than with Docker:
 
 - the remote workspace is canonical after the initial seed
-- `openclaw sandbox recreate` deletes that canonical remote workspace for the selected scope
+- `eve sandbox recreate` deletes that canonical remote workspace for the selected scope
 - next use seeds it again from the current local workspace
 
 ## Commands
 
-### `openclaw sandbox explain`
+### `eve sandbox explain`
 
 Inspect the **effective** sandbox mode/scope/workspace access, sandbox tool policy, and elevated gates (with fix-it config key paths).
 
 ```bash
-openclaw sandbox explain
-openclaw sandbox explain --session agent:main:main
-openclaw sandbox explain --agent work
-openclaw sandbox explain --json
+eve sandbox explain
+eve sandbox explain --session agent:main:main
+eve sandbox explain --agent work
+eve sandbox explain --json
 ```
 
-### `openclaw sandbox list`
+### `eve sandbox list`
 
 List all sandbox runtimes with their status and configuration.
 
 ```bash
-openclaw sandbox list
-openclaw sandbox list --browser  # List only browser containers
-openclaw sandbox list --json     # JSON output
+eve sandbox list
+eve sandbox list --browser  # List only browser containers
+eve sandbox list --json     # JSON output
 ```
 
 **Output includes:**
@@ -55,16 +55,16 @@ openclaw sandbox list --json     # JSON output
 - Idle time (time since last use)
 - Associated session/agent
 
-### `openclaw sandbox recreate`
+### `eve sandbox recreate`
 
 Remove sandbox runtimes to force recreation with updated config.
 
 ```bash
-openclaw sandbox recreate --all                # Recreate all containers
-openclaw sandbox recreate --session main       # Specific session
-openclaw sandbox recreate --agent mybot        # Specific agent
-openclaw sandbox recreate --browser            # Only browser containers
-openclaw sandbox recreate --all --force        # Skip confirmation
+eve sandbox recreate --all                # Recreate all containers
+eve sandbox recreate --session main       # Specific session
+eve sandbox recreate --agent mybot        # Specific agent
+eve sandbox recreate --browser            # Only browser containers
+eve sandbox recreate --all --force        # Skip confirmation
 ```
 
 **Options:**
@@ -85,14 +85,14 @@ Runtimes are automatically recreated when the agent is next used.
 
 ```bash
 # Pull new image
-docker pull openclaw-sandbox:latest
-docker tag openclaw-sandbox:latest openclaw-sandbox:bookworm-slim
+docker pull eve-sandbox:latest
+docker tag eve-sandbox:latest eve-sandbox:bookworm-slim
 
 # Update config to use new image
 # Edit config: agents.defaults.sandbox.docker.image (or agents.list[].sandbox.docker.image)
 
 # Recreate containers
-openclaw sandbox recreate --all
+eve sandbox recreate --all
 ```
 
 ### After changing sandbox configuration
@@ -101,7 +101,7 @@ openclaw sandbox recreate --all
 # Edit config: agents.defaults.sandbox.* (or agents.list[].sandbox.*)
 
 # Recreate to apply new config
-openclaw sandbox recreate --all
+eve sandbox recreate --all
 ```
 
 ### After changing SSH target or SSH auth material
@@ -114,7 +114,7 @@ openclaw sandbox recreate --all
 # - agents.defaults.sandbox.ssh.identityFile / certificateFile / knownHostsFile
 # - agents.defaults.sandbox.ssh.identityData / certificateData / knownHostsData
 
-openclaw sandbox recreate --all
+eve sandbox recreate --all
 ```
 
 For the core `ssh` backend, recreate deletes the per-scope remote workspace root
@@ -129,7 +129,7 @@ on the SSH target. The next run seeds it again from the local workspace.
 # - plugins.entries.openshell.config.mode
 # - plugins.entries.openshell.config.policy
 
-openclaw sandbox recreate --all
+eve sandbox recreate --all
 ```
 
 For OpenShell `remote` mode, recreate deletes the canonical remote workspace
@@ -138,16 +138,16 @@ for that scope. The next run seeds it again from the local workspace.
 ### After changing setupCommand
 
 ```bash
-openclaw sandbox recreate --all
+eve sandbox recreate --all
 # or just one agent:
-openclaw sandbox recreate --agent family
+eve sandbox recreate --agent family
 ```
 
 ### For a specific agent only
 
 ```bash
 # Update only one agent's containers
-openclaw sandbox recreate --agent alfred
+eve sandbox recreate --agent alfred
 ```
 
 ## Why this is needed
@@ -158,24 +158,24 @@ When you update sandbox configuration:
 - Runtimes are only pruned after 24h of inactivity.
 - Regularly-used agents keep old runtimes alive indefinitely.
 
-Use `openclaw sandbox recreate` to force removal of old runtimes. They are recreated automatically with current settings when next needed.
+Use `eve sandbox recreate` to force removal of old runtimes. They are recreated automatically with current settings when next needed.
 
 <Tip>
-Prefer `openclaw sandbox recreate` over manual backend-specific cleanup. It uses the Gateway's runtime registry and avoids mismatches when scope or session keys change.
+Prefer `eve sandbox recreate` over manual backend-specific cleanup. It uses the Gateway's runtime registry and avoids mismatches when scope or session keys change.
 </Tip>
 
 ## Registry migration
 
-OpenClaw stores sandbox runtime metadata in the shared SQLite state database. Older installs may still have legacy sandbox registry files:
+EVE stores sandbox runtime metadata in the shared SQLite state database. Older installs may still have legacy sandbox registry files:
 
-- `~/.openclaw/sandbox/containers.json`
-- `~/.openclaw/sandbox/browsers.json`
+- `~/.eve/sandbox/containers.json`
+- `~/.eve/sandbox/browsers.json`
 
-Some upgrades may also have one JSON shard per container/browser under `~/.openclaw/sandbox/containers/` or `~/.openclaw/sandbox/browsers/`. Regular sandbox runtime reads do not rewrite those legacy sources. Run `openclaw doctor --fix` to migrate valid legacy entries into SQLite. Invalid legacy files are quarantined so one bad old registry cannot hide current runtime entries.
+Some upgrades may also have one JSON shard per container/browser under `~/.eve/sandbox/containers/` or `~/.eve/sandbox/browsers/`. Regular sandbox runtime reads do not rewrite those legacy sources. Run `eve doctor --fix` to migrate valid legacy entries into SQLite. Invalid legacy files are quarantined so one bad old registry cannot hide current runtime entries.
 
 ## Configuration
 
-Sandbox settings live in `~/.openclaw/openclaw.json` under `agents.defaults.sandbox` (per-agent overrides go in `agents.list[].sandbox`):
+Sandbox settings live in `~/.eve/eve.json` under `agents.defaults.sandbox` (per-agent overrides go in `agents.list[].sandbox`):
 
 ```jsonc
 {
@@ -186,8 +186,8 @@ Sandbox settings live in `~/.openclaw/openclaw.json` under `agents.defaults.sand
         "backend": "docker", // docker, ssh, openshell
         "scope": "agent", // session, agent, shared
         "docker": {
-          "image": "openclaw-sandbox:bookworm-slim",
-          "containerPrefix": "openclaw-sbx-",
+          "image": "eve-sandbox:bookworm-slim",
+          "containerPrefix": "eve-sbx-",
           // ... more Docker options
         },
         "prune": {

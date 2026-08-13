@@ -10,7 +10,7 @@ describe("DefaultResourceLoader", () => {
   it("keeps deprecated SDK prompt override aliases wired to prompt transforms", async () => {
     // These aliases are deprecated but shipped SDK surface, so they still map
     // through the same transform path as the current options.
-    const root = mkdtempSync(join(tmpdir(), "openclaw-resource-loader-"));
+    const root = mkdtempSync(join(tmpdir(), "eve-resource-loader-"));
     try {
       const loader = new DefaultResourceLoader({
         cwd: root,

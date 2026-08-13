@@ -1,5 +1,5 @@
 // Summarizes heartbeat config for CLI and UI display.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveAgentConfig, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import {
   DEFAULT_HEARTBEAT_ACK_MAX_CHARS,
@@ -8,7 +8,7 @@ import {
 } from "../auto-reply/heartbeat.js";
 import { parseDurationMs } from "../cli/parse-duration.js";
 import type { AgentDefaultsConfig } from "../config/types.agent-defaults.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeAgentId } from "../routing/session-key.js";
 
 // Heartbeat summaries merge default and per-agent heartbeat config for CLI/UI
@@ -28,13 +28,13 @@ export type HeartbeatSummary = {
 
 const DEFAULT_HEARTBEAT_TARGET = "none";
 
-function hasExplicitHeartbeatAgents(cfg: OpenClawConfig) {
+function hasExplicitHeartbeatAgents(cfg: EVEConfig) {
   const list = cfg.agents?.list ?? [];
   return list.some((entry) => Boolean(entry?.heartbeat));
 }
 
 /** Return whether heartbeat scheduling applies to an agent. */
-export function isHeartbeatEnabledForAgent(cfg: OpenClawConfig, agentId?: string): boolean {
+export function isHeartbeatEnabledForAgent(cfg: EVEConfig, agentId?: string): boolean {
   const resolvedAgentId = normalizeAgentId(agentId ?? resolveDefaultAgentId(cfg));
   const list = cfg.agents?.list ?? [];
   const hasExplicit = hasExplicitHeartbeatAgents(cfg);
@@ -51,7 +51,7 @@ export function isHeartbeatEnabledForAgent(cfg: OpenClawConfig, agentId?: string
 
 /** Resolve a heartbeat interval string to milliseconds. */
 export function resolveHeartbeatIntervalMs(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   overrideEvery?: string,
   heartbeat?: HeartbeatConfig,
 ) {
@@ -81,7 +81,7 @@ export function resolveHeartbeatIntervalMs(
 
 /** Resolve display-ready heartbeat settings for an agent. */
 export function resolveHeartbeatSummaryForAgent(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId?: string,
 ): HeartbeatSummary {
   const defaults = cfg.agents?.defaults?.heartbeat;

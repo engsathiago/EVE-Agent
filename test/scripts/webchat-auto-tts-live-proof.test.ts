@@ -7,7 +7,7 @@ import { cleanupProofArtifacts } from "../../scripts/repro/webchat-auto-tts-live
 
 describe("webchat auto TTS live proof", () => {
   it("cleans generated media and prefs artifacts", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-webchat-tts-proof-test-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-webchat-tts-proof-test-"));
     const mediaDir = path.join(root, "media");
     const mediaPath = path.join(mediaDir, "voice.ogg");
     const prefsPath = path.join(root, "prefs.json");

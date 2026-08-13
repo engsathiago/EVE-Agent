@@ -1,8 +1,8 @@
 // Memory Core doctor contract migrates shipped workspace dreaming state.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { resolveMemoryDreamingWorkspaces } from "openclaw/plugin-sdk/memory-core-host-status";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
+import { resolveMemoryDreamingWorkspaces } from "eve-agent/plugin-sdk/memory-core-host-status";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
 import {
   DAILY_INGESTION_STATE_RELATIVE_PATH,
   SESSION_INGESTION_STATE_RELATIVE_PATH,

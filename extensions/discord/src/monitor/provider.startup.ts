@@ -1,11 +1,11 @@
 // Discord provider module implements model/runtime integration.
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
-import { danger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { isDangerousNameMatchingEnabled } from "eve-agent/plugin-sdk/dangerous-name-runtime";
+import { danger } from "eve-agent/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { resolveStateDir } from "eve-agent/plugin-sdk/state-paths";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   Client,
   ReadyListener,
@@ -238,7 +238,7 @@ export async function fetchDiscordBotIdentity(params: {
 }
 
 export function registerDiscordMonitorListeners(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   client: Pick<Client, "listeners">;
   accountId: string;
   discordConfig: DiscordListenerConfig;

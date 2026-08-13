@@ -28,7 +28,7 @@ export function tryHandleRootVersionFastPath(
     deps.onError ??
     ((error: unknown) => {
       console.error(
-        "[openclaw] Failed to resolve version:",
+        "[eve] Failed to resolve version:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
       process.exitCode = 1;
@@ -46,7 +46,7 @@ export function tryHandleRootVersionFastPath(
   resolveVersion()
     .then(({ VERSION, resolveCommitHash }) => {
       const commit = resolveCommitHash({ moduleUrl: deps.moduleUrl ?? import.meta.url });
-      output(commit ? `OpenClaw ${VERSION} (${commit})` : `OpenClaw ${VERSION}`);
+      output(commit ? `EVE ${VERSION} (${commit})` : `EVE ${VERSION}`);
       exit(0);
     })
     .catch(onError);

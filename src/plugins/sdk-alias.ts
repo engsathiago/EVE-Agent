@@ -3,10 +3,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { tryReadJsonSync } from "../infra/json-files.js";
-import { resolveOpenClawPackageRootSync } from "../infra/openclaw-root.js";
-import { resolveOpenClawDevSourceRoot } from "./dev-source-root.js";
+import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
+import { resolveEVEDevSourceRoot } from "./dev-source-root.js";
 import { PluginLruCache } from "./plugin-cache-primitives.js";
 
 type PluginSdkAliasCandidateKind = "dist" | "src";
@@ -131,7 +131,7 @@ export function resolvePluginLoaderJitiFsCacheDir(params: LoaderModuleResolvePar
   return path.join(
     resolveJitiFsCacheTmpDir(),
     "jiti",
-    "openclaw",
+    "eve",
     version,
     sanitizeJitiCachePathSegment(installMarker),
   );
@@ -155,7 +155,7 @@ function listPluginSdkSubpathsFromPackageJson(pkg: PluginSdkPackageJson): string
     .toSorted();
 }
 
-function hasTrustedOpenClawRootIndicator(params: {
+function hasTrustedEVERootIndicator(params: {
   packageRoot: string;
   packageJson: PluginSdkPackageJson;
 }): boolean {
@@ -165,14 +165,14 @@ function hasTrustedOpenClawRootIndicator(params: {
     return false;
   }
   const hasCliEntryExport = Object.hasOwn(packageExports, "./cli-entry");
-  const hasOpenClawBin =
+  const hasEVEBin =
     (typeof params.packageJson.bin === "string" &&
-      normalizeLowercaseStringOrEmpty(params.packageJson.bin).includes("openclaw")) ||
+      normalizeLowercaseStringOrEmpty(params.packageJson.bin).includes("eve")) ||
     (typeof params.packageJson.bin === "object" &&
       params.packageJson.bin !== null &&
-      typeof params.packageJson.bin.openclaw === "string");
-  const hasOpenClawEntrypoint = fs.existsSync(path.join(params.packageRoot, "openclaw.mjs"));
-  return hasCliEntryExport || hasOpenClawBin || hasOpenClawEntrypoint;
+      typeof params.packageJson.bin.eve === "string");
+  const hasEVEEntrypoint = fs.existsSync(path.join(params.packageRoot, "eve.mjs"));
+  return hasCliEntryExport || hasEVEBin || hasEVEEntrypoint;
 }
 
 function readPluginSdkSubpathsFromPackageRoot(packageRoot: string): string[] | null {
@@ -180,21 +180,21 @@ function readPluginSdkSubpathsFromPackageRoot(packageRoot: string): string[] | n
   if (!pkg) {
     return null;
   }
-  if (!hasTrustedOpenClawRootIndicator({ packageRoot, packageJson: pkg })) {
+  if (!hasTrustedEVERootIndicator({ packageRoot, packageJson: pkg })) {
     return null;
   }
   const subpaths = listPluginSdkSubpathsFromPackageJson(pkg);
   return subpaths.length > 0 ? subpaths : null;
 }
 
-function resolveTrustedOpenClawRootFromArgvHint(params: {
+function resolveTrustedEVERootFromArgvHint(params: {
   argv1?: string;
   cwd: string;
 }): string | null {
   if (!params.argv1) {
     return null;
   }
-  const packageRoot = resolveOpenClawPackageRootSync({
+  const packageRoot = resolveEVEPackageRootSync({
     cwd: params.cwd,
     argv1: params.argv1,
   });
@@ -205,7 +205,7 @@ function resolveTrustedOpenClawRootFromArgvHint(params: {
   if (!packageJson) {
     return null;
   }
-  return hasTrustedOpenClawRootIndicator({ packageRoot, packageJson }) ? packageRoot : null;
+  return hasTrustedEVERootIndicator({ packageRoot, packageJson }) ? packageRoot : null;
 }
 
 function findNearestPluginSdkPackageRoot(startDir: string, maxDepth = 12): string | null {
@@ -228,13 +228,13 @@ export function resolveLoaderPackageRoot(
   params: LoaderModuleResolveParams & { modulePath: string },
 ): string | null {
   const cwd = params.cwd ?? path.dirname(params.modulePath);
-  const fromModulePath = resolveOpenClawPackageRootSync({ cwd });
+  const fromModulePath = resolveEVEPackageRootSync({ cwd });
   if (fromModulePath) {
     return fromModulePath;
   }
   const argv1 = params.argv1 ?? process.argv[1];
   const moduleUrl = params.moduleUrl ?? (params.modulePath ? undefined : import.meta.url);
-  return resolveOpenClawPackageRootSync({
+  return resolveEVEPackageRootSync({
     cwd,
     ...(argv1 ? { argv1 } : {}),
     ...(moduleUrl ? { moduleUrl } : {}),
@@ -343,7 +343,7 @@ function formatResolutionError(error: unknown): string {
 function resolveDevSourceRootParam(params: { devSourceRoot?: string | null }): string | null {
   return params.devSourceRoot !== undefined
     ? params.devSourceRoot
-    : resolveOpenClawDevSourceRoot(process.env);
+    : resolveEVEDevSourceRoot(process.env);
 }
 
 function resolveLoaderPluginSdkPackageRoot(
@@ -354,11 +354,11 @@ function resolveLoaderPluginSdkPackageRoot(
     return devSourceRoot;
   }
   const cwd = params.cwd ?? path.dirname(params.modulePath);
-  const fromCwd = resolveOpenClawPackageRootSync({ cwd });
+  const fromCwd = resolveEVEPackageRootSync({ cwd });
   const fromExplicitHints =
-    resolveTrustedOpenClawRootFromArgvHint({ cwd, argv1: params.argv1 }) ??
+    resolveTrustedEVERootFromArgvHint({ cwd, argv1: params.argv1 }) ??
     (params.moduleUrl
-      ? resolveOpenClawPackageRootSync({
+      ? resolveEVEPackageRootSync({
           cwd,
           moduleUrl: params.moduleUrl,
         })
@@ -472,7 +472,7 @@ const cachedPluginSdkScopedAliasMaps = new PluginLruCache<Record<string, string>
 const cachedBundledPluginPublicSurfaceAliasMaps = new PluginLruCache<Record<string, string>>(
   MAX_PLUGIN_LOADER_ALIAS_CACHE_ENTRIES,
 );
-const PLUGIN_SDK_PACKAGE_NAMES = ["openclaw/plugin-sdk", "@openclaw/plugin-sdk"] as const;
+const PLUGIN_SDK_PACKAGE_NAMES = ["eve-agent/plugin-sdk", "@eve/plugin-sdk"] as const;
 const CODEX_NATIVE_TASK_RUNTIME_PLUGIN_SDK_SUBPATH = "codex-native-task-runtime";
 const CODEX_MCP_PROJECTION_PLUGIN_SDK_SUBPATH = "codex-mcp-projection";
 const OLLAMA_CONFIGURED_LOCAL_ORIGIN_RUNTIME_PLUGIN_SDK_SUBPATH = "ssrf-runtime-internal";
@@ -485,7 +485,7 @@ type PrivatePluginSdkSubpathOwner = {
 const PRIVATE_PLUGIN_SDK_SUBPATH_OWNERS: readonly PrivatePluginSdkSubpathOwner[] = [
   {
     bundledPluginId: "codex",
-    officialInstalledPackageName: "@openclaw/codex",
+    officialInstalledPackageName: "@eve/codex",
     allowPrivateQaCli: true,
     subpaths: [
       CODEX_NATIVE_TASK_RUNTIME_PLUGIN_SDK_SUBPATH,
@@ -519,490 +519,490 @@ const JS_STATIC_RELATIVE_DEPENDENCY_PATTERN =
 // source/dist alias here to keep source checkouts and packaged builds aligned.
 const WORKSPACE_PACKAGE_ALIAS_ENTRIES: WorkspacePackageAliasEntry[] = [
   {
-    packageName: "@openclaw/gateway-client",
+    packageName: "@eve/gateway-client",
     packageDir: "gateway-client",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/gateway-client",
+    packageName: "@eve/gateway-client",
     packageDir: "gateway-client",
     subpath: "readiness",
     srcFile: "readiness.ts",
     distFile: "readiness.mjs",
   },
   {
-    packageName: "@openclaw/gateway-client",
+    packageName: "@eve/gateway-client",
     packageDir: "gateway-client",
     subpath: "timeouts",
     srcFile: "timeouts.ts",
     distFile: "timeouts.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "client-info",
     srcFile: "client-info.ts",
     distFile: "client-info.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "connect-error-details",
     srcFile: "connect-error-details.ts",
     distFile: "connect-error-details.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "schema",
     srcFile: "schema.ts",
     distFile: "schema.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "startup-unavailable",
     srcFile: "startup-unavailable.ts",
     distFile: "startup-unavailable.mjs",
   },
   {
-    packageName: "@openclaw/gateway-protocol",
+    packageName: "@eve/gateway-protocol",
     packageDir: "gateway-protocol",
     subpath: "version",
     srcFile: "version.ts",
     distFile: "version.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "code-spans",
     srcFile: "code-spans.ts",
     distFile: "code-spans.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "fences",
     srcFile: "fences.ts",
     distFile: "fences.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "frontmatter",
     srcFile: "frontmatter.ts",
     distFile: "frontmatter.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "ir",
     srcFile: "ir.ts",
     distFile: "ir.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "render",
     srcFile: "render.ts",
     distFile: "render.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "render-aware-chunking",
     srcFile: "render-aware-chunking.ts",
     distFile: "render-aware-chunking.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "tables",
     srcFile: "tables.ts",
     distFile: "tables.mjs",
   },
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@eve/markdown-core",
     packageDir: "markdown-core",
     subpath: "types",
     srcFile: "types.ts",
     distFile: "types.mjs",
   },
   {
-    packageName: "@openclaw/media-generation-core",
+    packageName: "@eve/media-generation-core",
     packageDir: "media-generation-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/media-generation-core",
+    packageName: "@eve/media-generation-core",
     packageDir: "media-generation-core",
     subpath: "capability-model-ref",
     srcFile: "capability-model-ref.ts",
     distFile: "capability-model-ref.mjs",
   },
   {
-    packageName: "@openclaw/media-generation-core",
+    packageName: "@eve/media-generation-core",
     packageDir: "media-generation-core",
     subpath: "catalog",
     srcFile: "catalog.ts",
     distFile: "catalog.mjs",
   },
   {
-    packageName: "@openclaw/media-generation-core",
+    packageName: "@eve/media-generation-core",
     packageDir: "media-generation-core",
     subpath: "model-ref",
     srcFile: "model-ref.ts",
     distFile: "model-ref.mjs",
   },
   {
-    packageName: "@openclaw/media-generation-core",
+    packageName: "@eve/media-generation-core",
     packageDir: "media-generation-core",
     subpath: "normalization",
     srcFile: "normalization.ts",
     distFile: "normalization.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "base64",
     srcFile: "base64.ts",
     distFile: "base64.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "constants",
     srcFile: "constants.ts",
     distFile: "constants.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "content-length",
     srcFile: "content-length.ts",
     distFile: "content-length.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "file-name",
     srcFile: "file-name.ts",
     distFile: "file-name.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "inbound-path-policy",
     srcFile: "inbound-path-policy.ts",
     distFile: "inbound-path-policy.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "inline-image-data-url",
     srcFile: "inline-image-data-url.ts",
     distFile: "inline-image-data-url.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "media-source-url",
     srcFile: "media-source-url.ts",
     distFile: "media-source-url.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "mime",
     srcFile: "mime.ts",
     distFile: "mime.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "read-byte-stream-with-limit",
     srcFile: "read-byte-stream-with-limit.ts",
     distFile: "read-byte-stream-with-limit.mjs",
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpath: "read-response-with-limit",
     srcFile: "read-response-with-limit.ts",
     distFile: "read-response-with-limit.mjs",
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpath: "number-coercion",
     srcFile: "number-coercion.ts",
     distFile: "number-coercion.mjs",
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpath: "record-coerce",
     srcFile: "record-coerce.ts",
     distFile: "record-coerce.mjs",
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpath: "string-coerce",
     srcFile: "string-coerce.ts",
     distFile: "string-coerce.mjs",
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpath: "string-normalization",
     srcFile: "string-normalization.ts",
     distFile: "string-normalization.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "ansi",
     srcFile: "ansi.ts",
     distFile: "ansi.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "decorative-emoji",
     srcFile: "decorative-emoji.ts",
     distFile: "decorative-emoji.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "health-style",
     srcFile: "health-style.ts",
     distFile: "health-style.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "links",
     srcFile: "links.ts",
     distFile: "links.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "note",
     srcFile: "note.ts",
     distFile: "note.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "osc-progress",
     srcFile: "osc-progress.ts",
     distFile: "osc-progress.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "palette",
     srcFile: "palette.ts",
     distFile: "palette.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "progress-line",
     srcFile: "progress-line.ts",
     distFile: "progress-line.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "prompt-select-styled",
     srcFile: "prompt-select-styled.ts",
     distFile: "prompt-select-styled.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "prompt-select-styled-params",
     srcFile: "prompt-select-styled-params.ts",
     distFile: "prompt-select-styled-params.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "prompt-style",
     srcFile: "prompt-style.ts",
     distFile: "prompt-style.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "restore",
     srcFile: "restore.ts",
     distFile: "restore.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "safe-text",
     srcFile: "safe-text.ts",
     distFile: "safe-text.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "stream-writer",
     srcFile: "stream-writer.ts",
     distFile: "stream-writer.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "table",
     srcFile: "table.ts",
     distFile: "table.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "terminal-link",
     srcFile: "terminal-link.ts",
     distFile: "terminal-link.mjs",
   },
   {
-    packageName: "@openclaw/terminal-core",
+    packageName: "@eve/terminal-core",
     packageDir: "terminal-core",
     subpath: "theme",
     srcFile: "theme.ts",
     distFile: "theme.mjs",
   },
   {
-    packageName: "@openclaw/net-policy",
+    packageName: "@eve/net-policy",
     packageDir: "net-policy",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/net-policy",
+    packageName: "@eve/net-policy",
     packageDir: "net-policy",
     subpath: "ip",
     srcFile: "ip.ts",
     distFile: "ip.mjs",
   },
   {
-    packageName: "@openclaw/net-policy",
+    packageName: "@eve/net-policy",
     packageDir: "net-policy",
     subpath: "ipv4",
     srcFile: "ipv4.ts",
     distFile: "ipv4.mjs",
   },
   {
-    packageName: "@openclaw/net-policy",
+    packageName: "@eve/net-policy",
     packageDir: "net-policy",
     subpath: "redact-sensitive-url",
     srcFile: "redact-sensitive-url.ts",
     distFile: "redact-sensitive-url.mjs",
   },
   {
-    packageName: "@openclaw/net-policy",
+    packageName: "@eve/net-policy",
     packageDir: "net-policy",
     subpath: "url-userinfo",
     srcFile: "url-userinfo.ts",
     distFile: "url-userinfo.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "",
     srcFile: "index.ts",
     distFile: "index.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "configured-model-refs",
     srcFile: "configured-model-refs.ts",
     distFile: "configured-model-refs.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "model-catalog-refs",
     srcFile: "model-catalog-refs.ts",
     distFile: "model-catalog-refs.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "model-catalog-normalize",
     srcFile: "model-catalog-normalize.ts",
     distFile: "model-catalog-normalize.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "model-catalog-types",
     srcFile: "model-catalog-types.ts",
     distFile: "model-catalog-types.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "provider-id",
     srcFile: "provider-id.ts",
     distFile: "provider-id.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "provider-model-id-normalization",
     srcFile: "provider-model-id-normalization.ts",
     distFile: "provider-model-id-normalization.mjs",
   },
   {
-    packageName: "@openclaw/model-catalog-core",
+    packageName: "@eve/model-catalog-core",
     packageDir: "model-catalog-core",
     subpath: "provider-model-id-normalize",
     srcFile: "provider-model-id-normalize.ts",
@@ -1093,7 +1093,7 @@ export function listWorkspacePackageExportAliasEntries(params: {
     params.packageDir,
     "package.json",
   );
-  const fallbackPackageRoot = resolveOpenClawPackageRootSync({ cwd: process.cwd() });
+  const fallbackPackageRoot = resolveEVEPackageRootSync({ cwd: process.cwd() });
   const packageJson =
     tryReadJsonSync<PluginSdkPackageJson>(packageJsonPath) ??
     (fallbackPackageRoot
@@ -1173,7 +1173,7 @@ function readPrivateLocalOnlyPluginSdkSubpaths(packageRoot: string): string[] {
 function readBundledPluginPackageName(packageJsonPath: string): string | null {
   const parsed = tryReadJsonSync<{ name?: unknown }>(packageJsonPath);
   const name = typeof parsed?.name === "string" ? parsed.name.trim() : "";
-  return name.startsWith("@openclaw/") ? name : null;
+  return name.startsWith("@eve/") ? name : null;
 }
 
 function isBundledPluginPublicSurfaceSourceBasename(params: {
@@ -1334,7 +1334,7 @@ function resolveWorkspacePackageAliasMap(params: {
     ...WORKSPACE_PACKAGE_ALIAS_ENTRIES,
     ...listWorkspacePackageExportAliasEntries({
       packageRoot,
-      packageName: "@openclaw/acp-core",
+      packageName: "@eve/acp-core",
       packageDir: "acp-core",
     }),
   ];
@@ -1368,7 +1368,7 @@ function resolveWorkspacePackageAliasMap(params: {
 }
 
 function shouldIncludePrivateLocalOnlyPluginSdkSubpaths() {
-  return process.env.OPENCLAW_ENABLE_PRIVATE_QA_CLI === "1";
+  return process.env.EVE_ENABLE_PRIVATE_QA_CLI === "1";
 }
 
 function isBundledPluginModulePath(params: {
@@ -1651,7 +1651,7 @@ export function resolvePluginSdkScopedAliasMap(
         }
         break;
       }
-      if (Object.hasOwn(aliasMap, `openclaw/plugin-sdk/${subpath}`)) {
+      if (Object.hasOwn(aliasMap, `eve-agent/plugin-sdk/${subpath}`)) {
         break;
       }
     }
@@ -1893,7 +1893,7 @@ export function buildPluginLoaderAliasMap(
   });
   const result: Record<string, string> = {
     ...(extensionApiAlias
-      ? { "openclaw/extension-api": normalizeJitiAliasTargetPath(extensionApiAlias) }
+      ? { "eve-agent/extension-api": normalizeJitiAliasTargetPath(extensionApiAlias) }
       : {}),
     ...resolveBundledPluginPackagePublicSurfaceAliasMap({
       modulePath,
@@ -2114,15 +2114,15 @@ export function resolvePluginLoaderModuleConfig(params: {
 
 export function isBundledPluginExtensionPath(params: {
   modulePath: string;
-  openClawPackageRoot: string;
+  evePackageRoot: string;
   bundledPluginsDir?: string;
 }): boolean {
   const normalizedModulePath = path.resolve(params.modulePath);
   const roots = [
     params.bundledPluginsDir ? path.resolve(params.bundledPluginsDir) : null,
-    path.join(params.openClawPackageRoot, "extensions"),
-    path.join(params.openClawPackageRoot, "dist", "extensions"),
-    path.join(params.openClawPackageRoot, "dist-runtime", "extensions"),
+    path.join(params.evePackageRoot, "extensions"),
+    path.join(params.evePackageRoot, "dist", "extensions"),
+    path.join(params.evePackageRoot, "dist-runtime", "extensions"),
   ].filter((root): root is string => typeof root === "string");
   return roots.some(
     (root) =>

@@ -1,9 +1,9 @@
 // Embedding provider contract tests cover plugin embedding provider SDK behavior.
-import * as embeddingProviderSdk from "openclaw/plugin-sdk/embedding-providers";
+import * as embeddingProviderSdk from "eve-agent/plugin-sdk/embedding-providers";
 import {
   createPluginRegistryFixture,
   registerVirtualTestPlugin,
-} from "openclaw/plugin-sdk/plugin-test-contracts";
+} from "eve-agent/plugin-sdk/plugin-test-contracts";
 import { describe, expect, it } from "vitest";
 import { getRegisteredEmbeddingProvider } from "../embedding-providers.js";
 

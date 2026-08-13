@@ -9,7 +9,7 @@ import {
 } from "../../channels/plugins/index.js";
 import { resolveSessionConversationRef } from "../../channels/plugins/session-conversation.js";
 import { normalizeChannelId as normalizeChatChannelId } from "../../channels/registry.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { ANNOUNCE_SKIP_TOKEN, REPLY_SKIP_TOKEN } from "./sessions-send-tokens.js";
 export {
   isAnnounceSkip,
@@ -131,7 +131,7 @@ export function buildAgentToAgentAnnounceContext(params: {
 }
 
 /** Resolves the configured A2A ping-pong turn limit with a hard runtime cap. */
-export function resolvePingPongTurns(cfg?: OpenClawConfig) {
+export function resolvePingPongTurns(cfg?: EVEConfig) {
   const raw = cfg?.session?.agentToAgent?.maxPingPongTurns;
   const fallback = DEFAULT_AGENTNG_PONG_TURNS;
   if (typeof raw !== "number" || !Number.isFinite(raw)) {

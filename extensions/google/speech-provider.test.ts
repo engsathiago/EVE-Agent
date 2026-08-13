@@ -2,12 +2,12 @@
 import {
   getProviderHttpMocks,
   installProviderHttpMockCleanup,
-} from "openclaw/plugin-sdk/provider-http-test-mocks";
+} from "eve-agent/plugin-sdk/provider-http-test-mocks";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 const transcodeAudioBufferToOpusMock = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/media-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/media-runtime", () => ({
   transcodeAudioBufferToOpus: transcodeAudioBufferToOpusMock,
 }));
 
@@ -94,7 +94,7 @@ describe("Google speech provider", () => {
   });
 
   afterAll(() => {
-    vi.doUnmock("openclaw/plugin-sdk/media-runtime");
+    vi.doUnmock("eve-agent/plugin-sdk/media-runtime");
     vi.resetModules();
   });
 
@@ -247,7 +247,7 @@ describe("Google speech provider", () => {
     );
   });
 
-  it("does not wrap an OpenClaw audio-profile-v1 prompt twice", async () => {
+  it("does not wrap an EVE audio-profile-v1 prompt twice", async () => {
     const provider = buildGoogleSpeechProvider();
     const text = [
       "Synthesize speech from the TRANSCRIPT section only. Use the other sections only",

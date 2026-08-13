@@ -2,13 +2,13 @@
 export type {
   DiagnosticEventMetadata,
   DiagnosticEventPayload,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
-export { isInternalDiagnosticEventMetadata } from "openclaw/plugin-sdk/diagnostic-runtime";
+} from "eve-agent/plugin-sdk/diagnostic-runtime";
+export { isInternalDiagnosticEventMetadata } from "eve-agent/plugin-sdk/diagnostic-runtime";
 export {
   emptyPluginConfigSchema,
-  type OpenClawPluginApi,
-  type OpenClawPluginHttpRouteHandler,
-  type OpenClawPluginService,
-  type OpenClawPluginServiceContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-export { redactSensitiveText } from "openclaw/plugin-sdk/security-runtime";
+  type EVEPluginApi,
+  type EVEPluginHttpRouteHandler,
+  type EVEPluginService,
+  type EVEPluginServiceContext,
+} from "eve-agent/plugin-sdk/plugin-entry";
+export { redactSensitiveText } from "eve-agent/plugin-sdk/security-runtime";

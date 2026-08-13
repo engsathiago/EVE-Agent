@@ -1,6 +1,6 @@
-// Bench Model script supports OpenClaw repository automation.
+// Bench Model script supports EVE repository automation.
 import { pathToFileURL } from "node:url";
-import { completeSimple, type Model } from "openclaw/plugin-sdk/llm";
+import { completeSimple, type Model } from "eve-agent/plugin-sdk/llm";
 import { parseStrictIntegerOption } from "./lib/dev-tooling-safety.ts";
 
 type Usage = {
@@ -81,7 +81,7 @@ function parseArgs(argv = process.argv.slice(2)): CliOptions {
 }
 
 function printUsage(): void {
-  console.log(`OpenClaw model latency benchmark
+  console.log(`EVE model latency benchmark
 
 Usage:
   node --import tsx scripts/bench-model.ts [options]

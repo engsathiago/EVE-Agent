@@ -31,7 +31,7 @@ const COMPLETION_REQUIRED_TASK_KINDS = new Set([
 ]);
 
 function resolveAsyncTaskPollIntervalMs(): number {
-  return process.env.OPENCLAW_TEST_FAST === "1" ? 10 : DEFAULT_ASYNC_TASK_POLL_INTERVAL_MS;
+  return process.env.EVE_TEST_FAST === "1" ? 10 : DEFAULT_ASYNC_TASK_POLL_INTERVAL_MS;
 }
 
 function sleep(ms: number): Promise<void> {

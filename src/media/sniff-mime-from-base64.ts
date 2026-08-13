@@ -1,6 +1,6 @@
 // Base64 mime sniffing helpers infer media types from encoded payload bytes.
-import { canonicalizeBase64 } from "@openclaw/media-core/base64";
-import { detectMime } from "@openclaw/media-core/mime";
+import { canonicalizeBase64 } from "@eve/media-core/base64";
+import { detectMime } from "@eve/media-core/mime";
 
 /** Sniffs a MIME type from canonical base64 without decoding the full payload. */
 export async function sniffMimeFromBase64(base64: string): Promise<string | undefined> {

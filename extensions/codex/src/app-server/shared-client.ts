@@ -2,7 +2,7 @@
  * Owns shared and isolated Codex app-server client startup, auth application,
  * lease tracking, and teardown.
  */
-import { resolveDefaultAgentDir, type AuthProfileStore } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveDefaultAgentDir, type AuthProfileStore } from "eve-agent/plugin-sdk/agent-runtime";
 import {
   applyCodexAppServerAuthProfile,
   bridgeCodexAppServerStartOptions,
@@ -43,7 +43,7 @@ type KeyedSharedCodexAppServerClientState = {
   leasedReleases?: unknown;
 };
 
-const SHARED_CODEX_APP_SERVER_CLIENT_STATE = Symbol.for("openclaw.codexAppServerClientState");
+const SHARED_CODEX_APP_SERVER_CLIENT_STATE = Symbol.for("eve.codexAppServerClientState");
 
 function getSharedCodexAppServerClientState(): SharedCodexAppServerClientState {
   const globalState = globalThis as typeof globalThis & {

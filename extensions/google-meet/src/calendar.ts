@@ -1,5 +1,5 @@
 // Google Meet plugin module implements calendar behavior.
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { googleApiError } from "./google-api-errors.js";
 
 const GOOGLE_CALENDAR_API_BASE_URL = "https://www.googleapis.com/calendar/v3";

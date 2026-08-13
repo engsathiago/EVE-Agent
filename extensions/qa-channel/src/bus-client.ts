@@ -1,7 +1,7 @@
 // Qa Channel plugin module implements bus client behavior.
 import http from "node:http";
 import https from "node:https";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import type {
   QaBusInboundMessageInput,
   QaBusMessage,

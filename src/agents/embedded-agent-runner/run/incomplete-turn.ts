@@ -1,8 +1,8 @@
 /**
  * Classifies incomplete terminal assistant turns and retry instructions.
  */
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import {
   isSilentReplyPayloadText,
   isSilentReplyText,
@@ -125,8 +125,8 @@ const RETRY_GUARD_MODEL_APIS = new Set([
   "openai-responses",
   "openai-chatgpt-responses",
   "azure-openai-responses",
-  "openclaw-openai-responses-transport",
-  "openclaw-azure-openai-responses-transport",
+  "eve-openai-responses-transport",
+  "eve-azure-openai-responses-transport",
 ]);
 // Allow one immediate continuation plus one follow-up continuation before
 // surfacing the existing incomplete-turn error path.

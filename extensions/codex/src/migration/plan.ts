@@ -7,13 +7,13 @@ import {
   MIGRATION_REASON_TARGET_EXISTS,
   readMigrationConfigPath,
   summarizeMigrationItems,
-} from "openclaw/plugin-sdk/migration";
+} from "eve-agent/plugin-sdk/migration";
 import type {
   MigrationItem,
   MigrationPlan,
   MigrationProviderContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { asBoolean, isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/plugin-entry";
+import { asBoolean, isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { CODEX_PLUGINS_MARKETPLACE_NAME } from "../app-server/config.js";
 import { buildCodexAuthItems } from "./auth.js";
 import { exists, sanitizeName } from "./helpers.js";
@@ -95,7 +95,7 @@ async function buildSkillItems(params: {
           : targetExists && !params.overwrite
             ? MIGRATION_REASON_TARGET_EXISTS
             : undefined,
-        message: `Copy ${item.skill.sourceLabel} into this OpenClaw agent workspace.`,
+        message: `Copy ${item.skill.sourceLabel} into this EVE agent workspace.`,
         details: {
           skillName: item.name,
           sourceLabel: item.skill.sourceLabel,
@@ -227,7 +227,7 @@ function buildPluginItems(
           reason: conflict ? MIGRATION_REASON_PLUGIN_EXISTS : undefined,
           source: plugin.source,
           target: `plugins.entries.codex.config.codexPlugins.plugins.${configKey}`,
-          message: `Install Codex plugin "${plugin.pluginName}" in the OpenClaw-managed Codex app-server runtime.`,
+          message: `Install Codex plugin "${plugin.pluginName}" in the EVE-managed Codex app-server runtime.`,
           details: {
             configKey,
             marketplaceName: CODEX_PLUGINS_MARKETPLACE_NAME,
@@ -278,7 +278,7 @@ function buildPluginItems(
           plugin.message ??
           `Codex native plugin "${plugin.name}" was found but not activated automatically.`,
         recommendation:
-          "Review the plugin bundle first, then install trusted compatible plugins with openclaw plugins install <path>.",
+          "Review the plugin bundle first, then install trusted compatible plugins with eve plugins install <path>.",
       }),
     );
   }
@@ -461,7 +461,7 @@ function buildPluginConfigItem(
     status: conflict ? "conflict" : "planned",
     reason: conflict ? MIGRATION_REASON_TARGET_EXISTS : undefined,
     message:
-      "Enable OpenClaw's Codex plugin integration and record migrated source-installed curated plugins.",
+      "Enable EVE's Codex plugin integration and record migrated source-installed curated plugins.",
     details: {
       path: [...CODEX_PLUGIN_CONFIG_PATH],
       value,
@@ -542,8 +542,8 @@ export async function buildCodexMigrationPlan(
     items,
     warnings,
     nextSteps: [
-      "Run openclaw doctor after applying the migration.",
-      "Review skipped or auth-required Codex plugin/config/hook items before exposing them in OpenClaw sessions.",
+      "Run eve doctor after applying the migration.",
+      "Review skipped or auth-required Codex plugin/config/hook items before exposing them in EVE sessions.",
     ],
     metadata: {
       agentDir: targets.agentDir,

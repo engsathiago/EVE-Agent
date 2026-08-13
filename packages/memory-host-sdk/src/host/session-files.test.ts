@@ -11,13 +11,13 @@ import {
 } from "./session-files.js";
 
 function captureStateDirEnv() {
-  const value = process.env.OPENCLAW_STATE_DIR;
+  const value = process.env.EVE_STATE_DIR;
   return {
     restore() {
       if (value === undefined) {
-        Reflect.deleteProperty(process.env, "OPENCLAW_STATE_DIR");
+        Reflect.deleteProperty(process.env, "EVE_STATE_DIR");
       } else {
-        Reflect.set(process.env, "OPENCLAW_STATE_DIR", value);
+        Reflect.set(process.env, "EVE_STATE_DIR", value);
       }
     },
   };
@@ -40,7 +40,7 @@ beforeEach(() => {
   tmpDir = path.join(fixtureRoot, `case-${fixtureId++}`);
   fsSync.mkdirSync(tmpDir, { recursive: true });
   envSnapshot = captureStateDirEnv();
-  Reflect.set(process.env, "OPENCLAW_STATE_DIR", tmpDir);
+  Reflect.set(process.env, "EVE_STATE_DIR", tmpDir);
 });
 
 afterEach(() => {
@@ -116,7 +116,7 @@ describe("buildSessionEntry", () => {
     // Line 7: user message
     const jsonlLines = [
       JSON.stringify({ type: "custom", customType: "model-snapshot", data: {} }),
-      JSON.stringify({ type: "custom", customType: "openclaw.cache-ttl", data: {} }),
+      JSON.stringify({ type: "custom", customType: "eve.cache-ttl", data: {} }),
       JSON.stringify({ type: "session-meta", agentId: "test" }),
       JSON.stringify({ type: "message", message: { role: "user", content: "Hello world" } }),
       JSON.stringify({ type: "custom", customType: "tool-result", data: {} }),

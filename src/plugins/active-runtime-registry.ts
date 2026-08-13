@@ -1,5 +1,5 @@
 // Stores active runtime plugin registry state and activation metadata.
-import { normalizeSortedUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeSortedUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import { resolveCompatibleRuntimePluginRegistry, type PluginLoadOptions } from "./loader.js";
 import type { PluginRegistry } from "./registry-types.js";
 import {

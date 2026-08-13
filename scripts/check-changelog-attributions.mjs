@@ -10,12 +10,12 @@ import { fileURLToPath } from "node:url";
  */
 export const FORBIDDEN_CHANGELOG_THANKS_HANDLES = [
   "codex",
-  "openclaw",
+  "eve",
   "steipete",
   "clawsweeper",
-  "openclaw-clawsweeper",
+  "eve-clawsweeper",
   "clawsweeper[bot]",
-  "openclaw-clawsweeper[bot]",
+  "eve-clawsweeper[bot]",
 ];
 /**
  * Handle prefixes that identify forbidden changelog thanks credits.
@@ -30,9 +30,9 @@ export const FORBIDDEN_CHANGELOG_THANKS_HANDLE_SUFFIXES = ["[bot]"];
  */
 export const CHANGELOG_THANKS_REQUIRE_HUMAN_CREDIT_HANDLES = [
   "clawsweeper",
-  "openclaw-clawsweeper",
+  "eve-clawsweeper",
   "clawsweeper[bot]",
-  "openclaw-clawsweeper[bot]",
+  "eve-clawsweeper[bot]",
 ];
 /**
  * Handle prefixes that require explicit human credit instead.

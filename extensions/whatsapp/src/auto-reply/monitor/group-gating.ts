@@ -1,6 +1,6 @@
 // Whatsapp plugin module implements group gating behavior.
-import type { BuildMentionRegexesOptions } from "openclaw/plugin-sdk/channel-mention-gating";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { BuildMentionRegexesOptions } from "eve-agent/plugin-sdk/channel-mention-gating";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveWhatsAppGroupsConfigPath } from "../../group-config-path.js";
 import {
   getPrimaryIdentityId,
@@ -35,7 +35,7 @@ export type GroupHistoryEntry = {
 };
 
 type ApplyGroupGatingParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   msg: AdmittedWebInboundMessage;
   mentionText?: string;
   deferMissingMention?: boolean;

@@ -1,4 +1,4 @@
-/** Installs native Node resolution aliases so plugins can import the OpenClaw SDK in dev and tests. */
+/** Installs native Node resolution aliases so plugins can import the EVE SDK in dev and tests. */
 import fs from "node:fs";
 import Module from "node:module";
 import path from "node:path";
@@ -38,7 +38,7 @@ type NativeAliasEntry = {
 };
 
 /** Resolver install options for CJS `_resolveFilename` and modern ESM loader hooks. */
-export type InstallOpenClawPluginSdkNativeResolverOptions = {
+export type InstallEVEPluginSdkNativeResolverOptions = {
   modulePath?: string;
   pluginModulePath?: string;
   allowedParentRoots?: readonly string[];
@@ -50,10 +50,10 @@ export type InstallOpenClawPluginSdkNativeResolverOptions = {
 
 const moduleWithResolver = Module as ModuleWithResolver;
 const nodeResolveFilenameProperty = "_resolveFilename" as const;
-const PLUGIN_SDK_PACKAGE_PREFIXES = ["openclaw/plugin-sdk", "@openclaw/plugin-sdk"] as const;
+const PLUGIN_SDK_PACKAGE_PREFIXES = ["eve-agent/plugin-sdk", "@eve/plugin-sdk"] as const;
 const INTERNAL_CORE_PACKAGE_ALIASES = [
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@eve/normalization-core",
     packageDir: "normalization-core",
     subpaths: [
       ["", "index.ts"],
@@ -64,7 +64,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     ],
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@eve/media-core",
     packageDir: "media-core",
     subpaths: [
       ["", "index.ts"],
@@ -81,7 +81,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     ],
   },
   {
-    packageName: "@openclaw/llm-core",
+    packageName: "@eve/llm-core",
     packageDir: "llm-core",
     subpaths: [
       ["", "index.ts"],
@@ -97,7 +97,7 @@ let installed = false;
 let previousResolveFilename: ResolveFilename | undefined;
 let esmHooks: { deregister: () => void } | undefined;
 
-function resolveLoaderModulePath(options: InstallOpenClawPluginSdkNativeResolverOptions): string {
+function resolveLoaderModulePath(options: InstallEVEPluginSdkNativeResolverOptions): string {
   return options.modulePath ?? fileURLToPath(options.moduleUrl ?? import.meta.url);
 }
 
@@ -169,10 +169,10 @@ function resolveLoaderPackageRootFromModulePath(modulePath: string): string {
           name?: unknown;
         };
         if (
-          packageJson.name === "openclaw" ||
+          packageJson.name === "eve" ||
           (typeof packageJson.bin === "object" &&
             packageJson.bin !== null &&
-            typeof (packageJson.bin as { openclaw?: unknown }).openclaw === "string")
+            typeof (packageJson.bin as { eve?: unknown }).eve === "string")
         ) {
           return cursor;
         }
@@ -194,7 +194,7 @@ function resolveAllowedParentRoot(modulePath: string): string {
 }
 
 function resolveAllowedParentRoots(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallEVEPluginSdkNativeResolverOptions,
 ): string[] {
   const roots = new Set<string>();
   if (options.pluginModulePath) {
@@ -244,7 +244,7 @@ function resolveAliasTargetForParentPath(
 }
 
 function listPluginSdkNativeAliases(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallEVEPluginSdkNativeResolverOptions,
 ): Array<readonly [string, string]> {
   const modulePath = options.pluginModulePath ?? resolveLoaderModulePath(options);
   return Object.entries(
@@ -272,7 +272,7 @@ function listPluginSdkNativeAliases(
 }
 
 function listInternalCorePackageNativeAliases(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallEVEPluginSdkNativeResolverOptions,
 ): Array<{
   request: string;
   target: string;
@@ -295,11 +295,11 @@ function listInternalCorePackageNativeAliases(
   const internalCorePackageAliases = [
     ...INTERNAL_CORE_PACKAGE_ALIASES,
     {
-      packageName: "@openclaw/acp-core",
+      packageName: "@eve/acp-core",
       packageDir: "acp-core",
       subpaths: listWorkspacePackageExportAliasEntries({
         packageRoot,
-        packageName: "@openclaw/acp-core",
+        packageName: "@eve/acp-core",
         packageDir: "acp-core",
       }).map((entry) => [entry.subpath, entry.srcFile] as const),
     },
@@ -377,8 +377,8 @@ function clearNativeAliasesForParentRoots(parentRoots: readonly string[]): void 
   }
 }
 
-export function installOpenClawPluginSdkNativeResolver(
-  options: InstallOpenClawPluginSdkNativeResolverOptions = {},
+export function installEVEPluginSdkNativeResolver(
+  options: InstallEVEPluginSdkNativeResolverOptions = {},
 ): string[] {
   const parentRoots = resolveAllowedParentRoots(options);
   clearNativeAliasesForParentRoots(parentRoots);
@@ -392,8 +392,8 @@ export function installOpenClawPluginSdkNativeResolver(
   return [...pluginSdkNativeAliases.keys()].toSorted();
 }
 
-export function installOpenClawInternalCorePackageNativeResolver(
-  options: Pick<InstallOpenClawPluginSdkNativeResolverOptions, "moduleUrl"> = {},
+export function installEVEInternalCorePackageNativeResolver(
+  options: Pick<InstallEVEPluginSdkNativeResolverOptions, "moduleUrl"> = {},
 ): string[] {
   for (const alias of listInternalCorePackageNativeAliases(options)) {
     registerNativeAlias(alias);
@@ -402,7 +402,7 @@ export function installOpenClawInternalCorePackageNativeResolver(
   return [...pluginSdkNativeAliases.keys()].toSorted();
 }
 
-export function resetOpenClawPluginSdkNativeResolverForTest(): void {
+export function resetEVEPluginSdkNativeResolverForTest(): void {
   pluginSdkNativeAliases.clear();
   esmHooks?.deregister();
   esmHooks = undefined;

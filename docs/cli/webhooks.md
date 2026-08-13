@@ -1,35 +1,35 @@
 ---
-summary: "CLI reference for `openclaw webhooks` (Gmail Pub/Sub setup and runner)"
+summary: "CLI reference for `eve webhooks` (Gmail Pub/Sub setup and runner)"
 read_when:
-  - You want to wire Gmail Pub/Sub events into OpenClaw
+  - You want to wire Gmail Pub/Sub events into EVE
   - You need the full flag list and default values
 title: "Webhooks"
 ---
 
-# `openclaw webhooks`
+# `eve webhooks`
 
 Webhook helpers and integrations. Today this surface is scoped to Gmail Pub/Sub flows that integrate with the bundled `gog` watcher.
 
 ## Subcommands
 
 ```bash
-openclaw webhooks gmail setup --account <email> [...]
-openclaw webhooks gmail run   [--account <email>] [...]
+eve webhooks gmail setup --account <email> [...]
+eve webhooks gmail run   [--account <email>] [...]
 ```
 
 | Subcommand    | Description                                                                                  |
 | ------------- | -------------------------------------------------------------------------------------------- |
-| `gmail setup` | Configure Gmail watch, Pub/Sub topic/subscription, and the OpenClaw webhook delivery target. |
+| `gmail setup` | Configure Gmail watch, Pub/Sub topic/subscription, and the EVE webhook delivery target. |
 | `gmail run`   | Run `gog watch serve` plus the watch auto-renew loop.                                        |
 
 ## `webhooks gmail setup`
 
-Configure Gmail watch, Pub/Sub, and OpenClaw webhook delivery.
+Configure Gmail watch, Pub/Sub, and EVE webhook delivery.
 
 ```bash
-openclaw webhooks gmail setup --account you@example.com
-openclaw webhooks gmail setup --account you@example.com --project my-gcp-project --json
-openclaw webhooks gmail setup --account you@example.com --hook-url https://gateway.example.com/hooks/gmail
+eve webhooks gmail setup --account you@example.com
+eve webhooks gmail setup --account you@example.com --project my-gcp-project --json
+eve webhooks gmail setup --account you@example.com --hook-url https://gateway.example.com/hooks/gmail
 ```
 
 ### Required
@@ -48,12 +48,12 @@ openclaw webhooks gmail setup --account you@example.com --hook-url https://gatew
 | `--label <label>`       | `INBOX`                | Gmail label to watch.                                |
 | `--push-endpoint <url>` | (none)                 | Explicit Pub/Sub push endpoint. Overrides Tailscale. |
 
-### OpenClaw delivery options
+### EVE delivery options
 
 | Flag                   | Default | Description                                |
 | ---------------------- | ------- | ------------------------------------------ |
-| `--hook-url <url>`     | (none)  | OpenClaw webhook URL.                      |
-| `--hook-token <token>` | (none)  | OpenClaw webhook token.                    |
+| `--hook-url <url>`     | (none)  | EVE webhook URL.                      |
+| `--hook-token <token>` | (none)  | EVE webhook token.                    |
 | `--push-token <token>` | (none)  | Push token forwarded to `gog watch serve`. |
 
 ### `gog watch serve` options
@@ -86,10 +86,10 @@ openclaw webhooks gmail setup --account you@example.com --hook-url https://gatew
 Run `gog watch serve` plus the watch auto-renew loop in the foreground.
 
 ```bash
-openclaw webhooks gmail run --account you@example.com
+eve webhooks gmail run --account you@example.com
 ```
 
-`run` accepts the same `gog watch serve`, OpenClaw delivery, Pub/Sub, and Tailscale flags as `setup`, except:
+`run` accepts the same `gog watch serve`, EVE delivery, Pub/Sub, and Tailscale flags as `setup`, except:
 
 - `--account` is **optional** on `run` (it falls back to the configured account).
 - `run` does **not** accept `--project`, `--push-endpoint`, or `--json`.
@@ -98,7 +98,7 @@ openclaw webhooks gmail run --account you@example.com
 | Category          | Flags                                                                            |
 | ----------------- | -------------------------------------------------------------------------------- |
 | Pub/Sub           | `--account`, `--topic`, `--subscription`, `--label`                              |
-| OpenClaw delivery | `--hook-url`, `--hook-token`, `--push-token`                                     |
+| EVE delivery | `--hook-url`, `--hook-token`, `--push-token`                                     |
 | `gog watch serve` | `--bind`, `--port`, `--path`, `--include-body`, `--max-bytes`, `--renew-minutes` |
 | Tailscale         | `--tailscale`, `--tailscale-path`, `--tailscale-target`                          |
 

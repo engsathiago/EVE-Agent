@@ -1,5 +1,5 @@
 // Memory Core plugin module implements time behavior.
-import { timestampMsToIsoString } from "openclaw/plugin-sdk/number-runtime";
+import { timestampMsToIsoString } from "eve-agent/plugin-sdk/number-runtime";
 
 export function resolveMemoryCoreNowMs(nowMs: unknown): number {
   return timestampMsToIsoString(nowMs) === undefined ? Date.now() : (nowMs as number);

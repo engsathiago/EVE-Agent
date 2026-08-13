@@ -1,5 +1,5 @@
 // Runtime bridge for plugin-provided memory embedding providers.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { readConfiguredProviderApiId } from "./embedding-provider-config.js";
 import {
   getRuntimeEmbeddingProviderAdapter,
@@ -21,7 +21,7 @@ export function listRegisteredMemoryEmbeddingProviderAdapters(): MemoryEmbedding
 
 /** Lists memory embedding providers from runtime config and registered adapters. */
 export function listMemoryEmbeddingProviders(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): MemoryEmbeddingProviderAdapter[] {
   return listRuntimeEmbeddingProviderAdapters({
     key: "memoryEmbeddingProviders",
@@ -32,12 +32,12 @@ export function listMemoryEmbeddingProviders(
 
 function resolveConfiguredMemoryEmbeddingProviderId(
   providerId: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): string | undefined {
   return readConfiguredProviderApiId({ providerId, cfg });
 }
 
-function resolveMemoryEmbeddingProviderLookupIds(id: string, cfg?: OpenClawConfig): string[] {
+function resolveMemoryEmbeddingProviderLookupIds(id: string, cfg?: EVEConfig): string[] {
   return resolveRuntimeEmbeddingProviderLookupIds({
     id,
     cfg,
@@ -48,7 +48,7 @@ function resolveMemoryEmbeddingProviderLookupIds(id: string, cfg?: OpenClawConfi
 /** Resolves one memory embedding provider by id, alias, or configured API owner. */
 export function getMemoryEmbeddingProvider(
   id: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): MemoryEmbeddingProviderAdapter | undefined {
   return getRuntimeEmbeddingProviderAdapter({
     key: "memoryEmbeddingProviders",

@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { saveExecApprovals } from "../infra/exec-approvals.js";
 import { captureEnv } from "../test-utils/env.js";
 import { collectExecRuntimeFindings } from "./audit.js";
@@ -34,26 +34,26 @@ function requireFinding(
 }
 
 describe("security audit exec surface findings", () => {
-  // Redirect the OpenClaw home (OPENCLAW_HOME wins over HOME/USERPROFILE in
+  // Redirect the EVE home (EVE_HOME wins over HOME/USERPROFILE in
   // `resolveRawHomeDir`) to a per-test tempdir so `saveExecApprovals` never
-  // touches the real `~/.openclaw/exec-approvals.json` on the host running
+  // touches the real `~/.eve/exec-approvals.json` on the host running
   // the suite.
   let envSnapshot: ReturnType<typeof captureEnv> | undefined;
   let tempRoot = "";
   let tempCaseIndex = 0;
 
   beforeAll(async () => {
-    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-exec-approvals-"));
+    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-exec-approvals-"));
   });
 
   beforeEach(async () => {
-    envSnapshot = captureEnv(["OPENCLAW_HOME", "HOME", "USERPROFILE"]);
+    envSnapshot = captureEnv(["EVE_HOME", "HOME", "USERPROFILE"]);
     const tempDir = path.join(tempRoot, `case-${++tempCaseIndex}`);
-    await fs.mkdir(path.join(tempDir, ".openclaw"), { recursive: true });
-    // OPENCLAW_HOME takes precedence over HOME/USERPROFILE in resolveRawHomeDir,
+    await fs.mkdir(path.join(tempDir, ".eve"), { recursive: true });
+    // EVE_HOME takes precedence over HOME/USERPROFILE in resolveRawHomeDir,
     // so all three must point at the tempdir to neutralize whichever the host
     // happens to have set.
-    process.env.OPENCLAW_HOME = tempDir;
+    process.env.EVE_HOME = tempDir;
     process.env.HOME = tempDir;
     // Windows uses USERPROFILE for os.homedir()
     process.env.USERPROFILE = tempDir;
@@ -98,7 +98,7 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const finding = findings.find(
       (entry) => entry.checkId === "agents.claude_cli.permission_mode_overridden_by_yolo",
@@ -111,7 +111,7 @@ describe("security audit exec surface findings", () => {
       }),
     );
     expect(finding?.detail).toContain("resumeArgs=acceptEdits");
-    expect(finding?.detail).toContain("OpenClaw exec is YOLO");
+    expect(finding?.detail).toContain("EVE exec is YOLO");
   });
 
   it("warns for normalized Claude backend keys", () => {
@@ -126,7 +126,7 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(
       hasFinding("agents.claude_cli.permission_mode_overridden_by_yolo", "warn", findings),
@@ -149,14 +149,14 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(
       hasFinding("agents.claude_cli.permission_mode_overridden_by_yolo", "warn", findings),
     ).toBe(false);
   });
 
-  it("does not warn for restrictive Claude permission mode when OpenClaw exec is restrictive", () => {
+  it("does not warn for restrictive Claude permission mode when EVE exec is restrictive", () => {
     const findings = collectExecRuntimeFindings({
       tools: { exec: { security: "allowlist", ask: "on-miss" } },
       agents: {
@@ -169,7 +169,7 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(
       hasFinding("agents.claude_cli.permission_mode_overridden_by_yolo", "warn", findings),
@@ -189,7 +189,7 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(
       hasFinding("agents.claude_cli.permission_mode_overridden_by_yolo", "warn", findings),
@@ -210,7 +210,7 @@ describe("security audit exec surface findings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(
       hasFinding("agents.claude_cli.permission_mode_overridden_by_yolo", "warn", findings),
@@ -238,7 +238,7 @@ describe("security audit exec surface findings", () => {
           agents: {
             list: [{ id: "ops" }],
           },
-        } satisfies OpenClawConfig),
+        } satisfies EVEConfig),
       ),
     ).toBe(true);
   });
@@ -263,7 +263,7 @@ describe("security audit exec surface findings", () => {
               strictInlineEval: true,
             },
           },
-        } satisfies OpenClawConfig),
+        } satisfies EVEConfig),
       ),
     ).toBe(false);
   });
@@ -281,7 +281,7 @@ describe("security audit exec surface findings", () => {
           host: "gateway",
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(hasFinding("security.exposure.open_channels_with_exec", "warn", findings)).toBe(true);
   });
@@ -298,7 +298,7 @@ describe("security audit exec surface findings", () => {
           security: "full",
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(hasFinding("tools.exec.security_full_configured", "critical", findings)).toBe(true);
     expect(hasFinding("security.exposure.open_channels_with_exec", "critical", findings)).toBe(
@@ -312,7 +312,7 @@ describe("security audit exec surface findings", () => {
         allow: ["read", "exec", "process"],
         deny: ["write", "edit", "apply_patch"],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const finding = requireFinding("tools.exec.fs_tools_disabled_but_exec_enabled", findings);
     expect(finding.severity).toBe("warn");
@@ -335,7 +335,7 @@ describe("security audit exec surface findings", () => {
         allow: ["read", "exec", "process"],
         deny: ["write", "edit", "apply_patch"],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     expect(hasFinding("tools.exec.fs_tools_disabled_but_exec_enabled", "warn", findings)).toBe(
       false,

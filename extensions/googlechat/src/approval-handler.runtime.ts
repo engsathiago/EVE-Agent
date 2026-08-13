@@ -3,12 +3,12 @@ import type {
   ExpiredApprovalView,
   PendingApprovalView,
   ResolvedApprovalView,
-} from "openclaw/plugin-sdk/approval-handler-runtime";
-import { createChannelApprovalNativeRuntimeAdapter } from "openclaw/plugin-sdk/approval-handler-runtime";
-import { buildChannelApprovalNativeTargetKey } from "openclaw/plugin-sdk/approval-native-runtime";
-import type { ExecApprovalDecision } from "openclaw/plugin-sdk/approval-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { createChannelApprovalNativeRuntimeAdapter } from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { buildChannelApprovalNativeTargetKey } from "eve-agent/plugin-sdk/approval-native-runtime";
+import type { ExecApprovalDecision } from "eve-agent/plugin-sdk/approval-runtime";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveGoogleChatAccount, type ResolvedGoogleChatAccount } from "./accounts.js";
 import { sendGoogleChatMessage, updateGoogleChatMessage } from "./api.js";
 import {
@@ -28,7 +28,7 @@ import { resolveGoogleChatOutboundSpace } from "./targets.js";
 import type { GoogleChatCardV2 } from "./types.js";
 
 const log = createSubsystemLogger("googlechat/approvals");
-const GOOGLECHAT_APPROVAL_CARD_ID = "openclaw-approval";
+const GOOGLECHAT_APPROVAL_CARD_ID = "eve-approval";
 const MAX_TEXT_PARAGRAPH_CHARS = 1800;
 
 type GoogleChatApprovalHandlerContext = {

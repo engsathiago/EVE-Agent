@@ -2,12 +2,12 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DEVICE_PAIR_NOTIFY_SUBSCRIBER_MAX_ENTRIES,
@@ -38,7 +38,7 @@ describe("device-pair notify persistence", () => {
     vi.clearAllMocks();
     listDevicePairingMock.mockResolvedValue({ pending: [] });
     stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "device-pair-notify-"));
-    env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+    env = { ...process.env, EVE_STATE_DIR: stateDir };
   });
 
   afterEach(async () => {

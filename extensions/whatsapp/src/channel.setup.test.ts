@@ -1,12 +1,12 @@
 // Whatsapp tests cover channel.setup plugin behavior.
-import { createQueuedWizardPrompter } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import { createQueuedWizardPrompter } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/routing";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WHATSAPP_AUTH_UNSTABLE_CODE } from "./auth-store.js";
 import { whatsappSetupPlugin } from "./channel.setup.js";
 import { checkWhatsAppHeartbeatReady } from "./heartbeat.js";
-import type { OpenClawConfig } from "./runtime-api.js";
+import type { EVEConfig } from "./runtime-api.js";
 import { finalizeWhatsAppSetup } from "./setup-finalize.js";
 import {
   createWhatsAppAllowlistModeInput,
@@ -35,7 +35,7 @@ const hoisted = vi.hoisted(() => ({
     }),
   ),
   resolveWhatsAppAuthDir: vi.fn(() => ({
-    authDir: "/tmp/openclaw-whatsapp-test",
+    authDir: "/tmp/eve-whatsapp-test",
   })),
 }));
 
@@ -54,9 +54,9 @@ vi.mock("./login.js", () => ({
   loginWeb: hoisted.loginWeb,
 }));
 
-vi.mock("openclaw/plugin-sdk/setup", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/setup")>(
-    "openclaw/plugin-sdk/setup",
+vi.mock("eve-agent/plugin-sdk/setup", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/setup")>(
+    "eve-agent/plugin-sdk/setup",
   );
   const normalizeE164 = (value?: string | null) => {
     const raw = (value ?? "").trim();
@@ -82,12 +82,12 @@ vi.mock("openclaw/plugin-sdk/setup", async () => {
     },
     normalizeE164,
     splitSetupEntries: splitSetupEntriesForMock,
-    setSetupChannelEnabled: (cfg: OpenClawConfig, channel: string, enabled: boolean) => ({
+    setSetupChannelEnabled: (cfg: EVEConfig, channel: string, enabled: boolean) => ({
       ...cfg,
       channels: {
         ...cfg.channels,
         [channel]: {
-          ...(cfg.channels?.[channel as keyof NonNullable<OpenClawConfig["channels"]>] as object),
+          ...(cfg.channels?.[channel as keyof NonNullable<EVEConfig["channels"]>] as object),
           enabled,
         },
       },
@@ -128,12 +128,12 @@ function createRuntime(): RuntimeEnv {
 
 async function runConfigureWithHarness(params: {
   harness: ReturnType<typeof createQueuedWizardPrompter>;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   runtime?: RuntimeEnv;
   forceAllowFrom?: boolean;
 }) {
   const result = await finalizeWhatsAppSetup({
-    cfg: params.cfg ?? ({} as OpenClawConfig),
+    cfg: params.cfg ?? ({} as EVEConfig),
     accountId: DEFAULT_ACCOUNT_ID,
     forceAllowFrom: params.forceAllowFrom ?? false,
     prompter: params.harness.prompter,
@@ -178,7 +178,7 @@ describe("whatsapp setup wizard", () => {
       exists: false,
     });
     hoisted.resolveWhatsAppAuthDir.mockReset();
-    hoisted.resolveWhatsAppAuthDir.mockReturnValue({ authDir: "/tmp/openclaw-whatsapp-test" });
+    hoisted.resolveWhatsAppAuthDir.mockReturnValue({ authDir: "/tmp/eve-whatsapp-test" });
   });
 
   it("applies owner allowlist when forceAllowFrom is enabled", async () => {
@@ -271,7 +271,7 @@ describe("whatsapp setup wizard", () => {
 
     const result = await runConfigureWithHarness({
       harness,
-      cfg: createWhatsAppRootAllowFromConfig() as OpenClawConfig,
+      cfg: createWhatsAppRootAllowFromConfig() as EVEConfig,
     });
 
     expectWhatsAppOpenPolicySetup(result.cfg, harness);
@@ -292,7 +292,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       accountId: "work",
       account: {
         accountId: "work",
@@ -324,7 +324,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       accountId: "work",
       account: {
         accountId: "work",
@@ -359,7 +359,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(result.cfg.channels?.whatsapp?.dmPolicy).toBeUndefined();
@@ -390,7 +390,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(result.cfg.channels?.whatsapp?.accounts?.Default?.authDir).toBe("/tmp/default-auth");
@@ -452,7 +452,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       deps: {
         readWebAuthExistsForDecision: async () => ({
           outcome: "stable" as const,
@@ -477,7 +477,7 @@ describe("whatsapp setup wizard", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       deps: {
         readWebAuthExistsForDecision: async () => ({ outcome: "unstable" as const }),
         hasActiveWebListener: () => true,

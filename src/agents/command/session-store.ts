@@ -1,7 +1,7 @@
 /**
  * Updates persisted session metadata after agent command runs.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   resolveCompactionSessionFile,
   setSessionRuntimeModel,
@@ -9,7 +9,7 @@ import {
 } from "../../config/sessions.js";
 import { patchSessionEntry } from "../../config/sessions/session-accessor.js";
 import { resolveMaintenanceConfigFromInput } from "../../config/sessions/store-maintenance.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createLazyImportLoader } from "../../shared/lazy-promise.js";
 import { clearCliSession, setCliSessionBinding, setCliSessionId } from "../cli-session.js";
 import { DEFAULT_CONTEXT_TOKENS } from "../defaults.js";
@@ -51,7 +51,7 @@ function removeLifecycleStateFromMetadataPatch(entry: SessionEntry): SessionEntr
 
 /** Applies run result metadata, usage, and CLI bindings to a session entry. */
 export async function updateSessionStoreAfterAgentRun(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   contextTokensOverride?: number;
   sessionId: string;
   sessionKey: string;

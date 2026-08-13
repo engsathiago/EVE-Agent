@@ -27,13 +27,13 @@ describe("media understanding scope", () => {
 });
 
 const originalFetch = globalThis.fetch;
-const originalStateDirEnv = process.env.OPENCLAW_STATE_DIR;
+const originalStateDirEnv = process.env.EVE_STATE_DIR;
 
 function restoreProcessState() {
   if (originalStateDirEnv === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.EVE_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = originalStateDirEnv;
+    process.env.EVE_STATE_DIR = originalStateDirEnv;
   }
 }
 
@@ -142,14 +142,14 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("reads local attachments inside configured roots", async () => {
-    await withLocalAttachmentCache("openclaw-media-cache-allowed-", async ({ cache }) => {
+    await withLocalAttachmentCache("eve-media-cache-allowed-", async ({ cache }) => {
       const result = await cache.getBuffer({ attachmentIndex: 0, maxBytes: 1024, timeoutMs: 1000 });
       expect(result.buffer.toString()).toBe("ok");
     });
   });
 
   it("resolves relative attachment paths against the provided workspaceDir", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-workspace-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-workspace-" }, async (base) => {
       const workspaceDir = path.join(base, "workspace");
       const attachmentPath = path.join(workspaceDir, "media", "inbound", "report.pdf");
       await fs.mkdir(path.dirname(attachmentPath), { recursive: true });
@@ -166,7 +166,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("resolves existing state-relative media paths when cwd differs from state dir", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-state-relative-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-state-relative-" }, async (base) => {
       const stateDir = path.join(base, "state");
       const cwd = path.join(base, "cwd");
       const relativePath = "media/inbound/telegram.jpg";
@@ -174,7 +174,7 @@ describe("media understanding attachments SSRF", () => {
       await fs.mkdir(path.dirname(attachmentPath), { recursive: true });
       await fs.mkdir(cwd, { recursive: true });
       await fs.writeFile(attachmentPath, "state-media");
-      process.env.OPENCLAW_STATE_DIR = stateDir;
+      process.env.EVE_STATE_DIR = stateDir;
       vi.spyOn(process, "cwd").mockReturnValue(cwd);
 
       const cache = new MediaAttachmentCache([{ index: 0, path: relativePath }], {
@@ -188,7 +188,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("keeps cwd-relative fallback when a state-relative candidate does not exist", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-cwd-relative-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-cwd-relative-" }, async (base) => {
       const stateDir = path.join(base, "state");
       const cwd = path.join(base, "cwd");
       const relativePath = "media/inbound/local.jpg";
@@ -196,7 +196,7 @@ describe("media understanding attachments SSRF", () => {
       await fs.mkdir(stateDir, { recursive: true });
       await fs.mkdir(path.dirname(attachmentPath), { recursive: true });
       await fs.writeFile(attachmentPath, "cwd-media");
-      process.env.OPENCLAW_STATE_DIR = stateDir;
+      process.env.EVE_STATE_DIR = stateDir;
       vi.spyOn(process, "cwd").mockReturnValue(cwd);
 
       const cache = new MediaAttachmentCache([{ index: 0, path: relativePath }], {
@@ -210,7 +210,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("prefers an existing cwd-relative attachment over a state-relative collision", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-relative-collision-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-relative-collision-" }, async (base) => {
       const stateDir = path.join(base, "state");
       const cwd = path.join(base, "cwd");
       const relativePath = "media/inbound/photo.jpg";
@@ -220,7 +220,7 @@ describe("media understanding attachments SSRF", () => {
       await fs.mkdir(path.dirname(statePath), { recursive: true });
       await fs.writeFile(cwdPath, "cwd-media");
       await fs.writeFile(statePath, "state-media");
-      process.env.OPENCLAW_STATE_DIR = stateDir;
+      process.env.EVE_STATE_DIR = stateDir;
       vi.spyOn(process, "cwd").mockReturnValue(cwd);
 
       const cache = new MediaAttachmentCache([{ index: 0, path: relativePath }], {
@@ -233,7 +233,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("falls back to state media when a cwd collision is outside allowed roots", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-blocked-cwd-collision-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-blocked-cwd-collision-" }, async (base) => {
       const stateDir = path.join(base, "state");
       const cwd = path.join(base, "cwd");
       const relativePath = "media/inbound/photo.jpg";
@@ -243,7 +243,7 @@ describe("media understanding attachments SSRF", () => {
       await fs.mkdir(path.dirname(statePath), { recursive: true });
       await fs.writeFile(cwdPath, "blocked-cwd-media");
       await fs.writeFile(statePath, "state-media");
-      process.env.OPENCLAW_STATE_DIR = stateDir;
+      process.env.EVE_STATE_DIR = stateDir;
       vi.spyOn(process, "cwd").mockReturnValue(cwd);
 
       const cache = new MediaAttachmentCache([{ index: 0, path: relativePath }], {
@@ -269,7 +269,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("blocks directory attachments even inside configured roots", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-dir-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-dir-" }, async (base) => {
       const allowedRoot = path.join(base, "allowed");
       const attachmentPath = path.join(allowedRoot, "nested");
       await fs.mkdir(attachmentPath, { recursive: true });
@@ -288,7 +288,7 @@ describe("media understanding attachments SSRF", () => {
     if (process.platform === "win32") {
       return;
     }
-    await withTempDir({ prefix: "openclaw-media-cache-symlink-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-symlink-" }, async (base) => {
       const allowedRoot = path.join(base, "allowed");
       const outsidePath = "/etc/passwd";
       const symlinkPath = path.join(allowedRoot, "note.txt");
@@ -307,7 +307,7 @@ describe("media understanding attachments SSRF", () => {
 
   it("enforces maxBytes after reading local attachments", async () => {
     await withLocalAttachmentCache(
-      "openclaw-media-cache-max-bytes-",
+      "eve-media-cache-max-bytes-",
       async ({ cache, canonicalAttachmentPath }) => {
         const originalOpen = fs.open.bind(fs);
         const openSpy = vi.spyOn(fs, "open");
@@ -337,7 +337,7 @@ describe("media understanding attachments SSRF", () => {
       return;
     }
     await withLocalAttachmentCache(
-      "openclaw-media-cache-flags-",
+      "eve-media-cache-flags-",
       async ({ cache, canonicalAttachmentPath }) => {
         const openSpy = vi.spyOn(fs, "open");
 
@@ -354,7 +354,7 @@ describe("media understanding attachments SSRF", () => {
   });
 
   it("rejects local attachments when canonicalization fails", async () => {
-    await withTempDir({ prefix: "openclaw-media-cache-realpath-failure-" }, async (base) => {
+    await withTempDir({ prefix: "eve-media-cache-realpath-failure-" }, async (base) => {
       const allowedRoot = path.join(base, "allowed");
       const attachmentPath = path.join(allowedRoot, "voice-note.m4a");
       await fs.mkdir(allowedRoot, { recursive: true });

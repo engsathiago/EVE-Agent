@@ -1,6 +1,6 @@
 // Line type declarations define plugin contracts.
-import type { BaseProbeResult } from "openclaw/plugin-sdk/channel-contract";
-import type { MessageReceipt } from "openclaw/plugin-sdk/channel-outbound";
+import type { BaseProbeResult } from "eve-agent/plugin-sdk/channel-contract";
+import type { MessageReceipt } from "eve-agent/plugin-sdk/channel-outbound";
 
 export type LineTokenSource = "config" | "env" | "file" | "none";
 

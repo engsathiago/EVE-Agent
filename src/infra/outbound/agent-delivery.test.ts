@@ -90,7 +90,7 @@ vi.mock("../../utils/message-channel.js", () => ({
   normalizeMessageChannel: (value: string) => value.trim().toLowerCase(),
 }));
 
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 let resolveAgentDeliveryPlan: typeof import("./agent-delivery.js").resolveAgentDeliveryPlan;
 let resolveAgentDeliveryPlanWithSessionRoute: typeof import("./agent-delivery.js").resolveAgentDeliveryPlanWithSessionRoute;
 let resolveAgentOutboundTarget: typeof import("./agent-delivery.js").resolveAgentOutboundTarget;
@@ -208,7 +208,7 @@ describe("agent delivery helpers", () => {
     });
 
     const resolved = resolveAgentOutboundTarget({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       plan,
       targetMode: "implicit",
     });
@@ -233,7 +233,7 @@ describe("agent delivery helpers", () => {
 
     mocks.resolveOutboundTarget.mockClear();
     const resolved = resolveAgentOutboundTarget({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       plan,
       targetMode: "explicit",
       validateExplicitTarget: false,
@@ -263,7 +263,7 @@ describe("agent delivery helpers", () => {
     });
 
     const plan = await resolveAgentDeliveryPlanWithSessionRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentId: "agent",
       currentSessionKey: "agent:main",
       sessionEntry: {
@@ -300,7 +300,7 @@ describe("agent delivery helpers", () => {
     });
 
     const plan = await resolveAgentDeliveryPlanWithSessionRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentId: "agent",
       sessionEntry: undefined,
       requestedChannel: "workspace",
@@ -324,7 +324,7 @@ describe("agent delivery helpers", () => {
     mocks.resolveOutboundSessionRoute.mockRejectedValueOnce(new Error("route lookup failed"));
 
     const plan = await resolveAgentDeliveryPlanWithSessionRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentId: "agent",
       sessionEntry: undefined,
       requestedChannel: "workspace",
@@ -343,7 +343,7 @@ describe("agent delivery helpers", () => {
     });
 
     const plan = await resolveAgentDeliveryPlanWithSessionRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentId: "agent",
       sessionEntry: undefined,
       requestedChannel: "workspace",
@@ -375,7 +375,7 @@ describe("agent delivery helpers", () => {
     });
 
     const plan = await resolveAgentDeliveryPlanWithSessionRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentId: "agent",
       sessionEntry: {
         sessionId: "s-thread",

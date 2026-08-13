@@ -1,5 +1,5 @@
 // Imessage tests cover inbound processing.systemPrompt plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   buildIMessageInboundContext,
@@ -10,7 +10,7 @@ type DecisionParams = Parameters<typeof resolveIMessageInboundDecision>[0];
 
 function buildCfgWithGroups(
   groups: Record<string, { requireMention?: boolean; systemPrompt?: string }>,
-): OpenClawConfig {
+): EVEConfig {
   return {
     channels: {
       imessage: {
@@ -18,12 +18,12 @@ function buildCfgWithGroups(
         groups,
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
 function buildDecisionParams(overrides: Partial<DecisionParams> = {}): DecisionParams {
   return {
-    cfg: overrides.cfg ?? ({} as OpenClawConfig),
+    cfg: overrides.cfg ?? ({} as EVEConfig),
     accountId: "default",
     message: {
       id: 1,
@@ -189,7 +189,7 @@ describe("buildIMessageInboundContext forwards GroupSystemPrompt", () => {
     groupSystemPrompt?: string;
   }): Parameters<typeof buildIMessageInboundContext>[0] {
     return {
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       decision: {
         kind: "dispatch",
         isGroup: decision.isGroup,

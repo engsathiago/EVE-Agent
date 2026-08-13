@@ -5,15 +5,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
-import { isAudioFileName } from "@openclaw/media-core/mime";
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { isAudioFileName } from "@eve/media-core/mime";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import {
   buildTtsSupplementMediaPayload,
   getReplyPayloadTtsSupplement,
   isReplyPayloadTtsSupplement,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import {
   GATEWAY_CLIENT_CAPS,
   GATEWAY_CLIENT_MODES,
@@ -61,7 +61,7 @@ import type { MsgContext, TemplateContext } from "../../auto-reply/templating.js
 import { resolveSessionFilePath, updateSessionStoreEntry } from "../../config/sessions.js";
 import { resolveMirroredTranscriptText } from "../../config/sessions/transcript-mirror.js";
 import { CURRENT_SESSION_VERSION } from "../../config/sessions/version.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   claimAgentRunContext,
   clearAgentRunContext,
@@ -368,7 +368,7 @@ async function handleChatMetadataRequest({
 }
 
 async function buildChatMetadataResult(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: GatewayRequestContext;
   agentId: string;
   preloadedModelCatalog?: ModelCatalogEntry[];
@@ -397,7 +397,7 @@ async function buildChatMetadataResult(params: {
 }
 
 async function buildChatStartupMetadataResult(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: GatewayRequestContext;
   agentId: string;
   modelCatalog: ModelCatalogEntry[] | undefined;
@@ -508,7 +508,7 @@ function resolveWebchatPromptCacheKey(params: {
     )
     .digest("hex")
     .slice(0, 32);
-  return `openclaw-webchat-${digest}`;
+  return `eve-webchat-${digest}`;
 }
 
 async function buildWebchatAssistantMediaMessage(
@@ -663,7 +663,7 @@ function buildActiveChatSendDedupeKey(params: {
 }
 
 function validateChatSelectedAgent(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   requestedSessionKey: string;
   agentId?: string;
 }): { ok: true; agentId?: string } | { ok: false; error: string } {
@@ -698,7 +698,7 @@ function validateChatSelectedAgent(params: {
 }
 
 function resolveRequestedChatAgentId(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   requestedSessionKey: string;
   agentId?: string;
 }): string | undefined {
@@ -1406,7 +1406,7 @@ function shouldPassThroughManagedInboundPdfOffloadRef(ref: OffloadedRef): boolea
 async function prestageMediaPathOffloads(params: {
   offloadedRefs: OffloadedRef[];
   includeImageRefs?: boolean;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   agentId: string;
 }): Promise<{ paths: string[]; types: string[]; workspaceDir?: string }> {
@@ -1610,7 +1610,7 @@ export function buildOversizedHistoryPlaceholder(message?: unknown): Record<stri
       : Date.now();
   const rawMetadata =
     message && typeof message === "object"
-      ? (message as Record<string, unknown>)["__openclaw"]
+      ? (message as Record<string, unknown>)["__eve"]
       : undefined;
   const metadata =
     rawMetadata && typeof rawMetadata === "object" && !Array.isArray(rawMetadata)
@@ -1622,7 +1622,7 @@ export function buildOversizedHistoryPlaceholder(message?: unknown): Record<stri
     role,
     timestamp,
     content: [{ type: "text", text: CHAT_HISTORY_OVERSIZED_PLACEHOLDER }],
-    __openclaw: {
+    __eve: {
       ...(metadataId ? { id: metadataId } : {}),
       ...(metadataSeq !== undefined ? { seq: metadataSeq } : {}),
       truncated: true,
@@ -1752,7 +1752,7 @@ async function findSourceReplyTranscriptMirrorByIdempotencyKey(
     transcriptPath,
     idempotencyKey,
   );
-  if (found?.message.provider !== "openclaw" || found.message.model !== "delivery-mirror") {
+  if (found?.message.provider !== "eve" || found.message.model !== "delivery-mirror") {
     return null;
   }
   return found;
@@ -1804,7 +1804,7 @@ async function findSourceReplyTranscriptMirrorByMetadata(params: {
       typeof entry.id === "string" &&
       entry.id.trim().length > 0 &&
       message?.role === "assistant" &&
-      message.provider === "openclaw" &&
+      message.provider === "eve" &&
       message.model === "delivery-mirror" &&
       extractAssistantTranscriptText(message) === expectedText
     );
@@ -1833,7 +1833,7 @@ async function appendAssistantTranscriptMessage(params: {
     runId: string;
   };
   ttsSupplement?: GatewayInjectedTtsSupplementMarker;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): Promise<TranscriptAppendResult> {
   const transcriptPath = resolveTranscriptPath({
     sessionId: params.sessionId,
@@ -2513,7 +2513,7 @@ function sendGlobalAwareNodeChatPayload(params: {
   payload: unknown;
 }) {
   const deliveryKeys = resolveGlobalAwareNodeChatDeliveryKeys({
-    cfg: params.context.getRuntimeConfig?.() ?? ({} as OpenClawConfig),
+    cfg: params.context.getRuntimeConfig?.() ?? ({} as EVEConfig),
     sessionKey: params.sessionKey,
     agentId: params.agentId,
   });
@@ -2523,7 +2523,7 @@ function sendGlobalAwareNodeChatPayload(params: {
 }
 
 function resolveGlobalAwareNodeChatDeliveryKeys(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   agentId?: string;
 }): string[] {
@@ -2544,7 +2544,7 @@ function isSourceReplyTranscriptMirrorPayload(payload: ReplyPayload | undefined)
 }
 
 function readChatHistoryMessageId(message: unknown): string | undefined {
-  const metadata = asOptionalRecord(asOptionalRecord(message)?.["__openclaw"]);
+  const metadata = asOptionalRecord(asOptionalRecord(message)?.["__eve"]);
   return typeof metadata?.id === "string" ? metadata.id : undefined;
 }
 
@@ -2625,7 +2625,7 @@ async function handleChatHistoryRequest({
   };
   const agentIdOverride = normalizeOptionalText((params as { agentId?: string }).agentId);
   const requestedAgentId = resolveRequestedChatAgentId({
-    cfg: (context as { getRuntimeConfig?: () => OpenClawConfig }).getRuntimeConfig?.(),
+    cfg: (context as { getRuntimeConfig?: () => EVEConfig }).getRuntimeConfig?.(),
     requestedSessionKey: sessionKey,
     agentId: agentIdOverride,
   });
@@ -2850,7 +2850,7 @@ export const chatHandlers: GatewayRequestHandlers = {
     };
     const agentIdOverride = normalizeOptionalText((params as { agentId?: string }).agentId);
     const requestedAgentId = resolveRequestedChatAgentId({
-      cfg: (context as { getRuntimeConfig?: () => OpenClawConfig }).getRuntimeConfig?.(),
+      cfg: (context as { getRuntimeConfig?: () => EVEConfig }).getRuntimeConfig?.(),
       requestedSessionKey: sessionKey,
       agentId: agentIdOverride,
     });
@@ -3210,7 +3210,7 @@ export const chatHandlers: GatewayRequestHandlers = {
     const agentIdOverride = normalizeOptionalText(p.agentId);
     const clientRunId = p.idempotencyKey;
     const requestedAgentId = resolveRequestedChatAgentId({
-      cfg: (context as { getRuntimeConfig?: () => OpenClawConfig }).getRuntimeConfig?.(),
+      cfg: (context as { getRuntimeConfig?: () => EVEConfig }).getRuntimeConfig?.(),
       requestedSessionKey: rawSessionKey,
       agentId: agentIdOverride,
     });
@@ -3456,7 +3456,7 @@ export const chatHandlers: GatewayRequestHandlers = {
               explicitOriginTargetsAcpSession(explicitOriginResult.value) ||
               explicitOriginTargetsPlugin;
             // Bound plugin sessions own the real recipient model, so keep image
-            // attachments even when the parent OpenClaw session model is text-only.
+            // attachments even when the parent EVE session model is text-only.
             const supportsImages = supportsSessionModelImages || explicitOriginSupportsInlineImages;
             const routeImageOffloadsAsMediaPaths = !supportsImages;
             const parsed = await parseMessageWithAttachments(
@@ -3647,7 +3647,7 @@ export const chatHandlers: GatewayRequestHandlers = {
       // identical bytes on the wire. BodyForAgent uses the same bare text as
       // Body; the transient gateway stamp is removed (stamping the live turn
       // here would diverge from bare stored history and bust the prompt cache).
-      // See: https://github.com/openclaw/openclaw/issues/3658
+      // See: https://github.com/engsathiago/eve-agent/issues/3658
       const ctx: MsgContext = {
         Body: messageForAgent,
         BodyForAgent: messageForAgent,
@@ -4064,7 +4064,7 @@ export const chatHandlers: GatewayRequestHandlers = {
               }
               let broadcastedSourceReplyFinal = false;
               // WebChat persistence has two owners. Agent runs persist model-visible turns
-              // through OpenClaw runtime's SessionManager; this dispatcher only owns live delivery payloads.
+              // through EVE runtime's SessionManager; this dispatcher only owns live delivery payloads.
               // Do not blindly mirror agent-run final payloads into JSONL or chat.history can
               // duplicate normal embedded-agent assistant turns. The non-agent branch below has no
               // runtime-owned assistant turn, so it appends a gateway-injected assistant entry before
@@ -4516,7 +4516,7 @@ export const chatHandlers: GatewayRequestHandlers = {
                         ...(fallbackText ? { text: fallbackText } : {}),
                         timestamp: nowValue,
                         ...(ttsSupplementMarker
-                          ? { openclawTtsSupplement: ttsSupplementMarker }
+                          ? { eveTtsSupplement: ttsSupplementMarker }
                           : {}),
                         // Keep this compatible with runner stopReason enums even though this message isn't
                         // persisted to the transcript due to the append failure.
@@ -5024,7 +5024,7 @@ export const chatHandlers: GatewayRequestHandlers = {
     // Load session to find transcript file
     const rawSessionKey = p.sessionKey;
     const requestedAgentId = resolveRequestedChatAgentId({
-      cfg: (context as { getRuntimeConfig?: () => OpenClawConfig }).getRuntimeConfig?.(),
+      cfg: (context as { getRuntimeConfig?: () => EVEConfig }).getRuntimeConfig?.(),
       requestedSessionKey: rawSessionKey,
       agentId: p.agentId,
     });

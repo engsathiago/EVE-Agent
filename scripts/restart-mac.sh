@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
-# Reset OpenClaw like Trimmy: kill running instances, rebuild, repackage, relaunch, verify.
+# Reset EVE like Trimmy: kill running instances, rebuild, repackage, relaunch, verify.
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/scripts/lib/restart-mac-gateway.sh"
-APP_BUNDLE="${OPENCLAW_APP_BUNDLE:-}"
-APP_EXECUTABLE_RELATIVE_PATH="Contents/MacOS/OpenClaw"
-DEBUG_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build/debug/OpenClaw"
-LOCAL_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build-local/debug/OpenClaw"
-RELEASE_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build/release/OpenClaw"
-LAUNCH_AGENT="${HOME}/Library/LaunchAgents/ai.openclaw.mac.plist"
+APP_BUNDLE="${EVE_APP_BUNDLE:-}"
+APP_EXECUTABLE_RELATIVE_PATH="Contents/MacOS/EVE"
+DEBUG_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build/debug/EVE"
+LOCAL_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build-local/debug/EVE"
+RELEASE_PROCESS_PATTERN="${ROOT_DIR}/apps/macos/.build/release/EVE"
+LAUNCH_AGENT="${HOME}/Library/LaunchAgents/ai.eve.mac.plist"
 LOCK_KEY="$(printf '%s' "${ROOT_DIR}" | shasum -a 256 | cut -c1-8)"
-LOCK_DIR="${TMPDIR:-/tmp}/openclaw-restart-${LOCK_KEY}"
+LOCK_DIR="${TMPDIR:-/tmp}/eve-restart-${LOCK_KEY}"
 LOCK_PID_FILE="${LOCK_DIR}/pid"
 WAIT_FOR_LOCK=0
-LOG_PATH="${OPENCLAW_RESTART_LOG:-${TMPDIR:-/tmp}/openclaw-restart-${LOCK_KEY}.log}"
+LOG_PATH="${EVE_RESTART_LOG:-${TMPDIR:-/tmp}/eve-restart-${LOCK_KEY}.log}"
 NO_SIGN=0
 SIGN=0
 AUTO_DETECT_SIGNING=1
-GATEWAY_WAIT_SECONDS="${OPENCLAW_GATEWAY_WAIT_SECONDS:-0}"
-LAUNCHAGENT_DISABLE_MARKER="${HOME}/.openclaw/disable-launchagent"
+GATEWAY_WAIT_SECONDS="${EVE_GATEWAY_WAIT_SECONDS:-0}"
+LAUNCHAGENT_DISABLE_MARKER="${HOME}/.eve/disable-launchagent"
 ATTACH_ONLY=1
 
 log()  { printf '%s\n' "$*"; }
@@ -81,7 +81,7 @@ canonicalize_app_bundle() {
     return 0
   fi
   if [[ ! -d "${APP_BUNDLE}" ]]; then
-    fail "OPENCLAW_APP_BUNDLE does not exist: ${APP_BUNDLE}"
+    fail "EVE_APP_BUNDLE does not exist: ${APP_BUNDLE}"
   fi
   APP_BUNDLE="$(cd "${APP_BUNDLE}" && pwd -P)"
 }
@@ -104,14 +104,14 @@ for arg in "$@"; do
       log "  --no-attach-only Launch app without attach-only override"
       log ""
       log "Env:"
-      log "  OPENCLAW_GATEWAY_WAIT_SECONDS=0  Wait time before gateway port check (unsigned only)"
+      log "  EVE_GATEWAY_WAIT_SECONDS=0  Wait time before gateway port check (unsigned only)"
       log ""
       log "Unsigned recovery:"
-      log "  node openclaw.mjs daemon install --force --runtime node"
-      log "  node openclaw.mjs daemon restart"
+      log "  node eve.mjs daemon install --force --runtime node"
+      log "  node eve.mjs daemon restart"
       log ""
       log "Reset unsigned overrides:"
-      log "  rm ~/.openclaw/disable-launchagent"
+      log "  rm ~/.eve/disable-launchagent"
       log ""
       log "Default behavior: Auto-detect signing keys, fallback to --no-sign if none found"
       exit 0
@@ -139,10 +139,10 @@ fi
 
 acquire_lock
 
-kill_all_openclaw() {
+kill_all_eve() {
   for _ in {1..10}; do
     local pids=""
-    pids="$(openclaw_process_pids)"
+    pids="$(eve_process_pids)"
     if [[ -z "${pids}" ]]; then
       return 0
     fi
@@ -151,27 +151,27 @@ kill_all_openclaw() {
     done <<< "${pids}"
     sleep 0.3
   done
-  [[ -z "$(openclaw_process_pids)" ]]
+  [[ -z "$(eve_process_pids)" ]]
 }
 
-known_openclaw_executables() {
+known_eve_executables() {
   if [[ -n "${APP_BUNDLE}" ]]; then
     printf '%s\n' "${APP_BUNDLE}/${APP_EXECUTABLE_RELATIVE_PATH}"
   fi
   printf '%s\n' \
-    "${ROOT_DIR}/dist/OpenClaw.app/${APP_EXECUTABLE_RELATIVE_PATH}" \
-    "/Applications/OpenClaw.app/${APP_EXECUTABLE_RELATIVE_PATH}" \
+    "${ROOT_DIR}/dist/EVE.app/${APP_EXECUTABLE_RELATIVE_PATH}" \
+    "/Applications/EVE.app/${APP_EXECUTABLE_RELATIVE_PATH}" \
     "${DEBUG_PROCESS_PATTERN}" \
     "${LOCAL_PROCESS_PATTERN}" \
     "${RELEASE_PROCESS_PATTERN}"
 }
 
-openclaw_process_pids() {
+eve_process_pids() {
   local pattern=""
   while IFS= read -r pattern; do
     [[ -n "${pattern}" ]] || continue
     process_pids_matching "${pattern}"
-  done < <(known_openclaw_executables) | sort -u
+  done < <(known_eve_executables) | sort -u
 }
 
 process_pids_matching() {
@@ -186,14 +186,14 @@ process_pids_matching() {
 }
 
 stop_launch_agent() {
-  launchctl bootout gui/"$UID"/ai.openclaw.mac 2>/dev/null || true
+  launchctl bootout gui/"$UID"/ai.eve.mac 2>/dev/null || true
 }
 
 # 1) Stop launchd supervision, then kill all running instances.
 stop_launch_agent
-log "==> Killing existing OpenClaw instances"
-if ! kill_all_openclaw; then
-  fail "OpenClaw instances did not exit after cleanup attempts"
+log "==> Killing existing EVE instances"
+if ! kill_all_eve; then
+  fail "EVE instances did not exit after cleanup attempts"
 fi
 
 # Bundle Gateway-hosted plugin assets.
@@ -201,7 +201,7 @@ run_step "bundle plugin assets" bash -lc "cd '${ROOT_DIR}' && pnpm plugins:asset
 
 # 2) Rebuild into the same path the packager consumes (.build).
 run_step "clean build cache" bash -lc "cd '${ROOT_DIR}/apps/macos' && rm -rf .build .build-swift .swiftpm 2>/dev/null || true"
-run_step "swift build" bash -lc "cd '${ROOT_DIR}/apps/macos' && swift build -q --product OpenClaw"
+run_step "swift build" bash -lc "cd '${ROOT_DIR}/apps/macos' && swift build -q --product EVE"
 
 if [ "$AUTO_DETECT_SIGNING" -eq 1 ]; then
   if check_signing_keys; then
@@ -216,7 +216,7 @@ fi
 if [ "$NO_SIGN" -eq 1 ]; then
   export ALLOW_ADHOC_SIGNING=1
   export SIGN_IDENTITY="-"
-  mkdir -p "${HOME}/.openclaw"
+  mkdir -p "${HOME}/.eve"
   run_step "disable launchagent writes" /usr/bin/touch "${LAUNCHAGENT_DISABLE_MARKER}"
 elif [ "$SIGN" -eq 1 ]; then
   if ! check_signing_keys; then
@@ -235,20 +235,20 @@ choose_app_bundle() {
     return 0
   fi
 
-  if [[ -d "${ROOT_DIR}/dist/OpenClaw.app" ]]; then
-    APP_BUNDLE="$(cd "${ROOT_DIR}/dist/OpenClaw.app" && pwd -P)"
+  if [[ -d "${ROOT_DIR}/dist/EVE.app" ]]; then
+    APP_BUNDLE="$(cd "${ROOT_DIR}/dist/EVE.app" && pwd -P)"
     if [[ ! -d "${APP_BUNDLE}/Contents/Frameworks/Sparkle.framework" ]]; then
-      fail "dist/OpenClaw.app missing Sparkle after packaging"
+      fail "dist/EVE.app missing Sparkle after packaging"
     fi
     return 0
   fi
 
-  if [[ -d "/Applications/OpenClaw.app" ]]; then
-    APP_BUNDLE="$(cd "/Applications/OpenClaw.app" && pwd -P)"
+  if [[ -d "/Applications/EVE.app" ]]; then
+    APP_BUNDLE="$(cd "/Applications/EVE.app" && pwd -P)"
     return 0
   fi
 
-  fail "App bundle not found. Set OPENCLAW_APP_BUNDLE to your installed OpenClaw.app"
+  fail "App bundle not found. Set EVE_APP_BUNDLE to your installed EVE.app"
 }
 
 choose_app_bundle
@@ -261,8 +261,8 @@ fi
 # When unsigned, ensure the gateway LaunchAgent targets the repo CLI (before the app launches).
 # This reduces noisy "could not connect" errors during app startup.
 if [ "$NO_SIGN" -eq 1 ] && [ "$ATTACH_ONLY" -ne 1 ]; then
-  run_step "install gateway launch agent (unsigned)" bash -lc "cd '${ROOT_DIR}' && node openclaw.mjs daemon install --force --runtime node"
-  run_step "restart gateway daemon (unsigned)" bash -lc "cd '${ROOT_DIR}' && node openclaw.mjs daemon restart"
+  run_step "install gateway launch agent (unsigned)" bash -lc "cd '${ROOT_DIR}' && node eve.mjs daemon install --force --runtime node"
+  run_step "restart gateway daemon (unsigned)" bash -lc "cd '${ROOT_DIR}' && node eve.mjs daemon restart"
   if [[ "${GATEWAY_WAIT_SECONDS}" -gt 0 ]]; then
     run_step "wait for gateway (unsigned)" sleep "${GATEWAY_WAIT_SECONDS}"
   fi
@@ -271,7 +271,7 @@ if [ "$NO_SIGN" -eq 1 ] && [ "$ATTACH_ONLY" -ne 1 ]; then
       const fs = require("node:fs");
       const path = require("node:path");
       try {
-        const raw = fs.readFileSync(path.join(process.env.HOME, ".openclaw", "openclaw.json"), "utf8");
+        const raw = fs.readFileSync(path.join(process.env.HOME, ".eve", "eve.json"), "utf8");
         const cfg = JSON.parse(raw);
         const port = cfg && cfg.gateway && typeof cfg.gateway.port === "number" ? cfg.gateway.port : 18789;
         process.stdout.write(String(port));
@@ -303,11 +303,11 @@ run_step "launch app" env -i \
 # 5) Verify the app is alive.
 sleep 1.5
 if [[ -n "$(process_pids_matching "${APP_BUNDLE}/${APP_EXECUTABLE_RELATIVE_PATH}")" ]]; then
-  log "OK: OpenClaw is running."
+  log "OK: EVE is running."
 else
   fail "App exited immediately. Check ${LOG_PATH} or Console.app (User Reports)."
 fi
 
 if [ "$NO_SIGN" -eq 1 ] && [ "$ATTACH_ONLY" -ne 1 ]; then
-  run_step "show gateway launch agent args (unsigned)" bash -lc "/usr/bin/plutil -p '${HOME}/Library/LaunchAgents/ai.openclaw.gateway.plist' | head -n 40 || true"
+  run_step "show gateway launch agent args (unsigned)" bash -lc "/usr/bin/plutil -p '${HOME}/Library/LaunchAgents/ai.eve.gateway.plist' | head -n 40 || true"
 fi

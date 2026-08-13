@@ -1,5 +1,5 @@
 // Covers channel catalog registry loading and reset behavior.
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import type { PluginCandidate, PluginDiscoveryResult } from "./discovery.js";
@@ -11,15 +11,15 @@ afterEach(() => {
   vi.doUnmock("./installed-plugin-index-record-reader.js");
 });
 
-const ENV: NodeJS.ProcessEnv = { HOME: "/tmp/openclaw-test-home" };
+const ENV: NodeJS.ProcessEnv = { HOME: "/tmp/eve-test-home" };
 let loadCase = 0;
 
 const RECORDS: Record<string, PluginInstallRecord> = {
   weixin: {
     source: "npm",
-    spec: "@tencent-weixin/openclaw-weixin@2.3.7",
+    spec: "@tencent-weixin/eve-weixin@2.3.7",
     installPath:
-      "/tmp/openclaw-test-home/.openclaw/npm/node_modules/@tencent-weixin/openclaw-weixin",
+      "/tmp/eve-test-home/.eve/npm/node_modules/@tencent-weixin/eve-weixin",
   } as PluginInstallRecord,
 };
 
@@ -42,7 +42,7 @@ async function loadWithMocks(params: {
     return params.loadRecords ? params.loadRecords(opts.env) : RECORDS;
   });
 
-  vi.doMock("./discovery.js", () => ({ discoverOpenClawPlugins: discoverSpy }));
+  vi.doMock("./discovery.js", () => ({ discoverEVEPlugins: discoverSpy }));
   vi.doMock("./installed-plugin-index-record-reader.js", () => ({
     loadInstalledPluginIndexInstallRecordsSync: loadRecordsSpy,
   }));
@@ -74,10 +74,10 @@ function createChannelCandidate(params: {
 }): PluginCandidate {
   return {
     idHint: params.idHint ?? "hint-plugin",
-    source: "/tmp/openclaw-test-plugin/index.js",
-    rootDir: "/tmp/openclaw-test-plugin",
+    source: "/tmp/eve-test-plugin/index.js",
+    rootDir: "/tmp/eve-test-plugin",
     origin: params.origin ?? "global",
-    packageName: "@vendor/openclaw-test-plugin",
+    packageName: "@vendor/eve-test-plugin",
     packageManifest: {
       ...(params.pluginId ? { plugin: { id: params.pluginId } } : {}),
       channel: {
@@ -122,7 +122,7 @@ describe("listChannelCatalogEntries", () => {
     const supplied: Record<string, PluginInstallRecord> = {
       slack: {
         source: "npm",
-        spec: "@openclaw/slack@1.0.0",
+        spec: "@eve/slack@1.0.0",
       } as PluginInstallRecord,
     };
 
@@ -193,9 +193,9 @@ describe("listChannelCatalogEntries", () => {
       {
         pluginId: "package-plugin",
         origin: "global",
-        packageName: "@vendor/openclaw-test-plugin",
+        packageName: "@vendor/eve-test-plugin",
         workspaceDir: undefined,
-        rootDir: "/tmp/openclaw-test-plugin",
+        rootDir: "/tmp/eve-test-plugin",
         channel: {
           id: "test-channel",
           name: "Test Channel",

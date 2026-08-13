@@ -2,7 +2,7 @@
 import {
   expectProviderOnboardAllowlistAlias,
   expectProviderOnboardPrimaryAndFallbacks,
-} from "openclaw/plugin-sdk/provider-test-contracts";
+} from "eve-agent/plugin-sdk/provider-test-contracts";
 import { describe, it } from "vitest";
 import { applyOpencodeZenConfig, applyOpencodeZenProviderConfig } from "./onboard.js";
 

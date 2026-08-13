@@ -1,15 +1,15 @@
 // Mattermost plugin module implements client behavior.
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { sleep } from "openclaw/plugin-sdk/runtime-env";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { sleep } from "eve-agent/plugin-sdk/runtime-env";
 import {
   fetchWithSsrFGuard,
   ssrfPolicyFromPrivateNetworkOptIn,
-} from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { z } from "zod";
 
 const MATTERMOST_ERROR_BODY_LIMIT_BYTES = 8 * 1024;

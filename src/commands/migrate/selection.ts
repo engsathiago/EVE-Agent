@@ -1,8 +1,8 @@
 /** Selection helpers for filtering migration plan items before apply. */
 import path from "node:path";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { markMigrationItemSkipped, summarizeMigrationItems } from "../../plugin-sdk/migration.js";
 import type { MigrationItem, MigrationPlan } from "../../plugins/types.js";
 import { MIGRATION_CONFLICT_REASON_PHRASES } from "./output.js";
@@ -10,9 +10,9 @@ import { MIGRATION_CONFLICT_REASON_PHRASES } from "./output.js";
 // Public selection tokens and skip reasons shared with prompt tests and apply filtering.
 export const MIGRATION_SKILL_NOT_SELECTED_REASON = "not selected for migration";
 export const MIGRATION_PLUGIN_NOT_SELECTED_REASON = "not selected for migration";
-export const MIGRATION_SELECTION_ACCEPT = "__openclaw_migrate_accept_recommended__";
-export const MIGRATION_SELECTION_TOGGLE_ALL_ON = "__openclaw_migrate_toggle_all_on__";
-export const MIGRATION_SELECTION_TOGGLE_ALL_OFF = "__openclaw_migrate_toggle_all_off__";
+export const MIGRATION_SELECTION_ACCEPT = "__eve_migrate_accept_recommended__";
+export const MIGRATION_SELECTION_TOGGLE_ALL_ON = "__eve_migrate_toggle_all_on__";
+export const MIGRATION_SELECTION_TOGGLE_ALL_OFF = "__eve_migrate_toggle_all_off__";
 export const MIGRATION_SKILL_SELECTION_ACCEPT = MIGRATION_SELECTION_ACCEPT;
 export const MIGRATION_SKILL_SELECTION_TOGGLE_ALL_ON = MIGRATION_SELECTION_TOGGLE_ALL_ON;
 export const MIGRATION_SKILL_SELECTION_TOGGLE_ALL_OFF = MIGRATION_SELECTION_TOGGLE_ALL_OFF;

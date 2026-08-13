@@ -2,7 +2,7 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 
 /** Options for choosing the unit used by bare numeric duration values. */
 export type DurationMsParseOptions = {

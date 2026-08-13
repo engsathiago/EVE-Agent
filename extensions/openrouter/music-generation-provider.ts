@@ -3,10 +3,10 @@ import type {
   MusicGenerationProvider,
   MusicGenerationRequest,
   MusicGenerationSourceImage,
-} from "openclaw/plugin-sdk/music-generation";
-import { resolvePositiveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
+} from "eve-agent/plugin-sdk/music-generation";
+import { resolvePositiveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { isProviderApiKeyConfigured } from "eve-agent/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "eve-agent/plugin-sdk/provider-auth-runtime";
 import {
   assertOkOrThrowHttpError,
   createProviderOperationDeadline,
@@ -14,8 +14,8 @@ import {
   resolveProviderHttpRequestConfig,
   resolveProviderOperationTimeoutMs,
   type ProviderOperationDeadline,
-} from "openclaw/plugin-sdk/provider-http";
-import { isRecord, normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-http";
+import { isRecord, normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { OPENROUTER_BASE_URL } from "./provider-catalog.js";
 
 const DEFAULT_OPENROUTER_MUSIC_MODEL = "google/lyria-3-pro-preview";
@@ -276,8 +276,8 @@ export function buildOpenRouterMusicGenerationProvider(): MusicGenerationProvide
           defaultHeaders: {
             Authorization: `Bearer ${auth.apiKey}`,
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://openclaw.ai",
-            "X-OpenRouter-Title": "OpenClaw",
+            "HTTP-Referer": "https://eve.ai",
+            "X-OpenRouter-Title": "EVE",
           },
           provider: "openrouter",
           capability: "audio",

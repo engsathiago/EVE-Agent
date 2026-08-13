@@ -7,7 +7,7 @@ import {
   resolveWorkspaceAttestationPaths,
   shouldRemoveWorkspaceAttestation,
 } from "../agents/workspace.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isPathInside } from "../infra/path-guards.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { resolveHomeDir, shortenHomeInString } from "../utils.js";
@@ -35,7 +35,7 @@ type StateRemovalOptions = {
   preservePaths?: readonly string[];
 };
 
-function collectWorkspaceDirs(cfg: OpenClawConfig | undefined): string[] {
+function collectWorkspaceDirs(cfg: EVEConfig | undefined): string[] {
   const dirs = new Set<string>();
   if (!cfg) {
     dirs.add(resolveDefaultAgentWorkspaceDir());
@@ -49,7 +49,7 @@ function collectWorkspaceDirs(cfg: OpenClawConfig | undefined): string[] {
 
 /** Determine which config, credential, and workspace paths cleanup should consider. */
 export function buildCleanupPlan(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   stateDir: string;
   configPath: string;
   oauthDir: string;

@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/github-copilot-provider",
+  "name": "@eve/github-copilot-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw GitHub Copilot provider plugin",
+  "description": "EVE GitHub Copilot provider plugin",
   "type": "module",
   "dependencies": {
     "@clack/prompts": "1.4.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

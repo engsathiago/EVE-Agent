@@ -6,8 +6,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { ProviderRuntimeModel } from "../plugins/provider-runtime-model.types.js";
 import { normalizeAgentRuntimeTools } from "./runtime-plan/tools.js";
 import { summarizeToolDescriptionText } from "./tool-description-summary.js";
@@ -97,7 +97,7 @@ function buildMcpToolInventoryEntries(
 /** Builds the runtime-compatible MCP tool inventory and quarantine notices. */
 export function buildRuntimeCompatibleMcpToolInventory(params: {
   tools: readonly AnyAgentTool[];
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   workspaceDir?: string;
   modelProvider?: string;
   modelId?: string;

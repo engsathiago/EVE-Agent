@@ -10,7 +10,7 @@ const HOME_ENV_KEYS = [
   "USERPROFILE",
   "HOMEDRIVE",
   "HOMEPATH",
-  "OPENCLAW_STATE_DIR",
+  "EVE_STATE_DIR",
 ] as const;
 
 export type TempHomeEnv = {
@@ -43,18 +43,18 @@ async function ensurePrefixRoot(prefix: string): Promise<string> {
   }
 }
 
-/** Creates a temporary OpenClaw home and process env override for stateful tests. */
+/** Creates a temporary EVE home and process env override for stateful tests. */
 export async function createTempHomeEnv(prefix: string): Promise<TempHomeEnv> {
   const prefixRoot = await ensurePrefixRoot(prefix);
   const home = path.join(prefixRoot, `home-${String(nextHomeIndex)}`);
   nextHomeIndex += 1;
   await fs.rm(home, { recursive: true, force: true });
-  await fs.mkdir(path.join(home, ".openclaw"), { recursive: true });
+  await fs.mkdir(path.join(home, ".eve"), { recursive: true });
 
   const snapshot = captureEnv([...HOME_ENV_KEYS]);
   process.env.HOME = home;
   process.env.USERPROFILE = home;
-  process.env.OPENCLAW_STATE_DIR = path.join(home, ".openclaw");
+  process.env.EVE_STATE_DIR = path.join(home, ".eve");
 
   if (process.platform === "win32") {
     const match = home.match(/^([A-Za-z]:)(.*)$/);

@@ -18,7 +18,7 @@ describe("resolveWindowsSpawnProgram", () => {
   it("rejects node command strings that include inline entrypoint arguments on Windows", () => {
     expect(() =>
       resolveWindowsSpawnProgram({
-        command: "node C:\\Users\\me\\.openclaw\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
+        command: "node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
         platform: "win32",
         env: {},
         execPath: "C:\\node\\node.exe",
@@ -43,7 +43,7 @@ describe("resolveWindowsSpawnProgram", () => {
   });
 
   it("fails closed by default for unresolved windows wrappers", async () => {
-    const dir = await createTempDir("openclaw-windows-spawn-test-");
+    const dir = await createTempDir("eve-windows-spawn-test-");
     const shimPath = path.join(dir, "wrapper.cmd");
     await writeFile(shimPath, "@ECHO off\r\necho wrapper\r\n", "utf8");
 
@@ -58,7 +58,7 @@ describe("resolveWindowsSpawnProgram", () => {
   });
 
   it("only returns shell fallback when explicitly opted in", async () => {
-    const dir = await createTempDir("openclaw-windows-spawn-test-");
+    const dir = await createTempDir("eve-windows-spawn-test-");
     const shimPath = path.join(dir, "wrapper.cmd");
     await writeFile(shimPath, "@ECHO off\r\necho wrapper\r\n", "utf8");
 

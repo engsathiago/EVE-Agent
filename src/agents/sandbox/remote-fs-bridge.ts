@@ -458,13 +458,13 @@ class RemoteShellSandboxFsBridge implements SandboxFsBridge {
     const roots = [
       path.posix.join(workspaceContainerRoot, "skills"),
       path.posix.join(workspaceContainerRoot, ".agents", "skills"),
-      path.posix.join(workspaceContainerRoot, ".openclaw", "sandbox-skills", "skills"),
+      path.posix.join(workspaceContainerRoot, ".eve", "sandbox-skills", "skills"),
     ];
     if (path.resolve(this.sandbox.agentWorkspaceDir) !== path.resolve(this.sandbox.workspaceDir)) {
       roots.push(
         path.posix.join(agentContainerRoot, "skills"),
         path.posix.join(agentContainerRoot, ".agents", "skills"),
-        path.posix.join(agentContainerRoot, ".openclaw", "sandbox-skills", "skills"),
+        path.posix.join(agentContainerRoot, ".eve", "sandbox-skills", "skills"),
       );
     }
     return roots;
@@ -662,7 +662,7 @@ function buildRemoteProtectedSkillMounts(params: {
       localRoot: path.join(materializedSkillsWorkspaceDir, "skills"),
       containerRoot: path.posix.join(
         params.workspaceContainerRoot,
-        ".openclaw",
+        ".eve",
         "sandbox-skills",
         "skills",
       ),
@@ -691,7 +691,7 @@ function buildRemoteProtectedSkillMounts(params: {
         localRoot: path.join(materializedSkillsWorkspaceDir, "skills"),
         containerRoot: path.posix.join(
           params.agentContainerRoot,
-          ".openclaw",
+          ".eve",
           "sandbox-skills",
           "skills",
         ),

@@ -1,14 +1,14 @@
 /**
  * Codex provider plugin and live app-server model catalog discovery.
  */
-import { createSubsystemLogger } from "openclaw/plugin-sdk/core";
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/core";
+import { resolvePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   normalizeModelCompat,
   type ModelProviderConfig,
   type ProviderPlugin,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import { resolveCodexSystemPromptContribution } from "./prompt-overlay.js";
 import {
   buildCodexModelDefinition,
@@ -30,7 +30,7 @@ import type {
 import { buildCodexAppServerUsageSnapshot } from "./src/app-server/rate-limits.js";
 
 const DEFAULT_DISCOVERY_TIMEOUT_MS = 2500;
-const LIVE_DISCOVERY_ENV = "OPENCLAW_CODEX_DISCOVERY_LIVE";
+const LIVE_DISCOVERY_ENV = "EVE_CODEX_DISCOVERY_LIVE";
 const MODEL_DISCOVERY_PAGE_LIMIT = 100;
 const CODEX_APP_SERVER_SETUP_METHOD_ID = "app-server";
 const CODEX_DEFAULT_MODEL_REF = `${CODEX_PROVIDER_ID}/${FALLBACK_CODEX_MODELS[0].id}`;

@@ -3,27 +3,27 @@
  * Protects runtime-generated prompt blocks from user text and removes old
  * context formats before replaying or comparing messages.
  */
-/** Opening delimiter for protected OpenClaw runtime context blocks. */
-export const INTERNAL_RUNTIME_CONTEXT_BEGIN = "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>";
-/** Closing delimiter for protected OpenClaw runtime context blocks. */
-export const INTERNAL_RUNTIME_CONTEXT_END = "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+/** Opening delimiter for protected EVE runtime context blocks. */
+export const INTERNAL_RUNTIME_CONTEXT_BEGIN = "<<<BEGIN_EVE_INTERNAL_CONTEXT>>>";
+/** Closing delimiter for protected EVE runtime context blocks. */
+export const INTERNAL_RUNTIME_CONTEXT_END = "<<<END_EVE_INTERNAL_CONTEXT>>>";
 
-const ESCAPED_INTERNAL_RUNTIME_CONTEXT_BEGIN = "[[OPENCLAW_INTERNAL_CONTEXT_BEGIN]]";
-const ESCAPED_INTERNAL_RUNTIME_CONTEXT_END = "[[OPENCLAW_INTERNAL_CONTEXT_END]]";
+const ESCAPED_INTERNAL_RUNTIME_CONTEXT_BEGIN = "[[EVE_INTERNAL_CONTEXT_BEGIN]]";
+const ESCAPED_INTERNAL_RUNTIME_CONTEXT_END = "[[EVE_INTERNAL_CONTEXT_END]]";
 
 /** Notice inserted into runtime-generated context blocks. */
-export const OPENCLAW_RUNTIME_CONTEXT_NOTICE =
+export const EVE_RUNTIME_CONTEXT_NOTICE =
   "This context is runtime-generated, not user-authored. Keep internal details private.";
 /** Header for context attached to the immediately preceding user message. */
-export const OPENCLAW_NEXT_TURN_RUNTIME_CONTEXT_HEADER =
-  "OpenClaw runtime context for the immediately preceding user message.";
+export const EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER =
+  "EVE runtime context for the immediately preceding user message.";
 /** Header for runtime events passed as prompt context. */
-export const OPENCLAW_RUNTIME_EVENT_HEADER = "OpenClaw runtime event.";
+export const EVE_RUNTIME_EVENT_HEADER = "EVE runtime event.";
 /** Custom message type used for structured runtime-context messages. */
-export const OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE = "openclaw.runtime-context";
+export const EVE_RUNTIME_CONTEXT_CUSTOM_TYPE = "eve.runtime-context";
 
 const LEGACY_INTERNAL_CONTEXT_HEADER =
-  ["OpenClaw runtime context (internal):", OPENCLAW_RUNTIME_CONTEXT_NOTICE, ""].join("\n") + "\n";
+  ["EVE runtime context (internal):", EVE_RUNTIME_CONTEXT_NOTICE, ""].join("\n") + "\n";
 
 const LEGACY_INTERNAL_EVENT_MARKER = "[Internal task completion event]";
 const LEGACY_INTERNAL_EVENT_SEPARATOR = "\n\n---\n\n";
@@ -182,7 +182,7 @@ function stripLegacyInternalRuntimeContext(text: string): string {
 
 function isRuntimeContextPromptHeader(line: string): boolean {
   return (
-    line === OPENCLAW_NEXT_TURN_RUNTIME_CONTEXT_HEADER || line === OPENCLAW_RUNTIME_EVENT_HEADER
+    line === EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER || line === EVE_RUNTIME_EVENT_HEADER
   );
 }
 
@@ -196,7 +196,7 @@ function stripRuntimeContextPromptPreface(text: string): string {
     const nextLine = lines[index + 1] ?? "";
     if (
       isRuntimeContextPromptHeader(line.trim()) &&
-      nextLine.trim() === OPENCLAW_RUNTIME_CONTEXT_NOTICE
+      nextLine.trim() === EVE_RUNTIME_CONTEXT_NOTICE
     ) {
       changed = true;
       index += 1;
@@ -256,28 +256,28 @@ export function hasInternalRuntimeContext(text: string): boolean {
     findDelimitedTokenIndex(text, INTERNAL_RUNTIME_CONTEXT_BEGIN, 0) !== -1 ||
     text.includes(LEGACY_INTERNAL_CONTEXT_HEADER) ||
     text.includes(
-      `${OPENCLAW_NEXT_TURN_RUNTIME_CONTEXT_HEADER}\n${OPENCLAW_RUNTIME_CONTEXT_NOTICE}`,
+      `${EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER}\n${EVE_RUNTIME_CONTEXT_NOTICE}`,
     ) ||
-    text.includes(`${OPENCLAW_RUNTIME_EVENT_HEADER}\n${OPENCLAW_RUNTIME_CONTEXT_NOTICE}`)
+    text.includes(`${EVE_RUNTIME_EVENT_HEADER}\n${EVE_RUNTIME_CONTEXT_NOTICE}`)
   );
 }
 
-function isOpenClawRuntimeContextCustomMessage(message: unknown): boolean {
+function isEVERuntimeContextCustomMessage(message: unknown): boolean {
   if (!message || typeof message !== "object") {
     return false;
   }
   const candidate = message as { role?: unknown; customType?: unknown };
   return (
-    candidate.role === "custom" && candidate.customType === OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE
+    candidate.role === "custom" && candidate.customType === EVE_RUNTIME_CONTEXT_CUSTOM_TYPE
   );
 }
 
 /** Remove all structured runtime-context custom messages. */
 export function stripRuntimeContextCustomMessages<T>(messages: T[]): T[] {
-  if (!messages.some(isOpenClawRuntimeContextCustomMessage)) {
+  if (!messages.some(isEVERuntimeContextCustomMessage)) {
     return messages;
   }
-  return messages.filter((message) => !isOpenClawRuntimeContextCustomMessage(message));
+  return messages.filter((message) => !isEVERuntimeContextCustomMessage(message));
 }
 
 function isUserMessage(message: unknown): boolean {
@@ -288,22 +288,22 @@ function isUserMessage(message: unknown): boolean {
 
 /** Keeps only current-turn runtime context positioned immediately before the active user. */
 export function stripHistoricalRuntimeContextCustomMessages<T>(messages: T[]): T[] {
-  if (!messages.some(isOpenClawRuntimeContextCustomMessage)) {
+  if (!messages.some(isEVERuntimeContextCustomMessage)) {
     return messages;
   }
   const lastUserIndex = messages.findLastIndex(isUserMessage);
   if (lastUserIndex === -1) {
-    return messages.filter((message) => !isOpenClawRuntimeContextCustomMessage(message));
+    return messages.filter((message) => !isEVERuntimeContextCustomMessage(message));
   }
   const currentRuntimeContextIndexes = new Set<number>();
   for (let index = lastUserIndex - 1; index >= 0; index -= 1) {
-    if (!isOpenClawRuntimeContextCustomMessage(messages[index])) {
+    if (!isEVERuntimeContextCustomMessage(messages[index])) {
       break;
     }
     currentRuntimeContextIndexes.add(index);
   }
   return messages.filter((message, index) => {
-    if (!isOpenClawRuntimeContextCustomMessage(message)) {
+    if (!isEVERuntimeContextCustomMessage(message)) {
       return true;
     }
     return currentRuntimeContextIndexes.has(index);

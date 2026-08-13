@@ -1,10 +1,10 @@
 /**
  * Native Anthropic Messages streaming transport.
- * Converts OpenClaw contexts/tools into Anthropic payloads, streams SSE events
+ * Converts EVE contexts/tools into Anthropic payloads, streams SSE events
  * back into runtime output blocks, and applies provider request policy.
  */
-import { readResponseTextSnippet } from "@openclaw/media-core/read-response-with-limit";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { readResponseTextSnippet } from "@eve/media-core/read-response-with-limit";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { getEnvApiKey } from "../llm/env-api-keys.js";
 import { calculateCost, clampThinkingLevel } from "../llm/model-utils.js";
 import {

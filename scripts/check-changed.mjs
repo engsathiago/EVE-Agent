@@ -58,9 +58,9 @@ export function createChangedCheckChildEnv(baseEnv = process.env) {
   const resolvedBaseEnv = resolveLocalHeavyCheckEnv(baseEnv);
   return {
     ...resolvedBaseEnv,
-    OPENCLAW_OXLINT_SKIP_LOCK: "1",
-    OPENCLAW_TEST_HEAVY_CHECK_LOCK_HELD: "1",
-    OPENCLAW_TSGO_HEAVY_CHECK_LOCK_HELD: "1",
+    EVE_OXLINT_SKIP_LOCK: "1",
+    EVE_TEST_HEAVY_CHECK_LOCK_HELD: "1",
+    EVE_TSGO_HEAVY_CHECK_LOCK_HELD: "1",
   };
 }
 
@@ -105,7 +105,7 @@ export function shouldSkipAppLintForMissingSwiftlint(options = {}) {
 }
 
 export function shouldDelegateChangedCheckToCrabbox(argv = [], env = process.env) {
-  if (isTruthyEnvFlag(env.OPENCLAW_CHECK_CHANGED_REMOTE_CHILD)) {
+  if (isTruthyEnvFlag(env.EVE_CHECK_CHANGED_REMOTE_CHILD)) {
     return false;
   }
   if (isTruthyEnvFlag(env.CI) || isTruthyEnvFlag(env.GITHUB_ACTIONS)) {
@@ -125,7 +125,7 @@ export function buildChangedCheckCrabboxArgs(argv = [], options = {}) {
     "--provider",
     "blacksmith-testbox",
     "--blacksmith-org",
-    "openclaw",
+    "eve",
     "--blacksmith-workflow",
     ".github/workflows/ci-check-testbox.yml",
     "--blacksmith-job",
@@ -139,8 +139,8 @@ export function buildChangedCheckCrabboxArgs(argv = [], options = {}) {
     "--timing-json",
     "--",
     "env",
-    "OPENCLAW_CHECK_CHANGED_REMOTE_CHILD=1",
-    "OPENCLAW_CHANGED_LANES_RAW_SYNC=1",
+    "EVE_CHECK_CHANGED_REMOTE_CHILD=1",
+    "EVE_CHANGED_LANES_RAW_SYNC=1",
     "CI=1",
     "PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false",
     "corepack",
@@ -379,8 +379,8 @@ export function createChangedCheckPlan(result, options = {}) {
     addCommand("live Docker shell syntax", "bash", ["-n", ...LIVE_DOCKER_AUTH_SHELL_TARGETS]);
     addCommand("live Docker scheduler dry run", "node", ["scripts/test-docker-all.mjs"], {
       ...baseEnv,
-      OPENCLAW_DOCKER_ALL_DRY_RUN: "1",
-      OPENCLAW_DOCKER_ALL_LIVE_MODE: "only",
+      EVE_DOCKER_ALL_DRY_RUN: "1",
+      EVE_DOCKER_ALL_LIVE_MODE: "only",
     });
   }
 
@@ -511,7 +511,7 @@ function ensureCorepackPnpmShimDir() {
   if (corepackPnpmShimDir) {
     return corepackPnpmShimDir;
   }
-  const dir = mkdtempSync(path.join(tmpdir(), "openclaw-corepack-pnpm-"));
+  const dir = mkdtempSync(path.join(tmpdir(), "eve-corepack-pnpm-"));
   const pnpmPath = path.join(dir, "pnpm");
   writeFileSync(pnpmPath, '#!/bin/sh\nexec corepack pnpm "$@"\n', "utf8");
   chmodSync(pnpmPath, 0o755);

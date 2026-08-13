@@ -2,13 +2,13 @@
 import {
   createResolvedApproverActionAuthAdapter,
   resolveApprovalApprovers,
-} from "openclaw/plugin-sdk/approval-auth-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/approval-auth-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveSlackAccount, resolveSlackAccountAllowFrom } from "./accounts.js";
 import { normalizeSlackApproverId } from "./exec-approvals.js";
 
 export function getSlackApprovalApprovers(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): string[] {
   const account = resolveSlackAccount(params).config;
@@ -21,7 +21,7 @@ export function getSlackApprovalApprovers(params: {
 }
 
 export function isSlackApprovalAuthorizedSender(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   senderId?: string | null;
 }): boolean {

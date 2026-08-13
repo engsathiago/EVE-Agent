@@ -1,5 +1,5 @@
-// OpenClaw Gateway client facade.
-// Wraps the shared gateway-client package with OpenClaw host dependencies.
+// EVE Gateway client facade.
+// Wraps the shared gateway-client package with EVE host dependencies.
 import {
   GatewayClient as BaseGatewayClient,
   GATEWAY_CLOSE_CODE_HINTS as BASE_GATEWAY_CLOSE_CODE_HINTS,
@@ -165,11 +165,11 @@ export type GatewayClientConnectionMetadata = {
   preauthHandshakeTimeoutMs?: number;
 };
 
-function createOpenClawGatewayClientHostDeps(
+function createEVEGatewayClientHostDeps(
   overrides?: GatewayClientHostDeps,
 ): GatewayClientHostDeps {
   return {
-    // This wrapper is the only place the package reaches into OpenClaw runtime
+    // This wrapper is the only place the package reaches into EVE runtime
     // state. Keep device identity, token storage, proxy, and redaction here.
     loadOrCreateDeviceIdentity,
     signDevicePayload,
@@ -201,11 +201,11 @@ export class GatewayClient {
 
   constructor(opts: GatewayClientOptions) {
     // Inject host deps here so the reusable package stays decoupled from
-    // OpenClaw device identity, token storage, proxy routing, and logging.
+    // EVE device identity, token storage, proxy routing, and logging.
     this.#client = new BaseGatewayClient({
       ...opts,
       clientVersion: opts.clientVersion ?? VERSION,
-      hostDeps: createOpenClawGatewayClientHostDeps(opts.hostDeps),
+      hostDeps: createEVEGatewayClientHostDeps(opts.hostDeps),
     });
   }
 

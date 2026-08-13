@@ -31,8 +31,8 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     runRespawnChildWithSignalBridge({
       command: "/usr/bin/node",
-      args: ["/repo/openclaw/dist/entry.js"],
-      env: { OPENCLAW_NODE_OPTIONS_READY: "1" },
+      args: ["/repo/eve/dist/entry.js"],
+      env: { EVE_NODE_OPTIONS_READY: "1" },
       detachForProcessTree: true,
       stdioIsTerminal: false,
       runtime: {
@@ -45,10 +45,10 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     expect(spawnChild).toHaveBeenCalledWith(
       "/usr/bin/node",
-      ["/repo/openclaw/dist/entry.js"],
+      ["/repo/eve/dist/entry.js"],
       {
         stdio: "inherit",
-        env: { OPENCLAW_NODE_OPTIONS_READY: "1" },
+        env: { EVE_NODE_OPTIONS_READY: "1" },
         detached: process.platform !== "win32",
       },
     );
@@ -63,7 +63,7 @@ describe("runRespawnChildWithSignalBridge", () => {
     try {
       runRespawnChildWithSignalBridge({
         command: "/usr/bin/node",
-        args: ["/repo/openclaw/dist/entry.js"],
+        args: ["/repo/eve/dist/entry.js"],
         env: {},
         detachForProcessTree: true,
         stdioIsTerminal: false,
@@ -117,7 +117,7 @@ describe("runRespawnChildWithSignalBridge", () => {
     try {
       runRespawnChildWithSignalBridge({
         command: "/usr/bin/node",
-        args: ["/repo/openclaw/dist/entry.js"],
+        args: ["/repo/eve/dist/entry.js"],
         env: {},
         detachForProcessTree: true,
         stdioIsTerminal: false,
@@ -155,7 +155,7 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     runRespawnChildWithSignalBridge({
       command: "/usr/bin/node",
-      args: ["/repo/openclaw/dist/entry.js", "configure"],
+      args: ["/repo/eve/dist/entry.js", "configure"],
       env: {},
       detachForProcessTree: true,
       stdioIsTerminal: true,
@@ -169,7 +169,7 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     expect(spawnChild).toHaveBeenCalledWith(
       "/usr/bin/node",
-      ["/repo/openclaw/dist/entry.js", "configure"],
+      ["/repo/eve/dist/entry.js", "configure"],
       {
         stdio: "inherit",
         env: {},

@@ -1,11 +1,11 @@
 // Verifies channel guard behavior in plugin registry lookups.
 import { describe, expect, it } from "vitest";
 import type { ChannelPlugin } from "../channels/plugins/types.plugin.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createPluginRegistry } from "./registry.js";
 import type { PluginRuntime } from "./runtime/types.js";
 import { createPluginRecord } from "./status.test-helpers.js";
-import type { OpenClawPluginChannelRegistration } from "./types.js";
+import type { EVEPluginChannelRegistration } from "./types.js";
 
 function createTestRegistry() {
   return createPluginRegistry({
@@ -42,7 +42,7 @@ function createChannelPlugin(id: string, label: string): ChannelPlugin {
 describe("plugin registry channel guard", () => {
   it("rejects channel registration from disabled workspace plugins", () => {
     const pluginRegistry = createTestRegistry();
-    const config = {} as OpenClawConfig;
+    const config = {} as EVEConfig;
     const record = createPluginRecord({
       id: "workspace-shadow",
       source: "/plugins/workspace-shadow/index.ts",
@@ -71,7 +71,7 @@ describe("plugin registry channel guard", () => {
 
   it("rejects disabled workspace registration before reading channel data", () => {
     const pluginRegistry = createTestRegistry();
-    const config = {} as OpenClawConfig;
+    const config = {} as EVEConfig;
     const record = createPluginRecord({
       id: "workspace-shadow",
       source: "/plugins/workspace-shadow/index.ts",
@@ -79,7 +79,7 @@ describe("plugin registry channel guard", () => {
       enabled: false,
     });
     let touchedPluginGetter = false;
-    const registration = {} as OpenClawPluginChannelRegistration;
+    const registration = {} as EVEPluginChannelRegistration;
     Object.defineProperty(registration, "plugin", {
       enumerable: true,
       get() {
@@ -112,7 +112,7 @@ describe("plugin registry channel guard", () => {
 
   it("keeps channel registration available for trusted workspace plugins", () => {
     const pluginRegistry = createTestRegistry();
-    const config = {} as OpenClawConfig;
+    const config = {} as EVEConfig;
     const record = createPluginRecord({
       id: "trusted-workspace-shadow",
       source: "/plugins/trusted-workspace-shadow/index.ts",

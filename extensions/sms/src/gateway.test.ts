@@ -6,7 +6,7 @@ import type { ResolvedSmsAccount } from "./types.js";
 
 const registerPluginHttpRoute = vi.hoisted(() => vi.fn(() => vi.fn()));
 
-vi.mock("openclaw/plugin-sdk/webhook-ingress", () => ({
+vi.mock("eve-agent/plugin-sdk/webhook-ingress", () => ({
   createFixedWindowRateLimiter: () => ({
     clear: vi.fn(),
     isRateLimited: vi.fn(() => false),

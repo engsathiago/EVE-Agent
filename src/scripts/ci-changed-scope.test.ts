@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { bundledPluginFile } from "openclaw/plugin-sdk/test-fixtures";
+import { bundledPluginFile } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it } from "vitest";
 
 const {
@@ -172,7 +172,7 @@ describe("detectChangedScope", () => {
       runControlUiI18n: false,
     });
     expect(
-      detectChangedScope(["apps/macos-mlx-tts/Sources/OpenClawMLXTTSHelper/main.swift"]),
+      detectChangedScope(["apps/macos-mlx-tts/Sources/EVEMLXTTSHelper/main.swift"]),
     ).toEqual({
       runNode: false,
       runMacos: true,
@@ -182,7 +182,7 @@ describe("detectChangedScope", () => {
       runChangedSmoke: false,
       runControlUiI18n: false,
     });
-    expect(detectChangedScope(["apps/shared/OpenClawKit/Sources/Foo.swift"])).toEqual({
+    expect(detectChangedScope(["apps/shared/EVEKit/Sources/Foo.swift"])).toEqual({
       runNode: false,
       runMacos: true,
       runAndroid: true,
@@ -213,7 +213,7 @@ describe("detectChangedScope", () => {
 
   it("does not force macOS for generated protocol model-only changes", () => {
     expect(
-      detectChangedScope(["apps/shared/OpenClawKit/Sources/OpenClawProtocol/GatewayModels.swift"]),
+      detectChangedScope(["apps/shared/EVEKit/Sources/EVEProtocol/GatewayModels.swift"]),
     ).toEqual({
       runNode: false,
       runMacos: false,
@@ -722,7 +722,7 @@ describe("detectChangedScope", () => {
   it("treats base and head as literal git args", () => {
     const markerPath = path.join(
       os.tmpdir(),
-      `openclaw-ci-changed-scope-${Date.now()}-${Math.random().toString(16).slice(2)}.tmp`,
+      `eve-ci-changed-scope-${Date.now()}-${Math.random().toString(16).slice(2)}.tmp`,
     );
     markerPaths.push(markerPath);
 
@@ -743,7 +743,7 @@ describe("detectChangedScope", () => {
   });
 
   it("uses the merge commit first parent instead of a stale PR payload base", () => {
-    const { repoDir, staleBase } = createSyntheticMergeRepo("openclaw-ci-scope-merge-");
+    const { repoDir, staleBase } = createSyntheticMergeRepo("eve-ci-scope-merge-");
 
     expect(
       execFileSync("git", ["diff", "--name-only", staleBase, "HEAD"], {
@@ -759,7 +759,7 @@ describe("detectChangedScope", () => {
   });
 
   it("keeps direct CLI preflight empty diffs as no-op scope", () => {
-    const repoDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ci-scope-empty-"));
+    const repoDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ci-scope-empty-"));
     tempDirs.push(repoDir);
     const outputPath = path.join(repoDir, "github-output.txt");
     const scriptPath = path.resolve("scripts/ci-changed-scope.mjs");

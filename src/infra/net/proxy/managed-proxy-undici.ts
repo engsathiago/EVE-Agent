@@ -1,6 +1,6 @@
-// Bridges OpenClaw-managed proxy TLS trust into Undici EnvHttpProxyAgent and
+// Bridges EVE-managed proxy TLS trust into Undici EnvHttpProxyAgent and
 // explicit ProxyAgent options without changing unrelated operator proxies.
-import { isRecord as isProxyTlsRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord as isProxyTlsRecord } from "@eve/normalization-core/record-coerce";
 import type { EnvHttpProxyAgent } from "undici";
 import { resolveEnvHttpProxyAgentOptions, resolveEnvHttpProxyUrl } from "../proxy-env.js";
 import { getActiveManagedProxyTlsOptions, getActiveManagedProxyUrl } from "./active-proxy-state.js";
@@ -66,7 +66,7 @@ function resolveManagedProxyUrl(env: ManagedProxyTlsEnv = process.env): string |
   if (activeProxyUrl) {
     return activeProxyUrl.href;
   }
-  if (env["OPENCLAW_PROXY_ACTIVE"] !== "1") {
+  if (env["EVE_PROXY_ACTIVE"] !== "1") {
     return undefined;
   }
   // Child processes inherit only env, so recover the managed proxy URL from
@@ -74,7 +74,7 @@ function resolveManagedProxyUrl(env: ManagedProxyTlsEnv = process.env): string |
   return normalizeProxyUrl(resolveEnvHttpProxyUrl("https", env));
 }
 
-/** Resolves managed proxy TLS trust only when the target proxy is OpenClaw's active proxy. */
+/** Resolves managed proxy TLS trust only when the target proxy is EVE's active proxy. */
 export function resolveActiveManagedProxyTlsOptions(
   params?: ResolveActiveManagedProxyTlsOptionsParams,
 ): ManagedProxyTlsOptions | undefined {
@@ -92,7 +92,7 @@ export function resolveActiveManagedProxyTlsOptions(
   }
   const proxyCaFile = resolveManagedProxyCaFileForUrl({
     proxyUrl: managedProxyUrl,
-    caFileOverride: env["OPENCLAW_PROXY_CA_FILE"],
+    caFileOverride: env["EVE_PROXY_CA_FILE"],
   });
   try {
     return loadManagedProxyTlsOptionsSync(proxyCaFile);

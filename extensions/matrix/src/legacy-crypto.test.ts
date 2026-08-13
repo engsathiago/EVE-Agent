@@ -1,9 +1,9 @@
 // Matrix tests cover legacy crypto plugin behavior.
 import fs from "node:fs";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resetPluginStateStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import { withTempHome } from "openclaw/plugin-sdk/test-env";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import { withTempHome } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const legacyCryptoInspectorAvailability = vi.hoisted(() => ({
@@ -34,7 +34,7 @@ import {
 } from "./test-helpers.js";
 import { installMatrixTestRuntime } from "./test-runtime.js";
 
-function createDefaultMatrixConfig(): OpenClawConfig {
+function createDefaultMatrixConfig(): EVEConfig {
   return {
     channels: {
       matrix: {
@@ -47,7 +47,7 @@ function createDefaultMatrixConfig(): OpenClawConfig {
 }
 
 function writeDefaultLegacyCryptoFixture(home: string) {
-  const stateDir = path.join(home, ".openclaw");
+  const stateDir = path.join(home, ".eve");
   const cfg = createDefaultMatrixConfig();
   const { rootDir } = resolveMatrixAccountStorageRoot({
     stateDir,
@@ -67,7 +67,7 @@ function createOpsLegacyCryptoFixture(params: {
   accessToken?: string;
   includeStoredCredentials?: boolean;
 }) {
-  const stateDir = path.join(params.home, ".openclaw");
+  const stateDir = path.join(params.home, ".eve");
   writeFile(
     path.join(stateDir, "matrix", "crypto", "bot-sdk.json"),
     JSON.stringify({ deviceId: MATRIX_OPS_DEVICE_ID }),
@@ -181,7 +181,7 @@ describe("matrix legacy encrypted-state migration", () => {
         home,
         includeStoredCredentials: true,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         channels: {
           matrix: {
             accounts: {

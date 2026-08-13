@@ -2,7 +2,7 @@
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { findBundledPluginMetadataById } from "../plugins/bundled-plugin-metadata.js";
 import { resolvePluginConfigContractsById } from "../plugins/config-contracts.js";
 import { collectPluginConfigAssignments } from "./runtime-config-collectors-plugins.js";
@@ -42,7 +42,7 @@ describe("collectPluginConfigAssignments bundled plugin manifests", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     expect(
       resolvePluginConfigContractsById({
         config,
@@ -142,7 +142,7 @@ describe("collectPluginConfigAssignments bundled plugin manifests", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     expect(
       resolvePluginConfigContractsById({
         config,
@@ -211,7 +211,7 @@ describe("collectPluginConfigAssignments bundled plugin manifests", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     expect(
       resolvePluginConfigContractsById({
         config,

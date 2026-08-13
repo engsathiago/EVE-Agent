@@ -6,13 +6,13 @@ import {
   executeSqliteQueryTakeFirstSync,
   getNodeSqliteKysely,
 } from "../../infra/kysely-sync.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../../state/openclaw-state-db.generated.js";
+import type { DB as EVEStateKyselyDatabase } from "../../state/eve-state-db.generated.js";
 import type { CronRunLogEntry } from "../run-log-types.js";
 import type { CronDeliveryStatus, CronRunStatus } from "../types.js";
 import { parseCronRunLogEntryObject } from "./entry-codec.js";
 
-type CronRunLogsTable = OpenClawStateKyselyDatabase["cron_run_logs"];
-type CronRunLogDatabase = Pick<OpenClawStateKyselyDatabase, "cron_run_logs">;
+type CronRunLogsTable = EVEStateKyselyDatabase["cron_run_logs"];
+type CronRunLogDatabase = Pick<EVEStateKyselyDatabase, "cron_run_logs">;
 type CronRunLogRow = Selectable<CronRunLogsTable>;
 type CronRunLogInsert = Insertable<CronRunLogsTable>;
 type CronRunLogFilterParams = {

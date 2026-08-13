@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/xiaomi-provider",
+  "name": "@eve/xiaomi-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Xiaomi provider plugin",
+  "description": "EVE Xiaomi provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

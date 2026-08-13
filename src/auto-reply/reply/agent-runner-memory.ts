@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveBootstrapWarningSignaturesSeen } from "../../agents/bootstrap-budget.js";
 import { estimateMessagesTokens } from "../../agents/compaction.js";
 import { classifyCompactionReason } from "../../agents/embedded-agent-runner/compact-reasons.js";
@@ -31,7 +31,7 @@ import {
   type SessionEntry,
 } from "../../config/sessions.js";
 import { updateSessionEntry } from "../../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { readSessionMessagesAsync } from "../../gateway/session-utils.fs.js";
 import { logVerbose } from "../../globals.js";
 import { emitAgentEvent, registerAgentRunContext } from "../../infra/agent-events.js";
@@ -261,7 +261,7 @@ function resolveMemoryFlushRuntimeOverrideForProvider(params: {
 }
 
 function followupUsesCliRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   sessionEntry?: Pick<SessionEntry, "agentRuntimeOverride">;
 }): boolean {
@@ -277,7 +277,7 @@ function followupUsesCliRuntime(params: {
 }
 
 function resolveFollowupContextConfigProvider(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   sessionEntry?: SessionEntry;
   sessionKey?: string;
@@ -292,7 +292,7 @@ function resolveFollowupContextConfigProvider(params: {
 }
 
 function resolveFollowupAgentRuntimeId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   sessionEntry?: SessionEntry;
   sessionKey?: string;
@@ -329,7 +329,7 @@ function resolveFollowupAgentRuntimeId(params: {
 }
 
 function followupUsesCodexRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   sessionEntry?: SessionEntry;
   sessionKey?: string;
@@ -474,7 +474,7 @@ type SessionLogSnapshot = {
 };
 
 async function appendPostCompactionRefreshPrompt(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
 }): Promise<void> {
   const refreshPrompt = await readPostCompactionContext(params.followupRun.run.workspaceDir, {
@@ -720,7 +720,7 @@ async function estimatePromptTokensFromSessionTranscript(params: {
 
 /** Runs preflight compaction when session state exceeds configured thresholds. */
 export async function runPreflightCompactionIfNeeded(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   promptForEstimate?: string;
   defaultModel: string;
@@ -768,7 +768,7 @@ export async function runPreflightCompactionIfNeeded(params: {
     })
   ) {
     // Codex runtime sessions should reach Codex with their real thread state.
-    // Its harness owns automatic compaction; OpenClaw preflight compaction is
+    // Its harness owns automatic compaction; EVE preflight compaction is
     // only for non-Codex embedded runtimes.
     logVerbose(
       `preflightCompaction skipped: sessionKey=${params.sessionKey} runtime=codex reason=codex_native_auto_compaction`,
@@ -1049,7 +1049,7 @@ export async function runPreflightCompactionIfNeeded(params: {
 
 /** Runs post-turn memory flush when transcript state warrants it. */
 export async function runMemoryFlushIfNeeded(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   followupRun: FollowupRun;
   promptForEstimate?: string;
   sessionCtx: TemplateContext;

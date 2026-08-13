@@ -11,8 +11,8 @@ Adds media understanding provider support.
 
 ## Distribution
 
-- Package: `@openclaw/senseaudio-provider`
-- Install route: included in OpenClaw
+- Package: `@eve/senseaudio-provider`
+- Install route: included in EVE
 
 ## Surface
 

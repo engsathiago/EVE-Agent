@@ -1,6 +1,6 @@
 // Telegram plugin module implements bot handlers.media behavior.
 import type { Message } from "grammy/types";
-import { MediaFetchError } from "openclaw/plugin-sdk/media-runtime";
+import { MediaFetchError } from "eve-agent/plugin-sdk/media-runtime";
 
 export function isMediaSizeLimitError(err: unknown): boolean {
   const errMsg = String(err);

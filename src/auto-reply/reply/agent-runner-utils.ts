@@ -2,7 +2,7 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { normalizeChatType } from "../../channels/chat-type.js";
 import { getChannelPlugin } from "../../channels/plugins/index.js";
 import type {
@@ -20,7 +20,7 @@ import {
   getRuntimeConfigSnapshot,
   getRuntimeConfigSourceSnapshot,
   selectApplicableRuntimeConfig,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "../../config/config.js";
 import { isReasoningTagProvider } from "../../utils/provider-utils.js";
 import type { TemplateContext } from "../templating.js";
@@ -50,7 +50,7 @@ type EmbeddedReplyRoute = Pick<
 >;
 
 /** Selects the freshest runtime config usable by queued reply execution. */
-export function resolveQueuedReplyRuntimeConfig(config: OpenClawConfig): OpenClawConfig {
+export function resolveQueuedReplyRuntimeConfig(config: EVEConfig): EVEConfig {
   const runtimeConfig =
     typeof getRuntimeConfigSnapshot === "function" ? getRuntimeConfigSnapshot() : null;
   const runtimeSourceConfig =
@@ -66,14 +66,14 @@ export function resolveQueuedReplyRuntimeConfig(config: OpenClawConfig): OpenCla
 
 /** Resolves command secrets for queued reply execution, scoped to the origin route. */
 export async function resolveQueuedReplyExecutionConfig(
-  config: OpenClawConfig,
+  config: EVEConfig,
   params?: {
     originatingChannel?: string;
     messageProvider?: string;
     originatingAccountId?: string;
     agentAccountId?: string;
   },
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   const runtimeConfig = resolveQueuedReplyRuntimeConfig(config);
   const { resolvedConfig } = await resolveCommandSecretRefsViaGateway({
     config: runtimeConfig,
@@ -116,7 +116,7 @@ export async function resolveQueuedReplyExecutionConfig(
 /** Builds channel threading context for message-tool replies. */
 export function buildThreadingToolContext(params: {
   sessionCtx: TemplateContext;
-  config: OpenClawConfig | undefined;
+  config: EVEConfig | undefined;
   hasRepliedRef: { value: boolean } | undefined;
 }): ChannelThreadingToolContext {
   const { sessionCtx, config, hasRepliedRef } = params;

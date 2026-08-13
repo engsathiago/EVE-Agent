@@ -1,6 +1,6 @@
 // Zalouser tests cover monitor.account scope plugin behavior.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig, PluginRuntime } from "../runtime-api.js";
+import type { EVEConfig, PluginRuntime } from "../runtime-api.js";
 import "./monitor.send.test-mocks.js";
 import { testing } from "./monitor.js";
 import "./zalo-js.test-mocks.js";
@@ -72,7 +72,7 @@ describe("zalouser monitor pairing account scoping", () => {
       },
     };
 
-    const config: OpenClawConfig = {
+    const config: EVEConfig = {
       channels: {
         zalouser: {
           accounts: {

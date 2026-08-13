@@ -1,7 +1,7 @@
-// Tencent plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { buildSingleProviderApiKeyCatalog } from "openclaw/plugin-sdk/provider-catalog-shared";
+// Tencent plugin entrypoint registers its EVE integration.
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth-api-key";
+import { buildSingleProviderApiKeyCatalog } from "eve-agent/plugin-sdk/provider-catalog-shared";
 import { TOKENHUB_MODEL_CATALOG, TOKENHUB_PROVIDER_ID } from "./models.js";
 import { applyTokenHubConfig, TOKENHUB_DEFAULT_MODEL_REF } from "./onboard.js";
 import { buildTokenHubProvider } from "./provider-catalog.js";

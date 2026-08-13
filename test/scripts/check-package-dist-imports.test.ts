@@ -37,13 +37,13 @@ describe("check-package-dist-imports", () => {
   });
 
   it("accepts a minimal package dist root", () => {
-    const root = makeTempDir(tempDirs, "openclaw-package-dist-imports-");
+    const root = makeTempDir(tempDirs, "eve-package-dist-imports-");
     mkdirSync(join(root, "dist"), { recursive: true });
     writeFileSync(join(root, "dist", "index.js"), "export {};\n", "utf8");
 
     const result = spawnSync("node", [CHECK_SCRIPT, root], { encoding: "utf8" });
 
     expect(result.status, result.stderr).toBe(0);
-    expect(result.stdout).toContain("OpenClaw package dist import closure passed.");
+    expect(result.stdout).toContain("EVE package dist import closure passed.");
   });
 });

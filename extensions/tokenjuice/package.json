@@ -1,34 +1,34 @@
 {
-  "name": "@openclaw/tokenjuice",
+  "name": "@eve/tokenjuice",
   "version": "2026.6.8",
-  "description": "OpenClaw tokenjuice exec output compaction plugin",
+  "description": "EVE tokenjuice exec output compaction plugin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
     "tokenjuice": "0.8.1"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/tokenjuice",
-      "npmSpec": "@openclaw/tokenjuice",
+      "clawhubSpec": "clawhub:@eve/tokenjuice",
+      "npmSpec": "@eve/tokenjuice",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.28"
     },
@@ -36,7 +36,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8",
+      "eveVersion": "2026.6.8",
       "bundledDist": false
     },
     "release": {

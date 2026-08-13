@@ -1,13 +1,13 @@
 // Gateway OpenAI-compatible chat completions endpoint.
-// Translates OpenAI chat requests to OpenClaw agent runs and SSE/JSON responses.
+// Translates OpenAI chat requests to EVE agent runs and SSE/JSON responses.
 import { randomUUID } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { estimateBase64DecodedBytes } from "@openclaw/media-core/base64";
-import { resolveIntegerOption } from "@openclaw/normalization-core/number-coercion";
+import { estimateBase64DecodedBytes } from "@eve/media-core/base64";
+import { resolveIntegerOption } from "@eve/normalization-core/number-coercion";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { isClientToolNameConflictError } from "../agents/agent-tool-definition-adapter.js";
 import type { AgentStreamParams, ClientToolDefinition } from "../agents/command/shared-types.js";
 import type { ImageContent } from "../agents/command/types.js";
@@ -721,13 +721,13 @@ function coerceRequest(val: unknown): OpenAiChatCompletionRequest {
 function resolveAgentResponseText(result: unknown): string {
   const payloads = (result as { payloads?: Array<{ text?: string }> } | null)?.payloads;
   if (!Array.isArray(payloads) || payloads.length === 0) {
-    return "No response from OpenClaw.";
+    return "No response from EVE.";
   }
   const content = payloads
     .map((p) => (typeof p.text === "string" ? p.text : ""))
     .filter(Boolean)
     .join("\n\n");
-  return content || "No response from OpenClaw.";
+  return content || "No response from EVE.";
 }
 
 function resolveAgentResponseCommentary(result: unknown): string {
@@ -902,7 +902,7 @@ export async function handleOpenAiHttpRequest(
   const payload = coerceRequest(handled.body);
   const stream = Boolean(payload.stream);
   const streamIncludeUsage = stream && resolveIncludeUsageForStreaming(payload);
-  const model = typeof payload.model === "string" ? payload.model : "openclaw";
+  const model = typeof payload.model === "string" ? payload.model : "eve";
   const user = typeof payload.user === "string" ? payload.user : undefined;
   const maxTokens =
     typeof payload.max_completion_tokens === "number"

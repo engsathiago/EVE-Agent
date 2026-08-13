@@ -5,7 +5,7 @@ import type { PluginManifestRegistry } from "./manifest-registry.js";
 const mocks = vi.hoisted(() => {
   const loadManifestRegistry = vi.fn();
   return {
-    discoverOpenClawPlugins: vi.fn(() => ({ candidates: [], diagnostics: [] })),
+    discoverEVEPlugins: vi.fn(() => ({ candidates: [], diagnostics: [] })),
     loadBundledManifestRegistry: vi.fn(),
     loadPluginManifestRegistryForInstalledIndex: loadManifestRegistry,
     loadPluginManifestRegistryForPluginRegistry: loadManifestRegistry,
@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => {
 });
 
 vi.mock("./discovery.js", () => ({
-  discoverOpenClawPlugins: mocks.discoverOpenClawPlugins,
+  discoverEVEPlugins: mocks.discoverEVEPlugins,
 }));
 
 vi.mock("./manifest-registry.js", () => ({
@@ -49,7 +49,7 @@ function createPluginRecord(
 ): PluginManifestRecord {
   return {
     rootDir: `/tmp/${overrides.id}`,
-    manifestPath: `/tmp/${overrides.id}/openclaw.plugin.json`,
+    manifestPath: `/tmp/${overrides.id}/eve.plugin.json`,
     channelConfigs: undefined,
     providerAuthEnvVars: undefined,
     configUiHints: undefined,
@@ -76,7 +76,7 @@ function createPluginRecord(
     skills: [],
     settingsFiles: undefined,
     hooks: [],
-    source: `/tmp/${overrides.id}/openclaw.plugin.json`,
+    source: `/tmp/${overrides.id}/eve.plugin.json`,
     setupSource: undefined,
     startupDeferConfiguredChannelFullLoadUntilAfterListen: undefined,
     channelCatalogMeta: undefined,
@@ -86,8 +86,8 @@ function createPluginRecord(
 
 describe("resolvePluginConfigContractsById", () => {
   beforeEach(() => {
-    mocks.discoverOpenClawPlugins.mockReset();
-    mocks.discoverOpenClawPlugins.mockReturnValue({ candidates: [], diagnostics: [] });
+    mocks.discoverEVEPlugins.mockReset();
+    mocks.discoverEVEPlugins.mockReturnValue({ candidates: [], diagnostics: [] });
     mocks.loadBundledManifestRegistry.mockReset();
     mocks.loadBundledManifestRegistry.mockReturnValue(createRegistry([]));
     mocks.loadPluginManifestRegistryForInstalledIndex.mockReset();

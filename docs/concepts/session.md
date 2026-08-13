@@ -1,5 +1,5 @@
 ---
-summary: "How OpenClaw manages conversation sessions"
+summary: "How EVE manages conversation sessions"
 read_when:
   - You want to understand session routing and isolation
   - You want to configure DM scope for multi-user setups
@@ -7,7 +7,7 @@ read_when:
 title: "Session management"
 ---
 
-OpenClaw organizes conversations into **sessions**. Each message is routed to a
+EVE organizes conversations into **sessions**. Each message is routed to a
 session based on where it came from -- DMs, group chats, cron jobs, etc.
 
 ## How messages are routed
@@ -60,7 +60,7 @@ another linked channel without starting a new session. See
 [Channel docking](/concepts/channel-docking) for examples, config, and
 troubleshooting.
 
-Verify your setup with `openclaw security audit`.
+Verify your setup with `eve security audit`.
 
 ## Session lifecycle
 
@@ -92,8 +92,8 @@ sessions should expire on a timer.
 All session state is owned by the **gateway**. UI clients query the gateway for
 session data.
 
-- **Store:** `~/.openclaw/agents/<agentId>/sessions/sessions.json`
-- **Transcripts:** `~/.openclaw/agents/<agentId>/sessions/<sessionId>.jsonl`
+- **Store:** `~/.eve/agents/<agentId>/sessions/sessions.json`
+- **Transcripts:** `~/.eve/agents/<agentId>/sessions/<sessionId>.jsonl`
 
 `sessions.json` keeps separate lifecycle timestamps:
 
@@ -109,7 +109,7 @@ writes.
 
 ## Session maintenance
 
-OpenClaw automatically bounds session storage over time. By default, it runs
+EVE automatically bounds session storage over time. By default, it runs
 in `enforce` mode and applies cleanup during maintenance. Set
 `session.maintenance.mode` to `"warn"` to report what would be cleaned without mutating the store/files:
 
@@ -125,7 +125,7 @@ in `enforce` mode and applies cleanup during maintenance. Set
 }
 ```
 
-For production-sized `maxEntries` limits, Gateway runtime writes use a small high-water buffer and clean back down to the configured cap in batches. Session store reads do not prune or cap entries during Gateway startup. This avoids running full store cleanup on every startup or isolated cron session. `openclaw sessions cleanup --enforce` applies the cap immediately.
+For production-sized `maxEntries` limits, Gateway runtime writes use a small high-water buffer and clean back down to the configured cap in batches. Session store reads do not prune or cap entries during Gateway startup. This avoids running full store cleanup on every startup or isolated cron session. `eve sessions cleanup --enforce` applies the cap immediately.
 
 Maintenance preserves durable external conversation pointers, including group
 sessions and thread-scoped chat sessions, while still allowing synthetic cron,
@@ -133,16 +133,16 @@ hook, heartbeat, ACP, and sub-agent entries to age out.
 
 If you previously used direct-message isolation and later returned
 `session.dmScope` to `main`, preview stale peer-keyed DM rows with
-`openclaw sessions cleanup --dry-run --fix-dm-scope`. Applying the same flag
+`eve sessions cleanup --dry-run --fix-dm-scope`. Applying the same flag
 retires those old direct-DM rows and keeps their transcripts as deleted
 archives.
 
-Preview with `openclaw sessions cleanup --dry-run`.
+Preview with `eve sessions cleanup --dry-run`.
 
 ## Inspecting sessions
 
-- `openclaw status` -- session store path and recent activity.
-- `openclaw sessions --json` -- all sessions (filter with `--active <minutes>`).
+- `eve status` -- session store path and recent activity.
+- `eve sessions --json` -- all sessions (filter with `--active <minutes>`).
 - `/status` in chat -- context usage, model, and toggles.
 - `/context list` -- what is in the system prompt.
 

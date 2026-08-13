@@ -36,13 +36,13 @@ describe("resolveNpmRunner", () => {
       execPath,
       env: {},
       existsSync: (candidate) => candidate === expectedNpmCliPath,
-      npmArgs: ["pack", "openclaw@beta"],
+      npmArgs: ["pack", "eve@beta"],
       platform: "darwin",
     });
 
     expect(runner).toEqual({
       command: execPath,
-      args: [expectedNpmCliPath, "pack", "openclaw@beta"],
+      args: [expectedNpmCliPath, "pack", "eve@beta"],
       shell: false,
     });
   });
@@ -159,6 +159,6 @@ describe("resolveNpmRunner", () => {
         existsSync: () => false,
         platform: "win32",
       }),
-    ).toThrow("OpenClaw refuses to shell out to bare npm on Windows");
+    ).toThrow("EVE refuses to shell out to bare npm on Windows");
   });
 });

@@ -1,5 +1,5 @@
 // Qa Lab plugin module implements shared live-transport RTT behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import type { QaEvidenceTiming } from "../../evidence-summary.js";
 
 export type LiveTransportRttOptions<CheckId extends string = string> = {

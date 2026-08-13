@@ -7,8 +7,8 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import { formatCliCommand } from "../cli/command-format.js";
 import {
   getRuntimeConfigSnapshot,
@@ -16,7 +16,7 @@ import {
   selectApplicableRuntimeConfig,
 } from "../config/config.js";
 import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { coerceSecretRef } from "../config/types.secrets.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { getShellEnvAppliedKeys } from "../infra/shell-env.js";
@@ -126,7 +126,7 @@ function assertAuthModeAllowedForModel(params: {
 }
 
 function resolveConfigAwareEnvApiKey(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
   workspaceDir?: string,
 ): EnvApiKeyResult | null {
@@ -134,7 +134,7 @@ function resolveConfigAwareEnvApiKey(
 }
 
 function resolveProviderConfig(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): ModelProviderConfig | undefined {
   const providers = cfg?.models?.providers ?? {};
@@ -157,7 +157,7 @@ function resolveProviderConfig(
 
 /** Builds stable env/synthetic auth lookup data for repeated provider checks. */
 export function createRuntimeProviderAuthLookup(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   includePluginSyntheticAuth?: boolean;
@@ -226,7 +226,7 @@ function resolveRuntimeEnvApiKeyLookupOptions(params: {
 
 /** Reads a literal or env-secret marker for a custom provider entry. */
 export function getCustomProviderApiKey(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): string | undefined {
   const entry = resolveProviderConfig(cfg, provider);
@@ -251,7 +251,7 @@ type ResolvedCustomProviderApiKey = {
 };
 
 function canResolveEnvSecretRefInReadOnlyPath(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   id: string;
 }): boolean {
@@ -268,7 +268,7 @@ function canResolveEnvSecretRefInReadOnlyPath(params: {
 
 /** Resolves custom provider API keys that are usable without mutating secret stores. */
 export function resolveUsableCustomProviderApiKey(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   env?: NodeJS.ProcessEnv;
 }): ResolvedCustomProviderApiKey | null {
@@ -345,7 +345,7 @@ export function resolveUsableCustomProviderApiKey(params: {
 
 /** True when a custom provider has a literal/env/local key available now. */
 export function hasUsableCustomProviderApiKey(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
   env?: NodeJS.ProcessEnv,
 ): boolean {
@@ -354,7 +354,7 @@ export function hasUsableCustomProviderApiKey(
 
 /** True when explicit provider config should outrank profile/environment auth. */
 export function shouldPreferExplicitConfigApiKeyAuth(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): boolean {
   const providerConfig = resolveProviderConfig(cfg, provider);
@@ -366,7 +366,7 @@ export function shouldPreferExplicitConfigApiKeyAuth(
 }
 
 function resolveProviderAuthOverride(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): ModelProviderAuthMode | undefined {
   const entry = resolveProviderConfig(cfg, provider);
@@ -378,7 +378,7 @@ function resolveProviderAuthOverride(
 }
 
 function shouldUseImplicitAwsSdkAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelApi: string | undefined;
 }): boolean {
@@ -447,7 +447,7 @@ function normalizeProviderEntryBaseUrlForBinding(baseUrl: string | undefined): s
 }
 
 function providerEntriesShareBaseUrl(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   credentialProvider: string;
 }): boolean {
@@ -468,7 +468,7 @@ function isBearerProfileCredential(credential: AuthProfileCredential): boolean {
 
 /** True when a bearer auth profile can safely satisfy a provider-entry apiKey reference. */
 export function canUseProfileAsProviderEntryApiKey(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   credential: AuthProfileCredential;
 }): boolean {
@@ -496,7 +496,7 @@ export function canUseProfileAsProviderEntryApiKey(params: {
 
 /** Classifies a provider entry apiKey as literal/profile/marker before resolving secrets. */
 export function resolveProviderEntryApiKeyProfileReference(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   store: AuthProfileStore;
 }): ProviderEntryApiKeyProfileReference {
@@ -545,7 +545,7 @@ export function resolveProviderEntryApiKeyProfileReference(params: {
 
 /** Resolves a provider-entry apiKey profile reference into runtime auth when possible. */
 export async function resolveProviderEntryApiKeyBinding(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   store: AuthProfileStore;
   agentDir?: string;
@@ -586,7 +586,7 @@ export async function resolveProviderEntryApiKeyBinding(params: {
 }
 
 function resolveConfiguredAwsSdkProfileAuth(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   profileId: string;
 }): ResolvedProviderAuth | null {
@@ -659,7 +659,7 @@ function isManagedSecretRefApiKeyMarker(apiKey: string | undefined): boolean {
 }
 
 function hasManagedSecretRefProviderApiKey(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): boolean {
   const apiKey = resolveProviderConfig(cfg, provider)?.apiKey;
@@ -671,7 +671,7 @@ function hasManagedSecretRefProviderApiKey(
 }
 
 function resolveLiteralProviderConfigApiKeyAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
 }): ResolvedProviderAuth | undefined {
   const apiKey = normalizeOptionalSecretInput(
@@ -688,7 +688,7 @@ function resolveLiteralProviderConfigApiKeyAuth(params: {
 }
 
 function resolveManagedSecretRefRuntimeProviderAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
 }): ResolvedProviderAuth | undefined {
   if (!hasManagedSecretRefProviderApiKey(params.cfg, params.provider)) {
@@ -715,7 +715,7 @@ function resolveManagedSecretRefRuntimeProviderAuth(params: {
 
 /** True when a custom local provider can use a synthetic no-auth placeholder. */
 export function hasSyntheticLocalProviderAuthConfig(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
 }): boolean {
   const providerConfig = resolveProviderConfig(params.cfg, params.provider);
@@ -745,7 +745,7 @@ export function hasSyntheticLocalProviderAuthConfig(params: {
 }
 
 function listProviderSyntheticAuthRefs(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelApi?: string;
 }): string[] {
@@ -761,7 +761,7 @@ function listProviderSyntheticAuthRefs(params: {
 }
 
 function shouldResolvePluginSyntheticAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelApi?: string;
   runtimeLookup?: RuntimeProviderAuthLookup;
@@ -782,7 +782,7 @@ function shouldResolvePluginSyntheticAuth(params: {
 /** Fast auth-availability check for runtime provider/model selection. */
 export function hasRuntimeAvailableProviderAuth(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   allowPluginSyntheticAuth?: boolean;
@@ -841,7 +841,7 @@ type SyntheticProviderAuthResolution = {
 };
 
 function resolveProviderSyntheticRuntimeAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelApi?: string;
 }): SyntheticProviderAuthResolution {
@@ -854,7 +854,7 @@ function resolveProviderSyntheticRuntimeAuth(params: {
   }
 
   const resolveFromConfig = (
-    config: OpenClawConfig | undefined,
+    config: EVEConfig | undefined,
   ): ResolvedProviderAuth | undefined => {
     const providerConfig = resolveProviderConfig(config, params.provider);
     return (
@@ -895,7 +895,7 @@ function resolveProviderSyntheticRuntimeAuth(params: {
 }
 
 function resolveSyntheticLocalProviderAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelApi?: string;
 }): ResolvedProviderAuth | null {
@@ -972,7 +972,7 @@ function resolveAwsSdkAuthInfo(): { mode: "aws-sdk"; source: string } {
 }
 
 function shouldDeferSyntheticProfileAuth(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   resolvedApiKey: string | undefined;
   modelApi?: string;
@@ -995,7 +995,7 @@ function shouldDeferSyntheticProfileAuth(params: {
 
 function resolveScopedAuthProfileStore(params: {
   agentDir?: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   profileId?: string;
   preferredProfile?: string;
@@ -1008,7 +1008,7 @@ function resolveScopedAuthProfileStore(params: {
 /** Resolves the credential that should be used for one provider request. */
 export async function resolveApiKeyForProvider(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   profileId?: string;
   preferredProfile?: string;
   store?: AuthProfileStore;
@@ -1365,7 +1365,7 @@ export async function resolveApiKeyForProvider(params: {
     [
       `No API key found for provider "${provider}".`,
       `Auth store: ${authStorePath} (agentDir: ${resolvedAgentDir}).`,
-      `Configure auth for this agent (${formatCliCommand("openclaw agents add <id>")}) or copy only portable static auth profiles from the main agentDir.`,
+      `Configure auth for this agent (${formatCliCommand("eve agents add <id>")}) or copy only portable static auth profiles from the main agentDir.`,
     ].join(" "),
   );
 }
@@ -1378,7 +1378,7 @@ export type { EnvApiKeyResult } from "./model-auth-env.js";
 /** Reports the strongest configured auth mode for provider-list UI and diagnostics. */
 export function resolveModelAuthMode(
   provider?: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   store?: AuthProfileStore,
   options?: { workspaceDir?: string },
 ): ModelAuthMode | undefined {
@@ -1444,7 +1444,7 @@ export function resolveModelAuthMode(
 /** Checks provider auth availability, including profile fallback order. */
 export async function hasAvailableAuthForProvider(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   preferredProfile?: string;
   store?: AuthProfileStore;
   agentDir?: string;
@@ -1520,7 +1520,7 @@ export async function hasAvailableAuthForProvider(params: {
 /** Resolves request credentials from the provider attached to a model descriptor. */
 export async function getApiKeyForModel(params: {
   model: Model;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   profileId?: string;
   preferredProfile?: string;
   store?: AuthProfileStore;
@@ -1579,7 +1579,7 @@ export function applyLocalNoAuthHeaderOverride<T extends Model>(
 export function applyAuthHeaderOverride<T extends Model>(
   model: T,
   auth: ResolvedProviderAuth | null | undefined,
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
 ): T {
   if (!auth?.apiKey) {
     return model;

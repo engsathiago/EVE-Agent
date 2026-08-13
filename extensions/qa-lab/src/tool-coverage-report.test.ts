@@ -84,7 +84,7 @@ describe("qa tool coverage report", () => {
         capabilityLayer: "codex-native-workspace",
         required: true,
         fixtureCount: 1,
-        openclaw: "not-run",
+        eve: "not-run",
         codex: "not-run",
         drift: "not-run",
       }),
@@ -119,8 +119,8 @@ describe("qa tool coverage report", () => {
               scenarioId: "tool-read",
               drift: "none",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "read", argsHash: "a", resultHash: "r" }],
                   finalText: "",
@@ -148,8 +148,8 @@ describe("qa tool coverage report", () => {
               drift: "tool-result-shape",
               driftDetails: "tool result differs",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "write", argsHash: "a", resultHash: "r1" }],
                   finalText: "",
@@ -171,7 +171,7 @@ describe("qa tool coverage report", () => {
           },
         ],
         run: {
-          runtimePair: ["openclaw", "codex"],
+          runtimePair: ["eve", "codex"],
         },
       },
       generatedAt: "2026-05-10T00:00:00.000Z",
@@ -209,8 +209,8 @@ describe("qa tool coverage report", () => {
               scenarioId: "tool-optional",
               drift: "tool-call-shape",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [],
                   finalText: "",
@@ -247,15 +247,15 @@ describe("qa tool coverage report", () => {
     );
   });
 
-  it("keeps searchable OpenClaw dynamic tool rows report-only by default", () => {
+  it("keeps searchable EVE dynamic tool rows report-only by default", () => {
     const report = buildQaToolCoverageReport({
       scenarios: [
         makeScenario("tool-searchable-web-search", "web-search", {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-searchable",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-searchable",
           },
         }),
       ],
@@ -269,8 +269,8 @@ describe("qa tool coverage report", () => {
               drift: "tool-call-shape",
               driftDetails: "searchable discovery was report-only",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "web_search", argsHash: "a", resultHash: "r" }],
                   finalText: "",
@@ -302,22 +302,22 @@ describe("qa tool coverage report", () => {
     expect(report.searchableDynamicTools).toBe(1);
     expect(report.rows[0]).toEqual(
       expect.objectContaining({
-        capabilityLayer: "openclaw-dynamic-searchable",
+        capabilityLayer: "eve-dynamic-searchable",
         required: false,
         drift: "tool-call-shape",
       }),
     );
   });
 
-  it("passes required OpenClaw dynamic tool coverage when both runtimes exercise the tool", () => {
+  it("passes required EVE dynamic tool coverage when both runtimes exercise the tool", () => {
     const report = buildQaToolCoverageReport({
       scenarios: [
         makeScenario("tool-web-search", "web-search", {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-direct",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-direct",
             required: true,
           },
         }),
@@ -332,8 +332,8 @@ describe("qa tool coverage report", () => {
               drift: "tool-result-shape",
               driftDetails: "runtime envelopes differ",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "web_search", argsHash: "a", resultHash: "r1" }],
                   finalText: "",
@@ -363,15 +363,15 @@ describe("qa tool coverage report", () => {
     expect(report.passingTools).toBe(1);
   });
 
-  it("passes required OpenClaw dynamic tool coverage when Codex reports a soft tool error", () => {
+  it("passes required EVE dynamic tool coverage when Codex reports a soft tool error", () => {
     const report = buildQaToolCoverageReport({
       scenarios: [
         makeScenario("tool-web-search", "web-search", {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-direct",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-direct",
             required: true,
           },
         }),
@@ -386,8 +386,8 @@ describe("qa tool coverage report", () => {
               drift: "tool-result-shape",
               driftDetails: "Codex maps the controlled tool fault differently",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "web_search", argsHash: "a", resultHash: "r1" }],
                   finalText: "",
@@ -423,15 +423,15 @@ describe("qa tool coverage report", () => {
     );
   });
 
-  it("fails required OpenClaw dynamic tool coverage when a runtime skips the tool", () => {
+  it("fails required EVE dynamic tool coverage when a runtime skips the tool", () => {
     const report = buildQaToolCoverageReport({
       scenarios: [
         makeScenario("tool-web-search", "web-search", {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-direct",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-direct",
             required: true,
           },
         }),
@@ -446,8 +446,8 @@ describe("qa tool coverage report", () => {
               drift: "tool-call-shape",
               driftDetails: "Codex emitted no web_search call",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "web_search", argsHash: "a", resultHash: "r" }],
                   finalText: "",
@@ -476,15 +476,15 @@ describe("qa tool coverage report", () => {
     expect(report.failures).toEqual(["web-search missing codex tool call web_search"]);
   });
 
-  it("fails required OpenClaw dynamic tool coverage when the fixture failure mode is preserved", () => {
+  it("fails required EVE dynamic tool coverage when the fixture failure mode is preserved", () => {
     const report = buildQaToolCoverageReport({
       scenarios: [
         makeScenario("tool-web-search", "web-search", {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-direct",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-direct",
             required: true,
           },
         }),
@@ -499,8 +499,8 @@ describe("qa tool coverage report", () => {
               drift: "failure-mode",
               driftDetails: "at least one runtime failed",
               cells: {
-                openclaw: {
-                  runtime: "openclaw",
+                eve: {
+                  runtime: "eve",
                   transcriptBytes: "",
                   toolCalls: [{ tool: "web_search", argsHash: "a", resultHash: "r" }],
                   finalText: "",
@@ -536,9 +536,9 @@ describe("qa tool coverage report", () => {
       scenarios: [
         makeScenario("tool-web-search", "web-search", {
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
-            capabilityLayer: "openclaw-dynamic-direct",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
+            capabilityLayer: "eve-dynamic-direct",
             required: true,
           },
         }),
@@ -573,7 +573,7 @@ describe("qa tool coverage report", () => {
         scenarios: [
           makeScenario("tool-bad-layer", "bad", {
             toolCoverage: {
-              bucket: "openclaw-dynamic-integration",
+              bucket: "eve-dynamic-integration",
               capabilityLayer: "everything-everywhere",
             },
           }),
@@ -627,8 +627,8 @@ describe("qa tool coverage report", () => {
     );
     expect(report.rows.find((row) => row.tool === "image_generate")).toEqual(
       expect.objectContaining({
-        bucket: "openclaw-dynamic-integration",
-        expectedLayer: "openclaw-dynamic",
+        bucket: "eve-dynamic-integration",
+        expectedLayer: "eve-dynamic",
         required: false,
       }),
     );
@@ -640,8 +640,8 @@ describe("qa tool coverage report", () => {
     );
     expect(report.rows.find((row) => row.tool === "web_search")).toEqual(
       expect.objectContaining({
-        bucket: "openclaw-dynamic-integration",
-        capabilityLayer: "openclaw-dynamic-direct",
+        bucket: "eve-dynamic-integration",
+        capabilityLayer: "eve-dynamic-direct",
         required: true,
       }),
     );

@@ -11,10 +11,10 @@ import type {
   JsonSchemaValidator,
   jsonSchemaValidator,
 } from "@modelcontextprotocol/sdk/validation/types.js";
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { Compile } from "typebox/compile";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { logWarn } from "../logger.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { resolveGlobalSingleton } from "../shared/global-singleton.js";
@@ -51,7 +51,7 @@ type CreateSessionMcpRuntime = (
   params: Parameters<typeof createSessionMcpRuntime>[0] & { configFingerprint?: string },
 ) => SessionMcpRuntime;
 
-const SESSION_MCP_RUNTIME_MANAGER_KEY = Symbol.for("openclaw.sessionMcpRuntimeManager");
+const SESSION_MCP_RUNTIME_MANAGER_KEY = Symbol.for("eve.sessionMcpRuntimeManager");
 const DRAFT_2020_12_SCHEMA = "https://json-schema.org/draft/2020-12/schema";
 const DEFAULT_SESSION_MCP_RUNTIME_IDLE_TTL_MS = 10 * 60 * 1000;
 const SESSION_MCP_RUNTIME_SWEEP_INTERVAL_MS = 60 * 1000;
@@ -420,7 +420,7 @@ function createCatalogFingerprint(servers: Record<string, unknown>): string {
 
 function loadSessionMcpConfig(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   logDiagnostics?: boolean;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
 }): {
@@ -449,7 +449,7 @@ function loadSessionMcpConfig(params: {
  */
 export function resolveSessionMcpConfigSummary(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
 }): { fingerprint: string; serverNames: string[] } {
   const { loaded, fingerprint } = loadSessionMcpConfig({
@@ -467,7 +467,7 @@ export function resolveSessionMcpConfigSummary(params: {
 /** Returns the session MCP config fingerprint with the same no-runtime/no-connect contract as the summary helper. */
 export function resolveSessionMcpConfigFingerprint(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
 }): string {
   return resolveSessionMcpConfigSummary(params).fingerprint;
@@ -477,7 +477,7 @@ function createDisposedError(sessionId: string): Error {
   return new Error(`bundle-mcp runtime disposed for session ${sessionId}`);
 }
 
-function resolveSessionMcpRuntimeIdleTtlMs(cfg?: OpenClawConfig): number {
+function resolveSessionMcpRuntimeIdleTtlMs(cfg?: EVEConfig): number {
   const raw = cfg?.mcp?.sessionIdleTtlMs;
   if (typeof raw === "number" && Number.isFinite(raw) && raw >= 0) {
     return Math.floor(raw);
@@ -489,7 +489,7 @@ export function createSessionMcpRuntime(params: {
   sessionId: string;
   sessionKey?: string;
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
 }): SessionMcpRuntime {
   const { loaded, fingerprint: configFingerprint } = loadSessionMcpConfig({
@@ -586,7 +586,7 @@ export function createSessionMcpRuntime(params: {
           if (!session) {
             const client = new Client(
               {
-                name: "openclaw-bundle-mcp",
+                name: "eve-bundle-mcp",
                 version: "0.0.0",
               },
               {
@@ -1079,7 +1079,7 @@ export async function getOrCreateSessionMcpRuntime(params: {
   sessionId: string;
   sessionKey?: string;
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): Promise<SessionMcpRuntime> {
   return await getSessionMcpRuntimeManager().getOrCreate(params);
 }

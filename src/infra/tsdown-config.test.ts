@@ -1,6 +1,6 @@
 // Covers bundling rules encoded in the root tsdown config.
 import { readFileSync } from "node:fs";
-import { bundledPluginRoot } from "openclaw/plugin-sdk/test-fixtures";
+import { bundledPluginRoot } from "eve-agent/plugin-sdk/test-fixtures";
 import { describe, expect, it } from "vitest";
 import tsdownConfig from "../../tsdown.config.ts";
 

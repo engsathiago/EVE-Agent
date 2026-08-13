@@ -3,29 +3,29 @@ import type {
   GeneratedImageAsset,
   ImageGenerationProvider,
   ImageGenerationSourceImage,
-} from "openclaw/plugin-sdk/image-generation";
+} from "eve-agent/plugin-sdk/image-generation";
 import {
   imageFileExtensionForMimeType,
   toImageDataUrl,
-} from "openclaw/plugin-sdk/image-generation";
-import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/image-generation";
+import { isProviderApiKeyConfigured } from "eve-agent/plugin-sdk/provider-auth";
 import {
   assertOkOrThrowHttpError,
   assertOkOrThrowProviderError,
-} from "openclaw/plugin-sdk/provider-http";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
+} from "eve-agent/plugin-sdk/provider-http";
+import { readResponseWithLimit } from "eve-agent/plugin-sdk/response-limit-runtime";
 import {
   buildHostnameAllowlistPolicyFromSuffixAllowlist,
   fetchWithSsrFGuard,
   mergeSsrFPolicies,
   type SsrFPolicy,
   ssrfPolicyFromDangerouslyAllowPrivateNetwork,
-} from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   isRecord,
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveFalHttpRequestConfig } from "./http-config.js";
 
 const DEFAULT_FAL_IMAGE_MODEL = "fal-ai/flux/dev";

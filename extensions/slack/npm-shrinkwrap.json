@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/slack",
+  "name": "@eve/slack",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/slack",
+      "name": "@eve/slack",
       "version": "2026.6.8",
       "dependencies": {
         "@slack/bolt": "4.7.3",
@@ -15,10 +15,10 @@
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

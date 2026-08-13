@@ -5,8 +5,8 @@ import path from "node:path";
 import {
   abortAgentHarnessRun,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness";
-import { AUTH_PROFILE_RUNTIME_CONTRACT } from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+} from "eve-agent/plugin-sdk/agent-harness";
+import { AUTH_PROFILE_RUNTIME_CONTRACT } from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CodexAppServerClientFactory } from "./client-factory.js";
 import { runCodexAppServerAttempt as runCodexAppServerAttemptImpl } from "./run-attempt.js";
@@ -197,7 +197,7 @@ describe("Auth profile runtime contract - Codex app-server adapter", () => {
 
   beforeEach(async () => {
     vi.useRealTimers();
-    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-auth-contract-"));
+    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-codex-auth-contract-"));
   });
 
   afterEach(async () => {

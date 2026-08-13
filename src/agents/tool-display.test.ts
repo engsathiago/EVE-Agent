@@ -11,10 +11,10 @@ describe("tool display details", () => {
   it("summarizes tool-search code targets from described tool ids", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: "const tool = await openclaw.tools.describe('openclaw:core:exec'); return await openclaw.tools.call(tool.id, { command: 'echo hi' });",
+        code: "const tool = await eve.tools.describe('eve:core:exec'); return await eve.tools.call(tool.id, { command: 'echo hi' });",
       }),
     ).toEqual({
-      toolName: "openclaw:core:exec",
+      toolName: "eve:core:exec",
       displayToolName: "exec",
       displayArgs: { command: "echo hi" },
       detail: "echo hi",
@@ -25,10 +25,10 @@ describe("tool display details", () => {
   it("normalizes direct tool-search catalog ids to native display names and args", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: 'return await openclaw.tools.call("openclaw:core:exec", { command: "echo hi" });',
+        code: 'return await eve.tools.call("eve:core:exec", { command: "echo hi" });',
       }),
     ).toEqual({
-      toolName: "openclaw:core:exec",
+      toolName: "eve:core:exec",
       displayToolName: "exec",
       displayArgs: { command: "echo hi" },
       detail: "echo hi",
@@ -39,10 +39,10 @@ describe("tool display details", () => {
   it("preserves JS numeric literals in tool-search call args", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: 'return await openclaw.tools.call("web_search", { query: "OpenClaw", count: 1e3, limit: +3, threshold: .5 });',
+        code: 'return await eve.tools.call("web_search", { query: "EVE", count: 1e3, limit: +3, threshold: .5 });',
       })?.displayArgs,
     ).toEqual({
-      query: "OpenClaw",
+      query: "EVE",
       count: 1000,
       limit: 3,
       threshold: 0.5,
@@ -128,11 +128,11 @@ describe("tool display details", () => {
     const detail = formatToolDetail(
       resolveToolDisplay({
         name: "web_search",
-        args: { query: "OpenClaw docs", count: 3 },
+        args: { query: "EVE docs", count: 3 },
       }),
     );
 
-    expect(detail).toBe('for "OpenClaw docs" (top 3)');
+    expect(detail).toBe('for "EVE docs" (top 3)');
   });
 
   it("formats web_search provider query shapes", () => {
@@ -168,14 +168,14 @@ describe("tool display details", () => {
         resolveToolDisplay({
           name: "web_search",
           args: {
-            objective: "Find the OpenClaw repository on GitHub",
-            search_queries: ["openclaw github", "openclaw repository"],
+            objective: "Find the EVE repository on GitHub",
+            search_queries: ["eve github", "eve repository"],
             count: 5,
           },
         }),
       ),
     ).toBe(
-      'for "Find the OpenClaw repository on GitHub", "openclaw github", "openclaw repository" (top 5)',
+      'for "Find the EVE repository on GitHub", "eve github", "eve repository" (top 5)',
     );
   });
 
@@ -185,8 +185,8 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command:
-            "set -euo pipefail\ngit -C /Users/adityasingh/.openclaw/workspace status --short | head -n 3",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+            "set -euo pipefail\ngit -C /Users/adityasingh/.eve/workspace status --short | head -n 3",
+          workdir: "/Users/adityasingh/.eve/workspace",
         },
       }),
     );
@@ -235,7 +235,7 @@ describe("tool display details", () => {
       formatToolDetail(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/openclaw" },
+          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/eve" },
           detailMode: "explain",
         }),
       ),
@@ -245,7 +245,7 @@ describe("tool display details", () => {
       formatToolDetail(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git status", workdir: "/Users/peter/Projects/openclaw" },
+          args: { command: "git status", workdir: "/Users/peter/Projects/eve" },
           detailMode: "explain",
         }),
       ),
@@ -257,7 +257,7 @@ describe("tool display details", () => {
           name: "bash",
           args: {
             command: "command -v discrawl",
-            workdir: "/root/.openclaw/sandboxes/agent-clawsweeper-sandbox-discor-766423d0",
+            workdir: "/root/.eve/sandboxes/agent-clawsweeper-sandbox-discor-766423d0",
           },
           detailMode: "explain",
         }),
@@ -270,7 +270,7 @@ describe("tool display details", () => {
       formatToolSummary(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/openclaw" },
+          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/eve" },
           detailMode: "explain",
         }),
       ),
@@ -280,10 +280,10 @@ describe("tool display details", () => {
       formatToolSummary(
         resolveToolDisplay({
           name: "web_search",
-          args: { query: "OpenClaw docs" },
+          args: { query: "EVE docs" },
         }),
       ),
-    ).toBe('🔎 Web Search: for "OpenClaw docs"');
+    ).toBe('🔎 Web Search: for "EVE docs"');
   });
 
   it("moves cd path to context suffix with multiple stages and raw command", () => {
@@ -436,7 +436,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "python3 <<PY\nprint('x')\nPY",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.eve/workspace",
         },
       }),
     );
@@ -445,7 +445,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "node --check /tmp/test.js",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.eve/workspace",
         },
       }),
     );
@@ -454,7 +454,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "node -c /tmp/test.js",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.eve/workspace",
         },
       }),
     );

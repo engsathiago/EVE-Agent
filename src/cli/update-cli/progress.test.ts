@@ -15,7 +15,7 @@ function makeResult(
     steps: [
       {
         name: stepName,
-        command: "npm i -g openclaw@latest",
+        command: "npm i -g eve@latest",
         cwd: "/tmp",
         durationMs: 1,
         exitCode: 1,
@@ -71,7 +71,7 @@ describe("inferUpdateFailureHints", () => {
   it("returns EACCES hint for staged package permission failures", () => {
     const result = makeResult(
       "global install stage",
-      "EACCES: permission denied, mkdtemp '/usr/local/lib/node_modules/.openclaw-update-stage-'",
+      "EACCES: permission denied, mkdtemp '/usr/local/lib/node_modules/.eve-update-stage-'",
     );
     const hints = inferUpdateFailureHints(result);
     expect(hints.join("\n")).toContain("EACCES");

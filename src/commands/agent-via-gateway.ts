@@ -1,7 +1,7 @@
 // Gateway-first agent CLI implementation with embedded fallback for local/runtime failures.
 import { randomUUID } from "node:crypto";
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
@@ -14,7 +14,7 @@ import {
   readGatewayDispatchConfig,
   readGatewayDispatchConfigWithShellEnvFallback,
 } from "../config/gateway-dispatch-config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   callGateway,
   isGatewayCredentialsRequiredError,
@@ -115,7 +115,7 @@ let embeddedAgentCommandPromise: Promise<EmbeddedAgentCommandModule["agentComman
 let agentSessionModulePromise: Promise<AgentSessionModule> | undefined;
 let runtimeConfigModulePromise: Promise<RuntimeConfigModule> | undefined;
 let replyPayloadModulePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/reply-payload")>
+  | Promise<typeof import("eve-agent/plugin-sdk/reply-payload")>
   | undefined;
 const defaultAgentSessionModuleLoader: AgentSessionModuleLoader = () =>
   import("./agent/session.js");
@@ -136,14 +136,14 @@ function loadAgentSessionModule(): Promise<AgentSessionModule> {
   return agentSessionModulePromise;
 }
 
-async function loadRuntimeConfig(): Promise<OpenClawConfig> {
+async function loadRuntimeConfig(): Promise<EVEConfig> {
   runtimeConfigModulePromise ??= import("../config/io.js");
   const { getRuntimeConfig } = await runtimeConfigModulePromise;
   return getRuntimeConfig();
 }
 
 function loadReplyPayloadModule() {
-  replyPayloadModulePromise ??= import("openclaw/plugin-sdk/reply-payload");
+  replyPayloadModulePromise ??= import("eve-agent/plugin-sdk/reply-payload");
   return replyPayloadModulePromise;
 }
 
@@ -172,7 +172,7 @@ function protectJsonStdout(opts: Pick<AgentCliOpts, "json">): void {
   }
 }
 
-function parseTimeoutSeconds(opts: { cfg: OpenClawConfig; timeout?: string }) {
+function parseTimeoutSeconds(opts: { cfg: EVEConfig; timeout?: string }) {
   const raw =
     opts.timeout !== undefined
       ? parseStrictNonNegativeInteger(opts.timeout)
@@ -194,7 +194,7 @@ function resolveGatewayAgentTimeoutMs(timeoutSeconds: number): number {
 
 async function getGatewayDispatchConfig(options?: {
   skipShellEnvFallback?: boolean;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   // Scoped gateway turns need core agent/session/gateway fields only. The
   // running gateway owns plugin validation and plugin metadata freshness.
   if (options?.skipShellEnvFallback === false) {
@@ -476,7 +476,7 @@ async function abortAcceptedGatewayAgentRunWithGatewayCall(params: {
   signal: AgentCliSignal | undefined;
   runtime: RuntimeEnv;
   gatewayIdentity: AgentGatewayCallIdentity;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<void> {
   const request: GatewayRequestFunction = async <T = Record<string, unknown>>(
     method: string,
@@ -628,12 +628,12 @@ async function agentViaGatewayCommand(
   const explicitSessionKey = opts.sessionKey?.trim();
   if (!body) {
     throw new Error(
-      `Missing message. Use ${formatCliCommand('openclaw agent --message "..." --agent <id>')} or pass --to/--session-key/--session-id for an existing conversation.`,
+      `Missing message. Use ${formatCliCommand('eve agent --message "..." --agent <id>')} or pass --to/--session-key/--session-id for an existing conversation.`,
     );
   }
   if (!opts.to && !opts.sessionId && !opts.agent && !explicitSessionKey) {
     throw new Error(
-      `No target session selected. Use --agent <id>, --session-key <key>, --session-id <id>, or --to <E.164>. Run ${formatCliCommand("openclaw agents list")} to see agents.`,
+      `No target session selected. Use --agent <id>, --session-key <key>, --session-id <id>, or --to <E.164>. Run ${formatCliCommand("eve agents list")} to see agents.`,
     );
   }
 
@@ -644,7 +644,7 @@ async function agentViaGatewayCommand(
     const knownAgents = listAgentIds(cfg);
     if (!knownAgents.includes(agentId)) {
       throw new Error(
-        `Unknown agent id "${agentIdRaw}". Use "${formatCliCommand("openclaw agents list")}" to see configured agents.`,
+        `Unknown agent id "${agentIdRaw}". Use "${formatCliCommand("eve agents list")}" to see configured agents.`,
       );
     }
   }
@@ -684,7 +684,7 @@ async function agentViaGatewayCommand(
   let activeConnectionAbortAttempted = false;
   let activeConnectionAbortSucceeded = false;
   let response: GatewayAgentResponse | undefined;
-  const dispatchGatewayAgentCall = async (activeCfg: OpenClawConfig) =>
+  const dispatchGatewayAgentCall = async (activeCfg: EVEConfig) =>
     await withProgress(
       {
         label: "Waiting for agent reply…",
@@ -844,7 +844,7 @@ export async function agentCliCommand(
   // Fail loudly and point at the first-class command instead of no-opping.
   if (isCompactControlCommand(opts.message)) {
     runtime.error?.(
-      "Slash commands cannot be executed via --message from the CLI. Use: openclaw sessions compact <key>",
+      "Slash commands cannot be executed via --message from the CLI. Use: eve sessions compact <key>",
     );
     runtime.exit(1);
     return undefined;

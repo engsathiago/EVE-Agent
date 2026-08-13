@@ -2,7 +2,7 @@
 import type {
   ChannelPreviewStreamingConfig,
   StreamingMode,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import type { BlockStreamingCoalesceConfig, DmPolicy, GroupPolicy } from "./runtime-api.js";
 import type { SecretInput } from "./secret-input.js";
 

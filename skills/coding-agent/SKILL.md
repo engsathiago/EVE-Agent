@@ -3,7 +3,7 @@ name: coding-agent
 description: "Delegate coding work to Codex, Claude Code, or OpenCode as background workers; not simple edits or read-only code lookup."
 metadata:
   {
-    "openclaw":
+    "eve":
       {
         "emoji": "🧩",
         "requires":
@@ -34,7 +34,7 @@ metadata:
 
 # Coding Agent
 
-Use for background feature builds, PR reviews, large refactors, and issue-to-PR loops. Do not use for simple edits, read-only lookup, ACP thread-bound work, or any run inside `~/.openclaw`, `$OPENCLAW_STATE_DIR`, or active OpenClaw state dirs.
+Use for background feature builds, PR reviews, large refactors, and issue-to-PR loops. Do not use for simple edits, read-only lookup, ACP thread-bound work, or any run inside `~/.eve`, `$EVE_STATE_DIR`, or active EVE state dirs.
 
 ## Hard rules
 
@@ -42,12 +42,12 @@ Use for background feature builds, PR reviews, large refactors, and issue-to-PR 
 - Codex and OpenCode: use `pty:true`.
 - Claude Code: no PTY; use `claude --permission-mode bypassPermissions --print`.
 - Capture a real notification route before spawning.
-- Worker must send completion/failure via `openclaw message send`.
+- Worker must send completion/failure via `eve message send`.
 - Do not rely on heartbeat, system events, or notify-on-exit.
 - Monitor with `process`; do not kill slow workers without cause.
 - If user asked for a specific agent, use that agent.
 - If worker fails/hangs, respawn or ask; do not silently hand-code instead.
-- Never checkout branches or run background coding agents in `~/Projects/openclaw`; use an isolated checkout.
+- Never checkout branches or run background coding agents in `~/Projects/eve`; use an isolated checkout.
 
 ## Notification block
 
@@ -62,9 +62,9 @@ Notification route:
 - thread_id: <notifyThreadId or omit>
 
 When finished, send exactly one completion or failure message using:
-openclaw message send --channel <channel> --target '<target>' --message '<brief result>'
+eve message send --channel <channel> --target '<target>' --message '<brief result>'
 Add --account, --reply-to, or --thread-id only when present above.
-Do not use openclaw system event or heartbeat.
+Do not use eve system event or heartbeat.
 ```
 
 If no trustworthy route exists, say completion auto-notify is unavailable.
@@ -74,7 +74,7 @@ If no trustworthy route exists, say completion auto-notify is unavailable.
 Write the worker prompt to a temp file first. This avoids shell quoting bugs when the required notification block contains quotes or newlines.
 
 ```bash
-PROMPT=$(mktemp -t openclaw-worker-prompt.XXXXXX)
+PROMPT=$(mktemp -t eve-worker-prompt.XXXXXX)
 cat >"$PROMPT" <<'EOF'
 Task.
 <notification block>
@@ -117,7 +117,7 @@ Codex needs a trusted git repo:
 ```bash
 SCRATCH=$(mktemp -d)
 git -C "$SCRATCH" init
-PROMPT=$(mktemp -t openclaw-worker-prompt.XXXXXX)
+PROMPT=$(mktemp -t eve-worker-prompt.XXXXXX)
 cat >"$PROMPT" <<'EOF'
 Build X.
 <notification block>

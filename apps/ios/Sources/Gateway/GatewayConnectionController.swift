@@ -7,7 +7,7 @@ import EventKit
 import Foundation
 import Network
 import Observation
-import OpenClawKit
+import EVEKit
 import os
 import Photos
 import ReplayKit
@@ -847,7 +847,7 @@ extension GatewayConnectionController {
         if manualClientId?.isEmpty == false {
             return manualClientId!
         }
-        return "openclaw-ios"
+        return "eve-ios"
     }
 
     private func resolveManualPort(host: String, port: Int, useTLS: Bool) -> Int? {
@@ -878,8 +878,8 @@ extension GatewayConnectionController {
 
     private func currentCaps() -> [String] {
         var caps = [
-            OpenClawCapability.canvas.rawValue,
-            OpenClawCapability.screen.rawValue,
+            EVECapability.canvas.rawValue,
+            EVECapability.screen.rawValue,
         ]
 
         // Default-on: if the key doesn't exist yet, treat it as enabled.
@@ -887,26 +887,26 @@ extension GatewayConnectionController {
             UserDefaults.standard.object(forKey: "camera.enabled") == nil
                 ? true
                 : UserDefaults.standard.bool(forKey: "camera.enabled")
-        if cameraEnabled { caps.append(OpenClawCapability.camera.rawValue) }
+        if cameraEnabled { caps.append(EVECapability.camera.rawValue) }
 
         let voiceWakeEnabled = UserDefaults.standard.bool(forKey: VoiceWakePreferences.enabledKey)
-        if voiceWakeEnabled { caps.append(OpenClawCapability.voiceWake.rawValue) }
+        if voiceWakeEnabled { caps.append(EVECapability.voiceWake.rawValue) }
 
         let locationModeRaw = UserDefaults.standard.string(forKey: "location.enabledMode") ?? "off"
-        let locationMode = OpenClawLocationMode(rawValue: locationModeRaw) ?? .off
-        if locationMode != .off { caps.append(OpenClawCapability.location.rawValue) }
+        let locationMode = EVELocationMode(rawValue: locationModeRaw) ?? .off
+        if locationMode != .off { caps.append(EVECapability.location.rawValue) }
 
-        caps.append(OpenClawCapability.device.rawValue)
-        caps.append(OpenClawCapability.talk.rawValue)
+        caps.append(EVECapability.device.rawValue)
+        caps.append(EVECapability.talk.rawValue)
         if WatchMessagingService.isSupportedOnDevice() {
-            caps.append(OpenClawCapability.watch.rawValue)
+            caps.append(EVECapability.watch.rawValue)
         }
-        caps.append(OpenClawCapability.photos.rawValue)
-        caps.append(OpenClawCapability.contacts.rawValue)
-        caps.append(OpenClawCapability.calendar.rawValue)
-        caps.append(OpenClawCapability.reminders.rawValue)
+        caps.append(EVECapability.photos.rawValue)
+        caps.append(EVECapability.contacts.rawValue)
+        caps.append(EVECapability.calendar.rawValue)
+        caps.append(EVECapability.reminders.rawValue)
         if Self.motionAvailable() {
-            caps.append(OpenClawCapability.motion.rawValue)
+            caps.append(EVECapability.motion.rawValue)
         }
 
         return caps
@@ -914,58 +914,58 @@ extension GatewayConnectionController {
 
     private func currentCommands() -> [String] {
         var commands: [String] = [
-            OpenClawCanvasCommand.present.rawValue,
-            OpenClawCanvasCommand.hide.rawValue,
-            OpenClawCanvasCommand.navigate.rawValue,
-            OpenClawCanvasCommand.evalJS.rawValue,
-            OpenClawCanvasCommand.snapshot.rawValue,
-            OpenClawCanvasA2UICommand.push.rawValue,
-            OpenClawCanvasA2UICommand.pushJSONL.rawValue,
-            OpenClawCanvasA2UICommand.reset.rawValue,
-            OpenClawScreenCommand.record.rawValue,
-            OpenClawSystemCommand.notify.rawValue,
-            OpenClawChatCommand.push.rawValue,
-            OpenClawTalkCommand.pttStart.rawValue,
-            OpenClawTalkCommand.pttStop.rawValue,
-            OpenClawTalkCommand.pttCancel.rawValue,
-            OpenClawTalkCommand.pttOnce.rawValue,
+            EVECanvasCommand.present.rawValue,
+            EVECanvasCommand.hide.rawValue,
+            EVECanvasCommand.navigate.rawValue,
+            EVECanvasCommand.evalJS.rawValue,
+            EVECanvasCommand.snapshot.rawValue,
+            EVECanvasA2UICommand.push.rawValue,
+            EVECanvasA2UICommand.pushJSONL.rawValue,
+            EVECanvasA2UICommand.reset.rawValue,
+            EVEScreenCommand.record.rawValue,
+            EVESystemCommand.notify.rawValue,
+            EVEChatCommand.push.rawValue,
+            EVETalkCommand.pttStart.rawValue,
+            EVETalkCommand.pttStop.rawValue,
+            EVETalkCommand.pttCancel.rawValue,
+            EVETalkCommand.pttOnce.rawValue,
         ]
 
         let caps = Set(self.currentCaps())
-        if caps.contains(OpenClawCapability.camera.rawValue) {
-            commands.append(OpenClawCameraCommand.list.rawValue)
-            commands.append(OpenClawCameraCommand.snap.rawValue)
-            commands.append(OpenClawCameraCommand.clip.rawValue)
+        if caps.contains(EVECapability.camera.rawValue) {
+            commands.append(EVECameraCommand.list.rawValue)
+            commands.append(EVECameraCommand.snap.rawValue)
+            commands.append(EVECameraCommand.clip.rawValue)
         }
-        if caps.contains(OpenClawCapability.location.rawValue) {
-            commands.append(OpenClawLocationCommand.get.rawValue)
+        if caps.contains(EVECapability.location.rawValue) {
+            commands.append(EVELocationCommand.get.rawValue)
         }
-        if caps.contains(OpenClawCapability.device.rawValue) {
-            commands.append(OpenClawDeviceCommand.status.rawValue)
-            commands.append(OpenClawDeviceCommand.info.rawValue)
+        if caps.contains(EVECapability.device.rawValue) {
+            commands.append(EVEDeviceCommand.status.rawValue)
+            commands.append(EVEDeviceCommand.info.rawValue)
         }
-        if caps.contains(OpenClawCapability.watch.rawValue) {
-            commands.append(OpenClawWatchCommand.status.rawValue)
-            commands.append(OpenClawWatchCommand.notify.rawValue)
+        if caps.contains(EVECapability.watch.rawValue) {
+            commands.append(EVEWatchCommand.status.rawValue)
+            commands.append(EVEWatchCommand.notify.rawValue)
         }
-        if caps.contains(OpenClawCapability.photos.rawValue) {
-            commands.append(OpenClawPhotosCommand.latest.rawValue)
+        if caps.contains(EVECapability.photos.rawValue) {
+            commands.append(EVEPhotosCommand.latest.rawValue)
         }
-        if caps.contains(OpenClawCapability.contacts.rawValue) {
-            commands.append(OpenClawContactsCommand.search.rawValue)
-            commands.append(OpenClawContactsCommand.add.rawValue)
+        if caps.contains(EVECapability.contacts.rawValue) {
+            commands.append(EVEContactsCommand.search.rawValue)
+            commands.append(EVEContactsCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.calendar.rawValue) {
-            commands.append(OpenClawCalendarCommand.events.rawValue)
-            commands.append(OpenClawCalendarCommand.add.rawValue)
+        if caps.contains(EVECapability.calendar.rawValue) {
+            commands.append(EVECalendarCommand.events.rawValue)
+            commands.append(EVECalendarCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.reminders.rawValue) {
-            commands.append(OpenClawRemindersCommand.list.rawValue)
-            commands.append(OpenClawRemindersCommand.add.rawValue)
+        if caps.contains(EVECapability.reminders.rawValue) {
+            commands.append(EVERemindersCommand.list.rawValue)
+            commands.append(EVERemindersCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.motion.rawValue) {
-            commands.append(OpenClawMotionCommand.activity.rawValue)
-            commands.append(OpenClawMotionCommand.pedometer.rawValue)
+        if caps.contains(EVECapability.motion.rawValue) {
+            commands.append(EVEMotionCommand.activity.rawValue)
+            commands.append(EVEMotionCommand.pedometer.rawValue)
         }
 
         return commands

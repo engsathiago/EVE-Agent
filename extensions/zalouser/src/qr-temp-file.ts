@@ -1,7 +1,7 @@
 // Zalouser plugin module implements qr temp file behavior.
 import fsp from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 
 export async function writeQrDataUrlToTempFile(
   qrDataUrl: string,
@@ -15,8 +15,8 @@ export async function writeQrDataUrlToTempFile(
   }
   const safeProfile = profile.replace(/[^a-zA-Z0-9_-]+/g, "-") || "default";
   const filePath = path.join(
-    resolvePreferredOpenClawTmpDir(),
-    `openclaw-zalouser-qr-${safeProfile}.png`,
+    resolvePreferredEVETmpDir(),
+    `eve-zalouser-qr-${safeProfile}.png`,
   );
   await fsp.writeFile(filePath, Buffer.from(base64, "base64"));
   return filePath;

@@ -10,4 +10,4 @@ export type {
   OAuthProviderInterface,
   OAuthSelectOption,
   OAuthSelectPrompt,
-} from "openclaw/plugin-sdk/provider-oauth-runtime";
+} from "eve-agent/plugin-sdk/provider-oauth-runtime";

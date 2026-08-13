@@ -1,6 +1,6 @@
 // Irc plugin module implements doctor behavior.
-import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "openclaw/plugin-sdk/channel-policy";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "eve-agent/plugin-sdk/channel-policy";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 function asObjectRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value)

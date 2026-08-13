@@ -514,11 +514,11 @@ test("sessions.compact without maxLines runs embedded manual compaction for chec
     throw new Error("expected embedded compaction session file");
   }
   expect(path.basename(compactionCall.sessionFile)).toBe("sess-main.jsonl");
-  expect(compactionCall.workspaceDir).toBe(path.join(os.tmpdir(), "openclaw-gateway-test"));
+  expect(compactionCall.workspaceDir).toBe(path.join(os.tmpdir(), "eve-gateway-test"));
   expect(compactionCall.cwd).toBe("/tmp/task-repo");
   expect(callConfig.agents?.defaults?.model?.primary).toBe("anthropic/claude-opus-4-6");
   expect(callConfig.agents?.defaults?.workspace).toBe(
-    path.join(os.tmpdir(), "openclaw-gateway-test"),
+    path.join(os.tmpdir(), "eve-gateway-test"),
   );
   expect(compactionCall.provider).toBe("anthropic");
   expect(compactionCall.model).toBe("claude-opus-4-6");
@@ -793,7 +793,7 @@ test("sessions.compact maxLines aborts without truncating when an active run can
 });
 
 test("sessions.patch preserves nested model ids under provider overrides", async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gw-sessions-nested-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gw-sessions-nested-"));
   const storePath = path.join(dir, "sessions.json");
   await fs.writeFile(
     storePath,
@@ -803,7 +803,7 @@ test("sessions.patch preserves nested model ids under provider overrides", async
     "utf-8",
   );
 
-  await withEnvAsync({ OPENCLAW_CONFIG_PATH: undefined }, async () => {
+  await withEnvAsync({ EVE_CONFIG_PATH: undefined }, async () => {
     const { clearConfigCache, clearRuntimeConfigSnapshot } = await getGatewayConfigModule();
     clearConfigCache();
     clearRuntimeConfigSnapshot();
@@ -816,10 +816,10 @@ test("sessions.patch preserves nested model ids under provider overrides", async
         list: [{ id: "main", default: true, workspace: dir }],
       },
     };
-    const configPath = path.join(dir, "openclaw.json");
+    const configPath = path.join(dir, "eve.json");
     await fs.writeFile(configPath, JSON.stringify(cfg, null, 2), "utf-8");
 
-    await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+    await withEnvAsync({ EVE_CONFIG_PATH: configPath }, async () => {
       const started = await startConnectedServerWithClient();
       const { server, ws } = started;
       try {

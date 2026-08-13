@@ -1,9 +1,9 @@
 // Resolves diagnostics feature flags from config and environment.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { normalizeUniqueStringEntriesLower } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { normalizeUniqueStringEntriesLower } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.eve.js";
 
-const DIAGNOSTICS_ENV = "OPENCLAW_DIAGNOSTICS";
+const DIAGNOSTICS_ENV = "EVE_DIAGNOSTICS";
 
 type ParsedEnvFlags = {
   flags: string[];
@@ -38,9 +38,9 @@ function uniqueFlags(flags: string[]): string[] {
   return normalizeUniqueStringEntriesLower(flags);
 }
 
-/** Resolves enabled diagnostic flags from config plus `OPENCLAW_DIAGNOSTICS` overrides. */
+/** Resolves enabled diagnostic flags from config plus `EVE_DIAGNOSTICS` overrides. */
 export function resolveDiagnosticFlags(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   env: NodeJS.ProcessEnv = process.env,
 ): string[] {
   const configFlags = Array.isArray(cfg?.diagnostics?.flags) ? cfg?.diagnostics?.flags : [];
@@ -87,7 +87,7 @@ export function matchesDiagnosticFlag(flag: string, enabledFlags: string[]): boo
 /** Returns whether a diagnostic flag is enabled after config/env resolution. */
 export function isDiagnosticFlagEnabled(
   flag: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
   const flags = resolveDiagnosticFlags(cfg, env);

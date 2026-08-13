@@ -51,7 +51,7 @@ function createState(overrides: Partial<SkillWorkshopState> = {}): {
 
 function manifest(status: SkillWorkshopProposal["status"] = "pending") {
   return {
-    schema: "openclaw.skill-workshop.proposals-manifest.v1",
+    schema: "eve.skill-workshop.proposals-manifest.v1",
     updatedAt: ISO_NOW,
     proposals: [
       {

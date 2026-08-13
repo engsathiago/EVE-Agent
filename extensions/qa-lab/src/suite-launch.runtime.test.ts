@@ -34,7 +34,7 @@ async function writeEvidence(pathLocal: string) {
     pathLocal,
     `${JSON.stringify(
       {
-        kind: "openclaw.qa.evidence-summary",
+        kind: "eve.qa.evidence-summary",
         schemaVersion: 2,
         generatedAt: "2026-06-14T00:00:00.000Z",
         evidenceMode: "full",
@@ -224,7 +224,7 @@ describe("qa suite runtime launcher", () => {
     await expect(
       runQaSuite({
         repoRoot: process.cwd(),
-        runtimePair: ["openclaw", "codex"],
+        runtimePair: ["eve", "codex"],
         scenarioIds: ["control-ui-chat-flow-playwright"],
       }),
     ).rejects.toThrow("--runtime-pair requires execution.kind: flow scenarios");

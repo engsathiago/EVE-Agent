@@ -1,7 +1,7 @@
 /**
  * Application keybinding definitions and user-config migration helpers.
  *
- * Wraps pi-tui keybindings with OpenClaw-specific actions and per-agent overrides.
+ * Wraps pi-tui keybindings with EVE-specific actions and per-agent overrides.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -15,7 +15,7 @@ import {
 } from "@earendil-works/pi-tui";
 import { getAgentDir } from "../config.js";
 
-/** OpenClaw-specific key ids added to the shared pi-tui keybinding registry. */
+/** EVE-specific key ids added to the shared pi-tui keybinding registry. */
 export interface AppKeybindings {
   "app.interrupt": true;
   "app.clear": true;
@@ -60,7 +60,7 @@ export interface AppKeybindings {
   "app.tree.filter.cycleBackward": true;
 }
 
-/** Union of OpenClaw-specific app key ids. */
+/** Union of EVE-specific app key ids. */
 export type AppKeybinding = keyof AppKeybindings;
 
 declare module "@earendil-works/pi-tui" {
@@ -351,7 +351,7 @@ function loadRawConfig(path: string): Record<string, unknown> | undefined {
   }
 }
 
-/** Keybinding manager that loads OpenClaw defaults plus optional user overrides. */
+/** Keybinding manager that loads EVE defaults plus optional user overrides. */
 export class KeybindingsManager extends TuiKeybindingsManager {
   private configPath: string | undefined;
 

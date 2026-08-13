@@ -188,31 +188,31 @@ describe("unwrapKnownDispatchWrapperInvocation", () => {
       expected: { kind: "unwrapped", wrapper: "time", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "-n", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-n", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "-en", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-en", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "-E", "1", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-E", "1", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "-F", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-F", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "-o", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-o", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "--nb", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "--nb", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
-      argv: ["flock", "--wait", "1", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "--wait", "1", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "unwrapped", wrapper: "flock", argv: ["bash", "-lc", "echo hi"] },
     },
     {
@@ -255,11 +255,11 @@ describe("unwrapKnownDispatchWrapperInvocation", () => {
       expected: { kind: "blocked", wrapper: "timeout" },
     },
     {
-      argv: ["flock", "/tmp/openclaw.lock", "-c", "echo hi"],
+      argv: ["flock", "/tmp/eve.lock", "-c", "echo hi"],
       expected: { kind: "blocked", wrapper: "flock" },
     },
     {
-      argv: ["flock", "-un", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "-un", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       expected: { kind: "blocked", wrapper: "flock" },
     },
     {
@@ -352,17 +352,17 @@ describe("resolveDispatchWrapperTrustPlan", () => {
       effectiveArgv: ["bash", "-lc", "echo hi"],
     },
     {
-      argv: ["flock", "--timeout=2", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "--timeout=2", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       wrapper: "flock",
       effectiveArgv: ["bash", "-lc", "echo hi"],
     },
     {
-      argv: ["flock", "--close", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "--close", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       wrapper: "flock",
       effectiveArgv: ["bash", "-lc", "echo hi"],
     },
     {
-      argv: ["flock", "--no-fork", "/tmp/openclaw.lock", "bash", "-lc", "echo hi"],
+      argv: ["flock", "--no-fork", "/tmp/eve.lock", "bash", "-lc", "echo hi"],
       wrapper: "flock",
       effectiveArgv: ["bash", "-lc", "echo hi"],
     },

@@ -1,6 +1,6 @@
 // Zalouser plugin module implements doctor behavior.
-import type { ChannelDoctorAdapter } from "openclaw/plugin-sdk/channel-contract";
-import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "openclaw/plugin-sdk/channel-policy";
+import type { ChannelDoctorAdapter } from "eve-agent/plugin-sdk/channel-contract";
+import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "eve-agent/plugin-sdk/channel-policy";
 import { legacyConfigRules, normalizeCompatibilityConfig } from "./doctor-contract.js";
 import { isZalouserMutableGroupEntry } from "./security-audit.js";
 

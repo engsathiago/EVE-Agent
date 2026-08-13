@@ -3,7 +3,7 @@
  * Verifies filtered catalog output and pending load behavior.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { MAX_TIMER_TIMEOUT_MS } from "../shared/number-coercion.js";
 import {
   loadModelCatalogForBrowse,
@@ -16,7 +16,7 @@ const readOnlyCatalog: ModelCatalogEntry[] = [
 ];
 const fullCatalog: ModelCatalogEntry[] = [{ id: "gpt-full", name: "GPT Full", provider: "openai" }];
 
-function config(params: { providerWildcard?: boolean } = {}): OpenClawConfig {
+function config(params: { providerWildcard?: boolean } = {}): EVEConfig {
   return {
     agents: params.providerWildcard
       ? {
@@ -27,7 +27,7 @@ function config(params: { providerWildcard?: boolean } = {}): OpenClawConfig {
           },
         }
       : undefined,
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 describe("loadModelCatalogForBrowse", () => {

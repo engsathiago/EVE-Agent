@@ -1,6 +1,6 @@
 /** Collects and renders gateway health for channels, agents, plugins, and sessions. */
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
-import { asNullableRecord } from "@openclaw/normalization-core/record-coerce";
+import { resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
+import { asNullableRecord } from "@eve/normalization-core/record-coerce";
 import { styleHealthChannelLine } from "../../packages/terminal-core/src/health-style.js";
 import { isRich } from "../../packages/terminal-core/src/theme.js";
 import { resolveDefaultAgentId } from "../agents/agent-scope.js";
@@ -17,7 +17,7 @@ import type { ChannelAccountSnapshot } from "../channels/plugins/types.public.js
 import { probeGatewayStatus } from "../cli/daemon-cli/probe.js";
 import { withProgress } from "../cli/progress.js";
 import { resolveStorePath } from "../config/sessions/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { listContextEngineQuarantines } from "../context-engine/registry.js";
 import {
   buildGatewayConnectionDetails,
@@ -65,7 +65,7 @@ export type { HealthSummary } from "./health.types.js";
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 const debugHealth = (...args: unknown[]) => {
-  if (isTruthyEnvValue(process.env.OPENCLAW_DEBUG_HEALTH)) {
+  if (isTruthyEnvValue(process.env.EVE_DEBUG_HEALTH)) {
     console.warn("[health:debug]", ...args);
   }
 };
@@ -76,7 +76,7 @@ function isGatewayHealthAuthUnavailableError(error: unknown): boolean {
 
 export async function emitReachableGatewayAuthDiagnostic(params: {
   error: unknown;
-  config: OpenClawConfig;
+  config: EVEConfig;
   runtime: RuntimeEnv;
   timeoutMs?: number;
   token?: string;
@@ -240,10 +240,10 @@ export function formatContextEngineHealthLine(summary: HealthSummary): string | 
   return `Context engine: warning (${quarantined.length} quarantined; downgraded to legacy: ${engines})`;
 }
 
-const resolveHeartbeatSummary = (cfg: OpenClawConfig, agentId: string) =>
+const resolveHeartbeatSummary = (cfg: EVEConfig, agentId: string) =>
   resolveHeartbeatSummaryForAgent(cfg, agentId);
 
-const resolveAgentOrder = (cfg: OpenClawConfig) => {
+const resolveAgentOrder = (cfg: EVEConfig) => {
   const defaultAgentId = resolveDefaultAgentId(cfg);
   const entries = Array.isArray(cfg.agents?.list) ? cfg.agents.list : [];
   const seen = new Set<string>();
@@ -344,7 +344,7 @@ const hasAccountValue = (account: unknown): boolean => account !== null && accou
 
 function resolveProbeAccountEnabled(params: {
   plugin: ChannelPlugin;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   account: unknown;
   diagnostics: string[];
@@ -366,7 +366,7 @@ function resolveProbeAccountEnabled(params: {
 
 async function resolveProbeAccountConfigured(params: {
   plugin: ChannelPlugin;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   account: unknown;
   diagnostics: string[];
@@ -389,7 +389,7 @@ async function resolveProbeAccountConfigured(params: {
 
 async function resolveHealthAccountContext(params: {
   plugin: ChannelPlugin;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
 }): Promise<{
   probeAccount: unknown;
@@ -680,13 +680,13 @@ export async function getHealthSnapshot(params?: {
   return summary;
 }
 
-/** Runs the `openclaw health` command against the gateway and renders JSON or text. */
+/** Runs the `eve health` command against the gateway and renders JSON or text. */
 export async function healthCommand(
   opts: {
     json?: boolean;
     timeoutMs?: number;
     verbose?: boolean;
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     token?: string;
     password?: string;
   },
@@ -745,7 +745,7 @@ export async function healthCommand(
   if (opts.json) {
     writeRuntimeJson(runtime, summary);
   } else {
-    const debugEnabled = isTruthyEnvValue(process.env.OPENCLAW_DEBUG_HEALTH);
+    const debugEnabled = isTruthyEnvValue(process.env.EVE_DEBUG_HEALTH);
     const rich = isRich();
     if (opts.verbose) {
       const details = buildGatewayConnectionDetails({ config: cfg });
@@ -989,12 +989,12 @@ export async function healthCommand(
   }
 }
 
-async function readBestEffortHealthConfig(): Promise<OpenClawConfig> {
+async function readBestEffortHealthConfig(): Promise<EVEConfig> {
   const { readBestEffortConfig } = await loadConfigRuntime();
   return await readBestEffortConfig();
 }
 
-async function readRuntimeHealthConfig(): Promise<OpenClawConfig> {
+async function readRuntimeHealthConfig(): Promise<EVEConfig> {
   const { getRuntimeConfig } = await loadConfigRuntime();
   return getRuntimeConfig();
 }

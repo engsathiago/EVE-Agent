@@ -1,5 +1,5 @@
 // Core doctor compatibility migration pipeline for current config objects.
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { runPluginSetupConfigMigrations } from "../../../plugins/setup-registry.js";
 import { normalizeAgentId } from "../../../routing/session-key.js";
 import { migrateLegacySecretRefEnvMarkers } from "../../../secrets/legacy-secretref-env-marker.js";
@@ -10,7 +10,7 @@ import {
   normalizeLegacyOpenAICodexModelsAddMetadata,
 } from "./legacy-config-core-normalizers.js";
 
-function repairNullAgentWorkspaces(cfg: OpenClawConfig, changes: string[]): OpenClawConfig {
+function repairNullAgentWorkspaces(cfg: EVEConfig, changes: string[]): EVEConfig {
   const agents = cfg.agents?.list;
   if (!Array.isArray(agents)) {
     return cfg;
@@ -44,7 +44,7 @@ function repairNullAgentWorkspaces(cfg: OpenClawConfig, changes: string[]): Open
   };
 }
 
-function pruneBindingsForMissingAgents(cfg: OpenClawConfig, changes: string[]): OpenClawConfig {
+function pruneBindingsForMissingAgents(cfg: EVEConfig, changes: string[]): EVEConfig {
   const agents = cfg.agents?.list;
   const bindings = cfg.bindings;
   if (!Array.isArray(agents) || agents.length === 0 || !Array.isArray(bindings)) {
@@ -78,8 +78,8 @@ function pruneBindingsForMissingAgents(cfg: OpenClawConfig, changes: string[]): 
 }
 
 /** Normalize current config through core, plugin setup, channel, and secret-ref migrations. */
-export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfigValues(cfg: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } {
   const changes: string[] = [];

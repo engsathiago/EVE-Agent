@@ -1,10 +1,10 @@
 // Signal plugin module implements reaction level behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   resolveReactionLevel,
   type ReactionLevel,
   type ResolvedReactionLevel,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "eve-agent/plugin-sdk/status-helpers";
 import { resolveSignalAccount } from "./accounts.js";
 
 export type SignalReactionLevel = ReactionLevel;
@@ -20,7 +20,7 @@ export type ResolvedSignalReactionLevel = ResolvedReactionLevel;
  * - "extensive": Agent can react liberally
  */
 export function resolveSignalReactionLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
 }): ResolvedSignalReactionLevel {
   const account = resolveSignalAccount({

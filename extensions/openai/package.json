@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/openai-provider",
+  "name": "@eve/openai-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw OpenAI provider plugins",
+  "description": "EVE OpenAI provider plugins",
   "type": "module",
   "dependencies": {
     "ws": "8.21.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

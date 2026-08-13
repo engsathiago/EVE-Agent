@@ -21,10 +21,10 @@ the default built-in memory store.
 Install `memory-lancedb` before setting `plugins.slots.memory = "memory-lancedb"`:
 
 ```bash
-openclaw plugins install @openclaw/memory-lancedb
+eve plugins install @eve/memory-lancedb
 ```
 
-The plugin is published to npm and is not bundled into the OpenClaw runtime image.
+The plugin is published to npm and is not bundled into the EVE runtime image.
 The installer writes the plugin entry and switches the memory slot when no other
 plugin owns it.
 
@@ -62,13 +62,13 @@ slot with `plugins.slots.memory = "memory-lancedb"`. Companion plugins such as
 Restart the Gateway after changing plugin config:
 
 ```bash
-openclaw gateway restart
+eve gateway restart
 ```
 
 Then verify the plugin is loaded:
 
 ```bash
-openclaw plugins list
+eve plugins list
 ```
 
 ## Provider-backed embeddings
@@ -162,7 +162,7 @@ the Ollama provider documented in [Ollama](/providers/ollama).
 }
 ```
 
-Set `dimensions` for non-standard embedding models. OpenClaw knows the
+Set `dimensions` for non-standard embedding models. EVE knows the
 dimensions for `text-embedding-3-small` and `text-embedding-3-large`; custom
 models need the value in config so LanceDB can create the vector column.
 
@@ -215,7 +215,7 @@ in. For example, ZhiPu `embedding-3` uses `2048` dimensions:
 | `customTriggers`  | `[]`    | 0-50      | literal phrases that make auto-capture consider a message |
 
 `recallMaxChars` controls auto-recall, the `memory_recall` tool, the
-`memory_forget` query path, and `openclaw ltm search`. Auto-recall prefers the
+`memory_forget` query path, and `eve ltm search`. Auto-recall prefers the
 latest user message from the turn and falls back to the full prompt only when no
 user message is available. This keeps channel metadata and large prompt blocks
 out of the embedding request.
@@ -233,17 +233,17 @@ When `memory-lancedb` is the active memory plugin, it registers the `ltm` CLI
 namespace:
 
 ```bash
-openclaw ltm list
-openclaw ltm search "project preferences"
-openclaw ltm stats
+eve ltm list
+eve ltm search "project preferences"
+eve ltm stats
 ```
 
 The `query` subcommand runs a non-vector query against the LanceDB table
 directly:
 
 ```bash
-openclaw ltm query --cols id,text,createdAt --limit 20
-openclaw ltm query --filter "category = 'preference'" --order-by createdAt:desc
+eve ltm query --cols id,text,createdAt --limit 20
+eve ltm query --filter "category = 'preference'" --order-by createdAt:desc
 ```
 
 - `--cols <columns>`: comma-separated column allowlist (defaults to `id`, `text`, `importance`, `category`, `createdAt`).
@@ -259,7 +259,7 @@ Agents also get LanceDB memory tools from the active memory plugin:
 
 ## Storage
 
-By default, LanceDB data lives under `~/.openclaw/memory/lancedb`. Override the
+By default, LanceDB data lives under `~/.eve/memory/lancedb`. Override the
 path with `dbPath`:
 
 ```json5
@@ -269,7 +269,7 @@ path with `dbPath`:
       "memory-lancedb": {
         enabled: true,
         config: {
-          dbPath: "~/.openclaw/memory/lancedb",
+          dbPath: "~/.eve/memory/lancedb",
           embedding: {
             apiKey: "${OPENAI_API_KEY}",
             model: "text-embedding-3-small",
@@ -291,7 +291,7 @@ supports `${ENV_VAR}` expansion:
       "memory-lancedb": {
         enabled: true,
         config: {
-          dbPath: "s3://memory-bucket/openclaw",
+          dbPath: "s3://memory-bucket/eve",
           storageOptions: {
             access_key: "${AWS_ACCESS_KEY_ID}",
             secret_key: "${AWS_SECRET_ACCESS_KEY}",
@@ -311,12 +311,12 @@ supports `${ENV_VAR}` expansion:
 ## Runtime dependencies
 
 `memory-lancedb` depends on the native `@lancedb/lancedb` package. Packaged
-OpenClaw treats that package as part of the plugin package. Gateway startup
+EVE treats that package as part of the plugin package. Gateway startup
 does not repair plugin dependencies; if the dependency is missing, reinstall or
 update the plugin package and restart the Gateway.
 
 If an older install logs a missing `dist/package.json` or missing
-`@lancedb/lancedb` error during plugin load, upgrade OpenClaw and restart the
+`@lancedb/lancedb` error during plugin load, upgrade EVE and restart the
 Gateway.
 
 If the plugin logs that LanceDB is unavailable on `darwin-x64`, use the default
@@ -368,8 +368,8 @@ size reported by that model.
 Check that `plugins.slots.memory` points at `memory-lancedb`, then run:
 
 ```bash
-openclaw ltm stats
-openclaw ltm search "recent preference"
+eve ltm stats
+eve ltm search "recent preference"
 ```
 
 If `autoCapture` is disabled, the plugin will recall existing memories but will

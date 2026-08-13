@@ -1,5 +1,5 @@
 // Package manifest contract tests cover plugin package manifest requirements.
-import { describePackageManifestContract } from "openclaw/plugin-sdk/plugin-test-contracts";
+import { describePackageManifestContract } from "eve-agent/plugin-sdk/plugin-test-contracts";
 
 type PackageManifestContractParams = Parameters<typeof describePackageManifestContract>[0];
 

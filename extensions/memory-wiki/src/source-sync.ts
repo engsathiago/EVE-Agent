@@ -1,5 +1,5 @@
 // Memory Wiki plugin module implements source sync behavior.
-import type { OpenClawConfig } from "../api.js";
+import type { EVEConfig } from "../api.js";
 import { syncMemoryWikiBridgeSources, type BridgeMemoryWikiResult } from "./bridge.js";
 import {
   refreshMemoryWikiIndexesAfterImport,
@@ -16,7 +16,7 @@ export type MemoryWikiImportedSourceSyncResult = BridgeMemoryWikiResult & {
 
 export async function syncMemoryWikiImportedSources(params: {
   config: ResolvedMemoryWikiConfig;
-  appConfig?: OpenClawConfig;
+  appConfig?: EVEConfig;
 }): Promise<MemoryWikiImportedSourceSyncResult> {
   let syncResult: BridgeMemoryWikiResult;
   if (params.config.vaultMode === "bridge") {

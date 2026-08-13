@@ -337,7 +337,7 @@ describe("devices cli approve", () => {
     expect(logOutput).toContain("Device Nine");
     expect(logOutput).toContain("Approved: roles: operator; scopes: operator.read");
     expect(logOutput).toContain("Requested scopes exceed the current approval");
-    expect(readRuntimeErrorOutput()).toContain("openclaw devices approve req-abc");
+    expect(readRuntimeErrorOutput()).toContain("eve devices approve req-abc");
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(hasGatewayMethod("device.pair.approve")).toBe(false);
   });
@@ -400,7 +400,7 @@ describe("devices cli approve", () => {
 
     expectGatewayCall(0, { method: "device.pair.list" });
     expect(hasGatewayMethod("device.pair.approve")).toBe(false);
-    expect(readRuntimeErrorOutput()).toContain(`openclaw devices approve ${expectedRequestId}`);
+    expect(readRuntimeErrorOutput()).toContain(`eve devices approve ${expectedRequestId}`);
   });
 
   it("falls back to device id when selected pending display name is blank", async () => {
@@ -419,7 +419,7 @@ describe("devices cli approve", () => {
 
     const logOutput = runtime.log.mock.calls.map((c) => readRuntimeCallText(c)).join("\n");
     expect(logOutput).toContain("device-9");
-    expect(readRuntimeErrorOutput()).toContain("openclaw devices approve req-blank");
+    expect(readRuntimeErrorOutput()).toContain("eve devices approve req-blank");
     expect(hasGatewayMethod("device.pair.approve")).toBe(false);
   });
 
@@ -431,7 +431,7 @@ describe("devices cli approve", () => {
     await runDevicesApprove([
       "--latest",
       "--url",
-      "ws://gateway.example:18789/openclaw?cluster=qa lab",
+      "ws://gateway.example:18789/eve?cluster=qa lab",
       "--timeout",
       "3000",
       "--token",
@@ -440,7 +440,7 @@ describe("devices cli approve", () => {
 
     const errorOutput = runtime.error.mock.calls.map((c) => readRuntimeCallText(c)).join("\n");
     expect(errorOutput).toContain(
-      "openclaw devices approve req-url --url 'ws://gateway.example:18789/openclaw?cluster=qa lab' --timeout 3000",
+      "eve devices approve req-url --url 'ws://gateway.example:18789/eve?cluster=qa lab' --timeout 3000",
     );
     expect(errorOutput).toContain("Reuse the same --token option when rerunning.");
     expect(errorOutput).not.toContain("secret-token");
@@ -464,7 +464,7 @@ describe("devices cli approve", () => {
         requested: { roles: [], scopes: [] },
         approved: null,
       },
-      approveCommand: "openclaw devices approve req-json --url ws://gateway.example:18789 --json",
+      approveCommand: "eve devices approve req-json --url ws://gateway.example:18789 --json",
       requiresAuthFlags: {
         token: false,
         password: false,
@@ -627,7 +627,7 @@ describe("devices cli local fallback", () => {
           publicKey: "pk",
           role: "operator",
           scopes: ["operator.read"],
-          clientId: "openclaw-macos",
+          clientId: "eve-macos",
           clientMode: "cli",
           isRepair: true,
           ts: 1,
@@ -638,7 +638,7 @@ describe("devices cli local fallback", () => {
           publicKey: "pk",
           role: "operator",
           scopes: ["operator.read", "operator.pairing"],
-          clientId: "openclaw-macos",
+          clientId: "eve-macos",
           clientMode: "cli",
           isRepair: true,
           ts: 2,
@@ -654,7 +654,7 @@ describe("devices cli local fallback", () => {
           publicKey: "pk",
           role: "operator",
           scopes: ["operator.read", "operator.pairing"],
-          clientId: "openclaw-macos",
+          clientId: "eve-macos",
           clientMode: "cli",
           isRepair: true,
           ts: 2,
@@ -698,7 +698,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -709,7 +709,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -725,7 +725,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -777,7 +777,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: [],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -788,7 +788,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -812,7 +812,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -860,7 +860,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -876,7 +876,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -903,7 +903,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.write"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -914,7 +914,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -930,7 +930,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -957,7 +957,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -968,7 +968,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.write"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -984,7 +984,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.write"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1011,7 +1011,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -1022,7 +1022,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1038,7 +1038,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1065,7 +1065,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk-old",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -1076,7 +1076,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk-new",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1092,7 +1092,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk-new",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1119,7 +1119,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -1130,7 +1130,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             roles: ["operator", "different-role"],
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1146,7 +1146,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             roles: ["operator", "different-role"],
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1173,7 +1173,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -1184,7 +1184,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-ios",
+            clientId: "eve-ios",
             clientMode: "agent",
             isRepair: true,
             ts: 2,
@@ -1200,7 +1200,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-ios",
+            clientId: "eve-ios",
             clientMode: "agent",
             isRepair: true,
             ts: 2,
@@ -1227,7 +1227,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 1,
@@ -1238,7 +1238,7 @@ describe("devices cli local fallback", () => {
             publicKey: "pk",
             role: "operator",
             scopes: ["operator.read", "operator.pairing"],
-            clientId: "openclaw-macos",
+            clientId: "eve-macos",
             clientMode: "cli",
             isRepair: true,
             ts: 2,
@@ -1276,7 +1276,7 @@ describe("devices cli local fallback", () => {
     summarizeDeviceTokens.mockReturnValue(undefined);
 
     await expect(runDevicesCommand(["list"])).rejects.toThrow(
-      "different OPENCLAW_PROFILE or OPENCLAW_STATE_DIR",
+      "different EVE_PROFILE or EVE_STATE_DIR",
     );
     expect(readRuntimeOutput()).not.toContain(fallbackNotice);
   });

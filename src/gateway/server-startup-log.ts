@@ -1,6 +1,6 @@
 // Gateway startup logging helpers.
 // Produces the compact ready banner with resolved model and safety state.
-import { normalizeSortedUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeSortedUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import chalk from "chalk";
 import { resolveDefaultAgentId, resolveAgentConfig } from "../agents/agent-scope.js";
 import { DEFAULT_MODEL, DEFAULT_PROVIDER } from "../agents/defaults.js";
@@ -12,7 +12,7 @@ import {
   resolveConfiguredModelRef,
 } from "../agents/model-selection-shared.js";
 import { resolveThinkingDefault } from "../agents/model-thinking-default.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { getResolvedLoggerSettings } from "../logging.js";
 import { collectEnabledInsecureOrDangerousFlagsFromCurrentSnapshot } from "../security/dangerous-config-flags-current.js";
 
@@ -28,7 +28,7 @@ type StartupThinkLevel =
 
 /** Emit startup summary lines after Gateway bind and plugin loading complete. */
 export async function logGatewayStartup(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   bindHost: string;
   bindHosts?: string[];
   port: number;
@@ -72,7 +72,7 @@ export async function logGatewayStartup(params: {
   if (enabledDangerousFlags.length > 0) {
     const warning =
       `security warning: dangerous config flags enabled: ${enabledDangerousFlags.join(", ")}. ` +
-      "Run `openclaw security audit`.";
+      "Run `eve security audit`.";
     params.log.warn(warning);
   }
 }
@@ -93,7 +93,7 @@ function normalizeStartupThinkLevel(value: unknown): StartupThinkLevel | undefin
 
 /** Resolve explicit thinking overrides from agent defaults and per-model config. */
 function resolveExplicitStartupThinking(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
   defaultAgentThinking: unknown;
@@ -123,7 +123,7 @@ function isConfiguredReasoningDisabled(params: {
 
 /** Format model thinking and fast-mode details for the Gateway startup banner. */
 export function formatAgentModelStartupDetails(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
 }): string {

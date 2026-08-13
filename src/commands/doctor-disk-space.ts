@@ -1,7 +1,7 @@
-/** Doctor contribution for low disk space around the OpenClaw state directory. */
+/** Doctor contribution for low disk space around the EVE state directory. */
 import os from "node:os";
 import { note } from "../../packages/terminal-core/src/note.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveStateDir } from "../config/paths.js";
 import { tryReadDiskSpace } from "../infra/disk-space.js";
 import { resolveRequiredHomeDir } from "../infra/home-dir.js";
@@ -69,7 +69,7 @@ export function buildDiskSpaceWarnings(params: {
  * Doctor health contribution: check free disk space on the partition that
  * holds the state directory and warn when it drops below safe thresholds.
  *
- * This catches a common operational failure mode where OpenClaw silently
+ * This catches a common operational failure mode where EVE silently
  * fails to write config, sessions, or logs because the disk is full.
  *
  * Disk-space probing (statfs + nearest-existing-ancestor resolution) is
@@ -79,7 +79,7 @@ export function buildDiskSpaceWarnings(params: {
  * are specific to this health contribution.
  */
 export function noteDiskSpace(
-  _cfg: OpenClawConfig, // reserved for API consistency with other Doctor contributions
+  _cfg: EVEConfig, // reserved for API consistency with other Doctor contributions
   deps?: {
     env?: NodeJS.ProcessEnv;
     readDiskSpace?: (targetPath: string) => { availableBytes: number } | null;

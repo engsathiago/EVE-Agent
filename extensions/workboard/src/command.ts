@@ -1,5 +1,5 @@
 // Workboard plugin module implements command behavior.
-import type { OpenClawPluginApi } from "../api.js";
+import type { EVEPluginApi } from "../api.js";
 import { resolveWorkboardCardByIdOrPrefix } from "./card-lookup.js";
 import { dispatchAndStartWorkboardCards, type WorkboardSubagentRuntime } from "./dispatcher.js";
 import type { WorkboardStore } from "./store.js";
@@ -142,7 +142,7 @@ export async function handleWorkboardCommand(params: {
 }
 
 export function registerWorkboardCommand(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   store: WorkboardStore;
 }): void {
   params.api.registerCommand({

@@ -1,6 +1,6 @@
 // Keyed inbound-message debouncer that preserves same-key delivery order.
 import type { InboundDebounceByProvider } from "../config/types.messages.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 const resolveMs = (value: unknown): number | undefined => {
   if (typeof value !== "number" || !Number.isFinite(value)) {
@@ -21,7 +21,7 @@ const resolveChannelOverride = (params: {
 
 /** Resolve effective inbound debounce milliseconds from explicit, channel, and global config. */
 export function resolveInboundDebounceMs(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   overrideMs?: number;
 }): number {

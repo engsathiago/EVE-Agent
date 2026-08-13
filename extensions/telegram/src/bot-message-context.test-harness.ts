@@ -1,11 +1,11 @@
 // Telegram plugin module implements bot message context harness behavior.
 import { createHash } from "node:crypto";
-import { buildChannelInboundEventContext } from "openclaw/plugin-sdk/channel-inbound";
+import { buildChannelInboundEventContext } from "eve-agent/plugin-sdk/channel-inbound";
 import type { BuildTelegramMessageContextParams, TelegramMediaRef } from "./bot-message-context.js";
 import { setTelegramTopicNameStoreFactoryForTest } from "./topic-name-cache.js";
 
 export const baseTelegramMessageContextConfig = {
-  agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
+  agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/eve" } },
   channels: { telegram: { dmPolicy: "open", allowFrom: ["*"] } },
   messages: { groupChat: { mentionPatterns: [] } },
 } as never;
@@ -28,7 +28,7 @@ type BuildTelegramMessageContextForTestParams = {
   accountId?: string;
   dmPolicy?: BuildTelegramMessageContextParams["dmPolicy"];
   historyLimit?: number;
-  groupHistories?: Map<string, import("openclaw/plugin-sdk/reply-history").HistoryEntry[]>;
+  groupHistories?: Map<string, import("eve-agent/plugin-sdk/reply-history").HistoryEntry[]>;
   ackReactionScope?: BuildTelegramMessageContextParams["ackReactionScope"];
   botApi?: Record<string, unknown>;
   sendChatActionHandler?: BuildTelegramMessageContextParams["sendChatActionHandler"];
@@ -46,7 +46,7 @@ function resolveSessionStorePathForTest(testName: string | undefined): string {
     .update(`${process.pid}:${testName ?? "unknown"}`)
     .digest("hex")
     .slice(0, 16);
-  return `/tmp/openclaw/session-store-${hash}.json`;
+  return `/tmp/eve/session-store-${hash}.json`;
 }
 
 function createTelegramMessageContextSessionRuntimeForTest(

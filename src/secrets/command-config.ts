@@ -1,5 +1,5 @@
-/** Collects and analyzes command-scoped secret assignments from OpenClaw config. */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+/** Collects and analyzes command-scoped secret assignments from EVE config. */
+import type { EVEConfig } from "../config/types.eve.js";
 import { coerceSecretRef, resolveSecretInputRef } from "../config/types.secrets.js";
 import { getPath } from "./path-utils.js";
 import { isExpectedResolvedSecretValue } from "./secret-value.js";
@@ -38,8 +38,8 @@ export type AnalyzeAssignmentsFromSnapshotResult = {
  */
 /** Analyzes command secret assignments without mutating the source config. */
 export function analyzeCommandSecretAssignmentsFromSnapshot(params: {
-  sourceConfig: OpenClawConfig;
-  resolvedConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
+  resolvedConfig: EVEConfig;
   targetIds: ReadonlySet<string>;
   inactiveRefPaths?: ReadonlySet<string>;
   allowedPaths?: ReadonlySet<string>;
@@ -108,8 +108,8 @@ export function analyzeCommandSecretAssignmentsFromSnapshot(params: {
  * Returns resolved command assignments and throws when an active required ref is unresolved.
  */
 export function collectCommandSecretAssignmentsFromSnapshot(params: {
-  sourceConfig: OpenClawConfig;
-  resolvedConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
+  resolvedConfig: EVEConfig;
   commandName: string;
   targetIds: ReadonlySet<string>;
   inactiveRefPaths?: ReadonlySet<string>;

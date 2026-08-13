@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { AnyMessageContent, MiscMessageGenerationOptions, WAMessage } from "baileys";
-import { listMessageReceiptPlatformIds } from "openclaw/plugin-sdk/channel-outbound";
+import { listMessageReceiptPlatformIds } from "eve-agent/plugin-sdk/channel-outbound";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveWhatsAppOutboundMentions } from "./outbound-mentions.js";
 import { createWebSendApi } from "./send-api.js";
@@ -15,19 +15,19 @@ const imageOps = vi.hoisted(() => ({
   resizeToJpeg: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/channel-activity-runtime", async () => {
+vi.mock("eve-agent/plugin-sdk/channel-activity-runtime", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/channel-activity-runtime")
-  >("openclaw/plugin-sdk/channel-activity-runtime");
+    typeof import("eve-agent/plugin-sdk/channel-activity-runtime")
+  >("eve-agent/plugin-sdk/channel-activity-runtime");
   return {
     ...actual,
     recordChannelActivity: (...args: unknown[]) => recordChannelActivity(...args),
   };
 });
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/media-runtime")>(
-    "openclaw/plugin-sdk/media-runtime",
+vi.mock("eve-agent/plugin-sdk/media-runtime", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/media-runtime")>(
+    "eve-agent/plugin-sdk/media-runtime",
   );
   return {
     ...actual,
@@ -620,7 +620,7 @@ describe("createWebSendApi LID resolution (issue #67378)", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    authDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-wa-lid-"));
+    authDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-wa-lid-"));
     fs.writeFileSync(path.join(authDir, "lid-mapping-15555550000.json"), JSON.stringify("987654"));
   });
 

@@ -109,7 +109,7 @@ async function runBrowserToggle(
   if (printJsonResult(parent, status)) {
     return;
   }
-  const name = status.profile ?? "openclaw";
+  const name = status.profile ?? "eve";
   const headlessLabel = params.path === "/start" && status.headless ? " (headless)" : "";
   defaultRuntime.log(info(`🦞 browser [${name}] running: ${status.running}${headlessLabel}`));
 }
@@ -167,7 +167,7 @@ function formatBrowserDoctorGatewayError(error: unknown): string {
   if (!isGatewaySecretRefUnavailableErrorShape(error)) {
     return String(error);
   }
-  return "Gateway auth SecretRef is unavailable in this command path; browser doctor cannot reach the admin-scoped browser.request endpoint. Set OPENCLAW_GATEWAY_TOKEN or OPENCLAW_GATEWAY_PASSWORD, then retry.";
+  return "Gateway auth SecretRef is unavailable in this command path; browser doctor cannot reach the admin-scoped browser.request endpoint. Set EVE_GATEWAY_TOKEN or EVE_GATEWAY_PASSWORD, then retry.";
 }
 
 async function runBrowserDoctor(parent: BrowserParentOpts, profile?: string, deep?: boolean) {
@@ -198,14 +198,14 @@ async function runBrowserDoctor(parent: BrowserParentOpts, profile?: string, dee
   checks.push({
     name: "profile",
     ok: true,
-    detail: `${status.profile ?? "openclaw"} (${usesChromeMcpTransport(status) ? "chrome-mcp" : (status.transport ?? "cdp")})`,
+    detail: `${status.profile ?? "eve"} (${usesChromeMcpTransport(status) ? "chrome-mcp" : (status.transport ?? "cdp")})`,
   });
   checks.push({
     name: "browser",
     ok: status.running,
     detail: status.running
       ? `running${status.cdpReady === false ? ", CDP not ready" : ""}`
-      : "not running; run `openclaw browser start`",
+      : "not running; run `eve browser start`",
   });
 
   try {
@@ -294,14 +294,14 @@ async function runBrowserDoctor(parent: BrowserParentOpts, profile?: string, dee
 
 function usesChromeMcpTransport(params: {
   transport?: BrowserTransport;
-  driver?: "openclaw" | "existing-session";
+  driver?: "eve" | "existing-session";
 }): boolean {
   return params.transport === "chrome-mcp" || params.driver === "existing-session";
 }
 
 function formatBrowserConnectionSummary(params: {
   transport?: BrowserTransport;
-  driver?: "openclaw" | "existing-session";
+  driver?: "eve" | "existing-session";
   isRemote?: boolean;
   cdpPort?: number | null;
   cdpUrl?: string | null;
@@ -341,7 +341,7 @@ export function registerBrowserManageCommands(
         const detectedDisplay = detectedPath ? shortenHomePath(detectedPath) : "auto";
         defaultRuntime.log(
           [
-            `profile: ${status.profile ?? "openclaw"}`,
+            `profile: ${status.profile ?? "eve"}`,
             `enabled: ${status.enabled}`,
             `running: ${status.running}`,
             `transport: ${
@@ -697,7 +697,7 @@ export function registerBrowserManageCommands(
               const def = p.isDefault ? " [default]" : "";
               const loc = formatBrowserConnectionSummary(p);
               const remote = p.isRemote ? " [remote]" : "";
-              const driver = p.driver !== "openclaw" ? ` [${p.driver}]` : "";
+              const driver = p.driver !== "eve" ? ` [${p.driver}]` : "";
               return `${p.name}: ${status}${tabs}${def}${remote}${driver}\n  ${loc}, color: ${p.color}`;
             })
             .join("\n"),
@@ -712,7 +712,7 @@ export function registerBrowserManageCommands(
     .option("--color <hex>", "Profile color (hex format, e.g. #0066CC)")
     .option("--cdp-url <url>", "DevTools endpoint URL (http/https/ws/wss)")
     .option("--user-data-dir <path>", "User data dir for existing-session Chromium attach")
-    .option("--driver <driver>", "Profile driver (openclaw|existing-session). Default: openclaw")
+    .option("--driver <driver>", "Profile driver (eve|existing-session). Default: eve")
     .action(
       async (
         opts: {

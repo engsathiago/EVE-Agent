@@ -1,7 +1,7 @@
 /** Registry-loading adapters for model-list row construction. */
 import { loadAgentModelRegistry } from "../../agents/model-registry-loader.js";
 import { shouldSuppressBuiltInModel } from "../../agents/model-suppression.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ModelRegistry } from "../../llm/model-registry.js";
 import type { Model } from "../../llm/types.js";
 import { loadModelRegistry } from "./list.registry.js";
@@ -10,7 +10,7 @@ import { modelKey } from "./shared.js";
 
 /** Loads the full model registry and tracks discovered provider/model keys. */
 export async function loadListModelRegistry(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   opts?: {
     providerFilter?: string;
     normalizeModels?: boolean;
@@ -28,7 +28,7 @@ export async function loadListModelRegistry(
 function findConfiguredRegistryModel(params: {
   registry: ModelRegistry;
   entry: ConfiguredEntry;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Model | undefined {
   const model = params.registry.find(params.entry.ref.provider, params.entry.ref.model);
   if (!model) {
@@ -49,7 +49,7 @@ function findConfiguredRegistryModel(params: {
 
 /** Loads only configured registry entries and their auth availability. */
 export function loadConfiguredListModelRegistry(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   entries: ConfiguredEntry[],
   opts?: { providerFilter?: string; workspaceDir?: string },
 ) {

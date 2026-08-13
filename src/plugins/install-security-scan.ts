@@ -1,5 +1,5 @@
 // Runs security checks over plugin install candidates before activation.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type {
   InstallPolicyOrigin,
   InstallPolicyRequestKind,
@@ -55,7 +55,7 @@ async function loadInstallSecurityScanRuntime() {
 /** Scans an unpacked bundle source before plugin install/update. */
 export async function scanBundleInstallSource(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     logger: InstallScanLogger;
     pluginId: string;
     sourceDir: string;
@@ -73,7 +73,7 @@ export async function scanBundleInstallSource(
 /** Scans a package source directory and executable metadata before install/update. */
 export async function scanPackageInstallSource(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     extensions: string[];
     logger: InstallScanLogger;
     packageDir: string;
@@ -96,7 +96,7 @@ export async function scanPackageInstallSource(
 export async function scanInstalledPackageDependencyTree(params: {
   additionalPackageDirs?: string[];
   allowManagedNpmRootPackagePeerSymlinks?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   dangerouslyForceUnsafeInstall?: boolean;
   dependencyScanRootDir?: string;
   logger: InstallScanLogger;
@@ -115,7 +115,7 @@ export async function scanInstalledPackageDependencyTree(params: {
 /** Scans one file-based plugin install source. */
 export async function scanFileInstallSource(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     filePath: string;
     logger: InstallScanLogger;
     mode?: "install" | "update";
@@ -130,7 +130,7 @@ export async function scanFileInstallSource(
 
 /** Runs npm install policy checks before package install side effects. */
 export async function preflightPluginNpmInstallPolicy(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   logger: InstallScanLogger;
   mode?: "install" | "update";
   packageName: string;
@@ -146,7 +146,7 @@ export async function preflightPluginNpmInstallPolicy(params: {
 
 /** Runs git install policy checks before plugin install side effects. */
 export async function preflightPluginGitInstallPolicy(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   logger: InstallScanLogger;
   mode?: "install" | "update";
   pluginId: string;
@@ -160,7 +160,7 @@ export async function preflightPluginGitInstallPolicy(params: {
 
 /** Evaluates shared install policy for skill-managed dependency installs. */
 export async function evaluateSkillInstallPolicy(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   installId: string;
   installSpec?: SkillInstallSpecMetadata;
   logger: InstallScanLogger;

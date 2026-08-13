@@ -1,19 +1,19 @@
 // Xiaomi provider module implements model/runtime integration.
-import { transcodeAudioBufferToOpus } from "openclaw/plugin-sdk/media-runtime";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { assertOkOrThrowProviderError } from "openclaw/plugin-sdk/provider-http";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+import { transcodeAudioBufferToOpus } from "eve-agent/plugin-sdk/media-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { assertOkOrThrowProviderError } from "eve-agent/plugin-sdk/provider-http";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 import type {
   SpeechDirectiveTokenParseContext,
   SpeechProviderConfig,
   SpeechProviderOverrides,
   SpeechProviderPlugin,
-} from "openclaw/plugin-sdk/speech-core";
-import { asObject, trimToUndefined } from "openclaw/plugin-sdk/speech-core";
+} from "eve-agent/plugin-sdk/speech-core";
+import { asObject, trimToUndefined } from "eve-agent/plugin-sdk/speech-core";
 import {
   fetchWithSsrFGuard,
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
-} from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
 
 const DEFAULT_XIAOMI_TTS_BASE_URL = "https://api.xiaomimimo.com/v1";
 const DEFAULT_XIAOMI_TTS_MODEL = "mimo-v2.5-tts";

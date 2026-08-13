@@ -1,5 +1,5 @@
 // Google API module exposes the plugin public contract.
-import type { DoctorSessionRouteStateOwner } from "openclaw/plugin-sdk/runtime-doctor";
+import type { DoctorSessionRouteStateOwner } from "eve-agent/plugin-sdk/runtime-doctor";
 
 export const sessionRouteStateOwners: DoctorSessionRouteStateOwner[] = [
   {

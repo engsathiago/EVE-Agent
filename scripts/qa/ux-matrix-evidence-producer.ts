@@ -19,7 +19,7 @@ import {
 const execFileAsync = promisify(execFile);
 const SCENARIO_ID = "ux-matrix-evidence-dashboard";
 const SOURCE_PATH = "scripts/qa/ux-matrix-evidence-producer.ts";
-const SUITE_COMMAND = `pnpm openclaw qa suite --scenario ${SCENARIO_ID}`;
+const SUITE_COMMAND = `pnpm eve qa suite --scenario ${SCENARIO_ID}`;
 
 type MatrixCell = {
   artifacts: Array<{ kind: string; path: string }>;
@@ -146,7 +146,7 @@ function buildExecution(params: {
   return {
     runner: "ux-matrix-script-producer",
     environment: {
-      ref: process.env.OPENCLAW_QA_REF?.trim() || process.env.GITHUB_SHA?.trim() || null,
+      ref: process.env.EVE_QA_REF?.trim() || process.env.GITHUB_SHA?.trim() || null,
       os: process.platform,
       nodeVersion: process.version,
     },
@@ -489,7 +489,7 @@ async function writeProducerMetadata(params: {
     return acc;
   }, {});
   await writeJson(path.join(params.artifactBase, "manifest.json"), {
-    kind: "openclaw.qa.ux-matrix",
+    kind: "eve.qa.ux-matrix",
     run: {
       scenarioId: SCENARIO_ID,
       status: counts.fail ? "fail" : counts.blocked ? "blocked" : "pass",
@@ -511,7 +511,7 @@ async function writeProducerMetadata(params: {
       status: cell.status,
       surface: cell.surface,
     })),
-    kind: "openclaw.qa.ux-matrix.release-ledger",
+    kind: "eve.qa.ux-matrix.release-ledger",
   });
   await writeText(
     path.join(params.artifactBase, "commands.txt"),
@@ -540,7 +540,7 @@ export async function runUxMatrixEvidenceProducer(options: ProducerOptions) {
     "logs.txt",
   );
   const cliResult = await runCommandForCell({
-    args: ["openclaw.mjs", "--help"],
+    args: ["eve.mjs", "--help"],
     artifactBase: options.artifactBase,
     command: process.execPath,
     cwd: options.repoRoot,

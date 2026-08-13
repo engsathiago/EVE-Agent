@@ -9,7 +9,7 @@ const tempDirs: string[] = [];
 const scriptPath = "scripts/package-mac-dist.sh";
 
 function makePlist(): string {
-  const dir = mkdtempSync(path.join(tmpdir(), "openclaw-dist-plist-"));
+  const dir = mkdtempSync(path.join(tmpdir(), "eve-dist-plist-"));
   tempDirs.push(dir);
   const plist = path.join(dir, "Info.plist");
   writeFileSync(
@@ -48,7 +48,7 @@ describe("package-mac-dist plist validation", () => {
     const script = readFileSync(scriptPath, "utf8");
     const readBlock = script.slice(
       script.indexOf("VERSION="),
-      script.indexOf('ZIP="$ROOT_DIR/dist/OpenClaw-$VERSION.zip"'),
+      script.indexOf('ZIP="$ROOT_DIR/dist/EVE-$VERSION.zip"'),
     );
 
     expect(script).toContain('source "$ROOT_DIR/scripts/lib/plistbuddy.sh"');
@@ -108,7 +108,7 @@ describe("package-mac-dist plist validation", () => {
       script.indexOf("DIST_PNPM_CMD=()"),
       script.indexOf("correction_build_from_exact_tag()"),
     );
-    const dir = mkdtempSync(path.join(tmpdir(), "openclaw-dist-sparkle-"));
+    const dir = mkdtempSync(path.join(tmpdir(), "eve-dist-sparkle-"));
     tempDirs.push(dir);
     const tools = path.join(dir, "tools");
     const marker = path.join(dir, "installed");
@@ -121,11 +121,11 @@ describe("package-mac-dist plist validation", () => {
       [
         "#!/usr/bin/env bash",
         "set -euo pipefail",
-        'if [[ "$PWD" != "$OPENCLAW_ROOT" ]]; then',
+        'if [[ "$PWD" != "$EVE_ROOT" ]]; then',
         '  echo "node ran outside repo root: $PWD" >&2',
         "  exit 1",
         "fi",
-        'if [[ ! -f "$OPENCLAW_MARKER" ]]; then',
+        'if [[ ! -f "$EVE_MARKER" ]]; then',
         '  echo "Cannot find package tsx" >&2',
         "  exit 1",
         "fi",
@@ -142,7 +142,7 @@ describe("package-mac-dist plist validation", () => {
         "#!/usr/bin/env bash",
         "set -euo pipefail",
         "echo 'Already up to date'",
-        'touch "$OPENCLAW_MARKER"',
+        'touch "$EVE_MARKER"',
         "",
       ].join("\n"),
       "utf8",
@@ -152,10 +152,10 @@ describe("package-mac-dist plist validation", () => {
     const result = runHelper(`
       set -euo pipefail
       ROOT_DIR=${JSON.stringify(process.cwd())}
-      OPENCLAW_ROOT=${JSON.stringify(process.cwd())}
-      OPENCLAW_MARKER=${JSON.stringify(marker)}
+      EVE_ROOT=${JSON.stringify(process.cwd())}
+      EVE_MARKER=${JSON.stringify(marker)}
       PATH=${JSON.stringify(tools)}:/usr/bin:/bin
-      export OPENCLAW_MARKER OPENCLAW_ROOT PATH
+      export EVE_MARKER EVE_ROOT PATH
       ${helpers}
       require_canonical_sparkle_build 2026.6.2
     `);
@@ -173,7 +173,7 @@ describe("package-mac-dist plist validation", () => {
       script.indexOf("DIST_PNPM_CMD=()"),
       script.indexOf("correction_build_from_exact_tag()"),
     );
-    const dir = mkdtempSync(path.join(tmpdir(), "openclaw-dist-sparkle-"));
+    const dir = mkdtempSync(path.join(tmpdir(), "eve-dist-sparkle-"));
     tempDirs.push(dir);
     const tools = path.join(dir, "tools");
     const marker = path.join(dir, "installed");
@@ -186,11 +186,11 @@ describe("package-mac-dist plist validation", () => {
       [
         "#!/usr/bin/env bash",
         "set -euo pipefail",
-        'if [[ "$PWD" != "$OPENCLAW_ROOT" ]]; then',
+        'if [[ "$PWD" != "$EVE_ROOT" ]]; then',
         '  echo "node ran outside repo root: $PWD" >&2',
         "  exit 1",
         "fi",
-        'if [[ ! -f "$OPENCLAW_MARKER" ]]; then',
+        'if [[ ! -f "$EVE_MARKER" ]]; then',
         '  echo "Cannot find package tsx" >&2',
         "  exit 1",
         "fi",
@@ -206,7 +206,7 @@ describe("package-mac-dist plist validation", () => {
       [
         "#!/usr/bin/env bash",
         "set -euo pipefail",
-        'touch "$OPENCLAW_MARKER"',
+        'touch "$EVE_MARKER"',
         'echo "pnpm failed" >&2',
         "exit 42",
         "",
@@ -218,10 +218,10 @@ describe("package-mac-dist plist validation", () => {
     const result = runHelper(`
       set -euo pipefail
       ROOT_DIR=${JSON.stringify(process.cwd())}
-      OPENCLAW_ROOT=${JSON.stringify(process.cwd())}
-      OPENCLAW_MARKER=${JSON.stringify(marker)}
+      EVE_ROOT=${JSON.stringify(process.cwd())}
+      EVE_MARKER=${JSON.stringify(marker)}
       PATH=${JSON.stringify(tools)}:/usr/bin:/bin
-      export OPENCLAW_MARKER OPENCLAW_ROOT PATH
+      export EVE_MARKER EVE_ROOT PATH
       ${helpers}
       require_canonical_sparkle_build 2026.6.2
     `);

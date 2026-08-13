@@ -17,11 +17,11 @@ import { readTextFileBounded, readTextFileTail } from "../text-file-utils.mjs";
 const command = process.argv[2];
 const ERROR_DETAIL_TAIL_BYTES = 16 * 1024;
 const JSON_ARTIFACT_MAX_BYTES = readPositiveIntEnv(
-  "OPENCLAW_NPM_ONBOARD_JSON_ARTIFACT_MAX_BYTES",
+  "EVE_NPM_ONBOARD_JSON_ARTIFACT_MAX_BYTES",
   1024 * 1024,
 );
 const STATUS_TEXT_MAX_BYTES = readPositiveIntEnv(
-  "OPENCLAW_NPM_ONBOARD_STATUS_TEXT_MAX_BYTES",
+  "EVE_NPM_ONBOARD_STATUS_TEXT_MAX_BYTES",
   1024 * 1024,
 );
 const ansiEscapePattern = new RegExp(String.raw`\u001b\[[0-?]*[ -/]*[@-~]`, "g");
@@ -39,7 +39,7 @@ function stripAnsi(text) {
 }
 
 const statusSectionTitles = new Set([
-  "openclaw status",
+  "eve status",
   "overview",
   "plugin compatibility",
   "model selection",
@@ -78,7 +78,7 @@ function extractStatusSection(text, title) {
 }
 
 function readAuthProfileStoreText(agentDir) {
-  const dbPath = path.join(agentDir, "openclaw-agent.sqlite");
+  const dbPath = path.join(agentDir, "eve-agent.sqlite");
   if (!fs.existsSync(dbPath)) {
     return "";
   }
@@ -98,12 +98,12 @@ function readAuthProfileStoreText(agentDir) {
 
 function assertOnboardState() {
   const home = process.argv[3];
-  const stateDir = path.join(home, ".openclaw");
-  const configPath = path.join(stateDir, "openclaw.json");
+  const stateDir = path.join(home, ".eve");
+  const configPath = path.join(stateDir, "eve.json");
   const agentDir = path.join(stateDir, "agents", "main", "agent");
 
   if (!fs.existsSync(configPath)) {
-    throw new Error("onboard did not write openclaw.json");
+    throw new Error("onboard did not write eve.json");
   }
   if (!fs.existsSync(agentDir)) {
     throw new Error("onboard did not create main agent dir");
@@ -115,13 +115,13 @@ function assertOnboardState() {
   assertOpenAiEnvAuthProfileStore(authStoreText, {
     envRefMessage: "auth profile did not persist OPENAI_API_KEY env ref",
     rawKeyMessage: "auth profile persisted the raw OpenAI test key",
-    rawKeyNeedle: "sk-openclaw-npm-onboard-e2e",
+    rawKeyNeedle: "sk-eve-npm-onboard-e2e",
   });
 }
 
 function configureMockModel() {
   const mockPort = parseMockOpenAiPort(process.argv[3]);
-  const configPath = path.join(process.env.HOME, ".openclaw", "openclaw.json");
+  const configPath = path.join(process.env.HOME, ".eve", "eve.json");
   const cfg = readJson(configPath);
   applyMockOpenAiModelConfig(cfg, { mockPort });
   fs.writeFileSync(configPath, `${JSON.stringify(cfg, null, 2)}\n`);
@@ -131,7 +131,7 @@ function assertMockModelConfig() {
   const mockPort = parseMockOpenAiPort(process.argv[3]);
   const expectedModelRef = "openai/gpt-5.5";
   const expectedBaseUrl = `http://127.0.0.1:${mockPort}/v1`;
-  const configPath = path.join(process.env.HOME, ".openclaw", "openclaw.json");
+  const configPath = path.join(process.env.HOME, ".eve", "eve.json");
   const cfg = readJson(configPath);
   const provider = cfg.models?.providers?.openai;
   const defaultModel = cfg.agents?.defaults?.model?.primary;
@@ -149,7 +149,7 @@ function assertMockModelConfig() {
   if (provider?.api !== "openai-responses") {
     throw new Error(`mock OpenAI api was not preserved; got ${provider?.api}`);
   }
-  if (provider?.agentRuntime?.id !== "openclaw") {
+  if (provider?.agentRuntime?.id !== "eve") {
     throw new Error(`mock OpenAI runtime was not preserved; got ${provider?.agentRuntime?.id}`);
   }
   if (defaultModel !== expectedModelRef) {
@@ -157,7 +157,7 @@ function assertMockModelConfig() {
       `mock default model was not preserved; expected ${expectedModelRef}, got ${defaultModel}`,
     );
   }
-  if (defaultRuntime !== "openclaw") {
+  if (defaultRuntime !== "eve") {
     throw new Error(`mock default runtime was not preserved; got ${defaultRuntime}`);
   }
   if (agent && agentModel !== expectedModelRef) {
@@ -165,7 +165,7 @@ function assertMockModelConfig() {
       `mock agent model was not preserved; expected ${expectedModelRef}, got ${agentModel}`,
     );
   }
-  if (agent && agentRuntime !== "openclaw") {
+  if (agent && agentRuntime !== "eve") {
     throw new Error(`mock agent runtime was not preserved; got ${agentRuntime}`);
   }
 }
@@ -173,7 +173,7 @@ function assertMockModelConfig() {
 function assertChannelConfig() {
   const channel = process.argv[3];
   const expectedTokens = process.argv.slice(4);
-  const configPath = path.join(process.env.HOME, ".openclaw", "openclaw.json");
+  const configPath = path.join(process.env.HOME, ".eve", "eve.json");
   const cfg = readJson(configPath);
   const entry = cfg.channels?.[channel];
   if (!entry || entry.enabled === false) {
@@ -255,7 +255,7 @@ function assertStatusSurfaces() {
 function assertAgentTurn() {
   const marker = process.argv[3];
   const logPath = process.argv[4];
-  assertAgentReplyContainsMarker(marker, "/tmp/openclaw-agent.combined");
+  assertAgentReplyContainsMarker(marker, "/tmp/eve-agent.combined");
   assertOpenAiRequestLogUsed(logPath);
 }
 

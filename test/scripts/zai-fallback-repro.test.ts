@@ -14,7 +14,7 @@ import {
 describe("zai fallback repro command resolution", () => {
   it("wraps Windows pnpm.cmd without Node shell argv", () => {
     expect(
-      resolveZaiFallbackPnpmCommand(["openclaw", "agent", "--message", "hello world"], {
+      resolveZaiFallbackPnpmCommand(["eve", "agent", "--message", "hello world"], {
         comSpec: String.raw`C:\Windows\System32\cmd.exe`,
         npmExecPath: String.raw`C:\Program Files\nodejs\pnpm.cmd`,
         platform: "win32",
@@ -24,7 +24,7 @@ describe("zai fallback repro command resolution", () => {
         "/d",
         "/s",
         "/c",
-        String.raw`""C:\Program Files\nodejs\pnpm.cmd" openclaw agent --message "hello world""`,
+        String.raw`""C:\Program Files\nodejs\pnpm.cmd" eve agent --message "hello world""`,
       ],
       command: String.raw`C:\Windows\System32\cmd.exe`,
       shell: false,
@@ -41,7 +41,7 @@ describe("zai fallback repro command resolution", () => {
   });
 
   it("scans session transcripts with a byte cap", async () => {
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-zai-session-test-"));
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-zai-session-test-"));
     try {
       const sessionFile = path.join(root, "session.jsonl");
       await fs.writeFile(
@@ -73,14 +73,14 @@ describe("zai fallback repro command resolution", () => {
     const exitCode = await runZaiFallbackRepro({
       env: {
         ANTHROPIC_API_KEY: "anthropic-test-key",
-        OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
+        EVE_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
         ZAI_API_KEY: "zai-test-key",
       },
       error: () => {},
       log: () => {},
       mkdtemp: async () => {
-        const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-zai-fallback-test-"));
+        const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-zai-fallback-test-"));
         tempRoots.push(root);
         return root;
       },
@@ -89,7 +89,7 @@ describe("zai fallback repro command resolution", () => {
         calls.push(label);
         if (label === "run1") {
           const sessionFile = path.join(
-            String(env.OPENCLAW_STATE_DIR),
+            String(env.EVE_STATE_DIR),
             "agents",
             "main",
             "sessions",
@@ -120,7 +120,7 @@ describe("zai fallback repro command resolution", () => {
     const exitCode = await runZaiFallbackRepro({
       env: {
         ANTHROPIC_API_KEY: "anthropic-test-key",
-        OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
+        EVE_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
         ZAI_API_KEY: "zai-test-key",
       },
@@ -143,7 +143,7 @@ describe("zai fallback repro command resolution", () => {
     const exitCode = await runZaiFallbackRepro({
       env: {
         ANTHROPIC_API_KEY: "anthropic-test-key",
-        OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
+        EVE_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
         ZAI_API_KEY: "zai-test-key",
       },
@@ -152,7 +152,7 @@ describe("zai fallback repro command resolution", () => {
       runCommand: async (label, _args, env) => {
         if (label === "run1") {
           const sessionFile = path.join(
-            String(env.OPENCLAW_STATE_DIR),
+            String(env.EVE_STATE_DIR),
             "agents",
             "main",
             "sessions",

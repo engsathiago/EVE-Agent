@@ -80,7 +80,7 @@ function findCliCommandSuggestions(input: string, candidates: readonly string[])
 
 function formatCliSuggestionLines(suggestions: readonly string[]): string {
   const commandLines = suggestions
-    .map((command) => `  ${formatCliCommand(`openclaw ${command}`)}`)
+    .map((command) => `  ${formatCliCommand(`eve ${command}`)}`)
     .join("\n");
   return `Did you mean this?\n${commandLines}`;
 }

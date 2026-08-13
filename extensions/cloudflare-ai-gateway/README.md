@@ -1,12 +1,12 @@
-# OpenClaw Cloudflare AI Gateway Provider
+# EVE Cloudflare AI Gateway Provider
 
-Official OpenClaw provider plugin for Cloudflare AI Gateway.
+Official EVE provider plugin for Cloudflare AI Gateway.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/cloudflare-ai-gateway-provider
-openclaw gateway restart
+eve plugins install @eve/cloudflare-ai-gateway-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/cloudflare-ai-gateway> for setup and configuration.
+See <https://docs.eve.ai/providers/cloudflare-ai-gateway> for setup and configuration.

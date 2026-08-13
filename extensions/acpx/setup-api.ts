@@ -2,8 +2,8 @@
  * ACPX setup plugin entry. It auto-enables setup when ACP config already points
  * at the embedded ACPX runtime backend.
  */
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export default definePluginEntry({
   id: "acpx",

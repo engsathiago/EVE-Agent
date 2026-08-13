@@ -5,8 +5,8 @@ import type {
   WAMessage,
   WAPresence,
 } from "baileys";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 
 export type WhatsAppSocketTimingOptions = {
   keepAliveIntervalMs?: number;
@@ -50,7 +50,7 @@ function positiveInteger(value: number | undefined): number | undefined {
 }
 
 export function resolveWhatsAppSocketTiming(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   overrides?: WhatsAppSocketTimingOptions,
 ): Required<WhatsAppSocketTimingOptions> {
   const configured = cfg.web?.whatsapp;

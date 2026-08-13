@@ -11,25 +11,25 @@ import {
   resolveEnvelopeFormatOptions,
   resolveInboundMentionDecision,
   toInboundMediaFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   createChannelIngressResolver,
   defineStableChannelIngressIdentity,
   type ChannelIngressIdentityDescriptor,
-} from "openclaw/plugin-sdk/channel-ingress-runtime";
+} from "eve-agent/plugin-sdk/channel-ingress-runtime";
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/channel-policy";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth-native";
-import type { DmPolicy, GroupPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
-import { createChannelHistoryWindow, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { FinalizedMsgContext } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { sanitizeTerminalText } from "openclaw/plugin-sdk/text-chunking";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/channel-policy";
+import { hasControlCommand } from "eve-agent/plugin-sdk/command-auth-native";
+import type { DmPolicy, GroupPolicy, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveChannelContextVisibilityMode } from "eve-agent/plugin-sdk/context-visibility-runtime";
+import { createChannelHistoryWindow, type HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
+import type { FinalizedMsgContext } from "eve-agent/plugin-sdk/reply-runtime";
+import { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { sanitizeTerminalText } from "eve-agent/plugin-sdk/text-chunking";
+import { truncateUtf16Safe } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { resolveIMessageAccount } from "../accounts.js";
 import { resolveIMessageConversationRoute } from "../conversation-route.js";
 import {
@@ -383,7 +383,7 @@ type IMessageInboundDecision =
   | IMessageInboundDispatchDecision;
 
 export async function resolveIMessageInboundDecision(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   message: IMessagePayload;
   opts?: Pick<MonitorIMessageOpts, "requireMention">;
@@ -862,7 +862,7 @@ export async function resolveIMessageInboundDecision(params: {
 }
 
 export async function buildIMessageInboundContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   decision: IMessageInboundDispatchDecision;
   message: IMessagePayload;
   envelopeOptions?: EnvelopeFormatOptions;
@@ -1088,7 +1088,7 @@ function buildIMessageEchoScope(params: {
 }
 
 function buildDirectIMessageReplyTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   sender: string;
 }): string {

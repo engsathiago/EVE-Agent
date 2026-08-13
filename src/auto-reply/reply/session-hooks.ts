@@ -1,6 +1,6 @@
 // Emits session lifecycle hooks for channel plugins and agent runtimes.
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type {
   PluginHookSessionEndEvent,
   PluginHookSessionEndReason,
@@ -17,7 +17,7 @@ type SessionHookContext = {
 function buildSessionHookContext(params: {
   sessionId: string;
   sessionKey: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): SessionHookContext {
   return {
     sessionId: params.sessionId,
@@ -30,7 +30,7 @@ function buildSessionHookContext(params: {
 export function buildSessionStartHookPayload(params: {
   sessionId: string;
   sessionKey: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   resumedFrom?: string;
 }): {
   event: PluginHookSessionStartEvent;
@@ -54,7 +54,7 @@ export function buildSessionStartHookPayload(params: {
 export function buildSessionEndHookPayload(params: {
   sessionId: string;
   sessionKey: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   messageCount?: number;
   durationMs?: number;
   reason?: PluginHookSessionEndReason;

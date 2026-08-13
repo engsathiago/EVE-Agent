@@ -1,6 +1,6 @@
 // Feishu plugin module implements security audit shared behavior.
-import { hasConfiguredSecretInput } from "openclaw/plugin-sdk/secret-input";
-import type { OpenClawConfig } from "../runtime-api.js";
+import { hasConfiguredSecretInput } from "eve-agent/plugin-sdk/secret-input";
+import type { EVEConfig } from "../runtime-api.js";
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -12,7 +12,7 @@ function hasNonEmptyString(value: unknown): boolean {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function isFeishuDocToolEnabled(cfg: OpenClawConfig): boolean {
+function isFeishuDocToolEnabled(cfg: EVEConfig): boolean {
   const channels = asRecord(cfg.channels);
   const feishu = asRecord(channels?.feishu);
   if (!feishu || feishu.enabled === false) {
@@ -52,7 +52,7 @@ function isFeishuDocToolEnabled(cfg: OpenClawConfig): boolean {
   return false;
 }
 
-export function collectFeishuSecurityAuditFindings(params: { cfg: OpenClawConfig }) {
+export function collectFeishuSecurityAuditFindings(params: { cfg: EVEConfig }) {
   if (!isFeishuDocToolEnabled(params.cfg)) {
     return [];
   }

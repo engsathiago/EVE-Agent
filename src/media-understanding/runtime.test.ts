@@ -1,9 +1,9 @@
 // Media-understanding runtime tests cover file APIs, provider dispatch, disabled
 // state, cleanup, remote references, and direct model-backed image calls.
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AuthProfileStore } from "../agents/auth-profiles/types.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { MediaAttachment, MediaUnderstandingOutput } from "../media-understanding/types.js";
 import {
   describeVideoFile,
@@ -121,7 +121,7 @@ describe("media-understanding runtime", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -155,7 +155,7 @@ describe("media-understanding runtime", () => {
         capability: "audio",
         filePath: "/tmp/sample.ogg",
         mime: "audio/ogg",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -188,7 +188,7 @@ describe("media-understanding runtime", () => {
       describeImageFile({
         filePath: "/tmp/sample.jpg",
         mime: "image/jpeg",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -220,7 +220,7 @@ describe("media-understanding runtime", () => {
     await expect(
       describeImageFile({
         filePath: "https://httpbin.org/image/png",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -253,7 +253,7 @@ describe("media-understanding runtime", () => {
     await expect(
       describeImageFile({
         filePath: "https://example.com/clip.mp4",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toMatchObject({
@@ -290,7 +290,7 @@ describe("media-understanding runtime", () => {
     await describeImageFile({
       filePath: "/tmp/sample.jpg",
       mime: "image/jpeg",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
       workspaceDir: "/tmp/workspace",
     });
@@ -319,7 +319,7 @@ describe("media-understanding runtime", () => {
     await describeImageFile({
       filePath: "/tmp/sample.jpg",
       mime: "image/jpeg",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       scopeContext: {
         sessionKey: "agent:main:telegram:dm:123",
         channel: "telegram",
@@ -360,7 +360,7 @@ describe("media-understanding runtime", () => {
       filePath: "https://example.com/photo.png",
       mediaUrl: "https://example.com/photo.png",
       mime: "image/png",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
     });
 
@@ -386,7 +386,7 @@ describe("media-understanding runtime", () => {
     await describeVideoFile({
       filePath: "/tmp/sample.mp4",
       mime: "video/mp4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
       workspaceDir: "/tmp/workspace",
     });
@@ -409,7 +409,7 @@ describe("media-understanding runtime", () => {
     await transcribeAudioFile({
       filePath: "/tmp/sample.ogg",
       mime: "audio/ogg",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
       workspaceDir: "/tmp/workspace",
     });
@@ -447,7 +447,7 @@ describe("media-understanding runtime", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await describeImageFile({
       filePath: "/tmp/sample.jpg",
@@ -501,7 +501,7 @@ describe("media-understanding runtime", () => {
         provider: "zai",
         model: "glm-4.6v",
         prompt: "Describe it",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({ text: "generic image ok", model: "vision" });
@@ -529,7 +529,7 @@ describe("media-understanding runtime", () => {
       provider: "zai",
       model: "glm-4.6v",
       prompt: "Describe it",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
     });
 
@@ -551,7 +551,7 @@ describe("media-understanding runtime", () => {
       provider: "zai",
       model: "glm-4.6v",
       prompt: "Describe it",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
     });
 
@@ -585,7 +585,7 @@ describe("media-understanding runtime", () => {
         provider: "zai",
         model: "glm-4.6v",
         prompt: "Describe it",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
         timeoutMs: 45_000,
       }),
@@ -628,7 +628,7 @@ describe("media-understanding runtime", () => {
       provider: "zai",
       model: "glm-4.6v",
       prompt: "Describe it",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       agentDir: "/tmp/agent",
       timeoutMs: Number.MAX_SAFE_INTEGER,
     });
@@ -658,7 +658,7 @@ describe("media-understanding runtime", () => {
         provider: "gemini",
         model: "vision-v1",
         prompt: "Describe the sample.",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -720,7 +720,7 @@ describe("media-understanding runtime", () => {
         preferredProfile: "preferred-work",
         authStore,
         timeoutMs: 45_000,
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).resolves.toEqual({
@@ -793,7 +793,7 @@ describe("media-understanding runtime", () => {
       provider: "vision-plugin",
       model: "vision-json",
       timeoutMs: Number.MAX_SAFE_INTEGER,
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
     });
 
     expect(extractStructured).toHaveBeenCalledWith(
@@ -808,7 +808,7 @@ describe("media-understanding runtime", () => {
         instructions: "Return JSON.",
         provider: "vision-plugin",
         model: "vision-json",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
       }),
     ).rejects.toThrow("Structured extraction requires at least one image input.");
 
@@ -834,7 +834,7 @@ describe("media-understanding runtime", () => {
         instructions: "Return JSON.",
         provider: "vision-plugin",
         model: "vision-json",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
       }),
     ).rejects.toThrow("Provider does not support structured extraction: vision-plugin");
   });
@@ -870,7 +870,7 @@ describe("media-understanding runtime", () => {
         capability: "audio",
         filePath: "/tmp/sample.ogg",
         mime: "audio/ogg",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentDir: "/tmp/agent",
       }),
     ).rejects.toThrow("Audio transcription response missing text");

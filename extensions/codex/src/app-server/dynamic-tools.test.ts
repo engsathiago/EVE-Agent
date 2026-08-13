@@ -1,30 +1,30 @@
 // Codex tests cover dynamic tools plugin behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import type { AnyAgentTool } from "openclaw/plugin-sdk/agent-harness";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
+import type { AnyAgentTool } from "eve-agent/plugin-sdk/agent-harness";
 import {
   HEARTBEAT_RESPONSE_TOOL_NAME,
   embeddedAgentLog,
   wrapToolWithBeforeToolCallHook,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { createTerminalPresentationContractTool } from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { createTerminalPresentationContractTool } from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
 import {
   onInternalDiagnosticEvent,
   waitForDiagnosticEventsDrained,
   type DiagnosticEventPayload,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
+} from "eve-agent/plugin-sdk/diagnostic-runtime";
 import {
   initializeGlobalHookRunner,
   resetGlobalHookRunner,
-} from "openclaw/plugin-sdk/hook-runtime";
+} from "eve-agent/plugin-sdk/hook-runtime";
 import {
   createEmptyPluginRegistry,
   createMockPluginRegistry,
   createTestRegistry,
   setActivePluginRegistry,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
-  CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+  CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
   createCodexDynamicToolBridge,
 } from "./dynamic-tools.js";
 import type { CodexDynamicToolFunctionSpec, CodexDynamicToolSpec, JsonValue } from "./protocol.js";
@@ -178,7 +178,7 @@ afterEach(() => {
 });
 
 describe("createCodexDynamicToolBridge", () => {
-  it("keeps turn-yield direct while deferring OpenClaw session spawn", () => {
+  it("keeps turn-yield direct while deferring EVE session spawn", () => {
     const bridge = createCodexDynamicToolBridge({
       tools: [
         createTool({ name: "web_search" }),
@@ -199,22 +199,22 @@ describe("createCodexDynamicToolBridge", () => {
 
     expectDynamicSpec(webSearch, {
       name: "web_search",
-      namespace: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+      namespace: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
       deferLoading: true,
     });
     expectDynamicSpec(message, {
       name: "message",
-      namespace: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+      namespace: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
       deferLoading: true,
     });
     expectDynamicSpec(heartbeat, {
       name: HEARTBEAT_RESPONSE_TOOL_NAME,
-      namespace: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+      namespace: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
       deferLoading: true,
     });
     expectDynamicSpec(sessionsSpawn, {
       name: "sessions_spawn",
-      namespace: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+      namespace: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
       deferLoading: true,
     });
     expectNoNamespace(sessionsYield);
@@ -237,7 +237,7 @@ describe("createCodexDynamicToolBridge", () => {
       specs.find((tool) => tool.name === "web_search"),
       {
         name: "web_search",
-        namespace: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+        namespace: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
         deferLoading: true,
       },
     );
@@ -278,7 +278,7 @@ describe("createCodexDynamicToolBridge", () => {
       contentItems: [
         {
           type: "inputText",
-          text: `OpenClaw tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
+          text: `EVE tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
         },
       ],
     });
@@ -289,12 +289,12 @@ describe("createCodexDynamicToolBridge", () => {
         content: [
           {
             type: "text",
-            text: `OpenClaw tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
+            text: `EVE tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
           },
         ],
         details: {
           status: "failed",
-          error: `OpenClaw tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
+          error: `EVE tool is not available for this turn: ${HEARTBEAT_RESPONSE_TOOL_NAME}`,
         },
       },
       isError: true,
@@ -417,7 +417,7 @@ describe("createCodexDynamicToolBridge", () => {
 
     expect(result).toEqual({
       success: false,
-      contentItems: [{ type: "inputText", text: "Unknown OpenClaw tool: fuzzplugin_move_angles" }],
+      contentItems: [{ type: "inputText", text: "Unknown EVE tool: fuzzplugin_move_angles" }],
     });
     expect(badExecute).not.toHaveBeenCalled();
   });
@@ -586,7 +586,7 @@ describe("createCodexDynamicToolBridge", () => {
     }
     const text = firstItem.text;
     expect(text.length).toBeLessThanOrEqual(180);
-    expect(text).toContain("OpenClaw truncated dynamic tool result");
+    expect(text).toContain("EVE truncated dynamic tool result");
     expect(text).toContain("original 400 chars");
     expect(text).toContain("rerun with narrower args");
   });
@@ -637,7 +637,7 @@ describe("createCodexDynamicToolBridge", () => {
       throw new Error("expected inputText tool result");
     }
     expect(firstItem.text.length).toBeLessThanOrEqual(180);
-    expect(firstItem.text).toContain("OpenClaw truncated dynamic tool result");
+    expect(firstItem.text).toContain("EVE truncated dynamic tool result");
   });
 
   it("keeps truncation notices within tiny configured caps", async () => {
@@ -678,7 +678,7 @@ describe("createCodexDynamicToolBridge", () => {
       throw new Error("expected inputText tool result");
     }
     expect(firstItem.text.length).toBeLessThanOrEqual(32);
-    expect(firstItem.text).toBe("...(OpenClaw truncated dynamic tool".slice(0, 32));
+    expect(firstItem.text).toBe("...(EVE truncated dynamic tool".slice(0, 32));
   });
 
   it("budgets configured truncation across all text result blocks", async () => {
@@ -724,7 +724,7 @@ describe("createCodexDynamicToolBridge", () => {
       .map((item) => (item.type === "inputText" && typeof item.text === "string" ? item.text : ""))
       .join("");
     expect(text.length).toBeLessThanOrEqual(180);
-    expect(text).toContain("OpenClaw truncated dynamic tool result");
+    expect(text).toContain("EVE truncated dynamic tool result");
     expect(text).toContain("original 400 chars");
     expect(text).not.toContain("b".repeat(100));
   });
@@ -1486,7 +1486,7 @@ describe("createCodexDynamicToolBridge", () => {
       callId: "call-1",
       namespace: null,
       tool: "exec",
-      arguments: { command: "touch /tmp/openclaw-replay-test" },
+      arguments: { command: "touch /tmp/eve-replay-test" },
     });
 
     expect(result).toEqual(expectInputText("done"));
@@ -1509,7 +1509,7 @@ describe("createCodexDynamicToolBridge", () => {
     expect(result.sideEffectEvidence).toBeUndefined();
   });
 
-  it("shares replay-safe classification with OpenClaw for read-only dynamic tools", async () => {
+  it("shares replay-safe classification with EVE for read-only dynamic tools", async () => {
     const bridge = createBridgeWithToolResult("web_search", textToolResult("done"));
 
     const result = await bridge.handleToolCall({
@@ -1798,7 +1798,7 @@ describe("createCodexDynamicToolBridge", () => {
   });
 
   it("keeps config out of Codex tool-result contexts", async () => {
-    const config = { session: { store: "/tmp/openclaw-session-store.json" } };
+    const config = { session: { store: "/tmp/eve-session-store.json" } };
     const registry = createEmptyPluginRegistry();
     const middlewareContexts: Record<string, unknown>[] = [];
     const legacyContexts: Record<string, unknown>[] = [];

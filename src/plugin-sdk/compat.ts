@@ -1,6 +1,6 @@
 /**
  * @deprecated Legacy compat surface for external plugins that still depend on
- * older broad plugin-sdk imports. Use focused openclaw/plugin-sdk subpaths
+ * older broad plugin-sdk imports. Use focused eve-agent/plugin-sdk subpaths
  * instead.
  */
 
@@ -22,15 +22,15 @@ import {
 const shouldWarnCompatImport =
   process.env.VITEST !== "true" &&
   process.env.NODE_ENV !== "test" &&
-  process.env.OPENCLAW_SUPPRESS_PLUGIN_SDK_COMPAT_WARNING !== "1";
+  process.env.EVE_SUPPRESS_PLUGIN_SDK_COMPAT_WARNING !== "1";
 
 if (shouldWarnCompatImport) {
   process.emitWarning(
-    "openclaw/plugin-sdk/compat is deprecated for new plugins. Migrate to focused openclaw/plugin-sdk/<subpath> imports. See https://docs.openclaw.ai/plugins/sdk-migration",
+    "eve-agent/plugin-sdk/compat is deprecated for new plugins. Migrate to focused eve-agent/plugin-sdk/<subpath> imports. See https://docs.eve.ai/plugins/sdk-migration",
     {
-      code: "OPENCLAW_PLUGIN_SDK_COMPAT_DEPRECATED",
+      code: "EVE_PLUGIN_SDK_COMPAT_DEPRECATED",
       detail:
-        "Bundled plugins must use scoped plugin-sdk subpaths. External plugins may keep compat temporarily while migrating. Migration guide: https://docs.openclaw.ai/plugins/sdk-migration",
+        "Bundled plugins must use scoped plugin-sdk subpaths. External plugins may keep compat temporarily while migrating. Migration guide: https://docs.eve.ai/plugins/sdk-migration",
     },
   );
 }
@@ -63,7 +63,7 @@ export { createAccountStatusSink } from "./channel-lifecycle.core.js";
 export { createPluginRuntimeStore } from "./runtime-store.js";
 export { KeyedAsyncQueue } from "./keyed-async-queue.js";
 export { normalizeAccountId } from "./account-id.js";
-export { resolvePreferredOpenClawTmpDir } from "./temp-path.js";
+export { resolvePreferredEVETmpDir } from "./temp-path.js";
 
 export {
   createHybridChannelConfigAdapter,
@@ -84,27 +84,27 @@ export * from "./reply-history.js";
 export * from "./directory-runtime.js";
 export { mapAllowlistResolutionInputs } from "./allow-from.js";
 
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export const createChannelReplyPipeline = createChannelReplyPipelineCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export const createReplyPrefixContext = createReplyPrefixContextCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export const createReplyPrefixOptions = createReplyPrefixOptionsCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export const createTypingCallbacks = createTypingCallbacksCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export const resolveChannelSourceReplyDeliveryMode = resolveChannelSourceReplyDeliveryModeCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type ChannelReplyPipeline = ChannelReplyPipelineCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type CreateTypingCallbacksParams = CreateTypingCallbacksParamsCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type ReplyPrefixContext = ReplyPrefixContextCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type ReplyPrefixContextBundle = ReplyPrefixContextBundleCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type ReplyPrefixOptions = ReplyPrefixOptionsCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type SourceReplyDeliveryMode = SourceReplyDeliveryModeCompat;
-/** @deprecated Use `openclaw/plugin-sdk/channel-outbound`. */
+/** @deprecated Use `eve-agent/plugin-sdk/channel-outbound`. */
 export type TypingCallbacks = TypingCallbacksCompat;

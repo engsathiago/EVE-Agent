@@ -1,5 +1,5 @@
 // Discord helper module supports message handler helpers behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { vi } from "vitest";
 import type { createDiscordMessageHandler } from "./message-handler.js";
 import { createNoopThreadBindingManager } from "./thread-bindings.js";
@@ -11,7 +11,7 @@ export function createDiscordHandlerParams(overrides?: {
   setStatus?: (patch: Record<string, unknown>) => void;
   abortSignal?: AbortSignal;
 }): Parameters<typeof createDiscordMessageHandler>[0] {
-  const cfg: OpenClawConfig = {
+  const cfg: EVEConfig = {
     channels: {
       discord: {
         enabled: true,

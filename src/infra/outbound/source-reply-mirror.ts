@@ -3,8 +3,8 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeOptionalTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeOptionalTrimmedStringList } from "@eve/normalization-core/string-normalization";
 import type { ReplyPayload } from "../../auto-reply/types.js";
 import { getChannelPlugin } from "../../channels/plugins/index.js";
 import type {
@@ -12,14 +12,14 @@ import type {
   ChannelThreadingToolContext,
 } from "../../channels/plugins/types.public.js";
 import { appendAssistantMessageToSessionTranscript } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createOutboundPayloadPlan, projectOutboundPayloadPlanForMirror } from "./payloads.js";
 
 type SourceReplyTranscriptMirrorParams = {
   action: string;
   channel: string;
   actionParams: Record<string, unknown>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey?: string;
   agentId?: string;
   toolContext?: ChannelThreadingToolContext;

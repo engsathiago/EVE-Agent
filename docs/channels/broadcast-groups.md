@@ -18,7 +18,7 @@ Broadcast Groups enable multiple agents to process and respond to the same messa
 
 Current scope: **WhatsApp only** (web channel).
 
-Broadcast groups are evaluated after channel allowlists and group activation rules. In WhatsApp groups, this means broadcasts happen when OpenClaw would normally reply (for example: on mention, depending on your group settings).
+Broadcast groups are evaluated after channel allowlists and group activation rules. In WhatsApp groups, this means broadcasts happen when EVE would normally reply (for example: on mention, depending on your group settings).
 
 ## Use cases
 
@@ -83,7 +83,7 @@ Add a top-level `broadcast` section (next to `bindings`). Keys are WhatsApp peer
 }
 ```
 
-**Result:** When OpenClaw would reply in this chat, it will run all three agents.
+**Result:** When EVE would reply in this chat, it will run all three agents.
 
 ### Processing strategy
 
@@ -162,10 +162,10 @@ Control how agents process messages:
     A WhatsApp group or DM message arrives.
   </Step>
   <Step title="Route and admission">
-    OpenClaw applies channel allowlists, group activation rules, and configured ACP binding ownership.
+    EVE applies channel allowlists, group activation rules, and configured ACP binding ownership.
   </Step>
   <Step title="Broadcast check">
-    If no configured ACP binding owns the route, OpenClaw checks whether the peer ID is in `broadcast`.
+    If no configured ACP binding owns the route, EVE checks whether the peer ID is in `broadcast`.
   </Step>
   <Step title="If broadcast applies">
     - All listed agents process the message.
@@ -174,7 +174,7 @@ Control how agents process messages:
 
   </Step>
   <Step title="If broadcast does not apply">
-    OpenClaw dispatches the ordinary route or the configured ACP session route selected during routing.
+    EVE dispatches the ordinary route or the configured ACP session route selected during routing.
   </Step>
 </Steps>
 
@@ -209,7 +209,7 @@ In group `120363403215116621@g.us` with agents `["alfred", "baerbel"]`:
     ```
     Session: agent:alfred:whatsapp:group:120363403215116621@g.us
     History: [user message, alfred's previous responses]
-    Workspace: /Users/user/openclaw-alfred/
+    Workspace: /Users/user/eve-alfred/
     Tools: read, write, exec
     ```
   </Tab>
@@ -217,7 +217,7 @@ In group `120363403215116621@g.us` with agents `["alfred", "baerbel"]`:
     ```
     Session: agent:baerbel:whatsapp:group:120363403215116621@g.us
     History: [user message, baerbel's previous responses]
-    Workspace: /Users/user/openclaw-baerbel/
+    Workspace: /Users/user/eve-baerbel/
     Tools: read only
     ```
   </Tab>
@@ -325,7 +325,7 @@ Broadcast groups work alongside existing routing:
 - `GROUP_B`: agent1 AND agent2 respond (broadcast).
 
 <Note>
-**Precedence:** `broadcast` takes priority over ordinary route bindings. Configured ACP bindings (`bindings[].type="acp"`) are exclusive: when one matches, OpenClaw dispatches to the configured ACP session instead of fan-out broadcast.
+**Precedence:** `broadcast` takes priority over ordinary route bindings. Configured ACP bindings (`bindings[].type="acp"`) are exclusive: when one matches, EVE dispatches to the configured ACP session instead of fan-out broadcast.
 </Note>
 
 ## Troubleshooting
@@ -341,7 +341,7 @@ Broadcast groups work alongside existing routing:
     **Debug:**
 
     ```bash
-    tail -f ~/.openclaw/logs/gateway.log | grep broadcast
+    tail -f ~/.eve/logs/gateway.log | grep broadcast
     ```
 
   </Accordion>
@@ -433,7 +433,7 @@ Broadcast groups work alongside existing routing:
 ### Config schema
 
 ```typescript
-interface OpenClawConfig {
+interface EVEConfig {
   broadcast?: {
     strategy?: "parallel" | "sequential";
     [peerId: string]: string[];

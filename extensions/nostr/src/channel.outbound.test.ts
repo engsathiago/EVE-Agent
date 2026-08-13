@@ -1,7 +1,7 @@
 // Nostr tests cover channel.outbound plugin behavior.
-import { verifyChannelMessageAdapterCapabilityProofs } from "openclaw/plugin-sdk/channel-outbound";
-import { createStartAccountContext } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { verifyChannelMessageAdapterCapabilityProofs } from "eve-agent/plugin-sdk/channel-outbound";
+import { createStartAccountContext } from "eve-agent/plugin-sdk/channel-test-helpers";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PluginRuntime } from "../runtime-api.js";
 import { nostrPlugin } from "./channel.js";
@@ -93,7 +93,7 @@ describe("nostr outbound cfg threading", () => {
 
     const cfg = createCfg();
     await nostrOutboundAdapter.sendText({
-      cfg: cfg as OpenClawConfig,
+      cfg: cfg as EVEConfig,
       to: "NPUB123",
       text: "|a|b|",
       accountId: "default",
@@ -125,7 +125,7 @@ describe("nostr outbound cfg threading", () => {
     };
 
     await nostrOutboundAdapter.sendText({
-      cfg: cfg as OpenClawConfig,
+      cfg: cfg as EVEConfig,
       to: "NPUB123",
       text: "hello",
     });
@@ -156,7 +156,7 @@ describe("nostr outbound cfg threading", () => {
       proofs: {
         text: async () => {
           const result = await sendText({
-            cfg: createCfg() as OpenClawConfig,
+            cfg: createCfg() as EVEConfig,
             to: "NPUB123",
             text: "hello",
             accountId: "default",

@@ -4,8 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { gunzipSync, gzipSync } from "node:zlib";
-import { normalizeNullableString as normalizeObservedValue } from "@openclaw/normalization-core/string-coerce";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeNullableString as normalizeObservedValue } from "@eve/normalization-core/string-coerce";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import { requireNodeSqlite } from "../infra/node-sqlite.js";
 import { applyPrivateModeSync } from "../infra/private-mode.js";
 import { resolveSqliteDatabaseFilePaths } from "../infra/sqlite-files.js";
@@ -14,7 +14,7 @@ import {
   configureSqliteConnectionPragmas,
   type SqliteWalMaintenance,
 } from "../infra/sqlite-wal.js";
-import { openOpenClawStateDatabase } from "../state/openclaw-state-db.js";
+import { openEVEStateDatabase } from "../state/eve-state-db.js";
 import type {
   CaptureBlobRecord,
   CaptureEventRecord,
@@ -201,7 +201,7 @@ class DebugProxyCaptureStoreImpl {
       this.pathBased = opened.pathBased;
       return;
     }
-    const database = openOpenClawStateDatabase({ env: optionsOrDbPath.env });
+    const database = openEVEStateDatabase({ env: optionsOrDbPath.env });
     this.db = database.db;
     this.dbPath = database.path;
     // Retain the shipped public property while shared-state blobs live in this DB.
@@ -820,7 +820,7 @@ function resolveDebugProxyCaptureStoreKey(
 ): string {
   return typeof optionsOrDbPath === "string"
     ? `legacy:${optionsOrDbPath}:${legacyBlobDir ?? ""}`
-    : `shared:${openOpenClawStateDatabase({ env: optionsOrDbPath.env }).path}`;
+    : `shared:${openEVEStateDatabase({ env: optionsOrDbPath.env }).path}`;
 }
 
 function getDebugProxyCaptureStoreImpl(

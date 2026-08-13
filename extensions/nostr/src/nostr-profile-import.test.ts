@@ -2,7 +2,7 @@
  * Tests for Nostr Profile Import
  */
 
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { NostrProfile } from "./config-schema.js";
 import { importProfileFromRelays, mergeProfiles } from "./nostr-profile-import.js";

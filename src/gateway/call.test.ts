@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import type { DeviceIdentity } from "../infra/device-identity.js";
 import { createEmptyPluginRegistry } from "../plugins/registry-empty.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
@@ -271,9 +271,9 @@ function resetGatewayCallMocks() {
   closeReason = "";
   helloMethods = ["health", "secrets.resolve"];
   connectError = null;
-  const loadConfigForTests = getRuntimeConfig as unknown as () => OpenClawConfig;
+  const loadConfigForTests = getRuntimeConfig as unknown as () => EVEConfig;
   const resolveGatewayPortForTests = resolveGatewayPort as unknown as (
-    cfg?: OpenClawConfig,
+    cfg?: EVEConfig,
     env?: NodeJS.ProcessEnv,
   ) => number;
   testing.setDepsForTests({
@@ -321,22 +321,22 @@ function makeRemotePasswordGatewayConfig(remotePassword: string, localPassword =
 
 describe("callGateway url resolution", () => {
   const envSnapshot = captureEnv([
-    "OPENCLAW_ALLOW_INSECURE_PRIVATE_WS",
-    "OPENCLAW_CONFIG_PATH",
-    "OPENCLAW_GATEWAY_PORT",
-    "OPENCLAW_GATEWAY_URL",
-    "OPENCLAW_GATEWAY_TOKEN",
-    "OPENCLAW_STATE_DIR",
+    "EVE_ALLOW_INSECURE_PRIVATE_WS",
+    "EVE_CONFIG_PATH",
+    "EVE_GATEWAY_PORT",
+    "EVE_GATEWAY_URL",
+    "EVE_GATEWAY_TOKEN",
+    "EVE_STATE_DIR",
   ]);
 
   beforeEach(() => {
     envSnapshot.restore();
-    delete process.env.OPENCLAW_ALLOW_INSECURE_PRIVATE_WS;
-    delete process.env.OPENCLAW_CONFIG_PATH;
-    delete process.env.OPENCLAW_GATEWAY_PORT;
-    delete process.env.OPENCLAW_GATEWAY_URL;
-    delete process.env.OPENCLAW_GATEWAY_TOKEN;
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.EVE_ALLOW_INSECURE_PRIVATE_WS;
+    delete process.env.EVE_CONFIG_PATH;
+    delete process.env.EVE_GATEWAY_PORT;
+    delete process.env.EVE_GATEWAY_URL;
+    delete process.env.EVE_GATEWAY_TOKEN;
+    delete process.env.EVE_STATE_DIR;
     resetGatewayCallMocks();
   });
 
@@ -517,7 +517,7 @@ describe("callGateway url resolution", () => {
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://openclaw.example.test" },
+        remote: { url: "wss://eve.example.test" },
         auth: { mode: "token", allowTailscale: true },
       },
     });
@@ -525,7 +525,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({ method: "sessions.list" });
 
-    expect(lastClientOptions?.url).toBe("wss://openclaw.example.test");
+    expect(lastClientOptions?.url).toBe("wss://eve.example.test");
     expect(lastClientOptions?.token).toBeUndefined();
     expect(lastClientOptions?.password).toBeUndefined();
   });
@@ -534,7 +534,7 @@ describe("callGateway url resolution", () => {
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://openclaw.example.test" },
+        remote: { url: "wss://eve.example.test" },
         auth: { mode: "token" },
         tailscale: { mode: "serve" },
       },
@@ -543,7 +543,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({ method: "sessions.list" });
 
-    expect(lastClientOptions?.url).toBe("wss://openclaw.example.test");
+    expect(lastClientOptions?.url).toBe("wss://eve.example.test");
     expect(lastClientOptions?.token).toBeUndefined();
     expect(lastClientOptions?.password).toBeUndefined();
   });
@@ -608,14 +608,14 @@ describe("callGateway url resolution", () => {
     expect(lastClientOptions?.deviceIdentity).toBeNull();
   });
 
-  it("uses OPENCLAW_GATEWAY_URL env override in remote mode when remote URL is missing", async () => {
+  it("uses EVE_GATEWAY_URL env override in remote mode when remote URL is missing", async () => {
     getRuntimeConfig.mockReturnValue({
       gateway: { mode: "remote", bind: "loopback", remote: {} },
     });
     resolveGatewayPort.mockReturnValue(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
-    process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.EVE_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
+    process.env.EVE_GATEWAY_TOKEN = "env-token";
 
     await callGateway({
       method: "health",
@@ -640,11 +640,11 @@ describe("callGateway url resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
     resolveGatewayPort.mockReturnValue(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
-    process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.EVE_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
+    process.env.EVE_GATEWAY_TOKEN = "env-token";
 
     await callGateway({
       method: "health",
@@ -667,8 +667,8 @@ describe("callGateway url resolution", () => {
     });
     setGatewayNetworkDefaults(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
-    process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.EVE_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
+    process.env.EVE_GATEWAY_TOKEN = "env-token";
 
     await callGateway({
       method: "health",
@@ -825,7 +825,7 @@ describe("callGateway url resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
     setGatewayNetworkDefaults();
 
     await callGatewayCli({ method: "node.list", useStoredDeviceAuth: true });
@@ -1101,7 +1101,7 @@ describe("buildGatewayConnectionDetails", () => {
         tls: { enabled: true },
         handshakeTimeoutMs: 4321,
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     resolveGatewayPort.mockReturnValue(18800);
     testing.setDepsForTests({
       getRuntimeConfig: () => config,
@@ -1196,32 +1196,32 @@ describe("buildGatewayConnectionDetails", () => {
     expect(details.remoteFallbackNote).toBeUndefined();
   });
 
-  it("uses env OPENCLAW_GATEWAY_URL when set", () => {
+  it("uses env EVE_GATEWAY_URL when set", () => {
     getRuntimeConfig.mockReturnValue({ gateway: { mode: "local", bind: "loopback" } });
     resolveGatewayPort.mockReturnValue(18800);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
-    const prevUrl = process.env.OPENCLAW_GATEWAY_URL;
+    const prevUrl = process.env.EVE_GATEWAY_URL;
     try {
-      process.env.OPENCLAW_GATEWAY_URL = "wss://browser-gateway.local:9443/ws";
+      process.env.EVE_GATEWAY_URL = "wss://browser-gateway.local:9443/ws";
 
       const details = buildGatewayConnectionDetails();
 
       expect(details.url).toBe("wss://browser-gateway.local:9443/ws");
-      expect(details.urlSource).toBe("env OPENCLAW_GATEWAY_URL");
+      expect(details.urlSource).toBe("env EVE_GATEWAY_URL");
       expect(details.bindDetail).toBeUndefined();
     } finally {
       if (prevUrl === undefined) {
-        delete process.env.OPENCLAW_GATEWAY_URL;
+        delete process.env.EVE_GATEWAY_URL;
       } else {
-        process.env.OPENCLAW_GATEWAY_URL = prevUrl;
+        process.env.EVE_GATEWAY_URL = prevUrl;
       }
     }
   });
 
   it("falls back to the default config loader when test deps drift", () => {
-    const tempStateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-call-"));
-    process.env.OPENCLAW_STATE_DIR = tempStateDir;
-    process.env.OPENCLAW_CONFIG_PATH = path.join(tempStateDir, "missing-config.json");
+    const tempStateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-call-"));
+    process.env.EVE_STATE_DIR = tempStateDir;
+    process.env.EVE_CONFIG_PATH = path.join(tempStateDir, "missing-config.json");
     try {
       getRuntimeConfig.mockReturnValue({ gateway: { mode: "local", bind: "loopback" } });
       resolveGatewayPort.mockReturnValue(18800);
@@ -1261,7 +1261,7 @@ describe("buildGatewayConnectionDetails", () => {
     expect((thrown as Error).message).toContain("plaintext ws://");
     expect((thrown as Error).message).toContain("wss://");
     expect((thrown as Error).message).toContain("Tailscale Serve/Funnel");
-    expect((thrown as Error).message).toContain("openclaw doctor --fix");
+    expect((thrown as Error).message).toContain("eve doctor --fix");
   });
 
   it("redacts credential-bearing target URLs from insecure ws:// errors", () => {
@@ -1302,20 +1302,20 @@ describe("buildGatewayConnectionDetails", () => {
     expect(details.urlSource).toBe("config gateway.remote.url");
   });
 
-  it("allows ws:// hostname remote URLs when OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1", () => {
-    process.env.OPENCLAW_ALLOW_INSECURE_PRIVATE_WS = "1";
+  it("allows ws:// hostname remote URLs when EVE_ALLOW_INSECURE_PRIVATE_WS=1", () => {
+    process.env.EVE_ALLOW_INSECURE_PRIVATE_WS = "1";
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
         bind: "loopback",
-        remote: { url: "ws://openclaw-gateway.ai:18789" },
+        remote: { url: "ws://eve-gateway.ai:18789" },
       },
     });
     resolveGatewayPort.mockReturnValue(18789);
 
     const details = buildGatewayConnectionDetails();
 
-    expect(details.url).toBe("ws://openclaw-gateway.ai:18789");
+    expect(details.url).toBe("ws://eve-gateway.ai:18789");
     expect(details.urlSource).toBe("config gateway.remote.url");
   });
 
@@ -1617,9 +1617,9 @@ describe("callGateway error details", () => {
   });
 
   it("keeps the default wrapper timeout aligned with env handshake timeout", async () => {
-    const envSnapshot = captureEnv(["OPENCLAW_HANDSHAKE_TIMEOUT_MS"]);
+    const envSnapshot = captureEnv(["EVE_HANDSHAKE_TIMEOUT_MS"]);
     try {
-      process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS = "30000";
+      process.env.EVE_HANDSHAKE_TIMEOUT_MS = "30000";
       startMode = "silent";
       setLocalLoopbackGatewayConfig();
 
@@ -1740,11 +1740,11 @@ describe("callGateway error details", () => {
             stopStarted = true;
           },
         }) as never,
-      getRuntimeConfig: getRuntimeConfig as unknown as () => OpenClawConfig,
+      getRuntimeConfig: getRuntimeConfig as unknown as () => EVEConfig,
       loadOrCreateDeviceIdentity: () => deviceIdentityState.value,
       loadDeviceAuthToken: loadDeviceAuthTokenMock,
       resolveGatewayPort: resolveGatewayPort as unknown as (
-        cfg?: OpenClawConfig,
+        cfg?: EVEConfig,
         env?: NodeJS.ProcessEnv,
       ) => number,
     });
@@ -1805,11 +1805,11 @@ describe("callGateway error details", () => {
             stopStarted = true;
           },
         }) as never,
-      getRuntimeConfig: getRuntimeConfig as unknown as () => OpenClawConfig,
+      getRuntimeConfig: getRuntimeConfig as unknown as () => EVEConfig,
       loadOrCreateDeviceIdentity: () => deviceIdentityState.value,
       loadDeviceAuthToken: loadDeviceAuthTokenMock,
       resolveGatewayPort: resolveGatewayPort as unknown as (
-        cfg?: OpenClawConfig,
+        cfg?: EVEConfig,
         env?: NodeJS.ProcessEnv,
       ) => number,
     });
@@ -1891,11 +1891,11 @@ describe("callGateway error details", () => {
             });
           },
         }) as never,
-      getRuntimeConfig: getRuntimeConfig as unknown as () => OpenClawConfig,
+      getRuntimeConfig: getRuntimeConfig as unknown as () => EVEConfig,
       loadOrCreateDeviceIdentity: () => deviceIdentityState.value,
       loadDeviceAuthToken: loadDeviceAuthTokenMock,
       resolveGatewayPort: resolveGatewayPort as unknown as (
-        cfg?: OpenClawConfig,
+        cfg?: EVEConfig,
         env?: NodeJS.ProcessEnv,
       ) => number,
     });
@@ -1953,11 +1953,11 @@ describe("callGateway error details", () => {
             });
           },
         }) as never,
-      getRuntimeConfig: getRuntimeConfig as unknown as () => OpenClawConfig,
+      getRuntimeConfig: getRuntimeConfig as unknown as () => EVEConfig,
       loadOrCreateDeviceIdentity: () => deviceIdentityState.value,
       loadDeviceAuthToken: loadDeviceAuthTokenMock,
       resolveGatewayPort: resolveGatewayPort as unknown as (
-        cfg?: OpenClawConfig,
+        cfg?: EVEConfig,
         env?: NodeJS.ProcessEnv,
       ) => number,
     });
@@ -2007,14 +2007,14 @@ describe("callGateway url override auth requirements", () => {
 
   beforeEach(() => {
     envSnapshot = captureEnv([
-      "OPENCLAW_GATEWAY_TOKEN",
-      "OPENCLAW_GATEWAY_PASSWORD",
-      "OPENCLAW_GATEWAY_URL",
+      "EVE_GATEWAY_TOKEN",
+      "EVE_GATEWAY_PASSWORD",
+      "EVE_GATEWAY_URL",
     ]);
     resetGatewayCallMocks();
-    delete process.env.OPENCLAW_GATEWAY_TOKEN;
-    delete process.env.OPENCLAW_GATEWAY_PASSWORD;
-    delete process.env.OPENCLAW_GATEWAY_URL;
+    delete process.env.EVE_GATEWAY_TOKEN;
+    delete process.env.EVE_GATEWAY_PASSWORD;
+    delete process.env.EVE_GATEWAY_URL;
     setGatewayNetworkDefaults(18789);
   });
 
@@ -2023,8 +2023,8 @@ describe("callGateway url override auth requirements", () => {
   });
 
   it("throws when url override is set without explicit credentials", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "env-password";
+    process.env.EVE_GATEWAY_TOKEN = "env-token";
+    process.env.EVE_GATEWAY_PASSWORD = "env-password";
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2038,7 +2038,7 @@ describe("callGateway url override auth requirements", () => {
   });
 
   it("throws when env URL override is set without env credentials", async () => {
-    process.env.OPENCLAW_GATEWAY_URL = "wss://override.example/ws";
+    process.env.EVE_GATEWAY_URL = "wss://override.example/ws";
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2056,7 +2056,7 @@ describe("callGateway password resolution", () => {
     {
       label: "password",
       authKey: "password", // pragma: allowlist secret
-      envKey: "OPENCLAW_GATEWAY_PASSWORD",
+      envKey: "EVE_GATEWAY_PASSWORD",
       envValue: "from-env",
       configValue: "from-config",
       explicitValue: "explicit-password",
@@ -2064,7 +2064,7 @@ describe("callGateway password resolution", () => {
     {
       label: "token",
       authKey: "token", // pragma: allowlist secret
-      envKey: "OPENCLAW_GATEWAY_TOKEN",
+      envKey: "EVE_GATEWAY_TOKEN",
       envValue: "env-token",
       configValue: "local-token",
       explicitValue: "explicit-token",
@@ -2073,16 +2073,16 @@ describe("callGateway password resolution", () => {
 
   beforeEach(() => {
     envSnapshot = captureEnv([
-      "OPENCLAW_GATEWAY_PASSWORD",
-      "OPENCLAW_GATEWAY_TOKEN",
+      "EVE_GATEWAY_PASSWORD",
+      "EVE_GATEWAY_TOKEN",
       "LOCAL_REMOTE_FALLBACK_TOKEN",
       "LOCAL_REF_PASSWORD",
       "REMOTE_REF_TOKEN",
       "REMOTE_REF_PASSWORD",
     ]);
     resetGatewayCallMocks();
-    delete process.env.OPENCLAW_GATEWAY_PASSWORD;
-    delete process.env.OPENCLAW_GATEWAY_TOKEN;
+    delete process.env.EVE_GATEWAY_PASSWORD;
+    delete process.env.EVE_GATEWAY_TOKEN;
     delete process.env.LOCAL_REMOTE_FALLBACK_TOKEN;
     delete process.env.LOCAL_REF_PASSWORD;
     delete process.env.REMOTE_REF_TOKEN;
@@ -2133,7 +2133,7 @@ describe("callGateway password resolution", () => {
     },
   ])("$label", async ({ envPassword, config, expectedPassword }) => {
     if (envPassword !== undefined) {
-      process.env.OPENCLAW_GATEWAY_PASSWORD = envPassword;
+      process.env.EVE_GATEWAY_PASSWORD = envPassword;
     }
     getRuntimeConfig.mockReturnValue(config);
 
@@ -2158,7 +2158,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2166,7 +2166,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("does not resolve local password ref when env password takes precedence", async () => {
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "from-env";
+    process.env.EVE_GATEWAY_PASSWORD = "from-env";
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2181,7 +2181,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2204,7 +2204,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2227,7 +2227,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2254,7 +2254,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await expect(callGateway({ method: "health" })).rejects.toThrow("gateway.auth.token");
   });
@@ -2274,7 +2274,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2298,7 +2298,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2321,7 +2321,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await expect(callGateway({ method: "health" })).rejects.toThrow("gateway.auth.password");
   });
@@ -2345,7 +2345,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2369,7 +2369,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2393,7 +2393,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2417,7 +2417,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2443,7 +2443,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2468,7 +2468,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2493,7 +2493,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2518,7 +2518,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 
@@ -2543,7 +2543,7 @@ describe("callGateway password resolution", () => {
           default: { source: "env" },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     await callGateway({ method: "health" });
 

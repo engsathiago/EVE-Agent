@@ -1,15 +1,15 @@
 // Opencode Go provider module implements model/runtime integration.
-import type { ModelCatalogEntry } from "openclaw/plugin-sdk/agent-runtime";
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+import type { ModelCatalogEntry } from "eve-agent/plugin-sdk/agent-runtime";
+import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   buildLiveModelProviderConfig,
   type LiveModelCatalogFetchGuard,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
-import { normalizeModelCompat } from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
+import { normalizeModelCompat } from "eve-agent/plugin-sdk/provider-model-shared";
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 
 const PROVIDER_ID = "opencode-go";
 

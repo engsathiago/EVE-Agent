@@ -267,12 +267,12 @@ describe("gateway-cli coverage", () => {
 
   it("prints the latest stability bundle without calling Gateway", async () => {
     callGateway.mockClear();
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-cli-bundle-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-cli-bundle-"));
     try {
       const bundleDir = path.join(tempDir, "logs", "stability");
       const bundlePath = path.join(
         bundleDir,
-        "openclaw-stability-2026-04-22T12-00-00-000Z-123-test.json",
+        "eve-stability-2026-04-22T12-00-00-000Z-123-test.json",
       );
       const bundle = {
         version: 1,
@@ -354,7 +354,7 @@ describe("gateway-cli coverage", () => {
       fs.mkdirSync(bundleDir, { recursive: true });
       fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
 
-      await withEnvOverride({ OPENCLAW_STATE_DIR: tempDir }, async () => {
+      await withEnvOverride({ EVE_STATE_DIR: tempDir }, async () => {
         await runGatewayCommand(["gateway", "stability", "--bundle", "latest"]);
       });
 
@@ -375,11 +375,11 @@ describe("gateway-cli coverage", () => {
 
   it("writes gateway diagnostics export with a best-effort health snapshot", async () => {
     callGateway.mockClear();
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-cli-support-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-cli-support-"));
     try {
       const outputPath = path.join(tempDir, "diagnostics.zip");
       await withEnvOverride(
-        { OPENCLAW_STATE_DIR: tempDir, OPENCLAW_TEST_FILE_LOG: undefined },
+        { EVE_STATE_DIR: tempDir, EVE_TEST_FILE_LOG: undefined },
         async () => {
           await runGatewayCommand([
             "gateway",
@@ -422,10 +422,10 @@ describe("gateway-cli coverage", () => {
     discoverGatewayBeacons.mockClear();
     discoverGatewayBeacons.mockResolvedValueOnce([
       {
-        instanceName: "Studio (OpenClaw)",
+        instanceName: "Studio (EVE)",
         displayName: "Studio",
-        domain: "openclaw.internal.",
-        host: "studio.openclaw.internal",
+        domain: "eve.internal.",
+        host: "studio.eve.internal",
         port: 18789,
         lanHost: "studio.local",
         tailnetDns: "studio.tailnet.ts.net",
@@ -515,14 +515,14 @@ describe("gateway-cli coverage", () => {
         LAUNCH_JOB_LABEL: undefined,
         LAUNCH_JOB_NAME: undefined,
         XPC_SERVICE_NAME: undefined,
-        OPENCLAW_LAUNCHD_LABEL: undefined,
-        OPENCLAW_SYSTEMD_UNIT: undefined,
+        EVE_LAUNCHD_LABEL: undefined,
+        EVE_SYSTEMD_UNIT: undefined,
         INVOCATION_ID: undefined,
         SYSTEMD_EXEC_PID: undefined,
         JOURNAL_STREAM: undefined,
-        OPENCLAW_WINDOWS_TASK_NAME: undefined,
-        OPENCLAW_SERVICE_MARKER: undefined,
-        OPENCLAW_SERVICE_KIND: undefined,
+        EVE_WINDOWS_TASK_NAME: undefined,
+        EVE_SERVICE_MARKER: undefined,
+        EVE_SERVICE_KIND: undefined,
       },
       async () => {
         serviceIsLoaded.mockResolvedValue(true);
@@ -558,7 +558,7 @@ describe("gateway-cli coverage", () => {
     runtimeErrors.length = 0;
     serviceIsLoaded.mockResolvedValue(true);
     startGatewayServer.mockRejectedValueOnce(
-      new GatewayLockError("failed to acquire gateway lock at /tmp/openclaw/gateway.lock"),
+      new GatewayLockError("failed to acquire gateway lock at /tmp/eve/gateway.lock"),
     );
 
     await expectGatewayExit(["gateway", "--token", "test-token", "--allow-unconfigured"]);
@@ -567,7 +567,7 @@ describe("gateway-cli coverage", () => {
   });
 
   it("uses env/config port when --port is omitted", async () => {
-    await withEnvOverride({ OPENCLAW_GATEWAY_PORT: "19001" }, async () => {
+    await withEnvOverride({ EVE_GATEWAY_PORT: "19001" }, async () => {
       runtimeLogs.length = 0;
       runtimeErrors.length = 0;
       startGatewayServer.mockClear();

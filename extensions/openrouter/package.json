@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/openrouter-provider",
+  "name": "@eve/openrouter-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw OpenRouter provider plugin",
+  "description": "EVE OpenRouter provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

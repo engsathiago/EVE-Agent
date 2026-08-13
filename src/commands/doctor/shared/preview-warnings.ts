@@ -1,7 +1,7 @@
 // Doctor preview warning aggregation for config that can surprise users before repair.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { isRecord as hasRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { isRecord as hasRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { resolveAgentConfig } from "../../../agents/agent-scope-config.js";
 import { DEFAULT_MODEL, DEFAULT_PROVIDER } from "../../../agents/defaults.js";
 import { parseModelRef } from "../../../agents/model-selection-normalize.js";
@@ -12,7 +12,7 @@ import {
 } from "../../../agents/tool-policy-match.js";
 import { mergeAlsoAllowPolicy, resolveToolProfilePolicy } from "../../../agents/tool-policy.js";
 import { resolveAgentModelPrimaryValue } from "../../../config/model-input.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import type { AgentToolsConfig, ToolsConfig } from "../../../config/types.tools.js";
 import { collectChannelRouteTargets } from "../../../routing/channel-route-targets.js";
 import { createLazyImportLoader } from "../../../shared/lazy-promise.js";
@@ -27,19 +27,19 @@ function loadChannelDoctorModule(): Promise<ChannelDoctorModule> {
   return channelDoctorModuleLoader.load();
 }
 
-function listAgentRecords(cfg: OpenClawConfig): Record<string, unknown>[] {
+function listAgentRecords(cfg: EVEConfig): Record<string, unknown>[] {
   return Array.isArray(cfg.agents?.list) ? cfg.agents.list.filter(hasRecord) : [];
 }
 
-function hasChannels(cfg: OpenClawConfig): boolean {
+function hasChannels(cfg: EVEConfig): boolean {
   return hasRecord(cfg.channels);
 }
 
-function hasPlugins(cfg: OpenClawConfig): boolean {
+function hasPlugins(cfg: EVEConfig): boolean {
   return hasRecord(cfg.plugins);
 }
 
-function hasPluginLoadPaths(cfg: OpenClawConfig): boolean {
+function hasPluginLoadPaths(cfg: EVEConfig): boolean {
   const plugins = cfg.plugins;
   if (!hasRecord(plugins)) {
     return false;
@@ -48,7 +48,7 @@ function hasPluginLoadPaths(cfg: OpenClawConfig): boolean {
   return hasRecord(load) && Array.isArray(load.paths) && load.paths.length > 0;
 }
 
-function hasSubagentAllowlistConfig(cfg: OpenClawConfig): boolean {
+function hasSubagentAllowlistConfig(cfg: EVEConfig): boolean {
   if (Array.isArray(cfg.agents?.defaults?.subagents?.allowAgents)) {
     return true;
   }
@@ -73,7 +73,7 @@ function hasToolsBySenderKey(value: unknown): boolean {
   );
 }
 
-function hasConfiguredSafeBins(cfg: OpenClawConfig): boolean {
+function hasConfiguredSafeBins(cfg: EVEConfig): boolean {
   const globalExec = cfg.tools?.exec;
   if (
     hasRecord(globalExec) &&
@@ -141,7 +141,7 @@ function resolveProviderToolPolicy(params: {
 }
 
 function resolveMessageToolAvailability(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   globalTools?: ToolsConfig;
   agentTools?: AgentToolsConfig;
@@ -190,7 +190,7 @@ function resolveMessageToolAvailability(params: {
 const SOURCE_REPLY_RUNTIME_MESSAGE_ALLOW = ["message"];
 
 function resolvePrimaryModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentModel?: NonNullable<ReturnType<typeof resolveAgentConfig>>["model"],
 ): { provider: string; model: string } {
   const raw =
@@ -206,7 +206,7 @@ function resolvePrimaryModelRef(
 }
 
 function resolveSourceReplyMessageToolAvailability(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   globalTools?: ToolsConfig;
   agentTools?: AgentToolsConfig;
@@ -217,7 +217,7 @@ function resolveSourceReplyMessageToolAvailability(params: {
   });
 }
 
-function sourceReplyRuntimeMayAllowMessageTool(cfg: OpenClawConfig): boolean {
+function sourceReplyRuntimeMayAllowMessageTool(cfg: EVEConfig): boolean {
   const groupPolicy = resolveGroupVisibleReplyProvenance(cfg);
   if (groupPolicy.value === "message_tool") {
     return true;
@@ -229,7 +229,7 @@ function sourceReplyRuntimeMayAllowMessageTool(cfg: OpenClawConfig): boolean {
 }
 
 function collectMessageToolUnavailableTargets(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options: { sourceReplyRuntimeGrant?: boolean } = {},
 ): string[] {
   const agents = listAgentRecords(cfg);
@@ -258,7 +258,7 @@ function collectMessageToolUnavailableTargets(
   });
 }
 
-function resolveGroupVisibleReplyProvenance(cfg: OpenClawConfig): {
+function resolveGroupVisibleReplyProvenance(cfg: EVEConfig): {
   path: "messages.groupChat.visibleReplies" | "messages.visibleReplies";
   provenance: VisibleReplyPolicyProvenance;
   value: "automatic" | "message_tool";
@@ -294,7 +294,7 @@ function formatTargets(targets: string[]): string {
 }
 
 /** Warn when visible-reply policy selects message_tool but message is unavailable. */
-export function collectVisibleReplyToolPolicyWarnings(cfg: OpenClawConfig): string[] {
+export function collectVisibleReplyToolPolicyWarnings(cfg: EVEConfig): string[] {
   const groupPolicy = resolveGroupVisibleReplyProvenance(cfg);
   const warnings: string[] = [];
   if (groupPolicy.value === "message_tool") {
@@ -305,7 +305,7 @@ export function collectVisibleReplyToolPolicyWarnings(cfg: OpenClawConfig): stri
     warnings.push(
       `- ${groupPolicy.path} is set to "message_tool", but the message tool is unavailable for ${formatTargets(
         targets,
-      )}; OpenClaw falls back to automatic visible replies, so normal replies may post to the source chat. Enable the message tool or set ${groupPolicy.path} to "automatic".`,
+      )}; EVE falls back to automatic visible replies, so normal replies may post to the source chat. Enable the message tool or set ${groupPolicy.path} to "automatic".`,
     );
   }
 
@@ -318,7 +318,7 @@ export function collectVisibleReplyToolPolicyWarnings(cfg: OpenClawConfig): stri
     warnings.push(
       `- messages.visibleReplies is set to "message_tool", but the message tool is unavailable for ${formatTargets(
         targets,
-      )}; OpenClaw falls back to automatic direct-chat replies, so normal replies may post to the source chat. Enable the message tool or set messages.visibleReplies to "automatic".`,
+      )}; EVE falls back to automatic direct-chat replies, so normal replies may post to the source chat. Enable the message tool or set messages.visibleReplies to "automatic".`,
     );
   }
   return warnings;
@@ -335,7 +335,7 @@ function formatChannelList(channels: string[]): string {
 }
 
 /** Warn when routed channel agents lack the message tool required for channel actions. */
-export function collectChannelBoundMessageToolPolicyWarnings(cfg: OpenClawConfig): string[] {
+export function collectChannelBoundMessageToolPolicyWarnings(cfg: EVEConfig): string[] {
   return collectChannelRouteTargets(cfg).flatMap((target) => {
     const agentTools = resolveAgentConfig(cfg, target.agentId)?.tools;
     const runtimeMayAllowMessage = sourceReplyRuntimeMayAllowMessageTool(cfg);
@@ -677,7 +677,7 @@ function collectInheritedByProviderConfiguredToolSectionWarnings(params: {
 }
 
 /** Warn when configured tool sections no longer widen restrictive tool profiles. */
-export function collectProfileConfiguredToolSectionWarnings(cfg: OpenClawConfig): string[] {
+export function collectProfileConfiguredToolSectionWarnings(cfg: EVEConfig): string[] {
   const warnings: string[] = [];
   const globalTools = hasRecord(cfg.tools) ? cfg.tools : undefined;
   const globalAlsoAllow = Array.isArray(globalTools?.alsoAllow)
@@ -752,10 +752,10 @@ export type DoctorPreviewNotes = {
 };
 
 async function resolveDoctorChannelPreviewConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   allowExec?: boolean;
-}): Promise<{ cfg: OpenClawConfig; diagnostics: string[] }> {
+}): Promise<{ cfg: EVEConfig; diagnostics: string[] }> {
   const [{ resolveCommandSecretRefsViaGateway }, { getConfiguredChannelsCommandSecretTargetIds }] =
     await Promise.all([
       import("../../../cli/command-secret-gateway.js"),
@@ -778,8 +778,8 @@ async function resolveDoctorChannelPreviewConfig(params: {
 
 /** Collect info and warning notes for doctor preview mode. */
 export async function collectDoctorPreviewNotes(params: {
-  cfg: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  cfg: EVEConfig;
+  activationSourceConfig?: EVEConfig;
   doctorFixCommand: string;
   env?: NodeJS.ProcessEnv;
   allowExec?: boolean;
@@ -986,7 +986,7 @@ export async function collectDoctorPreviewNotes(params: {
 
 /** Collect warning notes only for callers that do not display info notes. */
 export async function collectDoctorPreviewWarnings(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   doctorFixCommand: string;
   env?: NodeJS.ProcessEnv;
   allowExec?: boolean;

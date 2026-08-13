@@ -1,4 +1,4 @@
-// Check Codex App Server Protocol script supports OpenClaw repository automation.
+// Check Codex App Server Protocol script supports EVE repository automation.
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
@@ -125,7 +125,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `Codex app-server generated protocol matches OpenClaw bridge assumptions: ${source.codexRepo}`,
+    `Codex app-server generated protocol matches EVE bridge assumptions: ${source.codexRepo}`,
   );
 }
 

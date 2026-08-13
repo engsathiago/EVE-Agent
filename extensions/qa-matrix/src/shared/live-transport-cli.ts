@@ -2,13 +2,13 @@
 import {
   createLiveTransportQaCliRegistration as createSharedLiveTransportQaCliRegistration,
   type LiveTransportQaCliRegistrationOptions,
-} from "openclaw/plugin-sdk/qa-runtime";
+} from "eve-agent/plugin-sdk/qa-runtime";
 
 export {
   createLazyCliRuntimeLoader,
   type LiveTransportQaCliRegistration,
   type LiveTransportQaCommandOptions,
-} from "openclaw/plugin-sdk/qa-runtime";
+} from "eve-agent/plugin-sdk/qa-runtime";
 
 type MatrixLiveTransportQaCliRegistrationOptions = Omit<
   LiveTransportQaCliRegistrationOptions,

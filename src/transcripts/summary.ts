@@ -1,5 +1,5 @@
 // Builds transcript summaries and normalized transcript metadata.
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import type { TranscriptSessionDescriptor, TranscriptUtterance } from "./provider-types.js";
 
 /**

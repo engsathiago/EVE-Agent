@@ -77,7 +77,7 @@ function resolveProviderAuthsForTest(
 }
 
 async function withTempHome<T>(fn: (homeDir: string) => Promise<T>): Promise<T> {
-  const homeDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-provider-usage-"));
+  const homeDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-provider-usage-"));
   try {
     return await fn(homeDir);
   } finally {

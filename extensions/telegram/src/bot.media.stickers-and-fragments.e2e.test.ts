@@ -212,7 +212,7 @@ describe("telegram stickers", () => {
             sticker: scenario.sticker,
             date: 1736380800,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({ file_path: scenario.filePath }),
         });
 
@@ -250,7 +250,7 @@ describe("telegram text fragments", () => {
             date: 1736380800,
             text: part1,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 
@@ -262,7 +262,7 @@ describe("telegram text fragments", () => {
             date: 1736380801,
             text: part2,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 
@@ -327,7 +327,7 @@ describe("telegram text fragments", () => {
             date: 1736380800,
             text: part1,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 
@@ -339,7 +339,7 @@ describe("telegram text fragments", () => {
             date: 1736380801,
             text: part2,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 
@@ -401,9 +401,9 @@ describe("telegram text fragments", () => {
             message_thread_id: 101,
             is_topic_message: true,
             date: 1736380800,
-            text: `@openclaw_bot topic-one ${"A".repeat(4050)}`,
+            text: `@eve_bot topic-one ${"A".repeat(4050)}`,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 
@@ -415,9 +415,9 @@ describe("telegram text fragments", () => {
             message_thread_id: 202,
             is_topic_message: true,
             date: 1736380801,
-            text: `@openclaw_bot topic-two ${"B".repeat(4050)}`,
+            text: `@eve_bot topic-two ${"B".repeat(4050)}`,
           },
-          me: { username: "openclaw_bot" },
+          me: { username: "eve_bot" },
           getFile: async () => ({}),
         });
 

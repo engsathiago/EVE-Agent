@@ -1,9 +1,9 @@
-// Webhooks plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry, type OpenClawPluginApi } from "./api.js";
+// Webhooks plugin entrypoint registers its EVE integration.
+import { definePluginEntry, type EVEPluginApi } from "./api.js";
 import { resolveWebhooksPluginConfig } from "./src/config.js";
 import { createTaskFlowWebhookRequestHandler, type TaskFlowWebhookTarget } from "./src/http.js";
 
-function registerWebhookRoutes(api: OpenClawPluginApi): void {
+function registerWebhookRoutes(api: EVEPluginApi): void {
   const routes = resolveWebhooksPluginConfig({
     pluginConfig: api.pluginConfig,
   });
@@ -47,8 +47,8 @@ export default definePluginEntry({
   id: "webhooks",
   name: "Webhooks",
   description:
-    "Authenticated inbound webhooks that bind external automation to OpenClaw TaskFlows.",
-  register(api: OpenClawPluginApi) {
+    "Authenticated inbound webhooks that bind external automation to EVE TaskFlows.",
+  register(api: EVEPluginApi) {
     registerWebhookRoutes(api);
   },
 });

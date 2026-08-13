@@ -4,14 +4,14 @@ struct IPadSidebarScreenChrome<Content: View>: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     let title: String
     let subtitle: String
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
     let gatewayAction: (() -> Void)?
     @ViewBuilder var content: Content
 
     init(
         title: String,
         subtitle: String,
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil,
+        headerLeadingAction: EVESidebarHeaderAction? = nil,
         gatewayAction: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content)
     {
@@ -24,22 +24,22 @@ struct IPadSidebarScreenChrome<Content: View>: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: self.isCompactHeight ? 10 : 16) {
-                    OpenClawAdaptiveHeaderRow(
+                    EVEAdaptiveHeaderRow(
                         title: self.title,
                         subtitle: self.subtitle,
                         titleFont: self.isCompactHeight ? .headline.weight(.semibold) : .title2.weight(.semibold),
                         subtitleLineLimit: self.isCompactHeight ? 1 : 2)
                     {
                         if let headerLeadingAction {
-                            OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                            EVESidebarHeaderLeadingSlot(action: headerLeadingAction)
                         }
                     } accessory: {
                         self.gatewayPill
                     }
-                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                    .padding(.horizontal, EVEProMetric.pagePadding)
                     self.content
                 }
                 .padding(.vertical, self.isCompactHeight ? 10 : 18)
@@ -56,16 +56,16 @@ struct IPadSidebarScreenChrome<Content: View>: View {
     private var gatewayPill: some View {
         if let gatewayAction {
             Button(action: gatewayAction) {
-                OpenClawGatewayCompactPill()
+                EVEGatewayCompactPill()
             }
             .buttonStyle(.plain)
             .accessibilityHint("Opens Settings / Gateway")
         } else {
-            OpenClawGatewayCompactPill()
+            EVEGatewayCompactPill()
         }
     }
 
     private var bottomScrollInset: CGFloat {
-        self.isCompactHeight ? 150 : OpenClawProMetric.bottomScrollInset
+        self.isCompactHeight ? 150 : EVEProMetric.bottomScrollInset
     }
 }

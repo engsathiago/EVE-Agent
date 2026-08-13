@@ -17,12 +17,12 @@ export type {
   AcpRuntimeTurnResult,
   AcpRuntimeTurnResultError,
   AcpSessionUpdateTag,
-} from "@openclaw/acp-core/runtime/types";
+} from "@eve/acp-core/runtime/types";
 export type {
-  OpenClawPluginApi,
-  OpenClawPluginConfigSchema,
-  OpenClawPluginService,
-  OpenClawPluginServiceContext,
+  EVEPluginApi,
+  EVEPluginConfigSchema,
+  EVEPluginService,
+  EVEPluginServiceContext,
   PluginLogger,
 } from "../plugins/types.js";
 export type {

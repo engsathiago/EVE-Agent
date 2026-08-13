@@ -2,14 +2,14 @@
  * Azure Speech REST helpers. They normalize endpoints, build SSML, list voices,
  * and synthesize speech with response-size and SSRF guards.
  */
-import { assertOkOrThrowProviderError } from "openclaw/plugin-sdk/provider-http";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
-import type { SpeechVoiceOption } from "openclaw/plugin-sdk/speech-core";
-import { trimToUndefined } from "openclaw/plugin-sdk/speech-core";
+import { assertOkOrThrowProviderError } from "eve-agent/plugin-sdk/provider-http";
+import { readResponseWithLimit } from "eve-agent/plugin-sdk/response-limit-runtime";
+import type { SpeechVoiceOption } from "eve-agent/plugin-sdk/speech-core";
+import { trimToUndefined } from "eve-agent/plugin-sdk/speech-core";
 import {
   fetchWithSsrFGuard,
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
-} from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
 
 /** Default Azure Speech neural voice. */
 export const DEFAULT_AZURE_SPEECH_VOICE = "en-US-JennyNeural";
@@ -205,7 +205,7 @@ export async function azureSpeechTTS(params: {
         "Content-Type": "application/ssml+xml",
         "Ocp-Apim-Subscription-Key": params.apiKey,
         "X-Microsoft-OutputFormat": outputFormat,
-        "User-Agent": "OpenClaw",
+        "User-Agent": "EVE",
       },
       body: buildAzureSpeechSsml({
         text: params.text,

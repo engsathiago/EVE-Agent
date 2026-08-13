@@ -2,9 +2,9 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeStringifiedOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveEnvApiKey } from "../agents/model-auth-env.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { SecretInput } from "../config/types.secrets.js";
 import { normalizeSecretInput } from "../utils/normalize-secret-input.js";
 import type { WizardPrompter } from "../wizard/prompts.js";
@@ -124,7 +124,7 @@ export async function ensureApiKeyFromOptionEnvOrPrompt(params: {
   token: string | undefined;
   tokenProvider: string | undefined;
   secretInputMode?: SecretInputMode;
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   expectedProviders: string[];
   provider: string;
@@ -169,7 +169,7 @@ export async function ensureApiKeyFromOptionEnvOrPrompt(params: {
 
 /** Resolves an API key from environment or interactive prompt and records the chosen secret mode. */
 export async function ensureApiKeyFromEnvOrPrompt(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   provider: string;
   envLabel: string;

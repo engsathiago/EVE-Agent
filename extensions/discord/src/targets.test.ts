@@ -1,5 +1,5 @@
 // Discord tests cover targets plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   resetDiscordDirectoryCacheForTest,
@@ -100,7 +100,7 @@ describe("resolveDiscordChannelId", () => {
 });
 
 describe("resolveDiscordTarget", () => {
-  const cfg = { channels: { discord: {} } } as OpenClawConfig;
+  const cfg = { channels: { discord: {} } } as EVEConfig;
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -148,7 +148,7 @@ describe("resolveDiscordTarget", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expectTargetFields(
       await resolveDiscordTarget(
@@ -172,7 +172,7 @@ describe("resolveDiscordTarget", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expectTargetFields(
       await resolveDiscordTarget(
@@ -196,7 +196,7 @@ describe("resolveDiscordTarget", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expectTargetFields(
       await resolveDiscordTarget(
@@ -220,7 +220,7 @@ describe("resolveDiscordTarget", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expectTargetFields(
       await resolveDiscordTarget(
@@ -252,7 +252,7 @@ describe("resolveDiscordTarget", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     vi.spyOn(directoryLive, "listDiscordDirectoryPeersLive").mockResolvedValueOnce([
       { kind: "user", id: "user:999", name: "Jane" } as const,

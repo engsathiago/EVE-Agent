@@ -6,16 +6,16 @@ import path from "node:path";
 import {
   asDateTimestampMs,
   timestampMsToIsoString,
-} from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { formatCliCommand } from "../cli/command-format.js";
 import { resolveStateDir } from "../config/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { VERSION } from "../version.js";
 import { isTruthyEnvValue } from "./env.js";
 import { writeJson } from "./json-files.js";
-import { resolveOpenClawPackageRoot } from "./openclaw-root.js";
+import { resolveEVEPackageRoot } from "./eve-root.js";
 import { scheduleGatewaySigusr1Restart } from "./restart.js";
 import { detectRespawnSupervisor, type RespawnSupervisor } from "./supervisor-markers.js";
 import { normalizeUpdateChannel, DEFAULT_PACKAGE_CHANNEL } from "./update-channels.js";
@@ -92,7 +92,7 @@ function shouldSkipCheck(allowInTests: boolean): boolean {
   return false;
 }
 
-function resolveAutoUpdatePolicy(cfg: OpenClawConfig): AutoUpdatePolicy {
+function resolveAutoUpdatePolicy(cfg: EVEConfig): AutoUpdatePolicy {
   const auto = cfg.update?.auto;
   const stableDelayHours =
     typeof auto?.stableDelayHours === "number" && Number.isFinite(auto.stableDelayHours)
@@ -115,7 +115,7 @@ function resolveAutoUpdatePolicy(cfg: OpenClawConfig): AutoUpdatePolicy {
   };
 }
 
-function resolveCheckIntervalMs(cfg: OpenClawConfig): number {
+function resolveCheckIntervalMs(cfg: EVEConfig): number {
   const channel = normalizeUpdateChannel(cfg.update?.channel) ?? DEFAULT_PACKAGE_CHANNEL;
   const auto = resolveAutoUpdatePolicy(cfg);
   if (!auto.enabled) {
@@ -316,7 +316,7 @@ async function runAutoUpdateCommand(params: {
   root?: string;
 }): Promise<AutoUpdateRunResult> {
   const supervisor = detectRespawnSupervisor(process.env, process.platform, {
-    includeLinuxOpenClawGatewayServiceMarker: true,
+    includeLinuxEVEGatewayServiceMarker: true,
   });
   if (supervisor) {
     return await startManagedServiceAutoUpdateHandoff({
@@ -359,14 +359,14 @@ async function runAutoUpdateCommand(params: {
     }
   }
   if (argv.length === 0) {
-    argv.push("openclaw", ...baseArgs);
+    argv.push("eve", ...baseArgs);
   }
 
   try {
     const res = await runCommandWithTimeout(argv, {
       timeoutMs: params.timeoutMs,
       env: {
-        OPENCLAW_AUTO_UPDATE: "1",
+        EVE_AUTO_UPDATE: "1",
       },
     });
     return {
@@ -392,7 +392,7 @@ function clearAutoState(nextState: UpdateCheckState): void {
 }
 
 export async function runGatewayUpdateCheck(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   log: { info: (msg: string, meta?: Record<string, unknown>) => void };
   isNixMode: boolean;
   allowInTests?: boolean;
@@ -410,7 +410,7 @@ export async function runGatewayUpdateCheck(params: {
     return;
   }
   const auto = resolveAutoUpdatePolicy(params.cfg);
-  const autoDisabledByEnv = isTruthyEnvValue(process.env.OPENCLAW_NO_AUTO_UPDATE);
+  const autoDisabledByEnv = isTruthyEnvValue(process.env.EVE_NO_AUTO_UPDATE);
   const shouldRunAutoUpdate = auto.enabled && !autoDisabledByEnv;
   const shouldRunUpdateHints = params.cfg.update?.checkOnStart !== false;
   if (!shouldRunUpdateHints && !shouldRunAutoUpdate) {
@@ -444,7 +444,7 @@ export async function runGatewayUpdateCheck(params: {
     }
   }
 
-  const root = await resolveOpenClawPackageRoot({
+  const root = await resolveEVEPackageRoot({
     moduleUrl: import.meta.url,
     argv1: process.argv[1],
     cwd: process.cwd(),
@@ -501,14 +501,14 @@ export async function runGatewayUpdateCheck(params: {
       state.lastNotifiedVersion !== resolved.version || state.lastNotifiedTag !== tag;
     if (shouldRunUpdateHints && shouldNotify) {
       params.log.info(
-        `update available (${tag}): v${resolved.version} (current v${VERSION}). Run: ${formatCliCommand("openclaw update")}`,
+        `update available (${tag}): v${resolved.version} (current v${VERSION}). Run: ${formatCliCommand("eve update")}`,
       );
       nextState.lastNotifiedVersion = resolved.version;
       nextState.lastNotifiedTag = tag;
     }
 
     if (auto.enabled && autoDisabledByEnv) {
-      params.log.info("auto-update disabled by OPENCLAW_NO_AUTO_UPDATE", {
+      params.log.info("auto-update disabled by EVE_NO_AUTO_UPDATE", {
         version: resolved.version,
         tag,
       });
@@ -610,7 +610,7 @@ export async function runGatewayUpdateCheck(params: {
 }
 
 export function scheduleGatewayUpdateCheck(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   log: { info: (msg: string, meta?: Record<string, unknown>) => void };
   isNixMode: boolean;
   onUpdateAvailableChange?: (updateAvailable: UpdateAvailable | null) => void;

@@ -2,11 +2,11 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import type { Message } from "grammy/types";
-import { formatLocationText } from "openclaw/plugin-sdk/channel-inbound";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import type { MsgContext } from "openclaw/plugin-sdk/reply-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatLocationText } from "eve-agent/plugin-sdk/channel-inbound";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import type { MsgContext } from "eve-agent/plugin-sdk/reply-runtime";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   resolveTelegramPrimaryMedia,
   resolveTelegramRichMessagePlaceholder,

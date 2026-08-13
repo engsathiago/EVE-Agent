@@ -5,7 +5,7 @@
 import type {
   AnyAgentTool,
   EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   type CodexAppServerRuntimeOptions,
   resolveCodexAppServerRuntimeOptions,

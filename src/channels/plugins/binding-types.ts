@@ -26,7 +26,7 @@ export type ConfiguredBindingConversation = ConversationRef;
 export type ConfiguredBindingChannel = ChannelId;
 
 /**
- * Raw binding config entry from OpenClaw config.
+ * Raw binding config entry from EVE config.
  */
 export type ConfiguredBindingRuleConfig = AgentBinding;
 

@@ -1,7 +1,7 @@
 // Codex plugin module implements conversation binding data behavior.
 import process from "node:process";
-import type { PluginConversationBinding } from "openclaw/plugin-sdk/plugin-entry";
-import { asOptionalRecord as readRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { PluginConversationBinding } from "eve-agent/plugin-sdk/plugin-entry";
+import { asOptionalRecord as readRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 const BINDING_DATA_VERSION = 1;
 

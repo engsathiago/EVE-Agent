@@ -1,10 +1,10 @@
 /**
  * Chrome MCP snapshot conversion helpers.
  *
- * Converts chrome-devtools-mcp structured snapshots into OpenClaw ARIA nodes
+ * Converts chrome-devtools-mcp structured snapshots into EVE ARIA nodes
  * and compact AI snapshots with stable refs and duplicate tracking.
  */
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { normalizeString } from "../record-shared.js";
 import type { SnapshotAriaNode } from "./client.types.js";
 import {
@@ -82,7 +82,7 @@ function registerRef(
   return undefined;
 }
 
-/** Flatten a Chrome MCP snapshot tree into OpenClaw ARIA-style nodes. */
+/** Flatten a Chrome MCP snapshot tree into EVE ARIA-style nodes. */
 export function flattenChromeMcpSnapshotToAriaNodes(
   root: ChromeMcpSnapshotNode,
   limit = 500,

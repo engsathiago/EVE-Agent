@@ -1,6 +1,6 @@
 // Zalo tests cover monitor.group policy plugin behavior.
-import { resolveStableChannelMessageIngress } from "openclaw/plugin-sdk/channel-ingress-runtime";
-import type { GroupPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { resolveStableChannelMessageIngress } from "eve-agent/plugin-sdk/channel-ingress-runtime";
+import type { GroupPolicy, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it, vi } from "vitest";
 import { normalizeZaloAllowEntry, resolveZaloRuntimeGroupPolicy } from "./group-access.js";
 import type { ZaloAccountConfig } from "./types.js";
@@ -56,7 +56,7 @@ const groupPolicyCases: Array<[string, ZaloAccountConfig, string, boolean, strin
 
 async function resolveAccess(
   params: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     accountConfig?: ZaloAccountConfig;
     providerConfigPresent?: boolean;
     defaultGroupPolicy?: GroupPolicy;

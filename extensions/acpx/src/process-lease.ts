@@ -1,22 +1,22 @@
 /**
- * Persistent lease store for ACPX wrapper processes. Leases let OpenClaw attach
+ * Persistent lease store for ACPX wrapper processes. Leases let EVE attach
  * gateway/session identity to spawned ACP processes and clean them up later.
  */
 import { randomUUID, createHash } from "node:crypto";
 import type {
   OpenKeyedStoreOptions,
   PluginStateKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import { ACPX_PROCESS_LEASE_MAX_ENTRIES, ACPX_PROCESS_LEASE_NAMESPACE } from "./state.js";
 
 /** Environment variable carrying the ACPX process lease id. */
-export const OPENCLAW_ACPX_LEASE_ID_ENV = "OPENCLAW_ACPX_LEASE_ID";
+export const EVE_ACPX_LEASE_ID_ENV = "EVE_ACPX_LEASE_ID";
 /** Environment variable carrying the owning gateway instance id. */
-export const OPENCLAW_GATEWAY_INSTANCE_ID_ENV = "OPENCLAW_GATEWAY_INSTANCE_ID";
+export const EVE_GATEWAY_INSTANCE_ID_ENV = "EVE_GATEWAY_INSTANCE_ID";
 /** CLI argument carrying the ACPX process lease id for platforms without env wrapping. */
-export const OPENCLAW_ACPX_LEASE_ID_ARG = "--openclaw-acpx-lease-id";
+export const EVE_ACPX_LEASE_ID_ARG = "--eve-acpx-lease-id";
 /** CLI argument carrying the owning gateway instance id. */
-export const OPENCLAW_GATEWAY_INSTANCE_ID_ARG = "--openclaw-gateway-instance-id";
+export const EVE_GATEWAY_INSTANCE_ID_ARG = "--eve-gateway-instance-id";
 
 /** Lifecycle state for a tracked ACPX wrapper process. */
 export type AcpxProcessLeaseState = "open" | "closing" | "closed" | "lost";
@@ -176,9 +176,9 @@ function appendAcpxLeaseArgs(params: {
 }): string {
   return [
     params.command,
-    OPENCLAW_ACPX_LEASE_ID_ARG,
+    EVE_ACPX_LEASE_ID_ARG,
     quoteEnvValue(params.leaseId),
-    OPENCLAW_GATEWAY_INSTANCE_ID_ARG,
+    EVE_GATEWAY_INSTANCE_ID_ARG,
     quoteEnvValue(params.gatewayInstanceId),
   ].join(" ");
 }
@@ -195,8 +195,8 @@ export function withAcpxLeaseEnvironment(params: {
   }
   return [
     "env",
-    `${OPENCLAW_ACPX_LEASE_ID_ENV}=${quoteEnvValue(params.leaseId)}`,
-    `${OPENCLAW_GATEWAY_INSTANCE_ID_ENV}=${quoteEnvValue(params.gatewayInstanceId)}`,
+    `${EVE_ACPX_LEASE_ID_ENV}=${quoteEnvValue(params.leaseId)}`,
+    `${EVE_GATEWAY_INSTANCE_ID_ENV}=${quoteEnvValue(params.gatewayInstanceId)}`,
     appendAcpxLeaseArgs(params),
   ].join(" ");
 }

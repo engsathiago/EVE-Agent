@@ -3,7 +3,7 @@ import { EventEmitter } from "node:events";
 import fsSync from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { resetLogger, setLoggerOverride } from "openclaw/plugin-sdk/runtime-env";
+import { resetLogger, setLoggerOverride } from "eve-agent/plugin-sdk/runtime-env";
 import { afterEach, beforeEach, expect, vi } from "vitest";
 import {
   loadConfigMock,
@@ -64,7 +64,7 @@ const pluginRuntimeMocks = vi.hoisted(() => {
   type StoreEntry = { key: string; value: unknown; createdAt: number };
   const stores = new Map<string, Map<string, StoreEntry>>();
   let nextRegisterIfAbsentError: Error | undefined;
-  let stateDir = `/tmp/openclaw-whatsapp-ingress-${Date.now()}-${Math.random()}`;
+  let stateDir = `/tmp/eve-whatsapp-ingress-${Date.now()}-${Math.random()}`;
 
   const openKeyedStore = vi.fn((options: { namespace: string }) => {
     let store = stores.get(options.namespace);
@@ -112,7 +112,7 @@ const pluginRuntimeMocks = vi.hoisted(() => {
       stores.clear();
       nextRegisterIfAbsentError = undefined;
       openKeyedStore.mockClear();
-      stateDir = `/tmp/openclaw-whatsapp-ingress-${Date.now()}-${Math.random()}`;
+      stateDir = `/tmp/eve-whatsapp-ingress-${Date.now()}-${Math.random()}`;
     },
   };
 });
@@ -125,10 +125,10 @@ export function failNextWhatsAppPluginStateRegisterIfAbsent(error: Error) {
   pluginRuntimeMocks.failNextRegisterIfAbsent(error);
 }
 
-vi.mock("openclaw/plugin-sdk/channel-activity-runtime", async () => {
+vi.mock("eve-agent/plugin-sdk/channel-activity-runtime", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/channel-activity-runtime")
-  >("openclaw/plugin-sdk/channel-activity-runtime");
+    typeof import("eve-agent/plugin-sdk/channel-activity-runtime")
+  >("eve-agent/plugin-sdk/channel-activity-runtime");
   return {
     ...actual,
     recordChannelActivity: (...args: unknown[]) =>
@@ -138,8 +138,8 @@ vi.mock("openclaw/plugin-sdk/channel-activity-runtime", async () => {
 
 vi.mock("./runtime.js", async () => {
   const { createChannelIngressQueueForTests: createChannelIngressQueue } = await Promise.resolve(
-    vi.importActual<typeof import("openclaw/plugin-sdk/plugin-state-test-runtime")>(
-      "openclaw/plugin-sdk/plugin-state-test-runtime",
+    vi.importActual<typeof import("eve-agent/plugin-sdk/plugin-state-test-runtime")>(
+      "eve-agent/plugin-sdk/plugin-state-test-runtime",
     ),
   );
   return {
@@ -278,7 +278,7 @@ function expectInboxPairingReplyText(
   const code = text.match(/Pairing code:\s*```[\r\n]+([A-Z2-9]{6,})/)?.[1];
   expect(code).toBeDefined();
   const resolvedCode = params.code ?? code ?? "";
-  expect(text).toContain("OpenClaw: access not configured.");
+  expect(text).toContain("EVE: access not configured.");
   expect(text).toContain(params.idLine);
   expect(text).toContain("Pairing code:");
   expect(text).toContain(`\n\`\`\`\n${resolvedCode}\n\`\`\`\n`);
@@ -400,7 +400,7 @@ export function installWebMonitorInboxUnitTestHooks(opts?: { authDir?: boolean }
     }
     resetWebInboundDedupe();
     if (createAuthDir) {
-      authDir = fsSync.mkdtempSync(path.join(os.tmpdir(), "openclaw-auth-"));
+      authDir = fsSync.mkdtempSync(path.join(os.tmpdir(), "eve-auth-"));
     } else {
       authDir = undefined;
     }

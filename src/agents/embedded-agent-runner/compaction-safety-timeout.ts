@@ -1,8 +1,8 @@
 /**
  * Wraps compaction calls with a safety timeout and abort cleanup.
  */
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { CompactResult, ContextEngine } from "../../context-engine/types.js";
 import { withTimeout } from "../../node-host/with-timeout.js";
 
@@ -56,7 +56,7 @@ function composeAbortSignals(...signals: Array<AbortSignal | undefined>): {
   };
 }
 
-export function resolveCompactionTimeoutMs(cfg?: OpenClawConfig): number {
+export function resolveCompactionTimeoutMs(cfg?: EVEConfig): number {
   return (
     finiteSecondsToTimerSafeMilliseconds(cfg?.agents?.defaults?.compaction?.timeoutSeconds, {
       floorSeconds: true,

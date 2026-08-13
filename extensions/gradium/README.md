@@ -1,12 +1,12 @@
-# OpenClaw Gradium Plugin
+# EVE Gradium Plugin
 
-Official OpenClaw plugin for Gradium.
+Official EVE plugin for Gradium.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/gradium-speech
-openclaw gateway restart
+eve plugins install @eve/gradium-speech
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/gradium> for setup and configuration.
+See <https://docs.eve.ai/providers/gradium> for setup and configuration.

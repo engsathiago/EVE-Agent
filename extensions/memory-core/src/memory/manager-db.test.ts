@@ -6,7 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 import {
   ensureMemoryIndexSchema,
   loadSqliteVecExtension,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   cleanupAgedMemoryReindexTempFiles,
@@ -31,7 +31,7 @@ describe("memory manager database publication", () => {
   let fixtureRoot = "";
 
   beforeEach(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-memory-db-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-memory-db-"));
   });
 
   afterEach(async () => {

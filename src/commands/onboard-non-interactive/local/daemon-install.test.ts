@@ -1,6 +1,6 @@
 // Non-interactive daemon install tests cover gateway service planning, token resolution, and systemd handling.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../../config/config.js";
+import type { EVEConfig } from "../../../config/config.js";
 import { installGatewayDaemonNonInteractive } from "./daemon-install.js";
 
 const buildGatewayInstallPlan = vi.hoisted(() => vi.fn());
@@ -48,7 +48,7 @@ describe("installGatewayDaemonNonInteractive", () => {
       warnings: [],
     });
     buildGatewayInstallPlan.mockResolvedValue({
-      programArguments: ["openclaw", "gateway", "run"],
+      programArguments: ["eve", "gateway", "run"],
       workingDirectory: "/tmp",
       environment: {},
     });
@@ -65,11 +65,11 @@ describe("installGatewayDaemonNonInteractive", () => {
             token: {
               source: "env",
               provider: "default",
-              id: "OPENCLAW_GATEWAY_TOKEN",
+              id: "EVE_GATEWAY_TOKEN",
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       opts: { installDaemon: true },
       runtime,
       port: 18789,
@@ -91,7 +91,7 @@ describe("installGatewayDaemonNonInteractive", () => {
     const runtime = { log: vi.fn(), error: vi.fn(), exit: vi.fn() };
 
     await installGatewayDaemonNonInteractive({
-      nextConfig: {} as OpenClawConfig,
+      nextConfig: {} as EVEConfig,
       opts: { installDaemon: true },
       runtime,
       port: 18789,
@@ -119,7 +119,7 @@ describe("installGatewayDaemonNonInteractive", () => {
 
     try {
       const result = await installGatewayDaemonNonInteractive({
-        nextConfig: {} as OpenClawConfig,
+        nextConfig: {} as EVEConfig,
         opts: { installDaemon: true },
         runtime,
         port: 18789,
@@ -131,7 +131,7 @@ describe("installGatewayDaemonNonInteractive", () => {
       });
       expect(runtime.log.mock.calls).toEqual([
         [
-          "Systemd user services are unavailable; skipping service install. Use a direct shell run (`openclaw gateway run`) or rerun without --install-daemon on this session.",
+          "Systemd user services are unavailable; skipping service install. Use a direct shell run (`eve gateway run`) or rerun without --install-daemon on this session.",
         ],
       ]);
       expect(buildGatewayInstallPlan).not.toHaveBeenCalled();

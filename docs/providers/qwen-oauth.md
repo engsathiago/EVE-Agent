@@ -1,5 +1,5 @@
 ---
-summary: "Use the Qwen Portal provider id with OpenClaw"
+summary: "Use the Qwen Portal provider id with EVE"
 read_when:
   - You want to configure the qwen-oauth provider id
   - You previously used Qwen Portal OAuth credentials
@@ -24,7 +24,7 @@ ModelStudio endpoint unless you specifically have a current Qwen Portal token.
 Provide your portal token through onboarding:
 
 ```bash
-openclaw onboard --auth-choice qwen-oauth
+eve onboard --auth-choice qwen-oauth
 ```
 
 Or set:
@@ -44,7 +44,7 @@ export QWEN_API_KEY="<your-qwen-portal-token>" # pragma: allowlist secret
 
 ## How this differs from Qwen
 
-OpenClaw has two Qwen-facing provider ids:
+EVE has two Qwen-facing provider ids:
 
 | Provider     | Endpoint family                                          | Best for                                                                               |
 | ------------ | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
@@ -60,7 +60,7 @@ provider instead.
 
 - You already have a working Qwen Portal token.
 - You are preserving a legacy Qwen OAuth or Qwen CLI workflow while moving to
-  OpenClaw's provider model.
+  EVE's provider model.
 - You need to test compatibility with the Qwen Portal endpoint specifically.
 
 Choose [Qwen](/providers/qwen) for new setup, broader endpoint choices, Standard
@@ -77,8 +77,8 @@ account uses ModelStudio / DashScope API keys instead, configure the canonical
 `qwen` provider:
 
 ```bash
-openclaw onboard --auth-choice qwen-standard-api-key
-openclaw models set qwen/qwen3-coder-plus
+eve onboard --auth-choice qwen-standard-api-key
+eve models set qwen/qwen3-coder-plus
 ```
 
 ## Migration
@@ -88,7 +88,7 @@ stops working, re-authenticate with a current token or switch to the Standard
 Qwen provider:
 
 ```bash
-openclaw onboard --auth-choice qwen-standard-api-key
+eve onboard --auth-choice qwen-standard-api-key
 ```
 
 Standard global ModelStudio uses:

@@ -4,7 +4,7 @@
  * preserving the input pattern's slot shape, so each result is
  * pipeable into `resolveOcPath` / `setOcPath`.
  *
- * @module @openclaw/oc-path/find
+ * @module @eve/oc-path/find
  */
 
 import { isMap, isScalar, isSeq, type Node, type Pair } from "yaml";

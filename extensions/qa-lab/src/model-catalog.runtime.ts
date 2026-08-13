@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import {
   appendQaChildOutput,
   appendQaChildOutputTail,
@@ -170,12 +170,12 @@ async function waitForProcessTreeExit(pid: number | undefined, timeoutMs: number
 
 export async function loadQaRunnerModelOptions(params: { repoRoot: string; signal?: AbortSignal }) {
   const tempRoot = await fs.mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-qa-model-catalog-"),
+    path.join(resolvePreferredEVETmpDir(), "eve-qa-model-catalog-"),
   );
   const workspaceDir = path.join(tempRoot, "workspace");
   const stateDir = path.join(tempRoot, "state");
   const homeDir = path.join(tempRoot, "home");
-  const configPath = path.join(tempRoot, "openclaw.json");
+  const configPath = path.join(tempRoot, "eve.json");
 
   try {
     await Promise.all([
@@ -213,11 +213,11 @@ export async function loadQaRunnerModelOptions(params: { repoRoot: string; signa
         env: {
           ...process.env,
           HOME: homeDir,
-          OPENCLAW_HOME: homeDir,
-          OPENCLAW_CONFIG_PATH: configPath,
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_OAUTH_DIR: path.join(stateDir, "credentials"),
-          OPENCLAW_CODEX_DISCOVERY_LIVE: "0",
+          EVE_HOME: homeDir,
+          EVE_CONFIG_PATH: configPath,
+          EVE_STATE_DIR: stateDir,
+          EVE_OAUTH_DIR: path.join(stateDir, "credentials"),
+          EVE_CODEX_DISCOVERY_LIVE: "0",
         },
         detached: process.platform !== "win32",
         stdio: ["ignore", "pipe", "pipe"],

@@ -1,14 +1,14 @@
 // Signal plugin module implements shared behavior.
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
+import { describeAccountSnapshot } from "eve-agent/plugin-sdk/account-helpers";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { createRestrictSendersChannelSecurity } from "openclaw/plugin-sdk/channel-policy";
-import { createChannelPluginBase, getChatChannelMeta } from "openclaw/plugin-sdk/core";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/core";
-import { normalizeStringifiedEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/channel-config-helpers";
+import { createRestrictSendersChannelSecurity } from "eve-agent/plugin-sdk/channel-policy";
+import { createChannelPluginBase, getChatChannelMeta } from "eve-agent/plugin-sdk/core";
+import type { ChannelPlugin } from "eve-agent/plugin-sdk/core";
+import { normalizeStringifiedEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { normalizeE164 } from "eve-agent/plugin-sdk/text-utility-runtime";
 import {
   listSignalAccountIds,
   resolveDefaultSignalAccountId,

@@ -2,10 +2,10 @@
  * Shared provider HTTP error normalization helpers.
  *
  * Transport adapters use this module to turn provider-specific response bodies,
- * request ids, and binary payload guardrails into stable OpenClaw error shapes.
+ * request ids, and binary payload guardrails into stable EVE error shapes.
  */
 export { asFiniteNumber } from "../../packages/normalization-core/src/number-coercion.js";
-import { readResponseWithLimit } from "@openclaw/media-core/read-response-with-limit";
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 import { normalizeOptionalString as trimToUndefined } from "../../packages/normalization-core/src/string-coerce.js";
 import { redactSensitiveText } from "../logging/redact.js";
 export { asBoolean } from "../utils/boolean.js";

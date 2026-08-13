@@ -51,7 +51,7 @@ describe("resolveCodexNativeSearchActivation", () => {
   });
 
   it("activates for direct openai when auth exists", () => {
-    // Direct OpenAI needs bridgeable auth before OpenClaw can suppress the
+    // Direct OpenAI needs bridgeable auth before EVE can suppress the
     // managed web-search tool in favor of Codex native search.
     const result = resolveCodexNativeSearchActivation({
       config: {
@@ -220,7 +220,7 @@ describe("resolveCodexNativeSearchActivation", () => {
   it("keeps native search inactive when inherited session policy denies web_search", () => {
     const agentId = `native-inherited-deny-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const sessionKey = `agent:${agentId}:subagent:limited`;
-    const storePath = path.join(os.tmpdir(), `openclaw-native-inherited-deny-${agentId}.json`);
+    const storePath = path.join(os.tmpdir(), `eve-native-inherited-deny-${agentId}.json`);
     writeSessionStoreForTest(storePath, {
       [sessionKey]: {
         sessionId: "limited-session",

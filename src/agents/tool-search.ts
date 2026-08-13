@@ -1,18 +1,18 @@
 /**
  * Tool Search catalog compaction.
  *
- * Presents large OpenClaw/MCP/client tool inventories through search, describe, call, and optional code-mode tools.
+ * Presents large EVE/MCP/client tool inventories through search, describe, call, and optional code-mode tools.
  */
 import { spawn } from "node:child_process";
 import os from "node:os";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeStringEntries,
   uniqueStrings,
   uniqueValues,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import { Type } from "typebox";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { getPluginToolMeta, type PluginToolMcpMeta } from "../plugins/tools.js";
 import {
   isToolWrappedWithBeforeToolCallHook,
@@ -50,7 +50,7 @@ const MAX_TOOL_SCHEMA_DIRECTORY_PROMPT_CHARS = 18_000;
 const TOOL_DIRECTORY_IDENTIFIER_RE = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/u;
 
 type ToolSearchMode = "code" | "tools" | "directory";
-type CatalogSource = "openclaw" | "mcp" | "client";
+type CatalogSource = "eve" | "mcp" | "client";
 type CatalogTool = AnyAgentTool | ToolDefinition;
 type CatalogVisibilityOptions = {
   includeMcp?: boolean;
@@ -95,8 +95,8 @@ export type ToolSearchConfig = {
 
 /** Per-run/session context used by Tool Search control tools. */
 export type ToolSearchToolContext = {
-  config?: OpenClawConfig;
-  runtimeConfig?: OpenClawConfig;
+  config?: EVEConfig;
+  runtimeConfig?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   sessionId?: string;
@@ -244,7 +244,7 @@ function settleBridge(message) {
 }
 
 function buildModelScriptSource(code) {
-  return "(async (openclaw, console) => {\n" + code + "\n})(openclaw, console)";
+  return "(async (eve, console) => {\n" + code + "\n})(eve, console)";
 }
 
 function buildControllerSource() {
@@ -298,7 +298,7 @@ function buildControllerSource() {
     "  warn: (...items) => logs.push(items.map(formatLogItem)),\n" +
     "  error: (...items) => logs.push(items.map(formatLogItem)),\n" +
     "});\n" +
-    "const openclaw = Object.freeze({\n" +
+    "const eve = Object.freeze({\n" +
     "  tools: Object.freeze({\n" +
     "    search: (query, options) => bridge('search', [query, options]),\n" +
     "    describe: (id) => bridge('describe', [id]),\n" +
@@ -306,7 +306,7 @@ function buildControllerSource() {
     "  }),\n" +
     "});\n" +
     "return Object.freeze({\n" +
-    "  openclaw,\n" +
+    "  eve,\n" +
     "  console,\n" +
     "  isBridgeIdle,\n" +
     "  waitForBridgeIdle,\n" +
@@ -352,7 +352,7 @@ async function runModelCode(code, timeoutMs) {
   });
   Object.defineProperties(sandbox, {
     console: { value: controller.console, enumerable: true },
-    openclaw: { value: controller.openclaw, enumerable: true },
+    eve: { value: controller.eve, enumerable: true },
   });
   activeController = controller;
   const pumpTimer = setInterval(() => pumpController(controller), 1);
@@ -407,7 +407,7 @@ process.on("message", (message) => {
 });
 `;
 
-const SESSION_CATALOGS_KEY = Symbol.for("openclaw.toolSearch.sessionCatalogs");
+const SESSION_CATALOGS_KEY = Symbol.for("eve.toolSearch.sessionCatalogs");
 const globalToolSearchState = globalThis as typeof globalThis & {
   [SESSION_CATALOGS_KEY]?: Map<string, ToolSearchCatalogSession>;
 };
@@ -419,7 +419,7 @@ const catalogFingerprints = new WeakMap<ToolSearchCatalogSession, string>();
 const catalogToolIdentities = new WeakMap<object, number>();
 let nextCatalogToolIdentity = 1;
 
-function readToolSearchConfig(config?: OpenClawConfig): Record<string, unknown> {
+function readToolSearchConfig(config?: EVEConfig): Record<string, unknown> {
   const tools = isRecord(config?.tools) ? config.tools : undefined;
   const toolSearch = tools?.toolSearch;
   if (toolSearch === true) {
@@ -453,7 +453,7 @@ function resolveMinCodeTimeoutMs(): number {
   return toolSearchMinCodeTimeoutMsForTest ?? 1000;
 }
 
-export function resolveToolSearchConfig(config?: OpenClawConfig): ToolSearchConfig {
+export function resolveToolSearchConfig(config?: EVEConfig): ToolSearchConfig {
   const raw = readToolSearchConfig(config);
   const rawMode = typeof raw.mode === "string" ? raw.mode : "code";
   const requestedMode: ToolSearchMode =
@@ -658,9 +658,9 @@ function classifyTool(tool: CatalogTool): {
     };
   }
   if (pluginId) {
-    return { source: "openclaw", sourceName: pluginId };
+    return { source: "eve", sourceName: pluginId };
   }
-  return { source: "openclaw", sourceName: "core" };
+  return { source: "eve", sourceName: "core" };
 }
 
 function makeCatalogId(tool: CatalogTool, source: CatalogSource, sourceName?: string): string {
@@ -884,7 +884,7 @@ export function createToolSearchCatalogRef(): ToolSearchCatalogRef {
 /** Replace visible tools with Tool Search controls and register hidden catalog entries. */
 export function applyToolSearchCatalog(params: {
   tools: AnyAgentTool[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionId?: string;
   sessionKey?: string;
   agentId?: string;
@@ -911,7 +911,7 @@ export function applyToolSearchCatalog(params: {
 /** Keep tool names discoverable while deferring heavyweight JSON schemas behind describe/call. */
 export function applyToolSchemaDirectoryCatalog(params: {
   tools: AnyAgentTool[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionId?: string;
   sessionKey?: string;
   agentId?: string;
@@ -998,7 +998,7 @@ export function resolveToolSearchCatalogTool(
 /** Move client-provided tools into an existing Tool Search catalog. */
 export function addClientToolsToToolSearchCatalog(params: {
   tools: ToolDefinition[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionId?: string;
   sessionKey?: string;
   agentId?: string;
@@ -1134,7 +1134,7 @@ function formatToolDirectoryIdentifier(value: string | undefined): string | unde
 }
 
 function formatToolDirectoryEntry(entry: ReturnType<typeof compactEntry>): string | undefined {
-  if (entry.source !== "openclaw") {
+  if (entry.source !== "eve") {
     return undefined;
   }
   const name = formatToolDirectoryIdentifier(entry.name);
@@ -1613,7 +1613,7 @@ function readCallArgs(args: unknown): { id: string; input: unknown } {
 
 function getTelemetry(catalog: ToolSearchCatalogSession) {
   const sources: Record<CatalogSource, number> = {
-    openclaw: 0,
+    eve: 0,
     mcp: 0,
     client: 0,
   };
@@ -2185,11 +2185,11 @@ export function createToolSearchTools(ctx: ToolSearchToolContext): AnyAgentTool[
       name: TOOL_SEARCH_CODE_MODE_TOOL_NAME,
       label: "Tool Search Code",
       description:
-        "Run JavaScript in an isolated Node subprocess with openclaw.tools.search, openclaw.tools.describe, and openclaw.tools.call for large tool catalogs.",
+        "Run JavaScript in an isolated Node subprocess with eve.tools.search, eve.tools.describe, and eve.tools.call for large tool catalogs.",
       parameters: Type.Object({
         code: Type.String({
           description:
-            "JavaScript body for an async function. Use return to return the final value. The openclaw.tools bridge is available.",
+            "JavaScript body for an async function. Use return to return the final value. The eve.tools bridge is available.",
         }),
       }),
       execute: async (
@@ -2228,7 +2228,7 @@ export function createToolSearchTools(ctx: ToolSearchToolContext): AnyAgentTool[
     {
       name: TOOL_CALL_RAW_TOOL_NAME,
       label: "Tool Call",
-      description: "Call a selected Tool Search catalog entry through OpenClaw.",
+      description: "Call a selected Tool Search catalog entry through EVE.",
       parameters: Type.Object({
         id: Type.String({ description: "Tool search result id or tool name." }),
         args: Type.Optional(

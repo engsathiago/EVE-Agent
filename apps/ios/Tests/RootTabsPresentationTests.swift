@@ -1,7 +1,7 @@
 import SwiftUI
 import Testing
 import UIKit
-@testable import OpenClaw
+@testable import EVE
 
 @MainActor
 @Suite struct RootTabsPresentationTests {
@@ -266,8 +266,8 @@ import UIKit
         #expect(routed.headerSubtitle == "Agent conversation")
         #expect(!routed.showsAgentBadge)
         #expect(routed.openSettings != nil)
-        #expect(ChatProTab.defaultHeaderTitle(showsAgentBadge: true, agentDisplayName: "OpenClaw") == "OpenClaw")
-        #expect(ChatProTab.defaultHeaderTitle(showsAgentBadge: false, agentDisplayName: "OpenClaw") == "Chat")
+        #expect(ChatProTab.defaultHeaderTitle(showsAgentBadge: true, agentDisplayName: "EVE") == "EVE")
+        #expect(ChatProTab.defaultHeaderTitle(showsAgentBadge: false, agentDisplayName: "EVE") == "Chat")
     }
 
     @Test func agentRoutesCanOpenGatewaySettingsFromHeaderPill() {
@@ -305,7 +305,7 @@ import UIKit
     }
 
     @Test func talkSidebarDestinationCanReceiveRevealAction() {
-        let action = OpenClawSidebarHeaderAction(
+        let action = EVESidebarHeaderAction(
             systemName: "sidebar.left",
             accessibilityLabel: "Show Sidebar",
             action: {})
@@ -358,20 +358,20 @@ import UIKit
     @Test func initialSidebarVisibilityParsesLaunchArgument() {
         #expect(
             RootTabs.requestedInitialSidebarVisibility(arguments: [
-                "OpenClaw",
-                "--openclaw-sidebar-visibility",
+                "EVE",
+                "--eve-sidebar-visibility",
                 "hidden",
             ]) == false)
         #expect(
             RootTabs.requestedInitialSidebarVisibility(arguments: [
-                "OpenClaw",
-                "--openclaw-sidebar-visibility",
+                "EVE",
+                "--eve-sidebar-visibility",
                 "visible",
             ]) == true)
         #expect(
             RootTabs.requestedInitialSidebarVisibility(arguments: [
-                "OpenClaw",
-                "--openclaw-sidebar-visibility",
+                "EVE",
+                "--eve-sidebar-visibility",
                 "unknown",
             ]) == nil)
     }

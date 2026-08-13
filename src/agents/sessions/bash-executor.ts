@@ -63,7 +63,7 @@ export async function executeBashWithOperations(
     if (tempFilePath) {
       return;
     }
-    const tempFile = createPrivateTempWriteStream("openclaw-bash");
+    const tempFile = createPrivateTempWriteStream("eve-bash");
     tempFilePath = tempFile.path;
     tempFileStream = tempFile.stream;
     for (const chunk of outputChunks) {

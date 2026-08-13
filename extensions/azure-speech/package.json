@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/azure-speech",
+  "name": "@eve/azure-speech",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Azure Speech plugin",
+  "description": "EVE Azure Speech plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

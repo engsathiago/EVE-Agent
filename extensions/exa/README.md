@@ -1,12 +1,12 @@
-# OpenClaw Exa Plugin
+# EVE Exa Plugin
 
-Official OpenClaw plugin for Exa.
+Official EVE plugin for Exa.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/exa-plugin
-openclaw gateway restart
+eve plugins install @eve/exa-plugin
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/tools/exa-search> for setup and configuration.
+See <https://docs.eve.ai/tools/exa-search> for setup and configuration.

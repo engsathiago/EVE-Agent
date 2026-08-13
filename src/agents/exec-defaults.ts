@@ -2,7 +2,7 @@
  * Resolves default exec tool settings from session and config context.
  */
 import type { SessionEntry } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   loadExecApprovals,
   type ExecAsk,
@@ -90,13 +90,13 @@ function applySessionLegacyExecPolicyLayer(
 // Gather the shared config state once so canExecRequestNode and
 // resolveExecDefaults stay aligned on agent/global/session precedence.
 function resolveExecConfigState(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   sessionEntry?: SessionEntry;
   execOverrides?: ExecOverridesConfig;
   agentId?: string;
   sessionKey?: string;
 }): {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   host: ExecTarget;
   agentId: string | undefined;
   agentExec?: ResolvedExecConfig;
@@ -129,7 +129,7 @@ function resolveExecConfigState(params: {
 }
 
 function resolveExecSandboxAvailability(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey?: string;
   sandboxAvailable?: boolean;
 }) {
@@ -146,7 +146,7 @@ function resolveExecSandboxAvailability(params: {
 
 /** Returns whether the current exec policy allows requesting host node execution. */
 export function canExecRequestNode(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   sessionEntry?: SessionEntry;
   execOverrides?: ExecOverridesConfig;
   agentId?: string;
@@ -167,7 +167,7 @@ export function canExecRequestNode(params: {
 
 /** Resolves effective exec host, mode, approval policy, and node availability. */
 export function resolveExecDefaults(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   sessionEntry?: SessionEntry;
   execOverrides?: ExecOverridesConfig;
   agentId?: string;

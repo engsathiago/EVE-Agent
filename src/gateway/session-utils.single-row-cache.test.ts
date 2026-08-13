@@ -3,7 +3,7 @@
  */
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { resetConfigRuntimeState, setRuntimeConfigSnapshot } from "../config/config.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   resolveStorePath,
   saveSessionStore,
@@ -99,7 +99,7 @@ async function withSingleRowCacheStore(
   run: (context: SingleRowCacheContext) => Promise<void>,
 ): Promise<void> {
   await withStateDirEnv(statePrefix, async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         list: [
           {
@@ -110,7 +110,7 @@ async function withSingleRowCacheStore(
         ],
         defaults: { model: { primary: TEST_MODEL } },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     setRuntimeConfigSnapshot(cfg, cfg);
     await run({
       now: Math.floor(Date.now() / 1_000) * 1_000 + 100,
@@ -190,8 +190,8 @@ describe("single gateway session row child-session cache", () => {
 
   test("shares the child-session index across repeated single-row loads for the same store", async () => {
     await withSingleRowCacheStore(
-      "openclaw-single-row-cache-",
-      "/tmp/openclaw-single-row-cache",
+      "eve-single-row-cache-",
+      "/tmp/eve-single-row-cache",
       async ({ now, storePath }) => {
         const store: Record<string, SessionEntry> = {
           "agent:main:subagent:parent-a": parentSession("parent-a", now),
@@ -225,8 +225,8 @@ describe("single gateway session row child-session cache", () => {
 
   test("refreshes subagent registry state while reusing store child candidates", async () => {
     await withSingleRowCacheStore(
-      "openclaw-single-row-cache-fresh-registry-",
-      "/tmp/openclaw-single-row-cache-fresh-registry",
+      "eve-single-row-cache-fresh-registry-",
+      "/tmp/eve-single-row-cache-fresh-registry",
       async ({ now, storePath }) => {
         const fixture = createMovingChildFixture(now);
         await saveSessionStore(storePath, fixture.store);
@@ -244,24 +244,24 @@ describe("single gateway session row child-session cache", () => {
 
   test("builds shared subagent metadata context for single-row session lists", async () => {
     await withSingleRowCacheStore(
-      "openclaw-single-row-list-context-",
-      "/tmp/openclaw-single-row-list-context",
+      "eve-single-row-list-context-",
+      "/tmp/eve-single-row-list-context",
       async ({ now, storePath }) => {
         const store: Record<string, SessionEntry> = {
           "agent:main:discord:channel:parent": parentSession("parent", now),
         };
-        const cfg: OpenClawConfig = {
+        const cfg: EVEConfig = {
           agents: {
             list: [
               {
                 id: MAIN_AGENT_ID,
                 default: true,
-                workspace: "/tmp/openclaw-single-row-list-context",
+                workspace: "/tmp/eve-single-row-list-context",
               },
             ],
             defaults: { model: { primary: TEST_MODEL } },
           },
-        } as OpenClawConfig;
+        } as EVEConfig;
 
         const syncListed = listSessionsFromStore({
           cfg,
@@ -300,8 +300,8 @@ describe("single gateway session row child-session cache", () => {
 
   test("rebuilds store child candidates after same-object session store writes", async () => {
     await withSingleRowCacheStore(
-      "openclaw-single-row-cache-write-version-",
-      "/tmp/openclaw-single-row-cache-write-version",
+      "eve-single-row-cache-write-version-",
+      "/tmp/eve-single-row-cache-write-version",
       async ({ now, storePath }) => {
         const fixture = createMovingChildFixture(now);
         await saveSessionStore(storePath, fixture.store);

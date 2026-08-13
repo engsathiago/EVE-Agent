@@ -2,13 +2,13 @@
  * Security module: token validation, rate limiting, input sanitization, user allowlist.
  */
 
-import { resolveStableChannelMessageIngress } from "openclaw/plugin-sdk/channel-ingress-runtime";
-import { finiteSecondsToTimerSafeMilliseconds } from "openclaw/plugin-sdk/number-runtime";
-import { safeEqualSecret } from "openclaw/plugin-sdk/security-runtime";
+import { resolveStableChannelMessageIngress } from "eve-agent/plugin-sdk/channel-ingress-runtime";
+import { finiteSecondsToTimerSafeMilliseconds } from "eve-agent/plugin-sdk/number-runtime";
+import { safeEqualSecret } from "eve-agent/plugin-sdk/security-runtime";
 import {
   createFixedWindowRateLimiter,
   type FixedWindowRateLimiter,
-} from "openclaw/plugin-sdk/webhook-ingress";
+} from "eve-agent/plugin-sdk/webhook-ingress";
 
 /**
  * Validate webhook token using constant-time comparison.

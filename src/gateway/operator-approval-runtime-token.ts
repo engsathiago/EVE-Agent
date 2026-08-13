@@ -3,7 +3,7 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { loadExecApprovals } from "../infra/exec-approvals.js";
 
-const APPROVAL_RUNTIME_TOKEN_CONTEXT = "openclaw:gateway-approval-runtime-token:v1";
+const APPROVAL_RUNTIME_TOKEN_CONTEXT = "eve:gateway-approval-runtime-token:v1";
 
 let fallbackApprovalRuntimeToken: string | null = null;
 

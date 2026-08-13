@@ -12,7 +12,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempDir(): Promise<string> {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "openclaw-codex-spawn-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "eve-codex-spawn-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -94,7 +94,7 @@ describe("resolveCodexAppServerSpawnInvocation", () => {
     expect(() =>
       resolveCodexAppServerSpawnInvocation(
         startOptions(
-          "node C:\\Users\\me\\.openclaw\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
+          "node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
         ),
         {
           platform: "win32",

@@ -1,10 +1,10 @@
 // Load session runtime model metadata so we can infer context windows when the
 // agent reports a model id. This includes custom models.json entries.
 
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { getRuntimeConfig } from "../config/config.js";
 import { projectConfigOntoRuntimeSourceSnapshot } from "../config/runtime-source-projection.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { computeBackoff, type BackoffPolicy } from "../infra/backoff.js";
 import {
   lookupCachedContextTokens,
@@ -151,7 +151,7 @@ export function applyConfiguredContextWindows(params: {
   }
 }
 
-function primeConfiguredContextWindowsFromConfig(cfg: OpenClawConfig): OpenClawConfig {
+function primeConfiguredContextWindowsFromConfig(cfg: EVEConfig): EVEConfig {
   applyConfiguredContextWindows({
     cache: MODEL_CONFIGURED_CONTEXT_TOKEN_CACHE,
     windowCache: MODEL_CONTEXT_WINDOW_CACHE,
@@ -163,7 +163,7 @@ function primeConfiguredContextWindowsFromConfig(cfg: OpenClawConfig): OpenClawC
   return cfg;
 }
 
-function primeConfiguredContextWindows(): OpenClawConfig | undefined {
+function primeConfiguredContextWindows(): EVEConfig | undefined {
   if (CONTEXT_WINDOW_RUNTIME_STATE.configuredConfig) {
     return primeConfiguredContextWindowsFromConfig(CONTEXT_WINDOW_RUNTIME_STATE.configuredConfig);
   }
@@ -243,7 +243,7 @@ export function ensureContextWindowCacheLoaded(): Promise<void> {
 }
 
 /** Replace cached model context metadata for the active runtime configuration. */
-export async function refreshContextWindowCache(cfg: OpenClawConfig): Promise<void> {
+export async function refreshContextWindowCache(cfg: EVEConfig): Promise<void> {
   beginContextWindowCacheRefresh();
   MODEL_CONFIGURED_CONTEXT_TOKEN_CACHE.clear();
   MODEL_CONTEXT_WINDOW_CACHE.clear();

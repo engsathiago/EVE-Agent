@@ -1,5 +1,5 @@
 // Skills CLI for workspace status, install/update, ClawHub verification, and workshop proposals.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { Command } from "commander";
 import {
   GATEWAY_CLIENT_MODES,
@@ -188,7 +188,7 @@ function buildSkillVerificationOutput(
   const verifiedSourceUrl = readVerifiedClawHubSkillSourceUrl(result.provenance);
   return {
     ...result,
-    openclaw: {
+    eve: {
       resolution: {
         source: target.resolution.source,
         selector: target.resolution.selector,
@@ -283,7 +283,7 @@ export function registerSkillsCli(program: Command) {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/skills", "docs.openclaw.ai/cli/skills")}\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/skills", "docs.eve.ai/cli/skills")}\n`,
     );
 
   skills
@@ -334,7 +334,7 @@ export function registerSkillsCli(program: Command) {
     .option("--global", "Install into the shared managed skills directory", false)
     .option("--agent <id>", "Target agent workspace (defaults to cwd-inferred, then default agent)")
     .option("--as <slug>", "Install a git/local skill under this slug")
-    .addHelpText("after", "\nExamples:\n  openclaw skills install @owner/weather\n")
+    .addHelpText("after", "\nExamples:\n  eve skills install @owner/weather\n")
     .action(
       async (
         slug: string,

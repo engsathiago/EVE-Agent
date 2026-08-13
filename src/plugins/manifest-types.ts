@@ -9,7 +9,7 @@ export type PluginConfigUiHint = {
 };
 
 /** Top-level plugin manifest format. */
-export type PluginFormat = "openclaw" | "bundle";
+export type PluginFormat = "eve" | "bundle";
 
 /** Supported external bundle manifest formats. */
 export type PluginBundleFormat = "codex" | "claude" | "cursor";

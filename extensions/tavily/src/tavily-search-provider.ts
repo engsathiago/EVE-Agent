@@ -1,6 +1,6 @@
 // Tavily provider module implements model/runtime integration.
-import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { WebSearchProviderPlugin } from "openclaw/plugin-sdk/provider-web-search-contract";
+import { readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import type { WebSearchProviderPlugin } from "eve-agent/plugin-sdk/provider-web-search-contract";
 import {
   buildTavilyWebSearchProviderBase,
   TAVILY_GENERIC_SEARCH_DESCRIPTION,

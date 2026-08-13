@@ -1,7 +1,7 @@
 // Tests heartbeat runner typing indicator behavior.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChannelPlugin } from "../channels/plugins/types.public.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
 import { createOutboundTestPlugin, createTestRegistry } from "../test-utils/channel-plugins.js";
 import { runHeartbeatOnce } from "./heartbeat-runner.js";
@@ -34,9 +34,9 @@ function installHeartbeatTypingPlugin(params: {
 function createHeartbeatConfig(params: {
   tmpDir: string;
   storePath: string;
-  session?: OpenClawConfig["session"];
+  session?: EVEConfig["session"];
   channelHeartbeat?: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   return {
     agents: {
       defaults: {
@@ -54,10 +54,10 @@ function createHeartbeatConfig(params: {
       store: params.storePath,
       ...params.session,
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
-async function seedTelegramSession(storePath: string, cfg: OpenClawConfig) {
+async function seedTelegramSession(storePath: string, cfg: EVEConfig) {
   await seedMainSessionStore(storePath, cfg, {
     lastChannel: "telegram",
     lastProvider: "telegram",
@@ -67,7 +67,7 @@ async function seedTelegramSession(storePath: string, cfg: OpenClawConfig) {
 
 function expectTypingCall(
   mock: ReturnType<typeof vi.fn>,
-  expected: { cfg: OpenClawConfig; to: string },
+  expected: { cfg: EVEConfig; to: string },
 ) {
   const call = mock.mock.calls[0];
   if (!call) {

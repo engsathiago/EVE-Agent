@@ -1,14 +1,14 @@
 ---
-summary: "CLI reference for `openclaw tui` (Gateway-backed or local embedded terminal UI)"
+summary: "CLI reference for `eve tui` (Gateway-backed or local embedded terminal UI)"
 read_when:
   - You want a terminal UI for the Gateway (remote-friendly)
   - You want to pass url/token/session from scripts
   - You want to run the TUI in local embedded mode without a Gateway
-  - You want to use openclaw chat or openclaw tui --local
+  - You want to use eve chat or eve tui --local
 title: "TUI"
 ---
 
-# `openclaw tui`
+# `eve tui`
 
 Open the terminal UI connected to the Gateway, or run it in local embedded
 mode.
@@ -32,15 +32,15 @@ Related:
 | `--timeout-ms <ms>`   | `agents.defaults.timeoutSeconds`          | Agent timeout. Invalid values log a warning and are ignored.                       |
 | `--history-limit <n>` | `200`                                     | History entries to load on attach.                                                 |
 
-Aliases: `openclaw chat` and `openclaw terminal` invoke the same command with `--local` implied.
+Aliases: `eve chat` and `eve terminal` invoke the same command with `--local` implied.
 
 Notes:
 
-- `chat` and `terminal` are aliases for `openclaw tui --local`.
+- `chat` and `terminal` are aliases for `eve tui --local`.
 - `--local` cannot be combined with `--url`, `--token`, or `--password`.
 - `tui` resolves configured gateway auth SecretRefs for token/password auth when possible (`env`/`file`/`exec` providers).
 - When launched from inside a configured agent workspace directory, TUI auto-selects that agent for the session key default (unless `--session` is explicitly `agent:<id>:...`).
-- To show the Gateway hostname in the footer for non-local URL-backed connections, run `openclaw config set tui.footer.showRemoteHost true`. The host label is off by default and never appears for loopback or embedded local connections.
+- To show the Gateway hostname in the footer for non-local URL-backed connections, run `eve config set tui.footer.showRemoteHost true`. The host label is off by default and never appears for loopback or embedded local connections.
 - Local mode uses the embedded agent runtime directly. Most local tools work, but Gateway-only features are unavailable.
 - Local mode adds `/auth [provider]` inside the TUI command surface.
 - Plugin approval gates still apply in local mode. Tools that require approval prompt for a decision in the terminal; nothing is silently auto-approved because the Gateway is not involved.
@@ -49,14 +49,14 @@ Notes:
 ## Examples
 
 ```bash
-openclaw chat
-openclaw tui --local
-openclaw tui
-openclaw tui --url ws://127.0.0.1:18789 --token <token>
-openclaw tui --session main --deliver
-openclaw chat --message "Compare my config to the docs and tell me what to fix"
+eve chat
+eve tui --local
+eve tui
+eve tui --url ws://127.0.0.1:18789 --token <token>
+eve tui --session main --deliver
+eve chat --message "Compare my config to the docs and tell me what to fix"
 # when run inside an agent workspace, infers that agent automatically
-openclaw tui --session bugfix
+eve tui --session bugfix
 ```
 
 ## Config repair loop
@@ -65,25 +65,25 @@ Use local mode when the current config already validates and you want the
 embedded agent to inspect it, compare it against the docs, and help repair it
 from the same terminal:
 
-If `openclaw config validate` is already failing, use `openclaw configure` or
-`openclaw doctor --fix` first. `openclaw chat` does not bypass the invalid-
+If `eve config validate` is already failing, use `eve configure` or
+`eve doctor --fix` first. `eve chat` does not bypass the invalid-
 config guard.
 
 ```bash
-openclaw chat
+eve chat
 ```
 
 Then inside the TUI:
 
 ```text
-!openclaw config file
-!openclaw docs gateway auth token secretref
-!openclaw config validate
-!openclaw doctor
+!eve config file
+!eve docs gateway auth token secretref
+!eve config validate
+!eve doctor
 ```
 
-Apply targeted fixes with `openclaw config set` or `openclaw configure`, then
-rerun `openclaw config validate`. See [TUI](/web/tui) and [Config](/cli/config).
+Apply targeted fixes with `eve config set` or `eve configure`, then
+rerun `eve config validate`. See [TUI](/web/tui) and [Config](/cli/config).
 
 ## Related
 

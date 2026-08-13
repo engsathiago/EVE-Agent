@@ -1,11 +1,11 @@
-# OpenClaw Matrix
+# EVE Matrix
 
-Official OpenClaw channel plugin for Matrix rooms and direct messages.
+Official EVE channel plugin for Matrix rooms and direct messages.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/matrix
+eve plugin add @eve/matrix
 ```
 
-Configure the Matrix homeserver and bot credentials in OpenClaw. The plugin lets agents join configured rooms, receive messages, and reply through Matrix.
+Configure the Matrix homeserver and bot credentials in EVE. The plugin lets agents join configured rooms, receive messages, and reply through Matrix.

@@ -1,5 +1,5 @@
 // Google tests cover realtime voice provider plugin behavior.
-import { REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ } from "openclaw/plugin-sdk/realtime-voice";
+import { REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ } from "eve-agent/plugin-sdk/realtime-voice";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildGoogleRealtimeVoiceProvider } from "./realtime-voice-provider.js";
 
@@ -220,8 +220,8 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
         },
         {
           type: "function",
-          name: "openclaw_agent_consult",
-          description: "Ask OpenClaw",
+          name: "eve_agent_consult",
+          description: "Ask EVE",
           parameters: {
             type: "object",
             properties: {
@@ -290,8 +290,8 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       },
       required: ["query"],
     });
-    expect(declarations[1]?.name).toBe("openclaw_agent_consult");
-    expect(declarations[1]?.description).toBe("Ask OpenClaw");
+    expect(declarations[1]?.name).toBe("eve_agent_consult");
+    expect(declarations[1]?.description).toBe("Ask EVE");
     expect(declarations[1]?.parametersJsonSchema).toEqual({
       type: "object",
       properties: {
@@ -381,8 +381,8 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       tools: [
         {
           type: "function",
-          name: "openclaw_agent_consult",
-          description: "Ask OpenClaw",
+          name: "eve_agent_consult",
+          description: "Ask EVE",
           parameters: {
             type: "object",
             properties: {
@@ -420,7 +420,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       "Puck",
     );
     expect(liveConstraints?.config?.tools?.[0]?.functionDeclarations?.[0]?.name).toBe(
-      "openclaw_agent_consult",
+      "eve_agent_consult",
     );
     expect(liveConstraints?.config?.tools?.[0]?.functionDeclarations?.[0]?.behavior).toBe(
       "NON_BLOCKING",
@@ -842,7 +842,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       setupComplete: { sessionId: "session-1" },
       toolCall: {
         functionCalls: [
-          { id: "consult-call", name: "openclaw_agent_consult", args: { prompt: "hi" } },
+          { id: "consult-call", name: "eve_agent_consult", args: { prompt: "hi" } },
         ],
       },
     });
@@ -858,7 +858,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       functionResponses: [
         {
           id: "consult-call",
-          name: "openclaw_agent_consult",
+          name: "eve_agent_consult",
           scheduling: "WHEN_IDLE",
           willContinue: true,
           response: { status: "working", message: "Tell the participant you are checking." },
@@ -869,7 +869,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       functionResponses: [
         {
           id: "consult-call",
-          name: "openclaw_agent_consult",
+          name: "eve_agent_consult",
           scheduling: "WHEN_IDLE",
           response: { text: "The meeting starts at 3." },
         },

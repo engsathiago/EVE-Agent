@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import type { Dirent } from "node:fs";
 import { delimiter, dirname, join } from "node:path";
-import { lowercasePreservingWhitespace } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { lowercasePreservingWhitespace } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { CLIENT_ID_KEYS, CLIENT_SECRET_KEYS } from "./oauth.shared.js";
 
 type CredentialFs = {

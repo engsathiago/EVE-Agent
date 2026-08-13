@@ -1,10 +1,10 @@
 // Discord plugin module implements segment behavior.
 import path from "node:path";
 import { Readable } from "node:stream";
-import type { DiscordAccountConfig, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { DiscordAccountConfig, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { maybeControlDiscordVoiceAgentRun } from "./agent-control.js";
 import { createDiscordOpusPlaybackStream } from "./audio.js";
 import { resolveDiscordVoiceIngressContext, runDiscordVoiceAgentTurn } from "./ingress.js";
@@ -35,7 +35,7 @@ export async function processDiscordVoiceSegment(params: {
   wavPath: string;
   userId: string;
   durationSeconds: number;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   discordConfig: DiscordAccountConfig;
   runtime: RuntimeEnv;
   ownerAllowFrom?: string[];

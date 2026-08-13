@@ -2,7 +2,7 @@
  * Regression coverage for OpenAI Responses payload policy.
  * Verifies store, prompt-cache, compaction, service-tier, and reasoning mutations.
  */
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import {
   applyOpenAIResponsesPayloadPolicy,
@@ -236,7 +236,7 @@ describe("openai responses payload policy", () => {
   it("emits store false for aliased native OpenAI Codex responses disable mode", () => {
     const policy = resolveOpenAIResponsesPayloadPolicy(
       {
-        api: "openclaw-openai-responses-transport",
+        api: "eve-openai-responses-transport",
         provider: "openai",
         baseUrl: "https://chatgpt.com/backend-api/codex",
       },

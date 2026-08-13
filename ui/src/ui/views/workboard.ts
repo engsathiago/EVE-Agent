@@ -1085,7 +1085,7 @@ function engineBlockedByRuntime(
     return null;
   }
   const normalized = runtime.toLowerCase();
-  if (normalized === "openclaw" || normalized === "pi") {
+  if (normalized === "eve" || normalized === "pi") {
     return null;
   }
   return t("workboard.engineDisabledRuntime", {

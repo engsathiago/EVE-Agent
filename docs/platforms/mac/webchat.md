@@ -19,10 +19,10 @@ agent (with a session switcher for other sessions).
 - Auto-open for testing:
 
   ```bash
-  dist/OpenClaw.app/Contents/MacOS/OpenClaw --webchat
+  dist/EVE.app/Contents/MacOS/EVE --webchat
   ```
 
-- Logs: `./scripts/clawlog.sh` (subsystem `ai.openclaw`, category `WebChatSwiftUI`).
+- Logs: `./scripts/clawlog.sh` (subsystem `ai.eve`, category `WebChatSwiftUI`).
 
 ## How it is wired
 

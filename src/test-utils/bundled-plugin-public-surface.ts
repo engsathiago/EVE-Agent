@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import {
   loadBundledPluginPublicSurfaceModule,
   loadBundledPluginPublicSurfaceModuleSync,
@@ -19,7 +19,7 @@ import {
 import { normalizeBundledPluginArtifactSubpath } from "../plugins/public-surface-runtime.js";
 import { resolveLoaderPackageRoot } from "../plugins/sdk-alias.js";
 
-const OPENCLAW_PACKAGE_ROOT =
+const EVE_PACKAGE_ROOT =
   resolveLoaderPackageRoot({
     modulePath: fileURLToPath(import.meta.url),
     moduleUrl: import.meta.url,
@@ -34,7 +34,7 @@ function isSafeBundledPluginDirName(pluginId: string): boolean {
 
 function readPluginManifestId(pluginDir: string): string | undefined {
   try {
-    const manifestPath = path.join(pluginDir, "openclaw.plugin.json");
+    const manifestPath = path.join(pluginDir, "eve.plugin.json");
     const parsed = JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as { id?: unknown };
     return typeof parsed.id === "string" ? parsed.id : undefined;
   } catch {
@@ -50,9 +50,9 @@ function findBundledPluginMetadataFast(
   }
   const rawRoots = [
     resolveBundledPluginsDir(),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "extensions"),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "dist-runtime", "extensions"),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "dist", "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "dist-runtime", "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "dist", "extensions"),
   ].filter((entry): entry is string => Boolean(entry));
   const roots = uniqueStrings(rawRoots);
 
@@ -87,9 +87,9 @@ function readPackageName(packageDir: string): string | undefined {
 function resolveWorkspacePackageDir(packageName: string): string {
   const rawRoots = [
     resolveBundledPluginsDir(),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "extensions"),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "dist-runtime", "extensions"),
-    path.resolve(OPENCLAW_PACKAGE_ROOT, "dist", "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "dist-runtime", "extensions"),
+    path.resolve(EVE_PACKAGE_ROOT, "dist", "extensions"),
   ].filter((entry): entry is string => Boolean(entry));
   const roots = uniqueStrings(rawRoots);
 
@@ -194,7 +194,7 @@ export function resolveBundledPluginPublicModulePath(params: {
 }): string {
   const metadata = findBundledPluginMetadata(params.pluginId);
   return path.resolve(
-    OPENCLAW_PACKAGE_ROOT,
+    EVE_PACKAGE_ROOT,
     "extensions",
     metadata.dirName,
     normalizeBundledPluginArtifactSubpath(params.artifactBasename),

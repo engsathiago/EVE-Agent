@@ -1,5 +1,5 @@
 /**
- * Knip configuration for OpenClaw root and bundled plugin dependency hygiene.
+ * Knip configuration for EVE root and bundled plugin dependency hygiene.
  */
 const BUNDLED_PLUGIN_ROOT_DIR = "extensions";
 
@@ -8,7 +8,7 @@ function bundledPluginFile(pluginId: string, relativePath: string, suffix = ""):
 }
 
 const rootEntries = [
-  "openclaw.mjs!",
+  "eve.mjs!",
   "src/index.ts!",
   "src/entry.ts!",
   "src/cli/daemon-cli.ts!",
@@ -52,7 +52,7 @@ const bundledPluginIgnoredRuntimeDependencies = [
   "json5",
   "lit",
   "linkedom",
-  "openclaw",
+  "eve",
   "clawpdf",
 ] as const;
 
@@ -137,7 +137,7 @@ const config = {
     ".": {
       entry: rootEntries,
       ignoreDependencies: [
-        "@openclaw/*",
+        "@eve/*",
         "file-type",
         "playwright-core",
         "sqlite-vec",
@@ -202,7 +202,7 @@ const config = {
     "packages/speech-core": {
       entry: ["api.ts!", "runtime-api.ts!", "speaker.ts!", "voice-models.ts!"],
       project: ["**/*.ts!"],
-      ignoreDependencies: ["openclaw"],
+      ignoreDependencies: ["eve"],
     },
     "packages/*": {
       entry: ["index.js!", "scripts/postinstall.js!"],

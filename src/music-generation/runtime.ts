@@ -1,7 +1,7 @@
 // Runs music generation requests through provider runtimes and fallbacks.
 import type { FallbackAttempt } from "../agents/model-fallback.types.js";
 import { resolveAgentModelTimeoutMsValue } from "../config/model-input.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import {
   buildMediaGenerationNormalizationMetadata,
@@ -38,7 +38,7 @@ export type { GenerateMusicParams, GenerateMusicRuntimeResult } from "./runtime-
 
 /** List runtime-visible music generation providers for a config snapshot. */
 export function listRuntimeMusicGenerationProviders(
-  params?: { config?: OpenClawConfig },
+  params?: { config?: EVEConfig },
   deps: MusicGenerationRuntimeDeps = {},
 ) {
   return (deps.listProviders ?? listMusicGenerationProviders)(params?.config);

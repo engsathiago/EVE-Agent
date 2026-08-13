@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { setTimeout as scheduleNativeTimeout } from "node:timers";
-import { withMockedWindowsPlatform } from "openclaw/plugin-sdk/test-node-mocks";
+import { withMockedWindowsPlatform } from "eve-agent/plugin-sdk/test-node-mocks";
 import type { Mock } from "vitest";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -31,9 +31,9 @@ const { withFileLockMock } = vi.hoisted(() => ({
     async <T>(_filePath: string, _options: unknown, fn: () => Promise<T>) => await fn(),
   ),
 }));
-const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("openclaw.memoryEmbeddingProviders");
-const MCPORTER_STATE_KEY = Symbol.for("openclaw.mcporterState");
-const QMD_EMBED_QUEUE_KEY = Symbol.for("openclaw.qmdEmbedQueueTail");
+const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("eve.memoryEmbeddingProviders");
+const MCPORTER_STATE_KEY = Symbol.for("eve.mcporterState");
+const QMD_EMBED_QUEUE_KEY = Symbol.for("eve.qmdEmbedQueueTail");
 
 type WatchOptions = {
   ignored?: (watchPath: string) => boolean;
@@ -155,10 +155,10 @@ function firstWriteLockCall(): EmbedLockCall {
   return call;
 }
 
-vi.mock("openclaw/plugin-sdk/memory-core-host-engine-foundation", async () => {
+vi.mock("eve-agent/plugin-sdk/memory-core-host-engine-foundation", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/memory-core-host-engine-foundation")
-  >("openclaw/plugin-sdk/memory-core-host-engine-foundation");
+    typeof import("eve-agent/plugin-sdk/memory-core-host-engine-foundation")
+  >("eve-agent/plugin-sdk/memory-core-host-engine-foundation");
   return {
     ...actual,
     createSubsystemLogger: () => {
@@ -186,9 +186,9 @@ vi.mock("chokidar", () => ({
   watch: watchMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/file-lock", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/file-lock")>(
-    "openclaw/plugin-sdk/file-lock",
+vi.mock("eve-agent/plugin-sdk/file-lock", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/file-lock")>(
+    "eve-agent/plugin-sdk/file-lock",
   );
   return {
     ...actual,
@@ -197,12 +197,12 @@ vi.mock("openclaw/plugin-sdk/file-lock", async () => {
 });
 
 import { spawn as mockedSpawn } from "node:child_process";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+import type { EVEConfig } from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
 import {
   requireNodeSqlite,
   resolveMemoryBackendConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { QmdMemoryManager, resolveQmdMcporterSearchProcessTimeoutMs } from "./qmd-manager.js";
 
 const spawnMock = mockedSpawn as unknown as Mock;
@@ -216,7 +216,7 @@ describe("QmdMemoryManager", () => {
   let tmpRoot: string;
   let workspaceDir: string;
   let stateDir: string;
-  let cfg: OpenClawConfig;
+  let cfg: EVEConfig;
   const agentId = "main";
   const openManagers = new Set<QmdMemoryManager>();
   let embedStartupJitterSpy: { mockRestore: () => void } | null = null;
@@ -291,7 +291,7 @@ describe("QmdMemoryManager", () => {
 
   async function createManager(params?: {
     mode?: "full" | "status" | "cli";
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     agentId?: string;
   }) {
     const cfgToUse = params?.cfg ?? cfg;
@@ -338,7 +338,7 @@ describe("QmdMemoryManager", () => {
     // Only workspace must exist for configured collection paths; state paths are
     // created lazily by manager code when needed.
     await fs.mkdir(workspaceDir, { recursive: true });
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+    process.env.EVE_STATE_DIR = stateDir;
     // Keep the default Windows path unresolved for most tests so spawn mocks can
     // match the logical package command. Tests that verify wrapper resolution
     // install explicit shim fixtures inline.
@@ -363,7 +363,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     seedMemoryEmbeddingProviders();
     embedStartupJitterSpy = vi
       .spyOn(
@@ -385,7 +385,7 @@ describe("QmdMemoryManager", () => {
     embedStartupJitterSpy?.mockRestore();
     embedStartupJitterSpy = null;
     vi.useRealTimers();
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.EVE_STATE_DIR;
     if (originalPath === undefined) {
       delete process.env.PATH;
     } else {
@@ -448,7 +448,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -492,7 +492,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let releaseUpdate: (() => void) | null = null;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -547,7 +547,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
     expect(watchMock).toHaveBeenCalledTimes(1);
@@ -619,7 +619,7 @@ describe("QmdMemoryManager", () => {
           })),
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
     expect(watchMock).toHaveBeenCalledTimes(1);
@@ -665,7 +665,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
     const ignored = firstWatchOptions().ignored;
@@ -700,7 +700,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const notesPath = path.join(workspaceDir, "notes.md");
     await fs.writeFile(notesPath, "hello");
@@ -737,7 +737,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let releaseUpdate: (() => void) | null = null;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -770,7 +770,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "status" });
     expect(spawnMock).not.toHaveBeenCalled();
@@ -788,7 +788,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "cli" });
 
@@ -817,7 +817,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const updateSpawned = createDeferred<void>();
     let releaseUpdate: (() => void) | null = null;
@@ -877,7 +877,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -919,7 +919,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const updateSpawned = createDeferred<void>();
     let releaseUpdate: (() => void) | null = null;
@@ -966,7 +966,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "collection" && args[1] === "list") {
@@ -1011,7 +1011,7 @@ describe("QmdMemoryManager", () => {
           sessions: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const sessionCollectionName = `sessions-${devAgentId}`;
     const wrongSessionsPath = path.join(stateDir, "agents", agentId, "qmd", "sessions");
@@ -1072,7 +1072,7 @@ describe("QmdMemoryManager", () => {
           sessions: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const sessionCollectionName = `sessions-${agentId}`;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -1110,7 +1110,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "collection" && args[1] === "list") {
@@ -1159,7 +1159,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const legacyCollections = new Map<
       string,
@@ -1243,7 +1243,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const listedCollections = new Map<
       string,
@@ -1321,7 +1321,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const listedCollections = new Map<
       string,
@@ -1401,7 +1401,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "collection" && args[1] === "list") {
@@ -1435,7 +1435,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let staleCollectionExists = true;
     const removeCalls: string[] = [];
@@ -1509,7 +1509,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const removed: string[] = [];
     const added = new Map<string, string>();
@@ -1573,7 +1573,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const removed: string[] = [];
     const added = new Map<string, string>();
@@ -1638,7 +1638,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const addFlagCalls: string[] = [];
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -1678,7 +1678,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const removeCalls: string[] = [];
     const addCalls: string[] = [];
@@ -1734,7 +1734,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const differentPath = path.join(tmpRoot, "other-memory");
     await fs.mkdir(differentPath, { recursive: true });
@@ -1786,7 +1786,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "update") {
         return createMockChild({ autoClose: false });
@@ -1816,7 +1816,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -1871,7 +1871,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -1926,7 +1926,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -1983,7 +1983,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: notesDir, pattern: "**/* #tag: [draft].md", name: "notes" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -2030,7 +2030,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -2096,7 +2096,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "update") {
@@ -2131,7 +2131,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "update") {
@@ -2172,7 +2172,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2223,7 +2223,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
@@ -2285,7 +2285,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
@@ -2316,7 +2316,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
@@ -2354,7 +2354,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const expectedDocId = "abc123";
     let missingCollectionSeen = false;
@@ -2490,7 +2490,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2537,7 +2537,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2571,7 +2571,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2606,7 +2606,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
         const child = createMockChild({ autoClose: false });
@@ -2640,7 +2640,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2690,7 +2690,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
         const child = createMockChild({ autoClose: false });
@@ -2732,7 +2732,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
         const child = createMockChild({ autoClose: false });
@@ -2786,7 +2786,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const firstUpdateSpawned = createDeferred<void>();
     let updateCalls = 0;
@@ -2838,7 +2838,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const firstUpdateSpawned = createDeferred<void>();
     const secondUpdateSpawned = createDeferred<void>();
@@ -2904,7 +2904,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -2946,7 +2946,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "--help") {
@@ -3004,7 +3004,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "--help") {
@@ -3053,7 +3053,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -3094,7 +3094,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: sharedMirrorDir, pattern: "**/*.md", name: "notion-mirror" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -3136,7 +3136,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "query") {
@@ -3182,7 +3182,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -3231,7 +3231,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3275,7 +3275,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3322,7 +3322,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3364,7 +3364,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3403,7 +3403,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3440,7 +3440,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let callCount = 0;
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
@@ -3500,7 +3500,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let expectedLimit = 0;
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
@@ -3541,7 +3541,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3615,7 +3615,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3688,7 +3688,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3727,7 +3727,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -3775,7 +3775,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const selectors: string[] = [];
     let expectedLimit = 0;
@@ -3829,7 +3829,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const selectors: string[] = [];
     const collections: string[] = [];
@@ -3875,7 +3875,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const selectors: string[] = [];
     let firstQueryCall = true;
@@ -3928,7 +3928,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const selectors: string[] = [];
     let firstQueryCall = true;
@@ -4013,7 +4013,7 @@ describe("QmdMemoryManager", () => {
               mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
             },
           },
-        } as OpenClawConfig;
+        } as EVEConfig;
 
         spawnMock.mockImplementation((_cmd: string, args: string[]) => {
           const child = createMockChild({ autoClose: false });
@@ -4064,7 +4064,7 @@ describe("QmdMemoryManager", () => {
               mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
             },
           },
-        } as OpenClawConfig;
+        } as EVEConfig;
 
         let firstCallCommand: string | null = null;
         spawnMock.mockImplementation((cmd: string, args: string[]) => {
@@ -4117,7 +4117,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -4160,7 +4160,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let daemonAttempts = 0;
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
@@ -4204,7 +4204,7 @@ describe("QmdMemoryManager", () => {
           mcporter: { enabled: true, serverName: "qmd", startDaemon: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((cmd: string, args: string[]) => {
       const child = createMockChild({ autoClose: false });
@@ -4244,7 +4244,7 @@ describe("QmdMemoryManager", () => {
           paths: [],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager();
 
@@ -4268,7 +4268,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search" && args.includes("workspace-main")) {
@@ -4354,7 +4354,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "embed") {
         return createMockChild({ autoClose: false });
@@ -4389,7 +4389,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const dateNowSpy = vi.spyOn(Date, "now").mockReturnValue(8_640_000_000_000_001);
     const { manager } = await createManager({ mode: "status" });
     try {
@@ -4425,7 +4425,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
 
@@ -4463,7 +4463,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
 
@@ -4495,7 +4495,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
 
@@ -4527,7 +4527,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
 
@@ -4568,7 +4568,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "full" });
 
@@ -4600,7 +4600,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const embedChildren: MockChild[] = [];
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "embed") {
@@ -4663,7 +4663,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation(() => createMockChild());
 
     const { manager } = await createManager({ mode: "status" });
@@ -4710,7 +4710,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     spawnMock.mockImplementation(() => createMockChild());
 
     let releaseFirstEmbed!: () => void;
@@ -4763,7 +4763,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const sessionsDir = path.join(stateDir, "agents", agentId, "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
@@ -4833,7 +4833,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const sessionsDir = path.join(stateDir, "agents", agentId, "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
@@ -4899,7 +4899,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager({ mode: "status" });
     await manager.sync({ reason: "manual", force: true });
@@ -4929,7 +4929,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let updateCalls = 0;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -4990,7 +4990,7 @@ describe("QmdMemoryManager", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { manager } = await createManager();
 
     const isAllowed = (key?: string) =>
@@ -5019,7 +5019,7 @@ describe("QmdMemoryManager", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { manager } = await createManager();
 
     logWarnMock.mockClear();
@@ -5220,7 +5220,7 @@ describe("QmdMemoryManager", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const { manager } = await createManager();
 
@@ -5393,7 +5393,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const duplicateDocid = "dup-123";
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -5460,7 +5460,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -5515,7 +5515,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search") {
@@ -5609,7 +5609,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search" && args.includes("workspace-main")) {
@@ -5687,7 +5687,7 @@ describe("QmdMemoryManager", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
       if (args[0] === "search" && args.includes("workspace-main")) {
@@ -5847,7 +5847,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     let statusKill: Mock | null = null;
     spawnMock.mockImplementation((_cmd: string, args: string[]) => {
@@ -5893,7 +5893,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: workspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const sessionsDir = path.join(stateDir, "agents", agentId, "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
@@ -5938,7 +5938,7 @@ describe("QmdMemoryManager", () => {
           ...cfg.memory,
           qmd: { ...cfg.memory?.qmd, searchMode: "query" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     await expect(manager.probeVectorAvailability()).resolves.toBe(false);
@@ -5972,7 +5972,7 @@ describe("QmdMemoryManager", () => {
           ...cfg.memory,
           qmd: { ...cfg.memory?.qmd, searchMode: "query" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     await expect(manager.probeVectorAvailability()).resolves.toBe(true);
@@ -6011,7 +6011,7 @@ describe("QmdMemoryManager", () => {
           ...cfg.memory,
           qmd: { ...cfg.memory?.qmd, searchMode: "query" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     await expect(manager.probeVectorAvailability()).resolves.toBe(true);
@@ -6035,7 +6035,7 @@ describe("QmdMemoryManager", () => {
           ...cfg.memory,
           qmd: { ...cfg.memory?.qmd, searchMode: "query" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     await expect(manager.probeVectorAvailability()).resolves.toBe(false);
@@ -6056,7 +6056,7 @@ describe("QmdMemoryManager", () => {
           ...cfg.memory,
           qmd: { ...cfg.memory?.qmd, searchMode: "search" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
     const baselineCalls = spawnMock.mock.calls.length;
 
@@ -6181,7 +6181,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: newWorkspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const collectionName = `workspace-${agentId}`;
 
@@ -6234,10 +6234,10 @@ describe("QmdMemoryManager", () => {
 
   it("rebinds a stale in-container collection root to the host workspace (sandbox-mode transition)", async () => {
     // Sandbox coverage: an agent that previously ran with its workspace bind-mounted under
-    // /home/node/.openclaw/... stored that in-container path as the collection root. Resolved
+    // /home/node/.eve/... stored that in-container path as the collection root. Resolved
     // with host paths, `collection show` reveals the stale container path; the rebind is
     // path-namespace-agnostic and re-binds to the current host root.
-    const containerRoot = "/home/node/.openclaw/teams/x/workspace";
+    const containerRoot = "/home/node/.eve/teams/x/workspace";
     const newWorkspaceDir = workspaceDir; // host path the manager is configured for
 
     cfg = {
@@ -6250,7 +6250,7 @@ describe("QmdMemoryManager", () => {
           paths: [{ path: newWorkspaceDir, pattern: "**/*.md", name: "workspace" }],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const collectionName = `workspace-${agentId}`;
 
@@ -6307,13 +6307,13 @@ describe("QmdMemoryManager", () => {
 
     const sampleOutput = [
       "Collection: memory-dir-example",
-      "  Path:     /home/node/.openclaw/teams/example-team/workspace-example/memory",
+      "  Path:     /home/node/.eve/teams/example-team/workspace-example/memory",
       "  Pattern:  **/*.md",
       "  Include:  yes (default)",
     ].join("\n");
 
     const result = parser(sampleOutput);
-    expect(result.path).toBe("/home/node/.openclaw/teams/example-team/workspace-example/memory");
+    expect(result.path).toBe("/home/node/.eve/teams/example-team/workspace-example/memory");
     expect(result.pattern).toBe("**/*.md");
 
     // Tolerant of missing fields.

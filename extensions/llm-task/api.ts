@@ -1,7 +1,7 @@
 // Llm Task API module exposes the plugin public contract.
-export { resolvePreferredOpenClawTmpDir, withTempWorkspace } from "./src/runtime-api.js";
+export { resolvePreferredEVETmpDir, withTempWorkspace } from "./src/runtime-api.js";
 export {
   definePluginEntry,
   type AnyAgentTool,
-  type OpenClawPluginApi,
-} from "openclaw/plugin-sdk/plugin-entry";
+  type EVEPluginApi,
+} from "eve-agent/plugin-sdk/plugin-entry";

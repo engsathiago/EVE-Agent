@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   downloadClawHubGitHubSkillArchive,
   downloadClawHubSkillArchive,
@@ -230,7 +230,7 @@ type ClawHubInstallParams = {
   force?: boolean;
   forceInstall?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 };
 
 type TrackedUpdateTarget =
@@ -1099,14 +1099,14 @@ async function installArchiveResolution(params: {
   version: string;
   archivePath: string;
   registry: string;
-  authority: "openclaw" | "third-party";
+  authority: "eve" | "third-party";
   force?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }) {
   return await withExtractedArchiveRoot({
     archivePath: params.archivePath,
-    tempDirPrefix: "openclaw-skill-clawhub-",
+    tempDirPrefix: "eve-skill-clawhub-",
     timeoutMs: 120_000,
     rootMarkers: CLAWHUB_SKILL_ARCHIVE_ROOT_MARKERS,
     onExtracted: async (rootDir) =>
@@ -1150,11 +1150,11 @@ async function installGitHubResolution(params: {
   commit: string;
   force?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }) {
   return await withExtractedArchiveRoot({
     archivePath: params.archivePath,
-    tempDirPrefix: "openclaw-skill-clawhub-github-",
+    tempDirPrefix: "eve-skill-clawhub-github-",
     timeoutMs: 120_000,
     onExtracted: async (repoRoot) =>
       await installExtractedSkillRoot({
@@ -1198,7 +1198,7 @@ function assertInstallResolutionAllowed(
   if (resolution.reason === "ambiguous_slug") {
     const message = resolution.message ? ` ${resolution.message}` : "";
     throw new Error(
-      `Skill "${resolution.slug}" is ambiguous on ClawHub. Install an owner-qualified skill, for example: openclaw skills install @owner/${resolution.slug}.${message}`,
+      `Skill "${resolution.slug}" is ambiguous on ClawHub. Install an owner-qualified skill, for example: eve skills install @owner/${resolution.slug}.${message}`,
     );
   }
   throw new Error(resolution.message || `Skill "${resolution.slug}" is not installable.`);
@@ -1210,7 +1210,7 @@ async function performClawHubSkillInstall(
   try {
     const targetDir = resolveWorkspaceSkillInstallDir(params.workspaceDir, params.slug);
     const registry = resolveClawHubBaseUrl(params.baseUrl);
-    const clawhubAuthority = isDefaultClawHubBaseUrl(params.baseUrl) ? "openclaw" : "third-party";
+    const clawhubAuthority = isDefaultClawHubBaseUrl(params.baseUrl) ? "eve" : "third-party";
     if (!params.force && (await pathExists(targetDir))) {
       return {
         ok: false,
@@ -1446,7 +1446,7 @@ export async function installSkillFromClawHub(params: {
   force?: boolean;
   forceInstall?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): Promise<InstallClawHubSkillResult> {
   return await installRequestedSkillFromClawHub(params);
 }
@@ -1457,7 +1457,7 @@ export async function updateSkillsFromClawHub(params: {
   baseUrl?: string;
   forceInstall?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): Promise<UpdateClawHubSkillResult[]> {
   const lock = await readClawHubSkillsLockfile(params.workspaceDir);
   const slugs = params.slug

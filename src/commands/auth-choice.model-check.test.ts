@@ -1,7 +1,7 @@
 // Auth-choice model check tests cover warnings for mismatched model and auth config.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AuthProfileStore } from "../agents/auth-profiles.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { warnIfModelConfigLooksOff } from "./auth-choice.model-check.js";
 import { makePrompter } from "./setup/__tests__/test-utils.js";
 
@@ -41,7 +41,7 @@ describe("warnIfModelConfigLooksOff", () => {
           model: "openai/gpt-5.5",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await warnIfModelConfigLooksOff(config, prompter, { validateCatalog: false });
 
@@ -50,7 +50,7 @@ describe("warnIfModelConfigLooksOff", () => {
     expect(listProfilesForProvider).toHaveBeenCalledOnce();
     expect(listProfilesForProvider).toHaveBeenCalledWith({ version: 1, profiles: {} }, "openai");
     expect(note).toHaveBeenCalledWith(
-      'No auth configured for provider "openai". The agent may fail until credentials are added. Run `openclaw models auth login --provider openai`, `openclaw configure`, or set an API key env var.',
+      'No auth configured for provider "openai". The agent may fail until credentials are added. Run `eve models auth login --provider openai`, `eve configure`, or set an API key env var.',
       "Model check",
     );
   });
@@ -82,7 +82,7 @@ describe("warnIfModelConfigLooksOff", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await warnIfModelConfigLooksOff(config, prompter, { validateCatalog: false });
 
@@ -127,13 +127,13 @@ describe("warnIfModelConfigLooksOff", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await warnIfModelConfigLooksOff(config, prompter, { validateCatalog: false });
 
     expect(listProfilesForProvider).toHaveBeenCalledWith(store, "openai");
     expect(note).toHaveBeenCalledWith(
-      'No auth configured for provider "openai". The agent may fail until credentials are added. Run `openclaw models auth login --provider openai`, `openclaw configure`, or set an API key env var.',
+      'No auth configured for provider "openai". The agent may fail until credentials are added. Run `eve models auth login --provider openai`, `eve configure`, or set an API key env var.',
       "Model check",
     );
   });
@@ -147,7 +147,7 @@ describe("warnIfModelConfigLooksOff", () => {
           model: "openai/gpt-5.5",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await warnIfModelConfigLooksOff(config, prompter);
 

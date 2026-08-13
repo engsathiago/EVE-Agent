@@ -32,7 +32,7 @@ export async function loadRootHelpRenderOptionsForConfigSensitivePlugins(
       hasEntries(plugins.entries) ||
       hasEntries(plugins.installs));
   const envAffectsPluginHelp = Boolean(
-    env.OPENCLAW_BUNDLED_PLUGINS_DIR?.trim() || env.OPENCLAW_DISABLE_BUNDLED_PLUGINS?.trim(),
+    env.EVE_BUNDLED_PLUGINS_DIR?.trim() || env.EVE_DISABLE_BUNDLED_PLUGINS?.trim(),
   );
   if (!envAffectsPluginHelp && !configAffectsPluginHelp) {
     return null;

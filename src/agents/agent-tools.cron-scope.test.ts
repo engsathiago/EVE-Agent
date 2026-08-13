@@ -18,49 +18,49 @@ const mocks = vi.hoisted(() => {
     }) satisfies AnyAgentTool;
 
   return {
-    createOpenClawToolsOptions: vi.fn(),
+    createEVEToolsOptions: vi.fn(),
     stubTool,
   };
 });
 
-vi.mock("./openclaw-tools.js", () => ({
-  createOpenClawTools: (options: unknown) => {
-    mocks.createOpenClawToolsOptions(options);
+vi.mock("./eve-tools.js", () => ({
+  createEVETools: (options: unknown) => {
+    mocks.createEVEToolsOptions(options);
     return [mocks.stubTool("cron")];
   },
 }));
 
 import "./test-helpers/fast-bash-tools.js";
 import "./test-helpers/fast-coding-tools.js";
-import { createOpenClawCodingTools } from "./agent-tools.js";
+import { createEVECodingTools } from "./agent-tools.js";
 
-function firstOpenClawToolsOptions(): { cronSelfRemoveOnlyJobId?: string } | undefined {
-  return mocks.createOpenClawToolsOptions.mock.calls[0]?.[0] as
+function firstEVEToolsOptions(): { cronSelfRemoveOnlyJobId?: string } | undefined {
+  return mocks.createEVEToolsOptions.mock.calls[0]?.[0] as
     | { cronSelfRemoveOnlyJobId?: string }
     | undefined;
 }
 
-describe("createOpenClawCodingTools cron scope", () => {
+describe("createEVECodingTools cron scope", () => {
   beforeEach(() => {
-    mocks.createOpenClawToolsOptions.mockClear();
+    mocks.createEVEToolsOptions.mockClear();
   });
 
   it("scopes cron-triggered jobs to self-removal", () => {
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       trigger: "cron",
       jobId: "job-current",
     });
 
     expect(tools.map((tool) => tool.name)).toContain("cron");
-    expect(firstOpenClawToolsOptions()?.cronSelfRemoveOnlyJobId).toBe("job-current");
+    expect(firstEVEToolsOptions()?.cronSelfRemoveOnlyJobId).toBe("job-current");
   });
 
   it("does not scope non-cron sessions", () => {
-    createOpenClawCodingTools({
+    createEVECodingTools({
       trigger: "user",
       jobId: "job-current",
     });
 
-    expect(firstOpenClawToolsOptions()?.cronSelfRemoveOnlyJobId).toBeUndefined();
+    expect(firstEVEToolsOptions()?.cronSelfRemoveOnlyJobId).toBeUndefined();
   });
 });

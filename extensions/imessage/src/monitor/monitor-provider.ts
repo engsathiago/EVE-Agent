@@ -2,51 +2,51 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
-import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "openclaw/plugin-sdk/approval-handler-runtime";
-import { logTypingFailure } from "openclaw/plugin-sdk/channel-feedback";
+import { resolveHumanDelayConfig } from "eve-agent/plugin-sdk/agent-runtime";
+import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { logTypingFailure } from "eve-agent/plugin-sdk/channel-feedback";
 import {
   createChannelInboundDebouncer,
   resolveEnvelopeFormatOptions,
   runChannelInboundEvent,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   deliverInboundReplyWithMessageSendContext,
   createChannelMessageReplyPipeline,
   resolveChannelStreamingBlockEnabled,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { registerChannelRuntimeContext } from "openclaw/plugin-sdk/channel-runtime-context";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { createChannelPairingChallengeIssuer } from "eve-agent/plugin-sdk/channel-pairing";
+import { registerChannelRuntimeContext } from "eve-agent/plugin-sdk/channel-runtime-context";
 import {
   readChannelAllowFromStore,
   upsertChannelPairingRequest,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
-import { normalizeScpRemoteHost } from "openclaw/plugin-sdk/host-runtime";
-import { isInboundPathAllowed, kindFromMime } from "openclaw/plugin-sdk/media-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import { resolveTextChunkLimit, type GetReplyOptions } from "openclaw/plugin-sdk/reply-runtime";
-import { dispatchInboundMessage } from "openclaw/plugin-sdk/reply-runtime";
-import { createReplyDispatcherWithTyping } from "openclaw/plugin-sdk/reply-runtime";
-import { settleReplyDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { getRuntimeConfig, type OpenClawConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { danger, logVerbose, shouldLogVerbose, warn } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/conversation-runtime";
+import { recordInboundSession } from "eve-agent/plugin-sdk/conversation-runtime";
+import { normalizeScpRemoteHost } from "eve-agent/plugin-sdk/host-runtime";
+import { isInboundPathAllowed, kindFromMime } from "eve-agent/plugin-sdk/media-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
+import { resolveTextChunkLimit, type GetReplyOptions } from "eve-agent/plugin-sdk/reply-runtime";
+import { dispatchInboundMessage } from "eve-agent/plugin-sdk/reply-runtime";
+import { createReplyDispatcherWithTyping } from "eve-agent/plugin-sdk/reply-runtime";
+import { settleReplyDispatcher } from "eve-agent/plugin-sdk/reply-runtime";
+import { resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
+import { getRuntimeConfig, type EVEConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { danger, logVerbose, shouldLogVerbose, warn } from "eve-agent/plugin-sdk/runtime-env";
 import {
   resolveOpenProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/runtime-group-policy";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
 import {
   getSessionEntry,
   readSessionUpdatedAt,
   resolveSendPolicy,
   resolveStorePath,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
-import { waitForTransportReady } from "openclaw/plugin-sdk/transport-ready-runtime";
+} from "eve-agent/plugin-sdk/session-store-runtime";
+import { truncateUtf16Safe } from "eve-agent/plugin-sdk/text-utility-runtime";
+import { waitForTransportReady } from "eve-agent/plugin-sdk/transport-ready-runtime";
 import { resolveIMessageAccount } from "../accounts.js";
 import { pollPendingIMessageApprovalReactions } from "../approval-reaction-poller.js";
 import { maybeResolveIMessageApprovalReaction } from "../approval-reactions.js";
@@ -115,7 +115,7 @@ const IMESSAGE_TYPING_KEEPALIVE_INTERVAL_MS = 8_000;
 const IMESSAGE_TYPING_KEEPALIVE_MAX_DURATION_MS = 10 * 60_000;
 type IMessageTypingController = Parameters<NonNullable<GetReplyOptions["onTypingController"]>>[0];
 
-function resolveConfiguredIMessageTypingMode(cfg: OpenClawConfig) {
+function resolveConfiguredIMessageTypingMode(cfg: EVEConfig) {
   return cfg.session?.typingMode ?? cfg.agents?.defaults?.typingMode;
 }
 

@@ -6,7 +6,7 @@ import {
   type EmbeddedAgentActiveSessionSteerTarget,
 } from "./attempt.queue-message.js";
 
-describe("embedded OpenClaw queued steering cancellation", () => {
+describe("embedded EVE queued steering cancellation", () => {
   it("waits for the queued user message_end transcript boundary", async () => {
     // A queued steer is only durable once the user message_end event lands in
     // the active transcript.

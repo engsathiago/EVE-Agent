@@ -1,5 +1,5 @@
 import Testing
-@testable import OpenClaw
+@testable import EVE
 
 @Suite struct TalkProStateTests {
     @Test func disabledTalkWithoutLoadedConfigCanStartAndRetryLoad() {

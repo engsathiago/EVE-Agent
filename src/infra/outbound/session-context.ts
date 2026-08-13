@@ -1,9 +1,9 @@
 // Outbound session context carries canonical hook/session policy keys plus
 // requester metadata used by delivery policies and media roots.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
 import { normalizeChatType } from "../../channels/chat-type.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SilentReplyConversationType } from "../../shared/silent-reply-policy.js";
 
 export type OutboundSessionContext = {
@@ -51,7 +51,7 @@ export type OutboundSessionContext = {
 
 /** Builds the outbound delivery session context, omitting empty policy fields. */
 export function buildOutboundSessionContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey?: string | null;
   policySessionKey?: string | null;
   conversationType?: string | null;

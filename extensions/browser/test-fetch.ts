@@ -10,7 +10,7 @@ type FetchPreconnectOptions = {
 
 type FetchWithPreconnect = {
   preconnect: (url: string | URL, options?: FetchPreconnectOptions) => void;
-  __openclawAcceptsDispatcher: true;
+  __eveAcceptsDispatcher: true;
 };
 
 /** Adds Browser test preconnect metadata to a fetch-like function. */
@@ -21,6 +21,6 @@ export function withBrowserFetchPreconnect<T extends object>(
 export function withBrowserFetchPreconnect(fn: object) {
   return Object.assign(fn, {
     preconnect: (_url: string | URL, _options?: FetchPreconnectOptions) => {},
-    __openclawAcceptsDispatcher: true as const,
+    __eveAcceptsDispatcher: true as const,
   });
 }

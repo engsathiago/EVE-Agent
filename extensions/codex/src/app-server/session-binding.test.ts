@@ -45,7 +45,7 @@ async function writeCodexCliAuthFile(codexHome: string): Promise<void> {
 
 describe("codex app-server session binding", () => {
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-binding-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-codex-binding-"));
   });
 
   afterEach(async () => {
@@ -60,7 +60,7 @@ describe("codex app-server session binding", () => {
       cwd: tempDir,
       model: "gpt-5.4-codex",
       modelProvider: "openai",
-      networkProxyProfileName: "openclaw-network",
+      networkProxyProfileName: "eve-network",
       networkProxyConfigFingerprint: "network-proxy-v1",
       dynamicToolsFingerprint: "tools-v1",
       webSearchThreadConfigFingerprint: "web-search-v1",
@@ -77,7 +77,7 @@ describe("codex app-server session binding", () => {
     expect(binding?.cwd).toBe(tempDir);
     expect(binding?.model).toBe("gpt-5.4-codex");
     expect(binding?.modelProvider).toBe("openai");
-    expect(binding?.networkProxyProfileName).toBe("openclaw-network");
+    expect(binding?.networkProxyProfileName).toBe("eve-network");
     expect(binding?.networkProxyConfigFingerprint).toBe("network-proxy-v1");
     expect(binding?.dynamicToolsFingerprint).toBe("tools-v1");
     expect(binding?.webSearchThreadConfigFingerprint).toBe("web-search-v1");

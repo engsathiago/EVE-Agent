@@ -1,10 +1,10 @@
 // Whatsapp plugin module implements outbound media contract behavior.
 import path from "node:path";
-import { sanitizeForPlainText } from "openclaw/plugin-sdk/channel-outbound";
-import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "openclaw/plugin-sdk/media-runtime";
-import { writeExternalFileWithinRoot } from "openclaw/plugin-sdk/security-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { resolvePreferredOpenClawTmpDir, withTempWorkspace } from "openclaw/plugin-sdk/temp-path";
+import { sanitizeForPlainText } from "eve-agent/plugin-sdk/channel-outbound";
+import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "eve-agent/plugin-sdk/media-runtime";
+import { writeExternalFileWithinRoot } from "eve-agent/plugin-sdk/security-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { resolvePreferredEVETmpDir, withTempWorkspace } from "eve-agent/plugin-sdk/temp-path";
 import { resolveWhatsAppDocumentFileName } from "./document-filename.js";
 import { formatError } from "./session-errors.js";
 import { isWhatsAppSocketOperationTimeoutError } from "./socket-timing.js";
@@ -213,7 +213,7 @@ async function transcodeToWhatsAppVoiceOpus(params: {
   fileName: string;
 }): Promise<Buffer> {
   return await withTempWorkspace(
-    { rootDir: resolvePreferredOpenClawTmpDir(), prefix: "whatsapp-voice-" },
+    { rootDir: resolvePreferredEVETmpDir(), prefix: "whatsapp-voice-" },
     async (workspace) => {
       const ext = path.extname(params.fileName).toLowerCase();
       const inputExt = ext && ext.length <= 12 ? ext : ".audio";

@@ -1,4 +1,4 @@
-// QA OTEL Smoke runtime supports OpenClaw repository automation.
+// QA OTEL Smoke runtime supports EVE repository automation.
 
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -85,7 +85,7 @@ type CapturedLogRecord = {
 };
 
 type StdoutDiagnosticLogRecord = {
-  signal: "openclaw.diagnostic.log";
+  signal: "eve.diagnostic.log";
   ts?: unknown;
   "service.name"?: unknown;
   severityText?: unknown;
@@ -105,57 +105,57 @@ const LOGS_EXPORTER_SCENARIO_IDS = {
   both: "otel-both-log-smoke",
 } satisfies Record<OtelLogsExporter, string>;
 const DEFAULT_DOCKER_COLLECTOR_IMAGE =
-  process.env.OPENCLAW_QA_OTEL_COLLECTOR_IMAGE || "otel/opentelemetry-collector:0.104.0";
+  process.env.EVE_QA_OTEL_COLLECTOR_IMAGE || "otel/opentelemetry-collector:0.104.0";
 const OTLP_SIGNAL_PATHS = new Map<string, OtlpSignal>([
   ["/v1/traces", "traces"],
   ["/v1/metrics", "metrics"],
   ["/v1/logs", "logs"],
 ]);
 const REQUIRED_SPAN_NAMES = [
-  "openclaw.run",
-  "openclaw.harness.run",
-  "openclaw.context.assembled",
-  "openclaw.message.delivery",
+  "eve.run",
+  "eve.harness.run",
+  "eve.context.assembled",
+  "eve.message.delivery",
 ] as const;
-const REQUIRED_METRIC_NAMES = ["openclaw.harness.duration_ms"] as const;
+const REQUIRED_METRIC_NAMES = ["eve.harness.duration_ms"] as const;
 const DISALLOWED_ATTRIBUTE_KEYS = new Set([
-  "openclaw.runId",
-  "openclaw.chatId",
-  "openclaw.messageId",
-  "openclaw.sessionKey",
-  "openclaw.sessionId",
-  "openclaw.callId",
-  "openclaw.toolCallId",
-  "openclaw.run_id",
-  "openclaw.chat_id",
-  "openclaw.message_id",
-  "openclaw.session_key",
-  "openclaw.session_id",
-  "openclaw.call_id",
-  "openclaw.tool_call_id",
+  "eve.runId",
+  "eve.chatId",
+  "eve.messageId",
+  "eve.sessionKey",
+  "eve.sessionId",
+  "eve.callId",
+  "eve.toolCallId",
+  "eve.run_id",
+  "eve.chat_id",
+  "eve.message_id",
+  "eve.session_key",
+  "eve.session_id",
+  "eve.call_id",
+  "eve.tool_call_id",
 ]);
 const DISALLOWED_BODY_NEEDLES = ["OTEL-QA-SECRET", "OTEL-QA-OK"];
 const COLLECTOR_OUTPUT_TAIL_BYTES = 16_000;
 const POSITIVE_INTEGER_PATTERN = /^[1-9]\d*$/u;
 const MAX_OTLP_COMPRESSED_BODY_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_COMPRESSED_BODY_BYTES",
+  "EVE_QA_OTEL_MAX_COMPRESSED_BODY_BYTES",
   2 * 1024 * 1024,
 );
 const MAX_OTLP_DECODED_BODY_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_DECODED_BODY_BYTES",
+  "EVE_QA_OTEL_MAX_DECODED_BODY_BYTES",
   8 * 1024 * 1024,
 );
 const MAX_CAPTURED_BODY_TEXT_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_CAPTURED_BODY_TEXT_BYTES",
+  "EVE_QA_OTEL_MAX_CAPTURED_BODY_TEXT_BYTES",
   512 * 1024,
 );
 const QA_SUITE_TIMEOUT_MS = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_SUITE_TIMEOUT_MS",
+  "EVE_QA_OTEL_SUITE_TIMEOUT_MS",
   10 * 60 * 1000,
 );
-const QA_SUITE_KILL_GRACE_MS = readPositiveIntegerEnv("OPENCLAW_QA_OTEL_SUITE_KILL_GRACE_MS", 5000);
+const QA_SUITE_KILL_GRACE_MS = readPositiveIntegerEnv("EVE_QA_OTEL_SUITE_KILL_GRACE_MS", 5000);
 const MAX_STDOUT_DIAGNOSTIC_LINE_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_STDOUT_DIAGNOSTIC_LINE_BYTES",
+  "EVE_QA_OTEL_MAX_STDOUT_DIAGNOSTIC_LINE_BYTES",
   512 * 1024,
 );
 const GATEWAY_STDOUT_ARTIFACT_READ_CHUNK_BYTES = 64 * 1024;
@@ -1033,7 +1033,7 @@ function isStdoutDiagnosticLogRecord(value: unknown): value is StdoutDiagnosticL
     typeof value === "object" &&
     value !== null &&
     !Array.isArray(value) &&
-    objectValue(value, "signal") === "openclaw.diagnostic.log"
+    objectValue(value, "signal") === "eve.diagnostic.log"
   );
 }
 
@@ -1166,9 +1166,9 @@ async function startDockerOtelCollector(
   const osTmpdir = deps.tmpdir ?? tmpdir;
 
   const collectorPort = await reservePort();
-  const tempDir = await makeTempDir(path.join(osTmpdir(), "openclaw-otel-collector-"));
+  const tempDir = await makeTempDir(path.join(osTmpdir(), "eve-otel-collector-"));
   const configPath = path.join(tempDir, "collector.yaml");
-  const containerName = `openclaw-otel-smoke-${makeUuid()}`;
+  const containerName = `eve-otel-smoke-${makeUuid()}`;
   const useHostNetwork = (deps.platform ?? process.platform) === "linux";
   const collectorEndpoint = useHostNetwork ? `127.0.0.1:${collectorPort}` : "0.0.0.0:4318";
   const receiverEndpoint = useHostNetwork
@@ -1180,19 +1180,19 @@ async function startDockerOtelCollector(
       http:
         endpoint: ${collectorEndpoint}
 exporters:
-  otlphttp/openclaw:
+  otlphttp/eve:
     endpoint: ${receiverEndpoint}
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/eve]
     metrics:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/eve]
     logs:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/eve]
 `;
   await writeConfigFile(configPath, config, "utf8");
 
@@ -1254,15 +1254,15 @@ service:
   };
 }
 
-function openClawEntryArgs(): string[] {
+function eveEntryArgs(): string[] {
   if (existsSync(path.join(process.cwd(), "scripts", "run-node.mjs"))) {
     return ["scripts/run-node.mjs"];
   }
-  return ["openclaw.mjs"];
+  return ["eve.mjs"];
 }
 
-function spawnOpenClaw(args: string[], env: NodeJS.ProcessEnv): ChildProcess {
-  return spawn(process.execPath, [...openClawEntryArgs(), ...args], {
+function spawnEVE(args: string[], env: NodeJS.ProcessEnv): ChildProcess {
+  return spawn(process.execPath, [...eveEntryArgs(), ...args], {
     detached: process.platform !== "win32",
     env,
     stdio: ["ignore", "pipe", "pipe"],
@@ -1297,7 +1297,7 @@ async function waitForChild(
     terminateChildTree(child, "SIGKILL", cleanupPids);
     await waitForProcessTreeExit(child, 1000, cleanupPids);
   }
-  throw new Error(`openclaw qa suite timed out after ${timeoutMs}ms`);
+  throw new Error(`eve qa suite timed out after ${timeoutMs}ms`);
 }
 
 function collectChildProcessTreePids(child: ChildProcess): number[] {
@@ -1451,9 +1451,9 @@ function buildQaEnv(port: number): NodeJS.ProcessEnv {
   env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = `http://127.0.0.1:${port}/v1/traces`;
   env.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT = `http://127.0.0.1:${port}/v1/metrics`;
   env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT = `http://127.0.0.1:${port}/v1/logs`;
-  env.OTEL_SERVICE_NAME = "openclaw-qa-lab-otel-smoke";
+  env.OTEL_SERVICE_NAME = "eve-qa-lab-otel-smoke";
   env.OTEL_SEMCONV_STABILITY_OPT_IN = "gen_ai_latest_experimental";
-  env.OPENCLAW_QA_SUITE_PROGRESS = env.OPENCLAW_QA_SUITE_PROGRESS ?? "1";
+  env.EVE_QA_SUITE_PROGRESS = env.EVE_QA_SUITE_PROGRESS ?? "1";
   return env;
 }
 
@@ -1520,8 +1520,8 @@ function isLatestGenAiModelCallSpan(span: CapturedSpan): boolean {
   }
   return (
     span.name === `${operationName} ${modelName}` &&
-    typeof span.attributes["openclaw.provider"] === "string" &&
-    typeof span.attributes["openclaw.model"] === "string"
+    typeof span.attributes["eve.provider"] === "string" &&
+    typeof span.attributes["eve.model"] === "string"
   );
 }
 
@@ -1650,8 +1650,8 @@ function assertSmoke(params: {
   if (modelSpans.length === 0) {
     failures.push("missing required GenAI model-call span");
   }
-  if (spanNames.has("openclaw.model.call")) {
-    failures.push("legacy openclaw.model.call span exported with GenAI semconv opt-in");
+  if (spanNames.has("eve.model.call")) {
+    failures.push("legacy eve.model.call span exported with GenAI semconv opt-in");
   }
   const metricNames = new Set(params.metrics.map((metric) => metric.name));
   for (const name of REQUIRED_METRIC_NAMES) {
@@ -1692,7 +1692,7 @@ function assertSmoke(params: {
 
   const attributeKeys = collectAttributeKeys(params.spans);
   const disallowed = [...DISALLOWED_ATTRIBUTE_KEYS].filter((key) => attributeKeys.has(key));
-  const contentKeys = [...attributeKeys].filter((key) => key.startsWith("openclaw.content."));
+  const contentKeys = [...attributeKeys].filter((key) => key.startsWith("eve.content."));
   if (disallowed.length > 0) {
     failures.push(`raw diagnostic id attributes exported: ${disallowed.join(", ")}`);
   }
@@ -1707,7 +1707,7 @@ function assertSmoke(params: {
     const serialized = JSON.stringify(span.attributes);
     return (
       Object.hasOwn(span.attributes, "error.type") ||
-      Object.hasOwn(span.attributes, "openclaw.errorCategory") ||
+      Object.hasOwn(span.attributes, "eve.errorCategory") ||
       serialized.includes("StreamAbandoned")
     );
   });
@@ -1788,7 +1788,7 @@ async function main() {
       );
     }
 
-    const child = spawnOpenClaw(buildQaArgs(options), buildQaEnv(exportPort));
+    const child = spawnEVE(buildQaArgs(options), buildQaEnv(exportPort));
     const cleanupSignalRelay = relayParentSignalsToChild(child);
     child.stdout?.on("data", (chunk) => {
       stdoutDiagnosticLogs.append(chunk);

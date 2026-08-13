@@ -6,7 +6,7 @@ import path from "node:path";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   buildMSTeamsPollCard,
@@ -40,7 +40,7 @@ describe("msteams polls", () => {
   it("extracts poll votes from activity values", () => {
     const vote = extractMSTeamsPollVote({
       value: {
-        openclawPollId: "poll-1",
+        evePollId: "poll-1",
         choices: "0,1",
       },
     });
@@ -52,7 +52,7 @@ describe("msteams polls", () => {
   });
 
   it("stores and records poll votes", async () => {
-    const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
     const store = createMSTeamsPollStoreState({ homedir: () => home });
     await store.createPoll({
       id: "poll-2",
@@ -108,7 +108,7 @@ describe("msteams polls", () => {
 });
 
 const createStateStore = async () => {
-  const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+  const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
   return createMSTeamsPollStoreState({ stateDir });
 };
 
@@ -179,7 +179,7 @@ describe("state poll store", () => {
   });
 
   it("ignores legacy JSON polls at runtime", async () => {
-    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
     const filePath = path.join(stateDir, "msteams-polls.json");
     await fs.promises.writeFile(
       filePath,
@@ -212,12 +212,12 @@ describe("state poll store", () => {
     });
     await expect(store.getPoll("poll-new")).resolves.toMatchObject({ id: "poll-new" });
     await expect(
-      fs.promises.access(path.join(stateDir, "state", "openclaw.sqlite")),
+      fs.promises.access(path.join(stateDir, "state", "eve.sqlite")),
     ).resolves.toBeUndefined();
   });
 
   it("hashes external poll ids before using plugin-state keys", async () => {
-    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
     const store = createMSTeamsPollStoreState({ stateDir });
     const longPollId = `poll-${"x".repeat(900)}`;
 
@@ -241,7 +241,7 @@ describe("state poll store", () => {
   });
 
   it("serializes concurrent votes for the same poll", async () => {
-    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
     const store = createMSTeamsPollStoreState({ stateDir });
     await store.createPoll({
       id: "poll-race",
@@ -266,7 +266,7 @@ describe("state poll store", () => {
   });
 
   it("keeps large vote maps split across bounded rows", async () => {
-    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
     const store = createMSTeamsPollStoreState({ stateDir });
     const votes = Object.fromEntries(
       Array.from({ length: 500 }, (_, index) => [
@@ -291,8 +291,8 @@ describe("state poll store", () => {
   });
 
   it("deletes vote buckets when pruning over the poll cap", async () => {
-    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
-    const env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+    const stateDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-polls-"));
+    const env = { ...process.env, EVE_STATE_DIR: stateDir };
     const metadataStore = createPluginStateKeyedStoreForTests<Omit<MSTeamsPoll, "votes">>(
       "msteams",
       {

@@ -12,7 +12,7 @@ import {
   resetTaskRegistryForTests,
 } from "../tasks/task-registry.js";
 import type { TaskRecord } from "../tasks/task-registry.types.js";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { withEVETestState } from "../test-utils/eve-test-state.js";
 import { tasksAuditJsonCommand, tasksListJsonCommand } from "./tasks-json.js";
 
 function createRuntime(): RuntimeEnv {
@@ -55,8 +55,8 @@ function jsonRoundTrip<T>(value: T): T {
 }
 
 async function withTaskJsonStateDir(run: () => Promise<void>): Promise<void> {
-  await withOpenClawTestState(
-    { layout: "state-only", prefix: "openclaw-tasks-json-command-" },
+  await withEVETestState(
+    { layout: "state-only", prefix: "eve-tasks-json-command-" },
     async () => {
       resetTaskRegistryDeliveryRuntimeForTests();
       resetTaskRegistryForTests({ persist: false });

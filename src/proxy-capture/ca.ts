@@ -37,7 +37,7 @@ export async function ensureDebugProxyCa(certDir: string): Promise<{
     "-out",
     certPath,
     "-subj",
-    "/CN=OpenClaw Debug Proxy",
+    "/CN=EVE Debug Proxy",
   ]);
   return { certPath, keyPath };
 }

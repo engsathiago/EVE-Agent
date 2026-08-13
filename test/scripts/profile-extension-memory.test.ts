@@ -104,7 +104,7 @@ describe("scripts/profile-extension-memory", () => {
   });
 
   it("bounds noisy child output without losing RSS samples", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-extension-memory-test-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-extension-memory-test-"));
     try {
       const extensionDir = path.join(root, "dist", "extensions", "noisy");
       const reportPath = path.join(root, "report.json");
@@ -141,7 +141,7 @@ describe("scripts/profile-extension-memory", () => {
   });
 
   it("creates parent directories for nested JSON report paths", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-extension-memory-test-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-extension-memory-test-"));
     try {
       const extensionDir = path.join(root, "dist", "extensions", "simple");
       const reportPath = path.join(root, ".artifacts", "memory", "report.json");
@@ -162,7 +162,7 @@ describe("scripts/profile-extension-memory", () => {
   });
 
   it("fails when a profiled plugin import fails", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-extension-memory-test-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-extension-memory-test-"));
     try {
       const extensionDir = path.join(root, "dist", "extensions", "broken");
       const reportPath = path.join(root, "report.json");
@@ -224,7 +224,7 @@ describe("scripts/profile-extension-memory", () => {
   it.runIf(process.platform !== "win32")(
     "cleans timeout descendants before resolving the case",
     async () => {
-      const root = mkdtempSync(path.join(tmpdir(), "openclaw-extension-memory-timeout-"));
+      const root = mkdtempSync(path.join(tmpdir(), "eve-extension-memory-timeout-"));
       const hookPath = path.join(root, "rss-hook.mjs");
       const descendantPidPath = path.join(root, "descendant.pid");
       let descendantPid = 0;
@@ -276,7 +276,7 @@ describe("scripts/profile-extension-memory", () => {
   it.runIf(process.platform !== "win32")(
     "cleans active case descendants on parent signal",
     async () => {
-      const root = mkdtempSync(path.join(tmpdir(), "openclaw-extension-memory-parent-signal-"));
+      const root = mkdtempSync(path.join(tmpdir(), "eve-extension-memory-parent-signal-"));
       const hookPath = path.join(root, "rss-hook.mjs");
       const runnerPath = path.join(root, "parent-signal-runner.mjs");
       const descendantPidPath = path.join(root, "descendant.pid");

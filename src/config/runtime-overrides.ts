@@ -2,7 +2,7 @@
 import { isPlainObject } from "../utils.js";
 import { parseConfigPath, setConfigValueAtPath, unsetConfigValueAtPath } from "./config-paths.js";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
-import type { OpenClawConfig } from "./types.js";
+import type { EVEConfig } from "./types.js";
 
 type OverrideTree = Record<string, unknown>;
 
@@ -90,9 +90,9 @@ export function unsetConfigOverride(pathRaw: string): {
 }
 
 /** Merge the current runtime overrides over a loaded config without mutating the input config. */
-export function applyConfigOverrides(cfg: OpenClawConfig): OpenClawConfig {
+export function applyConfigOverrides(cfg: EVEConfig): EVEConfig {
   if (!overrides || Object.keys(overrides).length === 0) {
     return cfg;
   }
-  return mergeOverrides(cfg, overrides) as OpenClawConfig;
+  return mergeOverrides(cfg, overrides) as EVEConfig;
 }

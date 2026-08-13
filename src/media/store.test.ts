@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
 import JSZip from "jszip";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { createSolidPngBuffer, createTinyJpegBuffer } from "../../test/helpers/image-fixtures.js";
 import { isPathWithinBase } from "../../test/helpers/paths.js";
@@ -15,7 +15,7 @@ describe("media store", () => {
   let tempHome: TempHomeEnv;
 
   beforeAll(async () => {
-    tempHome = await createTempHomeEnv("openclaw-test-home-");
+    tempHome = await createTempHomeEnv("eve-test-home-");
     home = tempHome.home;
     store = await import("./store.js");
   });
@@ -346,7 +346,7 @@ describe("media store", () => {
         await withTempStore(async (storeLocal17, homeLocal4) => {
           const dir = await storeLocal17.ensureMediaDir();
           expect(isPathWithinBase(homeLocal4, dir)).toBe(true);
-          expect(path.normalize(dir)).toContain(`${path.sep}.openclaw${path.sep}media`);
+          expect(path.normalize(dir)).toContain(`${path.sep}.eve${path.sep}media`);
           const stat = await fs.stat(dir);
           expect(stat.isDirectory()).toBe(true);
         });
@@ -486,7 +486,7 @@ describe("media store", () => {
             ),
           ).rejects.toThrow("Media exceeds 0MB limit");
 
-          const targetDir = path.join(homeInner, ".openclaw", "media", "oversized-stream");
+          const targetDir = path.join(homeInner, ".eve", "media", "oversized-stream");
           const entries = await fs.readdir(targetDir).catch(() => []);
           expect(entries).toStrictEqual([]);
         });
@@ -927,9 +927,9 @@ describe("media store", () => {
 
   it("prefers header mime extension when sniffed mime lacks mapping", async () => {
     await withTempStore(async (_store, homeLocal) => {
-      vi.doMock("@openclaw/media-core/mime", async () => {
-        const actual = await vi.importActual<typeof import("@openclaw/media-core/mime")>(
-          "@openclaw/media-core/mime",
+      vi.doMock("@eve/media-core/mime", async () => {
+        const actual = await vi.importActual<typeof import("@eve/media-core/mime")>(
+          "@eve/media-core/mime",
         );
         return {
           ...actual,
@@ -949,7 +949,7 @@ describe("media store", () => {
         expect(path.extname(saved.path)).toBe(".ogg");
         expect(saved.path.startsWith(homeLocal)).toBe(true);
       } finally {
-        vi.doUnmock("@openclaw/media-core/mime");
+        vi.doUnmock("@eve/media-core/mime");
       }
     });
   });

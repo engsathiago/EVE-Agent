@@ -1,5 +1,5 @@
 // Slack plugin module implements stream mode behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   mapStreamingModeToSlackLegacyDraftStreamMode,
   resolveSlackNativeStreaming,

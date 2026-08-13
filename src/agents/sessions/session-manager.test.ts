@@ -6,7 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { withOwnedSessionTranscriptWrites } from "../../config/sessions/transcript-write-context.js";
-import { isTranscriptOnlyOpenClawAssistantMessage } from "../../shared/transcript-only-openclaw-assistant.js";
+import { isTranscriptOnlyEVEAssistantMessage } from "../../shared/transcript-only-eve-assistant.js";
 import { prepareSessionManagerForRun } from "../embedded-agent-runner/session-manager-init.js";
 import { repairSessionFileIfNeeded } from "../session-file-repair.js";
 import {
@@ -19,7 +19,7 @@ import {
 const tempPaths: string[] = [];
 
 async function makeTempDir(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-manager-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-manager-"));
   tempPaths.push(dir);
   return dir;
 }
@@ -41,7 +41,7 @@ describe("SessionManager.open", () => {
       version: 3,
       id: "original-session",
       timestamp: "2026-05-27T00:00:00.000Z",
-      cwd: "/srv/openclaw/main",
+      cwd: "/srv/eve/main",
     };
     const userEntry = {
       type: "message",
@@ -1647,7 +1647,7 @@ describe("SessionManager.open", () => {
       timestamp: "2026-06-04T00:00:05.000Z",
       message: {
         ...buildAssistantMessage("mirrored delivery"),
-        provider: "openclaw",
+        provider: "eve",
         model: "delivery-mirror",
       },
     };
@@ -1663,7 +1663,7 @@ describe("SessionManager.open", () => {
           entry.type === "custom" ||
           entry.type === "label" ||
           entry.type === "session_info" ||
-          (entry.type === "message" && isTranscriptOnlyOpenClawAssistantMessage(entry.message)),
+          (entry.type === "message" && isTranscriptOnlyEVEAssistantMessage(entry.message)),
       }),
     ).toBe(1);
     expect(sessionManager.getLeafId()).toBe(baseAnswerId);

@@ -2,10 +2,10 @@
  * Anthropic provider runtime registration. It owns API-key/setup-token/Claude
  * CLI auth, dynamic model normalization, usage auth, media, and stream wrappers.
  */
-import { formatCliCommand, parseDurationMs } from "openclaw/plugin-sdk/cli-runtime";
-import { resolveExpiresAtMsFromDurationMs } from "openclaw/plugin-sdk/number-runtime";
+import { formatCliCommand, parseDurationMs } from "eve-agent/plugin-sdk/cli-runtime";
+import { resolveExpiresAtMsFromDurationMs } from "eve-agent/plugin-sdk/number-runtime";
 import type {
-  OpenClawPluginApi,
+  EVEPluginApi,
   ProviderAuthContext,
   ProviderAuthMethodNonInteractiveContext,
   ProviderResolveDynamicModelContext,
@@ -13,19 +13,19 @@ import type {
   ProviderResolveUsageAuthContext,
   ProviderResolvedUsageAuth,
   ProviderRuntimeModel,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   applyAuthProfileConfig,
   type AuthProfileStore,
   buildTokenProfileId,
   createProviderApiKeyAuthMethod,
   listProfilesForProvider,
-  type OpenClawConfig as ProviderAuthConfig,
+  type EVEConfig as ProviderAuthConfig,
   type ProviderAuthResult,
   suggestOAuthProfileIdForLegacyDefault,
   upsertAuthProfileWithLock,
   validateAnthropicSetupToken,
-} from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/provider-auth";
 import {
   cloneFirstTemplateModel,
   NATIVE_ANTHROPIC_REPLAY_HOOKS,
@@ -36,9 +36,9 @@ import {
   supportsClaudeAdaptiveThinking,
   supportsClaudeNativeMaxEffort,
   supportsClaudeNativeXhighEffort,
-} from "openclaw/plugin-sdk/provider-model-shared";
-import { fetchClaudeUsage } from "openclaw/plugin-sdk/provider-usage";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-model-shared";
+import { fetchClaudeUsage } from "eve-agent/plugin-sdk/provider-usage";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import * as claudeCliAuth from "./cli-auth-seam.js";
 import { buildAnthropicCliBackend } from "./cli-backend.js";
 import { buildClaudeCliCatalogEntries } from "./cli-catalog.js";
@@ -75,10 +75,10 @@ const ANTHROPIC_OPUS_47_TEMPLATE_MODEL_IDS = [
 const ANTHROPIC_SONNET_46_MODEL_ID = "claude-sonnet-4-6";
 const ANTHROPIC_SONNET_46_DOT_MODEL_ID = "claude-sonnet-4.6";
 const ANTHROPIC_SETUP_TOKEN_NOTE_LINES = [
-  "Anthropic setup-token auth is supported in OpenClaw.",
-  "OpenClaw prefers Claude CLI reuse when it is available on the host.",
-  "Anthropic staff told us this OpenClaw path is allowed again.",
-  `If you want a direct API billing path instead, use ${formatCliCommand("openclaw models auth login --provider anthropic --method api-key --set-default")} or ${formatCliCommand("openclaw models auth login --provider anthropic --method cli --set-default")}.`,
+  "Anthropic setup-token auth is supported in EVE.",
+  "EVE prefers Claude CLI reuse when it is available on the host.",
+  "Anthropic staff told us this EVE path is allowed again.",
+  `If you want a direct API billing path instead, use ${formatCliCommand("eve models auth login --provider anthropic --method api-key --set-default")} or ${formatCliCommand("eve models auth login --provider anthropic --method cli --set-default")}.`,
 ] as const;
 
 const CLAUDE_CLI_CANONICAL_ALLOWLIST_REFS = CLAUDE_CLI_DEFAULT_ALLOWLIST_REFS.map((ref) =>
@@ -630,7 +630,7 @@ function buildAnthropicAuthDoctorHint(params: {
     }`,
     `- auth store oauth profiles: ${storeOauthProfiles || "(none)"}`,
     `- suggested profile: ${suggested}`,
-    `Fix: run "${formatCliCommand("openclaw doctor --yes")}"`,
+    `Fix: run "${formatCliCommand("eve doctor --yes")}"`,
   ].join("\n");
 }
 
@@ -870,7 +870,7 @@ export function buildAnthropicProvider(): ProviderPlugin {
 }
 
 /** Register Anthropic provider, Claude CLI backend, and media understanding provider. */
-export function registerAnthropicPlugin(api: OpenClawPluginApi): void {
+export function registerAnthropicPlugin(api: EVEPluginApi): void {
   api.registerCliBackend(buildAnthropicCliBackend());
   api.registerProvider(buildAnthropicProvider());
   api.registerMediaUnderstandingProvider(anthropicMediaUnderstandingProvider);

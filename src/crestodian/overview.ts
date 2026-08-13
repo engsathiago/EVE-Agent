@@ -5,16 +5,16 @@ import {
   resolveDefaultAgentId,
 } from "../agents/agent-scope.js";
 import {
-  OPENCLAW_DOCS_URL,
-  OPENCLAW_SOURCE_URL,
-  resolveOpenClawReferencePaths,
+  EVE_DOCS_URL,
+  EVE_SOURCE_URL,
+  resolveEVEReferencePaths,
 } from "../agents/docs-path.js";
 import {
   readConfigFileSnapshot,
   resolveConfigPath,
   resolveGatewayPort,
   type ConfigFileSnapshot,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "../config/config.js";
 import { resolveAgentModelPrimaryValue } from "../config/model-input.js";
 import { normalizeAgentId } from "../routing/session-key.js";
@@ -61,7 +61,7 @@ export type CrestodianOverview = {
   };
 };
 
-type OpenClawReferencePaths = Awaited<ReturnType<typeof resolveOpenClawReferencePaths>>;
+type EVEReferencePaths = Awaited<ReturnType<typeof resolveEVEReferencePaths>>;
 
 type GatewayConnectionDetails = {
   url: string;
@@ -74,12 +74,12 @@ type CrestodianOverviewDependencies = {
   resolveConfigPath?: typeof resolveConfigPath;
   resolveGatewayPort?: typeof resolveGatewayPort;
   buildGatewayConnectionDetails?: (input: {
-    config: OpenClawConfig;
+    config: EVEConfig;
     configPath: string;
   }) => GatewayConnectionDetails;
   probeLocalCommand?: typeof probeLocalCommand;
   probeGatewayUrl?: typeof probeGatewayUrl;
-  resolveOpenClawReferencePaths?: typeof resolveOpenClawReferencePaths;
+  resolveEVEReferencePaths?: typeof resolveEVEReferencePaths;
 };
 
 function issueMessages(snapshot: ConfigFileSnapshot): string[] {
@@ -89,7 +89,7 @@ function issueMessages(snapshot: ConfigFileSnapshot): string[] {
   });
 }
 
-function buildAgentSummaries(cfg: OpenClawConfig): CrestodianAgentSummary[] {
+function buildAgentSummaries(cfg: EVEConfig): CrestodianAgentSummary[] {
   const defaultAgentId = resolveDefaultAgentId(cfg);
   const entries = listAgentEntries(cfg);
   if (entries.length === 0) {
@@ -129,8 +129,8 @@ function buildAgentSummaries(cfg: OpenClawConfig): CrestodianAgentSummary[] {
   return summaries;
 }
 
-function resolveFastTestReferences(env: NodeJS.ProcessEnv): OpenClawReferencePaths | undefined {
-  if (env.OPENCLAW_TEST_FAST !== "1") {
+function resolveFastTestReferences(env: NodeJS.ProcessEnv): EVEReferencePaths | undefined {
+  if (env.EVE_TEST_FAST !== "1") {
     return undefined;
   }
   const sourcePath = process.cwd();
@@ -167,7 +167,7 @@ export async function loadCrestodianOverview(
   } catch (err) {
     gatewayError = err instanceof Error ? err.message : String(err);
   }
-  const resolveReferences = deps.resolveOpenClawReferencePaths ?? resolveOpenClawReferencePaths;
+  const resolveReferences = deps.resolveEVEReferencePaths ?? resolveEVEReferencePaths;
   const commandProbe = deps.probeLocalCommand ?? probeLocalCommand;
   const [codex, claude, gateway, references] = await Promise.all([
     // Probes run in parallel; each individual probe is timeout-bounded in probes.ts.
@@ -208,9 +208,9 @@ export async function loadCrestodianOverview(
     },
     references: {
       docsPath: references.docsPath ?? undefined,
-      docsUrl: OPENCLAW_DOCS_URL,
+      docsUrl: EVE_DOCS_URL,
       sourcePath: references.sourcePath ?? undefined,
-      sourceUrl: OPENCLAW_SOURCE_URL,
+      sourceUrl: EVE_SOURCE_URL,
     },
   };
 }

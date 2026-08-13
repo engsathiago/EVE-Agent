@@ -1,20 +1,20 @@
 import { createHash } from "node:crypto";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
   getNodeSqliteKysely,
 } from "../infra/kysely-sync.js";
 import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.types.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  openEVEStateDatabase,
+  runEVEStateWriteTransaction,
+} from "../state/eve-state-db.js";
 const AGENT_MODEL_CATALOG_CACHE_VERSION = 1;
 const AGENT_MODEL_CATALOG_CACHE_TTL_MS = 30 * 60 * 1000;
 
-type AgentModelCatalogDatabase = Pick<OpenClawStateKyselyDatabase, "agent_model_catalogs">;
+type AgentModelCatalogDatabase = Pick<EVEStateKyselyDatabase, "agent_model_catalogs">;
 
 type CachedAgentModelCatalogPayload = {
   version: typeof AGENT_MODEL_CATALOG_CACHE_VERSION;
@@ -24,7 +24,7 @@ type CachedAgentModelCatalogPayload = {
 type AgentModelCatalogCacheKeyInput = {
   agentDir: string;
   cacheScope?: unknown;
-  config: OpenClawConfig;
+  config: EVEConfig;
   metadataSnapshot?: PluginMetadataSnapshot;
   workspaceDir?: string;
 };
@@ -105,7 +105,7 @@ export function readCachedAgentModelCatalog(
   params: ReadCachedAgentModelCatalogParams,
 ): unknown[] | undefined {
   try {
-    const database = openOpenClawStateDatabase();
+    const database = openEVEStateDatabase();
     const db = getNodeSqliteKysely<AgentModelCatalogDatabase>(database.db);
     const row = executeSqliteQueryTakeFirstSync(
       database.db,
@@ -134,7 +134,7 @@ export function writeCachedAgentModelCatalog(params: WriteCachedAgentModelCatalo
       version: AGENT_MODEL_CATALOG_CACHE_VERSION,
       entries: params.entries,
     } satisfies CachedAgentModelCatalogPayload);
-    runOpenClawStateWriteTransaction((database) => {
+    runEVEStateWriteTransaction((database) => {
       const db = getNodeSqliteKysely<AgentModelCatalogDatabase>(database.db);
       executeSqliteQuerySync(
         database.db,

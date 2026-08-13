@@ -1,5 +1,5 @@
 // Shared user-facing compaction notice payload helpers.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ReplyPayload } from "../types.js";
 
 export type CompactionNoticePhase = "start" | "end" | "incomplete" | "skipped";
@@ -11,7 +11,7 @@ const COMPACTION_NOTICE_TEXT: Record<CompactionNoticePhase, string> = {
   skipped: "🧹 Compaction not needed",
 };
 
-export function shouldNotifyUserAboutCompaction(cfg?: OpenClawConfig): boolean {
+export function shouldNotifyUserAboutCompaction(cfg?: EVEConfig): boolean {
   return cfg?.agents?.defaults?.compaction?.notifyUser === true;
 }
 

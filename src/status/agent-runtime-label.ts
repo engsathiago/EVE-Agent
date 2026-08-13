@@ -2,16 +2,16 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text.js";
 import { isCliProvider } from "../agents/model-selection.js";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 // Status runtime labels turn harness/provider/session state into a short
 // operator-facing name, sanitizing any persisted ACP/backend text.
 const AGENT_RUNTIME_LABELS: Readonly<Record<string, string>> = {
-  openclaw: "OpenClaw Default",
+  eve: "EVE Default",
   codex: "OpenAI Codex",
   "codex-cli": "OpenAI Codex",
   "claude-cli": "Claude CLI",
@@ -19,7 +19,7 @@ const AGENT_RUNTIME_LABELS: Readonly<Record<string, string>> = {
 };
 
 export function resolveAgentRuntimeLabel(args: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionEntry?: Pick<
     SessionEntry,
     "acp" | "agentRuntimeOverride" | "agentHarnessId" | "modelProvider" | "providerOverride"
@@ -55,5 +55,5 @@ export function resolveAgentRuntimeLabel(args: {
     );
   }
 
-  return AGENT_RUNTIME_LABELS.openclaw;
+  return AGENT_RUNTIME_LABELS.eve;
 }

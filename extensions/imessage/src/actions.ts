@@ -1,5 +1,5 @@
 // Imessage plugin module implements actions behavior.
-import { readBooleanParam } from "openclaw/plugin-sdk/boolean-param";
+import { readBooleanParam } from "eve-agent/plugin-sdk/boolean-param";
 import {
   createActionGate,
   jsonResult,
@@ -7,15 +7,15 @@ import {
   readPositiveIntegerParam,
   readReactionParams,
   readStringParam,
-} from "openclaw/plugin-sdk/channel-actions";
+} from "eve-agent/plugin-sdk/channel-actions";
 import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
-} from "openclaw/plugin-sdk/channel-contract";
-import { createLazyRuntimeNamedExport } from "openclaw/plugin-sdk/lazy-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { extractToolSend } from "openclaw/plugin-sdk/tool-send";
+} from "eve-agent/plugin-sdk/channel-contract";
+import { createLazyRuntimeNamedExport } from "eve-agent/plugin-sdk/lazy-runtime";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { extractToolSend } from "eve-agent/plugin-sdk/tool-send";
 import { resolveIMessageAccount } from "./accounts.js";
 import { IMESSAGE_ACTION_NAMES, IMESSAGE_ACTIONS } from "./actions-contract.js";
 import { DEFAULT_IMESSAGE_PROBE_TIMEOUT_MS } from "./constants.js";
@@ -449,10 +449,10 @@ export const imessageMessageActions: ChannelMessageActionAdapter = {
           ? ` imsg reports: ${privateApiStatus.statusMessage}`
           : "";
         log.warn(
-          `iMessage ${action} blocked: private API bridge unavailable (accountId=${account.accountId}, cliPath=${cliPathForProbe}). Run \`imsg launch\` to re-inject the dylib, then \`openclaw channels status\` to refresh.${reason}`,
+          `iMessage ${action} blocked: private API bridge unavailable (accountId=${account.accountId}, cliPath=${cliPathForProbe}). Run \`imsg launch\` to re-inject the dylib, then \`eve channels status\` to refresh.${reason}`,
         );
         throw new Error(
-          `iMessage ${action} requires the imsg private API bridge. Run imsg launch, then openclaw channels status to refresh capability detection.${reason}`,
+          `iMessage ${action} requires the imsg private API bridge. Run imsg launch, then eve channels status to refresh capability detection.${reason}`,
         );
       }
     };
@@ -576,14 +576,14 @@ export const imessageMessageActions: ChannelMessageActionAdapter = {
           );
         }
         // Reply-with-attachment requires the `imsg send-rich --file` flag
-        // (openclaw/imsg#114). Older imsg builds reject the option, so
+        // (eve/imsg#114). Older imsg builds reject the option, so
         // refuse loudly here rather than letting send-rich ship the text
         // alone and silently drop the attachment — the original symptom
-        // of openclaw/openclaw#79822.
+        // of eve/eve#79822.
         if (privateApiStatus?.cliCapabilities?.sendRichSupportsAttachment !== true) {
           throw new Error(
             "iMessage reply with an attachment needs an imsg build that exposes `send-rich --file` " +
-              "(openclaw/imsg#114). Upgrade imsg, or use action 'upload-file' (with filePath/filename) " +
+              "(eve/imsg#114). Upgrade imsg, or use action 'upload-file' (with filePath/filename) " +
               "or action 'send' (with media) to deliver the file plus a separate 'reply' for any text.",
           );
         }

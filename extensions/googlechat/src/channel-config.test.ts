@@ -1,7 +1,7 @@
 // Googlechat tests cover channel config plugin behavior.
-import type { ChannelOutboundPayloadHint } from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+import type { ChannelOutboundPayloadHint } from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   clearGoogleChatApprovalCardBindingsForTest,
@@ -33,7 +33,7 @@ describe("googlechatPlugin config adapter", () => {
         providers: {
           google_chat_service_account: {
             source: "file",
-            path: "/tmp/openclaw-missing-google-chat-service-account",
+            path: "/tmp/eve-missing-google-chat-service-account",
             mode: "singleValue",
           },
         },
@@ -51,7 +51,7 @@ describe("googlechatPlugin config adapter", () => {
           defaultTo: "spaces/AAA",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(googlechatPlugin.config.resolveAllowFrom?.({ cfg, accountId: "default" })).toEqual([
       "users/123",
@@ -77,7 +77,7 @@ describe("googlechatPlugin config adapter", () => {
           dm: { allowFrom: ["users/123"] },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const payload: ReplyPayload = {
       channelData: {
         execApproval: {
@@ -123,7 +123,7 @@ describe("googlechatPlugin config adapter", () => {
 
     expect(
       googlechatPlugin.outbound?.normalizePayload?.({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         payload,
       }),
     ).toBeNull();
@@ -154,19 +154,19 @@ describe("googlechatPlugin config adapter", () => {
 
     expect(
       googlechatPlugin.outbound?.normalizePayload?.({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         payload: unrelatedPayload,
       }),
     ).toBe(unrelatedPayload);
     expect(
       googlechatPlugin.outbound?.normalizePayload?.({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         payload: metadataPayload,
       }),
     ).toBeNull();
     expect(
       googlechatPlugin.outbound?.normalizePayload?.({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         payload: structuredPayload,
       }),
     ).toBe(structuredPayload);

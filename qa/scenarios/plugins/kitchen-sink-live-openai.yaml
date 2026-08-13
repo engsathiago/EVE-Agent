@@ -29,12 +29,12 @@ scenario:
     - scripts/e2e/kitchen-sink-plugin-docker.sh
   execution:
     kind: flow
-    summary: Install @openclaw/kitchen-sink, restart the gateway, exercise command inventory/tool/channel/OpenAI paths, and record CPU/RSS/log evidence.
+    summary: Install @eve/kitchen-sink, restart the gateway, exercise command inventory/tool/channel/OpenAI paths, and record CPU/RSS/log evidence.
     config:
       requiredProviderMode: live-frontier
       requiredProvider: openai
-      pluginSpec: npm:@openclaw/kitchen-sink@latest
-      pluginId: openclaw-kitchen-sink-fixture
+      pluginSpec: npm:@eve/kitchen-sink@latest
+      pluginId: eve-kitchen-sink-fixture
       pluginPersonality: conformance
       adversarialPersonality: adversarial
       channelId: kitchen-sink-channel

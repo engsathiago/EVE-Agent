@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ReplyPayload } from "../types.js";
 import {
   createDispatcher,
@@ -92,7 +92,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -151,7 +151,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -232,7 +232,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -305,7 +305,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -376,7 +376,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -448,7 +448,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -503,7 +503,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -556,7 +556,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });
@@ -606,7 +606,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       dispatcher,
       replyResolver,
     });

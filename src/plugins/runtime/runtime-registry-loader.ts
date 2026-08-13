@@ -1,5 +1,5 @@
 // Runtime registry loader assembles activated plugin runtimes from config and registry metadata.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { withActivatedPluginIds } from "../activation-context.js";
 import {
   getLoadedRuntimePluginRegistry,
@@ -11,7 +11,7 @@ import {
   resolveDiscoverableScopedChannelPluginIds,
 } from "../channel-plugin-ids.js";
 import { resolveEffectivePluginIds } from "../effective-plugin-ids.js";
-import { loadOpenClawPlugins } from "../loader.js";
+import { loadEVEPlugins } from "../loader.js";
 import {
   hasExplicitPluginIdScope,
   hasNonEmptyPluginIdScope,
@@ -109,7 +109,7 @@ function resolveScopePluginIds(params: {
 }
 
 function resolveOrLoadRuntimePluginRegistry(
-  loadOptions: NonNullable<Parameters<typeof loadOpenClawPlugins>[0]>,
+  loadOptions: NonNullable<Parameters<typeof loadEVEPlugins>[0]>,
 ): void {
   if (
     !getLoadedRuntimePluginRegistry({
@@ -119,14 +119,14 @@ function resolveOrLoadRuntimePluginRegistry(
       requiredPluginIds: loadOptions.onlyPluginIds,
     })
   ) {
-    loadOpenClawPlugins(loadOptions);
+    loadEVEPlugins(loadOptions);
   }
 }
 
 export function ensurePluginRegistryLoaded(options?: {
   scope?: PluginRegistryScope;
-  config?: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config?: EVEConfig;
+  activationSourceConfig?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   workspaceDir?: string;
   onlyPluginIds?: string[];

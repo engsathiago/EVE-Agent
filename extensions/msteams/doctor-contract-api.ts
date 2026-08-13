@@ -3,8 +3,8 @@ import crypto from "node:crypto";
 import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
-import { resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
+import { resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
 import { normalizeStoredConversationId } from "./src/conversation-store-helpers.js";
 import {
   buildMSTeamsConversationStateKey,

@@ -5,7 +5,7 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type {
   SandboxBackendCommandParams,
   SandboxBackendCommandResult,
@@ -68,7 +68,7 @@ export const sshSandboxBackendManager: SandboxBackendManager = {
           "/bin/sh",
           "-c",
           'if [ -d "$1" ]; then printf "1\\n"; else printf "0\\n"; fi',
-          "openclaw-sandbox-check",
+          "eve-sandbox-check",
           runtimePaths.runtimeRootDir,
         ]),
       });
@@ -98,7 +98,7 @@ export const sshSandboxBackendManager: SandboxBackendManager = {
           "/bin/sh",
           "-c",
           'rm -rf -- "$1"',
-          "openclaw-sandbox-remove",
+          "eve-sandbox-remove",
           runtimePaths.runtimeRootDir,
         ]),
         allowFailure: true,
@@ -224,7 +224,7 @@ class SshSandboxBackendImpl {
           "/bin/sh",
           "-c",
           'if [ -d "$1" ]; then printf "1\\n"; else printf "0\\n"; fi',
-          "openclaw-sandbox-check",
+          "eve-sandbox-check",
           this.params.runtimePaths.runtimeRootDir,
         ]),
       });
@@ -278,7 +278,7 @@ class SshSandboxBackendImpl {
         "/bin/sh",
         "-c",
         `${ENSURE_REMOTE_REAL_DIRECTORY_SCRIPT}\nfind "$1" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +`,
-        "openclaw-sandbox-clear",
+        "eve-sandbox-clear",
         remoteDir,
         this.params.runtimePaths.runtimeRootDir,
       ]),
@@ -312,7 +312,7 @@ class SshSandboxBackendImpl {
           "/bin/sh",
           "-c",
           params.script,
-          "openclaw-sandbox-fs",
+          "eve-sandbox-fs",
           ...(params.args ?? []),
         ]),
         stdin: params.stdin,
@@ -347,7 +347,7 @@ export function resolveSshRuntimePaths(
     remoteSkillsWorkspaceDir: path.posix.join(
       runtimeRootDir,
       "workspace",
-      ".openclaw",
+      ".eve",
       "sandbox-skills",
     ),
   };
@@ -365,5 +365,5 @@ function buildSshSandboxRuntimeId(scopeKey: string): string {
     (acc, char) => ((acc * 33) ^ char.charCodeAt(0)) >>> 0,
     5381,
   );
-  return `openclaw-ssh-${safe || "session"}-${hash.toString(16).slice(0, 8)}`;
+  return `eve-ssh-${safe || "session"}-${hash.toString(16).slice(0, 8)}`;
 }

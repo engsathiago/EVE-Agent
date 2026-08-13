@@ -43,13 +43,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized scheduler helper JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-helper-`);
+    const root = mkdtempSync(`${tmpdir()}/eve-docker-e2e-helper-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e.mjs", "failed-reruns", file, {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        EVE_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -83,13 +83,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized timing JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-timings-`);
+    const root = mkdtempSync(`${tmpdir()}/eve-docker-e2e-timings-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e-timings.mjs", file, {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        EVE_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -123,13 +123,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized rerun JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-`);
+    const root = mkdtempSync(`${tmpdir()}/eve-docker-e2e-rerun-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e-rerun.mjs", file, "--ref", "abc123", {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        EVE_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -145,7 +145,7 @@ describe("Docker E2E helper CLIs", () => {
   it.each(["summary.json", "failures.json"])(
     "prints local cleanup reruns without synthesizing Docker lane reruns from %s",
     (fileName) => {
-      const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-`);
+      const root = mkdtempSync(`${tmpdir()}/eve-docker-e2e-rerun-`);
       try {
         const cleanupFailure = {
           lane: "cleanup-smoke",

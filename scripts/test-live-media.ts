@@ -1,4 +1,4 @@
-// Test Live Media script supports OpenClaw repository automation.
+// Test Live Media script supports EVE repository automation.
 
 import { pathToFileURL } from "node:url";
 import { formatErrorMessage } from "../src/infra/errors.ts";
@@ -18,19 +18,19 @@ export const MEDIA_SUITES: Record<MediaSuiteId, MediaSuiteConfig> = {
   image: {
     id: "image",
     testFile: "test/image-generation.runtime.live.test.ts",
-    providerEnvVar: "OPENCLAW_LIVE_IMAGE_GENERATION_PROVIDERS",
+    providerEnvVar: "EVE_LIVE_IMAGE_GENERATION_PROVIDERS",
     providers: ["deepinfra", "fal", "google", "minimax", "openai", "openrouter", "vydra", "xai"],
   },
   music: {
     id: "music",
     testFile: "extensions/music-generation-providers.live.test.ts",
-    providerEnvVar: "OPENCLAW_LIVE_MUSIC_GENERATION_PROVIDERS",
+    providerEnvVar: "EVE_LIVE_MUSIC_GENERATION_PROVIDERS",
     providers: ["fal", "google", "minimax", "openrouter"],
   },
   video: {
     id: "video",
     testFile: "extensions/video-generation-providers.live.test.ts",
-    providerEnvVar: "OPENCLAW_LIVE_VIDEO_GENERATION_PROVIDERS",
+    providerEnvVar: "EVE_LIVE_VIDEO_GENERATION_PROVIDERS",
     providers: [
       "alibaba",
       "byteplus",

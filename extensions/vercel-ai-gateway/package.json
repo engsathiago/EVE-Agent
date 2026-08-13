@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/vercel-ai-gateway-provider",
+  "name": "@eve/vercel-ai-gateway-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Vercel AI Gateway provider plugin",
+  "description": "EVE Vercel AI Gateway provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

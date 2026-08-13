@@ -2,9 +2,9 @@
  * Synchronous Amazon Bedrock Mantle provider registration. It wires discovery,
  * runtime bearer-token preparation, stream wrappers, and failover classifiers.
  */
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolvePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   mergeImplicitMantleProvider,
   resolveImplicitMantleProvider,
@@ -19,13 +19,13 @@ type BedrockMantlePluginConfig = {
   };
 };
 
-/** Register the Amazon Bedrock Mantle provider with OpenClaw. */
-export function registerBedrockMantlePlugin(api: OpenClawPluginApi): void {
+/** Register the Amazon Bedrock Mantle provider with EVE. */
+export function registerBedrockMantlePlugin(api: EVEPluginApi): void {
   const providerId = "amazon-bedrock-mantle";
   const startupPluginConfig = (api.pluginConfig ?? {}) as BedrockMantlePluginConfig;
 
   function resolveCurrentPluginConfig(
-    config: OpenClawConfig | undefined,
+    config: EVEConfig | undefined,
   ): BedrockMantlePluginConfig | undefined {
     const runtimePluginConfig = resolvePluginConfigObject(config, providerId);
     return (

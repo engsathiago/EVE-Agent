@@ -2,18 +2,18 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { withTempDir } from "openclaw/plugin-sdk/test-env";
+import { withTempDir } from "eve-agent/plugin-sdk/test-env";
 
 const ssrfRuntimeMocks = vi.hoisted(() => ({
   fetchWithSsrFGuard: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", () => ({
   fetchWithSsrFGuard: ssrfRuntimeMocks.fetchWithSsrFGuard,
 }));
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/ssrf-runtime");
+  vi.doUnmock("eve-agent/plugin-sdk/ssrf-runtime");
   vi.resetModules();
 });
 
@@ -132,7 +132,7 @@ describe("engine/utils/stt", () => {
   });
 
   it("posts audio to OpenAI-compatible transcription endpoint", async () => {
-    await withTempDir("openclaw-qqbot-stt-", async (tmpDir) => {
+    await withTempDir("eve-qqbot-stt-", async (tmpDir) => {
       const audioPath = path.join(tmpDir, "voice.wav");
       fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
 
@@ -178,7 +178,7 @@ describe("engine/utils/stt", () => {
   });
 
   it("bounds STT error bodies without using response.text()", async () => {
-    await withTempDir("openclaw-qqbot-stt-error-", async (tmpDir) => {
+    await withTempDir("eve-qqbot-stt-error-", async (tmpDir) => {
       const audioPath = path.join(tmpDir, "voice.wav");
       fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
 

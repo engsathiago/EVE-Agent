@@ -3,7 +3,7 @@ import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { BUNDLED_RUNTIME_SIDECAR_PATHS } from "../plugins/runtime-sidecar-paths.js";
 import { pathExists } from "../utils.js";
 import {
@@ -20,7 +20,7 @@ import { readPackageVersion } from "./package-json.js";
 import { applyPathPrepend } from "./path-prepend.js";
 import { parseSemver } from "./runtime-guard.js";
 
-/** Supported package managers for OpenClaw global install and update flows. */
+/** Supported package managers for EVE global install and update flows. */
 export type GlobalInstallManager = "npm" | "pnpm" | "bun";
 
 /** Runs package-manager commands with timeout and environment control. */
@@ -51,14 +51,14 @@ export type ResolvedGlobalInstallTarget = ResolvedGlobalInstallCommand & {
   directNodeModulesRoot?: boolean;
 };
 
-const PRIMARY_PACKAGE_NAME = "openclaw";
+const PRIMARY_PACKAGE_NAME = "eve";
 const ALL_PACKAGE_NAMES = [PRIMARY_PACKAGE_NAME] as const;
 const GLOBAL_RENAME_PREFIX = ".";
 /** npm-compatible spec used when the user asks to install the moving main branch. */
-export const OPENCLAW_MAIN_PACKAGE_SPEC = "github:openclaw/openclaw#main";
+export const EVE_MAIN_PACKAGE_SPEC = "github:eve/eve#main";
 const COREPACK_ENABLE_DOWNLOAD_PROMPT_DEFAULT = "0";
 const NPM_GLOBAL_INSTALL_QUIET_FLAGS = ["--no-fund", "--no-audit", "--loglevel=error"] as const;
-const PNPM_OPENCLAW_BUILD_ALLOWLIST_FLAG = `--allow-build=${PRIMARY_PACKAGE_NAME}`;
+const PNPM_EVE_BUILD_ALLOWLIST_FLAG = `--allow-build=${PRIMARY_PACKAGE_NAME}`;
 const FIRST_PACKAGED_DIST_INVENTORY_VERSION = { major: 2026, minor: 4, patch: 15 };
 const OMITTED_PRIVATE_QA_BUNDLED_PLUGIN_ROOTS = new Set([
   "dist/extensions/qa-channel",
@@ -115,7 +115,7 @@ function stripPrimaryPackageAlias(spec: string): string {
     : normalized;
 }
 
-function isPnpmOpenClawSourceInstallSpec(spec: string): boolean {
+function isPnpmEVESourceInstallSpec(spec: string): boolean {
   const target = stripPrimaryPackageAlias(spec);
   return (
     /^github:/i.test(target) ||
@@ -125,7 +125,7 @@ function isPnpmOpenClawSourceInstallSpec(spec: string): boolean {
 }
 
 /**
- * Extracts a pinned installed version from package specs like `openclaw@1.2.3`.
+ * Extracts a pinned installed version from package specs like `eve@1.2.3`.
  * Moving tags, URLs, git refs, and aliases return null because they cannot be
  * compared reliably after install.
  */
@@ -152,7 +152,7 @@ export function resolveExpectedInstalledVersionFromSpec(
 }
 
 /**
- * Verifies that a global package root looks like a packaged OpenClaw install
+ * Verifies that a global package root looks like a packaged EVE install
  * and, when supplied, matches the expected concrete version.
  */
 export async function collectInstalledGlobalPackageErrors(params: {
@@ -284,7 +284,7 @@ async function collectCriticalInstalledPackageDistPaths(packageRoot: string): Pr
       }
       if (
         (await pathExists(path.join(packageRoot, pluginRoot, "package.json"))) ||
-        (await pathExists(path.join(packageRoot, pluginRoot, "openclaw.plugin.json")))
+        (await pathExists(path.join(packageRoot, pluginRoot, "eve.plugin.json")))
       ) {
         expectedFiles.add(relativePath);
       }
@@ -347,7 +347,7 @@ async function resolvePortableGitPathPrepend(): Promise<string[]> {
   if (!localAppData) {
     return [];
   }
-  const portableGitRoot = path.join(localAppData, "OpenClaw", "deps", "portable-git");
+  const portableGitRoot = path.join(localAppData, "EVE", "deps", "portable-git");
   const candidates = [
     path.join(portableGitRoot, "mingw64", "bin"),
     path.join(portableGitRoot, "usr", "bin"),
@@ -390,14 +390,14 @@ export function resolveGlobalInstallSpec(params: {
   env?: NodeJS.ProcessEnv;
 }): string {
   const override =
-    params.env?.OPENCLAW_UPDATE_PACKAGE_SPEC?.trim() ||
-    process.env.OPENCLAW_UPDATE_PACKAGE_SPEC?.trim();
+    params.env?.EVE_UPDATE_PACKAGE_SPEC?.trim() ||
+    process.env.EVE_UPDATE_PACKAGE_SPEC?.trim();
   if (override) {
     return override;
   }
   const target = normalizePackageTarget(params.tag);
   if (isMainPackageTarget(target)) {
-    return OPENCLAW_MAIN_PACKAGE_SPEC;
+    return EVE_MAIN_PACKAGE_SPEC;
   }
   if (isExplicitPackageInstallSpec(target)) {
     return target;
@@ -508,7 +508,7 @@ export function resolveNpmGlobalPrefixLayoutFromGlobalRoot(
 
 /**
  * Derives npm's global package and bin directories from a prefix root.
- * Used for staged installs where OpenClaw creates the prefix itself.
+ * Used for staged installs where EVE creates the prefix itself.
  */
 export function resolveNpmGlobalPrefixLayoutFromPrefix(prefix: string): NpmGlobalPrefixLayout {
   const resolvedPrefix = path.resolve(prefix);
@@ -856,7 +856,7 @@ export async function detectGlobalInstallManagerForRoot(
 }
 
 /**
- * Detects an installed global OpenClaw package by probing package-manager roots
+ * Detects an installed global EVE package by probing package-manager roots
  * when no trusted package root is already available.
  */
 export async function detectGlobalInstallManagerByPresence(
@@ -885,7 +885,7 @@ export async function detectGlobalInstallManagerByPresence(
 }
 
 /**
- * Builds the primary package-manager argv for a global OpenClaw install.
+ * Builds the primary package-manager argv for a global EVE install.
  * npm receives quiet/freshness-bypass flags; pnpm source installs allow builds.
  */
 export function globalInstallArgs(
@@ -901,7 +901,7 @@ export function globalInstallArgs(
       "add",
       "-g",
       ...(installPrefix ? ["--global-dir", installPrefix] : []),
-      ...(isPnpmOpenClawSourceInstallSpec(spec) ? [PNPM_OPENCLAW_BUILD_ALLOWLIST_FLAG] : []),
+      ...(isPnpmEVESourceInstallSpec(spec) ? [PNPM_EVE_BUILD_ALLOWLIST_FLAG] : []),
       spec,
     ];
   }

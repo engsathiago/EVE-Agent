@@ -53,8 +53,8 @@ describe("QA UX Matrix evidence producer CLI", () => {
   });
 
   it("sanitizes local checkout paths from generated evidence artifacts", () => {
-    const artifactBase = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ux-evidence-test-"));
-    const fakeRepoRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ux-repo-test-"));
+    const artifactBase = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ux-evidence-test-"));
+    const fakeRepoRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ux-repo-test-"));
     try {
       const result = runCli(
         "--artifact-base",

@@ -5,7 +5,7 @@ import { resolveHomeRelativePath } from "../infra/home-dir.js";
 import { isPathInside } from "../infra/path-guards.js";
 
 // Runtime trajectory path helpers. Paths are either beside the session file or
-// inside OPENCLAW_TRAJECTORY_DIR, with names scrubbed for filesystem safety.
+// inside EVE_TRAJECTORY_DIR, with names scrubbed for filesystem safety.
 export const TRAJECTORY_RUNTIME_CAPTURE_MAX_BYTES = 10 * 1024 * 1024;
 export const TRAJECTORY_RUNTIME_FILE_MAX_BYTES = 50 * 1024 * 1024;
 export const TRAJECTORY_RUNTIME_EVENT_MAX_BYTES = 256 * 1024;
@@ -50,7 +50,7 @@ export function resolveTrajectoryFilePath(params: {
   sessionId: string;
 }): string {
   const env = params.env ?? process.env;
-  const dirOverride = env.OPENCLAW_TRAJECTORY_DIR?.trim();
+  const dirOverride = env.EVE_TRAJECTORY_DIR?.trim();
   if (dirOverride) {
     return resolveContainedPath(
       resolveHomeRelativePath(dirOverride),

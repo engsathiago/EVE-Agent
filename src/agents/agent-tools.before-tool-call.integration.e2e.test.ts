@@ -351,7 +351,7 @@ describe("before_tool_call hook deduplication (#15502)", () => {
     expect(beforeToolCallHook).toHaveBeenCalledTimes(1);
   });
 
-  it("passes agent context to outer code-mode exec hooks through OpenClaw custom tools", async () => {
+  it("passes agent context to outer code-mode exec hooks through EVE custom tools", async () => {
     beforeToolCallHook = installBeforeToolCallHook({
       runBeforeToolCallImpl: async () => ({
         block: true,
@@ -1308,7 +1308,7 @@ describe("before_tool_call hook integration for client tools", () => {
 
   it("lets trusted policies read session extensions for client tools when config is provided", async () => {
     resetGlobalHookRunner();
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-client-tool-policy-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-client-tool-policy-"));
     const storePath = path.join(stateDir, "sessions.json");
     const config = { session: { store: storePath } };
     const seen: unknown[] = [];

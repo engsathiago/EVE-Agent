@@ -4,11 +4,11 @@ import {
   formatDocsLink,
   formatHelpExamples,
   theme,
-} from "openclaw/plugin-sdk/memory-core-host-runtime-cli";
+} from "eve-agent/plugin-sdk/memory-core-host-runtime-cli";
 import {
   parseStrictNonNegativeInteger,
   parseStrictPositiveInteger,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import type {
   MemoryCommandOptions,
   MemoryPromoteCommandOptions,
@@ -114,44 +114,44 @@ export function registerMemoryCli(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw memory status", "Show index and provider status."],
+          ["eve memory status", "Show index and provider status."],
           [
-            "openclaw memory status --fix",
+            "eve memory status --fix",
             "Repair stale recall locks and normalize promotion metadata.",
           ],
-          ["openclaw memory status --deep", "Probe embedding provider readiness."],
-          ["openclaw memory index --force", "Force a full reindex."],
-          ['openclaw memory search "meeting notes"', "Quick search using positional query."],
+          ["eve memory status --deep", "Probe embedding provider readiness."],
+          ["eve memory index --force", "Force a full reindex."],
+          ['eve memory search "meeting notes"', "Quick search using positional query."],
           [
-            'openclaw memory search --query "deployment" --max-results 20',
+            'eve memory search --query "deployment" --max-results 20',
             "Limit results for focused troubleshooting.",
           ],
           [
-            `openclaw memory promote --limit 10 --min-score ${DEFAULT_PROMOTION_MIN_SCORE}`,
+            `eve memory promote --limit 10 --min-score ${DEFAULT_PROMOTION_MIN_SCORE}`,
             "Review weighted short-term candidates for long-term memory.",
           ],
           [
-            "openclaw memory promote --apply",
+            "eve memory promote --apply",
             "Append top-ranked short-term candidates into MEMORY.md.",
           ],
           [
-            'openclaw memory promote-explain "router vlan"',
+            'eve memory promote-explain "router vlan"',
             "Explain why a specific candidate would or would not promote.",
           ],
           [
-            "openclaw memory rem-harness --json",
+            "eve memory rem-harness --json",
             "Preview REM reflections, candidate truths, and deep promotion output.",
           ],
           [
-            "openclaw memory rem-backfill --path ./memory",
+            "eve memory rem-backfill --path ./memory",
             "Write grounded historical REM entries into DREAMS.md for UI review.",
           ],
           [
-            "openclaw memory rem-backfill --path ./memory --stage-short-term",
+            "eve memory rem-backfill --path ./memory --stage-short-term",
             "Also seed durable grounded candidates into the live short-term promotion store.",
           ],
-          ["openclaw memory status --json", "Output machine-readable JSON (good for scripts)."],
-        ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/memory", "docs.openclaw.ai/cli/memory")}\n`,
+          ["eve memory status --json", "Output machine-readable JSON (good for scripts)."],
+        ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/memory", "docs.eve.ai/cli/memory")}\n`,
     );
 
   memory

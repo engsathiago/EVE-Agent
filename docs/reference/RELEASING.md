@@ -7,7 +7,7 @@ read_when:
   - Looking for version naming and cadence
 ---
 
-OpenClaw has three public release lanes:
+EVE has three public release lanes:
 
 - stable: tagged releases that publish to npm `beta` by default, or to npm `latest` when explicitly requested
 - beta: prerelease tags that publish to npm `beta`
@@ -44,7 +44,7 @@ OpenClaw has three public release lanes:
 - `latest` means the current promoted stable npm release
 - `beta` means the current beta install target
 - Stable and stable correction releases publish to npm `beta` by default; release operators can target `latest` explicitly, or promote a vetted beta build later
-- Every stable OpenClaw release ships the npm package, macOS app, and signed
+- Every stable EVE release ships the npm package, macOS app, and signed
   Windows Hub installers together; beta releases normally validate and publish
   the npm/package path first, with native app build/sign/notarize/promote
   reserved for stable unless explicitly requested
@@ -87,7 +87,7 @@ the maintainer-only release runbook.
    drift before tagging. Then run the local deterministic preflight:
    `pnpm check:test-types`, `pnpm check:architecture`,
    `pnpm build && pnpm ui:build`, and `pnpm release:check`.
-6. Run `OpenClaw NPM Release` with `preflight_only=true`. Before a tag exists,
+6. Run `EVE NPM Release` with `preflight_only=true`. Before a tag exists,
    a full 40-character release-branch SHA is allowed for validation-only
    preflight. The preflight generates dependency release evidence for the
    exact checked-out dependency graph and stores it in the npm preflight
@@ -108,12 +108,12 @@ the maintainer-only release runbook.
    the full release validation and npm preflight evidence, runs Parallels
    fresh/update proof against the exact prepared tarball plus Telegram package
    proof, records plugin npm and ClawHub plans, and prints the exact
-   `OpenClaw Release Publish` command only after the evidence bundle is green.
-   `OpenClaw Release Publish` dispatches the selected or all-publishable plugin
+   `EVE Release Publish` command only after the evidence bundle is green.
+   `EVE Release Publish` dispatches the selected or all-publishable plugin
    packages to npm and the same set to ClawHub in parallel, and then promotes the
-   prepared OpenClaw npm preflight artifact with the matching dist-tag as soon as
+   prepared EVE npm preflight artifact with the matching dist-tag as soon as
    plugin npm publish succeeds.
-   After the OpenClaw npm publish child succeeds, it creates or updates the
+   After the EVE npm publish child succeeds, it creates or updates the
    matching GitHub release/prerelease page from the complete matching
    `CHANGELOG.md` section. Stable releases published to npm `latest` become the
    GitHub latest release; stable maintenance releases kept on npm `beta` are
@@ -123,8 +123,8 @@ the maintainer-only release runbook.
    response. The publish workflow prints child run IDs immediately, auto-approves
    release environment gates the workflow token is allowed to approve, summarizes
    failed child jobs with log tails, closes out the GitHub release and dependency
-   evidence as soon as OpenClaw npm publish succeeds, waits for ClawHub whenever
-   OpenClaw npm is being published, then runs `pnpm release:verify-beta` and
+   evidence as soon as EVE npm publish succeeds, waits for ClawHub whenever
+   EVE npm is being published, then runs `pnpm release:verify-beta` and
    uploads postpublish evidence for the GitHub release, npm package, selected
    plugin npm packages, selected ClawHub packages, child workflow run IDs, and
    optional NPM Telegram run ID. The ClawHub path retries transient CLI
@@ -132,24 +132,24 @@ the maintainer-only release runbook.
    preview cell flakes, and ends with registry verification for every expected
    plugin version so partial publishes remain visible and retryable. Then run the post-publish
    package acceptance against the published
-   `openclaw@YYYY.M.PATCH-beta.N` or
-   `openclaw@beta` package. If a pushed or published prerelease needs a fix,
+   `eve@YYYY.M.PATCH-beta.N` or
+   `eve@beta` package. If a pushed or published prerelease needs a fix,
    cut the next matching prerelease number; do not delete or rewrite the old
    prerelease.
 10. For stable, continue only after the vetted beta or release candidate has the
     required validation evidence. Stable npm publish also goes through
-    `OpenClaw Release Publish`, reusing the successful preflight artifact via
+    `EVE Release Publish`, reusing the successful preflight artifact via
     `preflight_run_id`; stable macOS release readiness also requires the
     packaged `.zip`, `.dmg`, `.dSYM.zip`, and updated `appcast.xml` on `main`.
     The macOS publish workflow publishes the signed appcast to public `main`
     automatically after release assets verify; if branch protection blocks the
     direct push, it opens or updates an appcast PR. Stable Windows Hub
-    readiness requires the signed `OpenClawCompanion-Setup-x64.exe`,
-    `OpenClawCompanion-Setup-arm64.exe`, and
-    `OpenClawCompanion-SHA256SUMS.txt` assets on the OpenClaw GitHub release.
-    Pass the exact signed `openclaw/openclaw-windows-node` release tag as
+    readiness requires the signed `EVECompanion-Setup-x64.exe`,
+    `EVECompanion-Setup-arm64.exe`, and
+    `EVECompanion-SHA256SUMS.txt` assets on the EVE GitHub release.
+    Pass the exact signed `eve/eve-windows-node` release tag as
     `windows_node_tag` and its candidate-approved installer digest map as
-    `windows_node_installer_digests`; `OpenClaw Release Publish` keeps the
+    `windows_node_installer_digests`; `EVE Release Publish` keeps the
     release draft, dispatches `Windows Node Release`, and verifies all three
     assets before publication.
 11. After publish, run the npm post-publish verifier, optional standalone
@@ -175,12 +175,12 @@ release state.
 4. Do not add `YYYY.M.PATCH+1`, a beta version, or an empty future changelog
    section to `main` until the operator explicitly starts that release train.
 5. Run `pnpm release:generated:check`, `pnpm deps:shrinkwrap:check`, and
-   `OPENCLAW_TESTBOX=1 pnpm check:changed`. Push, then verify `origin/main`
+   `EVE_TESTBOX=1 pnpm check:changed`. Push, then verify `origin/main`
    contains the shipped version and changelog before calling the stable release
    done.
 6. Keep the repository variables `RELEASE_ROLLBACK_DRILL_ID` and
    `RELEASE_ROLLBACK_DRILL_DATE` current after each private rollback drill.
-   `OpenClaw Stable Main Closeout` starts from the `main` push that carries the
+   `EVE Stable Main Closeout` starts from the `main` push that carries the
    shipped version, changelog, and appcast after stable publication. It reads
    immutable postpublish evidence to bind the shipped tag to its Full Release
    Validation and Publish runs, then verifies the stable main state, release,
@@ -217,15 +217,15 @@ release state.
   guards in check mode and reports every generated drift failure it finds in one
   pass before running package release checks.
 - Plugin version sync updates official plugin package versions and existing
-  `openclaw.compat.pluginApi` floors to the OpenClaw release version by
+  `eve.compat.pluginApi` floors to the EVE release version by
   default. Treat that field as the plugin SDK/runtime API floor, not just a copy
   of the package version: for plugin-only releases that intentionally remain
-  compatible with older OpenClaw hosts, keep the floor at the oldest supported
+  compatible with older EVE hosts, keep the floor at the oldest supported
   host API and document that choice in the plugin release proof.
 - Run the manual `Full Release Validation` workflow before release approval to
   kick off all pre-release test boxes from one entrypoint. It accepts a branch,
   tag, or full commit SHA, dispatches manual `CI`, and dispatches
-  `OpenClaw Release Checks` for install smoke, package acceptance, cross-OS
+  `EVE Release Checks` for install smoke, package acceptance, cross-OS
   package checks, QA Lab parity, Matrix, and Telegram lanes. Stable and full
   runs always include exhaustive live/E2E and Docker release-path soak;
   `run_release_soak=true` is retained for an explicit beta soak. With
@@ -244,7 +244,7 @@ release state.
   `gh workflow run full-release-validation.yml --ref main -f ref=release/YYYY.M.PATCH`
 - Run the manual `Package Acceptance` workflow when you want side-channel proof
   for a package candidate while release work continues. Use `source=npm` for
-  `openclaw@beta`, `openclaw@latest`, or an exact release version; `source=ref`
+  `eve@beta`, `eve@latest`, or an exact release version; `source=ref`
   to pack a trusted `package_ref` branch/tag/SHA with the current
   `workflow_ref` harness; `source=url` for a public HTTPS tarball with a
   required SHA-256 and strict public URL policy; `source=trusted-url` for a
@@ -259,7 +259,7 @@ release state.
   the published baseline. `update-restart-auth` uses the candidate package as
   both the installed CLI and the package-under-test so it exercises the
   candidate update command's managed restart path.
-  Example: `gh workflow run package-acceptance.yml --ref main -f workflow_ref=main -f source=npm -f package_spec=openclaw@beta -f suite_profile=product -f published_upgrade_survivor_baseline=openclaw@2026.4.26 -f telegram_mode=mock-openai`
+  Example: `gh workflow run package-acceptance.yml --ref main -f workflow_ref=main -f source=npm -f package_spec=eve@beta -f suite_profile=product -f published_upgrade_survivor_baseline=eve@2026.4.26 -f telegram_mode=mock-openai`
   Common profiles:
   - `smoke`: install/channel/agent, gateway network, and config reload lanes
   - `package`: artifact-native package/update/restart/plugin lanes without OpenWebUI or live ClawHub
@@ -290,70 +290,70 @@ release state.
 - Run `pnpm qa:observability:smoke` when you want the source-checkout
   OpenTelemetry and Prometheus smoke lanes back to back.
 - Run `pnpm release:check` before every tagged release
-- `OpenClaw NPM Release` preflight generates dependency release evidence before
+- `EVE NPM Release` preflight generates dependency release evidence before
   it packs the npm tarball. The npm advisory vulnerability gate is
   release-blocking. The transitive manifest risk, dependency ownership/install
   surface, and dependency change reports are release evidence only. The
   dependency change report compares the release candidate with the previous
   reachable release tag.
 - The preflight uploads dependency evidence as
-  `openclaw-release-dependency-evidence-<tag>` and also embeds it under
+  `eve-release-dependency-evidence-<tag>` and also embeds it under
   `dependency-evidence/` inside the prepared npm preflight artifact. The real
   publish path reuses that preflight artifact, then attaches the same evidence
-  to the GitHub release as `openclaw-<version>-dependency-evidence.zip`.
-- Run `OpenClaw Release Publish` for the mutating publish sequence after the
+  to the GitHub release as `eve-<version>-dependency-evidence.zip`.
+- Run `EVE Release Publish` for the mutating publish sequence after the
   tag exists. Dispatch it from `release/YYYY.M.PATCH` (or `main` when publishing a
-  main-reachable tag), pass the release tag, successful OpenClaw npm
+  main-reachable tag), pass the release tag, successful EVE npm
   `preflight_run_id`, and successful `full_release_validation_run_id`, and keep
   the default plugin publish scope `all-publishable` unless you are deliberately
   running a focused repair. The workflow serializes plugin npm publish, plugin
-  ClawHub publish, and OpenClaw npm publish so the core package is not published
+  ClawHub publish, and EVE npm publish so the core package is not published
   before its externalized plugins.
-- Stable `OpenClaw Release Publish` requires an exact `windows_node_tag` after
-  the matching non-prerelease `openclaw/openclaw-windows-node` release exists.
+- Stable `EVE Release Publish` requires an exact `windows_node_tag` after
+  the matching non-prerelease `eve/eve-windows-node` release exists.
   It also requires the candidate-approved `windows_node_installer_digests` map.
   Before dispatching any publish child, it verifies that source release is
   published, non-prerelease, contains the required x64/ARM64 installers, and
   still matches that approved map. It then dispatches `Windows Node Release`
-  while the OpenClaw release is still a draft, carrying the pinned installer
+  while the EVE release is still a draft, carrying the pinned installer
   digest map unchanged. The child
   workflow downloads the signed Windows Hub installers from that exact tag,
   matches them against the pinned digests, verifies their Authenticode
-  signatures use the expected OpenClaw Foundation signer on a Windows runner,
+  signatures use the expected EVE Foundation signer on a Windows runner,
   writes a SHA-256 manifest, and uploads the installers plus manifest onto the
-  canonical OpenClaw GitHub release, then re-downloads the promoted assets and
+  canonical EVE GitHub release, then re-downloads the promoted assets and
   verifies the manifest membership and hashes. The parent verifies the current
   x64, ARM64, and checksum asset contract before publication. Direct recovery
-  rejects unexpected `OpenClawCompanion-*` asset names before replacing the
+  rejects unexpected `EVECompanion-*` asset names before replacing the
   expected contract assets with the pinned source bytes. Manually dispatch
   `Windows Node Release` only for recovery, and always pass an exact tag, never
   `latest`, plus the explicit `expected_installer_digests` JSON map from the
-  approved source release. Website download links should target exact OpenClaw
+  approved source release. Website download links should target exact EVE
   release asset URLs for the current stable release, or
   `releases/latest/download/...` only after verifying GitHub's latest redirect
   points at that same release; do not link only to the companion repo release
   page.
 - Release checks now run in a separate manual workflow:
-  `OpenClaw Release Checks`
-- `OpenClaw Release Checks` also runs the QA Lab mock parity lane plus the fast
+  `EVE Release Checks`
+- `EVE Release Checks` also runs the QA Lab mock parity lane plus the fast
   live Matrix profile and Telegram QA lane before release approval. The live
   lanes use the `qa-live-shared` environment; Telegram also uses Convex CI
   credential leases. Run the manual `QA-Lab - All Lanes` workflow with
   `matrix_profile=all` and `matrix_shards=true` when you want full Matrix
   transport, media, and E2EE inventory in parallel.
 - Cross-OS install and upgrade runtime validation is part of public
-  `OpenClaw Release Checks` and `Full Release Validation`, which call the
+  `EVE Release Checks` and `Full Release Validation`, which call the
   reusable workflow
-  `.github/workflows/openclaw-cross-os-release-checks-reusable.yml` directly
+  `.github/workflows/eve-cross-os-release-checks-reusable.yml` directly
 - This split is intentional: keep the real npm release path short,
   deterministic, and artifact-focused, while slower live checks stay in their
   own lane so they do not stall or block publish
 - Secret-bearing release checks should be dispatched through `Full Release
 Validation` or from the `main`/release workflow ref so workflow logic and
   secrets stay controlled
-- `OpenClaw Release Checks` accepts a branch, tag, or full commit SHA as long
-  as the resolved commit is reachable from an OpenClaw branch or release tag
-- `OpenClaw NPM Release` validation-only preflight also accepts the current
+- `EVE Release Checks` accepts a branch, tag, or full commit SHA as long
+  as the resolved commit is reachable from an EVE branch or release tag
+- `EVE NPM Release` validation-only preflight also accepts the current
   full 40-character workflow-branch commit SHA without requiring a pushed tag
 - That SHA path is validation-only and cannot be promoted into a real publish
 - In SHA mode the workflow synthesizes `v<package.json version>` only for the
@@ -362,25 +362,25 @@ Validation` or from the `main`/release workflow ref so workflow logic and
   runners, while the non-mutating validation path can use the larger
   Blacksmith Linux runners
 - That workflow runs
-  `OPENCLAW_LIVE_TEST=1 OPENCLAW_LIVE_CACHE_TEST=1 pnpm test:live:cache`
+  `EVE_LIVE_TEST=1 EVE_LIVE_CACHE_TEST=1 pnpm test:live:cache`
   using both `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` workflow secrets
 - npm release preflight no longer waits on the separate release checks lane
 - Before tagging a release candidate locally, run
   `RELEASE_TAG=vYYYY.M.PATCH-beta.N pnpm release:fast-pretag-check`. The helper
   runs the fast release guardrails, plugin npm/ClawHub release checks, build,
-  UI build, and `release:openclaw:npm:check` in the order that catches common
+  UI build, and `release:eve:npm:check` in the order that catches common
   approval-blocking mistakes before the GitHub publish workflow starts.
-- Run `RELEASE_TAG=vYYYY.M.PATCH node --import tsx scripts/openclaw-npm-release-check.ts`
+- Run `RELEASE_TAG=vYYYY.M.PATCH node --import tsx scripts/eve-npm-release-check.ts`
   (or the matching beta/correction tag) before approval
 - After npm publish, run
-  `node --import tsx scripts/openclaw-npm-postpublish-verify.ts YYYY.M.PATCH`
+  `node --import tsx scripts/eve-npm-postpublish-verify.ts YYYY.M.PATCH`
   (or the matching beta/correction version) to verify the published registry
   install path in a fresh temp prefix
-- After a beta publish, run `OPENCLAW_NPM_TELEGRAM_PACKAGE_SPEC=openclaw@YYYY.M.PATCH-beta.N OPENCLAW_NPM_TELEGRAM_CREDENTIAL_SOURCE=convex OPENCLAW_NPM_TELEGRAM_CREDENTIAL_ROLE=ci pnpm test:docker:npm-telegram-live`
+- After a beta publish, run `EVE_NPM_TELEGRAM_PACKAGE_SPEC=eve@YYYY.M.PATCH-beta.N EVE_NPM_TELEGRAM_CREDENTIAL_SOURCE=convex EVE_NPM_TELEGRAM_CREDENTIAL_ROLE=ci pnpm test:docker:npm-telegram-live`
   to verify installed-package onboarding, Telegram setup, and real Telegram E2E
   against the published npm package using the shared leased Telegram credential
   pool. Local maintainer one-offs may omit the Convex vars and pass the three
-  `OPENCLAW_QA_TELEGRAM_*` env credentials directly.
+  `EVE_QA_TELEGRAM_*` env credentials directly.
 - To run the full post-publish beta smoke from a maintainer machine, use `pnpm release:beta-smoke -- --beta betaN`. The helper runs Parallels npm update/fresh-target validation, dispatches `NPM Telegram Beta E2E`, polls the exact workflow run, downloads the artifact, and prints the Telegram report.
 - Maintainers can run the same post-publish check from GitHub Actions via the
   manual `NPM Telegram Beta E2E` workflow. It is intentionally manual-only and
@@ -392,7 +392,7 @@ Validation` or from the `main`/release workflow ref so workflow logic and
   - stable npm releases default to `beta`
   - stable npm publish can target `latest` explicitly via workflow input
   - token-based npm dist-tag mutation now lives in
-    `openclaw/releases/.github/workflows/openclaw-npm-dist-tags.yml` because
+    `eve/releases/.github/workflows/eve-npm-dist-tags.yml` because
     `npm dist-tag add` still needs `NPM_TOKEN` while the source repo keeps
     OIDC-only publish
   - public `macOS Release` is validation-only; when a tag lives only on a
@@ -456,15 +456,15 @@ gh workflow run full-release-validation.yml \
   -f provider=openai \
   -f mode=both \
   -f release_profile=stable \
-  -f evidence_package_spec=openclaw@YYYY.M.PATCH-beta.N
+  -f evidence_package_spec=eve@YYYY.M.PATCH-beta.N
 ```
 
 The workflow resolves the target ref, dispatches manual `CI` with
-`target_ref=<release-ref>`, dispatches `OpenClaw Release Checks`, prepares a
+`target_ref=<release-ref>`, dispatches `EVE Release Checks`, prepares a
 parent `release-package-under-test` artifact for package-facing checks, and
 dispatches standalone package Telegram E2E when `release_profile=full` with
 `rerun_group=all` or when `release_package_spec` or
-`npm_telegram_package_spec` is set. `OpenClaw Release
+`npm_telegram_package_spec` is set. `EVE Release
 Checks` then fans out install smoke, cross-OS release checks, live/E2E Docker
 release-path coverage when soak is enabled, Package Acceptance with Telegram
 package QA, QA Lab parity, live Matrix, and live Telegram. A full/all run is
@@ -500,15 +500,15 @@ the latest four stable packages plus pinned `2026.4.23` and `2026.5.2`
 baselines plus older `2026.4.15` coverage, with duplicate baselines removed and
 each baseline sharded into its own Docker runner job.
 
-`OpenClaw Release Checks` uses the trusted workflow ref to resolve the target
+`EVE Release Checks` uses the trusted workflow ref to resolve the target
 ref once as `release-package-under-test` and reuses that artifact in cross-OS,
 Package Acceptance, and release-path Docker checks when soak runs. This keeps
 all package-facing boxes on the same bytes and avoids repeated package builds.
-After a beta is already on npm, set `release_package_spec=openclaw@YYYY.M.PATCH-beta.N`
+After a beta is already on npm, set `release_package_spec=eve@YYYY.M.PATCH-beta.N`
 so release checks download the shipped package once, extract its build source
 SHA from `dist/build-info.json`, and reuse that artifact for cross-OS,
 Package Acceptance, release-path Docker, and package Telegram lanes.
-The cross-OS OpenAI install smoke uses `OPENCLAW_CROSS_OS_OPENAI_MODEL` when the
+The cross-OS OpenAI install smoke uses `EVE_CROSS_OS_OPENAI_MODEL` when the
 repo/org variable is set, otherwise `openai/gpt-5.4`, because this lane is
 proving package install, onboarding, gateway startup, and one live agent turn
 rather than benchmarking the slowest default model. The broader live provider
@@ -539,8 +539,8 @@ gh workflow run full-release-validation.yml \
   -f provider=openai \
   -f mode=both \
   -f release_profile=full \
-  -f release_package_spec=openclaw@YYYY.M.PATCH-beta.N \
-  -f evidence_package_spec=openclaw@YYYY.M.PATCH-beta.N \
+  -f release_package_spec=eve@YYYY.M.PATCH-beta.N \
+  -f evidence_package_spec=eve@YYYY.M.PATCH-beta.N \
   -f npm_telegram_provider_mode=mock-openai
 ```
 
@@ -562,11 +562,11 @@ Focused `npm-telegram` reruns require `release_package_spec` or
 release-checks package artifact. Focused
 cross-OS reruns can add `cross_os_suite_filter=windows/packaged-upgrade` or
 another OS/suite filter. QA release-check failures block normal release
-validation, including required OpenClaw dynamic tool drift in the standard tier.
+validation, including required EVE dynamic tool drift in the standard tier.
 Tideclaw alpha runs may still treat non-package-safety release-check lanes as
 advisory. When `live_suite_filter` explicitly requests a gated QA live lane such
 as Discord, WhatsApp, or Slack, the matching
-`OPENCLAW_RELEASE_QA_*_LIVE_CI_ENABLED` repo variable must be enabled; otherwise
+`EVE_RELEASE_QA_*_LIVE_CI_ENABLED` repo variable must be enabled; otherwise
 input capture fails instead of silently skipping the lane.
 
 ### Vitest
@@ -601,8 +601,8 @@ gh workflow run ci.yml --ref main -f target_ref=release/YYYY.M.PATCH -f include_
 
 ### Docker
 
-The Docker box lives in `OpenClaw Release Checks` through
-`openclaw-live-and-e2e-checks-reusable.yml`, plus the release-mode
+The Docker box lives in `EVE Release Checks` through
+`eve-live-and-e2e-checks-reusable.yml`, plus the release-mode
 `install-smoke` workflow. It validates the release candidate through packaged
 Docker environments instead of only source-level tests.
 
@@ -637,7 +637,7 @@ failed lane can reuse the same tarball and GHCR images.
 
 ### QA Lab
 
-The QA Lab box is also part of `OpenClaw Release Checks`. It is the agentic
+The QA Lab box is also part of `EVE Release Checks`. It is the agentic
 behavior and channel-level release gate, separate from Vitest and Docker
 package mechanics.
 
@@ -661,14 +661,14 @@ manual sharded QA-Lab run rather than the default release-critical lane.
 
 The Package box is the installable-product gate. It is backed by
 `Package Acceptance` and the resolver
-`scripts/resolve-openclaw-package-candidate.mjs`. The resolver normalizes a
+`scripts/resolve-eve-package-candidate.mjs`. The resolver normalizes a
 candidate into the `package-under-test` tarball consumed by Docker E2E, validates
 the package inventory, records the package version and SHA-256, and keeps the
 workflow harness ref separate from the package source ref.
 
 Supported candidate sources:
 
-- `source=npm`: `openclaw@beta`, `openclaw@latest`, or an exact OpenClaw release
+- `source=npm`: `eve@beta`, `eve@latest`, or an exact EVE release
   version
 - `source=ref`: pack a trusted `package_ref` branch, tag, or full commit SHA
   with the selected `workflow_ref` harness
@@ -682,7 +682,7 @@ Supported candidate sources:
   input-level private-network bypass to `source=url`
 - `source=artifact`: reuse a `.tgz` uploaded by another GitHub Actions run
 
-`OpenClaw Release Checks` runs Package Acceptance with `source=artifact`, the
+`EVE Release Checks` runs Package Acceptance with `source=artifact`, the
 prepared release package artifact, `suite_profile=custom`,
 `docker_lanes=doctor-switch update-channel-switch skill-install update-corrupt-plugin upgrade-survivor published-upgrade-survivor update-restart-auth plugins-offline plugin-update`,
 `telegram_mode=mock-openai`. Package Acceptance keeps migration, update,
@@ -728,9 +728,9 @@ gh workflow run package-acceptance.yml \
   --ref main \
   -f workflow_ref=main \
   -f source=npm \
-  -f package_spec=openclaw@beta \
+  -f package_spec=eve@beta \
   -f suite_profile=product \
-  -f published_upgrade_survivor_baseline=openclaw@2026.4.26
+  -f published_upgrade_survivor_baseline=eve@2026.4.26
 ```
 
 Common package profiles:
@@ -751,7 +751,7 @@ Telegram workflow still accepts a published npm spec for post-publish checks.
 
 ## Release publish automation
 
-`OpenClaw Release Publish` is the normal mutating publish entrypoint. It
+`EVE Release Publish` is the normal mutating publish entrypoint. It
 orchestrates the trusted-publisher workflows in the order the release needs:
 
 1. Check out the release tag and resolve its commit SHA.
@@ -760,7 +760,7 @@ orchestrates the trusted-publisher workflows in the order the release needs:
 4. Dispatch `Plugin NPM Release` with `publish_scope=all-publishable` and
    `ref=<release-sha>`.
 5. Dispatch `Plugin ClawHub Release` with the same scope and SHA.
-6. Dispatch `OpenClaw NPM Release` with the release tag, npm dist-tag, and
+6. Dispatch `EVE NPM Release` with the release tag, npm dist-tag, and
    saved `preflight_run_id` after verifying the saved
    `full_release_validation_run_id`.
 7. For stable releases, create or update the GitHub release as a draft, dispatch
@@ -771,10 +771,10 @@ orchestrates the trusted-publisher workflows in the order the release needs:
 Beta publish example:
 
 ```bash
-gh workflow run openclaw-release-publish.yml \
+gh workflow run eve-release-publish.yml \
   --ref release/YYYY.M.PATCH \
   -f tag=vYYYY.M.PATCH-beta.N \
-  -f preflight_run_id=<successful-openclaw-npm-preflight-run-id> \
+  -f preflight_run_id=<successful-eve-npm-preflight-run-id> \
   -f full_release_validation_run_id=<successful-full-release-validation-run-id> \
   -f npm_dist_tag=beta
 ```
@@ -782,12 +782,12 @@ gh workflow run openclaw-release-publish.yml \
 Stable publish to the default beta dist-tag:
 
 ```bash
-gh workflow run openclaw-release-publish.yml \
+gh workflow run eve-release-publish.yml \
   --ref release/YYYY.M.PATCH \
   -f tag=vYYYY.M.PATCH \
   -f windows_node_tag=vX.Y.Z \
-  -f windows_node_installer_digests='{"OpenClawCompanion-Setup-x64.exe":"sha256:<approved-x64-sha256>","OpenClawCompanion-Setup-arm64.exe":"sha256:<approved-arm64-sha256>"}' \
-  -f preflight_run_id=<successful-openclaw-npm-preflight-run-id> \
+  -f windows_node_installer_digests='{"EVECompanion-Setup-x64.exe":"sha256:<approved-x64-sha256>","EVECompanion-Setup-arm64.exe":"sha256:<approved-arm64-sha256>"}' \
+  -f preflight_run_id=<successful-eve-npm-preflight-run-id> \
   -f full_release_validation_run_id=<successful-full-release-validation-run-id> \
   -f npm_dist_tag=beta
 ```
@@ -795,27 +795,27 @@ gh workflow run openclaw-release-publish.yml \
 Stable promotion directly to `latest` is explicit:
 
 ```bash
-gh workflow run openclaw-release-publish.yml \
+gh workflow run eve-release-publish.yml \
   --ref release/YYYY.M.PATCH \
   -f tag=vYYYY.M.PATCH \
   -f windows_node_tag=vX.Y.Z \
-  -f windows_node_installer_digests='{"OpenClawCompanion-Setup-x64.exe":"sha256:<approved-x64-sha256>","OpenClawCompanion-Setup-arm64.exe":"sha256:<approved-arm64-sha256>"}' \
-  -f preflight_run_id=<successful-openclaw-npm-preflight-run-id> \
+  -f windows_node_installer_digests='{"EVECompanion-Setup-x64.exe":"sha256:<approved-x64-sha256>","EVECompanion-Setup-arm64.exe":"sha256:<approved-arm64-sha256>"}' \
+  -f preflight_run_id=<successful-eve-npm-preflight-run-id> \
   -f full_release_validation_run_id=<successful-full-release-validation-run-id> \
   -f npm_dist_tag=latest
 ```
 
 Use the lower-level `Plugin NPM Release` and `Plugin ClawHub Release` workflows
-only for focused repair or republish work. `OpenClaw Release Publish` rejects
-`plugin_publish_scope=selected` when `publish_openclaw_npm=true` so the core
+only for focused repair or republish work. `EVE Release Publish` rejects
+`plugin_publish_scope=selected` when `publish_eve_npm=true` so the core
 package cannot ship without every publishable official plugin, including
-`@openclaw/diffs-language-pack`. For a selected plugin repair, set
-`publish_openclaw_npm=false` with `plugin_publish_scope=selected` and
-`plugins=@openclaw/name`, or dispatch the child workflow directly.
+`@eve/diffs-language-pack`. For a selected plugin repair, set
+`publish_eve_npm=false` with `plugin_publish_scope=selected` and
+`plugins=@eve/name`, or dispatch the child workflow directly.
 
 ## NPM workflow inputs
 
-`OpenClaw NPM Release` accepts these operator-controlled inputs:
+`EVE NPM Release` accepts these operator-controlled inputs:
 
 - `tag`: required release tag such as `v2026.4.2`, `v2026.4.2-1`, or
   `v2026.4.2-beta.1`; when `preflight_only=true`, it may also be the current
@@ -826,33 +826,33 @@ package cannot ship without every publishable official plugin, including
   the prepared tarball from the successful preflight run
 - `npm_dist_tag`: npm target tag for the publish path; defaults to `beta`
 
-`OpenClaw Release Publish` accepts these operator-controlled inputs:
+`EVE Release Publish` accepts these operator-controlled inputs:
 
 - `tag`: required release tag; must already exist
-- `preflight_run_id`: successful `OpenClaw NPM Release` preflight run id;
-  required when `publish_openclaw_npm=true`
+- `preflight_run_id`: successful `EVE NPM Release` preflight run id;
+  required when `publish_eve_npm=true`
 - `full_release_validation_run_id`: successful `Full Release Validation` run
-  id; required when `publish_openclaw_npm=true`
-- `windows_node_tag`: exact non-prerelease `openclaw/openclaw-windows-node`
-  release tag; required for stable OpenClaw publish
+  id; required when `publish_eve_npm=true`
+- `windows_node_tag`: exact non-prerelease `eve/eve-windows-node`
+  release tag; required for stable EVE publish
 - `windows_node_installer_digests`: candidate-approved compact JSON map of the
   current Windows installer names to their pinned `sha256:` digests; required
-  for stable OpenClaw publish
-- `npm_dist_tag`: npm target tag for the OpenClaw package
+  for stable EVE publish
+- `npm_dist_tag`: npm target tag for the EVE package
 - `plugin_publish_scope`: defaults to `all-publishable`; use `selected` only
-  for focused plugin-only repair work with `publish_openclaw_npm=false`
-- `plugins`: comma-separated `@openclaw/*` package names when
+  for focused plugin-only repair work with `publish_eve_npm=false`
+- `plugins`: comma-separated `@eve/*` package names when
   `plugin_publish_scope=selected`
-- `publish_openclaw_npm`: defaults to `true`; set `false` only when using the
+- `publish_eve_npm`: defaults to `true`; set `false` only when using the
   workflow as a plugin-only repair orchestrator
 - `wait_for_clawhub`: defaults to `false` so npm availability is not blocked by
   the ClawHub sidecar; set `true` only when workflow completion must include
   ClawHub completion
 
-`OpenClaw Release Checks` accepts these operator-controlled inputs:
+`EVE Release Checks` accepts these operator-controlled inputs:
 
 - `ref`: branch, tag, or full commit SHA to validate. Secret-bearing checks
-  require the resolved commit to be reachable from an OpenClaw branch or
+  require the resolved commit to be reachable from an EVE branch or
   release tag.
 - `run_release_soak`: opt into exhaustive live/E2E, Docker release-path, and
   all-since upgrade-survivor soak for beta release checks. It is forced on by
@@ -862,9 +862,9 @@ Rules:
 
 - Stable and correction tags may publish to either `beta` or `latest`
 - Beta prerelease tags may publish only to `beta`
-- For `OpenClaw NPM Release`, full commit SHA input is allowed only when
+- For `EVE NPM Release`, full commit SHA input is allowed only when
   `preflight_only=true`
-- `OpenClaw Release Checks` and `Full Release Validation` are always
+- `EVE Release Checks` and `Full Release Validation` are always
   validation-only
 - The real publish path must use the same `npm_dist_tag` used during preflight;
   the workflow verifies that metadata before publish continues
@@ -873,7 +873,7 @@ Rules:
 
 When cutting a stable npm release:
 
-1. Run `OpenClaw NPM Release` with `preflight_only=true`
+1. Run `EVE NPM Release` with `preflight_only=true`
    - Before a tag exists, you may use the current full workflow-branch commit
      SHA for a validation-only dry run of the preflight workflow
 2. Choose `npm_dist_tag=beta` for the normal beta-first flow, or `latest` only
@@ -883,19 +883,19 @@ When cutting a stable npm release:
    Matrix, and Telegram coverage from one manual workflow
 4. If you intentionally only need the deterministic normal test graph, run the
    manual `CI` workflow on the release ref instead
-5. Select the exact non-prerelease `openclaw/openclaw-windows-node` release tag
+5. Select the exact non-prerelease `eve/eve-windows-node` release tag
    whose signed x64 and ARM64 installers should ship. Save it as
    `windows_node_tag`, and save their validated digest map as
    `windows_node_installer_digests`. The release-candidate helper records both
    and includes them in its generated publish command.
 6. Save the successful `preflight_run_id` and `full_release_validation_run_id`
-7. Run `OpenClaw Release Publish` with the same `tag`, the same `npm_dist_tag`,
+7. Run `EVE Release Publish` with the same `tag`, the same `npm_dist_tag`,
    the selected `windows_node_tag`, its saved `windows_node_installer_digests`,
    the saved `preflight_run_id`, and the saved `full_release_validation_run_id`;
    it publishes externalized plugins to npm and ClawHub before promoting the
-   OpenClaw npm package
+   EVE npm package
 8. If the release landed on `beta`, use the
-   `openclaw/releases/.github/workflows/openclaw-npm-dist-tags.yml`
+   `eve/releases/.github/workflows/eve-npm-dist-tags.yml`
    workflow to promote that stable version from `beta` to `latest`
 9. If the release intentionally published directly to `latest` and `beta`
    should follow the same stable build immediately, use that same release
@@ -915,18 +915,18 @@ alerts, and OTP handling observable and prevents repeated host alerts.
 
 ## Public references
 
-- [`.github/workflows/full-release-validation.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/full-release-validation.yml)
-- [`.github/workflows/package-acceptance.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/package-acceptance.yml)
-- [`.github/workflows/openclaw-npm-release.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/openclaw-npm-release.yml)
-- [`.github/workflows/openclaw-release-checks.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/openclaw-release-checks.yml)
-- [`.github/workflows/openclaw-cross-os-release-checks-reusable.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/openclaw-cross-os-release-checks-reusable.yml)
-- [`scripts/resolve-openclaw-package-candidate.mjs`](https://github.com/openclaw/openclaw/blob/main/scripts/resolve-openclaw-package-candidate.mjs)
-- [`scripts/openclaw-npm-release-check.ts`](https://github.com/openclaw/openclaw/blob/main/scripts/openclaw-npm-release-check.ts)
-- [`scripts/package-mac-dist.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-dist.sh)
-- [`scripts/make_appcast.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/make_appcast.sh)
+- [`.github/workflows/full-release-validation.yml`](https://github.com/engsathiago/eve-agent/blob/main/.github/workflows/full-release-validation.yml)
+- [`.github/workflows/package-acceptance.yml`](https://github.com/engsathiago/eve-agent/blob/main/.github/workflows/package-acceptance.yml)
+- [`.github/workflows/eve-npm-release.yml`](https://github.com/engsathiago/eve-agent/blob/main/.github/workflows/eve-npm-release.yml)
+- [`.github/workflows/eve-release-checks.yml`](https://github.com/engsathiago/eve-agent/blob/main/.github/workflows/eve-release-checks.yml)
+- [`.github/workflows/eve-cross-os-release-checks-reusable.yml`](https://github.com/engsathiago/eve-agent/blob/main/.github/workflows/eve-cross-os-release-checks-reusable.yml)
+- [`scripts/resolve-eve-package-candidate.mjs`](https://github.com/engsathiago/eve-agent/blob/main/scripts/resolve-eve-package-candidate.mjs)
+- [`scripts/eve-npm-release-check.ts`](https://github.com/engsathiago/eve-agent/blob/main/scripts/eve-npm-release-check.ts)
+- [`scripts/package-mac-dist.sh`](https://github.com/engsathiago/eve-agent/blob/main/scripts/package-mac-dist.sh)
+- [`scripts/make_appcast.sh`](https://github.com/engsathiago/eve-agent/blob/main/scripts/make_appcast.sh)
 
 Maintainers use the private release docs in
-[`openclaw/maintainers/release/README.md`](https://github.com/openclaw/maintainers/blob/main/release/README.md)
+[`eve/maintainers/release/README.md`](https://github.com/eve/maintainers/blob/main/release/README.md)
 for the actual runbook.
 
 ## Related

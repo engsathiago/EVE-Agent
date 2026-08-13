@@ -3,15 +3,15 @@
  * Records failures under the store lock, applies WHAM usage probes for OpenAI
  * OAuth profiles, and exposes display helpers for unavailable profiles.
  */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   asDateTimestampMs,
   isFutureDateTimestampMs,
   positiveSecondsToSafeMilliseconds,
   resolveExpiresAtMsFromDurationMs,
   resolveExpiresAtMsFromEpochSeconds,
-} from "@openclaw/normalization-core/number-coercion";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+} from "@eve/normalization-core/number-coercion";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import { resolveProviderRequestHeaders } from "../provider-request-config.js";
 import { notifyAuthProfileFailureHook, setAuthProfileFailureHook } from "./failure-hook.js";
@@ -228,13 +228,13 @@ async function probeWhamForCooldown(
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), WHAM_TIMEOUT_MS);
   try {
-    const version = process.env.OPENCLAW_VERSION?.trim();
+    const version = process.env.EVE_VERSION?.trim();
     const defaultHeaders: Record<string, string> = {
       Authorization: `Bearer ${profile.access}`,
       Accept: "application/json",
-      originator: "openclaw",
+      originator: "eve",
       ...(version ? { version } : {}),
-      "User-Agent": `openclaw/${version || "dev"}`,
+      "User-Agent": `eve/${version || "dev"}`,
     };
     if (profile.accountId) {
       defaultHeaders["ChatGPT-Account-Id"] = profile.accountId;
@@ -448,7 +448,7 @@ const DISABLED_FAILURE_BACKOFF_POLICIES = {
 } as const satisfies Record<DisabledFailureReason, DisabledFailureBackoffPolicy>;
 
 function resolveAuthCooldownConfig(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   providerId: string;
 }): ResolvedAuthCooldownConfig {
   const defaults = {
@@ -704,7 +704,7 @@ export async function markAuthProfileFailure(params: {
   store: AuthProfileStore;
   profileId: string;
   reason: AuthProfileFailureReason;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   runId?: string;
   modelId?: string;

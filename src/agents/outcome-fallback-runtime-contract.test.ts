@@ -2,7 +2,7 @@
 import {
   createContractRunResult,
   OUTCOME_FALLBACK_RUNTIME_CONTRACT,
-} from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+} from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import {
   classifyEmbeddedAgentRunResultForModelFallback,

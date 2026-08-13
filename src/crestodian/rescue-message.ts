@@ -5,10 +5,10 @@ import path from "node:path";
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "@openclaw/normalization-core/number-coercion";
+} from "@eve/normalization-core/number-coercion";
 import type { CommandContext } from "../auto-reply/reply/commands-types.js";
 import { resolveStateDir } from "../config/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { tryReadJson, writeJson } from "../infra/json-files.js";
 import type { RuntimeEnv } from "../runtime.js";
 import {
@@ -38,7 +38,7 @@ type RescuePendingOperation = {
 
 /** Input required to process one possible `/crestodian` rescue message. */
 export type CrestodianRescueMessageInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   command: CommandContext;
   commandBody: string;
   agentId?: string;
@@ -143,13 +143,13 @@ function formatUnsupportedRemoteOperation(operation: CrestodianOperation): strin
   if (operation.kind === "open-tui") {
     return [
       "Crestodian rescue cannot open the local TUI from a message channel.",
-      "Use local `openclaw` for agent handoff, or ask for status, doctor, config, gateway, agents, or models.",
+      "Use local `eve` for agent handoff, or ask for status, doctor, config, gateway, agents, or models.",
     ].join(" ");
   }
   if (operation.kind === "plugin-install") {
     return [
       "Crestodian rescue cannot install plugins from a message channel by default because plugin install downloads executable code.",
-      "Use local `openclaw crestodian` or `openclaw plugins install` instead.",
+      "Use local `eve crestodian` or `eve plugins install` instead.",
     ].join(" ");
   }
   return null;

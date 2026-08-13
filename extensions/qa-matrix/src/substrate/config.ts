@@ -1,6 +1,6 @@
 // Qa Matrix helper module supports config behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeStringEntries, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { MatrixQaProvisionedTopology } from "./topology.js";
 
 type MatrixQaReplyToMode = "off" | "first" | "all" | "batched";
@@ -41,7 +41,7 @@ type MatrixQaToolConfigOverrides = {
 };
 
 type MatrixQaAudioConfigOverrides = NonNullable<
-  NonNullable<NonNullable<OpenClawConfig["tools"]>["media"]>["audio"]
+  NonNullable<NonNullable<EVEConfig["tools"]>["media"]>["audio"]
 >;
 
 type MatrixQaGroupConfigOverrides = {
@@ -151,7 +151,7 @@ type MatrixQaGroupSnapshot = {
 };
 
 type MatrixQaGroupEntry = Omit<MatrixQaGroupSnapshot, "roomId">;
-type MatrixQaChannelConfig = NonNullable<OpenClawConfig["channels"]>["matrix"];
+type MatrixQaChannelConfig = NonNullable<EVEConfig["channels"]>["matrix"];
 type MatrixQaChannelAccountConfig = NonNullable<
   NonNullable<MatrixQaChannelConfig>["accounts"]
 >[string];
@@ -566,7 +566,7 @@ export function summarizeMatrixQaConfigSnapshot(snapshot: MatrixQaConfigSnapshot
 }
 
 export function buildMatrixQaConfig(
-  baseCfg: OpenClawConfig,
+  baseCfg: EVEConfig,
   params: {
     driverAccessToken?: string;
     driverUserId: string;
@@ -580,7 +580,7 @@ export function buildMatrixQaConfig(
     sutUserId: string;
     topology: MatrixQaProvisionedTopology;
   },
-): OpenClawConfig {
+): EVEConfig {
   const pluginAllow = uniqueStrings([...(baseCfg.plugins?.allow ?? []), "matrix"]);
   const snapshot = buildMatrixQaConfigSnapshot({
     driverUserId: params.driverUserId,

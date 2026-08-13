@@ -1,10 +1,10 @@
 // Claude CLI session history importer.
-// Converts Claude project JSONL into OpenClaw transcript-compatible messages.
+// Converts Claude project JSONL into EVE transcript-compatible messages.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   isToolCallBlock,
   isToolResultBlock,
@@ -12,7 +12,7 @@ import {
   type ToolContentBlock,
 } from "../chat/tool-content.js";
 import type { SessionEntry } from "../config/sessions.js";
-import { attachOpenClawTranscriptMeta } from "./session-transcript-readers.js";
+import { attachEVETranscriptMeta } from "./session-transcript-readers.js";
 
 export const CLAUDE_CLI_PROVIDER = "claude-cli";
 const CLAUDE_PROJECTS_RELATIVE_DIR = path.join(".claude", "projects");
@@ -119,7 +119,7 @@ function normalizeClaudeCliContent(
     const block = cloneJsonValue(item as ToolContentBlock);
     const type = typeof block.type === "string" ? block.type : "";
     if (type === "tool_use") {
-      // Claude stores tool calls as `tool_use` with `input`; OpenClaw history
+      // Claude stores tool calls as `tool_use` with `input`; EVE history
       // expects `toolcall` plus `arguments` so replay remains provider-neutral.
       const id = normalizeOptionalString(block.id) ?? "";
       const name = normalizeOptionalString(block.name) ?? "";
@@ -247,7 +247,7 @@ function parseClaudeCliHistoryEntry(
   }
 
   if (type === "user") {
-    return attachOpenClawTranscriptMeta(
+    return attachEVETranscriptMeta(
       {
         role: "user",
         content,
@@ -257,7 +257,7 @@ function parseClaudeCliHistoryEntry(
     ) as TranscriptLikeMessage;
   }
 
-  return attachOpenClawTranscriptMeta(
+  return attachEVETranscriptMeta(
     {
       role: "assistant",
       content,

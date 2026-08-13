@@ -2,7 +2,7 @@
  * Browser CLI form fill, wait, and evaluate commands.
  */
 import type { Command } from "commander";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   BROWSER_TAB_REFERENCE_HELP,
   parseBrowserNonNegativeIntegerOption,

@@ -1,5 +1,5 @@
 /**
- * OpenClaw Memory (LanceDB) Plugin
+ * EVE Memory (LanceDB) Plugin
  *
  * Long-term memory with vector search for AI conversations.
  * Uses LanceDB for storage and OpenAI for embeddings.
@@ -9,29 +9,29 @@
 import { Buffer } from "node:buffer";
 import { randomUUID } from "node:crypto";
 import type * as LanceDB from "@lancedb/lancedb";
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
 import {
   optionalFiniteNumberSchema,
   optionalPositiveIntegerSchema,
-} from "openclaw/plugin-sdk/channel-actions";
-import { BUNDLED_CHAT_CHANNEL_ENVELOPE_PREFIXES } from "openclaw/plugin-sdk/chat-channel-ids";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { MemoryEmbeddingProvider } from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { MESSAGE_TOOL_DELIVERY_HINTS } from "openclaw/plugin-sdk/message-tool-delivery-hints";
+} from "eve-agent/plugin-sdk/channel-actions";
+import { BUNDLED_CHAT_CHANNEL_ENVELOPE_PREFIXES } from "eve-agent/plugin-sdk/chat-channel-ids";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { MemoryEmbeddingProvider } from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
+import { MESSAGE_TOOL_DELIVERY_HINTS } from "eve-agent/plugin-sdk/message-tool-delivery-hints";
 import {
   parseStrictPositiveInteger,
   resolveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { readFiniteNumberParam, readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import { resolveLivePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { readFiniteNumberParam, readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import { resolveLivePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "eve-agent/plugin-sdk/runtime-env";
 import {
   asOptionalRecord as asRecord,
   normalizeLowercaseStringOrEmpty,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { truncateUtf16Safe } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { Type } from "typebox";
-import { definePluginEntry, type OpenClawPluginApi } from "./api.js";
+import { definePluginEntry, type EVEPluginApi } from "./api.js";
 import {
   DEFAULT_CAPTURE_MAX_CHARS,
   DEFAULT_RECALL_MAX_CHARS,
@@ -86,23 +86,23 @@ function loadOpenAiModule(): Promise<typeof import("openai")> {
 }
 
 let memoryEmbeddingProviderModulePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/memory-core-host-engine-embeddings")>
+  | Promise<typeof import("eve-agent/plugin-sdk/memory-core-host-engine-embeddings")>
   | undefined;
 function loadMemoryEmbeddingProviderModule(): Promise<
-  typeof import("openclaw/plugin-sdk/memory-core-host-engine-embeddings")
+  typeof import("eve-agent/plugin-sdk/memory-core-host-engine-embeddings")
 > {
   memoryEmbeddingProviderModulePromise ??=
-    import("openclaw/plugin-sdk/memory-core-host-engine-embeddings");
+    import("eve-agent/plugin-sdk/memory-core-host-engine-embeddings");
   return memoryEmbeddingProviderModulePromise;
 }
 
 let memoryHostCoreModulePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/memory-host-core")>
+  | Promise<typeof import("eve-agent/plugin-sdk/memory-host-core")>
   | undefined;
 function loadMemoryHostCoreModule(): Promise<
-  typeof import("openclaw/plugin-sdk/memory-host-core")
+  typeof import("eve-agent/plugin-sdk/memory-host-core")
 > {
-  memoryHostCoreModulePromise ??= import("openclaw/plugin-sdk/memory-host-core");
+  memoryHostCoreModulePromise ??= import("eve-agent/plugin-sdk/memory-host-core");
   return memoryHostCoreModulePromise;
 }
 
@@ -410,7 +410,7 @@ class ProviderAdapterEmbeddings implements Embeddings {
   private providerPromise: Promise<MemoryEmbeddingProvider> | undefined;
 
   constructor(
-    private api: OpenClawPluginApi,
+    private api: EVEPluginApi,
     private embedding: MemoryConfig["embedding"],
   ) {}
 
@@ -425,7 +425,7 @@ class ProviderAdapterEmbeddings implements Embeddings {
   }
 
   private async createProvider(): Promise<MemoryEmbeddingProvider> {
-    const cfg = (this.api.runtime.config?.current?.() ?? this.api.config) as OpenClawConfig;
+    const cfg = (this.api.runtime.config?.current?.() ?? this.api.config) as EVEConfig;
     const providerId = this.embedding.provider;
     const { getMemoryEmbeddingProvider } = await loadMemoryEmbeddingProviderModule();
     const adapter = getMemoryEmbeddingProvider(providerId, cfg);
@@ -539,7 +539,7 @@ export const testing = {
   runWithTimeout,
 } as const;
 
-function createEmbeddings(api: OpenClawPluginApi, cfg: MemoryConfig): Embeddings {
+function createEmbeddings(api: EVEPluginApi, cfg: MemoryConfig): Embeddings {
   const { provider, model, dimensions, apiKey, baseUrl } = cfg.embedding;
   if (provider === "openai" && apiKey) {
     return new OpenAiCompatibleEmbeddings(apiKey, model, baseUrl, dimensions);
@@ -773,7 +773,7 @@ const LEADING_CURRENT_MESSAGE_ID_SENDER_RE = /^#\d+\s+[^\n:]{1,100}:\s*/;
 const UNTRUSTED_CONTEXT_HEADER_RE = /^Untrusted context \(metadata/m;
 
 /**
- * Matches JSON blobs that look like OpenClaw transport envelope metadata.
+ * Matches JSON blobs that look like EVE transport envelope metadata.
  * Allows `{` on its own line so pretty-printed JSON (the `JSON.stringify(..., null, 2)`
  * output produced by `formatUntrustedJsonBlock` in core) is also caught when it
  * leaks outside its ```json fence. Key list mirrors envelope identifiers used
@@ -888,7 +888,7 @@ function matchKnownChannelMarkerFreeEnvelopePrefix(
 }
 
 /**
- * Returns true if `text` looks like it contains OpenClaw-injected envelope or
+ * Returns true if `text` looks like it contains EVE-injected envelope or
  * transport metadata that should never be persisted as a long-term memory.
  */
 export function looksLikeEnvelopeSludge(text: string): boolean {
@@ -1176,7 +1176,7 @@ function stripLeadingChronologicalContextBlocks(text: string): string {
 }
 
 /**
- * Strips OpenClaw-injected envelope metadata from a user message so that only
+ * Strips EVE-injected envelope metadata from a user message so that only
  * the user's actual intent text remains. Returns empty string if nothing
  * meaningful survives.
  */
@@ -1422,7 +1422,7 @@ export default definePluginEntry({
   kind: "memory" as const,
   configSchema: memoryConfigSchema,
 
-  register(api: OpenClawPluginApi) {
+  register(api: EVEPluginApi) {
     let cfg: MemoryConfig;
     try {
       cfg = memoryConfigSchema.parse(api.pluginConfig);
@@ -1449,7 +1449,7 @@ export default definePluginEntry({
     const resolveCurrentHookConfig = () => {
       const runtimePluginConfig = resolveLivePluginConfigObject(
         api.runtime.config?.current
-          ? () => api.runtime.config.current() as OpenClawConfig
+          ? () => api.runtime.config.current() as EVEConfig
           : undefined,
         "memory-lancedb",
         api.pluginConfig as Record<string, unknown>,

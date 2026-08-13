@@ -1,26 +1,26 @@
 ---
-summary: "CLI reference for `openclaw daemon` (legacy alias for gateway service management)"
+summary: "CLI reference for `eve daemon` (legacy alias for gateway service management)"
 read_when:
-  - You still use `openclaw daemon ...` in scripts
+  - You still use `eve daemon ...` in scripts
   - You need service lifecycle commands (install/start/stop/restart/status)
 title: "Daemon"
 ---
 
-# `openclaw daemon`
+# `eve daemon`
 
 Legacy alias for Gateway service management commands.
 
-`openclaw daemon ...` maps to the same service control surface as `openclaw gateway ...` service commands.
+`eve daemon ...` maps to the same service control surface as `eve gateway ...` service commands.
 
 ## Usage
 
 ```bash
-openclaw daemon status
-openclaw daemon install
-openclaw daemon start
-openclaw daemon stop
-openclaw daemon restart
-openclaw daemon uninstall
+eve daemon status
+eve daemon install
+eve daemon start
+eve daemon stop
+eve daemon restart
+eve daemon uninstall
 ```
 
 ## Subcommands
@@ -55,11 +55,11 @@ Notes:
 - On macOS, `install` keeps LaunchAgent plists owner-only and loads managed service environment values through an owner-only file and wrapper instead of serializing API keys or auth-profile env refs into `EnvironmentVariables`.
 - If you intentionally run multiple gateways on one host, isolate ports, config/state, and workspaces; see [/gateway#multiple-gateways-same-host](/gateway#multiple-gateways-same-host).
 - `restart --safe` asks the running Gateway to preflight active work and schedule one coalesced restart after active work drains. Plain `restart` keeps the existing service-manager behavior; `--force` remains the immediate override path.
-- `restart --safe --skip-deferral` runs the OpenClaw-aware safe restart but bypasses the active-work deferral gate so the Gateway emits the restart immediately even when blockers are reported. Operator escape hatch when a stuck task run pins the safe restart; requires `--safe`.
+- `restart --safe --skip-deferral` runs the EVE-aware safe restart but bypasses the active-work deferral gate so the Gateway emits the restart immediately even when blockers are reported. Operator escape hatch when a stuck task run pins the safe restart; requires `--safe`.
 
 ## Prefer
 
-Use [`openclaw gateway`](/cli/gateway) for current docs and examples.
+Use [`eve gateway`](/cli/gateway) for current docs and examples.
 
 ## Related
 

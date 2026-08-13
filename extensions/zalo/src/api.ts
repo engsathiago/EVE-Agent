@@ -3,8 +3,8 @@
  * @see https://bot.zaloplatforms.com/docs
  */
 
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { resolvePinnedHostnameWithPolicy, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { resolvePinnedHostnameWithPolicy, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 
 const ZALO_API_BASE = "https://bot-api.zaloplatforms.com";
 const ZALO_MEDIA_SSRF_POLICY: SsrFPolicy = {};

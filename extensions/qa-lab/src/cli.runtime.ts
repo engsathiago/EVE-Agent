@@ -1,9 +1,9 @@
 // Qa Lab plugin module implements cli behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   buildQaAgenticParityComparison,
   buildQaRuntimeParityReport,
@@ -91,7 +91,7 @@ import {
 } from "./tool-coverage-report.js";
 
 const QA_SUITE_INFRA_RETRY_LIMIT = 1;
-const QA_CREDENTIAL_PAYLOAD_MAX_BYTES_ENV = "OPENCLAW_QA_CREDENTIAL_PAYLOAD_MAX_BYTES";
+const QA_CREDENTIAL_PAYLOAD_MAX_BYTES_ENV = "EVE_QA_CREDENTIAL_PAYLOAD_MAX_BYTES";
 const DEFAULT_QA_CREDENTIAL_PAYLOAD_MAX_BYTES = 64 * 1024 * 1024;
 const QA_SUITE_INFRA_RETRY_NETWORK_ERROR_CODES = new Set([
   "ECONNRESET",
@@ -234,8 +234,8 @@ function normalizeQaOptionalModelRef(input: string | undefined) {
 }
 
 function normalizeQaRuntimeId(value: string): RuntimeId | undefined {
-  if (value === "openclaw" || value === "pi") {
-    return "openclaw";
+  if (value === "eve" || value === "pi") {
+    return "eve";
   }
   if (value === "codex") {
     return "codex";
@@ -253,16 +253,16 @@ function parseQaRuntimePair(value: string | undefined): [RuntimeId, RuntimeId] |
     .filter(Boolean)
     .map(normalizeQaRuntimeId);
   if (runtimes.length !== 2) {
-    throw new Error('--runtime-pair must use exactly two runtimes, e.g. "openclaw,codex".');
+    throw new Error('--runtime-pair must use exactly two runtimes, e.g. "eve,codex".');
   }
   const [left, right] = runtimes;
   if (!left || !right) {
-    throw new Error('--runtime-pair only supports "openclaw" and "codex".');
+    throw new Error('--runtime-pair only supports "eve" and "codex".');
   }
   if (left === right) {
     throw new Error("--runtime-pair must compare two different runtimes.");
   }
-  return ["openclaw", "codex"];
+  return ["eve", "codex"];
 }
 
 function parseQaRuntimeParityTierFilters(input: string[] | undefined): QaRuntimeParityTier[] {
@@ -775,15 +775,15 @@ function formatQaRunProfileNoMatchMessage(
 }
 
 async function withTemporaryQaProfileEnv<T>(profile: string, run: () => Promise<T>): Promise<T> {
-  const previousProfile = process.env.OPENCLAW_QA_PROFILE;
-  process.env.OPENCLAW_QA_PROFILE = profile;
+  const previousProfile = process.env.EVE_QA_PROFILE;
+  process.env.EVE_QA_PROFILE = profile;
   try {
     return await run();
   } finally {
     if (previousProfile === undefined) {
-      delete process.env.OPENCLAW_QA_PROFILE;
+      delete process.env.EVE_QA_PROFILE;
     } else {
-      process.env.OPENCLAW_QA_PROFILE = previousProfile;
+      process.env.EVE_QA_PROFILE = previousProfile;
     }
   }
 }
@@ -1145,9 +1145,9 @@ export async function runQaJsonlReplayCommand(opts: {
   providerMode?: QaProviderModeInput;
 }) {
   const repoRoot = path.resolve(opts.repoRoot ?? process.cwd());
-  const runtimePair = parseQaRuntimePair(opts.runtimePair) ?? ["openclaw", "codex"];
-  if (runtimePair[0] !== "openclaw" || runtimePair[1] !== "codex") {
-    throw new Error('--runtime-pair for jsonl-replay must be "openclaw,codex".');
+  const runtimePair = parseQaRuntimePair(opts.runtimePair) ?? ["eve", "codex"];
+  if (runtimePair[0] !== "eve" || runtimePair[1] !== "codex") {
+    throw new Error('--runtime-pair for jsonl-replay must be "eve,codex".');
   }
   const providerMode = normalizeQaProviderMode(opts.providerMode ?? "mock-openai");
   if (providerMode !== "mock-openai") {
@@ -1438,7 +1438,7 @@ export async function runQaLabUiCommand(opts: {
     advertiseHost: opts.advertiseHost,
     advertisePort: Number.isFinite(opts.advertisePort) ? opts.advertisePort : undefined,
     controlUiUrl: opts.controlUiUrl,
-    controlUiProxyToken: process.env.OPENCLAW_QA_CONTROL_UI_PROXY_TOKEN,
+    controlUiProxyToken: process.env.EVE_QA_CONTROL_UI_PROXY_TOKEN,
     controlUiProxyTarget: opts.controlUiProxyTarget,
     uiDistDir: opts.uiDistDir,
     autoKickoffTarget: opts.autoKickoffTarget,

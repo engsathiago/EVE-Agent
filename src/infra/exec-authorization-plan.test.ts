@@ -112,8 +112,8 @@ describe("exec authorization planner", () => {
   });
 
   it("keeps eval as prompt-only", async () => {
-    await expectSingleShellCandidate('eval "$OPENCLAW_CMD"', {
-      sourceSegment: expect.objectContaining({ argv: ["eval", "$OPENCLAW_CMD"] }),
+    await expectSingleShellCandidate('eval "$EVE_CMD"', {
+      sourceSegment: expect.objectContaining({ argv: ["eval", "$EVE_CMD"] }),
       trustMode: "prompt-only",
       reasons: ["eval"],
     });

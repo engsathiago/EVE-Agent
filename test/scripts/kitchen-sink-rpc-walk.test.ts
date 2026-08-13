@@ -56,7 +56,7 @@ import {
   summarizeProcessSamples,
   tailFile,
   unwrapRpcPayload,
-  usesBuiltOpenClawEntry,
+  usesBuiltEVEEntry,
   validateCliArgs,
   waitForGatewayReady,
 } from "../../scripts/e2e/kitchen-sink-rpc-walk.mjs";
@@ -87,12 +87,12 @@ describe("kitchen-sink RPC isolated state", () => {
 
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("Usage: node scripts/e2e/kitchen-sink-rpc-walk.mjs");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_NPM_SPEC");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_PERSONALITY");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_RPC_PORT");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_RPC_FETCH_MS");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_RPC_FETCH_BODY_BYTES");
-    expect(result.stdout).toContain("OPENCLAW_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_NPM_SPEC");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_PERSONALITY");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_RPC_PORT");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_RPC_FETCH_MS");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_RPC_FETCH_BODY_BYTES");
+    expect(result.stdout).toContain("EVE_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS");
     expect(result.stdout).not.toContain("Kitchen Sink RPC walk using");
     expect(result.stdout).not.toContain("temp root preserved");
   });
@@ -104,7 +104,7 @@ describe("kitchen-sink RPC isolated state", () => {
       {
         env: {
           ...process.env,
-          OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB: "1e3",
+          EVE_KITCHEN_SINK_MAX_RSS_MIB: "1e3",
         },
       },
     );
@@ -141,28 +141,28 @@ describe("kitchen-sink RPC isolated state", () => {
     expect(readPositiveInt("", 60_000)).toBe(60_000);
     expect(readPositiveInt("1000", 60_000)).toBe(1000);
     expect(readPositiveInt(" 1000 ", 60_000)).toBe(1000);
-    expect(() => readPositiveInt("1e3", 60_000, "OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB")).toThrow(
-      'OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB must be a positive integer. Got: "1e3"',
+    expect(() => readPositiveInt("1e3", 60_000, "EVE_KITCHEN_SINK_MAX_RSS_MIB")).toThrow(
+      'EVE_KITCHEN_SINK_MAX_RSS_MIB must be a positive integer. Got: "1e3"',
     );
-    expect(() => readPositiveInt("1000ms", 60_000, "OPENCLAW_KITCHEN_SINK_RPC_READY_MS")).toThrow(
-      'OPENCLAW_KITCHEN_SINK_RPC_READY_MS must be a positive integer. Got: "1000ms"',
+    expect(() => readPositiveInt("1000ms", 60_000, "EVE_KITCHEN_SINK_RPC_READY_MS")).toThrow(
+      'EVE_KITCHEN_SINK_RPC_READY_MS must be a positive integer. Got: "1000ms"',
     );
-    expect(() => readPositiveInt("0", 60_000, "OPENCLAW_KITCHEN_SINK_RPC_PORT")).toThrow(
-      'OPENCLAW_KITCHEN_SINK_RPC_PORT must be a positive integer. Got: "0"',
+    expect(() => readPositiveInt("0", 60_000, "EVE_KITCHEN_SINK_RPC_PORT")).toThrow(
+      'EVE_KITCHEN_SINK_RPC_PORT must be a positive integer. Got: "0"',
     );
   });
 
   it("uses an explicit RPC port or asks the OS for an available fallback", async () => {
     await expect(
-      resolveKitchenSinkRpcPort({ OPENCLAW_KITCHEN_SINK_RPC_PORT: "19080" }),
+      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "19080" }),
     ).resolves.toBe(19080);
     await expect(
-      resolveKitchenSinkRpcPort({ OPENCLAW_KITCHEN_SINK_RPC_PORT: "65535" }),
+      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65535" }),
     ).resolves.toBe(65535);
     await expect(
-      resolveKitchenSinkRpcPort({ OPENCLAW_KITCHEN_SINK_RPC_PORT: "65536" }),
+      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65536" }),
     ).rejects.toThrow(
-      'OPENCLAW_KITCHEN_SINK_RPC_PORT must be a TCP port from 1 to 65535. Got: "65536"',
+      'EVE_KITCHEN_SINK_RPC_PORT must be a TCP port from 1 to 65535. Got: "65536"',
     );
     await expect(
       resolveKitchenSinkRpcPort({}, { findAvailablePort: async () => 45678 }),
@@ -172,13 +172,13 @@ describe("kitchen-sink RPC isolated state", () => {
   it("cleans up the generated temporary home tree", async () => {
     const { root, env } = makeEnv();
 
-    expect(root).toContain("openclaw-kitchen-sink-rpc-");
+    expect(root).toContain("eve-kitchen-sink-rpc-");
     expect(env.HOME).toBe(path.join(root, "home"));
     expect(env.USERPROFILE).toBe(env.HOME);
-    expect(env.OPENCLAW_HOME).toBe(env.HOME);
-    expect(env.OPENCLAW_STATE_DIR).toBe(path.join(env.HOME, ".openclaw"));
-    expect(env.OPENCLAW_CONFIG_PATH).toBe(path.join(env.OPENCLAW_STATE_DIR, "openclaw.json"));
-    expect(existsSync(env.OPENCLAW_STATE_DIR)).toBe(true);
+    expect(env.EVE_HOME).toBe(env.HOME);
+    expect(env.EVE_STATE_DIR).toBe(path.join(env.HOME, ".eve"));
+    expect(env.EVE_CONFIG_PATH).toBe(path.join(env.EVE_STATE_DIR, "eve.json"));
+    expect(existsSync(env.EVE_STATE_DIR)).toBe(true);
 
     await expect(cleanupKitchenSinkEnv(root)).resolves.toBe(true);
 
@@ -192,14 +192,14 @@ describe("kitchen-sink RPC isolated state", () => {
 
     try {
       await expect(
-        cleanupKitchenSinkEnv("/tmp/openclaw-kitchen-sink-rpc-stuck", {
+        cleanupKitchenSinkEnv("/tmp/eve-kitchen-sink-rpc-stuck", {
           attempts: 3,
           delayMs: 1,
           throwOnFailure: true,
           warn: false,
         }),
       ).rejects.toThrow(
-        "failed to remove Kitchen Sink RPC temp root: /tmp/openclaw-kitchen-sink-rpc-stuck",
+        "failed to remove Kitchen Sink RPC temp root: /tmp/eve-kitchen-sink-rpc-stuck",
       );
       expect(rmSyncSpy).toHaveBeenCalledTimes(3);
     } finally {
@@ -323,7 +323,7 @@ describe("kitchen-sink RPC gateway teardown", () => {
   });
 
   it("fails readiness waits before polling after signaled gateway exits", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-signal-ready-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-signal-ready-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "gateway died\n");
@@ -345,7 +345,7 @@ describe("kitchen-sink RPC gateway teardown", () => {
   });
 
   it("aborts stalled readiness probes when the gateway exits mid-probe", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-exit-during-ready-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-exit-during-ready-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "gateway died during readiness\n");
@@ -387,7 +387,7 @@ describe("kitchen-sink RPC gateway teardown", () => {
   });
 
   it("keeps stalled readiness probes inside the caller deadline", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-stalled-ready-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-stalled-ready-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "booting\n");
@@ -413,7 +413,7 @@ describe("kitchen-sink RPC gateway teardown", () => {
   });
 
   it("requires /readyz body.ready before accepting gateway readiness", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-ready-body-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-ready-body-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "[gateway] ready\n");
@@ -439,7 +439,7 @@ describe("kitchen-sink RPC gateway teardown", () => {
 
 describe("kitchen-sink RPC gateway readiness logs", () => {
   it("scans gateway readiness logs incrementally across appended chunks", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-scan-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-scan-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "booting\n".repeat(1000));
@@ -459,7 +459,7 @@ describe("kitchen-sink RPC gateway readiness logs", () => {
   });
 
   it("resets the readiness scanner after log rotation", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-rotate-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-rotate-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "older log contents without readiness\n");
@@ -475,7 +475,7 @@ describe("kitchen-sink RPC gateway readiness logs", () => {
   });
 
   it("tails large gateway logs without returning older content", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-tail-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-tail-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, `old fatal marker\n${"noise\n".repeat(2000)}recent ready\n`);
@@ -509,7 +509,7 @@ describe("kitchen-sink RPC gateway readiness logs", () => {
   });
 
   it("scans gateway error logs incrementally and keeps the latest findings", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-errors-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-errors-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, `${"ordinary line\n".repeat(2000)}0 errors\n[ERROR] late failure\n`);
@@ -526,7 +526,7 @@ describe("kitchen-sink RPC gateway readiness logs", () => {
   });
 
   it("does not allowlist dirty error lines that mention zero errors", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-zero-error-smuggle-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-zero-error-smuggle-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, "[ERROR] 0 errors reported but fatal state remained\n");
@@ -543,7 +543,7 @@ describe("kitchen-sink RPC gateway readiness logs", () => {
   });
 
   it("bounds scanner memory for very long log lines", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-log-long-line-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-log-long-line-"));
     try {
       const logPath = path.join(root, "gateway.log");
       writeFileSync(logPath, `${"x".repeat(200_000)}[ERROR] giant line\n`);
@@ -585,7 +585,7 @@ describe("kitchen-sink RPC command output capture", () => {
   });
 
   posixIt("kills timed command process groups", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-timeout-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-timeout-"));
     const scriptPath = path.join(root, "trap-term.mjs");
     const grandchildPidPath = path.join(root, "grandchild.pid");
     let grandchildPid = 0;
@@ -631,7 +631,7 @@ setInterval(() => {}, 1000);
   });
 
   posixIt("rejects timed commands that exit cleanly after SIGTERM", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-kitchen-rpc-timeout-zero-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-kitchen-rpc-timeout-zero-"));
     const scriptPath = path.join(root, "term-zero.mjs");
     writeFileSync(
       scriptPath,
@@ -721,7 +721,7 @@ setInterval(() => {}, 1000);
   });
 
   it("rejects command spawn failures as Error objects", async () => {
-    await expect(runCommand("openclaw-definitely-missing-command", [])).rejects.toMatchObject({
+    await expect(runCommand("eve-definitely-missing-command", [])).rejects.toMatchObject({
       code: "ENOENT",
     });
   });
@@ -761,21 +761,21 @@ describe("kitchen-sink RPC caller loading", () => {
   });
 
   it("uses built callGateway chunks for dist and packaged entries", () => {
-    expect(usesBuiltOpenClawEntry({ command: "node", baseArgs: ["dist/index.js"] })).toBe(true);
+    expect(usesBuiltEVEEntry({ command: "node", baseArgs: ["dist/index.js"] })).toBe(true);
     expect(
-      usesBuiltOpenClawEntry({ command: "node", baseArgs: ["/app/openclaw.mjs"] }, "/repo", {
-        OPENCLAW_ENTRY: "/app/openclaw.mjs",
+      usesBuiltEVEEntry({ command: "node", baseArgs: ["/app/eve.mjs"] }, "/repo", {
+        EVE_ENTRY: "/app/eve.mjs",
       }),
     ).toBe(true);
   });
 
   it("does not deep-import gateway TypeScript for source pnpm runners", () => {
-    expect(usesBuiltOpenClawEntry({ pnpm: true, baseArgs: ["openclaw"] })).toBe(false);
-    expect(usesBuiltOpenClawEntry({ command: "node", baseArgs: ["scripts/dev.mjs"] })).toBe(false);
+    expect(usesBuiltEVEEntry({ pnpm: true, baseArgs: ["eve"] })).toBe(false);
+    expect(usesBuiltEVEEntry({ command: "node", baseArgs: ["scripts/dev.mjs"] })).toBe(false);
   });
 
   it("finds only built callGateway chunks", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-rpc-call-chunks-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-rpc-call-chunks-"));
     try {
       mkdirSync(path.join(root, "dist"));
       writeFileSync(path.join(root, "dist", "call-Abc123.js"), "");
@@ -793,7 +793,7 @@ describe("kitchen-sink RPC caller loading", () => {
 
   posixIt("kills descendants when timed commands exit cleanly after SIGTERM", async () => {
     const tempDirs: string[] = [];
-    const root = makeTempDir(tempDirs, "openclaw-kitchen-rpc-timeout-clean-parent-");
+    const root = makeTempDir(tempDirs, "eve-kitchen-rpc-timeout-clean-parent-");
     const scriptPath = path.join(root, "term-zero-grandchild.mjs");
     const grandchildPidPath = path.join(root, "grandchild.pid");
     let grandchildPid = 0;
@@ -839,7 +839,7 @@ setInterval(() => {}, 1000);
 
   posixIt("cleans active command process groups before parent signal exit", async () => {
     const tempDirs: string[] = [];
-    const root = makeTempDir(tempDirs, "openclaw-kitchen-rpc-parent-signal-");
+    const root = makeTempDir(tempDirs, "eve-kitchen-rpc-parent-signal-");
     const runnerPath = path.join(root, "runner.mjs");
     const scriptPath = path.join(root, "term-zero-grandchild.mjs");
     const grandchildPidPath = path.join(root, "grandchild.pid");
@@ -1014,7 +1014,7 @@ describe("kitchen-sink RPC command catalog assertions", () => {
   it("requires every expected Kitchen Sink plugin tool", () => {
     expect(() =>
       assertExpectedKitchenSinkToolEntries(
-        [{ id: "kitchen_sink_text", source: "plugin", pluginId: "openclaw-kitchen-sink-fixture" }],
+        [{ id: "kitchen_sink_text", source: "plugin", pluginId: "eve-kitchen-sink-fixture" }],
         "tools.catalog plugin tools",
         { requirePluginProvenance: true },
       ),
@@ -1025,8 +1025,8 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(() =>
       assertExpectedKitchenSinkToolEntries(
         [
-          { id: "kitchen_sink_text", source: "plugin", pluginId: "openclaw-kitchen-sink-fixture" },
-          { id: "kitchen_sink_search", source: "core", pluginId: "openclaw-kitchen-sink-fixture" },
+          { id: "kitchen_sink_text", source: "plugin", pluginId: "eve-kitchen-sink-fixture" },
+          { id: "kitchen_sink_search", source: "core", pluginId: "eve-kitchen-sink-fixture" },
           { id: "kitchen_sink_image_job", source: "plugin", pluginId: "other-plugin" },
         ],
         "tools.catalog plugin tools",
@@ -1039,16 +1039,16 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(
       assertExpectedKitchenSinkToolEntries(
         [
-          { id: "kitchen_sink_text", source: "plugin", pluginId: "openclaw-kitchen-sink-fixture" },
+          { id: "kitchen_sink_text", source: "plugin", pluginId: "eve-kitchen-sink-fixture" },
           {
             id: "kitchen_sink_search",
             source: "plugin",
-            pluginId: "openclaw-kitchen-sink-fixture",
+            pluginId: "eve-kitchen-sink-fixture",
           },
           {
             id: "kitchen_sink_image_job",
             source: "plugin",
-            pluginId: "openclaw-kitchen-sink-fixture",
+            pluginId: "eve-kitchen-sink-fixture",
           },
         ],
         "tools.catalog plugin tools",
@@ -1113,7 +1113,7 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     await expect(
       assertOperatorRpcDenied({ method: "skills.bins", params: {} }, async () => {
         throw new Error(
-          "openclaw gateway call skills.bins failed with 1\nGateway call failed: unauthorized role: operator",
+          "eve gateway call skills.bins failed with 1\nGateway call failed: unauthorized role: operator",
         );
       }),
     ).rejects.toThrow("Gateway call failed: unauthorized role: operator");
@@ -1168,16 +1168,16 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(() =>
       assertExpectedKitchenSinkToolEntries(
         [
-          { id: "kitchen_sink_text", source: "plugin", pluginId: "openclaw-kitchen-sink-fixture" },
+          { id: "kitchen_sink_text", source: "plugin", pluginId: "eve-kitchen-sink-fixture" },
           {
             id: "kitchen_sink_search",
             source: "plugin",
-            pluginId: "openclaw-kitchen-sink-fixture",
+            pluginId: "eve-kitchen-sink-fixture",
           },
           {
             id: "kitchen_sink_image_job",
             source: "core",
-            pluginId: "openclaw-kitchen-sink-fixture",
+            pluginId: "eve-kitchen-sink-fixture",
           },
         ],
         "tools.effective plugin tools",
@@ -1383,7 +1383,7 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(() =>
       assertKitchenSinkUiDescriptors({
         ok: true,
-        descriptors: [{ pluginId: "openclaw-kitchen-sink-fixture", id: "kitchen-sink-panel" }],
+        descriptors: [{ pluginId: "eve-kitchen-sink-fixture", id: "kitchen-sink-panel" }],
       }),
     ).not.toThrow();
 
@@ -1478,7 +1478,7 @@ describe("kitchen-sink RPC health/status assertions", () => {
         defaultAgentId: "main",
         agents: [],
         sessions: {
-          path: "/tmp/openclaw-sessions.sqlite",
+          path: "/tmp/eve-sessions.sqlite",
           count: 0,
           recent: [],
         },
@@ -1649,7 +1649,7 @@ describe("kitchen-sink RPC process sampling", () => {
         runCommand: async () => ({
           stdout: [
             "  PID  PPID   RSS %CPU COMMAND",
-            "  1234     1  2048  0.1 openclaw-gateway",
+            "  1234     1  2048  0.1 eve-gateway",
             badRow,
           ].join("\n"),
           stderr: "",
@@ -1666,7 +1666,7 @@ describe("kitchen-sink RPC process sampling", () => {
       runCommand: async () => ({
         stdout: [
           "  PID  PPID   RSS %CPU COMMAND",
-          "  1234     1  2048  0.1 openclaw-gateway",
+          "  1234     1  2048  0.1 eve-gateway",
           "  5678  1234  4096  0.2 child",
           "  9999  9998  9007199254740993  0.2 unrelated",
         ].join("\n"),
@@ -1867,7 +1867,7 @@ describe("kitchen-sink RPC process sampling", () => {
         expect(args).toEqual(["-ww", "-axo", "pid=,ppid=,rss=,pcpu=,command="]);
         return {
           stdout: [
-            " 4321     1   16384   0.0 node /usr/local/bin/corepack pnpm openclaw gateway --port 19080",
+            " 4321     1   16384   0.0 node /usr/local/bin/corepack pnpm eve gateway --port 19080",
             " 4322  4321  262144  12.5 node dist/index.js gateway --port 19080 --bind loopback",
             " 4323  4322   32768   1.5 node helper.js",
           ].join("\n"),
@@ -1909,8 +1909,8 @@ describe("kitchen-sink RPC process sampling", () => {
       posixCommandLineNeedles: ["gateway", "--port", "19080"],
       runCommand: async () => ({
         stdout: [
-          " 4321     1 1048576   0.0 node /usr/local/bin/corepack pnpm openclaw gateway --port 19080",
-          " 4322  4321  262144  12.5 openclaw-gateway",
+          " 4321     1 1048576   0.0 node /usr/local/bin/corepack pnpm eve gateway --port 19080",
+          " 4322  4321  262144  12.5 eve-gateway",
           " 4323  4322   32768   1.5 node helper.js",
         ].join("\n"),
         stderr: "",
@@ -1931,7 +1931,7 @@ describe("kitchen-sink RPC process sampling", () => {
       posixCommandLineNeedles: ["gateway", "--port", "19080"],
       runCommand: async () => ({
         stdout: [
-          " 4321     1 1048576   0.0 node /usr/local/bin/corepack pnpm openclaw gateway --port 19080",
+          " 4321     1 1048576   0.0 node /usr/local/bin/corepack pnpm eve gateway --port 19080",
           " 4322  4321  262144  12.5 node",
           " 4323  4322   32768   1.5 node helper.js",
         ].join("\n"),
@@ -1952,7 +1952,7 @@ describe("kitchen-sink RPC process sampling", () => {
       platform: "darwin",
       posixCommandLineNeedles: ["gateway", "--port", "19080"],
       runCommand: async () => ({
-        stdout: " 4321     1   16384   0.0 node /usr/local/bin/corepack pnpm openclaw status\n",
+        stdout: " 4321     1   16384   0.0 node /usr/local/bin/corepack pnpm eve status\n",
         stderr: "",
       }),
     });

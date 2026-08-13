@@ -1,11 +1,11 @@
 // Imessage plugin module implements deliver behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   deliverTextOrMediaReply,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { sendMessageIMessage } from "../send.js";
 import {
   chunkTextWithMode,
@@ -17,7 +17,7 @@ import type { SentMessageCache } from "./echo-cache.js";
 import { sanitizeOutboundText } from "./sanitize-outbound.js";
 
 export async function deliverReplies(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   replies: ReplyPayload[];
   target: string;
   accountId?: string;

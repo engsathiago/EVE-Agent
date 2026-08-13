@@ -1,6 +1,6 @@
 // Provider discovery contract helpers define reusable discovery tests for provider plugins.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { AuthProfileStore, OpenClawConfig } from "../provider-auth.js";
+import type { AuthProfileStore, EVEConfig } from "../provider-auth.js";
 import {
   registerProviderPlugins as registerProviders,
   requireRegisteredProvider as requireProvider,
@@ -82,7 +82,7 @@ function runCatalog(
   state: DiscoveryState,
   params: {
     provider: ProviderHandle;
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     env?: NodeJS.ProcessEnv;
     resolveProviderApiKey?: () => { apiKey: string | undefined; discoveryApiKey?: string };
     resolveProviderAuth?: (
@@ -136,17 +136,17 @@ function providerModelIds(provider: Record<string, unknown>): Array<unknown> {
 function installDiscoveryHooks(state: DiscoveryState, options: DiscoveryContractOptions) {
   beforeAll(async () => {
     vi.resetModules();
-    vi.doMock("openclaw/plugin-sdk/agent-runtime", () => {
+    vi.doMock("eve-agent/plugin-sdk/agent-runtime", () => {
       return {
         ensureAuthProfileStore: ensureAuthProfileStoreMock,
         listProfilesForProvider: listProfilesForProviderMock,
       };
     });
-    vi.doMock("openclaw/plugin-sdk/provider-auth", () => {
+    vi.doMock("eve-agent/plugin-sdk/provider-auth", () => {
       return {
         DEFAULT_COPILOT_API_BASE_URL: "https://api.individual.githubcopilot.com",
         MINIMAX_OAUTH_MARKER: "minimax-oauth",
-        applyAuthProfileConfig: (config: OpenClawConfig) => config,
+        applyAuthProfileConfig: (config: EVEConfig) => config,
         buildApiKeyCredential: (
           provider: string,
           key: unknown,
@@ -410,7 +410,7 @@ export function describeVllmProviderDiscoveryContract(params: {
                 },
               },
             },
-          } as unknown as OpenClawConfig,
+          } as unknown as EVEConfig,
           env: {
             VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
@@ -466,7 +466,7 @@ export function describeVllmProviderDiscoveryContract(params: {
                 },
               },
             },
-          } as unknown as OpenClawConfig,
+          } as unknown as EVEConfig,
           env: {
             VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
@@ -516,7 +516,7 @@ export function describeVllmProviderDiscoveryContract(params: {
                 },
               },
             },
-          } as OpenClawConfig,
+          } as EVEConfig,
           env: {
             VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
@@ -616,7 +616,7 @@ export function describeSglangProviderDiscoveryContract(params: {
                 },
               },
             },
-          } as OpenClawConfig,
+          } as EVEConfig,
           env: {
             SGLANG_API_KEY: "env-sglang-key",
           } as NodeJS.ProcessEnv,
@@ -667,7 +667,7 @@ export function describeSglangProviderDiscoveryContract(params: {
                 },
               },
             },
-          } as OpenClawConfig,
+          } as EVEConfig,
           env: {
             SGLANG_API_KEY: "env-sglang-key",
           } as NodeJS.ProcessEnv,

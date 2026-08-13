@@ -17,17 +17,17 @@ import {
 
 const ROOT_DIR = path.parse(process.cwd()).root;
 const CONFIG_DIR = path.join(ROOT_DIR, "config");
-const ETC_OPENCLAW_DIR = path.join(ROOT_DIR, "etc", "openclaw");
+const ETC_EVE_DIR = path.join(ROOT_DIR, "etc", "eve");
 const SHARED_DIR = path.join(ROOT_DIR, "shared");
 
-const DEFAULT_BASE_PATH = path.join(CONFIG_DIR, "openclaw.json");
+const DEFAULT_BASE_PATH = path.join(CONFIG_DIR, "eve.json");
 
 function configPath(...parts: string[]) {
   return path.join(CONFIG_DIR, ...parts);
 }
 
-function etcOpenClawPath(...parts: string[]) {
-  return path.join(ETC_OPENCLAW_DIR, ...parts);
+function etcEVEPath(...parts: string[]) {
+  return path.join(ETC_EVE_DIR, ...parts);
 }
 
 function sharedPath(...parts: string[]) {
@@ -84,7 +84,7 @@ describe("resolveConfigIncludes", () => {
   });
 
   it("rejects absolute path outside config directory (CWE-22)", () => {
-    const absolute = etcOpenClawPath("agents.json");
+    const absolute = etcEVEPath("agents.json");
     const files = { [absolute]: { list: [{ id: "main" }] } };
     const obj = { agents: { $include: absolute } };
     expectResolveIncludeError(() => resolve(obj, files), /escapes config directory/);
@@ -320,7 +320,7 @@ describe("resolveConfigIncludes", () => {
         resolve(
           { $include: "../../shared/common.json" },
           { [sharedPath("common.json")]: { shared: true } },
-          configPath("sub", "openclaw.json"),
+          configPath("sub", "eve.json"),
         ),
       /escapes config directory/,
     );
@@ -343,7 +343,7 @@ describe("resolveConfigIncludeWritePath", () => {
   it.runIf(process.platform !== "win32")(
     "canonicalizes missing targets through symlinks into allowed roots",
     async () => {
-      await withTempDir({ prefix: "openclaw-include-write-path-" }, async (tempRoot) => {
+      await withTempDir({ prefix: "eve-include-write-path-" }, async (tempRoot) => {
         const configDir = path.join(tempRoot, "config");
         const allowedDir = path.join(tempRoot, "allowed");
         const linkDir = path.join(configDir, "shared");
@@ -354,7 +354,7 @@ describe("resolveConfigIncludeWritePath", () => {
 
         expect(
           resolveConfigIncludeWritePath({
-            configPath: path.join(configDir, "openclaw.json"),
+            configPath: path.join(configDir, "eve.json"),
             includePath: path.join(linkDir, "plugins.json5"),
             allowedRoots: [allowedDir],
           }),
@@ -639,7 +639,7 @@ describe("security: path traversal protection (CWE-22)", () => {
     });
 
     it("allows include files when the config root path is a symlink", async () => {
-      await withTempDir({ prefix: "openclaw-includes-symlink-" }, async (tempRoot) => {
+      await withTempDir({ prefix: "eve-includes-symlink-" }, async (tempRoot) => {
         const realRoot = path.join(tempRoot, "real");
         const linkRoot = path.join(tempRoot, "link");
         await fs.mkdir(path.join(realRoot, "includes"), { recursive: true });
@@ -652,7 +652,7 @@ describe("security: path traversal protection (CWE-22)", () => {
 
         const result = resolveConfigIncludes(
           { $include: "./includes/extra.json5" },
-          path.join(linkRoot, "openclaw.json"),
+          path.join(linkRoot, "eve.json"),
         );
         expect(result).toEqual({ logging: { redactSensitive: "tools" } });
       });
@@ -689,7 +689,7 @@ describe("security: path traversal protection (CWE-22)", () => {
       if (process.platform === "win32") {
         return;
       }
-      await withTempDir({ prefix: "openclaw-includes-hardlink-" }, async (tempRoot) => {
+      await withTempDir({ prefix: "eve-includes-hardlink-" }, async (tempRoot) => {
         const configDir = path.join(tempRoot, "config");
         const outsideDir = path.join(tempRoot, "outside");
         await fs.mkdir(configDir, { recursive: true });
@@ -709,14 +709,14 @@ describe("security: path traversal protection (CWE-22)", () => {
         expect(() =>
           resolveConfigIncludes(
             { $include: "./extra.json5" },
-            path.join(configDir, "openclaw.json"),
+            path.join(configDir, "eve.json"),
           ),
         ).toThrow(/security checks|hardlink/i);
       });
     });
 
     it("rejects oversized include files", async () => {
-      await withTempDir({ prefix: "openclaw-includes-big-" }, async (tempRoot) => {
+      await withTempDir({ prefix: "eve-includes-big-" }, async (tempRoot) => {
         const configDir = path.join(tempRoot, "config");
         await fs.mkdir(configDir, { recursive: true });
         const includePath = path.join(configDir, "big.json5");
@@ -724,14 +724,14 @@ describe("security: path traversal protection (CWE-22)", () => {
         await fs.writeFile(includePath, `{"blob":"${payload}"}`, "utf-8");
 
         expect(() =>
-          resolveConfigIncludes({ $include: "./big.json5" }, path.join(configDir, "openclaw.json")),
+          resolveConfigIncludes({ $include: "./big.json5" }, path.join(configDir, "eve.json")),
         ).toThrow(/security checks|max/i);
       });
     });
   });
 });
 
-describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
+describe("EVE_INCLUDE_ROOTS allowlist", () => {
   it("permits an include outside the config directory when its root is allowed", () => {
     const sharedFile = sharedPath("common.json");
     const files = { [sharedFile]: { shared: true } };
@@ -746,7 +746,7 @@ describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
   });
 
   it("still rejects include paths that fall outside every allowed root", () => {
-    const obj = { $include: etcOpenClawPath("agents.json") };
+    const obj = { $include: etcEVEPath("agents.json") };
     expect(() =>
       resolveConfigIncludes(obj, DEFAULT_BASE_PATH, createMockResolver({}), {
         allowedRoots: [SHARED_DIR],
@@ -781,7 +781,7 @@ describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
   });
 
   it("resolves a symlinked include whose realpath lands inside an allowed root", async () => {
-    await withTempDir({ prefix: "openclaw-includes-allowed-symlink-" }, async (tempRoot) => {
+    await withTempDir({ prefix: "eve-includes-allowed-symlink-" }, async (tempRoot) => {
       const configDir = path.join(tempRoot, "config");
       const sharedDir = path.join(tempRoot, "shared");
       await fs.mkdir(configDir, { recursive: true });
@@ -797,7 +797,7 @@ describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
 
       const result = resolveConfigIncludes(
         { $include: "./extra.json5" },
-        path.join(configDir, "openclaw.json"),
+        path.join(configDir, "eve.json"),
         undefined,
         { allowedRoots: [sharedDir] },
       );
@@ -806,7 +806,7 @@ describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
   });
 
   it("rejects a symlinked include that escapes both the config directory and every allowed root", async () => {
-    await withTempDir({ prefix: "openclaw-includes-allowed-escape-" }, async (tempRoot) => {
+    await withTempDir({ prefix: "eve-includes-allowed-escape-" }, async (tempRoot) => {
       const configDir = path.join(tempRoot, "config");
       const allowedDir = path.join(tempRoot, "allowed");
       const offRootDir = path.join(tempRoot, "off-limits");
@@ -832,7 +832,7 @@ describe("OPENCLAW_INCLUDE_ROOTS allowlist", () => {
       expect(() =>
         resolveConfigIncludes(
           { $include: "./secret.json5" },
-          path.join(configDir, "openclaw.json"),
+          path.join(configDir, "eve.json"),
           undefined,
           { allowedRoots: [allowedDir] },
         ),

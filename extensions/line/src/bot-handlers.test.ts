@@ -1,6 +1,6 @@
 // Line tests cover bot handlers plugin behavior.
 import type { webhook } from "@line/bot-sdk";
-import type { HistoryEntry } from "openclaw/plugin-sdk/reply-history";
+import type { HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LineAccountConfig } from "./types.js";
 
@@ -9,11 +9,11 @@ type PostbackEvent = webhook.PostbackEvent;
 
 // Avoid pulling in globals/pairing/media dependencies; this suite only asserts
 // allowlist/groupPolicy gating and message-context wiring.
-vi.mock("openclaw/plugin-sdk/channel-inbound", () => ({
+vi.mock("eve-agent/plugin-sdk/channel-inbound", () => ({
   buildMentionRegexes: () => [],
   matchesMentionPatterns: () => false,
 }));
-vi.mock("openclaw/plugin-sdk/channel-pairing", () => ({
+vi.mock("eve-agent/plugin-sdk/channel-pairing", () => ({
   createChannelPairingChallengeIssuer:
     ({ upsertPairingRequest }: { upsertPairingRequest: (args: unknown) => Promise<unknown> }) =>
     async ({ senderId, onCreated }: { senderId: string; onCreated?: () => void }) => {
@@ -21,7 +21,7 @@ vi.mock("openclaw/plugin-sdk/channel-pairing", () => ({
       onCreated?.();
     },
 }));
-vi.mock("openclaw/plugin-sdk/command-auth-native", () => ({
+vi.mock("eve-agent/plugin-sdk/command-auth-native", () => ({
   hasControlCommand: (text: string) => text.trim().startsWith("!"),
   shouldComputeCommandAuthorized: (text: string) => text.trim().startsWith("!"),
   resolveControlCommandGate: ({
@@ -35,7 +35,7 @@ vi.mock("openclaw/plugin-sdk/command-auth-native", () => ({
       hasControlCommand && authorizers.some((entry) => entry.allowed || !entry.configured),
   }),
 }));
-vi.mock("openclaw/plugin-sdk/runtime-group-policy", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-group-policy", () => ({
   resolveAllowlistProviderRuntimeGroupPolicy: ({
     groupPolicy,
     defaultGroupPolicy,
@@ -50,11 +50,11 @@ vi.mock("openclaw/plugin-sdk/runtime-group-policy", () => ({
     cfg.channels?.line?.groupPolicy ?? "open",
   warnMissingProviderGroupPolicyFallbackOnce: () => {},
 }));
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-env", () => ({
   danger: (text: string) => text,
   logVerbose: () => {},
 }));
-vi.mock("openclaw/plugin-sdk/reply-history", () => ({
+vi.mock("eve-agent/plugin-sdk/reply-history", () => ({
   DEFAULT_GROUP_HISTORY_LIMIT: 20,
   createChannelHistoryWindow: ({ historyMap }: { historyMap: Map<string, HistoryEntry[]> }) => ({
     record: ({
@@ -117,7 +117,7 @@ vi.mock("openclaw/plugin-sdk/reply-history", () => ({
     historyMap.set(historyKey, [...existing, entry].slice(-limit));
   },
 }));
-vi.mock("openclaw/plugin-sdk/routing", () => ({
+vi.mock("eve-agent/plugin-sdk/routing", () => ({
   resolveAgentRoute: () => ({ agentId: "default" }),
 }));
 
@@ -126,7 +126,7 @@ const { readAllowFromStoreMock, upsertPairingRequestMock } = vi.hoisted(() => ({
   upsertPairingRequestMock: vi.fn(async (_args: unknown) => ({ code: "CODE", created: true })),
 }));
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/conversation-runtime", () => ({
   resolvePairingIdLabel: () => "lineUserId",
   readChannelAllowFromStore: readAllowFromStoreMock,
   upsertChannelPairingRequest: upsertPairingRequestMock,
@@ -321,14 +321,14 @@ describe("handleLineWebhookEvents", () => {
   });
 
   afterAll(() => {
-    vi.doUnmock("openclaw/plugin-sdk/channel-inbound");
-    vi.doUnmock("openclaw/plugin-sdk/channel-pairing");
-    vi.doUnmock("openclaw/plugin-sdk/command-auth-native");
-    vi.doUnmock("openclaw/plugin-sdk/runtime-group-policy");
-    vi.doUnmock("openclaw/plugin-sdk/runtime-env");
-    vi.doUnmock("openclaw/plugin-sdk/reply-history");
-    vi.doUnmock("openclaw/plugin-sdk/routing");
-    vi.doUnmock("openclaw/plugin-sdk/conversation-runtime");
+    vi.doUnmock("eve-agent/plugin-sdk/channel-inbound");
+    vi.doUnmock("eve-agent/plugin-sdk/channel-pairing");
+    vi.doUnmock("eve-agent/plugin-sdk/command-auth-native");
+    vi.doUnmock("eve-agent/plugin-sdk/runtime-group-policy");
+    vi.doUnmock("eve-agent/plugin-sdk/runtime-env");
+    vi.doUnmock("eve-agent/plugin-sdk/reply-history");
+    vi.doUnmock("eve-agent/plugin-sdk/routing");
+    vi.doUnmock("eve-agent/plugin-sdk/conversation-runtime");
     vi.doUnmock("./download.js");
     vi.doUnmock("./send.js");
     vi.doUnmock("./bot-message-context.js");

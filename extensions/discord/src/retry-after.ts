@@ -3,7 +3,7 @@ import {
   asFiniteNumberInRange,
   parseStrictFiniteNumber,
   parseStrictNonNegativeInteger,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 
 const RETRY_AFTER_HEADER_DELAY_RE = /^\d+$/;
 const RETRY_AFTER_BODY_SECONDS_RE = /^(?:\d+\.?\d*|\.\d+)$/;

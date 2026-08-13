@@ -1,5 +1,5 @@
 // Elevenlabs tests cover realtime transcription provider plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   testing,
@@ -10,7 +10,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
   it("normalizes nested provider config", () => {
     const provider = buildElevenLabsRealtimeTranscriptionProvider();
     const resolved = provider.resolveConfig?.({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       rawConfig: {
         providers: {
           elevenlabs: {
@@ -43,7 +43,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
   it("drops malformed numeric realtime config values", () => {
     const provider = buildElevenLabsRealtimeTranscriptionProvider();
     const resolved = provider.resolveConfig?.({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       rawConfig: {
         providers: {
           elevenlabs: {
@@ -69,7 +69,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
   it("keeps realtime VAD numeric config inside provider ranges", () => {
     const provider = buildElevenLabsRealtimeTranscriptionProvider();
     const resolved = provider.resolveConfig?.({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       rawConfig: {
         providers: {
           elevenlabs: {

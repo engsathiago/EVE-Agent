@@ -29,7 +29,7 @@ describe("gateway restart benchmark script", () => {
 
   it("prints help without running benchmark cases", () => {
     expect(helpResult.status).toBe(0);
-    expect(helpResult.stdout).toContain("OpenClaw Gateway restart benchmark");
+    expect(helpResult.stdout).toContain("EVE Gateway restart benchmark");
     expect(helpResult.stdout).toContain("--restarts <n>");
     expect(helpResult.stdout).toContain("Timeout for initial startup and each restart");
     expect(helpResult.stdout).toContain("--post-ready-delay-ms <ms>");
@@ -203,31 +203,31 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
   });
 
   it("enables both startup and restart trace in the child gateway environment", () => {
-    const env = testing.sanitizedEnv("/tmp/openclaw-bench", "/tmp/openclaw-bench/config.json", {
+    const env = testing.sanitizedEnv("/tmp/eve-bench", "/tmp/eve-bench/config.json", {
       config: {},
       id: "skipChannels",
       name: "gateway restart, skip channels",
     });
 
-    expect(env.OPENCLAW_GATEWAY_STARTUP_TRACE).toBe("1");
-    expect(env.OPENCLAW_GATEWAY_RESTART_TRACE).toBe("1");
-    expect(env.OPENCLAW_NO_RESPAWN).toBe("1");
-    expect(env.OPENCLAW_LOCAL_CHECK).toBeUndefined();
+    expect(env.EVE_GATEWAY_STARTUP_TRACE).toBe("1");
+    expect(env.EVE_GATEWAY_RESTART_TRACE).toBe("1");
+    expect(env.EVE_NO_RESPAWN).toBe("1");
+    expect(env.EVE_LOCAL_CHECK).toBeUndefined();
   });
 
   it("can pin ACPX startup probe policy per benchmark case", () => {
     const probeOffEnv = testing.sanitizedEnv(
-      "/tmp/openclaw-bench",
-      "/tmp/openclaw-bench/config.json",
+      "/tmp/eve-bench",
+      "/tmp/eve-bench/config.json",
       {
         config: {},
-        env: { OPENCLAW_ACPX_RUNTIME_STARTUP_PROBE: "0" },
+        env: { EVE_ACPX_RUNTIME_STARTUP_PROBE: "0" },
         id: "skipChannelsNoAcpxProbe",
         name: "gateway restart, skip channels, ACPX startup probe off",
       },
     );
 
-    expect(probeOffEnv.OPENCLAW_ACPX_RUNTIME_STARTUP_PROBE).toBe("0");
+    expect(probeOffEnv.EVE_ACPX_RUNTIME_STARTUP_PROBE).toBe("0");
   });
 
   it("parses restart trace metrics including resource Count fields", () => {
@@ -668,9 +668,9 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
   });
 
   it("writes restart intent files for the target gateway pid", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-restart-bench-test-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-restart-bench-test-"));
     try {
-      const env = { OPENCLAW_STATE_DIR: path.join(root, "state") };
+      const env = { EVE_STATE_DIR: path.join(root, "state") };
 
       expect(testing.writeRestartIntent(env, 12345, "gateway-restart-bench")).toBe(true);
       const raw = fs.readFileSync(path.join(root, "state", "gateway-restart-intent.json"), "utf8");
@@ -767,7 +767,7 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
   });
 
   it("writes plugin fixtures as a parent load path with explicit startup activation", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-restart-bench-config-test-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-restart-bench-config-test-"));
     try {
       const configPath = testing.writeConfig(root, {
         config: {},
@@ -784,7 +784,7 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
       expect(config.plugins?.allow).toEqual(["bench-plugin-01", "bench-plugin-02"]);
       const manifest = JSON.parse(
         fs.readFileSync(
-          path.join(root, "plugins", "bench-plugin-01", "openclaw.plugin.json"),
+          path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"),
           "utf8",
         ),
       ) as { activation?: { onStartup?: boolean } };

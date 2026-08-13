@@ -410,7 +410,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     expect(event?.sessionKey).toBe(sessionKey);
     expect(event?.messageId).toBeTypeOf("string");
     expect(message?.role).toBe("assistant");
-    expect(message?.provider).toBe("openclaw");
+    expect(message?.provider).toBe("eve");
     expect(message?.model).toBe("delivery-mirror");
     expect(message?.content).toEqual([{ type: "text", text: "Hello from delivery mirror!" }]);
     emitSpy.mockRestore();
@@ -504,7 +504,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
       expect(nextTurn.messageId).not.toBe(first.messageId);
       const lines = fs.readFileSync(first.sessionFile, "utf-8").trim().split("\n");
       expect(lines).toHaveLength(3);
-      expect(JSON.parse(lines[1]).message.openclawDeliveryMirror).toEqual({
+      expect(JSON.parse(lines[1]).message.eveDeliveryMirror).toEqual({
         kind: "channel-final",
         sourceMessageId: "message-1",
       });
@@ -556,7 +556,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     }
   });
 
-  it("skips transcript-only OpenClaw assistant entries when reading latest assistant text", async () => {
+  it("skips transcript-only EVE assistant entries when reading latest assistant text", async () => {
     writeTranscriptStore();
 
     const finalResult = await appendExactAssistantMessageToSessionTranscript({
@@ -579,7 +579,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
       storePath: fixture.storePath(),
       message: createExactAssistantMessage({
         text: "Injected transcript text",
-        provider: "openclaw",
+        provider: "eve",
         model: "gateway-injected",
       }),
     });
@@ -591,7 +591,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     expect(latestAssistantText?.text).toBe("Complete final answer");
   });
 
-  it("does not report transcript-only OpenClaw assistant entries as latest assistant text", async () => {
+  it("does not report transcript-only EVE assistant entries as latest assistant text", async () => {
     writeTranscriptStore();
 
     const mirrorResult = await appendAssistantMessageToSessionTranscript({
@@ -610,7 +610,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     expect(latestAssistantText).toBeUndefined();
   });
 
-  it("keeps transcript-only OpenClaw assistant entries available to the tail reader", async () => {
+  it("keeps transcript-only EVE assistant entries available to the tail reader", async () => {
     writeTranscriptStore();
 
     const mirrorResult = await appendAssistantMessageToSessionTranscript({
@@ -630,8 +630,8 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     expect(tailAssistantText?.text).toBe("Tail delivery mirror");
   });
 
-  it("scans past trailing non-assistant entries (e.g. openclaw.cache-ttl) to find the latest assistant text", async () => {
-    // Regression for openclaw/openclaw#83427: the cache-ttl custom entry was
+  it("scans past trailing non-assistant entries (e.g. eve.cache-ttl) to find the latest assistant text", async () => {
+    // Regression for eve/eve#83427: the cache-ttl custom entry was
     // emitted after the canonical assistant turn, and the tail reader returned
     // undefined on the first non-assistant line, so the gap-fill check in
     // persistTextTurnTranscript wrote a duplicate `api: "cli"` assistant
@@ -654,7 +654,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
 
     const cacheTtlEntry = `${JSON.stringify({
       type: "custom",
-      customType: "openclaw.cache-ttl",
+      customType: "eve.cache-ttl",
       timestamp: new Date().toISOString(),
       data: {
         provider: "anthropic",
@@ -702,7 +702,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
       expect(lines.length).toBe(4);
 
       const messageLine = JSON.parse(lines[3]);
-      expect(messageLine.message.provider).toBe("openclaw");
+      expect(messageLine.message.provider).toBe("eve");
       expect(messageLine.message.model).toBe("delivery-mirror");
       expect(messageLine.message.content[0].text).toBe("Repeated answer");
     }
@@ -878,7 +878,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
             textSignature: JSON.stringify({ v: 1, id: "item_final", phase: "final_answer" }),
           },
         ],
-        provider: "openclaw",
+        provider: "eve",
         model: "delivery-mirror",
       }),
     });
@@ -1087,7 +1087,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
           updateMode: "none",
           message: createExactAssistantMessage({
             text: "Mirrored reply",
-            provider: "openclaw",
+            provider: "eve",
             model: "delivery-mirror",
           }),
         }),
@@ -1124,7 +1124,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
       updateMode: "file-only",
       message: createExactAssistantMessage({
         text: "Done.",
-        provider: "openclaw",
+        provider: "eve",
         model: "delivery-mirror",
       }),
     });
@@ -1517,7 +1517,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
       transcriptPath: sessionFile,
       message: {
         role: "assistant",
-        provider: "openclaw",
+        provider: "eve",
         model: "delivery-mirror",
         content: "second side delivery",
       },

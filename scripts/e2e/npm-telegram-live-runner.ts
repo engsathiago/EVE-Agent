@@ -33,17 +33,17 @@ function parsePositiveIntegerEnv(env: NodeJS.ProcessEnv, name: string) {
 }
 
 function resolveCredentialSource(env: NodeJS.ProcessEnv) {
-  return env.OPENCLAW_NPM_TELEGRAM_CREDENTIAL_SOURCE ?? env.OPENCLAW_QA_CREDENTIAL_SOURCE;
+  return env.EVE_NPM_TELEGRAM_CREDENTIAL_SOURCE ?? env.EVE_QA_CREDENTIAL_SOURCE;
 }
 
 function resolveCredentialRole(env: NodeJS.ProcessEnv) {
-  return env.OPENCLAW_NPM_TELEGRAM_CREDENTIAL_ROLE ?? env.OPENCLAW_QA_CREDENTIAL_ROLE;
+  return env.EVE_NPM_TELEGRAM_CREDENTIAL_ROLE ?? env.EVE_QA_CREDENTIAL_ROLE;
 }
 
 const DEFAULT_RTT_CHECK_ID = "telegram-mentioned-message-reply";
 
 function resolveRttOptions(env: NodeJS.ProcessEnv, selectedScenarioIds: readonly string[] = []) {
-  const explicitCheckIds = splitCsv(env.OPENCLAW_NPM_TELEGRAM_RTT_CHECKS);
+  const explicitCheckIds = splitCsv(env.EVE_NPM_TELEGRAM_RTT_CHECKS);
   if (
     explicitCheckIds.length === 0 &&
     selectedScenarioIds.length > 0 &&
@@ -51,12 +51,12 @@ function resolveRttOptions(env: NodeJS.ProcessEnv, selectedScenarioIds: readonly
   ) {
     return {};
   }
-  const rttCount = parsePositiveIntegerEnv(env, "OPENCLAW_NPM_TELEGRAM_RTT_SAMPLES") ?? 20;
+  const rttCount = parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_SAMPLES") ?? 20;
   return {
     rttCount,
-    rttTimeoutMs: parsePositiveIntegerEnv(env, "OPENCLAW_NPM_TELEGRAM_RTT_TIMEOUT_MS"),
+    rttTimeoutMs: parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_TIMEOUT_MS"),
     maxRttFailures:
-      parsePositiveIntegerEnv(env, "OPENCLAW_NPM_TELEGRAM_RTT_MAX_FAILURES") ?? rttCount,
+      parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_MAX_FAILURES") ?? rttCount,
     rttCheckIds: explicitCheckIds,
   };
 }
@@ -65,7 +65,7 @@ async function shouldFailPackageTelegramRun(
   result: { summaryPath: string },
   env: NodeJS.ProcessEnv = process.env,
 ) {
-  if (parseBoolean(env.OPENCLAW_NPM_TELEGRAM_ALLOW_FAILURES)) {
+  if (parseBoolean(env.EVE_NPM_TELEGRAM_ALLOW_FAILURES)) {
     return false;
   }
   const { readQaSuiteFailedScenarioCountFromFile } =
@@ -73,26 +73,26 @@ async function shouldFailPackageTelegramRun(
   return (await readQaSuiteFailedScenarioCountFromFile(result.summaryPath)) > 0;
 }
 
-async function resolveTrustedOpenClawCommand(rawCommand: string) {
+async function resolveTrustedEVECommand(rawCommand: string) {
   if (!path.isAbsolute(rawCommand)) {
-    throw new Error("OPENCLAW_NPM_TELEGRAM_SUT_COMMAND must be an absolute path.");
+    throw new Error("EVE_NPM_TELEGRAM_SUT_COMMAND must be an absolute path.");
   }
   const commandName = path.basename(rawCommand);
-  if (commandName !== "openclaw" && commandName !== "openclaw.cmd") {
+  if (commandName !== "eve" && commandName !== "eve.cmd") {
     throw new Error(
-      `OPENCLAW_NPM_TELEGRAM_SUT_COMMAND must point to openclaw; got: ${commandName}`,
+      `EVE_NPM_TELEGRAM_SUT_COMMAND must point to eve; got: ${commandName}`,
     );
   }
   const npmPrefix = process.env.NPM_CONFIG_PREFIX?.trim();
   if (!npmPrefix) {
-    throw new Error("Missing NPM_CONFIG_PREFIX for installed openclaw command validation.");
+    throw new Error("Missing NPM_CONFIG_PREFIX for installed eve command validation.");
   }
   const [realCommand, realPrefix] = await Promise.all([
     fs.realpath(rawCommand),
     fs.realpath(npmPrefix),
   ]);
   if (realCommand !== realPrefix && !realCommand.startsWith(`${realPrefix}${path.sep}`)) {
-    throw new Error("OPENCLAW_NPM_TELEGRAM_SUT_COMMAND must resolve inside NPM_CONFIG_PREFIX.");
+    throw new Error("EVE_NPM_TELEGRAM_SUT_COMMAND must resolve inside NPM_CONFIG_PREFIX.");
   }
   return rawCommand;
 }
@@ -100,29 +100,29 @@ async function resolveTrustedOpenClawCommand(rawCommand: string) {
 async function main() {
   const { runTelegramQaLive } =
     await import("../../extensions/qa-lab/src/live-transports/telegram/telegram-live.runtime.ts");
-  const rawSutOpenClawCommand = process.env.OPENCLAW_NPM_TELEGRAM_SUT_COMMAND?.trim();
-  if (!rawSutOpenClawCommand) {
-    throw new Error("Missing OPENCLAW_NPM_TELEGRAM_SUT_COMMAND.");
+  const rawSutEVECommand = process.env.EVE_NPM_TELEGRAM_SUT_COMMAND?.trim();
+  if (!rawSutEVECommand) {
+    throw new Error("Missing EVE_NPM_TELEGRAM_SUT_COMMAND.");
   }
-  const sutOpenClawCommand = await resolveTrustedOpenClawCommand(rawSutOpenClawCommand);
+  const sutEVECommand = await resolveTrustedEVECommand(rawSutEVECommand);
 
-  const repoRoot = path.resolve(process.env.OPENCLAW_NPM_TELEGRAM_REPO_ROOT ?? process.cwd());
+  const repoRoot = path.resolve(process.env.EVE_NPM_TELEGRAM_REPO_ROOT ?? process.cwd());
   const outputDir =
-    process.env.OPENCLAW_NPM_TELEGRAM_OUTPUT_DIR?.trim() ||
+    process.env.EVE_NPM_TELEGRAM_OUTPUT_DIR?.trim() ||
     path.join(repoRoot, ".artifacts", "qa-e2e", `npm-telegram-live-${Date.now().toString(36)}`);
-  const scenarioIds = splitCsv(process.env.OPENCLAW_NPM_TELEGRAM_SCENARIOS);
+  const scenarioIds = splitCsv(process.env.EVE_NPM_TELEGRAM_SCENARIOS);
   const result = await runTelegramQaLive({
     env: process.env,
     repoRoot,
     outputDir,
-    sutOpenClawCommand,
-    providerMode: process.env.OPENCLAW_NPM_TELEGRAM_PROVIDER_MODE,
-    primaryModel: process.env.OPENCLAW_NPM_TELEGRAM_MODEL,
-    alternateModel: process.env.OPENCLAW_NPM_TELEGRAM_ALT_MODEL,
-    fastMode: parseBoolean(process.env.OPENCLAW_NPM_TELEGRAM_FAST),
+    sutEVECommand,
+    providerMode: process.env.EVE_NPM_TELEGRAM_PROVIDER_MODE,
+    primaryModel: process.env.EVE_NPM_TELEGRAM_MODEL,
+    alternateModel: process.env.EVE_NPM_TELEGRAM_ALT_MODEL,
+    fastMode: parseBoolean(process.env.EVE_NPM_TELEGRAM_FAST),
     scenarioIds,
     ...resolveRttOptions(process.env, scenarioIds),
-    sutAccountId: process.env.OPENCLAW_NPM_TELEGRAM_SUT_ACCOUNT,
+    sutAccountId: process.env.EVE_NPM_TELEGRAM_SUT_ACCOUNT,
     credentialSource: resolveCredentialSource(process.env),
     credentialRole: resolveCredentialRole(process.env),
   });

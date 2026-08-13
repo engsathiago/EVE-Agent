@@ -15,7 +15,7 @@ import {
 } from "../codex-install-utils.mjs";
 
 const cfg = readJson(configPath());
-const inspect = readJson("/tmp/openclaw-codex-inspect.json");
+const inspect = readJson("/tmp/eve-codex-inspect.json");
 const records = readInstallRecords(cfg.plugins?.installs);
 const codexRecord = records.codex || inspect.install;
 if (!codexRecord) {
@@ -24,8 +24,8 @@ if (!codexRecord) {
 if (codexRecord.source !== "npm") {
   throw new Error(`expected npm codex install record, got ${codexRecord.source}`);
 }
-if (!String(codexRecord.spec || "").includes("@openclaw/codex")) {
-  throw new Error(`expected @openclaw/codex install spec, got ${codexRecord.spec}`);
+if (!String(codexRecord.spec || "").includes("@eve/codex")) {
+  throw new Error(`expected @eve/codex install spec, got ${codexRecord.spec}`);
 }
 
 const npmRoot = managedNpmRoot();
@@ -37,14 +37,14 @@ assertPathInside(npmRoot, installPath, "codex install path");
 
 const codexPackageJson = path.join(installPath, "package.json");
 if (!fs.existsSync(codexPackageJson)) {
-  throw new Error(`missing npm-installed @openclaw/codex package: ${codexPackageJson}`);
+  throw new Error(`missing npm-installed @eve/codex package: ${codexPackageJson}`);
 }
 const codexPackage = readJson(codexPackageJson);
-if (codexPackage.name !== "@openclaw/codex") {
+if (codexPackage.name !== "@eve/codex") {
   throw new Error(`unexpected codex package name: ${codexPackage.name}`);
 }
 
-const npmProjectRoot = npmProjectRootForInstalledPackage(installPath, "@openclaw/codex");
+const npmProjectRoot = npmProjectRootForInstalledPackage(installPath, "@eve/codex");
 const openAiCodexPackageJson = findPackageJson("@openai/codex", [
   installPath,
   npmProjectRoot,
@@ -55,7 +55,7 @@ if (!openAiCodexPackageJson) {
 }
 assertPathInside(npmRoot, openAiCodexPackageJson, "@openai/codex dependency");
 
-const list = readJson("/tmp/openclaw-plugins-list.json");
+const list = readJson("/tmp/eve-plugins-list.json");
 const plugin = (list.plugins || []).find((entry) => entry.id === "codex");
 if (!plugin || plugin.enabled !== true || plugin.status !== "loaded") {
   throw new Error(`codex plugin was not enabled+loaded: ${JSON.stringify(plugin)}`);
@@ -85,7 +85,7 @@ if (providerRuntime && providerRuntime !== "codex") {
 }
 
 function readAuthProfileStoreText(agentDir) {
-  const dbPath = path.join(agentDir, "openclaw-agent.sqlite");
+  const dbPath = path.join(agentDir, "eve-agent.sqlite");
   if (!fs.existsSync(dbPath)) {
     throw new Error("auth profile SQLite store was not persisted");
   }
@@ -108,5 +108,5 @@ if (!authRaw) {
 assertOpenAiEnvAuthProfileStore(authRaw, {
   envRefMessage: "auth profile did not persist OPENAI_API_KEY env ref",
   rawKeyMessage: "auth profile persisted the raw OpenAI test key",
-  rawKeyNeedle: "sk-openclaw-codex-on-demand-e2e",
+  rawKeyNeedle: "sk-eve-codex-on-demand-e2e",
 });

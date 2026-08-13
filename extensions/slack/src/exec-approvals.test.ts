@@ -1,5 +1,5 @@
 // Slack tests cover exec approvals plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   getSlackExecApprovalApprovers,
@@ -14,9 +14,9 @@ import {
 } from "./exec-approvals.js";
 
 function buildConfig(
-  execApprovals?: NonNullable<NonNullable<OpenClawConfig["channels"]>["slack"]>["execApprovals"],
-  channelOverrides?: Partial<NonNullable<NonNullable<OpenClawConfig["channels"]>["slack"]>>,
-): OpenClawConfig {
+  execApprovals?: NonNullable<NonNullable<EVEConfig["channels"]>["slack"]>["execApprovals"],
+  channelOverrides?: Partial<NonNullable<NonNullable<EVEConfig["channels"]>["slack"]>>,
+): EVEConfig {
   return {
     channels: {
       slack: {
@@ -26,7 +26,7 @@ function buildConfig(
         execApprovals,
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 describe("slack exec approvals", () => {
@@ -47,7 +47,7 @@ describe("slack exec approvals", () => {
         cfg: {
           ...buildConfig(),
           commands: { ownerAllowFrom: ["slack:U123OWNER"] },
-        } as OpenClawConfig,
+        } as EVEConfig,
       }),
     ).toBe(false);
     expect(
@@ -82,7 +82,7 @@ describe("slack exec approvals", () => {
     const ownerFallbackCfg = {
       ...buildConfig({ enabled: true }),
       commands: { ownerAllowFrom: ["slack:u123owner"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
     expect(getSlackExecApprovalApprovers({ cfg: ownerFallbackCfg })).toEqual(["U123OWNER"]);
     expect(isSlackExecApprovalApprover({ cfg: ownerFallbackCfg, senderId: "U123OWNER" })).toBe(
       true,
@@ -107,7 +107,7 @@ describe("slack exec approvals", () => {
     const cfg = {
       ...buildConfig({ enabled: true }),
       commands: { ownerAllowFrom: ["slack:U123", "user:U456", "<@U789>"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(getSlackExecApprovalApprovers({ cfg })).toEqual(["U123", "U456", "U789"]);
     expect(isSlackExecApprovalApprover({ cfg, senderId: "U456" })).toBe(true);
@@ -137,7 +137,7 @@ describe("slack exec approvals", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(isSlackExecApprovalTargetRecipient({ cfg, senderId: "U123TARGET" })).toBe(true);
     expect(isSlackExecApprovalTargetRecipient({ cfg, senderId: "u123target" })).toBe(true);

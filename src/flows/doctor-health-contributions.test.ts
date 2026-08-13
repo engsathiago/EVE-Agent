@@ -39,7 +39,7 @@ const mocks = vi.hoisted(() => ({
   maybeScanExtraGatewayServices: vi.fn().mockResolvedValue(undefined),
   noteMacLaunchAgentOverrides: vi.fn(),
   noteMacLaunchctlGatewayEnvOverrides: vi.fn(),
-  noteMacStaleOpenClawUpdateLaunchdJobs: vi.fn(),
+  noteMacStaleEVEUpdateLaunchdJobs: vi.fn(),
   gatewaySecretInputPathCanWin: vi.fn(),
   readGatewaySecretInputValue: vi.fn((..._args: unknown[]) => undefined as string | undefined),
   checkGatewayHealth: vi.fn(async () => ({
@@ -54,7 +54,7 @@ const mocks = vi.hoisted(() => ({
   noteChromeMcpBrowserReadiness: vi.fn(),
   detectLegacyClawdBrowserProfileResidue: vi.fn(),
   maybeArchiveLegacyClawdBrowserProfileResidue: vi.fn(),
-  resolveAgentWorkspaceDir: vi.fn(() => "/tmp/openclaw-workspace"),
+  resolveAgentWorkspaceDir: vi.fn(() => "/tmp/eve-workspace"),
   resolveDefaultAgentId: vi.fn(() => "default"),
   note: vi.fn(),
   loadModelCatalog: vi.fn(async () => []),
@@ -148,7 +148,7 @@ vi.mock("../gateway/call.js", () => ({
 vi.mock("../commands/doctor-platform-notes.js", () => ({
   noteMacLaunchAgentOverrides: mocks.noteMacLaunchAgentOverrides,
   noteMacLaunchctlGatewayEnvOverrides: mocks.noteMacLaunchctlGatewayEnvOverrides,
-  noteMacStaleOpenClawUpdateLaunchdJobs: mocks.noteMacStaleOpenClawUpdateLaunchdJobs,
+  noteMacStaleEVEUpdateLaunchdJobs: mocks.noteMacStaleEVEUpdateLaunchdJobs,
 }));
 
 vi.mock("../gateway/credentials-secret-inputs.js", async (importOriginal) => {
@@ -235,7 +235,7 @@ vi.mock("../version.js", async () => ({
 }));
 
 vi.mock("../config/config.js", () => ({
-  CONFIG_PATH: "/tmp/fake-openclaw.json",
+  CONFIG_PATH: "/tmp/fake-eve.json",
   replaceConfigFile: mocks.replaceConfigFile,
   readConfigFileSnapshot: mocks.readConfigFileSnapshot,
 }));
@@ -267,7 +267,7 @@ vi.mock("../utils.js", async (importOriginal) => {
   return {
     ...actual,
     isRecord: mocks.isRecord,
-    resolveConfigDir: vi.fn(() => "/tmp/openclaw-config"),
+    resolveConfigDir: vi.fn(() => "/tmp/eve-config"),
     resolveUserPath: vi.fn((value: string) => value),
     shortenHomePath: mocks.shortenHomePath,
   };
@@ -340,7 +340,7 @@ describe("doctor health contributions", () => {
     mocks.maybeScanExtraGatewayServices.mockResolvedValue(undefined);
     mocks.noteMacLaunchAgentOverrides.mockClear();
     mocks.noteMacLaunchctlGatewayEnvOverrides.mockClear();
-    mocks.noteMacStaleOpenClawUpdateLaunchdJobs.mockClear();
+    mocks.noteMacStaleEVEUpdateLaunchdJobs.mockClear();
     mocks.gatewaySecretInputPathCanWin.mockClear();
     mocks.gatewaySecretInputPathCanWin.mockReset();
     mocks.readGatewaySecretInputValue.mockClear();
@@ -387,7 +387,7 @@ describe("doctor health contributions", () => {
       warnings: [],
     });
     mocks.resolveAgentWorkspaceDir.mockReset();
-    mocks.resolveAgentWorkspaceDir.mockReturnValue("/tmp/openclaw-workspace");
+    mocks.resolveAgentWorkspaceDir.mockReturnValue("/tmp/eve-workspace");
     mocks.resolveDefaultAgentId.mockReset();
     mocks.resolveDefaultAgentId.mockReturnValue("default");
     mocks.note.mockReset();
@@ -447,7 +447,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as Parameters<(typeof contribution)["run"]>[0];
 
@@ -495,7 +495,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: cfg,
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as Parameters<(typeof contribution)["run"]>[0];
 
@@ -540,7 +540,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: cfg,
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as Parameters<(typeof contribution)["run"]>[0];
 
@@ -615,10 +615,10 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       },
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
@@ -879,7 +879,7 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(false),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: { allowExec: true, nonInteractive: true },
-      env: { OPENCLAW_TEST_GATEWAY_TOKEN: "1" },
+      env: { EVE_TEST_GATEWAY_TOKEN: "1" },
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
@@ -1033,7 +1033,7 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(true),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
@@ -1080,15 +1080,15 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(true),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
 
     expect(mocks.runDoctorHealthRepairs).toHaveBeenCalledWith(
       expect.objectContaining({
-        cwd: "/tmp/openclaw-workspace",
-        configPath: "/tmp/fake-openclaw.json",
+        cwd: "/tmp/eve-workspace",
+        configPath: "/tmp/fake-eve.json",
       }),
       {
         checks: contribution.healthChecks,
@@ -1113,9 +1113,9 @@ describe("doctor health contributions", () => {
           checkId: "core/doctor/test-structured-findings",
           severity: "warning",
           message: "structured finding needs attention",
-          path: "openclaw.json",
+          path: "eve.json",
           line: 12,
-          fixHint: "run openclaw doctor --fix",
+          fixHint: "run eve doctor --fix",
         },
       ],
       remainingFindings: [],
@@ -1140,15 +1140,15 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(false),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
 
     expect(ctx.runtime.log).toHaveBeenCalledWith(
-      "[warning] core/doctor/test-structured-findings openclaw.json:12 - structured finding needs attention",
+      "[warning] core/doctor/test-structured-findings eve.json:12 - structured finding needs attention",
     );
-    expect(ctx.runtime.log).toHaveBeenCalledWith("  fix: run openclaw doctor --fix");
+    expect(ctx.runtime.log).toHaveBeenCalledWith("  fix: run eve doctor --fix");
   });
 
   it("runs structured-only contributions in dry-run mode when doctor is not repairing", async () => {
@@ -1169,13 +1169,13 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(false),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
 
     expect(mocks.runDoctorHealthRepairs).toHaveBeenCalledWith(
-      expect.objectContaining({ cwd: "/tmp/openclaw-workspace" }),
+      expect.objectContaining({ cwd: "/tmp/eve-workspace" }),
       {
         checks: contribution.healthChecks,
         dryRun: true,
@@ -1231,7 +1231,7 @@ describe("doctor health contributions", () => {
       prompter: buildDoctorPrompter(true),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
     await contribution.run(ctx);
@@ -1261,7 +1261,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
@@ -1286,7 +1286,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
@@ -1310,7 +1310,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
@@ -1346,7 +1346,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as unknown as Parameters<(typeof contribution)["run"]>[0];
 
@@ -1389,7 +1389,7 @@ describe("doctor health contributions", () => {
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
       options: {},
       cfgForPersistence: {},
-      configPath: "/tmp/fake-openclaw.json",
+      configPath: "/tmp/fake-eve.json",
       env: {},
     } as Parameters<(typeof contribution)["run"]>[0];
 
@@ -1409,7 +1409,7 @@ describe("doctor health contributions", () => {
   it("skips doctor config writes under legacy update parents", () => {
     expect(
       shouldSkipLegacyUpdateDoctorConfigWrite({
-        env: { OPENCLAW_UPDATE_IN_PROGRESS: "1" },
+        env: { EVE_UPDATE_IN_PROGRESS: "1" },
       }),
     ).toBe(true);
   });
@@ -1426,8 +1426,8 @@ describe("doctor health contributions", () => {
     expect(
       shouldSkipLegacyUpdateDoctorConfigWrite({
         env: {
-          OPENCLAW_UPDATE_IN_PROGRESS: "1",
-          OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+          EVE_UPDATE_IN_PROGRESS: "1",
+          EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
         },
       }),
     ).toBe(false);
@@ -1437,7 +1437,7 @@ describe("doctor health contributions", () => {
     expect(
       shouldSkipLegacyUpdateDoctorConfigWrite({
         env: {
-          OPENCLAW_UPDATE_IN_PROGRESS: "0",
+          EVE_UPDATE_IN_PROGRESS: "0",
         },
       }),
     ).toBe(false);
@@ -1461,7 +1461,7 @@ describe("doctor health contributions", () => {
           shouldWriteConfig: true,
           skipPluginValidationOnWrite: false,
         },
-        configPath: "/tmp/fake-openclaw.json",
+        configPath: "/tmp/fake-eve.json",
         sourceConfigValid: true,
         prompter: buildDoctorPrompter(true),
         runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
@@ -1474,10 +1474,10 @@ describe("doctor health contributions", () => {
       (entry) => entry.id === "doctor:write-config",
     )!;
 
-    it("allows config size drops when OPENCLAW_UPDATE_IN_PROGRESS=1", async () => {
+    it("allows config size drops when EVE_UPDATE_IN_PROGRESS=1", async () => {
       const ctx = buildWriteConfigCtx({
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       });
       await writeConfigContribution.run(ctx);
       expect(mocks.replaceConfigFile).toHaveBeenCalledWith(
@@ -1491,8 +1491,8 @@ describe("doctor health contributions", () => {
 
     it("skips plugin schema validation during update doctor writes", async () => {
       const ctx = buildWriteConfigCtx({
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       });
       await writeConfigContribution.run(ctx);
       expect(mocks.replaceConfigFile).toHaveBeenCalledWith(
@@ -1506,8 +1506,8 @@ describe("doctor health contributions", () => {
 
     it("preserves source config version for legacy parent writable update doctor writes", async () => {
       const ctx = buildWriteConfigCtx({
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       });
       ctx.configResult.sourceLastTouchedVersion = "2026.5.16-beta.4";
 
@@ -1524,9 +1524,9 @@ describe("doctor health contributions", () => {
 
     it("does not preserve source config version for explicit deferral update doctors", async () => {
       const ctx = buildWriteConfigCtx({
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_DEFER_CONFIGURED_PLUGIN_INSTALL_REPAIR: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_DEFER_CONFIGURED_PLUGIN_INSTALL_REPAIR: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       });
       ctx.configResult.sourceLastTouchedVersion = "2026.5.16-beta.4";
 
@@ -1556,14 +1556,14 @@ describe("doctor health contributions", () => {
     it("points update-time config rewrites at the pre-update backup", async () => {
       vi.mocked(fs.existsSync).mockImplementation((value) => String(value).endsWith(".pre-update"));
       const ctx = buildWriteConfigCtx({
-        OPENCLAW_UPDATE_IN_PROGRESS: "1",
-        OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
+        EVE_UPDATE_IN_PROGRESS: "1",
+        EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE: "1",
       });
 
       await writeConfigContribution.run(ctx);
 
       expect(ctx.runtime.log).toHaveBeenCalledWith(
-        "Update changed config; pre-update backup: /tmp/fake-openclaw.json.pre-update",
+        "Update changed config; pre-update backup: /tmp/fake-eve.json.pre-update",
       );
     });
 
@@ -1574,13 +1574,13 @@ describe("doctor health contributions", () => {
         cfg: {},
         cfgForPersistence: {},
         configResult: { cfg: {} },
-        configPath: "/tmp/fake-openclaw.json",
+        configPath: "/tmp/fake-eve.json",
         sourceConfigValid: true,
         prompter: buildDoctorPrompter(true),
         runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
         options: {},
         env: {
-          OPENCLAW_UPDATE_IN_PROGRESS: "1",
+          EVE_UPDATE_IN_PROGRESS: "1",
         },
       } as Parameters<(typeof contribution)["run"]>[0]);
 
@@ -1596,7 +1596,7 @@ describe("doctor health contributions", () => {
         cfg: {},
         cfgForPersistence: {},
         configResult: { cfg: {} },
-        configPath: "/tmp/fake-openclaw.json",
+        configPath: "/tmp/fake-eve.json",
         sourceConfigValid: true,
         prompter: buildDoctorPrompter(true),
         runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },

@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/llama-cpp-provider",
+  "name": "@eve/llama-cpp-provider",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/llama-cpp-provider",
+      "name": "@eve/llama-cpp-provider",
       "version": "2026.6.8",
       "dependencies": {
         "node-llama-cpp": "3.18.1"

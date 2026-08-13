@@ -1,12 +1,12 @@
 // Verifies trust-model audit findings and severity mapping.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   collectExposureMatrixFindings,
   collectLikelyMultiUserSetupFindings,
 } from "./audit-extra.sync.js";
 
-function audit(cfg: OpenClawConfig) {
+function audit(cfg: EVEConfig) {
   return [...collectExposureMatrixFindings(cfg), ...collectLikelyMultiUserSetupFindings(cfg)];
 }
 
@@ -28,7 +28,7 @@ describe("security audit trust model findings", () => {
         cfg: {
           tools: { elevated: { enabled: true, allowFrom: { whatsapp: ["+1"] } } },
           channels: { whatsapp: { groupPolicy: "open" } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some(
@@ -44,7 +44,7 @@ describe("security audit trust model findings", () => {
         cfg: {
           channels: { whatsapp: { groupPolicy: "open" } },
           tools: { elevated: { enabled: false } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some(
@@ -68,7 +68,7 @@ describe("security audit trust model findings", () => {
               sandbox: { mode: "all" },
             },
           },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some(
@@ -87,7 +87,7 @@ describe("security audit trust model findings", () => {
             deny: ["group:runtime"],
             fs: { workspaceOnly: true },
           },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some(
@@ -112,7 +112,7 @@ describe("security audit trust model findings", () => {
             },
           },
           tools: { elevated: { enabled: false } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = requireMultiUserHeuristicFinding(findings);
           expect(finding.severity).toBe("warn");
@@ -132,7 +132,7 @@ describe("security audit trust model findings", () => {
             },
           },
           tools: { elevated: { enabled: false } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some(
@@ -146,7 +146,7 @@ describe("security audit trust model findings", () => {
         cfg: {
           tools: { elevated: { enabled: true, allowFrom: { feishu: ["ou_123"] } } },
           channels: { feishu: { groupPolicy: "disabled", dmPolicy: "open" } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = findings.find(
             (entry) => entry.checkId === "security.exposure.open_groups_with_elevated",
@@ -160,7 +160,7 @@ describe("security audit trust model findings", () => {
         cfg: {
           channels: { feishu: { groupPolicy: "disabled", dmPolicy: "open" } },
           tools: { elevated: { enabled: false }, profile: "coding" },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = findings.find(
             (entry) => entry.checkId === "security.exposure.open_groups_with_runtime_or_fs",
@@ -178,7 +178,7 @@ describe("security audit trust model findings", () => {
               accounts: { work: { dmPolicy: "open" } },
             },
           },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = findings.find(
             (entry) => entry.checkId === "security.exposure.open_groups_with_elevated",
@@ -191,7 +191,7 @@ describe("security audit trust model findings", () => {
         name: "flags supported legacy open dm.policy",
         cfg: {
           channels: { discord: { dm: { policy: "open" } } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = findings.find(
             (entry) => entry.checkId === "security.exposure.open_groups_with_elevated",
@@ -203,7 +203,7 @@ describe("security audit trust model findings", () => {
         name: "preserves the detected nested-only DM policy path in remediation",
         cfg: {
           channels: { matrix: { dm: { policy: "open" } } },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           const finding = findings.find(
             (entry) => entry.checkId === "security.exposure.open_groups_with_elevated",
@@ -222,7 +222,7 @@ describe("security audit trust model findings", () => {
               dm: { policy: "open" },
             },
           },
-        } satisfies OpenClawConfig,
+        } satisfies EVEConfig,
         assert: (findings: ReturnType<typeof audit>) => {
           expect(
             findings.some((finding) =>

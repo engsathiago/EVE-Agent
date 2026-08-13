@@ -11,7 +11,7 @@ import {
   type ShellCompletionStatus,
 } from "./doctor-completion.js";
 
-const originalEnv = captureEnv(["HOME", "OPENCLAW_STATE_DIR", "SHELL"]);
+const originalEnv = captureEnv(["HOME", "EVE_STATE_DIR", "SHELL"]);
 const tempDirs: string[] = [];
 
 afterEach(async () => {
@@ -26,7 +26,7 @@ function status(overrides: Partial<ShellCompletionStatus> = {}): ShellCompletion
     shell: "zsh",
     profileInstalled: true,
     cacheExists: true,
-    cachePath: "/tmp/openclaw.zsh",
+    cachePath: "/tmp/eve.zsh",
     usesSlowPattern: false,
     ...overrides,
   };
@@ -34,17 +34,17 @@ function status(overrides: Partial<ShellCompletionStatus> = {}): ShellCompletion
 
 describe("shell completion health mapping", () => {
   it("checks an explicit shell instead of the detected environment shell", async () => {
-    const homeDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-completion-home-"));
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-completion-state-"));
+    const homeDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-completion-home-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-completion-state-"));
     tempDirs.push(homeDir, stateDir);
     setTestEnvValue("HOME", homeDir);
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
+    setTestEnvValue("EVE_STATE_DIR", stateDir);
     setTestEnvValue("SHELL", "/bin/zsh");
 
-    const current = await checkShellCompletionStatus("openclaw", { shell: "fish" });
+    const current = await checkShellCompletionStatus("eve", { shell: "fish" });
 
     expect(current.shell).toBe("fish");
-    expect(current.cachePath).toBe(path.join(stateDir, "completions", "openclaw.fish"));
+    expect(current.cachePath).toBe(path.join(stateDir, "completions", "eve.fish"));
     expect(current.profileInstalled).toBe(false);
     expect(current.cacheExists).toBe(false);
   });
@@ -63,7 +63,7 @@ describe("shell completion health mapping", () => {
       {
         kind: "state",
         action: "would-generate-completion-cache",
-        target: "/tmp/openclaw.zsh",
+        target: "/tmp/eve.zsh",
         dryRunSafe: true,
       },
       {
@@ -82,14 +82,14 @@ describe("shell completion health mapping", () => {
       expect.objectContaining({
         severity: "info",
         message: expect.stringContaining("cache is missing"),
-        fixHint: expect.stringContaining("openclaw doctor --fix"),
+        fixHint: expect.stringContaining("eve doctor --fix"),
       }),
     ]);
     expect(shellCompletionStatusToRepairEffects(current)).toEqual([
       {
         kind: "state",
         action: "would-regenerate-completion-cache",
-        target: "/tmp/openclaw.zsh",
+        target: "/tmp/eve.zsh",
         dryRunSafe: true,
       },
     ]);

@@ -7,18 +7,18 @@ import { DatabaseSync } from "node:sqlite";
 
 const SCHEMAS = [
   {
-    name: "openclaw-state",
-    schema: "src/state/openclaw-state-schema.sql",
-    outFile: "src/state/openclaw-state-db.generated.d.ts",
-    schemaOutFile: "src/state/openclaw-state-schema.generated.ts",
-    schemaExport: "OPENCLAW_STATE_SCHEMA_SQL",
+    name: "eve-state",
+    schema: "src/state/eve-state-schema.sql",
+    outFile: "src/state/eve-state-db.generated.d.ts",
+    schemaOutFile: "src/state/eve-state-schema.generated.ts",
+    schemaExport: "EVE_STATE_SCHEMA_SQL",
   },
   {
-    name: "openclaw-agent",
-    schema: "src/state/openclaw-agent-schema.sql",
-    outFile: "src/state/openclaw-agent-db.generated.d.ts",
-    schemaOutFile: "src/state/openclaw-agent-schema.generated.ts",
-    schemaExport: "OPENCLAW_AGENT_SCHEMA_SQL",
+    name: "eve-agent",
+    schema: "src/state/eve-agent-schema.sql",
+    outFile: "src/state/eve-agent-db.generated.d.ts",
+    schemaOutFile: "src/state/eve-agent-schema.generated.ts",
+    schemaExport: "EVE_AGENT_SCHEMA_SQL",
   },
 ];
 

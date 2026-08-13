@@ -34,7 +34,7 @@ describe("matrix device actions", () => {
         listOwnDevices: vi.fn(async () => [
           {
             deviceId: "A7hWrQ70ea",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: true,
@@ -49,7 +49,7 @@ describe("matrix device actions", () => {
     expect(result).toEqual([
       {
         deviceId: "A7hWrQ70ea",
-        displayName: "OpenClaw Gateway",
+        displayName: "EVE Gateway",
         lastSeenIp: null,
         lastSeenTs: null,
         current: true,
@@ -63,14 +63,14 @@ describe("matrix device actions", () => {
         listOwnDevices: vi.fn(async () => [
           {
             deviceId: "du314Zpw3A",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: true,
           },
           {
             deviceId: "old123",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: false,
@@ -83,19 +83,19 @@ describe("matrix device actions", () => {
 
     expect(result).toEqual({
       currentDeviceId: "du314Zpw3A",
-      staleOpenClawDevices: [
+      staleEVEDevices: [
         {
           deviceId: "old123",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: false,
         },
       ],
-      currentOpenClawDevices: [
+      currentEVEDevices: [
         {
           deviceId: "du314Zpw3A",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: true,
@@ -105,14 +105,14 @@ describe("matrix device actions", () => {
     expectResolvedActionClientCall();
   });
 
-  it("prunes stale OpenClaw-managed devices but preserves the current device", async () => {
+  it("prunes stale EVE-managed devices but preserves the current device", async () => {
     const deleteOwnDevices = vi.fn(async () => ({
       currentDeviceId: "du314Zpw3A",
       deletedDeviceIds: ["BritdXC6iL", "G6NJU9cTgs", "My3T0hkTE0"],
       remainingDevices: [
         {
           deviceId: "du314Zpw3A",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: true,
@@ -124,28 +124,28 @@ describe("matrix device actions", () => {
         listOwnDevices: vi.fn(async () => [
           {
             deviceId: "du314Zpw3A",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: true,
           },
           {
             deviceId: "BritdXC6iL",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: false,
           },
           {
             deviceId: "G6NJU9cTgs",
-            displayName: "OpenClaw Debug",
+            displayName: "EVE Debug",
             lastSeenIp: null,
             lastSeenTs: null,
             current: false,
           },
           {
             deviceId: "My3T0hkTE0",
-            displayName: "OpenClaw Gateway",
+            displayName: "EVE Gateway",
             lastSeenIp: null,
             lastSeenTs: null,
             current: false,
@@ -169,28 +169,28 @@ describe("matrix device actions", () => {
       before: [
         {
           deviceId: "du314Zpw3A",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: true,
         },
         {
           deviceId: "BritdXC6iL",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: false,
         },
         {
           deviceId: "G6NJU9cTgs",
-          displayName: "OpenClaw Debug",
+          displayName: "EVE Debug",
           lastSeenIp: null,
           lastSeenTs: null,
           current: false,
         },
         {
           deviceId: "My3T0hkTE0",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: false,
@@ -209,7 +209,7 @@ describe("matrix device actions", () => {
       remainingDevices: [
         {
           deviceId: "du314Zpw3A",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           lastSeenIp: null,
           lastSeenTs: null,
           current: true,

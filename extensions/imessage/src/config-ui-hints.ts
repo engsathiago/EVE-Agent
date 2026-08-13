@@ -1,5 +1,5 @@
 // Imessage helper module supports config ui hints behavior.
-import type { ChannelConfigUiHint } from "openclaw/plugin-sdk/core";
+import type { ChannelConfigUiHint } from "eve-agent/plugin-sdk/core";
 
 export const iMessageChannelConfigUiHints = {
   "": {

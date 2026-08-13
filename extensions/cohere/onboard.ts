@@ -1,7 +1,7 @@
 import {
   createModelCatalogPresetAppliers,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/provider-onboard";
 import { buildCohereModelDefinition, COHERE_BASE_URL, COHERE_MODEL_CATALOG } from "./models.js";
 
 export const COHERE_DEFAULT_MODEL_ID = "command-a-03-2025";
@@ -9,7 +9,7 @@ export const COHERE_DEFAULT_MODEL_REF = `cohere/${COHERE_DEFAULT_MODEL_ID}`;
 
 const coherePresetAppliers = createModelCatalogPresetAppliers({
   primaryModelRef: COHERE_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig) => ({
+  resolveParams: (_cfg: EVEConfig) => ({
     providerId: "cohere",
     api: "openai-completions",
     baseUrl: COHERE_BASE_URL,
@@ -18,6 +18,6 @@ const coherePresetAppliers = createModelCatalogPresetAppliers({
   }),
 });
 
-export function applyCohereConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyCohereConfig(cfg: EVEConfig): EVEConfig {
   return coherePresetAppliers.applyConfig(cfg);
 }

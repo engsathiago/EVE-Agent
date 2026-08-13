@@ -2,10 +2,10 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveChannelGroupRequireMention } from "../../config/group-policy.js";
 import type { GroupKeyResolution, SessionEntry } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createLazyImportLoader } from "../../shared/lazy-promise.js";
 import type { SilentReplyPolicy } from "../../shared/silent-reply-policy.js";
 import { isInternalMessageChannel } from "../../utils/message-channel.js";
@@ -63,7 +63,7 @@ function normalizeDiscordSlug(value?: string | null) {
 }
 
 function resolveDiscordGuilds(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId?: string | null,
 ): Record<string, DiscordGroupConfig> | undefined {
   const discord = cfg.channels?.discord as DiscordConfigWithGuilds | undefined;
@@ -120,7 +120,7 @@ function resolveDiscordChannelEntry(
 }
 
 function resolveDiscordRequireMentionFallback(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   groupId?: string | null;
   groupChannel?: string | null;
@@ -146,7 +146,7 @@ function resolveDiscordRequireMentionFallback(params: {
 
 /** Resolves whether a group/channel turn requires an explicit mention. */
 export async function resolveGroupRequireMention(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: TemplateContext;
   groupResolution?: GroupKeyResolution;
 }): Promise<boolean> {
@@ -278,7 +278,7 @@ export function buildGroupChatContext(params: {
   }
   if (canUseSilentReply) {
     lines.push(
-      `If no response is needed, reply with exactly "${params.silentToken}" (and nothing else) so OpenClaw stays silent.`,
+      `If no response is needed, reply with exactly "${params.silentToken}" (and nothing else) so EVE stays silent.`,
     );
     lines.push("Be extremely selective: reply only when directly addressed or clearly helpful.");
     lines.push(
@@ -338,7 +338,7 @@ export function resolveGroupSilentReplyBehavior(params: {
 
 /** Builds the channel-specific group intro injected into the system prompt. */
 export function buildGroupIntro(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionCtx: TemplateContext;
   sessionEntry?: SessionEntry;
   defaultActivation: "always" | "mention";

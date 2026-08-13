@@ -1,12 +1,12 @@
 // Slack plugin module implements thread resolution behavior.
 import type { WebClient as SlackWebClient } from "@slack/web-api";
-import { pruneMapToMaxSize } from "openclaw/plugin-sdk/collection-runtime";
+import { pruneMapToMaxSize } from "eve-agent/plugin-sdk/collection-runtime";
 import {
   asDateTimestampMs,
   parseFiniteNumber,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { logVerbose, shouldLogVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { formatSlackError } from "../errors.js";
 import type { SlackMessageEvent } from "../types.js";
 

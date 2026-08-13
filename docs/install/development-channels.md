@@ -8,7 +8,7 @@ title: "Release channels"
 sidebarTitle: "Release Channels"
 ---
 
-OpenClaw ships three update channels:
+EVE ships three update channels:
 
 - **stable**: npm dist-tag `latest`. Recommended for most users.
 - **beta**: npm dist-tag `beta` when it is current; if beta is missing or older than
@@ -26,9 +26,9 @@ installs.
 ## Switching channels
 
 ```bash
-openclaw update --channel stable
-openclaw update --channel beta
-openclaw update --channel dev
+eve update --channel stable
+eve update --channel beta
+eve update --channel dev
 ```
 
 `--channel` persists your choice in config (`update.channel`) and aligns the
@@ -43,9 +43,9 @@ install method:
   suffixes.
 - **`beta`** (git installs): prefers the latest beta git tag, but falls back to
   the latest stable git tag when beta is missing or older.
-- **`dev`**: ensures a git checkout (default `~/openclaw`, or
-  `$OPENCLAW_HOME/openclaw` when `OPENCLAW_HOME` is set; override with
-  `OPENCLAW_GIT_DIR`), switches to `main`, rebases on upstream, builds, and
+- **`dev`**: ensures a git checkout (default `~/eve`, or
+  `$EVE_HOME/eve` when `EVE_HOME` is set; override with
+  `EVE_GIT_DIR`), switches to `main`, rebases on upstream, builds, and
   installs the global CLI from that checkout.
 
 <Tip>
@@ -59,45 +59,45 @@ update **without** changing your persisted channel:
 
 ```bash
 # Install a specific version
-openclaw update --tag 2026.4.1-beta.1
+eve update --tag 2026.4.1-beta.1
 
 # Install from the beta dist-tag (one-off, does not persist)
-openclaw update --tag beta
+eve update --tag beta
 
 # Switch to the moving GitHub main checkout
-openclaw update --channel dev
+eve update --channel dev
 
 # Install a specific npm package spec
-openclaw update --tag openclaw@2026.4.1-beta.1
+eve update --tag eve@2026.4.1-beta.1
 
 # Install from GitHub main once without persisting the channel
-openclaw update --tag main
+eve update --tag main
 ```
 
 Notes:
 
 - `--tag` applies to **package (npm) installs only**. Git installs ignore it.
-- The tag is not persisted. Your next `openclaw update` uses your configured
+- The tag is not persisted. Your next `eve update` uses your configured
   channel as usual.
-- For package installs, OpenClaw pre-packs GitHub/git source specs into a
+- For package installs, EVE pre-packs GitHub/git source specs into a
   temporary tarball before the staged npm install. Use `--channel dev` or
   `--install-method git --version main` when you want the moving `main`
   checkout as your persistent install.
 - Downgrade protection: if the target version is older than your current version,
-  OpenClaw prompts for confirmation (skip with `--yes`).
+  EVE prompts for confirmation (skip with `--yes`).
 - `--channel beta` is different from `--tag beta`: the channel flow can fall back
   to stable/latest when beta is missing or older, while `--tag beta` targets the
   raw `beta` dist-tag for that one run.
 
 ## Dry run
 
-Preview what `openclaw update` would do without making changes:
+Preview what `eve update` would do without making changes:
 
 ```bash
-openclaw update --dry-run
-openclaw update --channel beta --dry-run
-openclaw update --tag 2026.4.1-beta.1 --dry-run
-openclaw update --dry-run --json
+eve update --dry-run
+eve update --channel beta --dry-run
+eve update --tag 2026.4.1-beta.1 --dry-run
+eve update --dry-run --json
 ```
 
 The dry run shows the effective channel, target version, planned actions, and
@@ -105,7 +105,7 @@ whether a downgrade confirmation would be required.
 
 ## Plugins and channels
 
-When you switch channels with `openclaw update`, OpenClaw also syncs plugin
+When you switch channels with `eve update`, EVE also syncs plugin
 sources:
 
 - `dev` prefers bundled plugins from the git checkout.
@@ -115,7 +115,7 @@ sources:
 ## Checking current status
 
 ```bash
-openclaw update status
+eve update status
 ```
 
 Shows the active channel, install kind (git or package), current version, and

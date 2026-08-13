@@ -1,19 +1,19 @@
 // Tokenjuice tests cover index plugin behavior.
 import fs from "node:fs";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { tokenjuiceFactory, createTokenjuiceOpenClawEmbeddedExtension } = vi.hoisted(() => {
+const { tokenjuiceFactory, createTokenjuiceEVEEmbeddedExtension } = vi.hoisted(() => {
   const tokenjuiceFactoryLocal = vi.fn();
-  const createTokenjuiceOpenClawEmbeddedExtensionLocal = vi.fn(() => tokenjuiceFactoryLocal);
+  const createTokenjuiceEVEEmbeddedExtensionLocal = vi.fn(() => tokenjuiceFactoryLocal);
   return {
     tokenjuiceFactory: tokenjuiceFactoryLocal,
-    createTokenjuiceOpenClawEmbeddedExtension: createTokenjuiceOpenClawEmbeddedExtensionLocal,
+    createTokenjuiceEVEEmbeddedExtension: createTokenjuiceEVEEmbeddedExtensionLocal,
   };
 });
 
 vi.mock("./runtime-api.js", () => ({
-  createTokenjuiceOpenClawEmbeddedExtension,
+  createTokenjuiceEVEEmbeddedExtension,
 }));
 
 import plugin from "./index.js";
@@ -21,19 +21,19 @@ import { createTokenjuiceAgentToolResultMiddleware } from "./tool-result-middlew
 
 describe("tokenjuice plugin", () => {
   beforeEach(() => {
-    createTokenjuiceOpenClawEmbeddedExtension.mockClear();
+    createTokenjuiceEVEEmbeddedExtension.mockClear();
     tokenjuiceFactory.mockClear();
   });
 
   it("is opt-in by default", () => {
     const manifest = JSON.parse(
-      fs.readFileSync(new URL("./openclaw.plugin.json", import.meta.url), "utf8"),
+      fs.readFileSync(new URL("./eve.plugin.json", import.meta.url), "utf8"),
     ) as { enabledByDefault?: unknown };
 
     expect(manifest.enabledByDefault).toBeUndefined();
   });
 
-  it("registers tokenjuice tool result middleware for OpenClaw and Codex runtimes", () => {
+  it("registers tokenjuice tool result middleware for EVE and Codex runtimes", () => {
     const registerAgentToolResultMiddleware = vi.fn();
 
     plugin.register(
@@ -48,11 +48,11 @@ describe("tokenjuice plugin", () => {
       }),
     );
 
-    expect(createTokenjuiceOpenClawEmbeddedExtension).toHaveBeenCalledTimes(1);
+    expect(createTokenjuiceEVEEmbeddedExtension).toHaveBeenCalledTimes(1);
     expect(tokenjuiceFactory).toHaveBeenCalledTimes(1);
     const registration = registerAgentToolResultMiddleware.mock.calls[0];
     expect(typeof registration?.[0]).toBe("function");
-    expect(registration?.[1]).toEqual({ runtimes: ["openclaw", "codex"] });
+    expect(registration?.[1]).toEqual({ runtimes: ["eve", "codex"] });
   });
 
   it("synthesises exec fields when bash provides metadata-only details (no status)", async () => {
@@ -74,7 +74,7 @@ describe("tokenjuice plugin", () => {
       {
         toolCallId: "tool-call-tokenjuice-bash-meta",
         toolName: "bash",
-        args: { command: "cat /tmp/out.txt", workdir: "/tmp/openclaw-tokenjuice-test" },
+        args: { command: "cat /tmp/out.txt", workdir: "/tmp/eve-tokenjuice-test" },
         result: {
           content: [{ type: "text", text: "file contents\n" }],
           details: {
@@ -84,7 +84,7 @@ describe("tokenjuice plugin", () => {
         },
         isError: false,
       },
-      { runtime: "openclaw" },
+      { runtime: "eve" },
     );
 
     expect(received?.details).toMatchObject({
@@ -129,7 +129,7 @@ describe("tokenjuice plugin", () => {
         },
         isError: false,
       },
-      { runtime: "openclaw" },
+      { runtime: "eve" },
     );
 
     expect(received?.details).toBe(existingDetails);
@@ -171,7 +171,7 @@ describe("tokenjuice plugin", () => {
           },
           isError: false,
         },
-        { runtime: "openclaw" },
+        { runtime: "eve" },
       );
 
       expect(received?.details).toMatchObject({
@@ -206,11 +206,11 @@ describe("tokenjuice plugin", () => {
       {
         toolCallId: "tool-call-tokenjuice-bash",
         toolName: "bash",
-        args: { command: "printf 'hello\\n'", workdir: "/tmp/openclaw-tokenjuice-test" },
+        args: { command: "printf 'hello\\n'", workdir: "/tmp/eve-tokenjuice-test" },
         result: { content: [{ type: "text", text: "hello\n" }], details: undefined },
         isError: false,
       },
-      { runtime: "openclaw" },
+      { runtime: "eve" },
     );
 
     expect(received?.toolName).toBe("bash");

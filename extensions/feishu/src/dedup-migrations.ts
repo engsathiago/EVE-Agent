@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import type { BundledChannelLegacyStateMigrationDetector } from "openclaw/plugin-sdk/channel-entry-contract";
+import type { BundledChannelLegacyStateMigrationDetector } from "eve-agent/plugin-sdk/channel-entry-contract";
 
 const DEDUP_TTL_MS = 24 * 60 * 60 * 1000;
 const STORE_MAX_ENTRIES = 10_000;

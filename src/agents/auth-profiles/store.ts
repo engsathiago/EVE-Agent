@@ -4,9 +4,9 @@
  * profiles, and external CLI overlays while keeping save paths local.
  */
 import { isDeepStrictEqual } from "node:util";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { asDateTimestampMs } from "../../shared/number-coercion.js";
-import type { OpenClawAgentDatabase } from "../../state/openclaw-agent-db.js";
+import type { EVEAgentDatabase } from "../../state/eve-agent-db.js";
 import { isRecord } from "../../utils.js";
 import { cloneAuthProfileStore } from "./clone.js";
 import { AUTH_STORE_VERSION, log } from "./constants.js";
@@ -50,8 +50,8 @@ import type { AuthProfileStore } from "./types.js";
 
 type LoadAuthProfileStoreOptions = {
   allowKeychainPrompt?: boolean;
-  config?: OpenClawConfig;
-  database?: OpenClawAgentDatabase;
+  config?: EVEConfig;
+  database?: EVEAgentDatabase;
   externalCli?: ExternalCliAuthDiscovery;
   readOnly?: boolean;
   syncExternalCli?: boolean;
@@ -126,7 +126,7 @@ function preserveLegacyOAuthRefsOnSave(params: {
 
 type ResolvedExternalCliOverlayOptions = {
   allowKeychainPrompt?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   externalCliProviderIds?: Iterable<string>;
   externalCliProfileIds?: Iterable<string>;
 };
@@ -138,7 +138,7 @@ type ExternalCliSyncResult = {
 
 function resolvePersistedLoadOptions(
   options: Pick<LoadAuthProfileStoreOptions, "allowKeychainPrompt" | "database"> | undefined,
-): { allowKeychainPrompt?: boolean; database?: OpenClawAgentDatabase } {
+): { allowKeychainPrompt?: boolean; database?: EVEAgentDatabase } {
   return {
     ...(options?.allowKeychainPrompt !== undefined
       ? { allowKeychainPrompt: options.allowKeychainPrompt }
@@ -297,7 +297,7 @@ function maybeSyncPersistedExternalCliAuthProfiles(params: {
   if (
     params.options?.readOnly === true ||
     params.options?.syncExternalCli === false ||
-    process.env.OPENCLAW_AUTH_STORE_READONLY === "1"
+    process.env.EVE_AUTH_STORE_READONLY === "1"
   ) {
     return { store: params.store, cacheable: true };
   }
@@ -795,7 +795,7 @@ function loadAuthProfileStoreForAgent(
   };
 
   const mergedOAuth = mergeOAuthFileIntoStore(store);
-  const forceReadOnly = process.env.OPENCLAW_AUTH_STORE_READONLY === "1";
+  const forceReadOnly = process.env.EVE_AUTH_STORE_READONLY === "1";
   const shouldWrite = !readOnly && !forceReadOnly && mergedOAuth;
   if (shouldWrite) {
     saveAuthProfileStore(store, agentDir);
@@ -881,7 +881,7 @@ export function ensureAuthProfileStore(
   agentDir?: string,
   options?: {
     allowKeychainPrompt?: boolean;
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     externalCli?: ExternalCliAuthDiscovery;
     externalCliProviderIds?: Iterable<string>;
     externalCliProfileIds?: Iterable<string>;
@@ -1036,7 +1036,7 @@ export function saveAuthProfileStore(
   store: AuthProfileStore,
   agentDir?: string,
   options?: SaveAuthProfileStoreOptions,
-  database?: OpenClawAgentDatabase,
+  database?: EVEAgentDatabase,
 ): void {
   const localStore = buildLocalAuthProfileStoreForSave({ store, agentDir, options });
   const existingRaw = readPersistedAuthProfileStoreRaw(agentDir, database);

@@ -212,7 +212,7 @@ describe("talk realtime gateway relay", () => {
         bridgeRequest?.onToolCall?.({
           itemId: "item-1",
           callId: "call-1",
-          name: "openclaw_agent_consult",
+          name: "eve_agent_consult",
           args: { question: "hello" },
         });
       }),
@@ -348,7 +348,7 @@ describe("talk realtime gateway relay", () => {
       type: "toolCall",
       itemId: "item-1",
       callId: "call-1",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "hello" },
     });
     expectRecordFields(toolCallPayload.talkEvent, {
@@ -398,9 +398,9 @@ describe("talk realtime gateway relay", () => {
       "call-1",
       {
         status: "working",
-        tool: "openclaw_agent_consult",
+        tool: "eve_agent_consult",
         message:
-          "Tell the person briefly that you are checking, then wait for the final OpenClaw result before answering with the actual result.",
+          "Tell the person briefly that you are checking, then wait for the final EVE result before answering with the actual result.",
       },
       { willContinue: true },
     );
@@ -460,7 +460,7 @@ describe("talk realtime gateway relay", () => {
     expectRecordFields(toolResultPayloads[0]?.talkEvent, {
       type: "tool.progress",
       callId: "call-1",
-      payload: { name: "openclaw_agent_consult", status: "working" },
+      payload: { name: "eve_agent_consult", status: "working" },
     });
     expectRecordFields(toolResultPayloads[1], {
       relaySessionId: session.relaySessionId,
@@ -842,7 +842,7 @@ describe("talk realtime gateway relay", () => {
     expectRecordFields(forcedToolCall, {
       relaySessionId: session.relaySessionId,
       type: "toolCall",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       forced: true,
     });
     expectRecordFields(forcedToolCall.args, {
@@ -867,22 +867,22 @@ describe("talk realtime gateway relay", () => {
       options: { willContinue: true },
     });
     expect(bridge.sendUserMessage).toHaveBeenLastCalledWith(
-      "Briefly tell the person that you are checking with OpenClaw. Do not answer the request yet. Wait for the OpenClaw result before giving the actual answer.",
+      "Briefly tell the person that you are checking with EVE. Do not answer the request yet. Wait for the EVE result before giving the actual answer.",
     );
 
     bridgeRequest?.onToolCall?.({
       itemId: "native-item",
       callId: "native-call",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "Can you check this?" },
     });
     expect(bridge.submitToolResult).toHaveBeenLastCalledWith(
       "native-call",
       {
         status: "working",
-        tool: "openclaw_agent_consult",
+        tool: "eve_agent_consult",
         message:
-          "Tell the person briefly that you are checking, then wait for the final OpenClaw result before answering with the actual result.",
+          "Tell the person briefly that you are checking, then wait for the final EVE result before answering with the actual result.",
       },
       { willContinue: true },
     );
@@ -897,13 +897,13 @@ describe("talk realtime gateway relay", () => {
       "native-call",
       {
         status: "already_delivered",
-        message: "OpenClaw already delivered this consult result internally. Do not repeat it.",
+        message: "EVE already delivered this consult result internally. Do not repeat it.",
       },
       { suppressResponse: true },
     );
     expect(bridge.sendUserMessage).toHaveBeenLastCalledWith(
       [
-        "OpenClaw finished checking. Speak this result naturally and concisely.",
+        "EVE finished checking. Speak this result naturally and concisely.",
         "Do not mention tool calls, JSON, or internal routing.",
         "",
         "Here is the checked answer.",
@@ -933,16 +933,16 @@ describe("talk realtime gateway relay", () => {
     bridgeRequest?.onToolCall?.({
       itemId: "native-other-item",
       callId: "native-other-call",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "Can you check something else?" },
     });
     expect(bridge.submitToolResult).toHaveBeenLastCalledWith(
       "native-other-call",
       {
         status: "working",
-        tool: "openclaw_agent_consult",
+        tool: "eve_agent_consult",
         message:
-          "Tell the person briefly that you are checking, then wait for the final OpenClaw result before answering with the actual result.",
+          "Tell the person briefly that you are checking, then wait for the final EVE result before answering with the actual result.",
       },
       { willContinue: true },
     );
@@ -954,7 +954,7 @@ describe("talk realtime gateway relay", () => {
       relaySessionId: session.relaySessionId,
       type: "toolCall",
       callId: "native-other-call",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "Can you check something else?" },
     });
     stopTalkRealtimeRelaySession({ relaySessionId: session.relaySessionId, connId: "conn-1" });
@@ -1007,7 +1007,7 @@ describe("talk realtime gateway relay", () => {
     bridgeRequest?.onToolCall?.({
       itemId: "native-item",
       callId: "native-call",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "Can you check this for me?" },
     });
     await vi.advanceTimersByTimeAsync(250);
@@ -1042,7 +1042,7 @@ describe("talk realtime gateway relay", () => {
     bridgeRequest?.onToolCall?.({
       itemId: "unicode-native-item",
       callId: "unicode-native-call",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "проверь статус" },
     });
     await vi.advanceTimersByTimeAsync(250);
@@ -1333,7 +1333,7 @@ describe("talk realtime gateway relay", () => {
       mode: "cancel",
       providerResult: {
         status: "cancelled",
-        message: "Cancelled the active OpenClaw run.",
+        message: "Cancelled the active EVE run.",
       },
     });
     expect(abortEmbeddedRun).toHaveBeenCalledTimes(1);
@@ -1341,7 +1341,7 @@ describe("talk realtime gateway relay", () => {
       "call-1",
       {
         status: "cancelled",
-        message: "Cancelled the active OpenClaw run.",
+        message: "Cancelled the active EVE run.",
       },
       { suppressResponse: true },
     );
@@ -1443,7 +1443,7 @@ describe("talk realtime gateway relay", () => {
       mode: "cancel",
       providerResult: {
         status: "cancelled",
-        message: "Cancelled the active OpenClaw run.",
+        message: "Cancelled the active EVE run.",
       },
     });
     expect(abortEmbeddedRun).toHaveBeenCalledTimes(1);

@@ -65,17 +65,17 @@ export function resolveSpawnCommand(command, args, execPath = process.execPath) 
  * Reads the signal-forwarding force-kill grace period.
  */
 export function resolveForceKillDelayMs(env = process.env) {
-  const raw = env.OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS;
+  const raw = env.EVE_RUN_WITH_ENV_FORCE_KILL_MS;
   if (raw === undefined || raw === "") {
     return 5_000;
   }
   const text = raw.trim();
   if (!/^\d+$/u.test(text)) {
-    throw new Error("OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer");
+    throw new Error("EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer");
   }
   const parsed = Number(text);
   if (!Number.isSafeInteger(parsed) || parsed < 1) {
-    throw new Error("OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer");
+    throw new Error("EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer");
   }
   return parsed;
 }

@@ -1,6 +1,6 @@
 /** Tests ACP child-to-parent stream relay notices, routing, and log path resolution. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { mergeMockedModule } from "../test-utils/vitest-module-mocks.js";
 
 const enqueueSystemEventMock = vi.fn();
@@ -59,7 +59,7 @@ const progressCommentaryDeliveryContext = {
   threadId: 1122,
 };
 
-function progressModeConfig(acp?: OpenClawConfig["acp"]): OpenClawConfig {
+function progressModeConfig(acp?: EVEConfig["acp"]): EVEConfig {
   return {
     ...(acp ? { acp } : {}),
     channels: {
@@ -1362,21 +1362,21 @@ describe("startAcpSpawnParentStreamRelay", () => {
 
   it("resolves ACP spawn stream log path from session metadata", () => {
     readAcpSessionEntryMock.mockReturnValue({
-      storePath: "/tmp/openclaw/agents/codex/sessions/sessions.json",
+      storePath: "/tmp/eve/agents/codex/sessions/sessions.json",
       entry: {
         sessionId: "sess-123",
-        sessionFile: "/tmp/openclaw/agents/codex/sessions/sess-123.jsonl",
+        sessionFile: "/tmp/eve/agents/codex/sessions/sess-123.jsonl",
       },
     });
     resolveSessionFilePathMock.mockReturnValue(
-      "/tmp/openclaw/agents/codex/sessions/sess-123.jsonl",
+      "/tmp/eve/agents/codex/sessions/sess-123.jsonl",
     );
 
     const resolved = resolveAcpSpawnStreamLogPath({
       childSessionKey: "agent:codex:acp:child-1",
     });
 
-    expect(resolved).toBe("/tmp/openclaw/agents/codex/sessions/sess-123.acp-stream.jsonl");
+    expect(resolved).toBe("/tmp/eve/agents/codex/sessions/sess-123.acp-stream.jsonl");
     expect(readAcpSessionEntryMock).toHaveBeenCalledWith({
       sessionKey: "agent:codex:acp:child-1",
     });
@@ -1387,6 +1387,6 @@ describe("startAcpSpawnParentStreamRelay", () => {
     ) as [string, { sessionId?: unknown }, { storePath?: unknown }];
     expect(sessionId).toBe("sess-123");
     expect(entry.sessionId).toBe("sess-123");
-    expect(options.storePath).toBe("/tmp/openclaw/agents/codex/sessions/sessions.json");
+    expect(options.storePath).toBe("/tmp/eve/agents/codex/sessions/sessions.json");
   });
 });

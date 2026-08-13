@@ -2,32 +2,32 @@
 import {
   buildChannelInboundEventContext,
   toInboundMediaFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { resolveAgentOutboundIdentity } from "openclaw/plugin-sdk/channel-outbound";
-import { createChannelPairingController } from "openclaw/plugin-sdk/channel-pairing";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { resolveAgentOutboundIdentity } from "eve-agent/plugin-sdk/channel-outbound";
+import { createChannelPairingController } from "eve-agent/plugin-sdk/channel-pairing";
 import {
   ensureConfiguredBindingRouteReady,
   resolveConfiguredBindingRoute,
   resolveRuntimeConversationBindingRoute,
-} from "openclaw/plugin-sdk/conversation-runtime";
+} from "eve-agent/plugin-sdk/conversation-runtime";
 import {
   asDateTimestampMs,
   parseStrictNonNegativeInteger,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   createChannelHistoryWindow,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/reply-history";
+import { resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
 import {
   resolveDefaultGroupPolicy,
   resolveOpenProviderRuntimeGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeOptionalString, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/runtime-group-policy";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeOptionalString, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveFeishuRuntimeAccount } from "./accounts.js";
 import {
   checkBotMentioned,

@@ -1,6 +1,6 @@
 // Crestodian probes check local tools and Gateway health with bounded subprocess/network work.
 import { spawn } from "node:child_process";
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
+import { resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
 
 /**
  * Local environment probes used by Crestodian overview loading.

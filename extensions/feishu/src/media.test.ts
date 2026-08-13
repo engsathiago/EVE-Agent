@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
-import { withTempDir } from "openclaw/plugin-sdk/test-env";
+import { withTempDir } from "eve-agent/plugin-sdk/test-env";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ClawdbotConfig } from "../runtime-api.js";
 
@@ -44,8 +44,8 @@ vi.mock("./runtime.js", () => ({
   }),
 }));
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/media-runtime")>();
+vi.mock("eve-agent/plugin-sdk/media-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/media-runtime")>();
   return {
     ...actual,
     runFfmpeg: runFfmpegMock,
@@ -100,7 +100,7 @@ function callData<T>(
 
 async function withIsolatedHome<T>(run: () => Promise<T>): Promise<T> {
   const originalHome = process.env.HOME;
-  return await withTempDir("openclaw-feishu-media-", async (tempHome) => {
+  return await withTempDir("eve-feishu-media-", async (tempHome) => {
     try {
       process.env.HOME = tempHome;
       return await run();
@@ -129,7 +129,7 @@ describe("sendMediaFeishu msg_type routing", () => {
     vi.doUnmock("./accounts.js");
     vi.doUnmock("./targets.js");
     vi.doUnmock("./runtime.js");
-    vi.doUnmock("openclaw/plugin-sdk/media-runtime");
+    vi.doUnmock("eve-agent/plugin-sdk/media-runtime");
     vi.resetModules();
   });
 
@@ -459,7 +459,7 @@ describe("sendMediaFeishu msg_type routing", () => {
       contentType: "application/pdf",
     });
 
-    const roots = ["/allowed/workspace", "/tmp/openclaw"];
+    const roots = ["/allowed/workspace", "/tmp/eve"];
     await sendMediaFeishu({
       cfg: emptyConfig,
       to: "user:ou_target",
@@ -902,7 +902,7 @@ describe("saveMessageResourceFeishu", () => {
         maxBytes: 1024,
       });
 
-      expect(result.saved.path).toContain(`${path.sep}.openclaw${path.sep}media${path.sep}inbound`);
+      expect(result.saved.path).toContain(`${path.sep}.eve${path.sep}media${path.sep}inbound`);
       expect(result.saved.id).toMatch(/^photo---[a-f0-9-]{36}\.jpg$/);
       expect(result.saved.size).toBe(4);
       await expect(fs.readFile(result.saved.path)).resolves.toEqual(

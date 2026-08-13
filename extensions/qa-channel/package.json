@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/qa-channel",
+  "name": "@eve/qa-channel",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw QA synthetic channel plugin",
+  "description": "EVE QA synthetic channel plugin",
   "type": "module",
   "exports": {
     ".": "./index.ts",
@@ -15,18 +15,18 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
@@ -38,7 +38,7 @@
       "detailLabel": "QA Channel",
       "docsPath": "/channels/qa-channel",
       "docsLabel": "qa-channel",
-      "blurb": "Synthetic Slack-class transport for automated OpenClaw QA scenarios.",
+      "blurb": "Synthetic Slack-class transport for automated EVE QA scenarios.",
       "systemImage": "checklist",
       "order": 999,
       "exposure": {

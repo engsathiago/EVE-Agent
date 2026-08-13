@@ -7,14 +7,14 @@ import {
   executeSqliteQueryTakeFirstSync,
   getNodeSqliteKysely,
 } from "../infra/kysely-sync.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
 import {
-  closeOpenClawStateDatabase,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
-import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
+  closeEVEStateDatabase,
+  openEVEStateDatabase,
+} from "../state/eve-state-db.js";
+import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { captureEnv } from "../test-utils/env.js";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { withEVETestState } from "../test-utils/eve-test-state.js";
 import {
   createManagedTaskFlow as createManagedTaskFlowOrNull,
   resetTaskFlowRegistryForTests,
@@ -50,7 +50,7 @@ import {
   parseTaskStatus,
 } from "./task-registry.types.js";
 
-const ORIGINAL_ENV = captureEnv(["OPENCLAW_STATE_DIR"]);
+const ORIGINAL_ENV = captureEnv(["EVE_STATE_DIR"]);
 
 function createTaskRecord(params: Parameters<typeof createTaskRecordOrNull>[0]): TaskRecord {
   const task = createTaskRecordOrNull(params);
@@ -70,7 +70,7 @@ function createManagedTaskFlow(
   return flow;
 }
 type TaskRegistryTestDatabase = Pick<
-  OpenClawStateKyselyDatabase,
+  EVEStateKyselyDatabase,
   "task_delivery_state" | "task_runs"
 >;
 
@@ -196,8 +196,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("rejects corrupt persisted task rows during sqlite restore", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-store-corrupt-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-store-corrupt-" },
       async () => {
         resetTaskRegistryForTests();
         const created = createTaskRecord({
@@ -212,7 +212,7 @@ describe("task-registry store runtime", () => {
           notifyPolicy: "silent",
         });
 
-        const database = openOpenClawStateDatabase();
+        const database = openEVEStateDatabase();
         const db = getNodeSqliteKysely<TaskRegistryTestDatabase>(database.db);
         executeSqliteQuerySync(
           database.db,
@@ -225,8 +225,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("drops invalid requester origins during sqlite restore", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-store-invalid-origin-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-store-invalid-origin-" },
       async () => {
         resetTaskRegistryForTests();
         const created = createTaskRecord({
@@ -244,7 +244,7 @@ describe("task-registry store runtime", () => {
           },
         });
 
-        const database = openOpenClawStateDatabase();
+        const database = openEVEStateDatabase();
         const db = getNodeSqliteKysely<TaskRegistryTestDatabase>(database.db);
         executeSqliteQuerySync(
           database.db,
@@ -523,8 +523,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("persists executor and requester agent ids in sqlite task rows", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-agent-id-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-agent-id-" },
       async () => {
         const created = createTaskRecord({
           runtime: "subagent",
@@ -539,7 +539,7 @@ describe("task-registry store runtime", () => {
           deliveryStatus: "pending",
         });
 
-        const database = openOpenClawStateDatabase();
+        const database = openEVEStateDatabase();
         const db = getNodeSqliteKysely<TaskRegistryTestDatabase>(database.db);
         const row = executeSqliteQueryTakeFirstSync(
           database.db,
@@ -567,8 +567,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("persists requester origin atomically when creating sqlite tasks", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-create-origin-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-create-origin-" },
       async () => {
         const created = createTaskRecord({
           runtime: "acp",
@@ -677,8 +677,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("prunes stale sqlite delivery state while retaining current rows", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-delivery-prune-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-delivery-prune-" },
       async () => {
         const taskA = createStoredTask();
         const taskB: TaskRecord = {
@@ -722,8 +722,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("prunes large sqlite snapshots without binding every task id at once", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-large-prune-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-large-prune-" },
       async () => {
         const tasks = new Map<string, TaskRecord>();
         const deliveryStates = new Map<string, TaskDeliveryState>();
@@ -760,8 +760,8 @@ describe("task-registry store runtime", () => {
   });
 
   it("reopens after the shared state database is closed", async () => {
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-store-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-store-" },
       async () => {
         const task = createStoredTask();
         saveTaskRegistryStateToSqlite({
@@ -769,7 +769,7 @@ describe("task-registry store runtime", () => {
           deliveryStates: new Map(),
         });
 
-        closeOpenClawStateDatabase();
+        closeEVEStateDatabase();
 
         const restored = loadTaskRegistryStateFromSqlite();
         expect(restored.tasks.get(task.taskId)).toEqual(task);
@@ -781,8 +781,8 @@ describe("task-registry store runtime", () => {
     if (process.platform === "win32") {
       return;
     }
-    await withOpenClawTestState(
-      { layout: "state-only", prefix: "openclaw-task-store-" },
+    await withEVETestState(
+      { layout: "state-only", prefix: "eve-task-store-" },
       async () => {
         createTaskRecord({
           runtime: "cron",
@@ -796,9 +796,9 @@ describe("task-registry store runtime", () => {
           notifyPolicy: "silent",
         });
 
-        const databasePath = resolveOpenClawStateSqlitePath(process.env);
+        const databasePath = resolveEVEStateSqlitePath(process.env);
         const registryDir = path.dirname(databasePath);
-        expect(databasePath.endsWith(path.join("state", "openclaw.sqlite"))).toBe(true);
+        expect(databasePath.endsWith(path.join("state", "eve.sqlite"))).toBe(true);
         expect(statSync(registryDir).mode & 0o777).toBe(0o700);
         expect(statSync(databasePath).mode & 0o777).toBe(0o600);
       },

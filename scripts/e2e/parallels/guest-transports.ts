@@ -1,4 +1,4 @@
-// Guest Transports script supports OpenClaw repository automation.
+// Guest Transports script supports EVE repository automation.
 import { randomUUID } from "node:crypto";
 import { run } from "./host-command.ts";
 import type { PhaseRunner } from "./phase-runner.ts";
@@ -26,7 +26,7 @@ export interface WindowsBackgroundPowerShellOptions {
 }
 
 function guestScriptName(extension: string): string {
-  return `openclaw-parallels-${randomUUID()}.${extension}`;
+  return `eve-parallels-${randomUUID()}.${extension}`;
 }
 
 function appendOutput(
@@ -93,24 +93,24 @@ export async function runWindowsBackgroundPowerShell(
   const runCommand = options.runCommand ?? run;
   const safeLabel = options.label.replaceAll(/[^A-Za-z0-9_-]/g, "-");
   const nonce = `${safeLabel}-${randomUUID()}`;
-  const fileBase = `openclaw-parallels-${nonce}`;
-  const logLengthPrefix = `__OPENCLAW_LOG_LENGTH__:${nonce}:`;
-  const logOffsetPrefix = `__OPENCLAW_LOG_OFFSET__:${nonce}:`;
-  const backgroundExitPrefix = `__OPENCLAW_BACKGROUND_EXIT__:${nonce}:`;
-  const backgroundDoneMarker = `__OPENCLAW_BACKGROUND_DONE__:${nonce}`;
+  const fileBase = `eve-parallels-${nonce}`;
+  const logLengthPrefix = `__EVE_LOG_LENGTH__:${nonce}:`;
+  const logOffsetPrefix = `__EVE_LOG_OFFSET__:${nonce}:`;
+  const backgroundExitPrefix = `__EVE_BACKGROUND_EXIT__:${nonce}:`;
+  const backgroundDoneMarker = `__EVE_BACKGROUND_DONE__:${nonce}`;
   const pathsScript = `$base = Join-Path $env:TEMP ${psSingleQuote(fileBase)}
 $scriptPath = "$base.ps1"
 $logPath = "$base.log"
 $donePath = "$base.done"
 $exitPath = "$base.exit"
 $pidPath = "$base.pid"
-function Write-OpenClawUtf8File([string]$Path, [string]$Value) {
+function Write-EVEUtf8File([string]$Path, [string]$Value) {
   [System.IO.File]::WriteAllText($Path, $Value, [System.Text.UTF8Encoding]::new($false))
 }`;
   const payload = `$ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 ${pathsScript}
-function Add-OpenClawBackgroundLog {
+function Add-EVEBackgroundLog {
   param([Parameter(ValueFromPipeline=$true)]$InputObject)
   process {
     $text = $InputObject | Out-String
@@ -126,13 +126,13 @@ function Add-OpenClawBackgroundLog {
 try {
   & {
 ${options.script}
-  } *>&1 | Add-OpenClawBackgroundLog
-  Write-OpenClawUtf8File $exitPath '0'
+  } *>&1 | Add-EVEBackgroundLog
+  Write-EVEUtf8File $exitPath '0'
 } catch {
-  $_ | Add-OpenClawBackgroundLog
-  Write-OpenClawUtf8File $exitPath '1'
+  $_ | Add-EVEBackgroundLog
+  Write-EVEUtf8File $exitPath '1'
 } finally {
-  Write-OpenClawUtf8File $donePath 'done'
+  Write-EVEUtf8File $donePath 'done'
 }`;
   const writeScript = runCommand(
     "prlctl",
@@ -179,7 +179,7 @@ if (!(Test-Path $scriptPath)) { throw "${safeLabel} background script was not wr
           "-EncodedCommand",
           encodePowerShell(`${pathsScript}
 $process = Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $scriptPath) -PassThru
-Write-OpenClawUtf8File $pidPath ([string]$process.Id)
+Write-EVEUtf8File $pidPath ([string]$process.Id)
 'started'`),
         ],
         { check: false, quiet: true, timeoutMs: timeoutBefore(deadline, 30_000) },
@@ -354,16 +354,16 @@ function cleanupWindowsBackground(
   options: { stopProcessTree: boolean },
 ): void {
   const stopProcessTree = options.stopProcessTree
-    ? `function Stop-OpenClawBackgroundProcessTree([int]$ProcessId) {
+    ? `function Stop-EVEBackgroundProcessTree([int]$ProcessId) {
   Get-CimInstance Win32_Process -Filter "ParentProcessId=$ProcessId" -ErrorAction SilentlyContinue | ForEach-Object {
-    Stop-OpenClawBackgroundProcessTree ([int]$_.ProcessId)
+    Stop-EVEBackgroundProcessTree ([int]$_.ProcessId)
   }
   Stop-Process -Id $ProcessId -Force -ErrorAction SilentlyContinue
 }
 if (Test-Path $pidPath) {
   $backgroundPid = (Get-Content -Path $pidPath -Raw).Trim()
   if ($backgroundPid) {
-    Stop-OpenClawBackgroundProcessTree ([int]$backgroundPid)
+    Stop-EVEBackgroundProcessTree ([int]$backgroundPid)
   }
 }
 `
@@ -407,7 +407,7 @@ export class LinuxGuest {
   }
 
   private transportArgs(args: string[]): string[] {
-    return ["exec", this.vmName, "/usr/bin/env", "HOME=/root", "OPENCLAW_ALLOW_ROOT=1", ...args];
+    return ["exec", this.vmName, "/usr/bin/env", "HOME=/root", "EVE_ALLOW_ROOT=1", ...args];
   }
 
   bash(script: string): string {

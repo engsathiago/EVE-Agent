@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 IOS_DIR="${ROOT_DIR}/apps/ios"
 
-APP_NAME="${IOS_APP_NAME:-OpenClaw}"
+APP_NAME="${IOS_APP_NAME:-EVE}"
 CONFIGURATION="${IOS_CONFIGURATION:-Debug}"
 DERIVED_DATA_DIR="${IOS_DERIVED_DATA_DIR:-${IOS_DIR}/build/DerivedData}"
 IOS_DESTINATION="${IOS_DEST:-platform=iOS Simulator,name=iPhone 17}"
@@ -26,8 +26,8 @@ run_simctl() {
 cd "${IOS_DIR}"
 "${XCODEGEN_BIN}" generate
 "${XCODEBUILD_BIN}" \
-  -project OpenClaw.xcodeproj \
-  -scheme OpenClaw \
+  -project EVE.xcodeproj \
+  -scheme EVE \
   -destination "${IOS_DESTINATION}" \
   -configuration "${CONFIGURATION}" \
   -derivedDataPath "${DERIVED_DATA_DIR}" \

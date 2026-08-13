@@ -8,9 +8,9 @@ import {
   setSetupChannelEnabled,
   splitSetupEntries,
   createSetupTranslator,
-} from "openclaw/plugin-sdk/setup";
-import type { ChannelSetupWizard } from "openclaw/plugin-sdk/setup";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/setup";
+import type { ChannelSetupWizard } from "eve-agent/plugin-sdk/setup";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { inspectTelegramAccount } from "./account-inspect.js";
 import { listTelegramAccountIds, resolveTelegramAccount } from "./accounts.js";
 import {

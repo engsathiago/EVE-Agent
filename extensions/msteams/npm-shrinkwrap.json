@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/msteams",
+  "name": "@eve/msteams",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/msteams",
+      "name": "@eve/msteams",
       "version": "2026.6.8",
       "dependencies": {
         "@azure/identity": "4.13.1",
@@ -15,10 +15,10 @@
         "typebox": "1.1.39"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

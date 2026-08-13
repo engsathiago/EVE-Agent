@@ -1,7 +1,7 @@
 // Line plugin module implements download behavior.
 import { messagingApi } from "@line/bot-sdk";
-import { saveMediaStream } from "openclaw/plugin-sdk/media-store";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { saveMediaStream } from "eve-agent/plugin-sdk/media-store";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 
 interface DownloadResult {
   path: string;

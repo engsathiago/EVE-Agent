@@ -2,9 +2,9 @@
 import {
   describeImageWithModel,
   describeImagesWithModel,
-} from "openclaw/plugin-sdk/media-understanding";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
-import { clearLiveCatalogCacheForTests } from "openclaw/plugin-sdk/provider-catalog-shared";
+} from "eve-agent/plugin-sdk/media-understanding";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
+import { clearLiveCatalogCacheForTests } from "eve-agent/plugin-sdk/provider-catalog-shared";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import plugin from "./index.js";
 

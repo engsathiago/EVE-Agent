@@ -1,7 +1,7 @@
 // Device Pair doctor contract migrates shipped plugin-owned state.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
 import {
   DEVICE_PAIR_NOTIFY_LEGACY_STATE_FILE,
   DEVICE_PAIR_NOTIFY_SUBSCRIBER_MAX_ENTRIES,

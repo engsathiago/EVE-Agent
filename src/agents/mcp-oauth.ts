@@ -1,6 +1,6 @@
 /**
  * MCP OAuth credential store and login helpers. Credentials are stored in the
- * private OpenClaw state directory with one hashed file per MCP server URL.
+ * private EVE state directory with one hashed file per MCP server URL.
  */
 import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
@@ -17,7 +17,7 @@ import type {
   OAuthTokens,
 } from "@modelcontextprotocol/sdk/shared/auth.js";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveStateDir } from "../config/paths.js";
 import { sanitizeServerName } from "./agent-bundle-mcp-names.js";
 
@@ -98,7 +98,7 @@ function buildOAuthClientMetadata(
 ): OAuthClientMetadata {
   const redirectUrl = resolveOAuthRedirectUrl(config, store);
   return {
-    client_name: "OpenClaw MCP",
+    client_name: "EVE MCP",
     redirect_uris: [redirectUrl],
     grant_types: ["authorization_code", "refresh_token"],
     response_types: ["code"],
@@ -109,7 +109,7 @@ function buildOAuthClientMetadata(
   };
 }
 
-/** Creates the MCP SDK OAuth provider backed by OpenClaw's private store. */
+/** Creates the MCP SDK OAuth provider backed by EVE's private store. */
 export function createMcpOAuthClientProvider(params: {
   serverName: string;
   serverUrl: string;
@@ -124,7 +124,7 @@ export function createMcpOAuthClientProvider(params: {
   const assertAuthorizationRedirectAllowed = () => {
     if (!allowAuthorizationRedirect) {
       throw new Error(
-        `MCP server "${params.serverName}" requires OAuth authorization. Run openclaw mcp login ${params.serverName}.`,
+        `MCP server "${params.serverName}" requires OAuth authorization. Run eve mcp login ${params.serverName}.`,
       );
     }
   };

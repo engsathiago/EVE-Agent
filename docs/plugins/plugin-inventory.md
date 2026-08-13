@@ -1,5 +1,5 @@
 ---
-summary: "Generated inventory of OpenClaw plugins shipped in core, published externally, or kept source-only"
+summary: "Generated inventory of EVE plugins shipped in core, published externally, or kept source-only"
 read_when:
   - You are deciding whether a plugin ships in the core npm package or installs separately
   - You are updating bundled plugin package metadata or release automation
@@ -9,7 +9,7 @@ title: "Plugin inventory"
 
 # Plugin inventory
 
-This page is generated from `extensions/*/package.json`, `openclaw.plugin.json`,
+This page is generated from `extensions/*/package.json`, `eve.plugin.json`,
 and the root npm package `files` exclusions. Regenerate it with:
 
 ```bash
@@ -18,8 +18,8 @@ pnpm plugins:inventory:gen
 
 ## Definitions
 
-- **Core npm package:** built into the `openclaw` npm package and available without a separate plugin install.
-- **Official external package:** OpenClaw-maintained plugin omitted from the core npm package, kept in this official inventory, and installed on demand through ClawHub and/or npm.
+- **Core npm package:** built into the `eve` npm package and available without a separate plugin install.
+- **Official external package:** EVE-maintained plugin omitted from the core npm package, kept in this official inventory, and installed on demand through ClawHub and/or npm.
 - **Source checkout only:** repo-local plugin omitted from published npm artifacts and not advertised as an installable package.
 
 Source checkouts are different from npm installs: after `pnpm install`, bundled
@@ -29,19 +29,19 @@ dependencies are available.
 ## Install a plugin
 
 Use the install route in each entry to decide whether install is needed. Plugins
-that say `included in OpenClaw` are already present in the core package.
+that say `included in EVE` are already present in the core package.
 Official external packages need one install, then a Gateway restart.
 
 For example, Discord is an official external package:
 
 ```bash
-openclaw plugins install @openclaw/discord
-openclaw gateway restart
-openclaw plugins inspect discord --runtime --json
+eve plugins install @eve/discord
+eve gateway restart
+eve plugins inspect discord --runtime --json
 ```
 
 During the launch cutover, ordinary bare package specs still install from npm.
-Use `clawhub:@openclaw/discord` or `npm:@openclaw/discord` when you need an
+Use `clawhub:@eve/discord` or `npm:@eve/discord` when you need an
 explicit source. After install, follow the plugin's setup doc, such as
 [Discord](/channels/discord), to add credentials and channel config. See
 [Manage plugins](/plugins/manage-plugins) for update, uninstall, and publishing
@@ -53,268 +53,268 @@ Each entry lists the package, distribution route, and description.
 
 72 plugins
 
-- **[admin-http-rpc](/plugins/reference/admin-http-rpc)** (`@openclaw/admin-http-rpc`) - included in OpenClaw. OpenClaw admin HTTP RPC endpoint.
+- **[admin-http-rpc](/plugins/reference/admin-http-rpc)** (`@eve/admin-http-rpc`) - included in EVE. EVE admin HTTP RPC endpoint.
 
-- **[alibaba](/plugins/reference/alibaba)** (`@openclaw/alibaba-provider`) - included in OpenClaw. Adds video generation provider support.
+- **[alibaba](/plugins/reference/alibaba)** (`@eve/alibaba-provider`) - included in EVE. Adds video generation provider support.
 
-- **[anthropic](/plugins/reference/anthropic)** (`@openclaw/anthropic-provider`) - included in OpenClaw. Adds Anthropic model provider support to OpenClaw.
+- **[anthropic](/plugins/reference/anthropic)** (`@eve/anthropic-provider`) - included in EVE. Adds Anthropic model provider support to EVE.
 
-- **[azure-speech](/plugins/reference/azure-speech)** (`@openclaw/azure-speech`) - included in OpenClaw. Azure AI Speech text-to-speech (MP3, native Ogg/Opus voice notes, PCM telephony).
+- **[azure-speech](/plugins/reference/azure-speech)** (`@eve/azure-speech`) - included in EVE. Azure AI Speech text-to-speech (MP3, native Ogg/Opus voice notes, PCM telephony).
 
-- **[bonjour](/plugins/reference/bonjour)** (`@openclaw/bonjour`) - included in OpenClaw. Advertise the local OpenClaw gateway over Bonjour/mDNS.
+- **[bonjour](/plugins/reference/bonjour)** (`@eve/bonjour`) - included in EVE. Advertise the local EVE gateway over Bonjour/mDNS.
 
-- **[browser](/plugins/reference/browser)** (`@openclaw/browser-plugin`) - included in OpenClaw. Adds agent-callable tools.
+- **[browser](/plugins/reference/browser)** (`@eve/browser-plugin`) - included in EVE. Adds agent-callable tools.
 
-- **[byteplus](/plugins/reference/byteplus)** (`@openclaw/byteplus-provider`) - included in OpenClaw. Adds BytePlus, BytePlus Plan model provider support to OpenClaw.
+- **[byteplus](/plugins/reference/byteplus)** (`@eve/byteplus-provider`) - included in EVE. Adds BytePlus, BytePlus Plan model provider support to EVE.
 
-- **[canvas](/plugins/reference/canvas)** (`@openclaw/canvas-plugin`) - included in OpenClaw. Experimental Canvas control and A2UI rendering surfaces for paired nodes.
+- **[canvas](/plugins/reference/canvas)** (`@eve/canvas-plugin`) - included in EVE. Experimental Canvas control and A2UI rendering surfaces for paired nodes.
 
-- **[clickclack](/plugins/reference/clickclack)** (`@openclaw/clickclack`) - included in OpenClaw. Adds the Clickclack channel surface for sending and receiving OpenClaw messages.
+- **[clickclack](/plugins/reference/clickclack)** (`@eve/clickclack`) - included in EVE. Adds the Clickclack channel surface for sending and receiving EVE messages.
 
-- **[codex-supervisor](/plugins/reference/codex-supervisor)** (`@openclaw/codex-supervisor`) - included in OpenClaw. Supervise Codex app-server sessions from OpenClaw.
+- **[codex-supervisor](/plugins/reference/codex-supervisor)** (`@eve/codex-supervisor`) - included in EVE. Supervise Codex app-server sessions from EVE.
 
-- **[cohere](/plugins/reference/cohere)** (`@openclaw/cohere-provider`) - included in OpenClaw; npm; ClawHub: `clawhub:@openclaw/cohere-provider`. OpenClaw Cohere provider plugin.
+- **[cohere](/plugins/reference/cohere)** (`@eve/cohere-provider`) - included in EVE; npm; ClawHub: `clawhub:@eve/cohere-provider`. EVE Cohere provider plugin.
 
-- **[comfy](/plugins/reference/comfy)** (`@openclaw/comfy-provider`) - included in OpenClaw. Adds ComfyUI model provider support to OpenClaw.
+- **[comfy](/plugins/reference/comfy)** (`@eve/comfy-provider`) - included in EVE. Adds ComfyUI model provider support to EVE.
 
-- **[copilot-proxy](/plugins/reference/copilot-proxy)** (`@openclaw/copilot-proxy`) - included in OpenClaw. Adds Copilot Proxy model provider support to OpenClaw.
+- **[copilot-proxy](/plugins/reference/copilot-proxy)** (`@eve/copilot-proxy`) - included in EVE. Adds Copilot Proxy model provider support to EVE.
 
-- **[deepgram](/plugins/reference/deepgram)** (`@openclaw/deepgram-provider`) - included in OpenClaw. Adds media understanding provider support. Adds realtime transcription provider support.
+- **[deepgram](/plugins/reference/deepgram)** (`@eve/deepgram-provider`) - included in EVE. Adds media understanding provider support. Adds realtime transcription provider support.
 
-- **[document-extract](/plugins/reference/document-extract)** (`@openclaw/document-extract-plugin`) - included in OpenClaw. Extract text and fallback page images from local document attachments.
+- **[document-extract](/plugins/reference/document-extract)** (`@eve/document-extract-plugin`) - included in EVE. Extract text and fallback page images from local document attachments.
 
-- **[duckduckgo](/plugins/reference/duckduckgo)** (`@openclaw/duckduckgo-plugin`) - included in OpenClaw. Adds web search provider support.
+- **[duckduckgo](/plugins/reference/duckduckgo)** (`@eve/duckduckgo-plugin`) - included in EVE. Adds web search provider support.
 
-- **[elevenlabs](/plugins/reference/elevenlabs)** (`@openclaw/elevenlabs-speech`) - included in OpenClaw. Adds media understanding provider support. Adds realtime transcription provider support. Adds text-to-speech provider support.
+- **[elevenlabs](/plugins/reference/elevenlabs)** (`@eve/elevenlabs-speech`) - included in EVE. Adds media understanding provider support. Adds realtime transcription provider support. Adds text-to-speech provider support.
 
-- **[fal](/plugins/reference/fal)** (`@openclaw/fal-provider`) - included in OpenClaw. Adds fal model provider support to OpenClaw.
+- **[fal](/plugins/reference/fal)** (`@eve/fal-provider`) - included in EVE. Adds fal model provider support to EVE.
 
-- **[file-transfer](/plugins/reference/file-transfer)** (`@openclaw/file-transfer`) - included in OpenClaw. Fetch, list, and write files on paired nodes via dedicated node commands. Bypasses bash stdout truncation by using base64 over node.invoke for binaries up to 16 MB.
+- **[file-transfer](/plugins/reference/file-transfer)** (`@eve/file-transfer`) - included in EVE. Fetch, list, and write files on paired nodes via dedicated node commands. Bypasses bash stdout truncation by using base64 over node.invoke for binaries up to 16 MB.
 
-- **[fireworks](/plugins/reference/fireworks)** (`@openclaw/fireworks-provider`) - included in OpenClaw. Adds Fireworks model provider support to OpenClaw.
+- **[fireworks](/plugins/reference/fireworks)** (`@eve/fireworks-provider`) - included in EVE. Adds Fireworks model provider support to EVE.
 
-- **[github-copilot](/plugins/reference/github-copilot)** (`@openclaw/github-copilot-provider`) - included in OpenClaw. Adds GitHub Copilot model provider support to OpenClaw.
+- **[github-copilot](/plugins/reference/github-copilot)** (`@eve/github-copilot-provider`) - included in EVE. Adds GitHub Copilot model provider support to EVE.
 
-- **[google](/plugins/reference/google)** (`@openclaw/google-plugin`) - included in OpenClaw. Adds Google, Google Gemini CLI, Google Vertex model provider support to OpenClaw.
+- **[google](/plugins/reference/google)** (`@eve/google-plugin`) - included in EVE. Adds Google, Google Gemini CLI, Google Vertex model provider support to EVE.
 
-- **[huggingface](/plugins/reference/huggingface)** (`@openclaw/huggingface-provider`) - included in OpenClaw. Adds Hugging Face model provider support to OpenClaw.
+- **[huggingface](/plugins/reference/huggingface)** (`@eve/huggingface-provider`) - included in EVE. Adds Hugging Face model provider support to EVE.
 
-- **[imessage](/plugins/reference/imessage)** (`@openclaw/imessage`) - included in OpenClaw. Adds the iMessage channel surface for sending and receiving OpenClaw messages.
+- **[imessage](/plugins/reference/imessage)** (`@eve/imessage`) - included in EVE. Adds the iMessage channel surface for sending and receiving EVE messages.
 
-- **[irc](/plugins/reference/irc)** (`@openclaw/irc`) - included in OpenClaw. Adds the IRC channel surface for sending and receiving OpenClaw messages.
+- **[irc](/plugins/reference/irc)** (`@eve/irc`) - included in EVE. Adds the IRC channel surface for sending and receiving EVE messages.
 
-- **[litellm](/plugins/reference/litellm)** (`@openclaw/litellm-provider`) - included in OpenClaw. Adds LiteLLM model provider support to OpenClaw.
+- **[litellm](/plugins/reference/litellm)** (`@eve/litellm-provider`) - included in EVE. Adds LiteLLM model provider support to EVE.
 
-- **[llm-task](/plugins/reference/llm-task)** (`@openclaw/llm-task`) - included in OpenClaw. Generic JSON-only LLM tool for structured tasks callable from workflows.
+- **[llm-task](/plugins/reference/llm-task)** (`@eve/llm-task`) - included in EVE. Generic JSON-only LLM tool for structured tasks callable from workflows.
 
-- **[lmstudio](/plugins/reference/lmstudio)** (`@openclaw/lmstudio-provider`) - included in OpenClaw. Adds LM Studio model provider support to OpenClaw.
+- **[lmstudio](/plugins/reference/lmstudio)** (`@eve/lmstudio-provider`) - included in EVE. Adds LM Studio model provider support to EVE.
 
-- **[mattermost](/plugins/reference/mattermost)** (`@openclaw/mattermost`) - included in OpenClaw. Adds the Mattermost channel surface for sending and receiving OpenClaw messages.
+- **[mattermost](/plugins/reference/mattermost)** (`@eve/mattermost`) - included in EVE. Adds the Mattermost channel surface for sending and receiving EVE messages.
 
-- **[memory-core](/plugins/reference/memory-core)** (`@openclaw/memory-core`) - included in OpenClaw. Adds agent-callable tools.
+- **[memory-core](/plugins/reference/memory-core)** (`@eve/memory-core`) - included in EVE. Adds agent-callable tools.
 
-- **[memory-wiki](/plugins/reference/memory-wiki)** (`@openclaw/memory-wiki`) - included in OpenClaw. Persistent wiki compiler and Obsidian-friendly knowledge vault for OpenClaw.
+- **[memory-wiki](/plugins/reference/memory-wiki)** (`@eve/memory-wiki`) - included in EVE. Persistent wiki compiler and Obsidian-friendly knowledge vault for EVE.
 
-- **[microsoft](/plugins/reference/microsoft)** (`@openclaw/microsoft-speech`) - included in OpenClaw. Adds text-to-speech provider support.
+- **[microsoft](/plugins/reference/microsoft)** (`@eve/microsoft-speech`) - included in EVE. Adds text-to-speech provider support.
 
-- **[microsoft-foundry](/plugins/reference/microsoft-foundry)** (`@openclaw/microsoft-foundry`) - included in OpenClaw. Adds Microsoft Foundry model provider support to OpenClaw.
+- **[microsoft-foundry](/plugins/reference/microsoft-foundry)** (`@eve/microsoft-foundry`) - included in EVE. Adds Microsoft Foundry model provider support to EVE.
 
-- **[migrate-claude](/plugins/reference/migrate-claude)** (`@openclaw/migrate-claude`) - included in OpenClaw. Imports Claude Code and Claude Desktop instructions, MCP servers, skills, and safe configuration into OpenClaw.
+- **[migrate-claude](/plugins/reference/migrate-claude)** (`@eve/migrate-claude`) - included in EVE. Imports Claude Code and Claude Desktop instructions, MCP servers, skills, and safe configuration into EVE.
 
-- **[migrate-hermes](/plugins/reference/migrate-hermes)** (`@openclaw/migrate-hermes`) - included in OpenClaw. Imports Hermes configuration, memories, skills, and supported credentials into OpenClaw.
+- **[migrate-hermes](/plugins/reference/migrate-hermes)** (`@eve/migrate-hermes`) - included in EVE. Imports Hermes configuration, memories, skills, and supported credentials into EVE.
 
-- **[minimax](/plugins/reference/minimax)** (`@openclaw/minimax-provider`) - included in OpenClaw. Adds MiniMax, MiniMax Portal model provider support to OpenClaw.
+- **[minimax](/plugins/reference/minimax)** (`@eve/minimax-provider`) - included in EVE. Adds MiniMax, MiniMax Portal model provider support to EVE.
 
-- **[mistral](/plugins/reference/mistral)** (`@openclaw/mistral-provider`) - included in OpenClaw. Adds Mistral model provider support to OpenClaw.
+- **[mistral](/plugins/reference/mistral)** (`@eve/mistral-provider`) - included in EVE. Adds Mistral model provider support to EVE.
 
-- **[moonshot](/plugins/reference/moonshot)** (`@openclaw/moonshot-provider`) - included in OpenClaw. Adds Moonshot model provider support to OpenClaw.
+- **[moonshot](/plugins/reference/moonshot)** (`@eve/moonshot-provider`) - included in EVE. Adds Moonshot model provider support to EVE.
 
-- **[novita](/plugins/reference/novita)** (`@openclaw/novita-provider`) - included in OpenClaw. Adds Novita, Novita AI, Novitaai model provider support to OpenClaw.
+- **[novita](/plugins/reference/novita)** (`@eve/novita-provider`) - included in EVE. Adds Novita, Novita AI, Novitaai model provider support to EVE.
 
-- **[nvidia](/plugins/reference/nvidia)** (`@openclaw/nvidia-provider`) - included in OpenClaw. Adds NVIDIA model provider support to OpenClaw.
+- **[nvidia](/plugins/reference/nvidia)** (`@eve/nvidia-provider`) - included in EVE. Adds NVIDIA model provider support to EVE.
 
-- **[oc-path](/plugins/reference/oc-path)** (`@openclaw/oc-path`) - included in OpenClaw. Adds the openclaw path CLI for oc:// workspace file addressing.
+- **[oc-path](/plugins/reference/oc-path)** (`@eve/oc-path`) - included in EVE. Adds the eve path CLI for oc:// workspace file addressing.
 
-- **[ollama](/plugins/reference/ollama)** (`@openclaw/ollama-provider`) - included in OpenClaw. Adds Ollama, Ollama Cloud model provider support to OpenClaw.
+- **[ollama](/plugins/reference/ollama)** (`@eve/ollama-provider`) - included in EVE. Adds Ollama, Ollama Cloud model provider support to EVE.
 
-- **[open-prose](/plugins/reference/open-prose)** (`@openclaw/open-prose`) - included in OpenClaw. OpenProse VM skill pack with a /prose slash command.
+- **[open-prose](/plugins/reference/open-prose)** (`@eve/open-prose`) - included in EVE. OpenProse VM skill pack with a /prose slash command.
 
-- **[openai](/plugins/reference/openai)** (`@openclaw/openai-provider`) - included in OpenClaw. Adds OpenAI model provider support to OpenClaw.
+- **[openai](/plugins/reference/openai)** (`@eve/openai-provider`) - included in EVE. Adds OpenAI model provider support to EVE.
 
-- **[opencode](/plugins/reference/opencode)** (`@openclaw/opencode-provider`) - included in OpenClaw. Adds OpenCode model provider support to OpenClaw.
+- **[opencode](/plugins/reference/opencode)** (`@eve/opencode-provider`) - included in EVE. Adds OpenCode model provider support to EVE.
 
-- **[opencode-go](/plugins/reference/opencode-go)** (`@openclaw/opencode-go-provider`) - included in OpenClaw. Adds OpenCode Go model provider support to OpenClaw.
+- **[opencode-go](/plugins/reference/opencode-go)** (`@eve/opencode-go-provider`) - included in EVE. Adds OpenCode Go model provider support to EVE.
 
-- **[openrouter](/plugins/reference/openrouter)** (`@openclaw/openrouter-provider`) - included in OpenClaw. Adds OpenRouter model provider support to OpenClaw.
+- **[openrouter](/plugins/reference/openrouter)** (`@eve/openrouter-provider`) - included in EVE. Adds OpenRouter model provider support to EVE.
 
-- **[policy](/plugins/reference/policy)** (`@openclaw/policy`) - included in OpenClaw. Adds policy-backed doctor checks for workspace conformance.
+- **[policy](/plugins/reference/policy)** (`@eve/policy`) - included in EVE. Adds policy-backed doctor checks for workspace conformance.
 
-- **[runway](/plugins/reference/runway)** (`@openclaw/runway-provider`) - included in OpenClaw. Adds video generation provider support.
+- **[runway](/plugins/reference/runway)** (`@eve/runway-provider`) - included in EVE. Adds video generation provider support.
 
-- **[searxng](/plugins/reference/searxng)** (`@openclaw/searxng-plugin`) - included in OpenClaw. Adds web search provider support.
+- **[searxng](/plugins/reference/searxng)** (`@eve/searxng-plugin`) - included in EVE. Adds web search provider support.
 
-- **[senseaudio](/plugins/reference/senseaudio)** (`@openclaw/senseaudio-provider`) - included in OpenClaw. Adds media understanding provider support.
+- **[senseaudio](/plugins/reference/senseaudio)** (`@eve/senseaudio-provider`) - included in EVE. Adds media understanding provider support.
 
-- **[sglang](/plugins/reference/sglang)** (`@openclaw/sglang-provider`) - included in OpenClaw. Adds SGLang model provider support to OpenClaw.
+- **[sglang](/plugins/reference/sglang)** (`@eve/sglang-provider`) - included in EVE. Adds SGLang model provider support to EVE.
 
-- **[signal](/plugins/reference/signal)** (`@openclaw/signal`) - included in OpenClaw. Adds the Signal channel surface for sending and receiving OpenClaw messages.
+- **[signal](/plugins/reference/signal)** (`@eve/signal`) - included in EVE. Adds the Signal channel surface for sending and receiving EVE messages.
 
-- **[sms](/plugins/reference/sms)** (`@openclaw/sms`) - included in OpenClaw. Twilio SMS channel plugin for OpenClaw text messages.
+- **[sms](/plugins/reference/sms)** (`@eve/sms`) - included in EVE. Twilio SMS channel plugin for EVE text messages.
 
-- **[synthetic](/plugins/reference/synthetic)** (`@openclaw/synthetic-provider`) - included in OpenClaw. Adds Synthetic model provider support to OpenClaw.
+- **[synthetic](/plugins/reference/synthetic)** (`@eve/synthetic-provider`) - included in EVE. Adds Synthetic model provider support to EVE.
 
-- **[tavily](/plugins/reference/tavily)** (`@openclaw/tavily-plugin`) - included in OpenClaw. Adds agent-callable tools. Adds web search provider support.
+- **[tavily](/plugins/reference/tavily)** (`@eve/tavily-plugin`) - included in EVE. Adds agent-callable tools. Adds web search provider support.
 
-- **[telegram](/plugins/reference/telegram)** (`@openclaw/telegram`) - included in OpenClaw. Adds the Telegram channel surface for sending and receiving OpenClaw messages.
+- **[telegram](/plugins/reference/telegram)** (`@eve/telegram`) - included in EVE. Adds the Telegram channel surface for sending and receiving EVE messages.
 
-- **[tencent](/plugins/reference/tencent)** (`@openclaw/tencent-provider`) - included in OpenClaw. Adds Tencent TokenHub model provider support to OpenClaw.
+- **[tencent](/plugins/reference/tencent)** (`@eve/tencent-provider`) - included in EVE. Adds Tencent TokenHub model provider support to EVE.
 
-- **[together](/plugins/reference/together)** (`@openclaw/together-provider`) - included in OpenClaw. Adds Together model provider support to OpenClaw.
+- **[together](/plugins/reference/together)** (`@eve/together-provider`) - included in EVE. Adds Together model provider support to EVE.
 
-- **[tts-local-cli](/plugins/reference/tts-local-cli)** (`@openclaw/tts-local-cli`) - included in OpenClaw. Adds text-to-speech provider support.
+- **[tts-local-cli](/plugins/reference/tts-local-cli)** (`@eve/tts-local-cli`) - included in EVE. Adds text-to-speech provider support.
 
-- **[venice](/plugins/reference/venice)** (`@openclaw/venice-provider`) - included in OpenClaw. Adds Venice model provider support to OpenClaw.
+- **[venice](/plugins/reference/venice)** (`@eve/venice-provider`) - included in EVE. Adds Venice model provider support to EVE.
 
-- **[vercel-ai-gateway](/plugins/reference/vercel-ai-gateway)** (`@openclaw/vercel-ai-gateway-provider`) - included in OpenClaw. Adds Vercel AI Gateway model provider support to OpenClaw.
+- **[vercel-ai-gateway](/plugins/reference/vercel-ai-gateway)** (`@eve/vercel-ai-gateway-provider`) - included in EVE. Adds Vercel AI Gateway model provider support to EVE.
 
-- **[vllm](/plugins/reference/vllm)** (`@openclaw/vllm-provider`) - included in OpenClaw. Adds vLLM model provider support to OpenClaw.
+- **[vllm](/plugins/reference/vllm)** (`@eve/vllm-provider`) - included in EVE. Adds vLLM model provider support to EVE.
 
-- **[volcengine](/plugins/reference/volcengine)** (`@openclaw/volcengine-provider`) - included in OpenClaw. Adds Volcengine, Volcengine Plan model provider support to OpenClaw.
+- **[volcengine](/plugins/reference/volcengine)** (`@eve/volcengine-provider`) - included in EVE. Adds Volcengine, Volcengine Plan model provider support to EVE.
 
-- **[voyage](/plugins/reference/voyage)** (`@openclaw/voyage-provider`) - included in OpenClaw. Adds memory embedding provider support.
+- **[voyage](/plugins/reference/voyage)** (`@eve/voyage-provider`) - included in EVE. Adds memory embedding provider support.
 
-- **[vydra](/plugins/reference/vydra)** (`@openclaw/vydra-provider`) - included in OpenClaw. Adds Vydra model provider support to OpenClaw.
+- **[vydra](/plugins/reference/vydra)** (`@eve/vydra-provider`) - included in EVE. Adds Vydra model provider support to EVE.
 
-- **[web-readability](/plugins/reference/web-readability)** (`@openclaw/web-readability-plugin`) - included in OpenClaw. Extract readable article content from local HTML web fetch responses.
+- **[web-readability](/plugins/reference/web-readability)** (`@eve/web-readability-plugin`) - included in EVE. Extract readable article content from local HTML web fetch responses.
 
-- **[webhooks](/plugins/reference/webhooks)** (`@openclaw/webhooks`) - included in OpenClaw. Authenticated inbound webhooks that bind external automation to OpenClaw TaskFlows.
+- **[webhooks](/plugins/reference/webhooks)** (`@eve/webhooks`) - included in EVE. Authenticated inbound webhooks that bind external automation to EVE TaskFlows.
 
-- **[workboard](/plugins/reference/workboard)** (`@openclaw/workboard`) - included in OpenClaw. Dashboard workboard for agent-owned issues and sessions.
+- **[workboard](/plugins/reference/workboard)** (`@eve/workboard`) - included in EVE. Dashboard workboard for agent-owned issues and sessions.
 
-- **[xai](/plugins/reference/xai)** (`@openclaw/xai-plugin`) - included in OpenClaw. Adds xAI model provider support to OpenClaw.
+- **[xai](/plugins/reference/xai)** (`@eve/xai-plugin`) - included in EVE. Adds xAI model provider support to EVE.
 
-- **[xiaomi](/plugins/reference/xiaomi)** (`@openclaw/xiaomi-provider`) - included in OpenClaw. Adds Xiaomi, Xiaomi Token Plan model provider support to OpenClaw.
+- **[xiaomi](/plugins/reference/xiaomi)** (`@eve/xiaomi-provider`) - included in EVE. Adds Xiaomi, Xiaomi Token Plan model provider support to EVE.
 
-- **[zai](/plugins/reference/zai)** (`@openclaw/zai-provider`) - included in OpenClaw. Adds Z.AI model provider support to OpenClaw.
+- **[zai](/plugins/reference/zai)** (`@eve/zai-provider`) - included in EVE. Adds Z.AI model provider support to EVE.
 
 ## Official external packages
 
 54 plugins
 
-- **[acpx](/plugins/reference/acpx)** (`@openclaw/acpx`) - npm; ClawHub. OpenClaw ACP runtime backend with plugin-owned session and transport management.
+- **[acpx](/plugins/reference/acpx)** (`@eve/acpx`) - npm; ClawHub. EVE ACP runtime backend with plugin-owned session and transport management.
 
-- **[amazon-bedrock](/plugins/reference/amazon-bedrock)** (`@openclaw/amazon-bedrock-provider`) - npm; ClawHub. OpenClaw Amazon Bedrock provider plugin with model discovery, embeddings, and guardrail support.
+- **[amazon-bedrock](/plugins/reference/amazon-bedrock)** (`@eve/amazon-bedrock-provider`) - npm; ClawHub. EVE Amazon Bedrock provider plugin with model discovery, embeddings, and guardrail support.
 
-- **[amazon-bedrock-mantle](/plugins/reference/amazon-bedrock-mantle)** (`@openclaw/amazon-bedrock-mantle-provider`) - npm; ClawHub. OpenClaw Amazon Bedrock Mantle provider plugin for OpenAI-compatible model routing.
+- **[amazon-bedrock-mantle](/plugins/reference/amazon-bedrock-mantle)** (`@eve/amazon-bedrock-mantle-provider`) - npm; ClawHub. EVE Amazon Bedrock Mantle provider plugin for OpenAI-compatible model routing.
 
-- **[anthropic-vertex](/plugins/reference/anthropic-vertex)** (`@openclaw/anthropic-vertex-provider`) - npm; ClawHub. OpenClaw Anthropic Vertex provider plugin for Claude models on Google Vertex AI.
+- **[anthropic-vertex](/plugins/reference/anthropic-vertex)** (`@eve/anthropic-vertex-provider`) - npm; ClawHub. EVE Anthropic Vertex provider plugin for Claude models on Google Vertex AI.
 
-- **[arcee](/plugins/reference/arcee)** (`@openclaw/arcee-provider`) - npm; ClawHub: `clawhub:@openclaw/arcee-provider`. Adds Arcee model provider support to OpenClaw.
+- **[arcee](/plugins/reference/arcee)** (`@eve/arcee-provider`) - npm; ClawHub: `clawhub:@eve/arcee-provider`. Adds Arcee model provider support to EVE.
 
-- **[brave](/plugins/reference/brave)** (`@openclaw/brave-plugin`) - npm; ClawHub. OpenClaw Brave Search provider plugin for web search.
+- **[brave](/plugins/reference/brave)** (`@eve/brave-plugin`) - npm; ClawHub. EVE Brave Search provider plugin for web search.
 
-- **[cerebras](/plugins/reference/cerebras)** (`@openclaw/cerebras-provider`) - npm; ClawHub: `clawhub:@openclaw/cerebras-provider`. Adds Cerebras model provider support to OpenClaw.
+- **[cerebras](/plugins/reference/cerebras)** (`@eve/cerebras-provider`) - npm; ClawHub: `clawhub:@eve/cerebras-provider`. Adds Cerebras model provider support to EVE.
 
-- **[chutes](/plugins/reference/chutes)** (`@openclaw/chutes-provider`) - npm; ClawHub: `clawhub:@openclaw/chutes-provider`. Adds Chutes model provider support to OpenClaw.
+- **[chutes](/plugins/reference/chutes)** (`@eve/chutes-provider`) - npm; ClawHub: `clawhub:@eve/chutes-provider`. Adds Chutes model provider support to EVE.
 
-- **[cloudflare-ai-gateway](/plugins/reference/cloudflare-ai-gateway)** (`@openclaw/cloudflare-ai-gateway-provider`) - npm; ClawHub: `clawhub:@openclaw/cloudflare-ai-gateway-provider`. Adds Cloudflare AI Gateway model provider support to OpenClaw.
+- **[cloudflare-ai-gateway](/plugins/reference/cloudflare-ai-gateway)** (`@eve/cloudflare-ai-gateway-provider`) - npm; ClawHub: `clawhub:@eve/cloudflare-ai-gateway-provider`. Adds Cloudflare AI Gateway model provider support to EVE.
 
-- **[codex](/plugins/reference/codex)** (`@openclaw/codex`) - npm; ClawHub. OpenClaw Codex app-server harness and model provider plugin with a Codex-managed GPT catalog.
+- **[codex](/plugins/reference/codex)** (`@eve/codex`) - npm; ClawHub. EVE Codex app-server harness and model provider plugin with a Codex-managed GPT catalog.
 
-- **[copilot](/plugins/reference/copilot)** (`@openclaw/copilot`) - npm; ClawHub: `clawhub:@openclaw/copilot`. Registers the GitHub Copilot agent runtime.
+- **[copilot](/plugins/reference/copilot)** (`@eve/copilot`) - npm; ClawHub: `clawhub:@eve/copilot`. Registers the GitHub Copilot agent runtime.
 
-- **[deepinfra](/plugins/reference/deepinfra)** (`@openclaw/deepinfra-provider`) - npm; ClawHub: `clawhub:@openclaw/deepinfra-provider`. Adds DeepInfra model provider support to OpenClaw.
+- **[deepinfra](/plugins/reference/deepinfra)** (`@eve/deepinfra-provider`) - npm; ClawHub: `clawhub:@eve/deepinfra-provider`. Adds DeepInfra model provider support to EVE.
 
-- **[deepseek](/plugins/reference/deepseek)** (`@openclaw/deepseek-provider`) - npm; ClawHub: `clawhub:@openclaw/deepseek-provider`. Adds DeepSeek model provider support to OpenClaw.
+- **[deepseek](/plugins/reference/deepseek)** (`@eve/deepseek-provider`) - npm; ClawHub: `clawhub:@eve/deepseek-provider`. Adds DeepSeek model provider support to EVE.
 
-- **[diagnostics-otel](/plugins/reference/diagnostics-otel)** (`@openclaw/diagnostics-otel`) - npm; ClawHub: `clawhub:@openclaw/diagnostics-otel`. OpenClaw diagnostics OpenTelemetry exporter for metrics, traces, and logs.
+- **[diagnostics-otel](/plugins/reference/diagnostics-otel)** (`@eve/diagnostics-otel`) - npm; ClawHub: `clawhub:@eve/diagnostics-otel`. EVE diagnostics OpenTelemetry exporter for metrics, traces, and logs.
 
-- **[diagnostics-prometheus](/plugins/reference/diagnostics-prometheus)** (`@openclaw/diagnostics-prometheus`) - npm; ClawHub: `clawhub:@openclaw/diagnostics-prometheus`. OpenClaw diagnostics Prometheus exporter for runtime metrics.
+- **[diagnostics-prometheus](/plugins/reference/diagnostics-prometheus)** (`@eve/diagnostics-prometheus`) - npm; ClawHub: `clawhub:@eve/diagnostics-prometheus`. EVE diagnostics Prometheus exporter for runtime metrics.
 
-- **[diffs](/plugins/reference/diffs)** (`@openclaw/diffs`) - npm; ClawHub. OpenClaw read-only diff viewer plugin and file renderer for agents.
+- **[diffs](/plugins/reference/diffs)** (`@eve/diffs`) - npm; ClawHub. EVE read-only diff viewer plugin and file renderer for agents.
 
-- **[diffs-language-pack](/plugins/reference/diffs-language-pack)** (`@openclaw/diffs-language-pack`) - npm; ClawHub: `clawhub:@openclaw/diffs-language-pack`. Adds syntax highlighting for languages outside the default diffs viewer set.
+- **[diffs-language-pack](/plugins/reference/diffs-language-pack)** (`@eve/diffs-language-pack`) - npm; ClawHub: `clawhub:@eve/diffs-language-pack`. Adds syntax highlighting for languages outside the default diffs viewer set.
 
-- **[discord](/plugins/reference/discord)** (`@openclaw/discord`) - npm; ClawHub. OpenClaw Discord channel plugin for channels, DMs, commands, and app events.
+- **[discord](/plugins/reference/discord)** (`@eve/discord`) - npm; ClawHub. EVE Discord channel plugin for channels, DMs, commands, and app events.
 
-- **[exa](/plugins/reference/exa)** (`@openclaw/exa-plugin`) - npm; ClawHub: `clawhub:@openclaw/exa-plugin`. Adds web search provider support.
+- **[exa](/plugins/reference/exa)** (`@eve/exa-plugin`) - npm; ClawHub: `clawhub:@eve/exa-plugin`. Adds web search provider support.
 
-- **[feishu](/plugins/reference/feishu)** (`@openclaw/feishu`) - npm; ClawHub. OpenClaw Feishu/Lark channel plugin for chats and workplace tools (community maintained by @m1heng).
+- **[feishu](/plugins/reference/feishu)** (`@eve/feishu`) - npm; ClawHub. EVE Feishu/Lark channel plugin for chats and workplace tools (community maintained by @m1heng).
 
-- **[firecrawl](/plugins/reference/firecrawl)** (`@openclaw/firecrawl-plugin`) - npm; ClawHub: `clawhub:@openclaw/firecrawl-plugin`. Adds agent-callable tools. Adds web fetch provider support. Adds web search provider support.
+- **[firecrawl](/plugins/reference/firecrawl)** (`@eve/firecrawl-plugin`) - npm; ClawHub: `clawhub:@eve/firecrawl-plugin`. Adds agent-callable tools. Adds web fetch provider support. Adds web search provider support.
 
-- **[gmi](/plugins/reference/gmi)** (`@openclaw/gmi-provider`) - npm; ClawHub: `clawhub:@openclaw/gmi-provider`. OpenClaw GMI Cloud provider plugin.
+- **[gmi](/plugins/reference/gmi)** (`@eve/gmi-provider`) - npm; ClawHub: `clawhub:@eve/gmi-provider`. EVE GMI Cloud provider plugin.
 
-- **[google-meet](/plugins/reference/google-meet)** (`@openclaw/google-meet`) - npm; ClawHub. OpenClaw Google Meet participant plugin for joining calls through Chrome or Twilio transports.
+- **[google-meet](/plugins/reference/google-meet)** (`@eve/google-meet`) - npm; ClawHub. EVE Google Meet participant plugin for joining calls through Chrome or Twilio transports.
 
-- **[googlechat](/plugins/reference/googlechat)** (`@openclaw/googlechat`) - npm; ClawHub. OpenClaw Google Chat channel plugin for spaces and direct messages.
+- **[googlechat](/plugins/reference/googlechat)** (`@eve/googlechat`) - npm; ClawHub. EVE Google Chat channel plugin for spaces and direct messages.
 
-- **[gradium](/plugins/reference/gradium)** (`@openclaw/gradium-speech`) - npm; ClawHub: `clawhub:@openclaw/gradium-speech`. Adds text-to-speech provider support.
+- **[gradium](/plugins/reference/gradium)** (`@eve/gradium-speech`) - npm; ClawHub: `clawhub:@eve/gradium-speech`. Adds text-to-speech provider support.
 
-- **[groq](/plugins/reference/groq)** (`@openclaw/groq-provider`) - npm; ClawHub: `clawhub:@openclaw/groq-provider`. Adds Groq model provider support to OpenClaw.
+- **[groq](/plugins/reference/groq)** (`@eve/groq-provider`) - npm; ClawHub: `clawhub:@eve/groq-provider`. Adds Groq model provider support to EVE.
 
-- **[inworld](/plugins/reference/inworld)** (`@openclaw/inworld-speech`) - npm; ClawHub: `clawhub:@openclaw/inworld-speech`. Inworld streaming text-to-speech (MP3, OGG_OPUS, PCM telephony).
+- **[inworld](/plugins/reference/inworld)** (`@eve/inworld-speech`) - npm; ClawHub: `clawhub:@eve/inworld-speech`. Inworld streaming text-to-speech (MP3, OGG_OPUS, PCM telephony).
 
-- **[kilocode](/plugins/reference/kilocode)** (`@openclaw/kilocode-provider`) - npm; ClawHub: `clawhub:@openclaw/kilocode-provider`. Adds Kilocode model provider support to OpenClaw.
+- **[kilocode](/plugins/reference/kilocode)** (`@eve/kilocode-provider`) - npm; ClawHub: `clawhub:@eve/kilocode-provider`. Adds Kilocode model provider support to EVE.
 
-- **[kimi](/plugins/reference/kimi)** (`@openclaw/kimi-provider`) - npm; ClawHub: `clawhub:@openclaw/kimi-provider`. Adds Kimi, Kimi Coding model provider support to OpenClaw.
+- **[kimi](/plugins/reference/kimi)** (`@eve/kimi-provider`) - npm; ClawHub: `clawhub:@eve/kimi-provider`. Adds Kimi, Kimi Coding model provider support to EVE.
 
-- **[line](/plugins/reference/line)** (`@openclaw/line`) - npm; ClawHub. OpenClaw LINE channel plugin for LINE Bot API chats.
+- **[line](/plugins/reference/line)** (`@eve/line`) - npm; ClawHub. EVE LINE channel plugin for LINE Bot API chats.
 
-- **[llama-cpp](/plugins/reference/llama-cpp)** (`@openclaw/llama-cpp-provider`) - npm; ClawHub. Local GGUF embeddings through node-llama-cpp.
+- **[llama-cpp](/plugins/reference/llama-cpp)** (`@eve/llama-cpp-provider`) - npm; ClawHub. Local GGUF embeddings through node-llama-cpp.
 
-- **[lobster](/plugins/reference/lobster)** (`@openclaw/lobster`) - npm; ClawHub. Lobster workflow tool plugin for typed pipelines and resumable approvals.
+- **[lobster](/plugins/reference/lobster)** (`@eve/lobster`) - npm; ClawHub. Lobster workflow tool plugin for typed pipelines and resumable approvals.
 
-- **[matrix](/plugins/reference/matrix)** (`@openclaw/matrix`) - ClawHub: `clawhub:@openclaw/matrix`; npm. OpenClaw Matrix channel plugin for rooms and direct messages.
+- **[matrix](/plugins/reference/matrix)** (`@eve/matrix`) - ClawHub: `clawhub:@eve/matrix`; npm. EVE Matrix channel plugin for rooms and direct messages.
 
-- **[memory-lancedb](/plugins/reference/memory-lancedb)** (`@openclaw/memory-lancedb`) - npm; ClawHub. OpenClaw LanceDB-backed long-term memory plugin with auto-recall, auto-capture, and vector search.
+- **[memory-lancedb](/plugins/reference/memory-lancedb)** (`@eve/memory-lancedb`) - npm; ClawHub. EVE LanceDB-backed long-term memory plugin with auto-recall, auto-capture, and vector search.
 
-- **[msteams](/plugins/reference/msteams)** (`@openclaw/msteams`) - npm; ClawHub. OpenClaw Microsoft Teams channel plugin for bot conversations.
+- **[msteams](/plugins/reference/msteams)** (`@eve/msteams`) - npm; ClawHub. EVE Microsoft Teams channel plugin for bot conversations.
 
-- **[nextcloud-talk](/plugins/reference/nextcloud-talk)** (`@openclaw/nextcloud-talk`) - npm; ClawHub. OpenClaw Nextcloud Talk channel plugin for conversations.
+- **[nextcloud-talk](/plugins/reference/nextcloud-talk)** (`@eve/nextcloud-talk`) - npm; ClawHub. EVE Nextcloud Talk channel plugin for conversations.
 
-- **[nostr](/plugins/reference/nostr)** (`@openclaw/nostr`) - npm; ClawHub. OpenClaw Nostr channel plugin for NIP-04 encrypted direct messages.
+- **[nostr](/plugins/reference/nostr)** (`@eve/nostr`) - npm; ClawHub. EVE Nostr channel plugin for NIP-04 encrypted direct messages.
 
-- **[openshell](/plugins/reference/openshell)** (`@openclaw/openshell-sandbox`) - npm; ClawHub. OpenClaw sandbox backend for the NVIDIA OpenShell CLI with mirrored local workspaces and SSH command execution.
+- **[openshell](/plugins/reference/openshell)** (`@eve/openshell-sandbox`) - npm; ClawHub. EVE sandbox backend for the NVIDIA OpenShell CLI with mirrored local workspaces and SSH command execution.
 
-- **[parallel](/tools/parallel-search)** (`@openclaw/parallel-plugin`) - npm; ClawHub: `clawhub:@openclaw/parallel-plugin`. Adds web search provider support.
+- **[parallel](/tools/parallel-search)** (`@eve/parallel-plugin`) - npm; ClawHub: `clawhub:@eve/parallel-plugin`. Adds web search provider support.
 
-- **[perplexity](/plugins/reference/perplexity)** (`@openclaw/perplexity-plugin`) - npm; ClawHub: `clawhub:@openclaw/perplexity-plugin`. Adds web search provider support.
+- **[perplexity](/plugins/reference/perplexity)** (`@eve/perplexity-plugin`) - npm; ClawHub: `clawhub:@eve/perplexity-plugin`. Adds web search provider support.
 
-- **[pixverse](/plugins/reference/pixverse)** (`@openclaw/pixverse-provider`) - npm; ClawHub: `clawhub:@openclaw/pixverse-provider`. OpenClaw PixVerse video generation provider plugin.
+- **[pixverse](/plugins/reference/pixverse)** (`@eve/pixverse-provider`) - npm; ClawHub: `clawhub:@eve/pixverse-provider`. EVE PixVerse video generation provider plugin.
 
-- **[qianfan](/plugins/reference/qianfan)** (`@openclaw/qianfan-provider`) - npm; ClawHub: `clawhub:@openclaw/qianfan-provider`. Adds Qianfan model provider support to OpenClaw.
+- **[qianfan](/plugins/reference/qianfan)** (`@eve/qianfan-provider`) - npm; ClawHub: `clawhub:@eve/qianfan-provider`. Adds Qianfan model provider support to EVE.
 
-- **[qqbot](/plugins/reference/qqbot)** (`@openclaw/qqbot`) - npm; ClawHub. OpenClaw QQ Bot channel plugin for group and direct-message workflows.
+- **[qqbot](/plugins/reference/qqbot)** (`@eve/qqbot`) - npm; ClawHub. EVE QQ Bot channel plugin for group and direct-message workflows.
 
-- **[qwen](/plugins/reference/qwen)** (`@openclaw/qwen-provider`) - npm; ClawHub: `clawhub:@openclaw/qwen-provider`. Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to OpenClaw.
+- **[qwen](/plugins/reference/qwen)** (`@eve/qwen-provider`) - npm; ClawHub: `clawhub:@eve/qwen-provider`. Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to EVE.
 
-- **[slack](/plugins/reference/slack)** (`@openclaw/slack`) - npm; ClawHub. OpenClaw Slack channel plugin for channels, DMs, commands, and app events.
+- **[slack](/plugins/reference/slack)** (`@eve/slack`) - npm; ClawHub. EVE Slack channel plugin for channels, DMs, commands, and app events.
 
-- **[stepfun](/plugins/reference/stepfun)** (`@openclaw/stepfun-provider`) - npm. Adds StepFun, StepFun Plan model provider support to OpenClaw.
+- **[stepfun](/plugins/reference/stepfun)** (`@eve/stepfun-provider`) - npm. Adds StepFun, StepFun Plan model provider support to EVE.
 
-- **[synology-chat](/plugins/reference/synology-chat)** (`@openclaw/synology-chat`) - npm; ClawHub. Synology Chat channel plugin for OpenClaw channels and direct messages.
+- **[synology-chat](/plugins/reference/synology-chat)** (`@eve/synology-chat`) - npm; ClawHub. Synology Chat channel plugin for EVE channels and direct messages.
 
-- **[tlon](/plugins/reference/tlon)** (`@openclaw/tlon`) - npm; ClawHub. OpenClaw Tlon/Urbit channel plugin for chat workflows.
+- **[tlon](/plugins/reference/tlon)** (`@eve/tlon`) - npm; ClawHub. EVE Tlon/Urbit channel plugin for chat workflows.
 
-- **[tokenjuice](/plugins/reference/tokenjuice)** (`@openclaw/tokenjuice`) - npm; ClawHub: `clawhub:@openclaw/tokenjuice`. Compacts exec and bash tool results with tokenjuice reducers.
+- **[tokenjuice](/plugins/reference/tokenjuice)** (`@eve/tokenjuice`) - npm; ClawHub: `clawhub:@eve/tokenjuice`. Compacts exec and bash tool results with tokenjuice reducers.
 
-- **[twitch](/plugins/reference/twitch)** (`@openclaw/twitch`) - npm; ClawHub. OpenClaw Twitch channel plugin for chat and moderation workflows.
+- **[twitch](/plugins/reference/twitch)** (`@eve/twitch`) - npm; ClawHub. EVE Twitch channel plugin for chat and moderation workflows.
 
-- **[voice-call](/plugins/reference/voice-call)** (`@openclaw/voice-call`) - npm; ClawHub. OpenClaw voice-call plugin for Twilio, Telnyx, and Plivo phone calls.
+- **[voice-call](/plugins/reference/voice-call)** (`@eve/voice-call`) - npm; ClawHub. EVE voice-call plugin for Twilio, Telnyx, and Plivo phone calls.
 
-- **[whatsapp](/plugins/reference/whatsapp)** (`@openclaw/whatsapp`) - ClawHub: `clawhub:@openclaw/whatsapp`; npm. OpenClaw WhatsApp channel plugin for WhatsApp Web chats.
+- **[whatsapp](/plugins/reference/whatsapp)** (`@eve/whatsapp`) - ClawHub: `clawhub:@eve/whatsapp`; npm. EVE WhatsApp channel plugin for WhatsApp Web chats.
 
-- **[zalo](/plugins/reference/zalo)** (`@openclaw/zalo`) - npm; ClawHub. OpenClaw Zalo channel plugin for bot and webhook chats.
+- **[zalo](/plugins/reference/zalo)** (`@eve/zalo`) - npm; ClawHub. EVE Zalo channel plugin for bot and webhook chats.
 
-- **[zalouser](/plugins/reference/zalouser)** (`@openclaw/zalouser`) - npm; ClawHub. OpenClaw Zalo Personal Account plugin via native zca-js integration.
+- **[zalouser](/plugins/reference/zalouser)** (`@eve/zalouser`) - npm; ClawHub. EVE Zalo Personal Account plugin via native zca-js integration.
 
 ## Source checkout only
 
 3 plugins
 
-- **[qa-channel](/plugins/reference/qa-channel)** (`@openclaw/qa-channel`) - source checkout only. Adds the QA Channel surface for sending and receiving OpenClaw messages.
+- **[qa-channel](/plugins/reference/qa-channel)** (`@eve/qa-channel`) - source checkout only. Adds the QA Channel surface for sending and receiving EVE messages.
 
-- **[qa-lab](/plugins/reference/qa-lab)** (`@openclaw/qa-lab`) - source checkout only. OpenClaw QA lab plugin with private debugger UI and scenario runner.
+- **[qa-lab](/plugins/reference/qa-lab)** (`@eve/qa-lab`) - source checkout only. EVE QA lab plugin with private debugger UI and scenario runner.
 
-- **[qa-matrix](/plugins/reference/qa-matrix)** (`@openclaw/qa-matrix`) - source checkout only. Matrix QA transport runner and substrate.
+- **[qa-matrix](/plugins/reference/qa-matrix)** (`@eve/qa-matrix`) - source checkout only. Matrix QA transport runner and substrate.

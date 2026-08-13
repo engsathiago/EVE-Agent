@@ -1,21 +1,21 @@
 ---
-summary: "OpenClaw browser control API, CLI reference, and scripting actions"
+summary: "EVE browser control API, CLI reference, and scripting actions"
 read_when:
   - Scripting or debugging the agent browser via the local control API
-  - Looking for the `openclaw browser` CLI reference
+  - Looking for the `eve browser` CLI reference
   - Adding custom browser automation with snapshots and refs
 title: "Browser control API"
 ---
 
 For setup, configuration, and troubleshooting, see [Browser](/tools/browser).
-This page is the reference for the local control HTTP API, the `openclaw browser`
+This page is the reference for the local control HTTP API, the `eve browser`
 CLI, and scripting patterns (snapshots, refs, waits, debug flows).
 
 ## Control API (optional)
 
 For local integrations only, the Gateway exposes a small loopback HTTP API.
 This standalone server is opt-in — set the environment variable
-`OPENCLAW_EAGER_BROWSER_CONTROL_SERVER=1` in the gateway service environment
+`EVE_EAGER_BROWSER_CONTROL_SERVER=1` in the gateway service environment
 and restart the gateway before the HTTP endpoints become available. Without
 this variable the browser control runtime still works through the CLI and
 agent tools, but nothing listens on the loopback control port.
@@ -37,7 +37,7 @@ agent tools, but nothing listens on the loopback control port.
 All endpoints accept `?profile=<name>`. `POST /start?headless=true` requests a
 one-shot headless launch for local managed profiles without changing persisted
 browser config; attach-only, remote CDP, and existing-session profiles reject
-that override because OpenClaw does not launch those browser processes.
+that override because EVE does not launch those browser processes.
 
 For tab endpoints, `targetId` is the compatibility field name. Prefer passing
 `suggestedTargetId` from `GET /tabs` or `POST /tabs/open`; labels and `tabId`
@@ -47,7 +47,7 @@ target-id prefixes still work, but they are volatile diagnostic handles.
 If shared-secret gateway auth is configured, browser HTTP routes require auth too:
 
 - `Authorization: Bearer <gateway token>`
-- `x-openclaw-password: <gateway password>` or HTTP Basic auth with that password
+- `x-eve-password: <gateway password>` or HTTP Basic auth with that password
 
 Notes:
 
@@ -90,7 +90,7 @@ What still works without Playwright:
   `--depth`, `--efficient`) when a per-tab CDP WebSocket is available. This is
   a fallback for inspection and ref discovery; Playwright remains the primary
   action engine.
-- Page screenshots for the managed `openclaw` browser when a per-tab CDP
+- Page screenshots for the managed `eve` browser when a per-tab CDP
   WebSocket is available
 - Page screenshots for `existing-session` / Chrome MCP profiles
 - `existing-session` ref-based screenshots (`--ref`) from snapshot output
@@ -108,7 +108,7 @@ not supported for element screenshots`.
 
 If you see `Playwright is not available in this gateway build`, the packaged
 Gateway is missing the core browser runtime dependency. Reinstall or update
-OpenClaw, then restart the gateway. For Docker, also install the Chromium
+EVE, then restart the gateway. For Docker, also install the Chromium
 browser binaries as shown below.
 
 #### Docker Playwright install
@@ -117,19 +117,19 @@ If your Gateway runs in Docker, avoid `npx playwright` (npm override conflicts).
 For custom images, bake Chromium into the image:
 
 ```bash
-OPENCLAW_INSTALL_BROWSER=1 ./scripts/docker/setup.sh
+EVE_INSTALL_BROWSER=1 ./scripts/docker/setup.sh
 ```
 
 For an existing image, install through the bundled CLI instead:
 
 ```bash
-docker compose run --rm openclaw-cli \
+docker compose run --rm eve-cli \
   node /app/node_modules/playwright-core/cli.js install chromium
 ```
 
 To persist browser downloads, set `PLAYWRIGHT_BROWSERS_PATH` (for example,
 `/home/node/.cache/ms-playwright`) and make sure `/home/node` is persisted via
-`OPENCLAW_HOME_VOLUME` or a bind mount. OpenClaw auto-detects the persisted
+`EVE_HOME_VOLUME` or a bind mount. EVE auto-detects the persisted
 Chromium on Linux. See [Docker](/install/docker).
 
 ## How it works (internal)
@@ -145,18 +145,18 @@ All commands accept `--browser-profile <name>` to target a specific profile, and
 <Accordion title="Basics: status, tabs, open/focus/close">
 
 ```bash
-openclaw browser status
-openclaw browser start
-openclaw browser start --headless # one-shot local managed headless launch
-openclaw browser stop            # also clears emulation on attach-only/remote CDP
-openclaw browser tabs
-openclaw browser tab             # shortcut for current tab
-openclaw browser tab new
-openclaw browser tab select 2
-openclaw browser tab close 2
-openclaw browser open https://example.com
-openclaw browser focus abcd1234
-openclaw browser close abcd1234
+eve browser status
+eve browser start
+eve browser start --headless # one-shot local managed headless launch
+eve browser stop            # also clears emulation on attach-only/remote CDP
+eve browser tabs
+eve browser tab             # shortcut for current tab
+eve browser tab new
+eve browser tab select 2
+eve browser tab close 2
+eve browser open https://example.com
+eve browser focus abcd1234
+eve browser close abcd1234
 ```
 
 </Accordion>
@@ -164,23 +164,23 @@ openclaw browser close abcd1234
 <Accordion title="Inspection: screenshot, snapshot, console, errors, requests">
 
 ```bash
-openclaw browser screenshot
-openclaw browser screenshot --full-page
-openclaw browser screenshot --ref 12        # or --ref e12
-openclaw browser screenshot --labels
-openclaw browser snapshot
-openclaw browser snapshot --format aria --limit 200
-openclaw browser snapshot --interactive --compact --depth 6
-openclaw browser snapshot --efficient
-openclaw browser snapshot --labels
-openclaw browser snapshot --urls
-openclaw browser snapshot --selector "#main" --interactive
-openclaw browser snapshot --frame "iframe#main" --interactive
-openclaw browser console --level error
-openclaw browser errors --clear
-openclaw browser requests --filter api --clear
-openclaw browser pdf
-openclaw browser responsebody "**/api" --max-chars 5000
+eve browser screenshot
+eve browser screenshot --full-page
+eve browser screenshot --ref 12        # or --ref e12
+eve browser screenshot --labels
+eve browser snapshot
+eve browser snapshot --format aria --limit 200
+eve browser snapshot --interactive --compact --depth 6
+eve browser snapshot --efficient
+eve browser snapshot --labels
+eve browser snapshot --urls
+eve browser snapshot --selector "#main" --interactive
+eve browser snapshot --frame "iframe#main" --interactive
+eve browser console --level error
+eve browser errors --clear
+eve browser requests --filter api --clear
+eve browser pdf
+eve browser responsebody "**/api" --max-chars 5000
 ```
 
 </Accordion>
@@ -188,31 +188,31 @@ openclaw browser responsebody "**/api" --max-chars 5000
 <Accordion title="Actions: navigate, click, type, drag, wait, evaluate">
 
 ```bash
-openclaw browser navigate https://example.com
-openclaw browser resize 1280 720
-openclaw browser click 12 --double           # or e12 for role refs
-openclaw browser click-coords 120 340        # viewport coordinates
-openclaw browser type 23 "hello" --submit
-openclaw browser press Enter
-openclaw browser hover 44
-openclaw browser scrollintoview e12
-openclaw browser drag 10 11
-openclaw browser select 9 OptionA OptionB
-openclaw browser download e12 report.pdf
-openclaw browser waitfordownload report.pdf
-openclaw browser upload /tmp/openclaw/uploads/file.pdf
-openclaw browser upload media://inbound/file.pdf
-openclaw browser fill --fields '[{"ref":"1","type":"text","value":"Ada"}]'
-openclaw browser dialog --accept
-openclaw browser dialog --dismiss --dialog-id d1
-openclaw browser wait --text "Done"
-openclaw browser wait "#main" --url "**/dash" --load networkidle --fn "window.ready===true"
-openclaw browser evaluate --fn '(el) => el.textContent' --ref 7
-openclaw browser evaluate --fn 'const title = document.title; return title;'
-openclaw browser evaluate --timeout-ms 30000 --fn 'async () => { await window.ready; return true; }'
-openclaw browser highlight e12
-openclaw browser trace start
-openclaw browser trace stop
+eve browser navigate https://example.com
+eve browser resize 1280 720
+eve browser click 12 --double           # or e12 for role refs
+eve browser click-coords 120 340        # viewport coordinates
+eve browser type 23 "hello" --submit
+eve browser press Enter
+eve browser hover 44
+eve browser scrollintoview e12
+eve browser drag 10 11
+eve browser select 9 OptionA OptionB
+eve browser download e12 report.pdf
+eve browser waitfordownload report.pdf
+eve browser upload /tmp/eve/uploads/file.pdf
+eve browser upload media://inbound/file.pdf
+eve browser fill --fields '[{"ref":"1","type":"text","value":"Ada"}]'
+eve browser dialog --accept
+eve browser dialog --dismiss --dialog-id d1
+eve browser wait --text "Done"
+eve browser wait "#main" --url "**/dash" --load networkidle --fn "window.ready===true"
+eve browser evaluate --fn '(el) => el.textContent' --ref 7
+eve browser evaluate --fn 'const title = document.title; return title;'
+eve browser evaluate --timeout-ms 30000 --fn 'async () => { await window.ready; return true; }'
+eve browser highlight e12
+eve browser trace start
+eve browser trace stop
 ```
 
 </Accordion>
@@ -220,20 +220,20 @@ openclaw browser trace stop
 <Accordion title="State: cookies, storage, offline, headers, geo, device">
 
 ```bash
-openclaw browser cookies
-openclaw browser cookies set session abc123 --url "https://example.com"
-openclaw browser cookies clear
-openclaw browser storage local get
-openclaw browser storage local set theme dark
-openclaw browser storage session clear
-openclaw browser set offline on
-openclaw browser set headers --headers-json '{"X-Debug":"1"}'
-openclaw browser set credentials user pass            # --clear to remove
-openclaw browser set geo 37.7749 -122.4194 --origin "https://example.com"
-openclaw browser set media dark
-openclaw browser set timezone America/New_York
-openclaw browser set locale en-US
-openclaw browser set device "iPhone 14"
+eve browser cookies
+eve browser cookies set session abc123 --url "https://example.com"
+eve browser cookies clear
+eve browser storage local get
+eve browser storage local set theme dark
+eve browser storage session clear
+eve browser set offline on
+eve browser set headers --headers-json '{"X-Debug":"1"}'
+eve browser set credentials user pass            # --clear to remove
+eve browser set geo 37.7749 -122.4194 --origin "https://example.com"
+eve browser set media dark
+eve browser set timezone America/New_York
+eve browser set locale en-US
+eve browser set device "iPhone 14"
 ```
 
 </Accordion>
@@ -242,17 +242,17 @@ openclaw browser set device "iPhone 14"
 
 Notes:
 
-- `upload` and `dialog` are **arming** calls; run them before the click/press that triggers the chooser/dialog. If an action opens a modal, the action response includes `blockedByDialog` and `browserState.dialogs.pending`; pass that `dialogId` to respond directly. Dialogs handled outside OpenClaw appear under `browserState.dialogs.recent`.
+- `upload` and `dialog` are **arming** calls; run them before the click/press that triggers the chooser/dialog. If an action opens a modal, the action response includes `blockedByDialog` and `browserState.dialogs.pending`; pass that `dialogId` to respond directly. Dialogs handled outside EVE appear under `browserState.dialogs.recent`.
 - `click`/`type`/etc require a `ref` from `snapshot` (numeric `12`, role ref `e12`, or actionable ARIA ref `ax12`). CSS selectors are intentionally not supported for actions. Use `click-coords` when the visible viewport position is the only reliable target.
-- Download and trace paths are constrained to OpenClaw temp roots: `/tmp/openclaw{,/downloads}` (fallback: `${os.tmpdir()}/openclaw/...`).
-- `upload` accepts files from the OpenClaw temp uploads root and
-  OpenClaw-managed inbound media. Managed inbound media can be referenced as
+- Download and trace paths are constrained to EVE temp roots: `/tmp/eve{,/downloads}` (fallback: `${os.tmpdir()}/eve/...`).
+- `upload` accepts files from the EVE temp uploads root and
+  EVE-managed inbound media. Managed inbound media can be referenced as
   `media://inbound/<id>`, sandbox-relative `media/inbound/<id>`, or a resolved
   path inside the managed inbound media directory. Nested media refs,
   traversal, symlinks, hardlinks, and arbitrary local paths are still rejected.
 - `upload` can also set file inputs directly via `--input-ref` or `--element`.
 
-Stable tab ids and labels survive Chromium raw-target replacement when OpenClaw
+Stable tab ids and labels survive Chromium raw-target replacement when EVE
 can prove the replacement tab, such as same URL or a single old tab becoming a
 single new tab after form submission. Raw target ids are still volatile; prefer
 `suggestedTargetId` from `tabs` in scripts.
@@ -260,7 +260,7 @@ single new tab after form submission. Raw target ids are still volatile; prefer
 Snapshot flags at a glance:
 
 - `--format ai` (default with Playwright): AI snapshot with numeric refs (`aria-ref="<n>"`).
-- `--format aria`: accessibility tree with `axN` refs. When Playwright is available, OpenClaw binds refs with backend DOM ids to the live page so follow-up actions can use them; otherwise treat the output as inspection-only.
+- `--format aria`: accessibility tree with `axN` refs. When Playwright is available, EVE binds refs with backend DOM ids to the live page so follow-up actions can use them; otherwise treat the output as inspection-only.
 - `--efficient` (or `--mode efficient`): compact role snapshot preset. Set `browser.snapshotDefaults.mode: "efficient"` to make this the default (see [Gateway configuration](/gateway/configuration-reference#browser)).
 - `--interactive`, `--compact`, `--depth`, `--selector` force a role snapshot with `ref=e12` refs. `--frame "<iframe>"` scopes role snapshots to an iframe.
 - With Playwright, `--labels` adds a screenshot with overlayed ref labels
@@ -275,16 +275,16 @@ Snapshot flags at a glance:
 
 ## Snapshots and refs
 
-OpenClaw supports two "snapshot" styles:
+EVE supports two "snapshot" styles:
 
-- **AI snapshot (numeric refs)**: `openclaw browser snapshot` (default; `--format ai`)
+- **AI snapshot (numeric refs)**: `eve browser snapshot` (default; `--format ai`)
   - Output: a text snapshot that includes numeric refs.
-  - Actions: `openclaw browser click 12`, `openclaw browser type 23 "hello"`.
+  - Actions: `eve browser click 12`, `eve browser type 23 "hello"`.
   - Internally, the ref is resolved via Playwright's `aria-ref`.
 
-- **Role snapshot (role refs like `e12`)**: `openclaw browser snapshot --interactive` (or `--compact`, `--depth`, `--selector`, `--frame`)
+- **Role snapshot (role refs like `e12`)**: `eve browser snapshot --interactive` (or `--compact`, `--depth`, `--selector`, `--frame`)
   - Output: a role-based list/tree with `[ref=e12]` (and optional `[nth=1]`).
-  - Actions: `openclaw browser click e12`, `openclaw browser highlight e12`.
+  - Actions: `eve browser click e12`, `eve browser highlight e12`.
   - Internally, the ref is resolved via `getByRole(...)` (plus `nth()` for duplicates).
   - Add `--labels` to include a screenshot with overlayed `e12` labels. On
     Playwright-backed profiles this also returns per-ref bounding-box metadata
@@ -292,9 +292,9 @@ OpenClaw supports two "snapshot" styles:
   - Add `--urls` when link text is ambiguous and the agent needs concrete
     navigation targets.
 
-- **ARIA snapshot (ARIA refs like `ax12`)**: `openclaw browser snapshot --format aria`
+- **ARIA snapshot (ARIA refs like `ax12`)**: `eve browser snapshot --format aria`
   - Output: the accessibility tree as structured nodes.
-  - Actions: `openclaw browser click ax12` works when the snapshot path can bind
+  - Actions: `eve browser click ax12` works when the snapshot path can bind
     the ref through Playwright and Chrome backend DOM ids.
 - If Playwright is unavailable, ARIA snapshots can still be useful for
   inspection, but refs may not be actionable. Re-snapshot with `--format ai`
@@ -319,19 +319,19 @@ Ref behavior:
 You can wait on more than just time/text:
 
 - Wait for URL (globs supported by Playwright):
-  - `openclaw browser wait --url "**/dash"`
+  - `eve browser wait --url "**/dash"`
 - Wait for load state:
-  - `openclaw browser wait --load networkidle`
-  - Supported on managed `openclaw` and raw/remote CDP profiles. The `user` and `existing-session` profiles reject `networkidle`; use `--url`, `--text`, a selector, or `--fn` waits there.
+  - `eve browser wait --load networkidle`
+  - Supported on managed `eve` and raw/remote CDP profiles. The `user` and `existing-session` profiles reject `networkidle`; use `--url`, `--text`, a selector, or `--fn` waits there.
 - Wait for a JS predicate:
-  - `openclaw browser wait --fn "window.ready===true"`
+  - `eve browser wait --fn "window.ready===true"`
 - Wait for a selector to become visible:
-  - `openclaw browser wait "#main"`
+  - `eve browser wait "#main"`
 
 These can be combined:
 
 ```bash
-openclaw browser wait "#main" \
+eve browser wait "#main" \
   --url "**/dash" \
   --load networkidle \
   --fn "window.ready===true" \
@@ -342,16 +342,16 @@ openclaw browser wait "#main" \
 
 When an action fails (e.g. "not visible", "strict mode violation", "covered"):
 
-1. `openclaw browser snapshot --interactive`
+1. `eve browser snapshot --interactive`
 2. Use `click <ref>` / `type <ref>` (prefer role refs in interactive mode)
-3. If it still fails: `openclaw browser highlight <ref>` to see what Playwright is targeting
+3. If it still fails: `eve browser highlight <ref>` to see what Playwright is targeting
 4. If the page behaves oddly:
-   - `openclaw browser errors --clear`
-   - `openclaw browser requests --filter api --clear`
+   - `eve browser errors --clear`
+   - `eve browser requests --filter api --clear`
 5. For deep debugging: record a trace:
-   - `openclaw browser trace start`
+   - `eve browser trace start`
    - reproduce the issue
-   - `openclaw browser trace stop` (prints `TRACE:<path>`)
+   - `eve browser trace stop` (prints `TRACE:<path>`)
 
 ## JSON output
 
@@ -360,10 +360,10 @@ When an action fails (e.g. "not visible", "strict mode violation", "covered"):
 Examples:
 
 ```bash
-openclaw browser status --json
-openclaw browser snapshot --interactive --json
-openclaw browser requests --filter api --json
-openclaw browser cookies --json
+eve browser status --json
+eve browser snapshot --interactive --json
+eve browser requests --filter api --json
+eve browser cookies --json
 ```
 
 Role snapshots in JSON include `refs` plus a small `stats` block (lines/chars/refs/interactive) so tools can reason about payload size and density.
@@ -386,11 +386,11 @@ These are useful for "make the site behave like X" workflows:
 
 ## Security and privacy
 
-- The openclaw browser profile may contain logged-in sessions; treat it as sensitive.
-- `browser act kind=evaluate` / `openclaw browser evaluate` and `wait --fn`
+- The eve browser profile may contain logged-in sessions; treat it as sensitive.
+- `browser act kind=evaluate` / `eve browser evaluate` and `wait --fn`
   execute arbitrary JavaScript in the page context. Prompt injection can steer
   this. Disable it with `browser.evaluateEnabled=false` if you do not need it.
-- `openclaw browser evaluate --fn` accepts a function source, an expression, or
+- `eve browser evaluate --fn` accepts a function source, an expression, or
   a statement body. Statement bodies are wrapped as async functions, so use
   `return` for the value you want back. Use `--timeout-ms <ms>` when the
   page-side function may need longer than the default evaluate timeout.

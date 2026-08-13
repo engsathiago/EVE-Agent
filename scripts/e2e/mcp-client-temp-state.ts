@@ -1,4 +1,4 @@
-// Mcp Client Temp State script supports OpenClaw repository automation.
+// Mcp Client Temp State script supports EVE repository automation.
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -20,7 +20,7 @@ export function createMcpClientTempState(params: {
   gatewayToken: string;
   tempRoot?: string;
 }): McpClientTempState {
-  const root = mkdtempSync(path.join(params.tempRoot ?? tmpdir(), "openclaw-mcp-client-"));
+  const root = mkdtempSync(path.join(params.tempRoot ?? tmpdir(), "eve-mcp-client-"));
   const stateDir = path.join(root, "state");
   const tokenFile = path.join(root, "gateway.token");
   mkdirSync(stateDir, { recursive: true });

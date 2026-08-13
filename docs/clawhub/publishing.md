@@ -13,7 +13,7 @@ server decides whether the signed-in user is allowed to publish there.
 
 ## Owners
 
-An owner is a ClawHub publisher handle, such as `@alice` or `@openclaw`.
+An owner is a ClawHub publisher handle, such as `@alice` or `@eve`.
 Personal owners are created for users. Org owners can have multiple members.
 
 When you publish, you either use your personal owner or choose an org owner
@@ -47,7 +47,7 @@ the first part of the name:
 ```
 
 The scope must match the selected publish owner. If your package is named
-`@openclaw/dronzer`, it can only be published as `@openclaw`. If you publish as
+`@eve/dronzer`, it can only be published as `@eve`. If you publish as
 `@vintageayu`, rename the package to `@vintageayu/dronzer`.
 
 This prevents a package from claiming an org namespace that the publisher does
@@ -73,8 +73,8 @@ If the package scope and selected owner do not match, ClawHub rejects the
 publish:
 
 ```text
-Package scope "@openclaw" must match selected owner "@vintageayu".
-Publish as "@openclaw" or rename this package to "@vintageayu/dronzer".
+Package scope "@eve" must match selected owner "@vintageayu".
+Publish as "@eve" or rename this package to "@vintageayu/dronzer".
 ```
 
 To fix it, either choose the owner named by the package scope, or rename the
@@ -84,13 +84,13 @@ If the package name already has the right scope but the package is owned by the
 wrong publisher, transfer ownership instead:
 
 ```sh
-clawhub package transfer @opik/opik-openclaw --to opik
+clawhub package transfer @opik/opik-eve --to opik
 ```
 
 Use package transfer only when you have admin access to both the current package
 owner and the destination publisher. It does not let you publish into a scope you
 cannot manage.
 
-This protects org namespaces. A package named `@openclaw/dronzer` claims the
-`@openclaw` namespace, so only publishers with access to the `@openclaw` owner
+This protects org namespaces. A package named `@eve/dronzer` claims the
+`@eve` namespace, so only publishers with access to the `@eve` owner
 can publish it.

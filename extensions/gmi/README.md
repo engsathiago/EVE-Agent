@@ -1,13 +1,13 @@
-# OpenClaw GMI Cloud Provider
+# EVE GMI Cloud Provider
 
-Official OpenClaw provider plugin for hosted GMI Cloud models through an
+Official EVE provider plugin for hosted GMI Cloud models through an
 OpenAI-compatible API.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/gmi-provider
-openclaw gateway restart
+eve plugins install @eve/gmi-provider
+eve gateway restart
 ```
 
 Configure a GMI Cloud API key, then select models with refs such as

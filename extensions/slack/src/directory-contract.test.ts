@@ -1,7 +1,7 @@
 // Slack tests cover directory contract plugin behavior.
-import type { BaseProbeResult } from "openclaw/plugin-sdk/channel-contract";
-import { expectDirectoryIds } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { BaseProbeResult } from "eve-agent/plugin-sdk/channel-contract";
+import { expectDirectoryIds } from "eve-agent/plugin-sdk/channel-test-helpers";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
   listSlackDirectoryGroupsFromConfig,
@@ -43,7 +43,7 @@ describe("Slack directory contract", () => {
           channels: { C111: { users: ["U777"] } },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     await expectDirectoryIds(
       listSlackDirectoryPeersFromConfig,
@@ -69,7 +69,7 @@ describe("Slack directory contract", () => {
           channels: { C111: {} },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     await expectDirectoryIds(listSlackDirectoryPeersFromConfig, cfg, ["user:u123"]);
     await expectDirectoryIds(listSlackDirectoryGroupsFromConfig, cfg, ["channel:c111"]);
@@ -85,7 +85,7 @@ describe("Slack directory contract", () => {
           dms: { U300: {} },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const peers = await listSlackDirectoryPeersFromConfig({
       cfg,
@@ -121,7 +121,7 @@ describe("Slack directory contract", () => {
           userToken: "xoxp-test",
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const self = await getSlackDirectorySelfLive({ cfg, accountId: "default" });
     if (!self) {
@@ -148,7 +148,7 @@ describe("Slack directory contract", () => {
           userToken: "xoxp-test",
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const self = await getSlackDirectorySelfLive({ cfg, accountId: "default" });
     if (!self) {

@@ -5,12 +5,12 @@
 import {
   embeddedAgentLog,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   hasPendingInternalDiagnosticEvent,
   type DiagnosticEventPayload,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
-import { parseStrictNonNegativeInteger } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/diagnostic-runtime";
+import { parseStrictNonNegativeInteger } from "eve-agent/plugin-sdk/number-runtime";
 import type { CodexDynamicToolBridge } from "./dynamic-tools.js";
 import {
   isJsonObject,
@@ -83,7 +83,7 @@ function formatDynamicToolTimeoutDetails(params: {
 
   if (tool !== "process" || !isJsonObject(params.call.arguments)) {
     return {
-      responseMessage: `OpenClaw dynamic tool call timed out after ${params.timeoutMs}ms while running tool ${tool}.`,
+      responseMessage: `EVE dynamic tool call timed out after ${params.timeoutMs}ms while running tool ${tool}.`,
       consoleMessage: `codex dynamic tool timeout: tool=${tool} toolTimeoutMs=${params.timeoutMs}; per-tool-call watchdog, not session idle`,
       meta: baseMeta,
     };
@@ -106,7 +106,7 @@ function formatDynamicToolTimeoutDetails(params: {
       : " while waiting for the process tool";
 
   return {
-    responseMessage: `OpenClaw dynamic tool call timed out after ${params.timeoutMs}ms${responseTarget}. This is a tool RPC timeout, not a session idle timeout.`,
+    responseMessage: `EVE dynamic tool call timed out after ${params.timeoutMs}ms${responseTarget}. This is a tool RPC timeout, not a session idle timeout.`,
     consoleMessage: `codex process tool timeout:${actionPart}${sessionPart} toolTimeoutMs=${params.timeoutMs}${requestedPart}; per-tool-call watchdog, not session idle${retryHint}`,
     meta: {
       ...baseMeta,
@@ -160,7 +160,7 @@ export async function handleDynamicToolCallWithTimeout(params: {
     });
   };
   if (params.signal.aborted) {
-    const message = "OpenClaw dynamic tool call aborted before execution.";
+    const message = "EVE dynamic tool call aborted before execution.";
     params.onFallbackSelected?.();
     notifyFailedToolResult(message);
     return failedDynamicToolResponse(message);
@@ -171,7 +171,7 @@ export async function handleDynamicToolCallWithTimeout(params: {
   let timedOut = false;
   let resolveAbort: ((response: CodexDynamicToolCallResponse) => void) | undefined;
   const abortFromRun = () => {
-    const message = "OpenClaw dynamic tool call aborted.";
+    const message = "EVE dynamic tool call aborted.";
     params.onFallbackSelected?.();
     controller.abort(params.signal.reason ?? new Error(message));
     notifyFailedToolResult(message);
@@ -231,7 +231,7 @@ export async function handleDynamicToolCallWithTimeout(params: {
     params.signal.removeEventListener("abort", abortFromRun);
     resolveAbort = undefined;
     if (!timedOut && !controller.signal.aborted) {
-      controller.abort(new Error("OpenClaw dynamic tool call finished."));
+      controller.abort(new Error("EVE dynamic tool call finished."));
     }
   }
 }
@@ -243,7 +243,7 @@ function readDynamicToolResponseText(response: CodexDynamicToolCallResponse): st
     )
     .join("\n")
     .trim();
-  return text || "OpenClaw dynamic tool call failed.";
+  return text || "EVE dynamic tool call failed.";
 }
 
 function failedDynamicToolResponse(
@@ -269,7 +269,7 @@ function failedDynamicToolResponse(
   return response;
 }
 
-/** Strips OpenClaw-only metadata before sending a dynamic tool response to Codex. */
+/** Strips EVE-only metadata before sending a dynamic tool response to Codex. */
 export function toCodexDynamicToolProtocolResponse(
   response: CodexDynamicToolCallResponse,
 ): CodexDynamicToolCallResponse {
@@ -305,7 +305,7 @@ type TerminalDynamicToolReleaseState = {
   currentTurnHadNonTerminalDynamicToolResult: boolean;
   activeAppServerTurnRequests: number;
   activeTurnItemIdsCount: number;
-  pendingOpenClawDynamicToolCompletionIdsCount: number;
+  pendingEVEDynamicToolCompletionIdsCount: number;
 };
 
 /** Decides whether a terminal dynamic tool response can release the Codex turn. */
@@ -319,7 +319,7 @@ export function shouldReleaseTurnAfterTerminalDynamicTool(
     !state.currentTurnHadNonTerminalDynamicToolResult &&
     state.activeAppServerTurnRequests === 0 &&
     state.activeTurnItemIdsCount === 0 &&
-    state.pendingOpenClawDynamicToolCompletionIdsCount === 0
+    state.pendingEVEDynamicToolCompletionIdsCount === 0
   );
 }
 
@@ -340,7 +340,7 @@ export type TerminalDynamicToolBatchAction =
 type TerminalDynamicToolBatchState = {
   activeAppServerTurnRequests: number;
   activeTurnItemIdsCount: number;
-  pendingOpenClawDynamicToolCompletionIdsCount: number;
+  pendingEVEDynamicToolCompletionIdsCount: number;
   currentTurnHadNonTerminalDynamicToolResult: boolean;
   hasPendingTerminalDynamicToolRelease: boolean;
 };
@@ -352,7 +352,7 @@ export function resolveTerminalDynamicToolBatchAction(
   if (
     state.activeAppServerTurnRequests > 0 ||
     state.activeTurnItemIdsCount > 0 ||
-    state.pendingOpenClawDynamicToolCompletionIdsCount > 0
+    state.pendingEVEDynamicToolCompletionIdsCount > 0
   ) {
     return "wait";
   }

@@ -11,7 +11,7 @@ import {
 
 describe("mcp-channels harness", () => {
   it("creates unique client temp state and removes token files on cleanup", () => {
-    const tempRoot = mkdtempSync(path.join(tmpdir(), "openclaw-mcp-harness-test-"));
+    const tempRoot = mkdtempSync(path.join(tmpdir(), "eve-mcp-harness-test-"));
     try {
       const first = createMcpClientTempState({ gatewayToken: "first-token", tempRoot });
       const second = createMcpClientTempState({ gatewayToken: "second-token", tempRoot });

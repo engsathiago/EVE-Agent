@@ -1,7 +1,7 @@
 // Voice Call plugin module implements gateway continue operation behavior.
 import { randomUUID } from "node:crypto";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 import type { VoiceCallConfig } from "./config.js";
 import type { CoreConfig } from "./core-bridge.js";
 import type { VoiceCallRuntime } from "./runtime.js";

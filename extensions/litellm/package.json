@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/litellm-provider",
+  "name": "@eve/litellm-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw LiteLLM provider plugin",
+  "description": "EVE LiteLLM provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

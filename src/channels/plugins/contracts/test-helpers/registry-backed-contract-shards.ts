@@ -3,7 +3,7 @@
  *
  * Installs surface, directory, threading, and plugin contract suites for bundled channel shards.
  */
-import { expectChannelPluginContract } from "openclaw/plugin-sdk/channel-test-helpers";
+import { expectChannelPluginContract } from "eve-agent/plugin-sdk/channel-test-helpers";
 import { beforeAll, describe, it } from "vitest";
 import {
   getBundledChannelDirectoryPluginAsync,

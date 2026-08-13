@@ -1,30 +1,30 @@
 // Line plugin module implements bot handlers behavior.
 import type { webhook } from "@line/bot-sdk";
-import { buildMentionRegexes, matchesMentionPatterns } from "openclaw/plugin-sdk/channel-inbound";
-import { resolveStableChannelMessageIngress } from "openclaw/plugin-sdk/channel-ingress-runtime";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { shouldComputeCommandAuthorized } from "openclaw/plugin-sdk/command-auth-native";
-import type { GroupPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { buildMentionRegexes, matchesMentionPatterns } from "eve-agent/plugin-sdk/channel-inbound";
+import { resolveStableChannelMessageIngress } from "eve-agent/plugin-sdk/channel-ingress-runtime";
+import { createChannelPairingChallengeIssuer } from "eve-agent/plugin-sdk/channel-pairing";
+import { shouldComputeCommandAuthorized } from "eve-agent/plugin-sdk/command-auth-native";
+import type { GroupPolicy, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   readChannelAllowFromStore,
   resolvePairingIdLabel,
   upsertChannelPairingRequest,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { createClaimableDedupe, type ClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+} from "eve-agent/plugin-sdk/conversation-runtime";
+import { createClaimableDedupe, type ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   createChannelHistoryWindow,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-import { danger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/reply-history";
+import { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime";
+import { danger, logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import {
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/runtime-group-policy";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { firstDefined, normalizeLineAllowEntry } from "./bot-access.js";
 import {
   buildLineMessageContext,
@@ -64,7 +64,7 @@ function isDownloadableLineMessageType(
 }
 
 export interface LineHandlerContext {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: ResolvedLineAccount;
   runtime: RuntimeEnv;
   mediaMaxBytes: number;

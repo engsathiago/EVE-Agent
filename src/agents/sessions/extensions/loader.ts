@@ -9,7 +9,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { createJiti } from "jiti/static";
-import * as bundledLlm from "openclaw/plugin-sdk/llm";
+import * as bundledLlm from "eve-agent/plugin-sdk/llm";
 // Static imports of packages that extensions may use.
 // These MUST be static so Bun bundles them into the compiled binary.
 // The virtualModules option then makes them available to extensions.
@@ -17,7 +17,7 @@ import * as bundledTypebox from "typebox";
 import * as bundledTypeboxCompile from "typebox/compile";
 import * as bundledTypeboxFormat from "typebox/format";
 import * as bundledTypeboxValue from "typebox/value";
-import { installOpenClawInternalCorePackageNativeResolver } from "../../../plugins/plugin-sdk-native-resolver.js";
+import { installEVEInternalCorePackageNativeResolver } from "../../../plugins/plugin-sdk-native-resolver.js";
 import {
   buildPluginLoaderAliasMap,
   buildPluginLoaderJitiOptions,
@@ -52,12 +52,12 @@ const VIRTUAL_MODULES: Record<string, unknown> = {
   "@sinclair/typebox/compile": bundledTypeboxCompile,
   "@sinclair/typebox/format": bundledTypeboxFormat,
   "@sinclair/typebox/value": bundledTypeboxValue,
-  "openclaw/plugin-sdk/agent-core": bundledAgentCore,
-  "@openclaw/plugin-sdk/agent-core": bundledAgentCore,
-  "openclaw/plugin-sdk/llm": bundledLlm,
-  "@openclaw/plugin-sdk/llm": bundledLlm,
-  "openclaw/plugin-sdk/agent-sessions": bundledAgentSessions,
-  "@openclaw/plugin-sdk/agent-sessions": bundledAgentSessions,
+  "eve-agent/plugin-sdk/agent-core": bundledAgentCore,
+  "@eve/plugin-sdk/agent-core": bundledAgentCore,
+  "eve-agent/plugin-sdk/llm": bundledLlm,
+  "@eve/plugin-sdk/llm": bundledLlm,
+  "eve-agent/plugin-sdk/agent-sessions": bundledAgentSessions,
+  "@eve/plugin-sdk/agent-sessions": bundledAgentSessions,
 };
 
 const require = createRequire(import.meta.url);
@@ -67,7 +67,7 @@ let createJitiLoaderFactory: typeof createJiti | undefined;
 let extensionSourceTransformLoader: ReturnType<typeof createJiti> | undefined;
 let nativeExtensionLoadCounter = 0;
 const EXTENSION_LOADER_ALIAS_IMPORT_PATTERN =
-  /(?:@openclaw\/plugin-sdk|openclaw\/plugin-sdk|@sinclair\/typebox|typebox)(?:\/[A-Za-z0-9_-]+)?/u;
+  /(?:@eve\/plugin-sdk|eve\/plugin-sdk|@sinclair\/typebox|typebox)(?:\/[A-Za-z0-9_-]+)?/u;
 const RELATIVE_EXTENSION_IMPORT_PATTERN =
   /(?:import\s*(?:[^'"]*?\s*from\s*)?["']\.{1,2}\/|export\s*(?:[^'"]*?\s*from\s*)["']\.{1,2}\/|import\s*\(\s*["']\.{1,2}\/|require\s*\(\s*["']\.{1,2}\/)/u;
 const COMMONJS_EXTENSION_EXPORT_PATTERN = /\b(?:module\.exports|exports\.)/u;
@@ -106,8 +106,8 @@ function getExtensionLoaderAliases(): Record<string, string> {
     ...buildPluginLoaderAliasMap(loaderModulePath, process.argv[1], import.meta.url),
     // The public agent-sessions export includes the resource loader. Extensions
     // load through the resource loader, so use the cycle-safe SDK barrel here.
-    "openclaw/plugin-sdk/agent-sessions": agentSessionsEntry,
-    "@openclaw/plugin-sdk/agent-sessions": agentSessionsEntry,
+    "eve-agent/plugin-sdk/agent-sessions": agentSessionsEntry,
+    "@eve/plugin-sdk/agent-sessions": agentSessionsEntry,
     typebox: typeboxEntry,
     "typebox/compile": typeboxCompileEntry,
     "typebox/format": typeboxFormatEntry,
@@ -430,7 +430,7 @@ async function loadExtensionSourceTransformModule(
   extensionPath: string,
 ): Promise<ExtensionFactory | undefined> {
   if (!extensionSourceTransformLoader) {
-    installOpenClawInternalCorePackageNativeResolver({ moduleUrl: import.meta.url });
+    installEVEInternalCorePackageNativeResolver({ moduleUrl: import.meta.url });
     const createJitiLoader = await loadCreateJitiLoaderFactory();
     extensionSourceTransformLoader = createJitiLoader(import.meta.url, {
       ...(isBunBinary
@@ -570,8 +570,8 @@ function readResourceManifest(packageJsonPath: string): ResourceManifest | null 
   try {
     const content = fs.readFileSync(packageJsonPath, "utf-8");
     const pkg = JSON.parse(content);
-    if (pkg.openclaw && typeof pkg.openclaw === "object") {
-      return pkg.openclaw as ResourceManifest;
+    if (pkg.eve && typeof pkg.eve === "object") {
+      return pkg.eve as ResourceManifest;
     }
     return null;
   } catch {
@@ -587,13 +587,13 @@ function isExtensionFile(name: string): boolean {
  * Resolve extension entry points from a directory.
  *
  * Checks for:
- * 1. package.json with "openclaw.extensions" field -> returns declared paths
+ * 1. package.json with "eve.extensions" field -> returns declared paths
  * 2. index.ts or index.js -> returns the index file
  *
  * Returns resolved paths or null if no entry points found.
  */
 function resolveExtensionEntries(dir: string): string[] | null {
-  // Check for package.json with "openclaw" field first
+  // Check for package.json with "eve" field first
   const packageJsonPath = path.join(dir, "package.json");
   if (fs.existsSync(packageJsonPath)) {
     const manifest = readResourceManifest(packageJsonPath);
@@ -630,7 +630,7 @@ function resolveExtensionEntries(dir: string): string[] | null {
  * Discovery rules:
  * 1. Direct files: `extensions/*.ts` or `*.js` → load
  * 2. Subdirectory with index: `extensions/* /index.ts` or `index.js` → load
- * 3. Subdirectory with package.json: `extensions/* /package.json` with "openclaw" field → load what it declares
+ * 3. Subdirectory with package.json: `extensions/* /package.json` with "eve" field → load what it declares
  *
  * No recursion beyond one level. Complex packages must use package.json manifest.
  */
@@ -702,7 +702,7 @@ export async function discoverAndLoadExtensions(
   for (const p of configuredPaths) {
     const resolved = resolvePath(p, cwd);
     if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-      // Check for package.json with OpenClaw manifest or index.ts
+      // Check for package.json with EVE manifest or index.ts
       const entries = resolveExtensionEntries(resolved);
       if (entries) {
         addPaths(entries);

@@ -11,7 +11,7 @@
  */
 
 import path from "node:path";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
+import { resolveStateDir } from "eve-agent/plugin-sdk/state-paths";
 
 /**
  * Normalise an identifier so it is safe to embed in a filename.

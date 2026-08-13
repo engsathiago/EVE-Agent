@@ -2,7 +2,7 @@
 // aligned on local/remote gateway token and password resolution.
 import { describe, expect, it } from "vitest";
 import { resolveGatewayProbeAuthResolution } from "../commands/status.gateway-probe.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { withEnv } from "../test-utils/env.js";
 import { resolveGatewayAuth } from "./auth.js";
 import { resolveGatewayCredentialsFromConfig } from "./credentials.js";
@@ -17,17 +17,17 @@ type ExpectedCredentialSet = {
 
 type TestCase = {
   name: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   expected: ExpectedCredentialSet;
 };
 
 const gatewayEnv = {
-  OPENCLAW_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
-  OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+  EVE_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
+  EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
 } as NodeJS.ProcessEnv;
 
-function makeRemoteGatewayConfig(remote: { token?: string; password?: string }): OpenClawConfig {
+function makeRemoteGatewayConfig(remote: { token?: string; password?: string }): EVEConfig {
   return {
     gateway: {
       mode: "remote",
@@ -37,15 +37,15 @@ function makeRemoteGatewayConfig(remote: { token?: string; password?: string }):
         password: "local-password", // pragma: allowlist secret
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function withGatewayAuthEnv<T>(env: NodeJS.ProcessEnv, fn: () => T): T {
   return withEnv(
     {
-      OPENCLAW_GATEWAY_TOKEN: env.OPENCLAW_GATEWAY_TOKEN,
-      OPENCLAW_GATEWAY_PASSWORD: env.OPENCLAW_GATEWAY_PASSWORD,
-      OPENCLAW_SERVICE_KIND: env.OPENCLAW_SERVICE_KIND,
+      EVE_GATEWAY_TOKEN: env.EVE_GATEWAY_TOKEN,
+      EVE_GATEWAY_PASSWORD: env.EVE_GATEWAY_PASSWORD,
+      EVE_SERVICE_KIND: env.EVE_SERVICE_KIND,
     },
     fn,
   );
@@ -63,10 +63,10 @@ describe("gateway credential precedence coverage", () => {
             password: "config-password", // pragma: allowlist secret
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
-        OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+        EVE_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
+        EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       expected: {
         call: { token: "env-token", password: "env-password" }, // pragma: allowlist secret
@@ -112,11 +112,11 @@ describe("gateway credential precedence coverage", () => {
             password: "config-password", // pragma: allowlist secret
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
-        OPENCLAW_SERVICE_KIND: "gateway",
+        EVE_GATEWAY_TOKEN: "env-token",
+        EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+        EVE_SERVICE_KIND: "gateway",
       } as NodeJS.ProcessEnv,
       expected: {
         call: { token: "config-token", password: "env-password" }, // pragma: allowlist secret

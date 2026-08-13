@@ -1,13 +1,13 @@
 {
   "entries": [
     {
-      "name": "@wecom/wecom-openclaw-plugin",
-      "description": "OpenClaw WeCom channel plugin by the Tencent WeCom team.",
+      "name": "@wecom/wecom-eve-plugin",
+      "description": "EVE WeCom channel plugin by the Tencent WeCom team.",
       "source": "external",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "plugin": {
-          "id": "wecom-openclaw-plugin",
+          "id": "wecom-eve-plugin",
           "label": "WeCom"
         },
         "contracts": {
@@ -35,20 +35,20 @@
           }
         },
         "install": {
-          "npmSpec": "@wecom/wecom-openclaw-plugin@2026.5.7",
+          "npmSpec": "@wecom/wecom-eve-plugin@2026.5.7",
           "defaultChoice": "npm",
           "expectedIntegrity": "sha512-TCkP9as00WfEhgFWG8YL/rcmaWGIshAki2HQh83nTRccGfVBCoGjrEboTTqq3yDmK9koWTV11zi8u8A4dNtvug=="
         }
       }
     },
     {
-      "name": "openclaw-plugin-yuanbao",
-      "description": "OpenClaw Yuanbao channel plugin by the Tencent Yuanbao team.",
+      "name": "eve-plugin-yuanbao",
+      "description": "EVE Yuanbao channel plugin by the Tencent Yuanbao team.",
       "source": "external",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "plugin": {
-          "id": "openclaw-plugin-yuanbao",
+          "id": "eve-plugin-yuanbao",
           "label": "Yuanbao"
         },
         "contracts": {
@@ -76,24 +76,24 @@
           }
         },
         "install": {
-          "npmSpec": "openclaw-plugin-yuanbao@2.13.1",
+          "npmSpec": "eve-plugin-yuanbao@2.13.1",
           "defaultChoice": "npm",
           "expectedIntegrity": "sha512-lH2I9/nsmrg7l0YJJSQhOSpWMEFBAa6FwKbZcRLDFHDT2+mOZkHa44XE+8KYN4VmorlUdAxHzpZQmVr7C98IuA=="
         }
       }
     },
     {
-      "name": "@tencent-weixin/openclaw-weixin",
-      "description": "OpenClaw Weixin channel plugin by the Tencent Weixin team.",
+      "name": "@tencent-weixin/eve-weixin",
+      "description": "EVE Weixin channel plugin by the Tencent Weixin team.",
       "source": "external",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "plugin": {
-          "id": "openclaw-weixin",
+          "id": "eve-weixin",
           "label": "Weixin"
         },
         "channel": {
-          "id": "openclaw-weixin",
+          "id": "eve-weixin",
           "label": "Weixin",
           "selectionLabel": "Weixin（微信）",
           "detailLabel": "Weixin",
@@ -104,7 +104,7 @@
           "order": 75
         },
         "channelConfigs": {
-          "openclaw-weixin": {
+          "eve-weixin": {
             "label": "Weixin",
             "description": "Personal WeChat conversation channel.",
             "schema": {
@@ -114,7 +114,7 @@
           }
         },
         "install": {
-          "npmSpec": "@tencent-weixin/openclaw-weixin@2.4.3",
+          "npmSpec": "@tencent-weixin/eve-weixin@2.4.3",
           "defaultChoice": "npm",
           "expectedIntegrity": "sha512-dPQbidUNWigC6V10vGW4i+GLH09x+6zUhafZRjuxkJ9GDu8o62WBsnUTojp4KqUH756hz+t2v9khiCRSi0dBDw==",
           "minHostVersion": ">=2026.3.22"
@@ -122,17 +122,17 @@
       }
     },
     {
-      "name": "@zalo-platforms/openclaw-zaloclawbot",
-      "description": "OpenClaw Zalo ClawBot channel plugin by the Zalo Platforms team.",
+      "name": "@zalo-platforms/eve-zaloclawbot",
+      "description": "EVE Zalo ClawBot channel plugin by the Zalo Platforms team.",
       "source": "external",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "plugin": {
-          "id": "openclaw-zaloclawbot",
+          "id": "eve-zaloclawbot",
           "label": "Zalo ClawBot"
         },
         "channel": {
-          "id": "openclaw-zaloclawbot",
+          "id": "eve-zaloclawbot",
           "label": "Zalo ClawBot",
           "selectionLabel": "Zalo ClawBot (QR)",
           "detailLabel": "Zalo ClawBot",
@@ -143,7 +143,7 @@
           "order": 82
         },
         "channelConfigs": {
-          "openclaw-zaloclawbot": {
+          "eve-zaloclawbot": {
             "label": "Zalo ClawBot",
             "description": "Personal Zalo assistant — QR-onboarded, owner-bound.",
             "schema": {
@@ -153,7 +153,7 @@
           }
         },
         "install": {
-          "npmSpec": "@zalo-platforms/openclaw-zaloclawbot@0.1.4",
+          "npmSpec": "@zalo-platforms/eve-zaloclawbot@0.1.4",
           "defaultChoice": "npm",
           "expectedIntegrity": "sha512-5IxZriHJYACLLGqkCPPsTP9tas62kXEOFqTFAFMdunAM3SPhIJwVFRp0WvoP/m7L2PX85weD0g8LOtxM93VDYg==",
           "minHostVersion": ">=2026.4.10"
@@ -161,11 +161,11 @@
       }
     },
     {
-      "name": "@openclaw/discord",
-      "description": "OpenClaw Discord channel plugin",
+      "name": "@eve/discord",
+      "description": "EVE Discord channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "discord",
           "label": "Discord",
@@ -179,7 +179,7 @@
           "preferSessionLookupForAnnounceTarget": true
         },
         "install": {
-          "npmSpec": "@openclaw/discord",
+          "npmSpec": "@eve/discord",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10",
           "allowInvalidConfigRecovery": true
@@ -187,11 +187,11 @@
       }
     },
     {
-      "name": "@openclaw/feishu",
-      "description": "OpenClaw Feishu/Lark channel plugin",
+      "name": "@eve/feishu",
+      "description": "EVE Feishu/Lark channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "feishu",
           "label": "Feishu",
@@ -204,18 +204,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/feishu",
+          "npmSpec": "@eve/feishu",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.29"
         }
       }
     },
     {
-      "name": "@openclaw/googlechat",
-      "description": "OpenClaw Google Chat channel plugin",
+      "name": "@eve/googlechat",
+      "description": "EVE Google Chat channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "googlechat",
           "label": "Google Chat",
@@ -254,18 +254,18 @@
           ]
         },
         "install": {
-          "npmSpec": "@openclaw/googlechat",
+          "npmSpec": "@eve/googlechat",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/line",
-      "description": "OpenClaw LINE channel plugin",
+      "name": "@eve/line",
+      "description": "EVE LINE channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "line",
           "label": "LINE",
@@ -279,18 +279,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/line",
+          "npmSpec": "@eve/line",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/matrix",
-      "description": "OpenClaw Matrix channel plugin",
+      "name": "@eve/matrix",
+      "description": "EVE Matrix channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "matrix",
           "label": "Matrix",
@@ -331,8 +331,8 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/matrix",
-          "npmSpec": "@openclaw/matrix",
+          "clawhubSpec": "clawhub:@eve/matrix",
+          "npmSpec": "@eve/matrix",
           "defaultChoice": "clawhub",
           "minHostVersion": ">=2026.4.10",
           "allowInvalidConfigRecovery": true
@@ -340,11 +340,11 @@
       }
     },
     {
-      "name": "@openclaw/msteams",
-      "description": "OpenClaw Microsoft Teams channel plugin",
+      "name": "@eve/msteams",
+      "description": "EVE Microsoft Teams channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "msteams",
           "label": "Microsoft Teams",
@@ -356,18 +356,18 @@
           "order": 60
         },
         "install": {
-          "npmSpec": "@openclaw/msteams",
+          "npmSpec": "@eve/msteams",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/nextcloud-talk",
-      "description": "OpenClaw Nextcloud Talk channel plugin",
+      "name": "@eve/nextcloud-talk",
+      "description": "EVE Nextcloud Talk channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "nextcloud-talk",
           "label": "Nextcloud Talk",
@@ -380,18 +380,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/nextcloud-talk",
+          "npmSpec": "@eve/nextcloud-talk",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/nostr",
-      "description": "OpenClaw Nostr channel plugin for NIP-04 encrypted DMs",
+      "name": "@eve/nostr",
+      "description": "EVE Nostr channel plugin for NIP-04 encrypted DMs",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "nostr",
           "label": "Nostr",
@@ -403,18 +403,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/nostr",
+          "npmSpec": "@eve/nostr",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/qqbot",
-      "description": "OpenClaw QQ Bot channel plugin",
+      "name": "@eve/qqbot",
+      "description": "EVE QQ Bot channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "qqbot",
           "label": "QQ Bot",
@@ -426,18 +426,18 @@
           "systemImage": "bubble.left.and.bubble.right"
         },
         "install": {
-          "npmSpec": "@openclaw/qqbot",
+          "npmSpec": "@eve/qqbot",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/slack",
-      "description": "OpenClaw Slack channel plugin",
+      "name": "@eve/slack",
+      "description": "EVE Slack channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "slack",
           "label": "Slack",
@@ -460,7 +460,7 @@
           }
         },
         "install": {
-          "npmSpec": "@openclaw/slack",
+          "npmSpec": "@eve/slack",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1",
           "allowInvalidConfigRecovery": true
@@ -468,33 +468,33 @@
       }
     },
     {
-      "name": "@openclaw/synology-chat",
-      "description": "Synology Chat channel plugin for OpenClaw",
+      "name": "@eve/synology-chat",
+      "description": "Synology Chat channel plugin for EVE",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "synology-chat",
           "label": "Synology Chat",
           "selectionLabel": "Synology Chat (Webhook)",
           "docsPath": "/channels/synology-chat",
           "docsLabel": "synology-chat",
-          "blurb": "Connect your Synology NAS Chat to OpenClaw with full agent capabilities.",
+          "blurb": "Connect your Synology NAS Chat to EVE with full agent capabilities.",
           "order": 90
         },
         "install": {
-          "npmSpec": "@openclaw/synology-chat",
+          "npmSpec": "@eve/synology-chat",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/tlon",
-      "description": "OpenClaw Tlon/Urbit channel plugin",
+      "name": "@eve/tlon",
+      "description": "EVE Tlon/Urbit channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "tlon",
           "label": "Tlon",
@@ -506,18 +506,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/tlon",
+          "npmSpec": "@eve/tlon",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/twitch",
-      "description": "OpenClaw Twitch channel plugin",
+      "name": "@eve/twitch",
+      "description": "EVE Twitch channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "twitch",
           "label": "Twitch",
@@ -527,18 +527,18 @@
           "aliases": ["twitch-chat"]
         },
         "install": {
-          "npmSpec": "@openclaw/twitch",
+          "npmSpec": "@eve/twitch",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/whatsapp",
-      "description": "OpenClaw WhatsApp channel plugin",
+      "name": "@eve/whatsapp",
+      "description": "EVE WhatsApp channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "whatsapp",
           "label": "WhatsApp",
@@ -550,19 +550,19 @@
           "systemImage": "message"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/whatsapp",
-          "npmSpec": "@openclaw/whatsapp",
+          "clawhubSpec": "clawhub:@eve/whatsapp",
+          "npmSpec": "@eve/whatsapp",
           "defaultChoice": "clawhub",
           "minHostVersion": ">=2026.4.25"
         }
       }
     },
     {
-      "name": "@openclaw/zalo",
-      "description": "OpenClaw Zalo channel plugin",
+      "name": "@eve/zalo",
+      "description": "EVE Zalo channel plugin",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "zalo",
           "label": "Zalo",
@@ -575,18 +575,18 @@
           "quickstartAllowFrom": true
         },
         "install": {
-          "npmSpec": "@openclaw/zalo",
+          "npmSpec": "@eve/zalo",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }
       }
     },
     {
-      "name": "@openclaw/zalouser",
-      "description": "OpenClaw Zalo Personal Account plugin via native zca-js integration",
+      "name": "@eve/zalouser",
+      "description": "EVE Zalo Personal Account plugin via native zca-js integration",
       "source": "official",
       "kind": "channel",
-      "openclaw": {
+      "eve": {
         "channel": {
           "id": "zalouser",
           "label": "Zalo Personal",
@@ -599,7 +599,7 @@
           "quickstartAllowFrom": false
         },
         "install": {
-          "npmSpec": "@openclaw/zalouser",
+          "npmSpec": "@eve/zalouser",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }

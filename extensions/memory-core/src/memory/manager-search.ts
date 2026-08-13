@@ -1,15 +1,15 @@
 // Memory Core plugin module implements manager search behavior.
 import type { DatabaseSync } from "node:sqlite";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+import { truncateUtf16Safe } from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
 import {
   cosineSimilarity,
   parseEmbedding,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 import {
   normalizeStringEntries,
   normalizeStringEntriesLower,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { vectorToBlob } from "./vector-blob.js";
 
 const FTS_QUERY_TOKEN_RE = /[\p{L}\p{N}_]+/gu;

@@ -4,7 +4,7 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { MsgContext } from "../../auto-reply/templating.js";
 import { resolveStoredSessionOwnerAgentId } from "../../gateway/session-store-key.js";
 import { writeTextAtomic } from "../../infra/json-files.js";
@@ -21,7 +21,7 @@ import {
 import type { DeliveryContext } from "../../utils/delivery-context.types.js";
 import { getFileStatSnapshot } from "../cache-utils.js";
 import { getRuntimeConfig } from "../io.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import type { EVEConfig } from "../types.eve.js";
 import { formatSessionArchiveTimestamp } from "./artifacts.js";
 import {
   pruneUnreferencedSessionArtifacts,
@@ -322,7 +322,7 @@ export type SessionEntryLifecycleMutationResult = {
 
 export type DeletedAgentSessionEntryPurgeParams = {
   /** Runtime config used to preserve legacy default-agent key ownership rules. */
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   /** Deleted agent whose session entries should be purged. */
   agentId: string;
   /** Agent id represented by the current store path for legacy unscoped keys. */

@@ -3,11 +3,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import { setTimeout as sleep } from "node:timers/promises";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   isRecord,
   normalizeOptionalString as readNonEmptyString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { createDirectReplyTranscriptSentinelScanner } from "./gateway-log-sentinel.js";
 import { liveTurnTimeoutMs } from "./suite-runtime-agent-common.js";
 import type {
@@ -38,8 +38,8 @@ type QaSessionTranscriptSummary = {
 function isSessionStoreLockTimeout(error: unknown) {
   const text = formatErrorMessage(error);
   return (
-    text.includes("OPENCLAW_SESSION_WRITE_LOCK_TIMEOUT") ||
-    text.includes("OPENCLAW_SESSION_WRITE_LOCK_STALE") ||
+    text.includes("EVE_SESSION_WRITE_LOCK_TIMEOUT") ||
+    text.includes("EVE_SESSION_WRITE_LOCK_STALE") ||
     text.includes("SessionWriteLockTimeoutError") ||
     text.includes("SessionWriteLockStaleError") ||
     text.includes("session file locked") ||

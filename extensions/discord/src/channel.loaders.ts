@@ -1,5 +1,5 @@
 // Discord plugin module implements channel.loaders behavior.
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+import { createLazyRuntimeModule } from "eve-agent/plugin-sdk/lazy-runtime";
 
 let discordProviderRuntimePromise:
   | Promise<typeof import("./monitor/provider.runtime.js")>

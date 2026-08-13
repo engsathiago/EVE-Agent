@@ -14,15 +14,15 @@ export function registerSetupCommand(program: Command): void {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n` +
-        `  ${theme.command("openclaw setup")}\n` +
+        `  ${theme.command("eve setup")}\n` +
         `    ${theme.muted("Create config, workspace, and session folders.")}\n` +
-        `  ${theme.command("openclaw setup --wizard")}\n` +
+        `  ${theme.command("eve setup --wizard")}\n` +
         `    ${theme.muted("Run full onboarding for auth, models, Gateway, and channels.")}\n\n` +
-        `${theme.muted("Docs:")} ${formatDocsLink("/cli/setup", "docs.openclaw.ai/cli/setup")}\n`,
+        `${theme.muted("Docs:")} ${formatDocsLink("/cli/setup", "docs.eve.ai/cli/setup")}\n`,
     )
     .option(
       "--workspace <dir>",
-      "Agent workspace directory (default: ~/.openclaw/workspace; stored as agents.defaults.workspace)",
+      "Agent workspace directory (default: ~/.eve/workspace; stored as agents.defaults.workspace)",
     )
     .option("--wizard", "Run interactive onboarding", false)
     .option("--non-interactive", "Run onboarding without prompts", false)

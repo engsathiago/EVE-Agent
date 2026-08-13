@@ -1,5 +1,5 @@
 ---
-summary: "CLI reference for `openclaw transcripts` (list, show, and locate stored transcripts)"
+summary: "CLI reference for `eve transcripts` (list, show, and locate stored transcripts)"
 read_when:
   - You want to read stored transcript summaries from the terminal
   - You need the path to a transcripts markdown summary
@@ -7,9 +7,9 @@ read_when:
 title: "Transcripts CLI"
 ---
 
-# `openclaw transcripts`
+# `eve transcripts`
 
-Inspect transcripts written by OpenClaw's core `transcripts` tool. This CLI is
+Inspect transcripts written by EVE's core `transcripts` tool. This CLI is
 read-only; capture, import, and summarization are owned by the agent tool and
 configured auto-start sources.
 
@@ -17,34 +17,34 @@ Use the CLI when you want to find yesterday's notes, open the Markdown file in
 an editor, feed a transcript to another tool, or debug where a session landed on
 disk. It does not start or stop capture.
 
-Artifacts live under the OpenClaw state directory:
+Artifacts live under the EVE state directory:
 
 ```text
-$OPENCLAW_STATE_DIR/transcripts/YYYY-MM-DD/<session>/
+$EVE_STATE_DIR/transcripts/YYYY-MM-DD/<session>/
   metadata.json
   transcript.jsonl
   summary.json
   summary.md
 ```
 
-The default state directory is `~/.openclaw`; set `OPENCLAW_STATE_DIR` to use a
+The default state directory is `~/.eve`; set `EVE_STATE_DIR` to use a
 different one. The date directory comes from the session start time, and the
 session directory is a safe filesystem segment derived from the session id.
 
 ## Commands
 
 ```bash
-openclaw transcripts list
-openclaw transcripts show <session>
-openclaw transcripts show YYYY-MM-DD/<session>
-openclaw transcripts path <session>
-openclaw transcripts path YYYY-MM-DD/<session>
-openclaw transcripts path <session> --dir
-openclaw transcripts path <session> --metadata
-openclaw transcripts path <session> --transcript
-openclaw transcripts list --json
-openclaw transcripts show <session> --json
-openclaw transcripts path <session> --json
+eve transcripts list
+eve transcripts show <session>
+eve transcripts show YYYY-MM-DD/<session>
+eve transcripts path <session>
+eve transcripts path YYYY-MM-DD/<session>
+eve transcripts path <session> --dir
+eve transcripts path <session> --metadata
+eve transcripts path <session> --transcript
+eve transcripts list --json
+eve transcripts show <session> --json
+eve transcripts path <session> --json
 ```
 
 - `list`: list stored sessions, date-qualified selector, start time, title, and `summary.md` path.
@@ -56,7 +56,7 @@ openclaw transcripts path <session> --json
 - `--json`: print machine-readable output.
 
 When a human session id repeats across days, use the date-qualified selector
-from `list`, for example `openclaw transcripts show 2026-05-22/standup`.
+from `list`, for example `eve transcripts show 2026-05-22/standup`.
 Default session ids include a timestamp and random suffix; configure fixed
 session ids only when they are unique within the day.
 
@@ -65,7 +65,7 @@ session ids only when they are unique within the day.
 `list` prints one session per line:
 
 ```text
-2026-05-22/standup  2026-05-22T09:00:00.000Z  Weekly standup  /Users/alex/.openclaw/transcripts/2026-05-22/standup/summary.md
+2026-05-22/standup  2026-05-22T09:00:00.000Z  Weekly standup  /Users/alex/.eve/transcripts/2026-05-22/standup/summary.md
 ```
 
 The output is tab-separated. The columns are selector, start time, title, and
@@ -94,7 +94,7 @@ Transcripts groups sessions by date, then by session id. Ten meetings on one
 day become ten sibling folders:
 
 ```text
-~/.openclaw/transcripts/2026-05-22/
+~/.eve/transcripts/2026-05-22/
   transcript-2026-05-22T09-00-00-000Z-a1b2c3d4/
   transcript-2026-05-22T10-30-00-000Z-b2c3d4e5/
   standup/
@@ -127,7 +127,7 @@ audio. Enable the tool with top-level `transcripts.enabled`:
 }
 ```
 
-Configure auto-start sources with `transcripts.autoStart` in `openclaw.json`.
+Configure auto-start sources with `transcripts.autoStart` in `eve.json`.
 Each entry is enabled by being present; omit an entry to disable that source.
 
 ```json

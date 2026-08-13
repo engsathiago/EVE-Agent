@@ -2,12 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   normalizeStringEntries,
   normalizeUniqueStringEntries,
-} from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.eve.js";
 import { buildPluginApi } from "./api-builder.js";
 import { collectPluginConfigContractMatches } from "./config-contracts.js";
 import type { PluginManifestRecord, PluginManifestRegistry } from "./manifest-registry.js";
@@ -22,7 +22,7 @@ import type { PluginRuntime } from "./runtime/types.js";
 import { listSetupCliBackendIds, listSetupProviderIds } from "./setup-descriptors.js";
 import type {
   CliBackendPlugin,
-  OpenClawPluginModule,
+  EVEPluginModule,
   PluginConfigMigration,
   PluginLogger,
   PluginSetupAutoEnableProbe,
@@ -158,7 +158,7 @@ function resolveSetupApiPath(
   return null;
 }
 
-function collectConfiguredPluginEntryIds(config: OpenClawConfig): string[] {
+function collectConfiguredPluginEntryIds(config: EVEConfig): string[] {
   const entries = config.plugins?.entries;
   if (!entries || typeof entries !== "object") {
     return [];
@@ -167,7 +167,7 @@ function collectConfiguredPluginEntryIds(config: OpenClawConfig): string[] {
 }
 
 function resolveRelevantSetupMigrationPluginIds(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): string[] {
@@ -197,7 +197,7 @@ function resolveRelevantSetupMigrationPluginIds(params: {
   return [...ids].toSorted();
 }
 
-function resolveRegister(mod: OpenClawPluginModule): {
+function resolveRegister(mod: EVEPluginModule): {
   definition?: { id?: string };
   register?: (api: ReturnType<typeof buildPluginApi>) => void | Promise<void>;
 } {
@@ -276,14 +276,14 @@ function resolveSetupRegistration(record: PluginManifestRecord): {
     return null;
   }
 
-  let mod: OpenClawPluginModule;
+  let mod: EVEPluginModule;
   try {
-    mod = getModuleLoader(setupSource)(setupSource) as OpenClawPluginModule;
+    mod = getModuleLoader(setupSource)(setupSource) as EVEPluginModule;
   } catch {
     return null;
   }
 
-  const resolved = resolveRegister((mod as { default?: OpenClawPluginModule }).default ?? mod);
+  const resolved = resolveRegister((mod as { default?: EVEPluginModule }).default ?? mod);
   if (!resolved.register) {
     return null;
   }
@@ -309,7 +309,7 @@ function buildSetupPluginApi(params: {
     source: params.setupSource,
     rootDir: params.record.rootDir,
     registrationMode: "setup-only",
-    config: {} as OpenClawConfig,
+    config: {} as EVEConfig,
     runtime: EMPTY_RUNTIME,
     logger: NOOP_LOGGER,
     resolvePath: (input) => input,
@@ -337,7 +337,7 @@ function matchesProvider(provider: ProviderPlugin, providerId: string): boolean 
 }
 
 function loadSetupManifestRegistry(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   pluginIds?: readonly string[];
@@ -391,7 +391,7 @@ function pushDescriptorRuntimeDisabledDiagnostic(params: {
     pluginId: params.record.id,
     code: "setup-descriptor-runtime-disabled",
     message:
-      "setup.requiresRuntime is false, so OpenClaw ignored the plugin setup runtime entry. Remove setup-api/openclaw.setupEntry or set requiresRuntime true if setup lookup still needs plugin code.",
+      "setup.requiresRuntime is false, so EVE ignored the plugin setup runtime entry. Remove setup-api/eve.setupEntry or set requiresRuntime true if setup lookup still needs plugin code.",
   });
 }
 
@@ -453,7 +453,7 @@ function pushSetupDescriptorDriftDiagnostics(params: {
 }
 
 export function resolvePluginSetupRegistry(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   pluginIds?: readonly string[];
@@ -581,7 +581,7 @@ export function resolvePluginSetupRegistry(params?: {
 
 export function resolvePluginSetupProvider(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   pluginIds?: readonly string[];
@@ -644,7 +644,7 @@ export function resolvePluginSetupProvider(params: {
 
 export function resolvePluginSetupCliBackend(params: {
   backend: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): SetupCliBackendEntry | undefined {
@@ -710,11 +710,11 @@ export function resolvePluginSetupCliBackend(params: {
 }
 
 export function runPluginSetupConfigMigrations(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): {
-  config: OpenClawConfig;
+  config: EVEConfig;
   changes: string[];
 } {
   let next = params.config;
@@ -742,7 +742,7 @@ export function runPluginSetupConfigMigrations(params: {
 }
 
 export function resolvePluginSetupAutoEnableReasons(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   pluginIds?: readonly string[];

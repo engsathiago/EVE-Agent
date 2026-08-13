@@ -1,6 +1,6 @@
-// Verifies OpenAI model selections route between OpenClaw and Codex runtimes.
+// Verifies OpenAI model selections route between EVE and Codex runtimes.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   listOpenAIAuthProfileProvidersForAgentRuntime,
   modelSelectionShouldEnsureCodexPlugin,
@@ -16,7 +16,7 @@ describe("OpenAI runtime routing policy", () => {
     expect(
       modelSelectionShouldEnsureCodexPlugin({
         model: "openai/gpt-5.5",
-        config: {} as OpenClawConfig,
+        config: {} as EVEConfig,
       }),
     ).toBe(true);
   });
@@ -32,7 +32,7 @@ describe("OpenAI runtime routing policy", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(openAIProviderUsesCodexRuntimeByDefault({ provider: "openai", config })).toBe(false);
     expect(modelSelectionShouldEnsureCodexPlugin({ model: "openai/gpt-5.5", config })).toBe(false);
@@ -55,7 +55,7 @@ describe("OpenAI runtime routing policy", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(openAIProviderUsesCodexRuntimeByDefault({ provider: "openai", config })).toBe(false);
     expect(modelSelectionShouldEnsureCodexPlugin({ model: "openai/gpt-5.5", config })).toBe(false);
@@ -80,7 +80,7 @@ describe("OpenAI runtime routing policy", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       resolveContextConfigProviderForRuntime({
@@ -91,18 +91,18 @@ describe("OpenAI runtime routing policy", () => {
     ).toBe("openai");
   });
 
-  it("keeps explicit OpenClaw plus Codex auth profile under the unified OpenAI provider", () => {
+  it("keeps explicit EVE plus Codex auth profile under the unified OpenAI provider", () => {
     // OpenAI auth now stays canonical even when the runtime is not Codex.
     expect(
       listOpenAIAuthProfileProvidersForAgentRuntime({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
       }),
     ).toEqual(["openai"]);
     expect(
       resolveOpenAIRuntimeProvider({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         authProfileProvider: "openai",
         authProfileId: "openai:work",
       }),
@@ -116,26 +116,26 @@ describe("OpenAI runtime routing policy", () => {
           openai: ["openai:work", "openai:backup"],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       listOpenAIAuthProfileProvidersForAgentRuntime({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toEqual(["openai"]);
     expect(
       resolveSelectedOpenAIRuntimeProvider({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toBe("openai");
     expect(
       resolveOpenAIRuntimeProvider({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toBe("openai");
@@ -148,43 +148,43 @@ describe("OpenAI runtime routing policy", () => {
           openai: ["openai:work", "openai:backup"],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       listOpenAIAuthProfileProvidersForAgentRuntime({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toEqual(["openai"]);
   });
 
-  it("keeps explicit OpenAI OpenClaw API-key auth order ahead of Codex backups", () => {
+  it("keeps explicit OpenAI EVE API-key auth order ahead of Codex backups", () => {
     const config = {
       auth: {
         order: {
           openai: ["openai:backup", "openai:work"],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       listOpenAIAuthProfileProvidersForAgentRuntime({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toEqual(["openai"]);
     expect(
       resolveSelectedOpenAIRuntimeProvider({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toBe("openai");
   });
 
-  it("does not route custom OpenAI-compatible OpenClaw configs through Codex auth order", () => {
+  it("does not route custom OpenAI-compatible EVE configs through Codex auth order", () => {
     const config = {
       models: {
         providers: {
@@ -199,19 +199,19 @@ describe("OpenAI runtime routing policy", () => {
           openai: ["openai:work", "openai:backup"],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       listOpenAIAuthProfileProvidersForAgentRuntime({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toEqual(["openai"]);
     expect(
       resolveSelectedOpenAIRuntimeProvider({
         provider: "openai",
-        harnessRuntime: "openclaw",
+        harnessRuntime: "eve",
         config,
       }),
     ).toBe("openai");

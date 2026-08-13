@@ -1,6 +1,6 @@
 // Exercises the full commitment extraction-to-follow-up chain.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { runHeartbeatOnce } from "../infra/heartbeat-runner.js";
 import { installHeartbeatRunnerTestRuntime } from "../infra/heartbeat-runner.test-harness.js";
 import {
@@ -34,9 +34,9 @@ describe("commitments full-chain integration", () => {
     vi.setSystemTime(writeMs);
 
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      await withEnvAsync({ OPENCLAW_STATE_DIR: tmpDir }, async () => {
+      await withEnvAsync({ EVE_STATE_DIR: tmpDir }, async () => {
         const sessionKey = "agent:main:telegram:user-155462274";
-        const cfg: OpenClawConfig = {
+        const cfg: EVEConfig = {
           agents: {
             defaults: {
               workspace: tmpDir,

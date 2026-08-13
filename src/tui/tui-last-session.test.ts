@@ -15,7 +15,7 @@ import {
 const tempDirs: string[] = [];
 
 async function makeTempStateDir() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-tui-last-session-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-tui-last-session-"));
   tempDirs.push(dir);
   return dir;
 }

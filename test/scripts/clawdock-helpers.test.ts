@@ -16,7 +16,7 @@ async function writeExecutable(file: string, content: string) {
 
 describe("scripts/clawdock/clawdock-helpers.sh", () => {
   it("loads the standard docker-compose.override.yml before ClawDock extra overrides", async () => {
-    const tempDir = await mkdtemp(path.join(tmpdir(), "openclaw-clawdock-"));
+    const tempDir = await mkdtemp(path.join(tmpdir(), "eve-clawdock-"));
     try {
       const projectDir = path.join(tempDir, "project");
       const binDir = path.join(tempDir, "bin");
@@ -67,7 +67,7 @@ printf '%s\\n' "$@" > "$CLAWDOCK_DOCKER_ARGS_FILE"
   });
 
   it("opens dashboard URLs through the published gateway port without starting dependencies", async () => {
-    const tempDir = await mkdtemp(path.join(tmpdir(), "openclaw-clawdock-"));
+    const tempDir = await mkdtemp(path.join(tmpdir(), "eve-clawdock-"));
     try {
       const projectDir = path.join(tempDir, "project");
       const binDir = path.join(tempDir, "bin");
@@ -81,7 +81,7 @@ printf '%s\\n' "$@" > "$CLAWDOCK_DOCKER_ARGS_FILE"
         `#!/usr/bin/env bash
 printf '%s\\n' "$@" >> "$CLAWDOCK_DOCKER_ARGS_FILE"
 printf '%s\\n' '---' >> "$CLAWDOCK_DOCKER_ARGS_FILE"
-if [[ "$*" == *" port openclaw-gateway 18789" ]]; then
+if [[ "$*" == *" port eve-gateway 18789" ]]; then
   printf '%s\\n' '0.0.0.0:19001'
 else
   printf '%s\\n' 'Dashboard: http://127.0.0.1:18789/?token=test-token'
@@ -122,7 +122,7 @@ printf '%s\\n' "$1" > "$CLAWDOCK_OPENED_URL_FILE"
           "run",
           "--rm",
           "--no-deps",
-          "openclaw-cli",
+          "eve-cli",
           "dashboard",
           "--no-open",
           "---",
@@ -130,7 +130,7 @@ printf '%s\\n' "$1" > "$CLAWDOCK_OPENED_URL_FILE"
           "-f",
           path.join(projectDir, "docker-compose.yml"),
           "port",
-          "openclaw-gateway",
+          "eve-gateway",
           "18789",
           "---",
           "",

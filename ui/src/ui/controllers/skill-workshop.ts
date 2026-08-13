@@ -33,7 +33,7 @@ type SkillProposalManifestEntry = {
 };
 
 type SkillProposalManifest = {
-  schema: "openclaw.skill-workshop.proposals-manifest.v1";
+  schema: "eve.skill-workshop.proposals-manifest.v1";
   updatedAt: string;
   proposals: SkillProposalManifestEntry[];
 };

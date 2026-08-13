@@ -1,15 +1,15 @@
 // Manifest model-catalog planner turns plugin catalog declarations into normalized rows and suppressions.
-import { normalizeModelCatalogProviderRows } from "@openclaw/model-catalog-core/model-catalog-normalize";
+import { normalizeModelCatalogProviderRows } from "@eve/model-catalog-core/model-catalog-normalize";
 import {
   buildModelCatalogMergeKey,
   normalizeModelCatalogProviderId,
-} from "@openclaw/model-catalog-core/model-catalog-refs";
+} from "@eve/model-catalog-core/model-catalog-refs";
 import type {
   ModelCatalog,
   ModelCatalogAlias,
   ModelCatalogDiscovery,
   NormalizedModelCatalogRow,
-} from "@openclaw/model-catalog-core/model-catalog-types";
+} from "@eve/model-catalog-core/model-catalog-types";
 import { normalizeLowercaseStringOrEmpty } from "../../packages/normalization-core/src/string-coerce.js";
 import { normalizeUniqueStringEntries } from "../../packages/normalization-core/src/string-normalization.js";
 

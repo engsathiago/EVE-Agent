@@ -116,7 +116,7 @@ export function truncateUtf16Safe(input: string, maxLen: number): string {
   return sliceUtf16Safe(input, 0, limit);
 }
 
-/** Resolves `~` and OpenClaw home-relative paths with injectable env/home sources. */
+/** Resolves `~` and EVE home-relative paths with injectable env/home sources. */
 export function resolveUserPath(
   input: string,
   env: NodeJS.ProcessEnv = process.env,
@@ -128,20 +128,20 @@ export function resolveUserPath(
   return resolveHomeRelativePath(input, { env, homedir });
 }
 
-/** Resolves the OpenClaw config directory from state/config env overrides or home. */
+/** Resolves the EVE config directory from state/config env overrides or home. */
 export function resolveConfigDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,
 ): string {
-  const override = env.OPENCLAW_STATE_DIR?.trim();
+  const override = env.EVE_STATE_DIR?.trim();
   if (override) {
     return resolveUserPath(override, env, homedir);
   }
-  const configPath = env.OPENCLAW_CONFIG_PATH?.trim();
+  const configPath = env.EVE_CONFIG_PATH?.trim();
   if (configPath) {
     return path.dirname(resolveUserPath(configPath, env, homedir));
   }
-  const newDir = path.join(resolveRequiredHomeDir(env, homedir), ".openclaw");
+  const newDir = path.join(resolveRequiredHomeDir(env, homedir), ".eve");
   try {
     const hasNew = fs.existsSync(newDir);
     if (hasNew) {
@@ -153,7 +153,7 @@ export function resolveConfigDir(
   return newDir;
 }
 
-/** Resolves the effective OpenClaw home directory, if one can be determined. */
+/** Resolves the effective EVE home directory, if one can be determined. */
 export function resolveHomeDir(): string | undefined {
   return resolveEffectiveHomeDir(process.env, os.homedir);
 }
@@ -163,14 +163,14 @@ function resolveHomeDisplayPrefix(): { home: string; prefix: string } | undefine
   if (!home) {
     return undefined;
   }
-  const explicitHome = process.env.OPENCLAW_HOME?.trim();
+  const explicitHome = process.env.EVE_HOME?.trim();
   if (explicitHome) {
-    return { home, prefix: "$OPENCLAW_HOME" };
+    return { home, prefix: "$EVE_HOME" };
   }
   return { home, prefix: "~" };
 }
 
-/** Replaces the leading home directory in a path with `~` or `$OPENCLAW_HOME`. */
+/** Replaces the leading home directory in a path with `~` or `$EVE_HOME`. */
 export function shortenHomePath(input: string): string {
   if (!input) {
     return input;

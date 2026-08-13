@@ -181,14 +181,14 @@ describe("security-sensitive guard script", () => {
 
   it("trusts only configured security-sensitive guard marker comment authors", () => {
     const trustedAuthors = securitySensitiveGuardCommentAuthors(
-      "github-actions[bot], openclaw-security-guard[bot]",
+      "github-actions[bot], eve-security-guard[bot]",
     );
 
     expect(
       isSecuritySensitiveGuardMarkerComment(
         {
           body: securitySensitiveGuardMarker,
-          user: { login: "openclaw-security-guard[bot]" },
+          user: { login: "eve-security-guard[bot]" },
         },
         trustedAuthors,
       ),
@@ -257,7 +257,7 @@ describe("security-sensitive guard script", () => {
             headers: { "content-length": "65" },
           }),
         )) as typeof fetch,
-    }).request("/repos/openclaw/openclaw");
+    }).request("/repos/eve/eve");
 
     await expect(request).rejects.toThrow("GitHub response body exceeded 64 bytes");
     expect(GITHUB_RESPONSE_BODY_MAX_BYTES).toBeGreaterThan(64);

@@ -42,7 +42,7 @@ function echoFirstInputLineScript(prefix: string): string {
   ].join(" ");
 }
 
-describe("OpenClaw Codex sandbox exec-server", () => {
+describe("EVE Codex sandbox exec-server", () => {
   it("reports unavailable app-server remote environment support without exposing an environment", async () => {
     const sandbox = createSandboxContext({});
     const client = {
@@ -138,7 +138,7 @@ describe("OpenClaw Codex sandbox exec-server", () => {
     const addRequest = requests[0];
     expect(addRequest?.method).toBe("environment/add");
     expect(environment).toEqual({
-      environmentId: expect.stringMatching(/^openclaw-sandbox-/),
+      environmentId: expect.stringMatching(/^eve-sandbox-/),
       cwd: "/workspace",
     });
     const execServerUrl =
@@ -323,9 +323,9 @@ describe("OpenClaw Codex sandbox exec-server", () => {
     vi.stubEnv("HOME", "/gateway-home");
     vi.stubEnv("USER", "gateway-user");
     vi.stubEnv("TMPDIR", "/gateway-tmp");
-    vi.stubEnv("OPENCLAW_TEST_SECRET_TOKEN", "host-secret");
-    vi.stubEnv("OPENCLAW_TEST_DATABASE_PASSWORD", "host-password");
-    vi.stubEnv("OPENCLAW_TEST_PRIVATE_KEY", "host-private-key");
+    vi.stubEnv("EVE_TEST_SECRET_TOKEN", "host-secret");
+    vi.stubEnv("EVE_TEST_DATABASE_PASSWORD", "host-password");
+    vi.stubEnv("EVE_TEST_PRIVATE_KEY", "host-private-key");
     const buildExecSpec = vi.fn(async () => ({
       argv: [process.execPath, "-e", ""],
       env: {},
@@ -450,7 +450,7 @@ describe("OpenClaw Codex sandbox exec-server", () => {
       sandbox,
     });
     const unauthorizedUrl = execServerUrlFromClient(client).replace(
-      /\/openclaw-[^/?#]+/u,
+      /\/eve-[^/?#]+/u,
       "/wrong",
     );
     const socket = await openSocket(unauthorizedUrl);
@@ -466,7 +466,7 @@ describe("OpenClaw Codex sandbox exec-server", () => {
       sandbox,
     });
     const unauthorizedUrl = execServerUrlFromClient(client).replace(
-      /\/openclaw-[^/?#]+/u,
+      /\/eve-[^/?#]+/u,
       "/wrong",
     );
     const socket = await openSocket(unauthorizedUrl);

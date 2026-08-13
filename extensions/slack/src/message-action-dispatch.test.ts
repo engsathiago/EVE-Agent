@@ -125,11 +125,11 @@ describe("handleSlackMessageAction", () => {
 
     const action = firstAction(invoke);
     const firstButtons = blockAt(action, 0);
-    expect(firstButtons.block_id).toBe("openclaw_reply_buttons_1");
-    expect(elementAt(firstButtons, 0).action_id).toBe("openclaw:reply_button:1:1");
+    expect(firstButtons.block_id).toBe("eve_reply_buttons_1");
+    expect(elementAt(firstButtons, 0).action_id).toBe("eve:reply_button:1:1");
     const secondButtons = blockAt(action, 1);
-    expect(secondButtons.block_id).toBe("openclaw_reply_buttons_2");
-    expect(elementAt(secondButtons, 0).action_id).toBe("openclaw:reply_button:2:1");
+    expect(secondButtons.block_id).toBe("eve_reply_buttons_2");
+    expect(elementAt(secondButtons, 0).action_id).toBe("eve:reply_button:2:1");
   });
 
   it("passes media and rendered interactive blocks through for split Slack delivery", async () => {

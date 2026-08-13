@@ -1,7 +1,7 @@
 // Diffs Language Pack API module exposes the plugin public contract.
 export {
   definePluginEntry,
-  type OpenClawPluginApi,
-  type OpenClawPluginHttpRouteHandler,
+  type EVEPluginApi,
+  type EVEPluginHttpRouteHandler,
   type PluginLogger,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";

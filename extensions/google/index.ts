@@ -1,17 +1,17 @@
-// Google plugin entrypoint registers its OpenClaw integration.
-import type { ImageGenerationProvider } from "openclaw/plugin-sdk/image-generation";
-import type { MediaUnderstandingProvider } from "openclaw/plugin-sdk/media-understanding";
-import type { MusicGenerationProvider } from "openclaw/plugin-sdk/music-generation";
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+// Google plugin entrypoint registers its EVE integration.
+import type { ImageGenerationProvider } from "eve-agent/plugin-sdk/image-generation";
+import type { MediaUnderstandingProvider } from "eve-agent/plugin-sdk/media-understanding";
+import type { MusicGenerationProvider } from "eve-agent/plugin-sdk/music-generation";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 import type {
   RealtimeVoiceBridge,
   RealtimeVoiceBridgeCreateRequest,
   RealtimeVoiceProviderConfig,
   RealtimeVoiceProviderPlugin,
-} from "openclaw/plugin-sdk/realtime-voice";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import type { VideoGenerationProvider } from "openclaw/plugin-sdk/video-generation";
+} from "eve-agent/plugin-sdk/realtime-voice";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { VideoGenerationProvider } from "eve-agent/plugin-sdk/video-generation";
 import { buildGoogleGeminiCliBackend } from "./cli-backend.js";
 import { registerGoogleGeminiCliProvider } from "./gemini-cli-provider.js";
 import {

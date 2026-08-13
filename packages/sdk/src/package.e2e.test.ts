@@ -1,4 +1,4 @@
-// OpenClaw SDK tests cover package behavior.
+// EVE SDK tests cover package behavior.
 import { spawn, type SpawnOptionsWithoutStdio } from "node:child_process";
 import { createReadStream } from "node:fs";
 import fs from "node:fs/promises";
@@ -17,9 +17,9 @@ type CommandResult = {
 const COMMAND_TIMEOUT_MS = 120_000;
 const tempDirs: string[] = [];
 const WORKSPACE_PACKAGE_NAMES = [
-  "@openclaw/gateway-protocol",
-  "@openclaw/gateway-client",
-  "@openclaw/sdk",
+  "@eve/gateway-protocol",
+  "@eve/gateway-client",
+  "@eve/sdk",
 ] as const;
 
 type PackageManifest = {
@@ -142,7 +142,7 @@ function normalizeWorkspaceDependencies(
   const normalized: Record<string, string> = {};
   for (const [name, spec] of Object.entries(dependencies)) {
     normalized[name] =
-      name.startsWith("@openclaw/") && spec === "workspace:*" ? "0.0.0-private" : spec;
+      name.startsWith("@eve/") && spec === "workspace:*" ? "0.0.0-private" : spec;
   }
   return normalized;
 }
@@ -187,7 +187,7 @@ function closeServer(server: Server): Promise<void> {
   });
 }
 
-async function startOpenClawRegistry(packages: PackedPackage[]): Promise<{
+async function startEVERegistry(packages: PackedPackage[]): Promise<{
   registryUrl: string;
   close: () => Promise<void>;
 }> {
@@ -253,7 +253,7 @@ async function startOpenClawRegistry(packages: PackedPackage[]): Promise<{
   };
 }
 
-describe("OpenClaw SDK package e2e", () => {
+describe("EVE SDK package e2e", () => {
   afterEach(async () => {
     await Promise.all(
       tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })),
@@ -267,7 +267,7 @@ describe("OpenClaw SDK package e2e", () => {
       path.join(repoRoot, "packages", "gateway-client"),
       path.join(repoRoot, "packages", "sdk"),
     ];
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sdk-consumer-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-sdk-consumer-"));
     tempDirs.push(tempDir);
 
     for (const packageName of WORKSPACE_PACKAGE_NAMES) {
@@ -291,15 +291,15 @@ describe("OpenClaw SDK package e2e", () => {
       packedPackages.push({ manifest, tarball });
     }
     const sdkTarball =
-      packedPackages.find((pkg) => pkg.manifest.name === "@openclaw/sdk")?.tarball ?? "";
+      packedPackages.find((pkg) => pkg.manifest.name === "@eve/sdk")?.tarball ?? "";
     expect(sdkTarball).not.toBe("");
-    const registry = await startOpenClawRegistry(packedPackages);
+    const registry = await startEVERegistry(packedPackages);
 
     await fs.writeFile(
       path.join(tempDir, "package.json"),
       JSON.stringify({ private: true, type: "module" }),
     );
-    await fs.writeFile(path.join(tempDir, ".npmrc"), `@openclaw:registry=${registry.registryUrl}`);
+    await fs.writeFile(path.join(tempDir, ".npmrc"), `@eve:registry=${registry.registryUrl}`);
     try {
       await runCommand(
         "npm",
@@ -313,9 +313,9 @@ describe("OpenClaw SDK package e2e", () => {
     }
 
     const importScript = `
-      import { GatewayClientTransport, OpenClaw, normalizeGatewayEvent } from "@openclaw/sdk";
+      import { GatewayClientTransport, EVE, normalizeGatewayEvent } from "@eve/sdk";
       if (typeof GatewayClientTransport !== "function") throw new Error("missing transport export");
-      if (typeof OpenClaw !== "function") throw new Error("missing client export");
+      if (typeof EVE !== "function") throw new Error("missing client export");
       const event = normalizeGatewayEvent({
         event: "agent",
         payload: { runId: "pack-smoke", stream: "lifecycle", data: { phase: "start" } }

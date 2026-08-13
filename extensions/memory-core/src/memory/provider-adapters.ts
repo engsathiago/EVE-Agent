@@ -4,8 +4,8 @@ import {
   listMemoryEmbeddingProviders,
   listRegisteredMemoryEmbeddingProviderAdapters,
   type MemoryEmbeddingProviderAdapter,
-} from "openclaw/plugin-sdk/memory-core-host-embedding-registry";
-import { getProviderEnvVars } from "openclaw/plugin-sdk/provider-env-vars";
+} from "eve-agent/plugin-sdk/memory-core-host-embedding-registry";
+import { getProviderEnvVars } from "eve-agent/plugin-sdk/provider-env-vars";
 import { filterUnregisteredMemoryEmbeddingProviderAdapters } from "./provider-adapter-registration.js";
 
 export type BuiltinMemoryEmbeddingProviderDoctorMetadata = {

@@ -165,7 +165,7 @@ export type DiscordVoiceRealtimeConfig = {
   instructions?: string;
   /** Tool policy for bidi realtime consult calls. */
   toolPolicy?: DiscordVoiceRealtimeToolPolicy;
-  /** Whether bidi should force the OpenClaw agent brain for every substantive turn. */
+  /** Whether bidi should force the EVE agent brain for every substantive turn. */
   consultPolicy?: DiscordVoiceRealtimeConsultPolicy;
   /** Require a wake name before OpenAI agent-proxy realtime Discord voice responds. */
   requireWakeName?: boolean;
@@ -177,14 +177,14 @@ export type DiscordVoiceRealtimeConfig = {
   bargeIn?: boolean;
   /** Minimum assistant playback duration before a barge-in truncates audio. Default: 250ms; set 0 for immediate interruption. */
   minBargeInAudioEndMs?: number;
-  /** Debounce window before buffered transcripts are sent to the OpenClaw agent. */
+  /** Debounce window before buffered transcripts are sent to the EVE agent. */
   debounceMs?: number;
   /** Provider-specific realtime voice config keyed by provider id. */
   providers?: Record<string, Record<string, unknown> | undefined>;
 };
 
 export type DiscordVoiceAgentSessionConfig = {
-  /** Which OpenClaw conversation should receive voice turns. Default: "voice". */
+  /** Which EVE conversation should receive voice turns. Default: "voice". */
   mode?: "voice" | "target";
   /** Discord target used when mode is "target", for example "channel:123". */
   target?: string;
@@ -195,7 +195,7 @@ export type DiscordVoiceConfig = {
   enabled?: boolean;
   /** Voice conversation mode. Default: agent-proxy. */
   mode?: DiscordVoiceMode;
-  /** Route voice turns through an existing OpenClaw Discord conversation. */
+  /** Route voice turns through an existing EVE Discord conversation. */
   agentSession?: DiscordVoiceAgentSessionConfig;
   /** Optional LLM model override for Discord voice channel responses. */
   model?: string;

@@ -37,7 +37,7 @@ describe("config observe recovery", () => {
   }
 
   beforeAll(async () => {
-    fixtureRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "openclaw-config-observe-recovery-"));
+    fixtureRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "eve-config-observe-recovery-"));
   });
 
   afterAll(async () => {
@@ -143,7 +143,7 @@ describe("config observe recovery", () => {
     warn = vi.fn(),
     options: { env?: NodeJS.ProcessEnv; observe?: boolean } = {},
   ) {
-    const configPath = path.join(home, ".openclaw", "openclaw.json");
+    const configPath = path.join(home, ".eve", "eve.json");
     const error = vi.fn();
     return {
       configPath,
@@ -228,7 +228,7 @@ describe("config observe recovery", () => {
     auditPath: string;
     warn: ReturnType<typeof vi.fn>;
   } {
-    const configPath = path.join(home, ".openclaw", "openclaw.json");
+    const configPath = path.join(home, ".eve", "eve.json");
     return {
       deps: {
         fs,
@@ -238,7 +238,7 @@ describe("config observe recovery", () => {
         logger: { warn },
       },
       configPath,
-      auditPath: path.join(home, ".openclaw", "logs", "config-audit.jsonl"),
+      auditPath: path.join(home, ".eve", "logs", "config-audit.jsonl"),
       warn,
     };
   }
@@ -397,7 +397,7 @@ describe("config observe recovery", () => {
   it("read snapshots auto-restore tiny valid clobbers before recording them observed", async () => {
     await withSuiteHome(async (home) => {
       const { io, configPath, warn } = createTestConfigIO(home);
-      const auditPath = path.join(home, ".openclaw", "logs", "config-audit.jsonl");
+      const auditPath = path.join(home, ".eve", "logs", "config-audit.jsonl");
       await seedConfigBackup(configPath, {
         ...recoverableTelegramConfig,
         channels: {
@@ -450,13 +450,13 @@ describe("config observe recovery", () => {
       await seedConfigBackup(configPath, recoverableTelegramConfig);
       await writeConfigRaw(configPath, {
         meta: { lastTouchedVersion: "2026.5.28" },
-        env: { vars: { OPENCLAW_CLOBBER_ONLY: "bad" } },
+        env: { vars: { EVE_CLOBBER_ONLY: "bad" } },
       });
 
       const config = io.loadConfig();
 
       expect(config.gateway?.mode).toBe("local");
-      expect(env.OPENCLAW_CLOBBER_ONLY).toBeUndefined();
+      expect(env.EVE_CLOBBER_ONLY).toBeUndefined();
     });
   });
 
@@ -467,20 +467,20 @@ describe("config observe recovery", () => {
       await seedConfigBackup(configPath, recoverableTelegramConfig);
       await writeConfigRaw(configPath, {
         meta: { lastTouchedVersion: "2026.5.28" },
-        env: { vars: { OPENCLAW_CLOBBER_ONLY: "bad" } },
+        env: { vars: { EVE_CLOBBER_ONLY: "bad" } },
       });
 
       const snapshot = await io.readConfigFileSnapshot({ recoverSuspicious: true });
 
       expect(snapshot.config.gateway?.mode).toBe("local");
-      expect(env.OPENCLAW_CLOBBER_ONLY).toBeUndefined();
+      expect(env.EVE_CLOBBER_ONLY).toBeUndefined();
     });
   });
 
   it("does not auto-restore read snapshots when observation is disabled", async () => {
     await withSuiteHome(async (home) => {
       const { io, configPath } = createTestConfigIO(home, vi.fn(), { observe: false });
-      const auditPath = path.join(home, ".openclaw", "logs", "config-audit.jsonl");
+      const auditPath = path.join(home, ".eve", "logs", "config-audit.jsonl");
       await seedConfigBackup(configPath, recoverableTelegramConfig);
       const clobbered = await writeConfigRaw(configPath, {
         meta: { lastTouchedVersion: "2026.5.28" },
@@ -498,7 +498,7 @@ describe("config observe recovery", () => {
   it("does not auto-restore include-authored roots from stale full-file backups", async () => {
     await withSuiteHome(async (home) => {
       const { io, configPath } = createTestConfigIO(home);
-      const auditPath = path.join(home, ".openclaw", "logs", "config-audit.jsonl");
+      const auditPath = path.join(home, ".eve", "logs", "config-audit.jsonl");
       const includedConfig = {
         ...recoverableTelegramConfig,
         channels: {
@@ -636,7 +636,7 @@ describe("config observe recovery", () => {
       const { io, configPath } = createTestConfigIO(home, vi.fn(), { env });
       await seedConfigBackup(configPath, {
         gateway: { mode: "local" },
-        env: { vars: { OPENCLAW_BACKUP_ONLY: "stale" } },
+        env: { vars: { EVE_BACKUP_ONLY: "stale" } },
         agents: { defaults: { model: 123 } },
       });
       await writeConfigRaw(configPath, {
@@ -645,7 +645,7 @@ describe("config observe recovery", () => {
 
       await io.readConfigFileSnapshot({ recoverSuspicious: true });
 
-      expect(env.OPENCLAW_BACKUP_ONLY).toBeUndefined();
+      expect(env.EVE_BACKUP_ONLY).toBeUndefined();
     });
   });
 
@@ -957,7 +957,7 @@ describe("config observe recovery", () => {
     await withSuiteHome(async (home) => {
       const { deps, configPath, warn } = makeDeps(home);
       const snapshot = await makeSnapshot(configPath, recoverableTelegramConfig);
-      const healthPath = path.join(home, ".openclaw", "logs", "config-health.json");
+      const healthPath = path.join(home, ".eve", "logs", "config-health.json");
 
       await expect(
         promoteConfigSnapshotToLastKnownGood({
@@ -977,7 +977,7 @@ describe("config observe recovery", () => {
   it("logs sync health-state write failures", async () => {
     await withSuiteHome(async (home) => {
       const { deps, configPath, warn } = makeDeps(home);
-      const healthPath = path.join(home, ".openclaw", "logs", "config-health.json");
+      const healthPath = path.join(home, ".eve", "logs", "config-health.json");
       await seedConfigBackup(configPath, recoverableTelegramConfig);
       await writeClobberedUpdateChannel(configPath);
 
@@ -1132,7 +1132,7 @@ describe("config observe recovery", () => {
             {
               path: "plugins.entries.feishu",
               message:
-                "plugin feishu: plugin requires OpenClaw >=2026.4.23, but this host is 2026.4.22; skipping load",
+                "plugin feishu: plugin requires EVE >=2026.4.23, but this host is 2026.4.22; skipping load",
             },
           ],
         },

@@ -1,10 +1,10 @@
 /** Converts image provider base64/data-url payloads into generated or source image assets. */
-import { canonicalizeBase64 } from "@openclaw/media-core/base64";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { canonicalizeBase64 } from "@eve/media-core/base64";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { GeneratedImageAsset, ImageGenerationSourceImage } from "./types.js";
 
 const DEFAULT_IMAGE_MIME_TYPE = "image/png";

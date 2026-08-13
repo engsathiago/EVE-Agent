@@ -1,5 +1,5 @@
 // Irc plugin module implements outbound base behavior.
-import { sanitizeForPlainText } from "openclaw/plugin-sdk/channel-outbound";
+import { sanitizeForPlainText } from "eve-agent/plugin-sdk/channel-outbound";
 import { chunkTextForOutbound } from "./channel-api.js";
 
 export const ircOutboundBaseAdapter = {

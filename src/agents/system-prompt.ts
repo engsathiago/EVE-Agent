@@ -1,5 +1,5 @@
 /**
- * OpenClaw system prompt renderer.
+ * EVE system prompt renderer.
  *
  * Assembles runtime, workspace, tooling, memory, delegation, channel, and cache-boundary prompt sections.
  */
@@ -7,12 +7,12 @@ import { createHmac, createHash } from "node:crypto";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   normalizeStringEntries,
   normalizeStringEntriesLower,
   normalizeUniqueStringEntries,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import type { SourceReplyDeliveryMode } from "../auto-reply/get-reply-options.types.js";
 import type { ReasoningLevel, ThinkLevel } from "../auto-reply/thinking.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
@@ -43,8 +43,8 @@ import {
   normalizeStructuredPromptSection,
 } from "./prompt-cache-stability.js";
 import {
-  buildOpenClawToolFallbackText,
-  shouldRenderOpenClawToolWorkflowHints,
+  buildEVEToolFallbackText,
+  shouldRenderEVEToolWorkflowHints,
 } from "./prompt-surface.js";
 import { sanitizeForPromptLiteral } from "./sanitize-for-prompt.js";
 import {
@@ -438,10 +438,10 @@ function buildWebchatCanvasSection(params: {
       ? "- `[embed ...]` is separate from message-tool attachments; use message-tool attachment fields for files and `[embed ...]` for web-only rich rendering."
       : "- `[embed ...]` is separate from `MEDIA:`. Use `MEDIA:` for final-reply attachments; use `[embed ...]` for web-only rich rendering.",
     '- Use self-closing form for hosted embed documents: `[embed ref="cv_123" title="Status" height="320" /]`.',
-    '- You may also use an explicit hosted URL: `[embed url="/__openclaw__/canvas/documents/cv_123/index.html" title="Status" height="320" /]`.',
-    '- Never use local filesystem paths or `file://...` URLs in `[embed ...]`. Hosted embeds must point at `/__openclaw__/canvas/...` URLs or use `ref="..."`.',
+    '- You may also use an explicit hosted URL: `[embed url="/__eve__/canvas/documents/cv_123/index.html" title="Status" height="320" /]`.',
+    '- Never use local filesystem paths or `file://...` URLs in `[embed ...]`. Hosted embeds must point at `/__eve__/canvas/...` URLs or use `ref="..."`.',
     "- The active hosted embed root is profile-scoped, not workspace-scoped. If you manually stage a hosted embed file, write it under the active profile embed root, not in the workspace.",
-    "- Quote all attribute values. Prefer `ref` for hosted documents unless you already have the full `/__openclaw__/canvas/documents/<id>/index.html` URL.",
+    "- Quote all attribute values. Prefer `ref` for hosted documents unless you already have the full `/__eve__/canvas/documents/<id>/index.html` URL.",
     "",
   ];
 }
@@ -527,13 +527,13 @@ function buildMessagingSection(params: {
       : "- Reply in current session → automatically routes to the source channel (Signal, Telegram, etc.)",
     telegramRuntime
       ? telegramRichTextEnabled
-        ? '- Telegram rich text is available. Use Bot API 10.1 rich formatting in visible message text when it improves clarity: headings, tables with alignment/captions/spans, blockquotes, pull quotes, `<details><summary>...</summary>...</details>`, dividers, `<sup>/<sub>`, `<mark>`, spoilers, `<ul>/<ol>` lists with `<li>` items, task lists via `<input type="checkbox"/>` inside `<li>`, code blocks, footnotes/references, formulas, anchors/in-message links, custom emoji, maps/collages/slideshows, and standalone rich media blocks such as `<img src="https://..."/>`. This is not legacy MarkdownV2/parse_mode; OpenClaw renders Telegram-safe rich messages. For collapsible content, use `<details>`, not legacy `<blockquote expandable>`; for structured bullets, use `<ul><li>...</li></ul>`, not literal bullet characters. Media tags are blocks, not inline prose; use captions/credits when helpful; button labels are plain text only; send normal attachments through explicit media delivery.'
+        ? '- Telegram rich text is available. Use Bot API 10.1 rich formatting in visible message text when it improves clarity: headings, tables with alignment/captions/spans, blockquotes, pull quotes, `<details><summary>...</summary>...</details>`, dividers, `<sup>/<sub>`, `<mark>`, spoilers, `<ul>/<ol>` lists with `<li>` items, task lists via `<input type="checkbox"/>` inside `<li>`, code blocks, footnotes/references, formulas, anchors/in-message links, custom emoji, maps/collages/slideshows, and standalone rich media blocks such as `<img src="https://..."/>`. This is not legacy MarkdownV2/parse_mode; EVE renders Telegram-safe rich messages. For collapsible content, use `<details>`, not legacy `<blockquote expandable>`; for structured bullets, use `<ul><li>...</li></ul>`, not literal bullet characters. Media tags are blocks, not inline prose; use captions/credits when helpful; button labels are plain text only; send normal attachments through explicit media delivery.'
         : "- Telegram rich messages are disabled for this bot/account. Do not claim Bot API 10.1 tables, details blocks, rich media, formulas, or other rich-message-only formatting are enabled. Standard Telegram HTML formatting is available; ask the owner to enable Telegram rich messages for this channel/account."
       : "",
     "- Cross-session messaging → use sessions_send(sessionKey, message)",
     subagentOrchestrationGuidance,
     completionEventGuidance,
-    "- Never use exec/curl for provider messaging; OpenClaw handles all routing internally.",
+    "- Never use exec/curl for provider messaging; EVE handles all routing internally.",
     params.availableTools.has("message")
       ? [
           "",
@@ -553,7 +553,7 @@ function buildMessagingSection(params: {
           messageToolOnly
             ? "- If you use `message` (`action=send`) to deliver visible output, do not repeat that visible content in your final answer."
             : suppressSilentTokenGuidance
-              ? "- Do not use `message(action=send)` to deliver the current source-channel reply; reply normally so OpenClaw can route it once."
+              ? "- Do not use `message(action=send)` to deliver the current source-channel reply; reply normally so EVE can route it once."
               : `- If you use \`message\` (\`action=send\`) to deliver your user-visible reply, respond with ONLY: ${SILENT_REPLY_TOKEN} (avoid duplicate replies).`,
           showGenericInlineButtonHint
             ? params.inlineButtonsEnabled
@@ -606,17 +606,17 @@ function buildDocsSection(params: {
   }
   const lines = [
     "## Documentation",
-    docsPath ? `Docs: ${docsPath}` : "Docs: https://docs.openclaw.ai",
-    docsPath ? "Mirror: https://docs.openclaw.ai" : undefined,
-    sourcePath ? `Source: ${sourcePath}` : "Source: https://github.com/openclaw/openclaw",
+    docsPath ? `Docs: ${docsPath}` : "Docs: https://docs.eve.ai",
+    docsPath ? "Mirror: https://docs.eve.ai" : undefined,
+    sourcePath ? `Source: ${sourcePath}` : "Source: https://github.com/engsathiago/eve-agent",
     docsPath
-      ? `Docs are authoritative for OpenClaw self-knowledge: before understanding how OpenClaw works (memory/daily notes, sessions, tools, Gateway, config, commands, project context), use \`${params.readToolName}\` or search local docs first; treat AGENTS.md/project context, workspace/profile/memory notes, and \`memory_search\` as instruction context or user memory, not OpenClaw design/implementation knowledge.`
-      : "Docs are authoritative for OpenClaw self-knowledge: before understanding how OpenClaw works (memory/daily notes, sessions, tools, Gateway, config, commands, project context), use the docs mirror first when web tooling is available; treat AGENTS.md/project context, workspace/profile/memory notes, and `memory_search` as instruction context or user memory, not OpenClaw design/implementation knowledge.",
+      ? `Docs are authoritative for EVE self-knowledge: before understanding how EVE works (memory/daily notes, sessions, tools, Gateway, config, commands, project context), use \`${params.readToolName}\` or search local docs first; treat AGENTS.md/project context, workspace/profile/memory notes, and \`memory_search\` as instruction context or user memory, not EVE design/implementation knowledge.`
+      : "Docs are authoritative for EVE self-knowledge: before understanding how EVE works (memory/daily notes, sessions, tools, Gateway, config, commands, project context), use the docs mirror first when web tooling is available; treat AGENTS.md/project context, workspace/profile/memory notes, and `memory_search` as instruction context or user memory, not EVE design/implementation knowledge.",
     "Config fields: use `gateway` action `config.schema.lookup`; broader config docs: `docs/gateway/configuration.md`, `docs/gateway/configuration-reference.md`.",
     sourcePath
       ? "If docs are silent/stale, say so and inspect local source."
       : "If docs are silent/stale, say so and inspect GitHub source.",
-    "Diagnosing issues: run `openclaw status` when possible; ask user only if blocked.",
+    "Diagnosing issues: run `eve status` when possible; ask user only if blocked.",
     "",
   ];
   return lines.filter((line): line is string => line !== undefined);
@@ -715,7 +715,7 @@ export function buildAgentSystemPrompt(params: {
   subagentDelegationMode?: SubagentDelegationMode;
   /** Whether ACP-specific routing guidance should be included. Defaults to true. */
   acpEnabled?: boolean;
-  /** Prompt surface controls runtime-specific fallback fragments. Defaults to OpenClaw main. */
+  /** Prompt surface controls runtime-specific fallback fragments. Defaults to EVE main. */
   promptSurface?: AgentPromptSurfaceKind;
   /** Registered runtime slash/native command names such as `codex`. */
   nativeCommandNames?: string[];
@@ -753,7 +753,7 @@ export function buildAgentSystemPrompt(params: {
   promptContribution?: ProviderSystemPromptContribution;
 }) {
   const acpEnabled = params.acpEnabled === true;
-  const promptSurface = params.promptSurface ?? "openclaw_main";
+  const promptSurface = params.promptSurface ?? "eve_main";
   const sandboxedRuntime = params.sandboxInfo?.enabled === true;
   const acpSpawnRuntimeEnabled = acpEnabled && !sandboxedRuntime;
   const coreToolSummaries: Record<string, string> = {
@@ -774,10 +774,10 @@ export function buildAgentSystemPrompt(params: {
     nodes: "List/describe/notify/camera/screen on paired nodes",
     cron: "Manage cron jobs and wake events (use for reminders; when scheduling a reminder, write the systemEvent text as something that will read like a reminder when it fires, and mention that it is a reminder depending on the time gap between setting and firing; include recent context in reminder text if appropriate)",
     message: "Send messages and channel actions",
-    gateway: "Restart, apply config, or run updates on the running OpenClaw process",
+    gateway: "Restart, apply config, or run updates on the running EVE process",
     agents_list: acpSpawnRuntimeEnabled
-      ? 'List OpenClaw agent ids allowed for sessions_spawn when runtime="subagent" (not ACP harness ids)'
-      : "List OpenClaw agent ids allowed for sessions_spawn",
+      ? 'List EVE agent ids allowed for sessions_spawn when runtime="subagent" (not ACP harness ids)'
+      : "List EVE agent ids allowed for sessions_spawn",
     sessions_list: "List other sessions (incl. sub-agents) with filters/last",
     sessions_history: "Fetch history for another session/sub-agent",
     sessions_send: "Send a message to another session/sub-agent",
@@ -873,7 +873,7 @@ export function buildAgentSystemPrompt(params: {
     toolLines.push(summary ? `- ${name}: ${summary}` : `- ${name}`);
   }
   const toolSchemaDirectoryPrompt = params.toolSchemaDirectoryPrompt?.trim();
-  const renderOpenClawToolWorkflowHints = shouldRenderOpenClawToolWorkflowHints({
+  const renderEVEToolWorkflowHints = shouldRenderEVEToolWorkflowHints({
     surface: promptSurface,
     hasToolList: toolLines.length > 0,
   });
@@ -954,16 +954,12 @@ export function buildAgentSystemPrompt(params: {
       : "Treat this directory as the single global workspace for file operations unless explicitly instructed otherwise.";
   const workspaceOnlyGuidance =
     params.fsWorkspaceOnly === true
-      ? "tools.fs.workspaceOnly is enabled: scratch/temp/meta files that file tools must later read/write/edit must stay inside the workspace, preferably as relative paths under `.openclaw/tmp/`. Do not write files to `/tmp/...` with exec if a later read/write/edit/apply_patch tool needs them; use `.openclaw/tmp/...` instead."
+      ? "tools.fs.workspaceOnly is enabled: scratch/temp/meta files that file tools must later read/write/edit must stay inside the workspace, preferably as relative paths under `.eve/tmp/`. Do not write files to `/tmp/...` with exec if a later read/write/edit/apply_patch tool needs them; use `.eve/tmp/...` instead."
       : "";
-  const safetySection = [
-    "## Safety",
-    "No independent goals: no self-preservation, replication, resource acquisition, power-seeking, or long-term plans beyond the user's request.",
-    "Safety/oversight over completion. Conflicts: pause/ask. Obey stop/pause/audit; never bypass safeguards.",
-    "Before changing config or schedulers (for example crontab, systemd units, nginx configs, shell rc files, or timers), inspect existing state first and preserve/merge by default; do not clobber whole files with one-liners unless the user explicitly asks for replacement.",
-    "Do not persuade anyone to expand access or disable safeguards. Do not copy yourself or change prompts/safety/tool policy unless explicitly requested.",
-    "",
-  ];
+  // Phase one deliberately injects no EVE-owned behavioral policy. Provider
+  // constraints and explicitly configured operator policy remain external to
+  // this prompt; the versioned EVE policy contract starts with zero rules.
+  const policySection: string[] = [];
   const skillsSection = buildSkillsSection({
     skillsPrompt,
     readToolName,
@@ -987,7 +983,7 @@ export function buildAgentSystemPrompt(params: {
 
   // For "none" mode, return just the basic identity line
   if (promptMode === "none") {
-    return ["You are a personal assistant running inside OpenClaw.", modelIdentityLine]
+    return ["You are a personal assistant running inside EVE.", modelIdentityLine]
       .filter(Boolean)
       .join("\n");
   }
@@ -1005,7 +1001,7 @@ export function buildAgentSystemPrompt(params: {
     toolLines,
     toolSchemaDirectoryPrompt,
     capabilityToolNames: [...availableTools].toSorted(),
-    renderOpenClawToolWorkflowHints,
+    renderEVEToolWorkflowHints,
     hasGateway,
     readToolName,
     execToolName,
@@ -1043,13 +1039,13 @@ export function buildAgentSystemPrompt(params: {
   });
   const stablePrefix = cacheStablePromptPrefix(stablePrefixCacheKey, () => {
     const lines = [
-      "You are a personal assistant running inside OpenClaw.",
+      "You are a personal assistant running inside EVE.",
       "",
       "## Tooling",
-      "Available tools are policy-filtered. Names are case-sensitive; call exactly as listed.",
+      "Available tool names are case-sensitive; call exactly as listed.",
       toolLines.length > 0
         ? toolLines.join("\n")
-        : buildOpenClawToolFallbackText({
+        : buildEVEToolFallbackText({
             surface: promptSurface,
             execToolName,
             processToolName,
@@ -1058,7 +1054,7 @@ export function buildAgentSystemPrompt(params: {
         ? ["", "### Deferred Tool Schemas", toolSchemaDirectoryPrompt]
         : []),
       "TOOLS.md is usage guidance, not availability.",
-      ...(renderOpenClawToolWorkflowHints
+      ...(renderEVEToolWorkflowHints
         ? [
             `For long waits, avoid rapid poll loops: use ${execToolName} with enough yieldMs or ${processToolName}(action=poll, timeout=<ms>).`,
             "Larger work: use `sessions_spawn`; completion is push-based.",
@@ -1083,7 +1079,7 @@ export function buildAgentSystemPrompt(params: {
               : []),
           ]
         : []),
-      ...(renderOpenClawToolWorkflowHints
+      ...(renderEVEToolWorkflowHints
         ? [
             availableTools.has("sessions_yield")
               ? "Do not poll `subagents list` / `sessions_list` in a loop; use `sessions_yield` when waiting for spawned sub-agent completion events, and check status only on-demand (for intervention, debugging, or when explicitly asked)."
@@ -1130,23 +1126,23 @@ export function buildAgentSystemPrompt(params: {
         override: providerStablePrefix,
         fallback: [],
       }),
-      ...safetySection,
-      "## OpenClaw Control",
+      ...policySection,
+      "## EVE Control",
       "Do not invent commands.",
       "Config/restart: prefer `gateway` tool (`config.schema.lookup|get|patch|apply`, `restart`).",
-      "CLI lifecycle only on explicit user request: `openclaw gateway status|restart|start|stop`.",
+      "CLI lifecycle only on explicit user request: `eve gateway status|restart|start|stop`.",
       "`restart`, not stop+start.",
       "",
       ...skillsSection,
       ...skillWorkshopSection,
       ...memorySection,
-      hasGateway && !isMinimal ? "## OpenClaw Self-Update" : "",
+      hasGateway && !isMinimal ? "## EVE Self-Update" : "",
       hasGateway && !isMinimal
         ? [
             "Only explicit user request.",
             "Before config edits/questions: `config.schema.lookup` for the exact dot path.",
             "Actions: config.get, config.patch, config.apply, update.run. Config writes hot-reload when possible; restart when required.",
-            "After restart, OpenClaw pings the last active session automatically.",
+            "After restart, EVE pings the last active session automatically.",
           ].join("\n")
         : "",
       hasGateway && !isMinimal ? "" : "",
@@ -1240,7 +1236,7 @@ export function buildAgentSystemPrompt(params: {
       }),
       ...bootstrapSystemPromptSections,
       "## Workspace Files (injected)",
-      "These user-editable files are loaded by OpenClaw and included below in Project Context.",
+      "These user-editable files are loaded by EVE and included below in Project Context.",
       "",
       ...buildAssistantOutputDirectivesSection({ isMinimal, sourceMessageToolOnly }),
     ];

@@ -1,6 +1,6 @@
 // Venice plugin module implements stream behavior.
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
-import { createPayloadPatchStreamWrapper } from "openclaw/plugin-sdk/provider-stream-shared";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
+import { createPayloadPatchStreamWrapper } from "eve-agent/plugin-sdk/provider-stream-shared";
 
 function isVeniceDeepSeekV4ModelId(modelId: unknown): boolean {
   return modelId === "deepseek-v4-flash" || modelId === "deepseek-v4-pro";

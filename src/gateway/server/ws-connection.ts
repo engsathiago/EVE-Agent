@@ -1,7 +1,7 @@
 // Gateway WebSocket connection handler owns pre-auth limits, handshake auth, presence, and message-handler attachment.
 import { randomUUID } from "node:crypto";
 import type { Socket } from "node:net";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type { RawData, WebSocket, WebSocketServer } from "ws";
 import {
   GATEWAY_STARTUP_CLOSE_CODE,
@@ -257,15 +257,15 @@ export function attachGatewayWsConnectionHandler(params: AttachGatewayWsConnecti
     const { remoteAddr, remotePort, localAddr, localPort, endpoint } = resolveSocketAddress(socket);
     const preauthBudgetKey = (
       socket as WebSocket & {
-        __openclawPreauthBudgetClaimed?: boolean;
-        __openclawPreauthBudgetKey?: string;
+        __evePreauthBudgetClaimed?: boolean;
+        __evePreauthBudgetKey?: string;
       }
-    )["__openclawPreauthBudgetKey"];
+    )["__evePreauthBudgetKey"];
     (
       socket as WebSocket & {
-        __openclawPreauthBudgetClaimed?: boolean;
+        __evePreauthBudgetClaimed?: boolean;
       }
-    )["__openclawPreauthBudgetClaimed"] = true;
+    )["__evePreauthBudgetClaimed"] = true;
     const headerValue = (value: string | string[] | undefined) =>
       Array.isArray(value) ? value[0] : value;
     const requestHost = headerValue(upgradeReq.headers.host);

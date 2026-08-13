@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/msteams",
+  "name": "@eve/msteams",
   "version": "2026.6.8",
-  "description": "OpenClaw Microsoft Teams channel plugin for bot conversations.",
+  "description": "EVE Microsoft Teams channel plugin for bot conversations.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -15,19 +15,19 @@
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
+    "@eve/plugin-sdk": "workspace:*",
     "jose": "6.2.3",
-    "openclaw": "2026.5.28"
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
@@ -51,7 +51,7 @@
       }
     },
     "install": {
-      "npmSpec": "@openclaw/msteams",
+      "npmSpec": "@eve/msteams",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -59,7 +59,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8"
+      "eveVersion": "2026.6.8"
     },
     "release": {
       "publishToClawHub": true,

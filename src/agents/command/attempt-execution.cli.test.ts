@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../../config/sessions.js";
 import { clearSessionStoreCacheForTest } from "../../config/sessions/store.js";
 import { appendSessionTranscriptMessage } from "../../config/sessions/transcript-append.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { captureEnv, setTestEnvValue } from "../../test-utils/env.js";
 import { saveAuthProfileStore } from "../auth-profiles/store.js";
 import type { EmbeddedAgentRunResult } from "../embedded-agent.js";
@@ -80,7 +80,7 @@ vi.mock("../model-runtime-aliases.js", async () => {
       modelId,
     }: {
       provider?: string;
-      cfg?: OpenClawConfig;
+      cfg?: EVEConfig;
       modelId?: string;
     }) => {
       const key = provider && modelId ? `${provider}/${modelId}` : undefined;
@@ -203,7 +203,7 @@ function firstRunCliAgentArg(callIndex = 0) {
 }
 
 function firstEmbeddedAgentArg(callIndex = 0) {
-  return requireMockArg(runEmbeddedAgentMock, callIndex, "embedded OpenClaw agent argument");
+  return requireMockArg(runEmbeddedAgentMock, callIndex, "embedded EVE agent argument");
 }
 
 describe("CLI attempt execution", () => {
@@ -213,7 +213,7 @@ describe("CLI attempt execution", () => {
 
   beforeEach(async () => {
     homeEnvSnapshot = captureEnv(["HOME"]);
-    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cli-attempt-"));
+    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-cli-attempt-"));
     storePath = path.join(tmpDir, "sessions.json");
     runCliAgentMock.mockReset();
     runEmbeddedAgentMock.mockReset();
@@ -240,7 +240,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry: params.sessionEntry,
       sessionId: params.sessionEntry.sessionId,
       sessionKey: params.sessionKey,
@@ -289,11 +289,11 @@ describe("CLI attempt execution", () => {
   }
 
   function makeClaudeCliSessionEntry(
-    openclawSessionId: string,
+    eveSessionId: string,
     cliSessionId: string,
   ): SessionEntry {
     return {
-      sessionId: openclawSessionId,
+      sessionId: eveSessionId,
       updatedAt: Date.now(),
       cliSessionBindings: {
         "claude-cli": {
@@ -357,7 +357,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -486,7 +486,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -555,7 +555,7 @@ describe("CLI attempt execution", () => {
     const homeDir = path.join(tmpDir, "home");
     setTestEnvValue("HOME", homeDir);
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-123",
+      sessionId: "eve-session-123",
       updatedAt: Date.now(),
       cliSessionBindings: {
         "claude-cli": {
@@ -616,7 +616,7 @@ describe("CLI attempt execution", () => {
       "utf-8",
     );
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-456",
+      sessionId: "eve-session-456",
       updatedAt: Date.now(),
       cliSessionBindings: {
         "claude-cli": {
@@ -671,7 +671,7 @@ describe("CLI attempt execution", () => {
       })}\n`,
       "utf-8",
     );
-    const sessionEntry = makeClaudeCliSessionEntry("openclaw-session-cwd", cliSessionId);
+    const sessionEntry = makeClaudeCliSessionEntry("eve-session-cwd", cliSessionId);
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
     await fs.writeFile(storePath, JSON.stringify(sessionStore, null, 2), "utf-8");
     runCliAgentMock.mockResolvedValueOnce(makeCliResult("resumed cli response"));
@@ -694,7 +694,7 @@ describe("CLI attempt execution", () => {
   it("passes session-bound OpenAI Codex auth profile to codex-cli aliases", async () => {
     const sessionKey = "agent:main:direct:codex-cli-auth-alias";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-codex",
+      sessionId: "eve-session-codex",
       updatedAt: Date.now(),
       authProfileOverride: "openai:work",
       authProfileOverrideSource: "user",
@@ -707,7 +707,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "codex-cli",
       originalProvider: "codex-cli",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -740,11 +740,11 @@ describe("CLI attempt execution", () => {
   it("skips auto auth-profile resolution for CLI-owned transport", async () => {
     const sessionKey = "agent:main:direct:codex-cli-owned-transport";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-codex-owned",
+      sessionId: "eve-session-codex-owned",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           agentRuntime: { id: "codex" },
@@ -792,7 +792,7 @@ describe("CLI attempt execution", () => {
   it("selects a google-gemini-cli auth profile for canonical Google models routed through Gemini CLI", async () => {
     const sessionKey = "agent:main:direct:gemini-cli-auth-bridge";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-gemini",
+      sessionId: "eve-session-gemini",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -835,7 +835,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -869,7 +869,7 @@ describe("CLI attempt execution", () => {
   it("forwards pinned canonical Google API-key profiles to Google models routed through Gemini CLI", async () => {
     const sessionKey = "agent:main:direct:gemini-cli-google-api-key";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-gemini-api-key",
+      sessionId: "eve-session-gemini-api-key",
       updatedAt: Date.now(),
       authProfileOverride: "google:api-key",
       authProfileOverrideSource: "user",
@@ -906,7 +906,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -940,7 +940,7 @@ describe("CLI attempt execution", () => {
   it("forwards incompatible pinned profiles to Gemini CLI for fail-closed backend validation", async () => {
     const sessionKey = "agent:main:direct:gemini-cli-incompatible-auth";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-gemini-incompatible-auth",
+      sessionId: "eve-session-gemini-incompatible-auth",
       updatedAt: Date.now(),
       authProfileOverride: "vercel-ai-gateway:default",
       authProfileOverrideSource: "user",
@@ -977,7 +977,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1011,7 +1011,7 @@ describe("CLI attempt execution", () => {
   it("ignores stale auto-selected profiles when resolving Gemini CLI auth order", async () => {
     const sessionKey = "agent:main:direct:gemini-cli-stale-auto-auth";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-gemini-stale-auto-auth",
+      sessionId: "eve-session-gemini-stale-auto-auth",
       updatedAt: Date.now(),
       authProfileOverride: "openai:work",
       authProfileOverrideSource: "auto",
@@ -1060,7 +1060,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1094,7 +1094,7 @@ describe("CLI attempt execution", () => {
   it("selects canonical Google API-key auth order for Google models routed through Gemini CLI", async () => {
     const sessionKey = "agent:main:direct:gemini-cli-google-api-key-order";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-gemini-api-key-order",
+      sessionId: "eve-session-gemini-api-key-order",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1134,7 +1134,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1421,7 +1421,7 @@ describe("CLI attempt execution", () => {
     expect(validEntries.filter((entry) => entry.type === "message")).toHaveLength(1);
   });
 
-  it("embedded assistant gap-fill skips trailing openclaw.cache-ttl custom entries (regression for #83427)", async () => {
+  it("embedded assistant gap-fill skips trailing eve.cache-ttl custom entries (regression for #83427)", async () => {
     const sessionKey = "agent:main:subagent:embedded-gap-fill-cache-ttl";
     const sessionEntry: SessionEntry = {
       sessionId: "session-embedded-gap-fill-cache-ttl",
@@ -1460,7 +1460,7 @@ describe("CLI attempt execution", () => {
       sessionFile,
       `${JSON.stringify({
         type: "custom",
-        customType: "openclaw.cache-ttl",
+        customType: "eve.cache-ttl",
         timestamp: new Date().toISOString(),
         data: {
           provider: "anthropic",
@@ -1580,9 +1580,9 @@ describe("CLI attempt execution", () => {
 
     const updatedEntry = await persistCliTranscriptEntry({
       body: [
-        "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+        "<<<BEGIN_EVE_INTERNAL_CONTEXT>>>",
         "secret runtime context",
-        "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+        "<<<END_EVE_INTERNAL_CONTEXT>>>",
         "",
         "visible ask",
       ].join("\n"),
@@ -1608,7 +1608,7 @@ describe("CLI attempt execution", () => {
   it("forwards separate user trigger, channel, and provider context to CLI runs", async () => {
     const sessionKey = "agent:main:direct:claude-channel-context";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-channel",
+      sessionId: "eve-session-channel",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1619,7 +1619,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1663,7 +1663,7 @@ describe("CLI attempt execution", () => {
   it("forwards message-tool-only policy and requires explicit subagent targets", async () => {
     const sessionKey = "agent:main:subagent:claude-message-policy";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-cli-message-policy",
+      sessionId: "eve-session-cli-message-policy",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1674,7 +1674,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1711,7 +1711,7 @@ describe("CLI attempt execution", () => {
   it("does not pass auth-order profiles to CLI backends that do not stage them", async () => {
     const sessionKey = "agent:main:direct:claude-auth-order";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-claude-auth-order",
+      sessionId: "eve-session-claude-auth-order",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1728,7 +1728,7 @@ describe("CLI attempt execution", () => {
             "claude-cli": ["claude-cli:work"],
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1761,7 +1761,7 @@ describe("CLI attempt execution", () => {
   it("does not pass auth-order profiles to configured CLI runtimes that do not stage them", async () => {
     const sessionKey = "agent:main:direct:anthropic-claude-runtime-auth-order";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-anthropic-claude-runtime-auth-order",
+      sessionId: "eve-session-anthropic-claude-runtime-auth-order",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1799,7 +1799,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1836,7 +1836,7 @@ describe("CLI attempt execution", () => {
   it("forwards runtime toolsAllow into CLI attempts so the CLI harness can fail closed", async () => {
     const sessionKey = "agent:main:direct:claude-tools-allow";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-cli-tools-allow",
+      sessionId: "eve-session-cli-tools-allow",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1847,7 +1847,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1886,7 +1886,7 @@ describe("CLI attempt execution", () => {
     vi.setSystemTime(new Date("2024-06-05T15:30:00Z"));
     const sessionKey = "agent:main:direct:claude-timestamp";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-cli-timestamp",
+      sessionId: "eve-session-cli-timestamp",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1897,7 +1897,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "opus",
-      cfg: { agents: { defaults: { userTimezone: "UTC" } } } as OpenClawConfig,
+      cfg: { agents: { defaults: { userTimezone: "UTC" } } } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1931,7 +1931,7 @@ describe("CLI attempt execution", () => {
   it("routes canonical Anthropic models through the configured Claude CLI runtime", async () => {
     const sessionKey = "agent:main:direct:canonical-claude-cli";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-canonical-cli",
+      sessionId: "eve-session-canonical-cli",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -1950,7 +1950,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -1986,7 +1986,7 @@ describe("CLI attempt execution", () => {
   it("routes provider-qualified Anthropic shorthand through the configured Claude CLI runtime", async () => {
     const sessionKey = "agent:main:direct:shorthand-claude-cli";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-shorthand-cli",
+      sessionId: "eve-session-shorthand-cli",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -2005,7 +2005,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2041,7 +2041,7 @@ describe("CLI attempt execution", () => {
   it("routes canonical OpenAI models through the configured embedded Codex runtime", async () => {
     const sessionKey = "agent:main:direct:canonical-codex-cli";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-canonical-codex-cli",
+      sessionId: "eve-session-canonical-codex-cli",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -2051,7 +2051,7 @@ describe("CLI attempt execution", () => {
       meta: {
         durationMs: 5,
         finalAssistantVisibleText: "canonical codex embedded",
-        executionTrace: { runner: "openclaw" },
+        executionTrace: { runner: "eve" },
       },
     });
 
@@ -2067,7 +2067,7 @@ describe("CLI attempt execution", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2103,7 +2103,7 @@ describe("CLI attempt execution", () => {
   it("forwards selected auth profiles through metadata-scoped provider aliases", async () => {
     const sessionKey = "agent:main:direct:metadata-auth-alias";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-metadata-auth-alias",
+      sessionId: "eve-session-metadata-auth-alias",
       updatedAt: Date.now(),
       authProfileOverride: "openai:work",
       authProfileOverrideSource: "user",
@@ -2134,7 +2134,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "fixture",
       originalProvider: "fixture",
       modelOverride: "fixture-model",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2182,7 +2182,7 @@ describe("CLI attempt execution", () => {
     const { clearAgentHarnesses, registerAgentHarness } = await import("../harness/registry.js");
     const sessionKey = "agent:main:direct:openai-chatgpt-api-key";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-openai-chatgpt-api-key",
+      sessionId: "eve-session-openai-chatgpt-api-key",
       updatedAt: Date.now(),
       authProfileOverride: "openai:backup",
       authProfileOverrideSource: "user",
@@ -2219,7 +2219,7 @@ describe("CLI attempt execution", () => {
         providerOverride: "openai",
         originalProvider: "openai",
         modelOverride: "gpt-5.4",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         sessionEntry,
         sessionId: sessionEntry.sessionId,
         sessionKey,
@@ -2259,7 +2259,7 @@ describe("CLI attempt execution", () => {
   it("keeps one-shot model runs on the raw embedded provider path", async () => {
     const sessionKey = "agent:main:direct:model-run-raw";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-model-run-raw",
+      sessionId: "eve-session-model-run-raw",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -2278,7 +2278,7 @@ describe("CLI attempt execution", () => {
             agentRuntime: { id: "claude-cli" },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2317,7 +2317,7 @@ describe("CLI attempt execution", () => {
     expectMockArgFields(runEmbeddedAgentMock, {
       provider: "anthropic",
       model: "claude-opus-4-7",
-      agentHarnessId: "openclaw",
+      agentHarnessId: "eve",
       prompt: "raw prompt",
       messageChannel: "discord",
       messageProvider: "discord-voice",
@@ -2331,7 +2331,7 @@ describe("CLI attempt execution", () => {
   it("forwards trusted elevated defaults to embedded agent runs", async () => {
     const sessionKey = "agent:main:telegram:direct:123";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-elevated-followup",
+      sessionId: "eve-session-elevated-followup",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -2349,7 +2349,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "openai",
       originalProvider: "openai",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2387,7 +2387,7 @@ describe("CLI attempt execution", () => {
   it("forwards one-shot CLI cleanup to CLI providers", async () => {
     const sessionKey = "agent:main:direct:cleanup-claude-cli";
     const sessionEntry: SessionEntry = {
-      sessionId: "openclaw-session-cleanup-cli",
+      sessionId: "eve-session-cleanup-cli",
       updatedAt: Date.now(),
     };
     const sessionStore: Record<string, SessionEntry> = { [sessionKey]: sessionEntry };
@@ -2398,7 +2398,7 @@ describe("CLI attempt execution", () => {
       providerOverride: "claude-cli",
       originalProvider: "claude-cli",
       modelOverride: "claude-opus-4-7",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey,
@@ -2439,7 +2439,7 @@ describe("embedded attempt harness pinning", () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-embedded-attempt-"));
+    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-embedded-attempt-"));
     runCliAgentMock.mockReset();
     runEmbeddedAgentMock.mockReset();
   });
@@ -2461,7 +2461,7 @@ describe("embedded attempt harness pinning", () => {
       providerOverride: "openai",
       originalProvider: "openai",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2502,7 +2502,7 @@ describe("embedded attempt harness pinning", () => {
       providerOverride: "minimax",
       originalProvider: "minimax",
       modelOverride: "minimax-m2.7",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2542,7 +2542,7 @@ describe("embedded attempt harness pinning", () => {
       providerOverride: "openai",
       originalProvider: "openai",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2594,7 +2594,7 @@ describe("embedded attempt harness pinning", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2659,7 +2659,7 @@ describe("embedded attempt harness pinning", () => {
         providerOverride: "openai",
         originalProvider: "openai",
         modelOverride: "gpt-5.4",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         sessionEntry,
         sessionId: sessionEntry.sessionId,
         sessionKey: "agent:main:main",
@@ -2706,7 +2706,7 @@ describe("embedded attempt harness pinning", () => {
       providerOverride: "openai",
       originalProvider: "openai",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2733,11 +2733,11 @@ describe("embedded attempt harness pinning", () => {
     expectMockArgFields(runEmbeddedAgentMock, { agentHarnessId: undefined });
   });
 
-  it("ignores stale OpenAI sessions pinned to OpenClaw and relies on default Codex routing", async () => {
+  it("ignores stale OpenAI sessions pinned to EVE and relies on default Codex routing", async () => {
     const sessionEntry: SessionEntry = {
       sessionId: "stale-agent-session",
       updatedAt: Date.now(),
-      agentHarnessId: "openclaw",
+      agentHarnessId: "eve",
     };
     runEmbeddedAgentMock.mockResolvedValueOnce({
       meta: { durationMs: 1 },
@@ -2747,7 +2747,7 @@ describe("embedded attempt harness pinning", () => {
       providerOverride: "openai",
       originalProvider: "openai",
       modelOverride: "gpt-5.4",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2777,7 +2777,7 @@ describe("embedded attempt harness pinning", () => {
     });
   });
 
-  it("routes explicit OpenAI native runs with legacy Codex OAuth through OpenClaw", async () => {
+  it("routes explicit OpenAI native runs with legacy Codex OAuth through EVE", async () => {
     const sessionEntry: SessionEntry = {
       sessionId: "explicit-agent-codex-oauth-session",
       updatedAt: Date.now(),
@@ -2797,12 +2797,12 @@ describe("embedded attempt harness pinning", () => {
           providers: {
             openai: {
               baseUrl: "https://api.openai.com/v1",
-              agentRuntime: { id: "openclaw" },
+              agentRuntime: { id: "eve" },
               models: [],
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",
@@ -2829,8 +2829,8 @@ describe("embedded attempt harness pinning", () => {
     expectMockArgFields(runEmbeddedAgentMock, {
       provider: "openai",
       model: "gpt-5.4",
-      agentHarnessId: "openclaw",
-      agentHarnessRuntimeOverride: "openclaw",
+      agentHarnessId: "eve",
+      agentHarnessRuntimeOverride: "eve",
       authProfileId: "openai:work",
       authProfileIdSource: "user",
     });
@@ -2855,7 +2855,7 @@ describe("embedded attempt harness pinning", () => {
             agentRuntime: { id: "claude-cli" },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sessionEntry,
       sessionId: sessionEntry.sessionId,
       sessionKey: "agent:main:main",

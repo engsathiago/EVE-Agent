@@ -2,7 +2,7 @@ import { listPersistedRuntimeToolSchemaQuarantines } from "../agents/tool-schema
 import { resolveReadOnlyChannelPluginsForConfig } from "../channels/plugins/read-only.js";
 // Runtime plugin health collection is isolated from pure status formatting so
 // ordinary status tests do not eagerly load plugin registry internals.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { listContextEngineQuarantines } from "../context-engine/registry.js";
 import { getActiveRuntimePluginRegistry } from "../plugins/active-runtime-registry.js";
 import {
@@ -69,7 +69,7 @@ function normalizeCompatibilityNotice(
 }
 
 function collectChannelPluginFailures(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   diagnostics?: readonly PluginDiagnosticRecord[];
   workspaceDir?: string;
 }): ChannelPluginFailureRecord[] {
@@ -172,7 +172,7 @@ export function collectRuntimePluginHealthSnapshot(): StatusPluginHealthSnapshot
 }
 
 export async function collectInstalledPluginHealthSnapshot(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): Promise<StatusPluginHealthSnapshot> {
   const { buildPluginCompatibilityNotices, buildPluginSnapshotReport } =

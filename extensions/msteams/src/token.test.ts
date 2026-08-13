@@ -20,9 +20,9 @@ vi.mock("./oauth.token.js", () => ({
 
 vi.mock("./storage.js", () => ({
   resolveMSTeamsStorePath: ({ filename }: { filename: string }) => {
-    const stateDir = process.env.OPENCLAW_STATE_DIR;
+    const stateDir = process.env.EVE_STATE_DIR;
     if (!stateDir) {
-      throw new Error("OPENCLAW_STATE_DIR is required for token tests");
+      throw new Error("EVE_STATE_DIR is required for token tests");
     }
     return `${stateDir}/${filename}`;
   },
@@ -45,7 +45,7 @@ const ENV_KEYS = [
   "MSTEAMS_CERTIFICATE_THUMBPRINT",
   "MSTEAMS_USE_MANAGED_IDENTITY",
   "MSTEAMS_MANAGED_IDENTITY_CLIENT_ID",
-  "OPENCLAW_STATE_DIR",
+  "EVE_STATE_DIR",
 ] as const;
 
 let savedEnv: Record<string, string | undefined> = {};
@@ -284,8 +284,8 @@ describe("resolveDelegatedAccessToken", () => {
 
   beforeEach(() => {
     saveAndClearEnv();
-    stateDir = mkdtempSync(path.join(os.tmpdir(), "openclaw-msteams-token-"));
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+    stateDir = mkdtempSync(path.join(os.tmpdir(), "eve-msteams-token-"));
+    process.env.EVE_STATE_DIR = stateDir;
     oauthTokenMocks.refreshMSTeamsDelegatedTokens.mockReset();
   });
 

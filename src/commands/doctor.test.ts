@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   runPostUpgradeProbes: vi.fn(),
-  resolveInstalledPluginIndexStorePath: vi.fn(() => "/tmp/openclaw-installed-plugins.json"),
+  resolveInstalledPluginIndexStorePath: vi.fn(() => "/tmp/eve-installed-plugins.json"),
 }));
 
 vi.mock("./doctor-post-upgrade.js", () => ({

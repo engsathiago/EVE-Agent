@@ -1,5 +1,5 @@
-/** Auth availability index for `openclaw models list` rows. */
-import { normalizeProviderIdForAuth } from "@openclaw/model-catalog-core/provider-id";
+/** Auth availability index for `eve models list` rows. */
+import { normalizeProviderIdForAuth } from "@eve/model-catalog-core/provider-id";
 import type { AuthProfileStore } from "../../agents/auth-profiles/types.js";
 import type { AuthProfileCredential } from "../../agents/auth-profiles/types.js";
 import {
@@ -18,7 +18,7 @@ import {
   openAIProviderUsesCodexRuntimeByDefault,
 } from "../../agents/openai-routing.js";
 import { resolveAgentModelPrimaryValue } from "../../config/model-input.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
 import { loadPluginRegistrySnapshotWithMetadata } from "../../plugins/plugin-registry.js";
 
@@ -29,7 +29,7 @@ export type ModelListAuthIndex = {
 
 /** Inputs used to build the auth index without re-reading process-wide state. */
 export type CreateModelListAuthIndexParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   authStore: AuthProfileStore;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
@@ -57,7 +57,7 @@ function normalizeStoredAuthProvider(
 }
 
 function listValidatedSyntheticAuthProviderRefs(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
   metadataSnapshot?: PluginMetadataSnapshot;

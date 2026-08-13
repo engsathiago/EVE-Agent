@@ -1,7 +1,7 @@
 /**
  * Orchestrates one agent attempt across embedded, CLI, and ACP runtimes.
  */
-import type { AcpRuntimeEvent } from "@openclaw/acp-core/runtime/types";
+import type { AcpRuntimeEvent } from "@eve/acp-core/runtime/types";
 import { sanitizeForLog } from "../../../packages/terminal-core/src/ansi.js";
 import { formatAcpErrorChain } from "../../acp/runtime/errors.js";
 import { normalizeReplyPayload } from "../../auto-reply/reply/normalize-reply.js";
@@ -9,7 +9,7 @@ import type { ThinkLevel, VerboseLevel } from "../../auto-reply/thinking.js";
 import { persistSessionTranscriptTurn } from "../../config/sessions/session-accessor.js";
 import { readTailAssistantTextFromSessionTranscript } from "../../config/sessions/transcript.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   injectTimestamp,
   timestampOptsFromConfig,
@@ -117,7 +117,7 @@ type PersistTextTurnTranscriptParams = {
   sessionAgentId: string;
   threadId?: string | number;
   sessionCwd: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   embeddedAssistantGapFill?: boolean;
   assistant: {
     api: string;
@@ -154,7 +154,7 @@ function resolveProfileAuthFromStore(params: { agentDir: string; profileId: stri
 }
 
 function resolveHarnessAuthProfileSelection(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir: string;
   workspaceDir: string;
   provider: string;
@@ -222,7 +222,7 @@ function resolveHarnessAuthProfileSelection(params: {
 
 function cliBackendAcceptsAuthProfileForwarding(params: {
   provider: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentId?: string;
 }): boolean {
   const backend = resolveCliBackendConfig(params.provider, params.config, {
@@ -234,7 +234,7 @@ function cliBackendAcceptsAuthProfileForwarding(params: {
 function resolveCliExecutionAuthProfileId(params: {
   cliExecutionProvider: string;
   authProfileProvider: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir: string;
   selected: HarnessAuthProfileSelection;
 }): string | undefined {
@@ -402,13 +402,13 @@ export async function persistAcpTurnTranscript(params: {
   sessionAgentId: string;
   threadId?: string | number;
   sessionCwd: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<PersistTextTurnTranscriptResult> {
   return await persistTextTurnTranscript({
     ...params,
     assistant: {
       api: "openai-responses",
-      provider: "openclaw",
+      provider: "eve",
       model: "acp-runtime",
     },
   });
@@ -427,7 +427,7 @@ export async function persistCliTurnTranscript(params: {
   sessionAgentId: string;
   threadId?: string | number;
   sessionCwd: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   embeddedAssistantGapFill?: boolean;
 }): Promise<PersistTextTurnTranscriptResult> {
   const replyText = resolveCliTranscriptReplyText(params.result);
@@ -463,7 +463,7 @@ export function runAgentAttempt(params: {
   providerOverride: string;
   modelOverride: string;
   originalProvider: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionEntry: SessionEntry | undefined;
   sessionId: string;
   sessionKey: string | undefined;
@@ -530,7 +530,7 @@ export function runAgentAttempt(params: {
   );
   const bootstrapPromptWarningSignature =
     bootstrapPromptWarningSignaturesSeen[bootstrapPromptWarningSignaturesSeen.length - 1];
-  const requestedAgentHarnessId = isRawModelRun ? "openclaw" : undefined;
+  const requestedAgentHarnessId = isRawModelRun ? "eve" : undefined;
   const cliExecutionProvider = isRawModelRun
     ? params.providerOverride
     : (resolveCliRuntimeExecutionProvider({
@@ -549,7 +549,7 @@ export function runAgentAttempt(params: {
       agentId: params.sessionAgentId,
     });
   const agentHarnessPolicy = isRawModelRun
-    ? ({ runtime: "openclaw", runtimeSource: "model" } as const)
+    ? ({ runtime: "eve", runtimeSource: "model" } as const)
     : resolveAvailableAgentHarnessPolicy({
         provider: params.providerOverride,
         modelId: params.modelOverride,
@@ -605,8 +605,8 @@ export function runAgentAttempt(params: {
   });
   const embeddedAgentHarnessOverride =
     requestedAgentHarnessId ??
-    (agentHarnessPolicy.runtime === "openclaw" && agentHarnessPolicy.runtimeSource !== "implicit"
-      ? "openclaw"
+    (agentHarnessPolicy.runtime === "eve" && agentHarnessPolicy.runtimeSource !== "implicit"
+      ? "eve"
       : undefined);
   if (!isRawModelRun && isCliExecutionProvider) {
     const cliSessionBinding = getCliSessionBinding(params.sessionEntry, cliExecutionProvider);

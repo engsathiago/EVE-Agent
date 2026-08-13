@@ -4,7 +4,7 @@ description: "iMessage/SMS CLI for listing chats, history, and sending messages 
 homepage: https://imsg.to
 metadata:
   {
-    "openclaw":
+    "eve":
       {
         "emoji": "📨",
         "os": ["darwin"],
@@ -47,7 +47,7 @@ Do not use when:
 - Slack messages -> use `slack` skill
 - Group chat management (adding/removing members) -> not supported
 - Bulk/mass messaging -> always confirm with user first
-- Replying in current conversation -> just reply normally (OpenClaw routes automatically)
+- Replying in current conversation -> just reply normally (EVE routes automatically)
 
 ## Requirements
 

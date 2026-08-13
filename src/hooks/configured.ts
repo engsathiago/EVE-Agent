@@ -1,6 +1,6 @@
 // Configured hook helpers combine config and install records into active hooks.
 import type { HookConfig, HookInstallRecord } from "../config/types.hooks.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { getLegacyInternalHookHandlers } from "./legacy-config.js";
 
 function hasEnabledFlag(entry: HookConfig | undefined): boolean {
@@ -19,7 +19,7 @@ function hasConfiguredInstalls(installs: Record<string, HookInstallRecord> | und
 }
 
 /** Return whether config can load any internal hooks, including legacy handlers. */
-export function hasConfiguredInternalHooks(config: OpenClawConfig): boolean {
+export function hasConfiguredInternalHooks(config: EVEConfig): boolean {
   const internal = config.hooks?.internal;
   if (!internal || internal.enabled === false) {
     return false;
@@ -40,7 +40,7 @@ export function hasConfiguredInternalHooks(config: OpenClawConfig): boolean {
 }
 
 /** Resolve explicitly configured internal hook names; null means all/discovered hooks may load. */
-export function resolveConfiguredInternalHookNames(config: OpenClawConfig): Set<string> | null {
+export function resolveConfiguredInternalHookNames(config: EVEConfig): Set<string> | null {
   const internal = config.hooks?.internal;
   if (!internal || internal.enabled === false) {
     return new Set();

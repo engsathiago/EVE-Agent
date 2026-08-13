@@ -38,7 +38,7 @@ export type AcpxPluginConfig = {
   permissionMode?: AcpxPermissionMode;
   nonInteractivePermissions?: AcpxNonInteractivePermissionPolicy;
   pluginToolsMcpBridge?: boolean;
-  openClawToolsMcpBridge?: boolean;
+  eveToolsMcpBridge?: boolean;
   strictWindowsCmdWrapper?: boolean;
   timeoutSeconds?: number;
   queueOwnerTtlSeconds?: number;
@@ -54,7 +54,7 @@ export type ResolvedAcpxPluginConfig = {
   permissionMode: AcpxPermissionMode;
   nonInteractivePermissions: AcpxNonInteractivePermissionPolicy;
   pluginToolsMcpBridge: boolean;
-  openClawToolsMcpBridge: boolean;
+  eveToolsMcpBridge: boolean;
   strictWindowsCmdWrapper: boolean;
   timeoutSeconds?: number;
   queueOwnerTtlSeconds: number;
@@ -87,7 +87,7 @@ const McpServerConfigSchema = z.object({
     .describe("Environment variables for the MCP server"),
 });
 
-/** Zod schema for validating raw ACPX plugin config from OpenClaw config. */
+/** Zod schema for validating raw ACPX plugin config from EVE config. */
 export const AcpxPluginConfigSchema = z.strictObject({
   cwd: nonEmptyTrimmedString("cwd must be a non-empty string").optional(),
   stateDir: nonEmptyTrimmedString("stateDir must be a non-empty string").optional(),
@@ -103,8 +103,8 @@ export const AcpxPluginConfigSchema = z.strictObject({
     })
     .optional(),
   pluginToolsMcpBridge: z.boolean({ error: "pluginToolsMcpBridge must be a boolean" }).optional(),
-  openClawToolsMcpBridge: z
-    .boolean({ error: "openClawToolsMcpBridge must be a boolean" })
+  eveToolsMcpBridge: z
+    .boolean({ error: "eveToolsMcpBridge must be a boolean" })
     .optional(),
   strictWindowsCmdWrapper: z
     .boolean({ error: "strictWindowsCmdWrapper must be a boolean" })

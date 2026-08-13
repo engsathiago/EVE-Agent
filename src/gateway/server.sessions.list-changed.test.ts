@@ -6,7 +6,7 @@ import path from "node:path";
 import {
   createPluginRegistryFixture,
   registerTestPlugin,
-} from "openclaw/plugin-sdk/plugin-test-contracts";
+} from "eve-agent/plugin-sdk/plugin-test-contracts";
 import { afterEach, expect, test, vi } from "vitest";
 import { loadSessionStore } from "../config/sessions.js";
 import { createEmptyPluginRegistry } from "../plugins/registry-empty.js";
@@ -354,7 +354,7 @@ test("sessions.list keeps bulk rows lightweight and uses persisted model fields"
       JSON.stringify({
         message: {
           role: "assistant",
-          provider: "openclaw",
+          provider: "eve",
           model: "delivery-mirror",
           usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
         },

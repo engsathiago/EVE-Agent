@@ -118,7 +118,7 @@ describe("dependency guard workflow", () => {
     const detectSteps = detectJob?.steps ?? [];
     const autoscrubSteps = autoscrubJob?.steps ?? [];
     const finalSteps = finalJob?.steps ?? [];
-    expect(detectSteps[1].env?.OPENCLAW_DEPENDENCY_GUARD_MODE).toBe("detect");
+    expect(detectSteps[1].env?.EVE_DEPENDENCY_GUARD_MODE).toBe("detect");
     expect(autoscrubSteps[1].uses).toBe(
       "actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3",
     );
@@ -140,11 +140,11 @@ describe("dependency guard workflow", () => {
     });
     expect(autoscrubSteps[2]["continue-on-error"]).toBe(true);
     expect(autoscrubSteps[3].env?.GITHUB_TOKEN).toBe("${{ github.token }}");
-    expect(autoscrubSteps[3].env?.OPENCLAW_DEPENDENCY_GUARD_AUTOSCRUB_TOKEN).toBe(
+    expect(autoscrubSteps[3].env?.EVE_DEPENDENCY_GUARD_AUTOSCRUB_TOKEN).toBe(
       "${{ steps.app-token.outputs.token || steps.app-token-fallback.outputs.token }}",
     );
-    expect(autoscrubSteps[3].env?.OPENCLAW_DEPENDENCY_GUARD_MODE).toBe("autoscrub");
-    expect(finalSteps[1].env?.OPENCLAW_DEPENDENCY_GUARD_MODE).toBe("enforce");
+    expect(autoscrubSteps[3].env?.EVE_DEPENDENCY_GUARD_MODE).toBe("autoscrub");
+    expect(finalSteps[1].env?.EVE_DEPENDENCY_GUARD_MODE).toBe("enforce");
   });
 
   it("preserves dependency-guard as the final required check", () => {
@@ -162,8 +162,8 @@ describe("dependency guard workflow", () => {
     const runStep = detectSteps[1];
     const script = readFileSync("scripts/github/dependency-guard.mjs", "utf8");
 
-    expect(runStep.env?.OPENCLAW_SECURITY_TEAM_SLUG).toBe("openclaw-secops");
-    expect(runStep.env?.OPENCLAW_SECURITY_APPROVERS).toBe("vincentkoc,steipete,joshavant");
+    expect(runStep.env?.EVE_SECURITY_TEAM_SLUG).toBe("eve-secops");
+    expect(runStep.env?.EVE_SECURITY_APPROVERS).toBe("vincentkoc,steipete,joshavant");
     expect(workflow).toContain("scripts/github/dependency-guard.mjs");
     expect(script).toContain('"dependencies-changed"');
     expect(script).not.toContain('"blocked: dependencies"');
@@ -192,7 +192,7 @@ describe("dependency guard workflow", () => {
     expect(script).toContain('"overrides"');
     expect(script).toContain('"packageManager"');
     expect(script).toContain("/allow-dependencies-change");
-    expect(script).toContain("openclaw-secops");
+    expect(script).toContain("eve-secops");
     expect(script).toContain("securityApproverSet");
     expect(guardSources).toContain("/memberships/");
     expect(guardSources).toContain("isCommentNewerThan");
@@ -238,15 +238,15 @@ describe("dependency guard workflow", () => {
   it("requires secops review for future workflow or guard changes", () => {
     const codeowners = readFileSync(CODEOWNERS, "utf8");
     expect(codeowners).toContain(
-      "/.github/workflows/dependency-guard.yml @openclaw/openclaw-secops",
+      "/.github/workflows/dependency-guard.yml @eve/eve-secops",
     );
     expect(codeowners).toContain(
-      "/test/scripts/dependency-guard-workflow.test.ts @openclaw/openclaw-secops",
+      "/test/scripts/dependency-guard-workflow.test.ts @eve/eve-secops",
     );
-    expect(codeowners).toContain("/scripts/github/dependency-guard.mjs @openclaw/openclaw-secops");
-    expect(codeowners).toContain("/package-lock.json @openclaw/openclaw-secops");
-    expect(codeowners).toContain("/npm-shrinkwrap.json @openclaw/openclaw-secops");
-    expect(codeowners).toContain("/extensions/*/package-lock.json @openclaw/openclaw-secops");
-    expect(codeowners).toContain("/extensions/*/npm-shrinkwrap.json @openclaw/openclaw-secops");
+    expect(codeowners).toContain("/scripts/github/dependency-guard.mjs @eve/eve-secops");
+    expect(codeowners).toContain("/package-lock.json @eve/eve-secops");
+    expect(codeowners).toContain("/npm-shrinkwrap.json @eve/eve-secops");
+    expect(codeowners).toContain("/extensions/*/package-lock.json @eve/eve-secops");
+    expect(codeowners).toContain("/extensions/*/npm-shrinkwrap.json @eve/eve-secops");
   });
 });

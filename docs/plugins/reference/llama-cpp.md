@@ -11,7 +11,7 @@ Local GGUF embeddings through node-llama-cpp.
 
 ## Distribution
 
-- Package: `@openclaw/llama-cpp-provider`
+- Package: `@eve/llama-cpp-provider`
 - Install route: npm; ClawHub
 
 ## Surface

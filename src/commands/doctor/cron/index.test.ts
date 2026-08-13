@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../../config/config.js";
+import type { EVEConfig } from "../../../config/config.js";
 import { readCronRunLogEntriesSync } from "../../../cron/run-log.js";
 import {
   loadCronJobsStoreWithConfigJobs,
@@ -12,7 +12,7 @@ import {
   resolveCronQuarantinePath,
   saveCronStore,
 } from "../../../cron/store.js";
-import { runOpenClawStateWriteTransaction } from "../../../state/openclaw-state-db.js";
+import { runEVEStateWriteTransaction } from "../../../state/eve-state-db.js";
 import {
   collectLegacyWhatsAppCrontabHealthWarning,
   maybeRepairLegacyCronStore,
@@ -30,7 +30,7 @@ vi.mock("../../../../packages/terminal-core/src/note.js", () => ({
 let tempRoot: string | null = null;
 
 async function makeTempStorePath() {
-  tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-doctor-cron-"));
+  tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-doctor-cron-"));
   return path.join(tempRoot, "cron", "jobs.json");
 }
 
@@ -48,7 +48,7 @@ function makePrompter(confirmResult = true) {
   };
 }
 
-function createCronConfig(storePath: string): OpenClawConfig {
+function createCronConfig(storePath: string): EVEConfig {
   return {
     cron: {
       store: storePath,
@@ -123,7 +123,7 @@ function insertEarlySQLiteCronRow(
 ) {
   const schedule = requireRecord(job.schedule, "cron schedule");
   const payload = requireRecord(job.payload, "cron payload");
-  runOpenClawStateWriteTransaction(({ db }) => {
+  runEVEStateWriteTransaction(({ db }) => {
     db.prepare(
       `INSERT INTO cron_jobs (
         store_key, job_id, name, enabled, created_at_ms, updated_at,
@@ -862,7 +862,7 @@ describe("maybeRepairLegacyCronStore", () => {
       }),
     ]);
 
-    const cfg = { cron: { store: storePath } } as OpenClawConfig;
+    const cfg = { cron: { store: storePath } } as EVEConfig;
     await maybeRepairLegacyCronStore({
       cfg,
       options: {},
@@ -900,7 +900,7 @@ describe("maybeRepairLegacyCronStore", () => {
       }),
     ]);
 
-    const cfg = { cron: { store: storePath } } as OpenClawConfig;
+    const cfg = { cron: { store: storePath } } as EVEConfig;
     await maybeRepairLegacyCronStore({
       cfg,
       options: {},
@@ -995,7 +995,7 @@ describe("maybeRepairLegacyCronStore", () => {
         wakeMode: "now",
         payload: {
           kind: "systemEvent",
-          text: "__openclaw_memory_core_short_term_promotion_dream__",
+          text: "__eve_memory_core_short_term_promotion_dream__",
         },
         state: {},
       },
@@ -1012,7 +1012,7 @@ describe("maybeRepairLegacyCronStore", () => {
     expect(job.sessionTarget).toBe("isolated");
     const payload = requireRecord(job.payload, "cron payload");
     expect(payload.kind).toBe("agentTurn");
-    expect(payload.message).toBe("__openclaw_memory_core_short_term_promotion_dream__");
+    expect(payload.message).toBe("__eve_memory_core_short_term_promotion_dream__");
     expect(payload.lightContext).toBe(true);
     const delivery = requireRecord(job.delivery, "cron delivery");
     expect(delivery.mode).toBe("none");
@@ -1051,7 +1051,7 @@ describe("legacy WhatsApp crontab health check", () => {
       readCrontab: async () => ({
         stdout: [
           "# keep comments ignored",
-          "*/5 * * * * ~/.openclaw/bin/ensure-whatsapp.sh >> ~/.openclaw/logs/whatsapp-health.log 2>&1",
+          "*/5 * * * * ~/.eve/bin/ensure-whatsapp.sh >> ~/.eve/logs/whatsapp-health.log 2>&1",
           "0 9 * * * /usr/bin/true",
           "",
         ].join("\n"),
@@ -1069,7 +1069,7 @@ describe("legacy WhatsApp crontab health check", () => {
       readCrontab: async () => ({
         stdout: [
           "# keep comments ignored",
-          "*/5 * * * * ~/.openclaw/bin/ensure-whatsapp.sh >> ~/.openclaw/logs/whatsapp-health.log 2>&1",
+          "*/5 * * * * ~/.eve/bin/ensure-whatsapp.sh >> ~/.eve/logs/whatsapp-health.log 2>&1",
           "0 9 * * * /usr/bin/true",
           "",
         ].join("\n"),
@@ -1119,7 +1119,7 @@ describe("legacy WhatsApp crontab health check", () => {
       noteLegacyWhatsAppCrontabHealthCheck({
         platform: "linux",
         readCrontab: async () => ({
-          stdout: { lines: ["*/5 * * * * ~/.openclaw/bin/ensure-whatsapp.sh"] },
+          stdout: { lines: ["*/5 * * * * ~/.eve/bin/ensure-whatsapp.sh"] },
         }),
       }),
     ).resolves.toBeUndefined();

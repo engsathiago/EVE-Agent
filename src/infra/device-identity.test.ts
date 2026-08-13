@@ -21,7 +21,7 @@ const MISMATCHED_SWIFT_RAW_PRIVATE_KEY = "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ
 async function withIdentity(
   run: (identity: ReturnType<typeof loadOrCreateDeviceIdentity>) => void,
 ) {
-  await withTempDir("openclaw-device-identity-", async (dir) => {
+  await withTempDir("eve-device-identity-", async (dir) => {
     const identity = loadOrCreateDeviceIdentity(path.join(dir, "device.json"));
     run(identity);
   });
@@ -29,7 +29,7 @@ async function withIdentity(
 
 describe("device identity crypto helpers", () => {
   it("loads an existing identity without creating a missing file", async () => {
-    await withTempDir("openclaw-device-identity-readonly-", async (dir) => {
+    await withTempDir("eve-device-identity-readonly-", async (dir) => {
       const identityPath = path.join(dir, "identity", "device.json");
 
       expect(loadDeviceIdentityIfPresent(identityPath)).toBeNull();
@@ -42,7 +42,7 @@ describe("device identity crypto helpers", () => {
   });
 
   it("does not repair mismatched stored device ids in read-only mode", async () => {
-    await withTempDir("openclaw-device-identity-readonly-", async (dir) => {
+    await withTempDir("eve-device-identity-readonly-", async (dir) => {
       const identityPath = path.join(dir, "identity", "device.json");
       loadOrCreateDeviceIdentity(identityPath);
       const stored = JSON.parse(fs.readFileSync(identityPath, "utf8")) as Record<string, unknown>;
@@ -59,7 +59,7 @@ describe("device identity crypto helpers", () => {
   });
 
   it("loads Swift raw-key identity files without generating a new device id", async () => {
-    await withTempDir("openclaw-device-identity-swift-", async (dir) => {
+    await withTempDir("eve-device-identity-swift-", async (dir) => {
       const identityPath = path.join(dir, "identity", "device.json");
       fs.mkdirSync(path.dirname(identityPath), { recursive: true });
       fs.writeFileSync(
@@ -110,7 +110,7 @@ describe("device identity crypto helpers", () => {
   });
 
   it("does not overwrite recognized invalid identity files", async () => {
-    await withTempDir("openclaw-device-identity-invalid-", async (dir) => {
+    await withTempDir("eve-device-identity-invalid-", async (dir) => {
       const identityPath = path.join(dir, "identity", "device.json");
       fs.mkdirSync(path.dirname(identityPath), { recursive: true });
       fs.writeFileSync(
@@ -139,7 +139,7 @@ describe("device identity crypto helpers", () => {
   });
 
   it("does not migrate Swift raw-key identity files with mismatched key material", async () => {
-    await withTempDir("openclaw-device-identity-swift-invalid-", async (dir) => {
+    await withTempDir("eve-device-identity-swift-invalid-", async (dir) => {
       const identityPath = path.join(dir, "identity", "device.json");
       fs.mkdirSync(path.dirname(identityPath), { recursive: true });
       fs.writeFileSync(

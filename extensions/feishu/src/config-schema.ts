@@ -1,5 +1,5 @@
 // Feishu helper module supports config schema behavior.
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-id";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/account-id";
 import { z } from "zod";
 export { z };
 import { buildSecretInputSchema, hasConfiguredSecretInput } from "./secret-input.js";

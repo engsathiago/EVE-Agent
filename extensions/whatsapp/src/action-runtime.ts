@@ -1,12 +1,12 @@
 // Whatsapp plugin module implements action runtime behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
 import {
   createActionGate,
   jsonResult,
   readReactionParams,
   readStringParam,
-} from "openclaw/plugin-sdk/channel-actions";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-actions";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveAuthorizedWhatsAppOutboundTarget } from "./action-runtime-target-auth.js";
 import { resolveWhatsAppReactionLevel } from "./reaction-level.js";
 import { sendReactionWhatsApp } from "./send.js";
@@ -18,7 +18,7 @@ export const whatsAppActionRuntime = {
 
 export async function handleWhatsAppAction(
   params: Record<string, unknown>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): Promise<AgentToolResult<unknown>> {
   const action = readStringParam(params, "action", { required: true });
   const whatsAppConfig = cfg.channels?.whatsapp;

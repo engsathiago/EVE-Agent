@@ -13,7 +13,7 @@ import {
 const tempDirs: string[] = [];
 
 function makeRepoRoot() {
-  const repoRoot = mkdtempSync(path.join(os.tmpdir(), "openclaw-format-generated-module-"));
+  const repoRoot = mkdtempSync(path.join(os.tmpdir(), "eve-format-generated-module-"));
   tempDirs.push(repoRoot);
   const formatterDir = path.join(repoRoot, "node_modules", ".bin");
   mkdirSync(formatterDir, { recursive: true });

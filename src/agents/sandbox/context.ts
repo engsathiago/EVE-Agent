@@ -5,7 +5,7 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   ensureBrowserControlAuth,
   resolveBrowserControlAuth,
@@ -33,7 +33,7 @@ import { ensureSandboxWorkspace } from "./workspace.js";
 async function syncSandboxSkillsToWorkspace(params: {
   sourceWorkspaceDir: string;
   targetWorkspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId: string;
   rawSessionKey: string;
 }): Promise<SkillEligibilityContext | undefined> {
@@ -72,7 +72,7 @@ async function ensureSandboxWorkspaceLayout(params: {
   cfg: ReturnType<typeof resolveSandboxConfigForAgent>;
   agentId: string;
   rawSessionKey: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): Promise<{
   agentWorkspaceDir: string;
@@ -160,7 +160,7 @@ export async function resolveSandboxDockerUser(params: {
   }
 }
 
-function resolveSandboxSession(params: { config?: OpenClawConfig; sessionKey?: string }) {
+function resolveSandboxSession(params: { config?: EVEConfig; sessionKey?: string }) {
   const rawSessionKey = params.sessionKey?.trim();
   if (!rawSessionKey) {
     return null;
@@ -197,7 +197,7 @@ function resolveSandboxWorkspaceInfoWorkdir(params: {
 }
 
 export async function resolveSandboxContext(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionKey?: string;
   workspaceDir?: string;
 }): Promise<SandboxContext | null> {
@@ -316,7 +316,7 @@ export async function resolveSandboxContext(params: {
 }
 
 export async function ensureSandboxWorkspaceForSession(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionKey?: string;
   workspaceDir?: string;
 }): Promise<SandboxWorkspaceInfo | null> {

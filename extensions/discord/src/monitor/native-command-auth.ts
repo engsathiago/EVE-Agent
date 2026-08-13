@@ -1,9 +1,9 @@
 // Discord plugin module implements native command auth behavior.
-import { resolveCommandAuthorizedFromAuthorizers } from "openclaw/plugin-sdk/command-auth-native";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
-import { resolveOpenProviderRuntimeGroupPolicy } from "openclaw/plugin-sdk/runtime-group-policy";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveCommandAuthorizedFromAuthorizers } from "eve-agent/plugin-sdk/command-auth-native";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { isDangerousNameMatchingEnabled } from "eve-agent/plugin-sdk/dangerous-name-runtime";
+import { resolveOpenProviderRuntimeGroupPolicy } from "eve-agent/plugin-sdk/runtime-group-policy";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveDiscordAccountAllowFrom, resolveDiscordAccountDmPolicy } from "../accounts.js";
 import type { AutocompleteInteraction, Guild } from "../internal/discord.js";
 import {
@@ -22,7 +22,7 @@ import { resolveDiscordNativeInteractionChannelContext } from "./native-interact
 import { resolveDiscordSenderIdentity } from "./sender-identity.js";
 
 export function resolveDiscordNativeCommandAllowlistAccess(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   sender: { id: string; name?: string; tag?: string };
   chatType: "direct" | "group" | "thread" | "channel";
@@ -65,7 +65,7 @@ export function resolveDiscordNativeCommandAllowlistAccess(params: {
 }
 
 export function resolveDiscordNativeCommandChannelAccessContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   discordConfig: DiscordConfig;
   accountId: string;
   sender: { id: string; name?: string; tag?: string };
@@ -114,7 +114,7 @@ export function resolveDiscordNativeCommandChannelAccessContext(params: {
   return { commandsAllowFromAccess, guildInfo, channelConfig } as const;
 }
 
-export function resolveDiscordCommandOwnerAllowFrom(cfg: OpenClawConfig): string[] | undefined {
+export function resolveDiscordCommandOwnerAllowFrom(cfg: EVEConfig): string[] | undefined {
   const raw = cfg.commands?.ownerAllowFrom;
   if (!Array.isArray(raw) || raw.length === 0) {
     return undefined;
@@ -145,7 +145,7 @@ export function resolveDiscordCommandOwnerAllowFrom(cfg: OpenClawConfig): string
 }
 
 export async function resolveDiscordGuildNativeCommandAuthorized(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   discordConfig: DiscordConfig;
   useAccessGroups: boolean;
@@ -235,7 +235,7 @@ export function resolveDiscordNativeGroupDmAccess(params: {
 
 export async function resolveDiscordNativeAutocompleteAuthorized(params: {
   interaction: AutocompleteInteraction;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   discordConfig: DiscordConfig;
   accountId: string;
   skipCommandOwnerAllowFrom?: boolean;

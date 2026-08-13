@@ -2,7 +2,7 @@
 // when only setup-shell metadata is active.
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../../agents/agent-scope.js";
 import { applyPluginAutoEnable } from "../../config/plugin-auto-enable.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { resolveRuntimePluginRegistry } from "../../plugins/loader.js";
 import type { PluginChannelRegistration } from "../../plugins/registry-types.js";
 import {
@@ -48,7 +48,7 @@ function canResolveSendCapableChannel(channel: DeliverableMessageChannel): boole
 /** Loads runtime plugins on demand when a selected outbound channel has only a setup shell. */
 export function bootstrapOutboundChannelPlugin(params: {
   channel: DeliverableMessageChannel;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): void {
   const cfg = params.cfg;
   if (!cfg) {

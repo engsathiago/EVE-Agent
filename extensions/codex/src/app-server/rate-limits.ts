@@ -5,14 +5,14 @@
 import {
   MAX_DATE_TIMESTAMP_MS,
   resolveExpiresAtMsFromEpochSeconds,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   clampPercent,
   PROVIDER_LABELS,
   type ProviderUsageSnapshot,
   type UsageWindow,
-} from "openclaw/plugin-sdk/provider-usage";
-import { asFiniteNumber, parseStrictFiniteNumber } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-usage";
+import { asFiniteNumber, parseStrictFiniteNumber } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { isJsonObject, type JsonObject, type JsonValue } from "./protocol.js";
 
 const CODEX_LIMIT_ID = "codex";
@@ -80,7 +80,7 @@ export function formatCodexUsageLimitErrorMessage(params: {
       if (usageSummary?.blockingPeriod && usageSummary.blockingReason) {
         parts.push(`Your ${usageSummary.blockingReason}.`);
       }
-      parts.push("OpenClaw could not determine a reset time from Codex.");
+      parts.push("EVE could not determine a reset time from Codex.");
     }
   }
   parts.push(

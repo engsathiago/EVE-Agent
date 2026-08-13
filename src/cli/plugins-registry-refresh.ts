@@ -1,5 +1,5 @@
 // Registry refresh helper shared by plugin config mutations that need post-write discovery repair.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { loadInstalledPluginIndexInstallRecords } from "../plugins/installed-plugin-index-records.js";
 import type { InstalledPluginIndexRefreshReason } from "../plugins/installed-plugin-index.js";
@@ -13,7 +13,7 @@ export type PluginRegistryRefreshLogger = {
 
 /** Refresh persisted plugin registry and clear runtime discovery after a config mutation. */
 export async function refreshPluginRegistryAfterConfigMutation(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   reason: InstalledPluginIndexRefreshReason;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;

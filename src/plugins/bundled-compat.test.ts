@@ -1,6 +1,6 @@
 /** Covers bundled plugin compatibility modes and their activation defaults. */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { withBundledPluginEnablementCompat } from "./bundled-compat.js";
 
 describe("withBundledPluginEnablementCompat", () => {
@@ -10,7 +10,7 @@ describe("withBundledPluginEnablementCompat", () => {
         allow: ["discord"],
         bundledDiscovery: "compat",
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const result = withBundledPluginEnablementCompat({
       config,
@@ -30,7 +30,7 @@ describe("withBundledPluginEnablementCompat", () => {
         allow: ["openai"],
         bundledDiscovery: "allowlist",
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       withBundledPluginEnablementCompat({
@@ -51,7 +51,7 @@ describe("withBundledPluginEnablementCompat", () => {
           deepseek: { enabled: true },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       withBundledPluginEnablementCompat({

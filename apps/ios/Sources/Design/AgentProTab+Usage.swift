@@ -1,5 +1,5 @@
-import OpenClawKit
-import OpenClawProtocol
+import EVEKit
+import EVEProtocol
 import SwiftUI
 
 extension AgentProTab {
@@ -10,7 +10,7 @@ extension AgentProTab {
                     Text("Totals")
                         .font(.headline)
                     Spacer()
-                    ProValuePill(value: "\(self.overview?.usage?.days ?? 31)d", color: OpenClawBrand.accent)
+                    ProValuePill(value: "\(self.overview?.usage?.days ?? 31)d", color: EVEBrand.accent)
                 }
                 HStack(spacing: 10) {
                     self.detailMetric(label: "Cost", value: self.usageValue)
@@ -19,7 +19,7 @@ extension AgentProTab {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     var usageTokenValue: String {
@@ -56,13 +56,13 @@ extension AgentProTab {
                     }
                 }
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         }
     }
 
     func usageDayRow(_ day: CostUsageDailyEntryLite) -> some View {
         HStack(spacing: 12) {
-            ProIconBadge(systemName: "calendar", color: OpenClawBrand.accent)
+            ProIconBadge(systemName: "calendar", color: EVEBrand.accent)
             VStack(alignment: .leading, spacing: 3) {
                 Text(day.date)
                     .font(.subheadline.weight(.semibold))
@@ -73,7 +73,7 @@ extension AgentProTab {
             Spacer(minLength: 8)
             Text(Self.currency(day.totalCost ?? 0))
                 .font(.caption2.weight(.semibold))
-                .foregroundStyle(OpenClawBrand.accent)
+                .foregroundStyle(EVEBrand.accent)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 14)

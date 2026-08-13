@@ -1,5 +1,5 @@
 /** Detached task-ledger integration for cron runs. */
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import {
   DEFAULT_AGENT_ID,
   normalizeAgentId,

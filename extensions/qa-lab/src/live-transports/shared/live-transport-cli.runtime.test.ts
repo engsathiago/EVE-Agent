@@ -6,13 +6,13 @@ import { resolveLiveTransportQaRunOptions } from "./live-transport-cli.runtime.j
 describe("resolveLiveTransportQaRunOptions", () => {
   it("drops blank model refs so live transports can use provider defaults", () => {
     const options = resolveLiveTransportQaRunOptions({
-      repoRoot: "/tmp/openclaw-repo",
+      repoRoot: "/tmp/eve-repo",
       providerMode: "live-frontier",
       primaryModel: " ",
       alternateModel: "",
       listScenarios: true,
     });
-    expect(options.repoRoot).toBe(path.resolve("/tmp/openclaw-repo"));
+    expect(options.repoRoot).toBe(path.resolve("/tmp/eve-repo"));
     expect(options.providerMode).toBe("live-frontier");
     expect(options.primaryModel).toBeUndefined();
     expect(options.alternateModel).toBeUndefined();

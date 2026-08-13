@@ -16,13 +16,13 @@ import type {
   MatrixVerificationMethod,
   MatrixVerificationSummary,
   MessageEventContent,
-} from "@openclaw/matrix/test-api.js";
+} from "@eve/matrix/test-api.js";
 import type {
   OpenKeyedStoreOptions,
   PluginStateEntry,
   PluginStateKeyedStore,
   PluginStateSyncKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import { buildMatrixQaMessageContent } from "./client.js";
 import { findMatrixQaObservedEventMatch, normalizeMatrixQaObservedEvent } from "./events.js";
 import type { MatrixQaObservedEvent } from "./events.js";
@@ -30,7 +30,7 @@ import type { MatrixQaRoomEventWaitResult } from "./sync.js";
 
 type MatrixQaE2eeActorId = "driver" | "observer" | `driver-${string}` | `cli-${string}`;
 
-type MatrixQaE2eeRuntime = typeof import("@openclaw/matrix/test-api.js");
+type MatrixQaE2eeRuntime = typeof import("@eve/matrix/test-api.js");
 
 type MatrixQaE2eeClientParams = {
   accessToken: string;
@@ -59,7 +59,7 @@ type MatrixQaPluginStateValue = {
 const matrixQaPluginStateNamespaces = new Map<string, Map<string, MatrixQaPluginStateValue>>();
 
 function resolveMatrixQaPluginStateNamespaceKey(options: OpenKeyedStoreOptions): string {
-  return `${options.env?.OPENCLAW_STATE_DIR ?? ""}\0${options.namespace}`;
+  return `${options.env?.EVE_STATE_DIR ?? ""}\0${options.namespace}`;
 }
 
 function resolveMatrixQaPluginStateRows(
@@ -287,7 +287,7 @@ export type MatrixQaE2eeScenarioClient = {
 
 export async function loadMatrixQaE2eeRuntime(): Promise<MatrixQaE2eeRuntime> {
   const { loadQaRunnerBundledPluginTestApi } =
-    await import("openclaw/plugin-sdk/qa-runner-runtime");
+    await import("eve-agent/plugin-sdk/qa-runner-runtime");
   return loadQaRunnerBundledPluginTestApi<MatrixQaE2eeRuntime>("matrix");
 }
 

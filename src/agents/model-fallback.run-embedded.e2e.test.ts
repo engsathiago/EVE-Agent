@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import type { AuthProfileFailureReason } from "./auth-profiles.js";
 import { ensureAuthProfileStore, saveAuthProfileStore } from "./auth-profiles/store.js";
 import { classifyEmbeddedAgentRunResultForModelFallback } from "./embedded-agent-runner/result-fallback-classifier.js";
@@ -36,7 +36,7 @@ vi.mock("./models-config.js", async () => {
   const mod = await vi.importActual<typeof import("./models-config.js")>("./models-config.js");
   return {
     ...mod,
-    ensureOpenClawModelsJson: vi.fn(async () => ({ wrote: false })),
+    ensureEVEModelsJson: vi.fn(async () => ({ wrote: false })),
   };
 });
 
@@ -90,7 +90,7 @@ type EmbeddedAttemptParams = {
   authProfileId?: string;
 };
 
-function makeConfig(): OpenClawConfig {
+function makeConfig(): EVEConfig {
   const apiKeyField = ["api", "Key"].join("");
   return {
     agents: {
@@ -137,7 +137,7 @@ function makeConfig(): OpenClawConfig {
         },
       },
     },
-  } satisfies OpenClawConfig;
+  } satisfies EVEConfig;
 }
 
 async function withAgentWorkspace<T>(
@@ -145,7 +145,7 @@ async function withAgentWorkspace<T>(
 ): Promise<T> {
   // Each e2e case gets isolated agent/workspace dirs because usage stats and
   // transcripts are part of the fallback behavior under test.
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-model-fallback-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-model-fallback-"));
   const agentDir = path.join(root, "agent");
   const workspaceDir = path.join(root, "workspace");
   await fs.mkdir(agentDir, { recursive: true });
@@ -231,7 +231,7 @@ async function runEmbeddedFallback(params: {
   sessionId?: string;
   lane?: string;
   abortSignal?: AbortSignal;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }) {
   // Runs the same embedded-agent entrypoint that production fallback uses while
   // keeping provider/model attempts deterministic through mocks.

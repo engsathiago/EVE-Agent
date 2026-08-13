@@ -25,12 +25,12 @@ import {
 
 const TEST_ENV_KEYS = [
   "HOME",
-  "OPENCLAW_STATE_DIR",
-  "OPENCLAW_CONFIG_PATH",
-  "OPENCLAW_GATEWAY_URL",
-  "OPENCLAW_GATEWAY_TOKEN",
-  "OPENCLAW_GATEWAY_PASSWORD",
-  "OPENCLAW_GATEWAY_PORT",
+  "EVE_STATE_DIR",
+  "EVE_CONFIG_PATH",
+  "EVE_GATEWAY_URL",
+  "EVE_GATEWAY_TOKEN",
+  "EVE_GATEWAY_PASSWORD",
+  "EVE_GATEWAY_PORT",
 ];
 
 describe("plugin.approval.request turn-source routing (real gateway)", () => {
@@ -41,23 +41,23 @@ describe("plugin.approval.request turn-source routing (real gateway)", () => {
 
   beforeAll(async () => {
     envSnapshot = captureEnv(TEST_ENV_KEYS);
-    delete process.env.OPENCLAW_CONFIG_PATH;
-    delete process.env.OPENCLAW_GATEWAY_URL;
-    delete process.env.OPENCLAW_GATEWAY_TOKEN;
-    delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+    delete process.env.EVE_CONFIG_PATH;
+    delete process.env.EVE_GATEWAY_URL;
+    delete process.env.EVE_GATEWAY_TOKEN;
+    delete process.env.EVE_GATEWAY_PASSWORD;
 
     tempHome = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-plugin-approval-turn-source-e2e-"),
+      path.join(os.tmpdir(), "eve-plugin-approval-turn-source-e2e-"),
     );
-    const stateDir = path.join(tempHome, ".openclaw");
+    const stateDir = path.join(tempHome, ".eve");
     await fs.mkdir(stateDir, { recursive: true });
     process.env.HOME = tempHome;
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+    process.env.EVE_STATE_DIR = stateDir;
 
     const port = await getFreeGatewayPort();
     const token = "plugin-approval-turn-source-e2e-token";
     const url = `ws://127.0.0.1:${port}`;
-    process.env.OPENCLAW_GATEWAY_PORT = String(port);
+    process.env.EVE_GATEWAY_PORT = String(port);
 
     server = await startGatewayServer(port, {
       bind: "loopback",

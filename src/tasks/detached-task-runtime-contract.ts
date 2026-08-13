@@ -1,5 +1,5 @@
 // Defines the detached task runtime contract and spawn options.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type {
   TaskDeliveryState,
   TaskDeliveryStatus,
@@ -102,7 +102,7 @@ export type DetachedTaskDeliveryStatusParams = {
 };
 
 export type DetachedTaskCancelParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   taskId: string;
   reason?: string;
 };

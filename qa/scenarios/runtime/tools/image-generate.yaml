@@ -7,7 +7,7 @@ scenario:
   coverage:
     primary:
       - tools.image-generate
-  objective: Verify image_generate preserves arguments and result shape across OpenClaw and Codex.
+  objective: Verify image_generate preserves arguments and result shape across EVE and Codex.
   successCriteria:
     - Effective tools expose image_generate after QA image-generation config is applied.
     - The mock provider plans exactly one happy-path image_generate call.
@@ -27,14 +27,14 @@ scenario:
       toolCoverage:
         family: image_generate
         actualTool: image_generate
-        bucket: openclaw-dynamic-integration
-        expectedLayer: openclaw-dynamic
-        capabilityLayer: openclaw-dynamic-direct
+        bucket: eve-dynamic-integration
+        expectedLayer: eve-dynamic
+        capabilityLayer: eve-dynamic-direct
         required: false
         codexDefaultImpact: P4
         qaImpact: P1
         action: optional runtime parity gate with async image completion coverage
-        reason: image_generate is an OpenClaw integration tool whose happy path yields for async completion, so standard direct call/result parity would compare different lifecycle phases.
+        reason: image_generate is an EVE integration tool whose happy path yields for async completion, so standard direct call/result parity would compare different lifecycle phases.
       promptSnippet: "target=image_generate"
       failurePromptSnippet: "failure target=image_generate"
 

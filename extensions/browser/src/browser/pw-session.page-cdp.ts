@@ -4,14 +4,14 @@
  * Opens a CDP session through Playwright pages and marks backend DOM nodes with
  * temporary browser refs for role-snapshot interactions.
  */
-import { uniqueValues } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { uniqueValues } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { CDPSession, Page } from "playwright-core";
 
 type PageCdpSend = (method: string, params?: Record<string, unknown>) => Promise<unknown>;
 type MarkBackendDomRef = { ref: string; backendDOMNodeId: number };
 
 /** Attribute used to mark DOM nodes that correspond to generated browser refs. */
-export const BROWSER_REF_MARKER_ATTRIBUTE = "data-openclaw-browser-ref";
+export const BROWSER_REF_MARKER_ATTRIBUTE = "data-eve-browser-ref";
 
 async function withPlaywrightPageCdpSession<T>(
   page: Page,

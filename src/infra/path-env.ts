@@ -1,15 +1,15 @@
-// Builds PATH values for OpenClaw child processes.
+// Builds PATH values for EVE child processes.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
   normalizeStringEntries,
   normalizeUniqueStringEntries,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import { resolveBrewPathDirs } from "./brew.js";
 import { isTruthyEnvValue } from "./env.js";
 
-type EnsureOpenClawPathOpts = {
+type EnsureEVEPathOpts = {
   /** Executable whose directory should stay first for shebang-compatible child processes. */
   execPath?: string;
   /** Working directory used only when project-local bin fallback is explicitly enabled. */
@@ -76,7 +76,7 @@ function mergePath(params: { existing: string; prepend?: string[]; append?: stri
 }
 
 function candidateBinDirs(
-  opts: EnsureOpenClawPathOpts,
+  opts: EnsureEVEPathOpts,
   existingPathParts: ReadonlySet<string>,
 ): { prepend: string[]; append: string[] } {
   const execPath = opts.execPath ?? process.execPath;
@@ -88,7 +88,7 @@ function candidateBinDirs(
   const append: string[] = [];
 
   // Keep the active runtime directory ahead of PATH hardening so shebang-based
-  // subprocesses keep using the same Node/Bun the current OpenClaw process is on.
+  // subprocesses keep using the same Node/Bun the current EVE process is on.
   try {
     const execDir = path.dirname(execPath);
     if (isExecutable(execPath)) {
@@ -98,10 +98,10 @@ function candidateBinDirs(
     // ignore
   }
 
-  // Bundled macOS app: `openclaw` lives next to the executable (process.execPath).
+  // Bundled macOS app: `eve` lives next to the executable (process.execPath).
   try {
     const execDir = path.dirname(execPath);
-    const siblingCli = path.join(execDir, "openclaw");
+    const siblingCli = path.join(execDir, "eve");
     if (isExecutable(siblingCli)) {
       prepend.push(execDir);
     }
@@ -113,10 +113,10 @@ function candidateBinDirs(
   // disabled by default; if an operator explicitly enables it, only append (never prepend).
   const allowProjectLocalBin =
     opts.allowProjectLocalBin === true ||
-    isTruthyEnvValue(process.env.OPENCLAW_ALLOW_PROJECT_LOCAL_BIN);
+    isTruthyEnvValue(process.env.EVE_ALLOW_PROJECT_LOCAL_BIN);
   if (allowProjectLocalBin) {
     const localBinDir = path.join(cwd, "node_modules", ".bin");
-    if (isExecutable(path.join(localBinDir, "openclaw"))) {
+    if (isExecutable(path.join(localBinDir, "eve"))) {
       append.push(localBinDir);
     }
   }
@@ -127,7 +127,7 @@ function candidateBinDirs(
 
   // User-writable / package-manager directories are appended so they never
   // shadow trusted OS binaries.
-  // This includes Brew/Homebrew dirs, which are useful for finding `openclaw`
+  // This includes Brew/Homebrew dirs, which are useful for finding `eve`
   // in launchd/minimal environments but must not be treated as trusted.
   append.push(...resolvePathBootstrapBrewDirs({ homeDir, platform, existingPathParts }));
   const miseDataDir = process.env.MISE_DATA_DIR ?? path.join(homeDir, ".local", "share", "mise");
@@ -153,16 +153,16 @@ function candidateBinDirs(
 }
 
 /**
- * Best-effort PATH bootstrap so skills that require the `openclaw` CLI can run
+ * Best-effort PATH bootstrap so skills that require the `eve` CLI can run
  * under launchd/minimal environments (and inside the macOS app bundle).
  */
-export function ensureOpenClawCliOnPath(opts: EnsureOpenClawPathOpts = {}) {
-  if (isTruthyEnvValue(process.env.OPENCLAW_PATH_BOOTSTRAPPED)) {
+export function ensureEVECliOnPath(opts: EnsureEVEPathOpts = {}) {
+  if (isTruthyEnvValue(process.env.EVE_PATH_BOOTSTRAPPED)) {
     return;
   }
   // Mark before filesystem probing so repeated calls from nested bootstraps do
   // not keep reshuffling PATH.
-  process.env.OPENCLAW_PATH_BOOTSTRAPPED = "1";
+  process.env.EVE_PATH_BOOTSTRAPPED = "1";
 
   const existing = opts.pathEnv ?? process.env.PATH ?? "";
   const existingPathParts = splitPathParts(existing);

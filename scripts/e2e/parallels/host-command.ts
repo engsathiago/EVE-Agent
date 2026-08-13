@@ -1,4 +1,4 @@
-// Host Command script supports OpenClaw repository automation.
+// Host Command script supports EVE repository automation.
 import { spawn, spawnSync, type SpawnOptions, type SpawnSyncReturns } from "node:child_process";
 import { createWriteStream } from "node:fs";
 import path from "node:path";
@@ -18,9 +18,9 @@ const HOST_COMMAND_TIMEOUT_KILL_GRACE_MS = 100;
 const HOST_COMMAND_STREAMING_TIMEOUT_KILL_GRACE_MS = 2_000;
 const HOST_COMMAND_PROCESS_GROUP_EXIT_POLL_MS = 25;
 const HOST_COMMAND_POST_FORCE_KILL_WAIT_MS = 100;
-const HOST_COMMAND_CHILD_PID_PREFIX = "__OPENCLAW_HOST_COMMAND_CHILD_PID__";
-const HOST_COMMAND_SPAWN_ERROR_PREFIX = "__OPENCLAW_HOST_COMMAND_SPAWN_ERROR__";
-const HOST_COMMAND_TIMEOUT_PREFIX = "__OPENCLAW_HOST_COMMAND_TIMEOUT__";
+const HOST_COMMAND_CHILD_PID_PREFIX = "__EVE_HOST_COMMAND_CHILD_PID__";
+const HOST_COMMAND_SPAWN_ERROR_PREFIX = "__EVE_HOST_COMMAND_SPAWN_ERROR__";
+const HOST_COMMAND_TIMEOUT_PREFIX = "__EVE_HOST_COMMAND_TIMEOUT__";
 let progressStderrDepth = 0;
 
 type HostCommandInvocation = {

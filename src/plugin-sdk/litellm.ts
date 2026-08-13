@@ -1,10 +1,10 @@
 // Manual facade. Keep loader boundary explicit.
-import type { ModelDefinitionConfig, OpenClawConfig } from "../config/types.js";
+import type { ModelDefinitionConfig, EVEConfig } from "../config/types.js";
 import { loadBundledPluginPublicSurfaceModuleSync } from "./facade-loader.js";
 
 type FacadeModule = {
-  applyLitellmConfig: (cfg: OpenClawConfig) => OpenClawConfig;
-  applyLitellmProviderConfig: (cfg: OpenClawConfig) => OpenClawConfig;
+  applyLitellmConfig: (cfg: EVEConfig) => EVEConfig;
+  applyLitellmProviderConfig: (cfg: EVEConfig) => EVEConfig;
   buildLitellmModelDefinition: () => ModelDefinitionConfig;
   LITELLM_BASE_URL: string;
   LITELLM_DEFAULT_MODEL_ID: string;
@@ -17,7 +17,7 @@ function loadFacadeModule(): FacadeModule {
     artifactBasename: "api.js",
   });
 }
-/** Apply LiteLLM defaults to the full OpenClaw config. */
+/** Apply LiteLLM defaults to the full EVE config. */
 export const applyLitellmConfig: FacadeModule["applyLitellmConfig"] = ((...args) =>
   loadFacadeModule()["applyLitellmConfig"](...args)) as FacadeModule["applyLitellmConfig"];
 /** Apply only LiteLLM provider config defaults. */

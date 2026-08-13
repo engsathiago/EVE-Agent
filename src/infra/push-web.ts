@@ -37,7 +37,7 @@ const WEB_PUSH_STATE_FILENAME = "push/web-push-subscriptions.json";
 const VAPID_KEYS_FILENAME = "push/vapid-keys.json";
 const MAX_ENDPOINT_LENGTH = 2048;
 const MAX_KEY_LENGTH = 512;
-const DEFAULT_VAPID_SUBJECT = "https://openclaw.ai";
+const DEFAULT_VAPID_SUBJECT = "https://eve.ai";
 
 const withLock = createAsyncLock();
 
@@ -140,15 +140,15 @@ export async function resolveVapidKeys(baseDir?: string): Promise<VapidKeyPair> 
 }
 
 function resolveVapidSubjectFromEnv(): string {
-  return process.env.OPENCLAW_VAPID_SUBJECT || DEFAULT_VAPID_SUBJECT;
+  return process.env.EVE_VAPID_SUBJECT || DEFAULT_VAPID_SUBJECT;
 }
 
 function resolveVapidPublicKeyFromEnv(): string | undefined {
-  return process.env.OPENCLAW_VAPID_PUBLIC_KEY || undefined;
+  return process.env.EVE_VAPID_PUBLIC_KEY || undefined;
 }
 
 function resolveVapidPrivateKeyFromEnv(): string | undefined {
-  return process.env.OPENCLAW_VAPID_PRIVATE_KEY || undefined;
+  return process.env.EVE_VAPID_PRIVATE_KEY || undefined;
 }
 
 // --- Subscription CRUD ---

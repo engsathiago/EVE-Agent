@@ -8,7 +8,7 @@ import { detectFeishuLegacyStateMigrations } from "./dedup-migrations.js";
 const tempDirs: string[] = [];
 
 async function makeStateDir(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-feishu-dedup-migration-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-feishu-dedup-migration-"));
   tempDirs.push(dir);
   return dir;
 }

@@ -4,7 +4,7 @@ import {
   GPT5_CONTRACT_MODEL_ID,
   NON_GPT5_CONTRACT_MODEL_ID,
   sharedGpt5PersonalityConfig,
-} from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+} from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
 import { describe, expect, it } from "vitest";
 import { buildCodexProvider } from "./provider.js";
 

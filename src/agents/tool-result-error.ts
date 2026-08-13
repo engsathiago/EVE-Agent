@@ -1,4 +1,4 @@
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 
 export function readToolResultDetails(result: unknown): Record<string, unknown> | undefined {
   if (!result || typeof result !== "object") {

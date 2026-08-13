@@ -1,5 +1,5 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 
 type MatrixPreflightAudioRuntime = typeof import("./preflight-audio.runtime.js");
 const MATRIX_DEFAULT_ECHO_TRANSCRIPT_FORMAT = '📝 "{transcript}"';
@@ -19,7 +19,7 @@ function formatMatrixAudioTranscriptEcho(transcript: string, format: string): st
   return format.replace("{transcript}", transcript);
 }
 
-function suppressMatrixPreflightAudioEcho(cfg: OpenClawConfig): OpenClawConfig {
+function suppressMatrixPreflightAudioEcho(cfg: EVEConfig): EVEConfig {
   const audio = cfg.tools?.media?.audio;
   if (!audio?.echoTranscript) {
     return cfg;
@@ -52,7 +52,7 @@ export function isMatrixAudioContent(params: { msgtype?: string; mimetype?: stri
 export async function resolveMatrixPreflightAudioTranscript(params: {
   mediaPath: string;
   mediaContentType?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   chatType: "channel" | "direct";
   originatingTo: string;
@@ -92,7 +92,7 @@ export async function resolveMatrixPreflightAudioTranscript(params: {
 
 export async function sendMatrixPreflightAudioTranscriptEcho(params: {
   transcript: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   originatingTo: string;
   messageThreadId?: string;

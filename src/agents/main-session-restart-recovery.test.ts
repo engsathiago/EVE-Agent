@@ -36,7 +36,7 @@ let tmpDir: string;
 beforeEach(async () => {
   vi.clearAllMocks();
   resetAgentRunContextForTest();
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-main-restart-recovery-"));
+  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-main-restart-recovery-"));
 });
 
 afterEach(async () => {

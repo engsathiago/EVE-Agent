@@ -2,19 +2,19 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { MAX_DATE_TIMESTAMP_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_DATE_TIMESTAMP_MS } from "eve-agent/plugin-sdk/number-runtime";
 import {
   testing as sessionBindingTesting,
   registerSessionBindingAdapter,
-} from "openclaw/plugin-sdk/session-binding-runtime";
+} from "eve-agent/plugin-sdk/session-binding-runtime";
 import {
   getSessionEntry,
   saveSessionStore,
   upsertSessionEntry,
-} from "openclaw/plugin-sdk/session-store-runtime";
+} from "eve-agent/plugin-sdk/session-store-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { installMatrixMonitorTestRuntime } from "../../test-runtime.js";
-import { MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY } from "../send/types.js";
+import { MATRIX_EVE_FINALIZED_PREVIEW_KEY } from "../send/types.js";
 import { createMatrixRoomMessageHandler, MatrixRetryableInboundError } from "./handler.js";
 import {
   createMatrixHandlerTestHarness,
@@ -235,7 +235,7 @@ function expectFinalizedPreviewEdit(eventId: string, text: string) {
       room === "!room:example.org" && editedEventId === eventId && body === text,
   );
   const options = requireRecord(call[3], "edit options");
-  expect(options.extraContent).toEqual({ [MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY]: true });
+  expect(options.extraContent).toEqual({ [MATRIX_EVE_FINALIZED_PREVIEW_KEY]: true });
 }
 
 function expectEditLiveFlag(eventId: string, text: string, expected: boolean | undefined) {
@@ -3200,7 +3200,7 @@ describe("matrix monitor handler draft streaming", () => {
       name: "exec",
       phase: "end",
       status: "failed",
-      progressText: "run openclaw cron -> run jq (agent) failed",
+      progressText: "run eve cron -> run jq (agent) failed",
     });
     await opts.onItemEvent?.({
       itemId: "command-1",
@@ -3208,7 +3208,7 @@ describe("matrix monitor handler draft streaming", () => {
       name: "exec",
       phase: "end",
       status: "failed",
-      progressText: "run openclaw cron -> run jq (agent) failed",
+      progressText: "run eve cron -> run jq (agent) failed",
     });
 
     await vi.waitFor(() => {
@@ -3237,7 +3237,7 @@ describe("matrix monitor handler draft streaming", () => {
     );
     expect(recoveredEdit?.[2]).not.toContain("completed");
     expect(recoveredEdit?.[2]).not.toContain("failed");
-    expect(recoveredEdit?.[2]).not.toContain("run openclaw cron -> run jq");
+    expect(recoveredEdit?.[2]).not.toContain("run eve cron -> run jq");
   });
 
   it("replaces Matrix tool-start progress when command output completes", async () => {

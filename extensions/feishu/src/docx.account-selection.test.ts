@@ -1,6 +1,6 @@
 // Feishu tests cover docx.account selection plugin behavior.
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import type { OpenClawPluginApi } from "../runtime-api.js";
+import type { EVEPluginApi } from "../runtime-api.js";
 import { createToolFactoryHarness } from "./tool-factory-test-harness.js";
 
 const createFeishuClientMock = vi.fn((creds: { appId?: string } | undefined) => ({
@@ -55,7 +55,7 @@ describe("feishu_doc account selection", () => {
     vi.clearAllMocks();
   });
 
-  function createDocEnabledConfig(): OpenClawPluginApi["config"] {
+  function createDocEnabledConfig(): EVEPluginApi["config"] {
     return {
       channels: {
         feishu: {
@@ -66,10 +66,10 @@ describe("feishu_doc account selection", () => {
           },
         },
       },
-    } as OpenClawPluginApi["config"];
+    } as EVEPluginApi["config"];
   }
 
-  function createMixedToolConfig(): OpenClawPluginApi["config"] {
+  function createMixedToolConfig(): EVEPluginApi["config"] {
     return {
       channels: {
         feishu: {
@@ -88,7 +88,7 @@ describe("feishu_doc account selection", () => {
           },
         },
       },
-    } as OpenClawPluginApi["config"];
+    } as EVEPluginApi["config"];
   }
 
   test("uses agentAccountId context when params omit accountId", async () => {

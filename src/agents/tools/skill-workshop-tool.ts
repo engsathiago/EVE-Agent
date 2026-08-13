@@ -4,7 +4,7 @@
  * Exposes proposal create/update/review/apply actions while the workshop service owns persistence.
  */
 import { Type } from "typebox";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   applySkillProposal,
   inspectSkillProposal,
@@ -126,7 +126,7 @@ const SkillWorkshopToolSchema = Type.Object(
 
 export type SkillWorkshopToolOptions = {
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   origin?: SkillProposalOrigin;
 };

@@ -1,21 +1,21 @@
 // Covers when model selection should install the Copilot runtime plugin.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { modelSelectionShouldEnsureCopilotRuntimePlugin } from "./copilot-routing.js";
 
-const emptyCfg = {} as OpenClawConfig;
+const emptyCfg = {} as EVEConfig;
 
-function cfgWithProviderRuntime(id: string): OpenClawConfig {
+function cfgWithProviderRuntime(id: string): EVEConfig {
   return {
     models: {
       providers: {
         "github-copilot": { agentRuntime: { id } },
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
-function cfgWithModelRuntime(modelId: string, id: string): OpenClawConfig {
+function cfgWithModelRuntime(modelId: string, id: string): EVEConfig {
   return {
     models: {
       providers: {
@@ -24,7 +24,7 @@ function cfgWithModelRuntime(modelId: string, id: string): OpenClawConfig {
         },
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
 describe("modelSelectionShouldEnsureCopilotRuntimePlugin", () => {
@@ -93,7 +93,7 @@ describe("modelSelectionShouldEnsureCopilotRuntimePlugin", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     expect(
       modelSelectionShouldEnsureCopilotRuntimePlugin({
         model: "github-copilot/gpt-4o",
@@ -116,7 +116,7 @@ describe("modelSelectionShouldEnsureCopilotRuntimePlugin", () => {
           openai: { agentRuntime: { id: "copilot" } },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     expect(
       modelSelectionShouldEnsureCopilotRuntimePlugin({ model: "openai/gpt-4o", config: cfg }),
     ).toBe(false);

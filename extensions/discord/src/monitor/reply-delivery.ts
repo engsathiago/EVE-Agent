@@ -1,22 +1,22 @@
 // Discord plugin module implements reply delivery behavior.
-import { formatReasoningMessage, resolveAgentAvatar } from "openclaw/plugin-sdk/agent-runtime";
+import { formatReasoningMessage, resolveAgentAvatar } from "eve-agent/plugin-sdk/agent-runtime";
 import {
   buildOutboundSessionContext,
   sendDurableMessageBatch,
   type OutboundDeliveryFormattingOptions,
   type OutboundIdentity,
   type OutboundSendDeps,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import type {
   MarkdownTableMode,
-  OpenClawConfig,
+  EVEConfig,
   ReplyToMode,
-} from "openclaw/plugin-sdk/config-contracts";
-import type { OutboundMediaAccess } from "openclaw/plugin-sdk/media-runtime";
-import type { ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-dispatch-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/config-contracts";
+import type { OutboundMediaAccess } from "eve-agent/plugin-sdk/media-runtime";
+import type { ChunkMode } from "eve-agent/plugin-sdk/reply-chunking";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-dispatch-runtime";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { RequestClient } from "../internal/discord.js";
 import { sendMessageDiscord, sendVoiceMessageDiscord } from "../send.js";
 import { sanitizeDiscordFrontChannelReplyPayloads } from "./reply-safety.js";
@@ -63,7 +63,7 @@ function resolveBoundThreadBinding(params: {
 }
 
 function resolveBindingIdentity(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   binding: DiscordThreadBindingLookupRecord | undefined,
 ): OutboundIdentity | undefined {
   if (!binding) {
@@ -85,7 +85,7 @@ function resolveBindingIdentity(
 }
 
 function createDiscordDeliveryDeps(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   token: string;
   rest?: RequestClient;
 }): OutboundSendDeps {
@@ -122,7 +122,7 @@ type DiscordDeliveryOptions = {
 };
 
 function resolveDiscordDeliveryOptions(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: string;
   sessionKey?: string;
   threadBindings?: DiscordThreadBindingLookup;
@@ -170,7 +170,7 @@ function formatDiscordReasoningPayload(payload: ReplyPayload): ReplyPayload {
 }
 
 export async function deliverDiscordReply(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   replies: ReplyPayload[];
   target: string;
   token: string;

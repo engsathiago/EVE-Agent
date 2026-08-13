@@ -6,18 +6,18 @@ import { deleteTestEnvValue, setTestEnvValue } from "../../test-utils/env.js";
 /** Process home env snapshot used by skill loader tests. */
 export type SkillsHomeEnvSnapshot = {
   previousHome: string | undefined;
-  previousOpenClawHome: string | undefined;
+  previousEVEHome: string | undefined;
   previousUserProfile: string | undefined;
 };
 
 export function setMockSkillsHomeEnv(fakeHome: string): SkillsHomeEnvSnapshot {
   const snapshot: SkillsHomeEnvSnapshot = {
     previousHome: process.env.HOME,
-    previousOpenClawHome: process.env.OPENCLAW_HOME,
+    previousEVEHome: process.env.EVE_HOME,
     previousUserProfile: process.env.USERPROFILE,
   };
   setTestEnvValue("HOME", fakeHome);
-  deleteTestEnvValue("OPENCLAW_HOME");
+  deleteTestEnvValue("EVE_HOME");
   deleteTestEnvValue("USERPROFILE");
   vi.spyOn(os, "homedir").mockReturnValue(fakeHome);
   return snapshot;
@@ -37,7 +37,7 @@ export async function restoreMockSkillsHomeEnv(
 ) {
   vi.restoreAllMocks();
   restoreEnvValue("HOME", snapshot.previousHome);
-  restoreEnvValue("OPENCLAW_HOME", snapshot.previousOpenClawHome);
+  restoreEnvValue("EVE_HOME", snapshot.previousEVEHome);
   restoreEnvValue("USERPROFILE", snapshot.previousUserProfile);
   await cleanup?.();
 }

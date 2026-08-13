@@ -7,7 +7,7 @@ import {
   select as clackSelect,
   text as clackText,
 } from "@clack/prompts";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import {
   stylePromptHint,
   stylePromptMessage,

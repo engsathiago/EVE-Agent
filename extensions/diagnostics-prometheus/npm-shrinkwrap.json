@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/diagnostics-prometheus",
+  "name": "@eve/diagnostics-prometheus",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/diagnostics-prometheus",
+      "name": "@eve/diagnostics-prometheus",
       "version": "2026.6.8"
     }
   }

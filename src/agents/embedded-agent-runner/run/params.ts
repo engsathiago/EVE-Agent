@@ -10,7 +10,7 @@ import type { ReplyOperation } from "../../../auto-reply/reply/reply-run-registr
 import type { ReasoningLevel, ThinkLevel, VerboseLevel } from "../../../auto-reply/thinking.js";
 import type { ChatType } from "../../../channels/chat-type.js";
 import type { InboundEventKind } from "../../../channels/inbound-event/kind.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import type { ImageContent } from "../../../llm/types.js";
 import type { PromptImageOrderEntry } from "../../../media/prompt-image-order.js";
 import type { CommandQueueEnqueueFn } from "../../../process/command-queue.types.js";
@@ -118,7 +118,7 @@ export type RunEmbeddedAgentParams = {
   /** Task working directory for tool/runtime execution. Defaults to workspaceDir. */
   cwd?: string;
   agentDir?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   skillsSnapshot?: SkillSnapshot;
   prompt: string;
   /** User-visible prompt body to submit and persist; runtime context travels separately. */
@@ -137,7 +137,7 @@ export type RunEmbeddedAgentParams = {
   modelFallbacksOverride?: string[];
   /** Session-pinned embedded harness id. Prevents runtime hot-switching. */
   agentHarnessId?: string;
-  /** Explicit runtime override selected for this turn. Unlike agentHarnessId, this may force OpenClaw. */
+  /** Explicit runtime override selected for this turn. Unlike agentHarnessId, this may force EVE. */
   agentHarnessRuntimeOverride?: string;
   authProfileId?: string;
   authProfileIdSource?: "auto" | "user";

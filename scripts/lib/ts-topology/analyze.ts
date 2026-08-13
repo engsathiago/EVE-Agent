@@ -1,4 +1,4 @@
-// Analyze script supports OpenClaw repository automation.
+// Analyze script supports EVE repository automation.
 import path from "node:path";
 import ts from "typescript";
 import {

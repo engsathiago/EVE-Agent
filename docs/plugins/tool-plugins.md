@@ -1,25 +1,25 @@
 ---
-summary: "Build simple typed agent tools with defineToolPlugin and openclaw plugins init/build/validate"
+summary: "Build simple typed agent tools with defineToolPlugin and eve plugins init/build/validate"
 title: "Tool plugins"
 sidebarTitle: "Tool Plugins"
 read_when:
-  - You want to build a simple OpenClaw plugin that only adds agent tools
+  - You want to build a simple EVE plugin that only adds agent tools
   - You want to use defineToolPlugin instead of hand-writing plugin manifest metadata
   - You need to scaffold, generate, validate, test, or publish a tool-only plugin
 ---
 
-Tool plugins add agent-callable tools to OpenClaw without adding a channel,
+Tool plugins add agent-callable tools to EVE without adding a channel,
 model provider, hook, service, or setup backend. Use `defineToolPlugin` when the
-plugin owns a fixed list of tools and you want OpenClaw to generate the manifest
+plugin owns a fixed list of tools and you want EVE to generate the manifest
 metadata that keeps those tools discoverable without loading runtime code.
 
 The recommended flow is:
 
-1. Scaffold a package with `openclaw plugins init`.
+1. Scaffold a package with `eve plugins init`.
 2. Write tools with `defineToolPlugin`.
 3. Build JavaScript.
-4. Generate `openclaw.plugin.json` and `package.json` metadata with
-   `openclaw plugins build`.
+4. Generate `eve.plugin.json` and `package.json` metadata with
+   `eve plugins build`.
 5. Validate the generated metadata before publishing or installing.
 
 For provider, channel, hook, service, or mixed-capability plugins, start with
@@ -31,9 +31,9 @@ or [Provider Plugins](/plugins/sdk-provider-plugins) instead.
 - Node >= 22.
 - TypeScript ESM package output.
 - `typebox` for config and tool parameter schemas.
-- `openclaw >=2026.5.17`, the first OpenClaw version that exports
-  `openclaw/plugin-sdk/tool-plugin`.
-- A package root that can ship `dist/`, `openclaw.plugin.json`, and
+- `eve >=2026.5.17`, the first EVE version that exports
+  `eve-agent/plugin-sdk/tool-plugin`.
+- A package root that can ship `dist/`, `eve.plugin.json`, and
   `package.json`.
 
 The generated plugin imports `typebox` at runtime, so keep `typebox` in
@@ -44,7 +44,7 @@ The generated plugin imports `typebox` at runtime, so keep `typebox` in
 Create a new plugin package:
 
 ```bash
-openclaw plugins init stock-quotes --name "Stock Quotes"
+eve plugins init stock-quotes --name "Stock Quotes"
 cd stock-quotes
 npm install
 npm run plugin:build
@@ -58,8 +58,8 @@ The scaffold creates:
 - `src/index.test.ts`: a small metadata test.
 - `tsconfig.json`: NodeNext TypeScript output to `dist/`.
 - `package.json`: scripts, runtime dependencies, and
-  `openclaw.extensions: ["./dist/index.js"]`.
-- `openclaw.plugin.json`: generated manifest metadata for the initial tool.
+  `eve.extensions: ["./dist/index.js"]`.
+- `eve.plugin.json`: generated manifest metadata for the initial tool.
 
 Expected validation output:
 
@@ -75,7 +75,7 @@ schemas.
 
 ```typescript
 import { Type } from "typebox";
-import { defineToolPlugin } from "openclaw/plugin-sdk/tool-plugin";
+import { defineToolPlugin } from "eve-agent/plugin-sdk/tool-plugin";
 
 export default defineToolPlugin({
   id: "stock-quotes",
@@ -124,8 +124,8 @@ tool({
 });
 ```
 
-`openclaw plugins build` writes the matching `toolMetadata.<tool>.optional`
-manifest entry, so OpenClaw can discover the tool without loading plugin
+`eve plugins build` writes the matching `toolMetadata.<tool>.optional`
+manifest entry, so EVE can discover the tool without loading plugin
 runtime code.
 
 Use `factory` when a tool needs the runtime tool context before it can be
@@ -153,12 +153,12 @@ services, providers, commands, or other runtime surfaces.
 
 ## Return values
 
-`defineToolPlugin` wraps plain return values into the OpenClaw tool-result
+`defineToolPlugin` wraps plain return values into the EVE tool-result
 format:
 
 - Return a string when the model should see that exact text.
 - Return a JSON-compatible value when you want the model to see formatted JSON
-  and OpenClaw to keep the original value in `details`.
+  and EVE to keep the original value in `details`.
 
 ```typescript
 tool({
@@ -189,7 +189,7 @@ capabilities.
 
 ## Configuration
 
-`configSchema` is optional. If you omit it, OpenClaw uses a strict empty object
+`configSchema` is optional. If you omit it, EVE uses a strict empty object
 schema and the generated manifest still includes `configSchema`.
 
 ```typescript
@@ -225,15 +225,15 @@ export default defineToolPlugin({
 });
 ```
 
-OpenClaw reads plugin config from the plugin entry in the Gateway config. Do not
+EVE reads plugin config from the plugin entry in the Gateway config. Do not
 hard-code secrets in source or in docs examples. Use config, environment
 variables, or SecretRefs according to the plugin's security model.
 
 ## Generated metadata
 
-OpenClaw discovers installed plugins from cold metadata. It must be able to read
+EVE discovers installed plugins from cold metadata. It must be able to read
 the plugin manifest before importing plugin runtime code. `defineToolPlugin`
-therefore exposes static metadata, and `openclaw plugins build` writes that
+therefore exposes static metadata, and `eve plugins build` writes that
 metadata into the package.
 
 Run the generator after changing plugin id, name, description, config schema,
@@ -241,7 +241,7 @@ activation, or tool names:
 
 ```bash
 npm run build
-openclaw plugins build --entry ./dist/index.js
+eve plugins build --entry ./dist/index.js
 ```
 
 For a one-tool plugin, the generated manifest looks like this:
@@ -266,27 +266,27 @@ For a one-tool plugin, the generated manifest looks like this:
 }
 ```
 
-`contracts.tools` is the important discovery contract. It tells OpenClaw which
+`contracts.tools` is the important discovery contract. It tells EVE which
 plugin owns each tool without loading every installed plugin runtime. If the
 manifest is stale, the tool may be missing from discovery or the wrong plugin
 may be blamed for a registration error.
 
 ## Package metadata
 
-For the simple tool-plugin workflow, `openclaw plugins build` aligns
+For the simple tool-plugin workflow, `eve plugins build` aligns
 `package.json` to the selected single runtime entry:
 
 ```json
 {
   "type": "module",
-  "files": ["dist", "openclaw.plugin.json", "README.md"],
+  "files": ["dist", "eve.plugin.json", "README.md"],
   "dependencies": {
     "typebox": "^1.1.38"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.5.17"
+    "eve": ">=2026.5.17"
   },
-  "openclaw": {
+  "eve": {
     "extensions": ["./dist/index.js"]
   }
 }
@@ -303,34 +303,34 @@ rewriting files:
 
 ```bash
 npm run build
-openclaw plugins build --entry ./dist/index.js --check
-openclaw plugins validate --entry ./dist/index.js
+eve plugins build --entry ./dist/index.js --check
+eve plugins validate --entry ./dist/index.js
 npm test
 ```
 
 `plugins validate` checks that:
 
-- `openclaw.plugin.json` exists and passes the normal manifest loader.
+- `eve.plugin.json` exists and passes the normal manifest loader.
 - The current entry exports `defineToolPlugin` metadata.
 - Generated manifest fields match the entry metadata.
 - `contracts.tools` matches the declared tool names.
-- `package.json` points `openclaw.extensions` at the selected runtime entry.
+- `package.json` points `eve.extensions` at the selected runtime entry.
 
 ## Install and inspect locally
 
-From a separate OpenClaw checkout or installed CLI, install the package path:
+From a separate EVE checkout or installed CLI, install the package path:
 
 ```bash
-openclaw plugins install ./stock-quotes
-openclaw plugins inspect stock-quotes --runtime
+eve plugins install ./stock-quotes
+eve plugins inspect stock-quotes --runtime
 ```
 
 For a packaged smoke, pack first and install the tarball:
 
 ```bash
 npm pack
-openclaw plugins install npm-pack:./openclaw-plugin-stock-quotes-0.1.0.tgz
-openclaw plugins inspect stock-quotes --runtime --json
+eve plugins install npm-pack:./eve-plugin-stock-quotes-0.1.0.tgz
+eve plugins inspect stock-quotes --runtime --json
 ```
 
 After installation, start or restart the Gateway and ask the agent to use the
@@ -349,19 +349,19 @@ clawhub package publish your-org/stock-quotes
 Install with an explicit ClawHub locator:
 
 ```bash
-openclaw plugins install clawhub:your-org/stock-quotes
+eve plugins install clawhub:your-org/stock-quotes
 ```
 
 Bare npm package specs remain supported during the launch cutover, but ClawHub
-is the preferred discovery and distribution surface for OpenClaw plugins.
+is the preferred discovery and distribution surface for EVE plugins.
 
 ## Troubleshooting
 
 ### `plugin entry not found: ./dist/index.js`
 
 The selected entry file does not exist. Run `npm run build`, then rerun
-`openclaw plugins build --entry ./dist/index.js` or
-`openclaw plugins validate --entry ./dist/index.js`.
+`eve plugins build --entry ./dist/index.js` or
+`eve plugins validate --entry ./dist/index.js`.
 
 ### `plugin entry does not expose defineToolPlugin metadata`
 
@@ -369,21 +369,21 @@ The entry did not export a value created by `defineToolPlugin`. Check that the
 module default export is the `defineToolPlugin(...)` result, or pass the correct
 entry with `--entry`.
 
-### `openclaw.plugin.json generated metadata is stale`
+### `eve.plugin.json generated metadata is stale`
 
 The manifest no longer matches the entry metadata. Run:
 
 ```bash
 npm run build
-openclaw plugins build --entry ./dist/index.js
+eve plugins build --entry ./dist/index.js
 ```
 
-Commit both `openclaw.plugin.json` and `package.json` changes.
+Commit both `eve.plugin.json` and `package.json` changes.
 
-### `package.json openclaw.extensions must include ./dist/index.js`
+### `package.json eve.extensions must include ./dist/index.js`
 
 The package metadata points at a different runtime entry. Run
-`openclaw plugins build --entry ./dist/index.js` so the generator aligns the
+`eve plugins build --entry ./dist/index.js` so the generator aligns the
 package metadata with the entry you intend to ship.
 
 ### `Cannot find package 'typebox'`
@@ -395,10 +395,10 @@ The built plugin imports `typebox` at runtime. Keep `typebox` in
 
 Check these in order:
 
-1. `openclaw plugins inspect <plugin-id> --runtime`
-2. `openclaw plugins validate --root <plugin-root> --entry ./dist/index.js`
-3. `openclaw.plugin.json` has `contracts.tools` with the expected tool names.
-4. `package.json` has `openclaw.extensions: ["./dist/index.js"]`.
+1. `eve plugins inspect <plugin-id> --runtime`
+2. `eve plugins validate --root <plugin-root> --entry ./dist/index.js`
+3. `eve.plugin.json` has `contracts.tools` with the expected tool names.
+4. `package.json` has `eve.extensions: ["./dist/index.js"]`.
 5. The Gateway was restarted or reloaded after installing the plugin.
 
 ## See also

@@ -6,9 +6,9 @@
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/model-catalog-core/provider-id";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { Model } from "../llm/types.js";
 import type {
   prepareProviderDynamicModel,
@@ -61,7 +61,7 @@ function liveModelKey(provider: string, id: string): string | null {
  */
 export async function appendPrioritizedDynamicLiveModels(params: {
   models: Model[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentDir: string;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;

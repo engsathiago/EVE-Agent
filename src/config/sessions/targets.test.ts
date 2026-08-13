@@ -2,9 +2,9 @@
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { withTempHome } from "openclaw/plugin-sdk/test-env";
+import { withTempHome } from "eve-agent/plugin-sdk/test-env";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config.js";
+import type { EVEConfig } from "../config.js";
 import { resolveStorePath } from "./paths.js";
 import {
   resolveAgentSessionStoreTargetsSync,
@@ -31,7 +31,7 @@ async function createAgentSessionStores(
   return storePaths;
 }
 
-function createCustomRootCfg(customRoot: string, defaultAgentId = "ops"): OpenClawConfig {
+function createCustomRootCfg(customRoot: string, defaultAgentId = "ops"): EVEConfig {
   return {
     session: {
       store: path.join(customRoot, "agents", "{agentId}", "sessions", "sessions.json"),
@@ -74,9 +74,9 @@ function expectTargetsToContainStores(
 describe("resolveSessionStoreTargets", () => {
   it("resolves all configured agent stores", async () => {
     await withTempHome(async () => {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         session: {
-          store: "~/.openclaw/agents/{agentId}/sessions/sessions.json",
+          store: "~/.eve/agents/{agentId}/sessions/sessions.json",
         },
         agents: {
           list: [{ id: "main", default: true }, { id: "work" }],
@@ -100,9 +100,9 @@ describe("resolveSessionStoreTargets", () => {
 
   it("includes configured ACP harness stores for all-agent session views", async () => {
     await withTempHome(async () => {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         session: {
-          store: "~/.openclaw/agents/{agentId}/sessions/sessions.json",
+          store: "~/.eve/agents/{agentId}/sessions/sessions.json",
         },
         agents: {
           list: [
@@ -144,7 +144,7 @@ describe("resolveSessionStoreTargets", () => {
   });
 
   it("dedupes shared store paths for --all-agents", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       session: {
         store: "/tmp/shared-sessions.json",
       },
@@ -159,7 +159,7 @@ describe("resolveSessionStoreTargets", () => {
   });
 
   it("rejects unknown agent ids", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         list: [{ id: "main", default: true }, { id: "work" }],
       },
@@ -215,10 +215,10 @@ describe("resolveAgentSessionStoreTargetsSync", () => {
 describe("resolveAllAgentSessionStoreTargetsSync", () => {
   it("includes discovered on-disk agent stores alongside configured targets", async () => {
     await withTempHome(async (home) => {
-      const stateDir = path.join(home, ".openclaw");
+      const stateDir = path.join(home, ".eve");
       const storePaths = await createAgentSessionStores(stateDir, ["ops", "retired"]);
 
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         agents: {
           list: [{ id: "ops", default: true }],
         },
@@ -268,9 +268,9 @@ describe("resolveAllAgentSessionStoreTargetsSync", () => {
 
       const env = {
         ...process.env,
-        OPENCLAW_STATE_DIR: envStateDir,
+        EVE_STATE_DIR: envStateDir,
       };
-      const cfg: OpenClawConfig = {};
+      const cfg: EVEConfig = {};
       const mainStorePath = await resolveRealStorePath(mainSessionsDir);
       const retiredStorePath = await resolveRealStorePath(retiredSessionsDir);
 
@@ -298,7 +298,7 @@ describe("resolveAllAgentSessionStoreTargetsSync", () => {
       const cfg = createCustomRootCfg(customRoot, "main");
       const env = {
         ...process.env,
-        OPENCLAW_STATE_DIR: envStateDir,
+        EVE_STATE_DIR: envStateDir,
       };
 
       const targets = resolveAllAgentSessionStoreTargetsSync(cfg, { env });
@@ -336,7 +336,7 @@ describe("resolveAllAgentSessionStoreTargetsSync", () => {
 
   it("skips discovered directories that only normalize into the default main agent", async () => {
     await withTempHome(async (home) => {
-      const stateDir = path.join(home, ".openclaw");
+      const stateDir = path.join(home, ".eve");
       const mainSessionsDir = path.join(stateDir, "agents", "main", "sessions");
       const junkSessionsDir = path.join(stateDir, "agents", "###", "sessions");
       await fs.mkdir(mainSessionsDir, { recursive: true });
@@ -344,7 +344,7 @@ describe("resolveAllAgentSessionStoreTargetsSync", () => {
       await fs.writeFile(path.join(mainSessionsDir, "sessions.json"), "{}", "utf8");
       await fs.writeFile(path.join(junkSessionsDir, "sessions.json"), "{}", "utf8");
 
-      const cfg: OpenClawConfig = {};
+      const cfg: EVEConfig = {};
       const mainStorePath = await resolveRealStorePath(mainSessionsDir);
       const targets = resolveAllAgentSessionStoreTargetsSync(cfg, { env: process.env });
 

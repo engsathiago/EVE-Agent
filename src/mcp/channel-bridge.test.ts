@@ -1,6 +1,6 @@
 // Channel MCP bridge tests cover request bridging between MCP and channel APIs.
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { OpenClawChannelBridge } from "./channel-bridge.js";
+import { EVEChannelBridge } from "./channel-bridge.js";
 
 const ONE_MINUTE_MS = 60 * 1_000;
 const ONE_HOUR_MS = 60 * ONE_MINUTE_MS;
@@ -31,13 +31,13 @@ type BridgeInternals = {
 };
 
 function makeBridge(verbose = false): BridgeInternals {
-  return new OpenClawChannelBridge({} as never, {
+  return new EVEChannelBridge({} as never, {
     claudeChannelMode: "off",
     verbose,
   }) as unknown as BridgeInternals;
 }
 
-describe("OpenClawChannelBridge — pendingClaudePermissions / pendingApprovals memory bounds", () => {
+describe("EVEChannelBridge — pendingClaudePermissions / pendingApprovals memory bounds", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(0);
@@ -215,7 +215,7 @@ describe("OpenClawChannelBridge — pendingClaudePermissions / pendingApprovals 
       await bridge.sendNotification({ method: "channel/event" });
 
       expect(writes).toHaveLength(1);
-      expect(writes[0]).toBe("openclaw mcp: notification channel/event failed\n");
+      expect(writes[0]).toBe("eve mcp: notification channel/event failed\n");
       expect(writes[0]).not.toContain("transport closed");
     } finally {
       writeSpy.mockRestore();

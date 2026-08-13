@@ -1,20 +1,20 @@
 // Dispatches reply turns through ACP runtimes and projects their events.
-import { formatAcpRuntimeErrorText } from "@openclaw/acp-core/runtime/error-text";
-import { resolveAcpThreadSessionDetailLines } from "@openclaw/acp-core/runtime/session-identifiers";
+import { formatAcpRuntimeErrorText } from "@eve/acp-core/runtime/error-text";
+import { resolveAcpThreadSessionDetailLines } from "@eve/acp-core/runtime/session-identifiers";
 import {
   isSessionIdentityPending,
   resolveSessionIdentityFromMeta,
-} from "@openclaw/acp-core/runtime/session-identity";
+} from "@eve/acp-core/runtime/session-identity";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveAcpAgentPolicyError, resolveAcpDispatchPolicyError } from "../../acp/policy.js";
 import { AcpRuntimeError, toAcpRuntimeError } from "../../acp/runtime/errors.js";
 import { resolveAgentDir, resolveAgentWorkspaceDir } from "../../agents/agent-scope.js";
 import type { ChatType } from "../../channels/chat-type.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { TtsAutoMode } from "../../config/types.tts.js";
 import { logVerbose } from "../../globals.js";
 import { emitAgentEvent } from "../../infra/agent-events.js";
@@ -131,7 +131,7 @@ function isRestrictiveRuntimeToolsAllow(toolsAllow: string[] | undefined): boole
 }
 
 async function hasBoundConversationForSession(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   channelRaw: string | undefined;
   accountIdRaw: string | undefined;
@@ -255,7 +255,7 @@ async function maybeUnbindStaleBoundConversations(params: {
 }
 
 async function finalizeAcpTurnOutput(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   agentId: string;
   delivery: AcpDispatchDeliveryCoordinator;
@@ -365,7 +365,7 @@ async function finalizeAcpTurnOutput(params: {
 
 export async function tryDispatchAcpReply(params: {
   ctx: FinalizedMsgContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   dispatcher: ReplyDispatcher;
   runId?: string;
   sessionKey?: string;

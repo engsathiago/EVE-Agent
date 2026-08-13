@@ -191,10 +191,10 @@ describe("renderAndroidVersionProperties", () => {
     const version = resolveAndroidVersion(rootDir);
 
     expect(renderAndroidVersionProperties(version)).toContain(
-      "OPENCLAW_ANDROID_VERSION_NAME=2026.6.2",
+      "EVE_ANDROID_VERSION_NAME=2026.6.2",
     );
     expect(renderAndroidVersionProperties(version)).toContain(
-      "OPENCLAW_ANDROID_VERSION_CODE=2026060201",
+      "EVE_ANDROID_VERSION_CODE=2026060201",
     );
   });
 });
@@ -205,7 +205,7 @@ describe("renderAndroidReleaseNotes", () => {
       version: "2026.6.2",
       versionCode: 2026060201,
       changelog: [
-        "# OpenClaw Android Changelog",
+        "# EVE Android Changelog",
         "",
         "## Unreleased",
         "",
@@ -222,7 +222,7 @@ describe("renderAndroidReleaseNotes", () => {
     expect(
       renderAndroidReleaseNotes(
         version,
-        "# OpenClaw Android Changelog\n\n## Unreleased\n\nFuture Android changes.\n\n## 2026.6.2 - 2026-06-02\n\nPinned Android release notes.\n",
+        "# EVE Android Changelog\n\n## Unreleased\n\nFuture Android changes.\n\n## 2026.6.2 - 2026-06-02\n\nPinned Android release notes.\n",
       ),
     ).toBe("Pinned Android release notes.\n");
   });
@@ -237,7 +237,7 @@ describe("renderAndroidReleaseNotes", () => {
     expect(
       renderAndroidReleaseNotes(
         version,
-        "# OpenClaw Android Changelog\n\n## Unreleased\n\nPending Android notes.\n",
+        "# EVE Android Changelog\n\n## Unreleased\n\nPending Android notes.\n",
       ),
     ).toBe("Pending Android notes.\n");
   });
@@ -252,7 +252,7 @@ describe("renderAndroidReleaseNotes", () => {
     expect(() =>
       renderAndroidReleaseNotes(
         version,
-        "# OpenClaw Android Changelog\n\n## 2026.6.1\n\nOld notes.\n",
+        "# EVE Android Changelog\n\n## 2026.6.1\n\nOld notes.\n",
       ),
     ).toThrow("Unable to find Android changelog notes for 2026.6.2");
   });

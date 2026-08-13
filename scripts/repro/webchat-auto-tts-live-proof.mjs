@@ -60,7 +60,7 @@ async function main() {
   });
   setActivePluginRegistry(pluginRegistry.registry);
 
-  const prefsPath = path.join(os.tmpdir(), `openclaw-webchat-tts-proof-${process.pid}.json`);
+  const prefsPath = path.join(os.tmpdir(), `eve-webchat-tts-proof-${process.pid}.json`);
   const cfg = {
     messages: {
       tts: {

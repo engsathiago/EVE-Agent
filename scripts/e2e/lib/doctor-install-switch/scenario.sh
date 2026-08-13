@@ -1,44 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source scripts/lib/openclaw-e2e-instance.sh
-openclaw_e2e_eval_test_state_from_b64 "${OPENCLAW_TEST_STATE_FUNCTION_B64:?missing OPENCLAW_TEST_STATE_FUNCTION_B64}"
+source scripts/lib/eve-e2e-instance.sh
+eve_e2e_eval_test_state_from_b64 "${EVE_TEST_STATE_FUNCTION_B64:?missing EVE_TEST_STATE_FUNCTION_B64}"
 
 # Keep logs focused; the npm global install step can emit noisy deprecation warnings.
 export npm_config_loglevel=error
 export npm_config_fund=false
 export npm_config_audit=false
-export OPENCLAW_DISABLE_BUNDLED_PLUGINS=1
+export EVE_DISABLE_BUNDLED_PLUGINS=1
 
 # Stub systemd/loginctl so doctor + daemon flows work in Docker.
-export PATH="/tmp/openclaw-bin:$PATH"
-mkdir -p /tmp/openclaw-bin
-cp scripts/e2e/lib/doctor-install-switch/shims/systemctl /tmp/openclaw-bin/systemctl
-cp scripts/e2e/lib/doctor-install-switch/shims/loginctl /tmp/openclaw-bin/loginctl
-chmod +x /tmp/openclaw-bin/systemctl /tmp/openclaw-bin/loginctl
+export PATH="/tmp/eve-bin:$PATH"
+mkdir -p /tmp/eve-bin
+cp scripts/e2e/lib/doctor-install-switch/shims/systemctl /tmp/eve-bin/systemctl
+cp scripts/e2e/lib/doctor-install-switch/shims/loginctl /tmp/eve-bin/loginctl
+chmod +x /tmp/eve-bin/systemctl /tmp/eve-bin/loginctl
 
-package_tgz="${OPENCLAW_CURRENT_PACKAGE_TGZ:?missing OPENCLAW_CURRENT_PACKAGE_TGZ}"
-git_root="/tmp/openclaw-git"
+package_tgz="${EVE_CURRENT_PACKAGE_TGZ:?missing EVE_CURRENT_PACKAGE_TGZ}"
+git_root="/tmp/eve-git"
 mkdir -p "$git_root"
 # The git-style install fixture is unpacked from the tarball so this lane does
 # not depend on checkout source files being present in the Docker image.
 tar -xzf "$package_tgz" -C "$git_root" --strip-components=1
 (
   cd "$git_root"
-  openclaw_e2e_maybe_timeout "${OPENCLAW_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install --omit=optional --no-fund --no-audit >/tmp/openclaw-git-install.log 2>&1
+  eve_e2e_maybe_timeout "${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install --omit=optional --no-fund --no-audit >/tmp/eve-git-install.log 2>&1
   git init -q
-  git config user.email "docker-e2e@openclaw.local"
-  git config user.name "OpenClaw Docker E2E"
+  git config user.email "docker-e2e@eve.local"
+  git config user.name "EVE Docker E2E"
   git add -A --
   git commit -qm "test fixture"
 )
-npm_log="/tmp/openclaw-doctor-switch-npm-install.log"
-if ! openclaw_e2e_maybe_timeout "${OPENCLAW_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install -g --prefix /tmp/npm-prefix --omit=optional "$package_tgz" >"$npm_log" 2>&1; then
-  openclaw_e2e_print_log "$npm_log"
+npm_log="/tmp/eve-doctor-switch-npm-install.log"
+if ! eve_e2e_maybe_timeout "${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install -g --prefix /tmp/npm-prefix --omit=optional "$package_tgz" >"$npm_log" 2>&1; then
+  eve_e2e_print_log "$npm_log"
   exit 1
 fi
 
-npm_bin="/tmp/npm-prefix/bin/openclaw"
-npm_root="/tmp/npm-prefix/lib/node_modules/openclaw"
+npm_bin="/tmp/npm-prefix/bin/eve"
+npm_root="/tmp/npm-prefix/lib/node_modules/eve"
 if [ -f "$npm_root/dist/index.mjs" ]; then
   npm_entry="$npm_root/dist/index.mjs"
 else
@@ -50,7 +50,7 @@ if [ -f "$git_root/dist/index.mjs" ]; then
 else
   git_entry="$git_root/dist/index.js"
 fi
-git_cli="$git_root/openclaw.mjs"
+git_cli="$git_root/eve.mjs"
 
 package_version="$(node -p "require(\"$npm_root/package.json\").version")"
 is_legacy_package_acceptance_compat() {
@@ -127,30 +127,30 @@ run_flow() {
   local install_expected="$3"
   local doctor_cmd="$4"
   local doctor_expected="$5"
-  local install_log="/tmp/openclaw-doctor-switch-${name}-install.log"
-  local doctor_log="/tmp/openclaw-doctor-switch-${name}-doctor.log"
-  local command_timeout="${OPENCLAW_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
+  local install_log="/tmp/eve-doctor-switch-${name}-install.log"
+  local doctor_log="/tmp/eve-doctor-switch-${name}-doctor.log"
+  local command_timeout="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
 
   echo "== Flow: $name =="
-  openclaw_test_state_create "switch-${name}" empty
+  eve_test_state_create "switch-${name}" empty
   export USER="testuser"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" bash -c "$install_cmd" >"$install_log" 2>&1; then
-    openclaw_e2e_print_log "$install_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" bash -c "$install_cmd" >"$install_log" 2>&1; then
+    eve_e2e_print_log "$install_log"
     exit 1
   fi
   rm -f "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile"
   rm -rf "$HOME/.config/fish" "$HOME/.config/powershell"
 
-  unit_path="$HOME/.config/systemd/user/openclaw-gateway.service"
+  unit_path="$HOME/.config/systemd/user/eve-gateway.service"
   if [ ! -f "$unit_path" ]; then
     echo "Missing unit file: $unit_path"
     exit 1
   fi
   assert_entrypoint "$unit_path" "$install_expected"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" bash -c "$doctor_cmd" >"$doctor_log" 2>&1; then
-    openclaw_e2e_print_log "$doctor_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" bash -c "$doctor_cmd" >"$doctor_log" 2>&1; then
+    eve_e2e_print_log "$doctor_log"
     exit 1
   fi
 
@@ -161,33 +161,33 @@ run_flow \
   "npm-to-git" \
   "$npm_bin daemon install --force" \
   "$npm_entry" \
-  "OPENCLAW_UPDATE_IN_PROGRESS=1 node $git_cli doctor --repair --force --yes --non-interactive" \
+  "EVE_UPDATE_IN_PROGRESS=1 node $git_cli doctor --repair --force --yes --non-interactive" \
   "$git_entry"
 
 run_flow \
   "git-to-npm" \
   "node $git_cli daemon install --force" \
   "$git_entry" \
-  "OPENCLAW_UPDATE_IN_PROGRESS=1 $npm_bin doctor --repair --force --yes --non-interactive" \
+  "EVE_UPDATE_IN_PROGRESS=1 $npm_bin doctor --repair --force --yes --non-interactive" \
   "$npm_entry"
 
 run_proxy_env_flow() {
   local name="proxy-env-cleanup"
-  local install_log="/tmp/openclaw-doctor-switch-${name}-install.log"
-  local doctor_log="/tmp/openclaw-doctor-switch-${name}-doctor.log"
-  local command_timeout="${OPENCLAW_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
+  local install_log="/tmp/eve-doctor-switch-${name}-install.log"
+  local doctor_log="/tmp/eve-doctor-switch-${name}-doctor.log"
+  local command_timeout="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
 
   echo "== Flow: $name =="
-  openclaw_test_state_create "switch-${name}" empty
+  eve_test_state_create "switch-${name}" empty
   export USER="testuser"
 
-  unit_path="$HOME/.config/systemd/user/openclaw-gateway.service"
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" env \
+  unit_path="$HOME/.config/systemd/user/eve-gateway.service"
+  if ! eve_e2e_maybe_timeout "$command_timeout" env \
     HTTP_PROXY="http://proxy.local:7890" \
     HTTPS_PROXY="https://proxy.local:7890" \
     NO_PROXY="localhost,127.0.0.1" \
     "$npm_bin" gateway install --force >"$install_log" 2>&1; then
-    openclaw_e2e_print_log "$install_log"
+    eve_e2e_print_log "$install_log"
     exit 1
   fi
   assert_no_env_key "$unit_path" "HTTP_PROXY"
@@ -198,9 +198,9 @@ run_proxy_env_flow() {
     printf "%s\n" "Environment=HTTP_PROXY=http://stale-proxy.local:7890"
     printf "%s\n" "Environment=HTTPS_PROXY=https://stale-proxy.local:7890"
   } >>"$unit_path"
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" env OPENCLAW_UPDATE_IN_PROGRESS=1 \
+  if ! eve_e2e_maybe_timeout "$command_timeout" env EVE_UPDATE_IN_PROGRESS=1 \
     node "$git_cli" doctor --repair --force --yes --non-interactive >"$doctor_log" 2>&1; then
-    openclaw_e2e_print_log "$doctor_log"
+    eve_e2e_print_log "$doctor_log"
     exit 1
   fi
   assert_no_env_key "$unit_path" "HTTP_PROXY"
@@ -211,74 +211,74 @@ run_proxy_env_flow
 
 run_wrapper_flow() {
   local name="wrapper-persistence"
-  local install_log="/tmp/openclaw-doctor-switch-${name}-install.log"
-  local reinstall_log="/tmp/openclaw-doctor-switch-${name}-reinstall.log"
-  local env_repair_log="/tmp/openclaw-doctor-switch-${name}-env-repair.log"
-  local doctor_log="/tmp/openclaw-doctor-switch-${name}-doctor.log"
-  local clear_log="/tmp/openclaw-doctor-switch-${name}-clear.log"
-  local command_timeout="${OPENCLAW_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
+  local install_log="/tmp/eve-doctor-switch-${name}-install.log"
+  local reinstall_log="/tmp/eve-doctor-switch-${name}-reinstall.log"
+  local env_repair_log="/tmp/eve-doctor-switch-${name}-env-repair.log"
+  local doctor_log="/tmp/eve-doctor-switch-${name}-doctor.log"
+  local clear_log="/tmp/eve-doctor-switch-${name}-clear.log"
+  local command_timeout="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"
 
   echo "== Flow: $name =="
-  openclaw_test_state_create "switch-${name}" empty
+  eve_test_state_create "switch-${name}" empty
   export USER="testuser"
   mkdir -p "$HOME/.local/bin"
-  local wrapper="$HOME/.local/bin/openclaw-wrapper"
+  local wrapper="$HOME/.local/bin/eve-wrapper"
   node scripts/e2e/lib/doctor-install-switch/write-wrapper.mjs \
     "$wrapper" \
     "$npm_bin" \
-    "$HOME/openclaw-wrapper-argv.log"
+    "$HOME/eve-wrapper-argv.log"
 
-  local unit_path="$HOME/.config/systemd/user/openclaw-gateway.service"
+  local unit_path="$HOME/.config/systemd/user/eve-gateway.service"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" --force >"$install_log" 2>&1; then
-    openclaw_e2e_print_log "$install_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" --force >"$install_log" 2>&1; then
+    eve_e2e_print_log "$install_log"
     exit 1
   fi
   assert_exec_arg "$unit_path" 1 "$wrapper"
   assert_exec_arg "$unit_path" 2 "gateway"
-  assert_env_value "$unit_path" "OPENCLAW_WRAPPER" "$wrapper"
+  assert_env_value "$unit_path" "EVE_WRAPPER" "$wrapper"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --force >"$reinstall_log" 2>&1; then
-    openclaw_e2e_print_log "$reinstall_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --force >"$reinstall_log" 2>&1; then
+    eve_e2e_print_log "$reinstall_log"
     exit 1
   fi
   assert_exec_arg "$unit_path" 1 "$wrapper"
   assert_exec_arg "$unit_path" 2 "gateway"
-  assert_env_value "$unit_path" "OPENCLAW_WRAPPER" "$wrapper"
+  assert_env_value "$unit_path" "EVE_WRAPPER" "$wrapper"
 
-  sed -i "/^Environment=OPENCLAW_WRAPPER=/d" "$unit_path"
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" >"$env_repair_log" 2>&1; then
-    openclaw_e2e_print_log "$env_repair_log"
+  sed -i "/^Environment=EVE_WRAPPER=/d" "$unit_path"
+  if ! eve_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" >"$env_repair_log" 2>&1; then
+    eve_e2e_print_log "$env_repair_log"
     exit 1
   fi
   assert_exec_arg "$unit_path" 1 "$wrapper"
-  assert_env_value "$unit_path" "OPENCLAW_WRAPPER" "$wrapper"
+  assert_env_value "$unit_path" "EVE_WRAPPER" "$wrapper"
 
-  sed -i "s#^Environment=OPENCLAW_WRAPPER=.*#Environment=OPENCLAW_WRAPPER=/tmp/stale-openclaw-wrapper#" "$unit_path"
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" >"$env_repair_log" 2>&1; then
-    openclaw_e2e_print_log "$env_repair_log"
+  sed -i "s#^Environment=EVE_WRAPPER=.*#Environment=EVE_WRAPPER=/tmp/stale-eve-wrapper#" "$unit_path"
+  if ! eve_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" >"$env_repair_log" 2>&1; then
+    eve_e2e_print_log "$env_repair_log"
     exit 1
   fi
   assert_exec_arg "$unit_path" 1 "$wrapper"
-  assert_env_value "$unit_path" "OPENCLAW_WRAPPER" "$wrapper"
+  assert_env_value "$unit_path" "EVE_WRAPPER" "$wrapper"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" node "$git_cli" doctor --repair --force --yes >"$doctor_log" 2>&1; then
-    openclaw_e2e_print_log "$doctor_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" node "$git_cli" doctor --repair --force --yes >"$doctor_log" 2>&1; then
+    eve_e2e_print_log "$doctor_log"
     exit 1
   fi
-  if ! grep -Fq "Gateway service invokes OPENCLAW_WRAPPER:" "$doctor_log"; then
+  if ! grep -Fq "Gateway service invokes EVE_WRAPPER:" "$doctor_log"; then
     echo "Expected doctor to report active wrapper"
-    openclaw_e2e_print_log "$doctor_log"
+    eve_e2e_print_log "$doctor_log"
     exit 1
   fi
   assert_exec_arg "$unit_path" 1 "$wrapper"
-  assert_env_value "$unit_path" "OPENCLAW_WRAPPER" "$wrapper"
+  assert_env_value "$unit_path" "EVE_WRAPPER" "$wrapper"
 
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" env OPENCLAW_WRAPPER= "$npm_bin" gateway install --force >"$clear_log" 2>&1; then
-    openclaw_e2e_print_log "$clear_log"
+  if ! eve_e2e_maybe_timeout "$command_timeout" env EVE_WRAPPER= "$npm_bin" gateway install --force >"$clear_log" 2>&1; then
+    eve_e2e_print_log "$clear_log"
     exit 1
   fi
-  assert_no_env_key "$unit_path" "OPENCLAW_WRAPPER"
+  assert_no_env_key "$unit_path" "EVE_WRAPPER"
   assert_entrypoint "$unit_path" "$npm_entry"
 }
 

@@ -3,9 +3,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
-import type { AssistantMessage, ToolResultMessage, UserMessage } from "openclaw/plugin-sdk/llm";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
+import type { AssistantMessage, ToolResultMessage, UserMessage } from "eve-agent/plugin-sdk/llm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { onSessionTranscriptUpdate } from "../../sessions/transcript-events.js";
 import { makeAgentAssistantMessage } from "../test-helpers/agent-message-fixtures.js";

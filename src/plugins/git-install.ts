@@ -2,8 +2,8 @@
 import "../infra/fs-safe-defaults.js";
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import { pathExists } from "../infra/fs-safe.js";
 import { withTempDir } from "../infra/install-source-utils.js";
@@ -339,7 +339,7 @@ export async function installPluginFromGitSpec(
   const persistentRepoDir = resolveGitInstallRepoDir({ gitDir: params.gitDir, source: parsed });
   const effectiveMode =
     params.mode === "update" && (await pathExists(persistentRepoDir)) ? "update" : "install";
-  return await withTempDir("openclaw-git-plugin-", async (tmpDir) => {
+  return await withTempDir("eve-git-plugin-", async (tmpDir) => {
     const repoDir = path.join(tmpDir, "repo");
     params.logger?.info?.(
       `Cloning ${sanitizeForLog(redactSensitiveUrlLikeString(parsed.label))}...`,

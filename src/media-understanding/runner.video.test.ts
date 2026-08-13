@@ -1,7 +1,7 @@
 // Video runner tests cover provider request wiring, auth/config precedence, and
 // provider output handling for video attachments.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { runCapability } from "./runner.js";
@@ -44,8 +44,8 @@ describe("runCapability video provider wiring", () => {
     let seenBaseUrl: string | undefined;
     let seenHeaders: Record<string, string> | undefined;
 
-    await withTempDir({ prefix: "openclaw-video-auth-" }, async (isolatedAgentDir) => {
-      await withVideoFixture("openclaw-video-merge", async ({ ctx, media, cache }) => {
+    await withTempDir({ prefix: "eve-video-auth-" }, async (isolatedAgentDir) => {
+      await withVideoFixture("eve-video-merge", async ({ ctx, media, cache }) => {
         const cfg = {
           models: {
             providers: {
@@ -75,7 +75,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig;
+        } as unknown as EVEConfig;
 
         const result = await runCapability({
           capability: "video",
@@ -114,16 +114,16 @@ describe("runCapability video provider wiring", () => {
   });
 
   it("auto-selects moonshot for video when google is unavailable", async () => {
-    await withTempDir({ prefix: "openclaw-video-agent-" }, async (isolatedAgentDir) => {
+    await withTempDir({ prefix: "eve-video-agent-" }, async (isolatedAgentDir) => {
       await withEnvAsync(
         {
           GEMINI_API_KEY: undefined,
           GOOGLE_API_KEY: undefined,
           MOONSHOT_API_KEY: undefined,
-          OPENCLAW_AGENT_DIR: isolatedAgentDir,
+          EVE_AGENT_DIR: isolatedAgentDir,
         },
         async () => {
-          await withVideoFixture("openclaw-video-auto-moonshot", async ({ ctx, media, cache }) => {
+          await withVideoFixture("eve-video-auto-moonshot", async ({ ctx, media, cache }) => {
             const cfg = {
               models: {
                 providers: {
@@ -141,7 +141,7 @@ describe("runCapability video provider wiring", () => {
                   },
                 },
               },
-            } as unknown as OpenClawConfig;
+            } as unknown as EVEConfig;
 
             const result = await runCapability({
               capability: "video",
@@ -185,8 +185,8 @@ describe("runCapability video provider wiring", () => {
     const resolveApiKeyForProvider = vi.mocked(modelAuth.resolveApiKeyForProvider);
     resolveApiKeyForProvider.mockClear();
 
-    await withTempDir({ prefix: "openclaw-video-provider-api-" }, async (isolatedAgentDir) => {
-      await withVideoFixture("openclaw-video-provider-api", async ({ ctx, media, cache }) => {
+    await withTempDir({ prefix: "eve-video-provider-api-" }, async (isolatedAgentDir) => {
+      await withVideoFixture("eve-video-provider-api", async ({ ctx, media, cache }) => {
         let seenApiKey: string | undefined;
         const cfg = {
           models: {
@@ -205,7 +205,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig;
+        } as unknown as EVEConfig;
 
         const result = await runCapability({
           capability: "video",

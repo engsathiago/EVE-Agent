@@ -1,19 +1,19 @@
 // Sms plugin module implements channel behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/account-resolution";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
+import type { EVEConfig } from "eve-agent/plugin-sdk/account-resolution";
 import {
   createHybridChannelConfigAdapter,
   createScopedDmSecurityResolver,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { createChatChannelPlugin, type ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
+} from "eve-agent/plugin-sdk/channel-config-helpers";
+import { createChatChannelPlugin, type ChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
 import {
   createMessageReceiptFromOutboundResults,
   defineChannelMessageAdapter,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { createConditionalWarningCollector } from "openclaw/plugin-sdk/channel-policy";
-import { createEmptyChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { chunkTextForOutbound } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { createConditionalWarningCollector } from "eve-agent/plugin-sdk/channel-policy";
+import { createEmptyChannelDirectoryAdapter } from "eve-agent/plugin-sdk/directory-runtime";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { chunkTextForOutbound } from "eve-agent/plugin-sdk/text-chunking";
 import {
   inspectSmsAccount,
   isSmsAccountConfigured,
@@ -66,7 +66,7 @@ const resolveSmsDmPolicy = createScopedDmSecurityResolver<ResolvedSmsAccount>({
   resolveAllowFrom: (account) => account.allowFrom,
   policyPathSuffix: "dmPolicy",
   defaultPolicy: "pairing",
-  approveHint: "openclaw pairing approve sms <code>",
+  approveHint: "eve pairing approve sms <code>",
   normalizeEntry: normalizeSmsAllowFrom,
 });
 
@@ -101,10 +101,10 @@ function smsSetupPatch(input: Record<string, unknown>): Record<string, unknown> 
 }
 
 function applySmsAccountConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   input: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   const patch = smsSetupPatch(params.input);
   const channels = { ...params.cfg.channels };
   const current = { ...(channels[CHANNEL_ID] as Record<string, unknown> | undefined) };
@@ -152,7 +152,7 @@ function createSmsReceipt(params: {
 }
 
 export function resolveSmsTextChunkLimit(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   fallbackLimit?: number;
 }): number {
@@ -162,7 +162,7 @@ export function resolveSmsTextChunkLimit(params: {
 }
 
 async function sendSmsText(ctx: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   to: string;
   text: string;
@@ -289,7 +289,7 @@ export const smsPlugin: ChannelPlugin<ResolvedSmsAccount, SmsProbe> = createChat
   pairing: {
     text: {
       idLabel: "phoneNumber",
-      message: "OpenClaw: your SMS access has been approved.",
+      message: "EVE: your SMS access has been approved.",
       normalizeAllowEntry: normalizeSmsAllowFrom,
       notify: async ({ cfg, id, message, accountId }) => {
         const account = resolveSmsAccount(cfg, accountId);

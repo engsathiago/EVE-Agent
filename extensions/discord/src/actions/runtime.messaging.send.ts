@@ -1,5 +1,5 @@
 // Discord plugin module implements runtime.messaging.send behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   assertMediaNotDataUrl,
   jsonResult,

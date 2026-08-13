@@ -4,7 +4,7 @@ import type { IncomingMessage } from "node:http";
 import os from "node:os";
 import path from "node:path";
 import type { Duplex } from "node:stream";
-import { defaultRuntime } from "openclaw/plugin-sdk/runtime-env";
+import { defaultRuntime } from "eve-agent/plugin-sdk/runtime-env";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   A2UI_PATH,
@@ -169,7 +169,7 @@ describe("canvas host", () => {
       serverModule.CANVAS_LIVE_RELOAD_MAX_INBOUND_MESSAGE_BYTES;
     const wsModule = await vi.importActual<typeof import("ws")>("ws");
     WebSocketServerClass = wsModule.WebSocketServer;
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-canvas-fixtures-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-canvas-fixtures-"));
   });
 
   beforeEach(() => {
@@ -186,8 +186,8 @@ describe("canvas host", () => {
     const out = injectCanvasLiveReload("<html><body>Hello</body></html>");
     expect(out).toContain(CANVAS_WS_PATH);
     expect(out).toContain("location.reload");
-    expect(out).toContain("openclawCanvasA2UIAction");
-    expect(out).toContain("openclawSendUserAction");
+    expect(out).toContain("eveCanvasA2UIAction");
+    expect(out).toContain("eveSendUserAction");
   });
 
   it("creates a default index.html when missing", async () => {
@@ -198,7 +198,7 @@ describe("canvas host", () => {
       const response = await captureHandlerResponse(handler, `${CANVAS_HOST_PATH}/`);
       expect(response.status).toBe(200);
       expect(response.body).toContain("Interactive test page");
-      expect(response.body).toContain("openclawSendUserAction");
+      expect(response.body).toContain("eveSendUserAction");
       expect(response.body).toContain(CANVAS_WS_PATH);
       expect(response.body).toContain('document.createElement("span")');
       expect(response.body).not.toContain("statusEl.innerHTML");
@@ -448,7 +448,7 @@ describe("canvas host", () => {
     try {
       await fs.stat(bundlePath);
     } catch {
-      await fs.writeFile(bundlePath, "window.openclawA2UI = {};", "utf8");
+      await fs.writeFile(bundlePath, "window.eveA2UI = {};", "utf8");
       createdBundle = true;
     }
 
@@ -458,13 +458,13 @@ describe("canvas host", () => {
       const res = await captureA2uiResponse(`${A2UI_PATH}/`);
       const html = res.body;
       expect(res.status).toBe(200);
-      expect(html).toContain("openclaw-a2ui-host");
-      expect(html).toContain("openclawCanvasA2UIAction");
+      expect(html).toContain("eve-a2ui-host");
+      expect(html).toContain("eveCanvasA2UIAction");
 
       const bundleRes = await captureA2uiResponse(`${A2UI_PATH}/a2ui.bundle.js`);
       const js = bundleRes.body;
       expect(bundleRes.status).toBe(200);
-      expect(js).toContain("openclawA2UI");
+      expect(js).toContain("eveA2UI");
       const expectedPngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
       for (const assetPath of [
         "assets/providers/google.png",

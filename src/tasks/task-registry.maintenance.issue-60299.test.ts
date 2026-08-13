@@ -172,7 +172,7 @@ function createTaskRegistryMaintenanceHarness(params: {
       return next;
     },
     isRuntimeAuthoritative: () => params.runtimeAuthoritative ?? true,
-    resolveCronJobsStorePath: () => "/tmp/openclaw-test-cron/jobs.json",
+    resolveCronJobsStorePath: () => "/tmp/eve-test-cron/jobs.json",
     loadCronJobsStoreSync: () => params.cronStore ?? { version: 1, jobs: [] },
     readCronRunLogEntriesSync: ({ jobId }) => (jobId ? (cronRunLogEntries[jobId] ?? []) : []),
   };
@@ -221,7 +221,7 @@ describe("task-registry maintenance issue #60299", () => {
     createTaskRegistryMaintenanceHarness({
       tasks,
       loadSessionStore: loadSessionStoreMock,
-      resolveStorePath: () => "/tmp/openclaw-test-sessions-main.json",
+      resolveStorePath: () => "/tmp/eve-test-sessions-main.json",
     });
 
     expectMaintenanceCounts(await runTaskRegistryMaintenance(), { reconciled: tasks.length });

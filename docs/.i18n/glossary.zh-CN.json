@@ -1,7 +1,7 @@
 [
   {
-    "source": "OpenClaw",
-    "target": "OpenClaw"
+    "source": "EVE",
+    "target": "EVE"
   },
   {
     "source": "macOS platform notes",
@@ -1144,12 +1144,12 @@
     "target": "Agent runtime architecture"
   },
   {
-    "source": "OpenClaw agent runtime workflow",
-    "target": "OpenClaw agent runtime workflow"
+    "source": "EVE agent runtime workflow",
+    "target": "EVE agent runtime workflow"
   },
   {
-    "source": "OpenClaw agent runtime architecture",
-    "target": "OpenClaw agent runtime architecture"
+    "source": "EVE agent runtime architecture",
+    "target": "EVE agent runtime architecture"
   },
   {
     "source": "Install and Configure Plugins",

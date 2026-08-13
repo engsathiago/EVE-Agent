@@ -35,13 +35,13 @@ describe("pinIosVersion", () => {
   it("pins an explicit iOS release version and syncs generated artifacts", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: `# OpenClaw iOS Changelog
+      changelog: `# EVE iOS Changelog
 
 ## Unreleased
 
 - Draft release notes.
 `,
-      prefix: "openclaw-ios-pin-",
+      prefix: "eve-ios-pin-",
     });
 
     const result = pinIosVersion({
@@ -60,7 +60,7 @@ describe("pinIosVersion", () => {
     );
     expect(
       fs.readFileSync(path.join(rootDir, "apps", "ios", "Config", "Version.xcconfig"), "utf8"),
-    ).toContain("OPENCLAW_MARKETING_VERSION = 2026.4.7");
+    ).toContain("EVE_MARKETING_VERSION = 2026.4.7");
     expect(
       fs.readFileSync(
         path.join(rootDir, "apps", "ios", "fastlane", "metadata", "en-US", "release_notes.txt"),
@@ -74,13 +74,13 @@ describe("pinIosVersion", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
       packageVersion: "2026.4.10-beta.3",
-      changelog: `# OpenClaw iOS Changelog
+      changelog: `# EVE iOS Changelog
 
 ## Unreleased
 
 - Candidate release notes.
 `,
-      prefix: "openclaw-ios-pin-",
+      prefix: "eve-ios-pin-",
     });
 
     const result = pinIosVersion({
@@ -99,7 +99,7 @@ describe("pinIosVersion", () => {
   it("can skip syncing checked-in artifacts when requested", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: `# OpenClaw iOS Changelog
+      changelog: `# EVE iOS Changelog
 
 ## Unreleased
 
@@ -107,7 +107,7 @@ describe("pinIosVersion", () => {
 `,
       versionXcconfig: "stale\n",
       releaseNotes: "stale\n",
-      prefix: "openclaw-ios-pin-",
+      prefix: "eve-ios-pin-",
     });
 
     const result = pinIosVersion({

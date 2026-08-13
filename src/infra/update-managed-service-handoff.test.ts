@@ -52,7 +52,7 @@ async function runHelperWithExistingSentinel(params: {
   const { execFile } =
     await vi.importActual<typeof import("node:child_process")>("node:child_process");
   const { startManagedServiceUpdateHandoff } = await import("./update-managed-service-handoff.js");
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-handoff-helper-test-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-handoff-helper-test-"));
   tempDirs.add(tmpDir);
 
   await startManagedServiceUpdateHandoff({
@@ -61,7 +61,7 @@ async function runHelperWithExistingSentinel(params: {
     restartDelayMs: 500,
     parentPid: process.pid,
     execPath: "/usr/local/bin/node",
-    argv1: "/opt/openclaw/openclaw.mjs",
+    argv1: "/opt/eve/eve.mjs",
     ...(params.handoffId ? { handoffId: params.handoffId } : {}),
     env: {},
     meta: {
@@ -134,7 +134,7 @@ async function runHelperWithCommand(params: {
   const { execFile } =
     await vi.importActual<typeof import("node:child_process")>("node:child_process");
   const { startManagedServiceUpdateHandoff } = await import("./update-managed-service-handoff.js");
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-handoff-recovery-test-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-handoff-recovery-test-"));
   tempDirs.add(tmpDir);
 
   await startManagedServiceUpdateHandoff({
@@ -143,7 +143,7 @@ async function runHelperWithCommand(params: {
     restartDelayMs: 0,
     parentPid: process.pid,
     execPath: "/usr/local/bin/node",
-    argv1: "/opt/openclaw/openclaw.mjs",
+    argv1: "/opt/eve/eve.mjs",
     env: {},
     meta: { sessionKey: "agent:test:webchat:dm:user-123" },
   });
@@ -191,7 +191,7 @@ async function runHelperWithCommand(params: {
 }
 
 async function writeFakeSystemctl(): Promise<{ binDir: string; recordPath: string }> {
-  const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-recovery-bin-"));
+  const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-recovery-bin-"));
   tempDirs.add(binDir);
   const recordPath = path.join(binDir, "systemctl-calls.log");
   await fs.writeFile(
@@ -203,7 +203,7 @@ async function writeFakeSystemctl(): Promise<{ binDir: string; recordPath: strin
 }
 
 async function writeFakeLaunchctl(): Promise<{ binDir: string; recordPath: string }> {
-  const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-launchctl-bin-"));
+  const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-launchctl-bin-"));
   tempDirs.add(binDir);
   const recordPath = path.join(binDir, "launchctl-calls.log");
   const countPath = path.join(binDir, "launchctl-kickstart-count");
@@ -235,9 +235,9 @@ describe("managed service update handoff", () => {
     const { startManagedServiceUpdateHandoff, stripSupervisorHintEnv } =
       await import("./update-managed-service-handoff.js");
     const serviceIdentityEnv = {
-      OPENCLAW_LAUNCHD_LABEL: "com.example.openclaw.test",
-      OPENCLAW_SYSTEMD_UNIT: "openclaw-test.service",
-      OPENCLAW_WINDOWS_TASK_NAME: "OpenClaw Test Gateway",
+      EVE_LAUNCHD_LABEL: "com.example.eve.test",
+      EVE_SYSTEMD_UNIT: "eve-test.service",
+      EVE_WINDOWS_TASK_NAME: "EVE Test Gateway",
     } satisfies NodeJS.ProcessEnv;
     const supervisorEnv = Object.fromEntries(
       SUPERVISOR_HINT_ENV_VARS.map((key) => [key, "supervised"]),
@@ -253,12 +253,12 @@ describe("managed service update handoff", () => {
     });
 
     const result = await startManagedServiceUpdateHandoff({
-      root: "/tmp/openclaw",
+      root: "/tmp/eve",
       timeoutMs: 1_800_000,
       restartDelayMs: 500,
       parentPid: 12345,
       execPath: "/usr/local/bin/node",
-      argv1: "/opt/openclaw/openclaw.mjs",
+      argv1: "/opt/eve/eve.mjs",
       env: {
         ...supervisorEnv,
         ...serviceIdentityEnv,
@@ -271,7 +271,7 @@ describe("managed service update handoff", () => {
     });
 
     expect(result.status).toBe("started");
-    expect(result.command).toBe("openclaw update --yes --timeout 1800");
+    expect(result.command).toBe("eve update --yes --timeout 1800");
     expect(spawnMock).toHaveBeenCalledTimes(1);
     const [execPath, args, options] = spawnMock.mock.calls[0] as unknown as [
       string,
@@ -300,31 +300,31 @@ describe("managed service update handoff", () => {
     )) {
       expect(options.env[key]).toBeUndefined();
     }
-    expect(options.env.OPENCLAW_UPDATE_RUN_HANDOFF).toBe("1");
+    expect(options.env.EVE_UPDATE_RUN_HANDOFF).toBe("1");
     expect(options.env[CONTROL_PLANE_UPDATE_SENTINEL_META_ENV]).toMatch(/sentinel-meta\.json$/u);
   });
 
   it("launches systemd handoffs through a transient user scope", async () => {
     const { startManagedServiceUpdateHandoff } =
       await import("./update-managed-service-handoff.js");
-    const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-systemd-run-bin-"));
+    const binDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-systemd-run-bin-"));
     tempDirs.add(binDir);
     const systemdRunPath = path.join(binDir, "systemd-run");
     await fs.writeFile(systemdRunPath, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
 
     const result = await startManagedServiceUpdateHandoff({
-      root: "/tmp/openclaw",
+      root: "/tmp/eve",
       timeoutMs: 1_800_000,
       restartDelayMs: 500,
       parentPid: 12345,
       execPath: "/usr/local/bin/node",
-      argv1: "/opt/openclaw/openclaw.mjs",
+      argv1: "/opt/eve/eve.mjs",
       handoffId: "handoff-123",
       channel: "beta",
       supervisor: "systemd",
       env: {
         PATH: binDir,
-        OPENCLAW_SYSTEMD_UNIT: "openclaw-gateway.service",
+        EVE_SYSTEMD_UNIT: "eve-gateway.service",
         INVOCATION_ID: "gateway-invocation",
         KEEP_ME: "1",
       },
@@ -347,7 +347,7 @@ describe("managed service update handoff", () => {
       "--user",
       "--scope",
       "--collect",
-      "--unit=openclaw-update-handoff-123.scope",
+      "--unit=eve-update-handoff-123.scope",
     ]);
     expect(args.slice(4, 7)).toEqual([
       "/usr/local/bin/node",
@@ -362,11 +362,11 @@ describe("managed service update handoff", () => {
     };
     expect(helperParams.serviceRecovery).toEqual({
       kind: "systemd",
-      unit: "openclaw-gateway.service",
+      unit: "eve-gateway.service",
     });
     expect(helperParams.commandArgv).toEqual([
       "/usr/local/bin/node",
-      "/opt/openclaw/openclaw.mjs",
+      "/opt/eve/eve.mjs",
       "update",
       "--yes",
       "--json",
@@ -377,23 +377,23 @@ describe("managed service update handoff", () => {
     ]);
     expect(helperParams.handoffId).toBe("handoff-123");
     expect(options.detached).toBe(true);
-    expect(options.env.OPENCLAW_SYSTEMD_UNIT).toBe("openclaw-gateway.service");
+    expect(options.env.EVE_SYSTEMD_UNIT).toBe("eve-gateway.service");
     expect(options.env.INVOCATION_ID).toBeUndefined();
     expect(options.env.KEEP_ME).toBe("1");
-    expect(options.env.OPENCLAW_UPDATE_RUN_HANDOFF).toBe("1");
+    expect(options.env.EVE_UPDATE_RUN_HANDOFF).toBe("1");
   });
 
   it("starts the managed gateway service when the update command fails after handoff", async () => {
     const { binDir, recordPath } = await writeFakeSystemctl();
     const result = await runHelperWithCommand({
       commandArgv: [process.execPath, "-e", "process.exit(7)"],
-      serviceRecovery: { kind: "systemd", unit: "openclaw-gateway.service" },
+      serviceRecovery: { kind: "systemd", unit: "eve-gateway.service" },
       pathPrepend: binDir,
     });
 
     expect(result.code).toBe(7);
     await expect(fs.readFile(recordPath, "utf-8")).resolves.toBe(
-      "--user start openclaw-gateway.service\n",
+      "--user start eve-gateway.service\n",
     );
   });
 
@@ -401,7 +401,7 @@ describe("managed service update handoff", () => {
     const { binDir, recordPath } = await writeFakeSystemctl();
     const result = await runHelperWithCommand({
       commandArgv: [process.execPath, "-e", "process.exit(0)"],
-      serviceRecovery: { kind: "systemd", unit: "openclaw-gateway.service" },
+      serviceRecovery: { kind: "systemd", unit: "eve-gateway.service" },
       pathPrepend: binDir,
     });
 
@@ -416,8 +416,8 @@ describe("managed service update handoff", () => {
       serviceRecovery: {
         kind: "launchd",
         uid: 501,
-        label: "com.example.openclaw",
-        plistPath: "/Users/test/Library/LaunchAgents/com.example.openclaw.plist",
+        label: "com.example.eve",
+        plistPath: "/Users/test/Library/LaunchAgents/com.example.eve.plist",
       },
       pathPrepend: binDir,
     });
@@ -425,10 +425,10 @@ describe("managed service update handoff", () => {
     expect(result.code).toBe(7);
     await expect(fs.readFile(recordPath, "utf-8")).resolves.toBe(
       [
-        "kickstart gui/501/com.example.openclaw",
-        "enable gui/501/com.example.openclaw",
-        "bootstrap gui/501 /Users/test/Library/LaunchAgents/com.example.openclaw.plist",
-        "kickstart gui/501/com.example.openclaw",
+        "kickstart gui/501/com.example.eve",
+        "enable gui/501/com.example.eve",
+        "bootstrap gui/501 /Users/test/Library/LaunchAgents/com.example.eve.plist",
+        "kickstart gui/501/com.example.eve",
         "",
       ].join("\n"),
     );
@@ -440,29 +440,29 @@ describe("managed service update handoff", () => {
     const cases = [
       {
         supervisor: "launchd" as const,
-        env: { OPENCLAW_LAUNCHD_LABEL: "com.example.openclaw.test", HOME: "/Users/test" },
+        env: { EVE_LAUNCHD_LABEL: "com.example.eve.test", HOME: "/Users/test" },
         expected: {
           kind: "launchd",
           uid: typeof process.getuid === "function" ? process.getuid() : 501,
-          label: "com.example.openclaw.test",
-          plistPath: "/Users/test/Library/LaunchAgents/com.example.openclaw.test.plist",
+          label: "com.example.eve.test",
+          plistPath: "/Users/test/Library/LaunchAgents/com.example.eve.test.plist",
         },
       },
       {
         supervisor: "schtasks" as const,
-        env: { OPENCLAW_WINDOWS_TASK_NAME: "OpenClaw Test Gateway" },
-        expected: { kind: "schtasks", taskName: "OpenClaw Test Gateway" },
+        env: { EVE_WINDOWS_TASK_NAME: "EVE Test Gateway" },
+        expected: { kind: "schtasks", taskName: "EVE Test Gateway" },
       },
     ];
 
     for (const testCase of cases) {
       const result = await startManagedServiceUpdateHandoff({
-        root: "/tmp/openclaw",
+        root: "/tmp/eve",
         timeoutMs: 1_800_000,
         restartDelayMs: 500,
         parentPid: 12345,
         execPath: "/usr/local/bin/node",
-        argv1: "/opt/openclaw/openclaw.mjs",
+        argv1: "/opt/eve/eve.mjs",
         supervisor: testCase.supervisor,
         env: testCase.env,
         meta: { sessionKey: "agent:test:webchat:dm:user-123" },
@@ -526,11 +526,11 @@ describe("managed service update handoff", () => {
   });
 
   it("sweeps stale handoff temp directories while keeping fresh handoff logs", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-handoff-cleanup-test-"));
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-handoff-cleanup-test-"));
     tempDirs.add(tmpDir);
     const staleDir = path.join(tmpDir, `${MANAGED_SERVICE_UPDATE_HANDOFF_TEMP_PREFIX}stale`);
     const freshDir = path.join(tmpDir, `${MANAGED_SERVICE_UPDATE_HANDOFF_TEMP_PREFIX}fresh`);
-    const unrelatedDir = path.join(tmpDir, "openclaw-other-temp");
+    const unrelatedDir = path.join(tmpDir, "eve-other-temp");
     await fs.mkdir(staleDir, { recursive: true });
     await fs.mkdir(freshDir, { recursive: true });
     await fs.mkdir(unrelatedDir, { recursive: true });

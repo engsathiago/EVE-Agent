@@ -1,5 +1,5 @@
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { runCommandWithTimeout } from "../process/exec.js";
 import type { CronRunDiagnostics, CronRunOutcome, CronRunStatus, CronJob } from "./types.js";
 

@@ -6,7 +6,7 @@ read_when:
 title: "Platforms"
 ---
 
-OpenClaw core is written in TypeScript. **Node is the recommended runtime**.
+EVE core is written in TypeScript. **Node is the recommended runtime**.
 Bun is not recommended for the Gateway — known issues with WhatsApp and
 Telegram channels; see [Bun (experimental)](/install/bun) for details.
 
@@ -40,22 +40,22 @@ Linux-compatible Gateway runtime.
 - Windows Hub: [Windows](/platforms/windows)
 - Gateway runbook: [Gateway](/gateway)
 - Gateway configuration: [Configuration](/gateway/configuration)
-- Service status: `openclaw gateway status`
+- Service status: `eve gateway status`
 
 ## Gateway service install (CLI)
 
 Use one of these (all supported):
 
-- Wizard (recommended): `openclaw onboard --install-daemon`
-- Direct: `openclaw gateway install`
-- Configure flow: `openclaw configure` → select **Gateway service**
-- Repair/migrate: `openclaw doctor` (offers to install or fix the service)
+- Wizard (recommended): `eve onboard --install-daemon`
+- Direct: `eve gateway install`
+- Configure flow: `eve configure` → select **Gateway service**
+- Repair/migrate: `eve doctor` (offers to install or fix the service)
 
 The service target depends on OS:
 
-- macOS: LaunchAgent (`ai.openclaw.gateway` or `ai.openclaw.<profile>`; legacy `com.openclaw.*`)
-- Linux/WSL2: systemd user service (`openclaw-gateway[-<profile>].service`)
-- Native Windows: Scheduled Task (`OpenClaw Gateway` or `OpenClaw Gateway (<profile>)`), with a per-user Startup-folder login item fallback if task creation is denied
+- macOS: LaunchAgent (`ai.eve.gateway` or `ai.eve.<profile>`; legacy `com.eve.*`)
+- Linux/WSL2: systemd user service (`eve-gateway[-<profile>].service`)
+- Native Windows: Scheduled Task (`EVE Gateway` or `EVE Gateway (<profile>)`), with a per-user Startup-folder login item fallback if task creation is denied
 
 ## Related
 

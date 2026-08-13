@@ -18,7 +18,7 @@ export function registerCronCli(program: Command) {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/cron", "docs.openclaw.ai/cli/cron")}\n${theme.muted("Upgrade tip:")} run \`openclaw doctor --fix\` to normalize legacy cron job storage.\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/cron", "docs.eve.ai/cli/cron")}\n${theme.muted("Upgrade tip:")} run \`eve doctor --fix\` to normalize legacy cron job storage.\n`,
     );
 
   registerCronStatusCommand(cron);

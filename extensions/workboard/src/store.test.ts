@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { MAX_DATE_TIMESTAMP_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_DATE_TIMESTAMP_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, expect, it, vi } from "vitest";
 import { createWorkboardSqliteStores } from "./sqlite-store.js";
 import {
@@ -50,7 +50,7 @@ function statfsFixture(type: number): ReturnType<typeof fs.statfsSync> {
 
 describe("WorkboardStore", () => {
   it("persists boards, cards, subscriptions, and attachment blobs in sqlite", async () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-workboard-sqlite-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-workboard-sqlite-"));
     const dbPath = path.join(dir, "workboard.sqlite");
     if (process.platform !== "win32") {
       fs.chmodSync(dir, 0o755);
@@ -157,7 +157,7 @@ describe("WorkboardStore", () => {
   });
 
   it("uses rollback journaling on network-backed volumes", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-workboard-sqlite-network-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-workboard-sqlite-network-"));
     const dbPath = path.join(dir, "workboard.sqlite");
     const statfs = vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0xff534d42));
     try {
@@ -2105,7 +2105,7 @@ describe("WorkboardStore", () => {
       id: "ops",
       name: "Ops",
       description: "Operational work",
-      defaultWorkspace: { kind: "dir", path: "/tmp/openclaw-ops" },
+      defaultWorkspace: { kind: "dir", path: "/tmp/eve-ops" },
     });
     const card = await store.create({ title: "Ops card", boardId: "ops" });
     const subscription = await store.subscribeNotifications({
@@ -2130,7 +2130,7 @@ describe("WorkboardStore", () => {
       },
     });
     await expect(cards.lookup("ops")).resolves.toBeUndefined();
-    expect(board.defaultWorkspace).toEqual({ kind: "dir", path: "/tmp/openclaw-ops" });
+    expect(board.defaultWorkspace).toEqual({ kind: "dir", path: "/tmp/eve-ops" });
     expect((await store.listBoards()).boards.find((item) => item.id === "ops")).toMatchObject({
       name: "Ops",
       total: 1,

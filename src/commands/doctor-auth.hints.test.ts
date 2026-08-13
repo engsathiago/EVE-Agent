@@ -1,6 +1,6 @@
 // Doctor auth hint tests cover OAuth refresh failure formatting and auth repair guidance.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   formatOAuthRefreshFailureDoctorLine,
   noteLegacyCodexProviderOverride,
@@ -26,8 +26,8 @@ vi.mock("../agents/auth-profiles.js", async () => {
   };
 });
 
-function doctorFixtureConfig(config: unknown): OpenClawConfig {
-  return config as OpenClawConfig;
+function doctorFixtureConfig(config: unknown): EVEConfig {
+  return config as EVEConfig;
 }
 
 describe("resolveUnusableProfileHint", () => {
@@ -69,7 +69,7 @@ describe("resolveUnusableProfileHint", () => {
           "OAuth token refresh failed for openai-codex: refresh_token_reused. Please try again or re-authenticate.",
       }),
     ).toBe(
-      "- openai-codex:default: re-auth required [refresh_token_reused] — Run `openclaw models auth login --provider openai`.",
+      "- openai-codex:default: re-auth required [refresh_token_reused] — Run `eve models auth login --provider openai`.",
     );
   });
 
@@ -82,7 +82,7 @@ describe("resolveUnusableProfileHint", () => {
           "OAuth token refresh failed for openai-codex: temporary upstream issue. Please try again or re-authenticate.",
       }),
     ).toBe(
-      "- openai-codex:default: OAuth refresh failed — Try again; if this persists, run `openclaw models auth login --provider openai`.",
+      "- openai-codex:default: OAuth refresh failed — Try again; if this persists, run `eve models auth login --provider openai`.",
     );
   });
 
@@ -95,7 +95,7 @@ describe("resolveUnusableProfileHint", () => {
           "OAuth token refresh failed for openai-codex`\nrm -rf /: invalid_grant. Please try again or re-authenticate.",
       }),
     ).toBe(
-      "- openai-codex:default: re-auth required [invalid_grant] — Run `openclaw models auth login --provider openai`.",
+      "- openai-codex:default: re-auth required [invalid_grant] — Run `eve models auth login --provider openai`.",
     );
   });
 

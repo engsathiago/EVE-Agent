@@ -1,8 +1,8 @@
 // Qwen setup module handles plugin onboarding behavior.
 import {
   createModelCatalogPresetAppliers,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/provider-onboard";
 import {
   QWEN_CN_BASE_URL,
   QWEN_DEFAULT_MODEL_REF,
@@ -16,7 +16,7 @@ import { buildQwenOAuthProvider, buildQwenProvider } from "./provider-catalog.js
 
 const qwenPresetAppliers = createModelCatalogPresetAppliers<[string]>({
   primaryModelRef: QWEN_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig, baseUrl: string) => {
+  resolveParams: (_cfg: EVEConfig, baseUrl: string) => {
     const provider = buildQwenProvider({ baseUrl });
     return {
       providerId: "qwen",
@@ -51,22 +51,22 @@ const qwenOAuthPresetAppliers = createModelCatalogPresetAppliers<[]>({
   },
 });
 
-export function applyQwenConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyQwenConfig(cfg: EVEConfig): EVEConfig {
   return qwenPresetAppliers.applyConfig(cfg, QWEN_GLOBAL_BASE_URL);
 }
 
-export function applyQwenConfigCn(cfg: OpenClawConfig): OpenClawConfig {
+export function applyQwenConfigCn(cfg: EVEConfig): EVEConfig {
   return qwenPresetAppliers.applyConfig(cfg, QWEN_CN_BASE_URL);
 }
 
-export function applyQwenStandardConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyQwenStandardConfig(cfg: EVEConfig): EVEConfig {
   return qwenPresetAppliers.applyConfig(cfg, QWEN_STANDARD_GLOBAL_BASE_URL);
 }
 
-export function applyQwenStandardConfigCn(cfg: OpenClawConfig): OpenClawConfig {
+export function applyQwenStandardConfigCn(cfg: EVEConfig): EVEConfig {
   return qwenPresetAppliers.applyConfig(cfg, QWEN_STANDARD_CN_BASE_URL);
 }
 
-export function applyQwenOAuthConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyQwenOAuthConfig(cfg: EVEConfig): EVEConfig {
   return qwenOAuthPresetAppliers.applyConfig(cfg);
 }

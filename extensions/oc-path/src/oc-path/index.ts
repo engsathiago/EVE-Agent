@@ -1,5 +1,5 @@
 /**
- * `@openclaw/oc-path` — substrate package public surface.
+ * `@eve/oc-path` — substrate package public surface.
  *
  * **Strategic frame**: workspace files are byte-stable and addressable
  * via the `oc://` scheme — the addressing scheme is universal across
@@ -21,7 +21,7 @@
  * the AST carries its `kind` discriminator and the universal verbs
  * dispatch internally.
  *
- * @module @openclaw/oc-path
+ * @module @eve/oc-path
  */
 
 // AST types

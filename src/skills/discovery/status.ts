@@ -1,6 +1,6 @@
 // Skill discovery status helpers summarize installed, workspace, and bundled skills.
 import path from "node:path";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { evaluateEntryRequirementsForCurrentPlatform } from "../../shared/entry-status.js";
 import type { RequirementConfigCheck, Requirements } from "../../shared/requirements.js";
 import { CONFIG_DIR } from "../../utils.js";
@@ -246,7 +246,7 @@ function normalizeInstallOptions(
 }
 
 type BuildSkillStatusContext = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   prefs: SkillsInstallPreferences;
   eligibility?: SkillEligibilityContext;
   allowBundled: ReadonlySet<string> | undefined;
@@ -338,7 +338,7 @@ function buildSkillStatus(
 export function buildWorkspaceSkillStatus(
   workspaceDir: string,
   opts?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     managedSkillsDir?: string;
     entries?: SkillEntry[];
     eligibility?: SkillEligibilityContext;

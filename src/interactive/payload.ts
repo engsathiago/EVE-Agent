@@ -1,9 +1,9 @@
 // Interactive payload helpers normalize structured interactive UI payloads.
-import { asOptionalRecord as toRecord } from "@openclaw/normalization-core/record-coerce";
+import { asOptionalRecord as toRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 
 export type InteractiveButtonStyle = "primary" | "secondary" | "success" | "danger";
 

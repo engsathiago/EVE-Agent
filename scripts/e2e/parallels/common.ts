@@ -1,4 +1,4 @@
-// Common helper supports OpenClaw script workflows.
+// Common helper supports EVE script workflows.
 export * from "./filesystem.ts";
 export * from "./env-limits.ts";
 export * from "./host-command.ts";

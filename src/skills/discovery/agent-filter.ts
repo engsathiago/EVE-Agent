@@ -1,5 +1,5 @@
 // Agent skill filter helpers select skills that apply to a configured agent.
-import type { OpenClawConfig } from "../../config/types.js";
+import type { EVEConfig } from "../../config/types.js";
 import { normalizeAgentId } from "../../routing/session-key.js";
 import { normalizeSkillFilter } from "./filter.js";
 
@@ -8,9 +8,9 @@ type AgentSkillsLimits = {
 };
 
 function resolveAgentEntry(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   agentId: string | undefined,
-): NonNullable<NonNullable<OpenClawConfig["agents"]>["list"]>[number] | undefined {
+): NonNullable<NonNullable<EVEConfig["agents"]>["list"]>[number] | undefined {
   if (!cfg) {
     return undefined;
   }
@@ -23,7 +23,7 @@ function resolveAgentEntry(
  * Unknown agent ids also fall back to defaults so legacy/unresolved callers do not widen access.
  */
 export function resolveEffectiveAgentSkillFilter(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   agentId: string | undefined,
 ): string[] | undefined {
   if (!cfg) {
@@ -37,7 +37,7 @@ export function resolveEffectiveAgentSkillFilter(
 }
 
 export function resolveEffectiveAgentSkillsLimits(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   agentId: string | undefined,
 ): AgentSkillsLimits | undefined {
   if (!agentId) {

@@ -59,7 +59,7 @@ export type ContextEngineHealthSummary = {
 type ModelPricingHealthSummary =
   import("../gateway/model-pricing-cache-state.js").GatewayModelPricingHealth;
 
-/** Full gateway health payload consumed by `openclaw health`. */
+/** Full gateway health payload consumed by `eve health`. */
 export type HealthSummary = {
   ok: true;
   ts: number;

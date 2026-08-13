@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import { describe, expect, it } from "vitest";
 import { getSubagentDepthFromSessionStore } from "./subagent-depth.js";
 import { resolveAgentTimeoutMs } from "./timeout.js";
@@ -72,7 +72,7 @@ describe("getSubagentDepthFromSessionStore", () => {
   });
 
   it("resolves prefixed store keys when caller key omits the agent prefix", () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-subagent-depth-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-subagent-depth-"));
     const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
     const prefixedKey = "agent:main:subagent:flat";
     const storePath = storeTemplate.replaceAll("{agentId}", "main");
@@ -104,7 +104,7 @@ describe("getSubagentDepthFromSessionStore", () => {
   });
 
   it("accepts JSON5 syntax in the on-disk depth store for backward compatibility", () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-subagent-depth-json5-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-subagent-depth-json5-"));
     const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
     const storePath = storeTemplate.replaceAll("{agentId}", "main");
     fs.writeFileSync(

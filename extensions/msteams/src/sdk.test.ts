@@ -129,7 +129,7 @@ describe("createMSTeamsApp", () => {
     );
   });
 
-  it("preserves both Teams SDK and OpenClaw User-Agent fragments", async () => {
+  it("preserves both Teams SDK and EVE User-Agent fragments", async () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
@@ -142,7 +142,7 @@ describe("createMSTeamsApp", () => {
       app as unknown as { client?: { options?: { headers?: Record<string, string> } } }
     ).client?.options?.headers;
 
-    expect(headers?.["User-Agent"]).toMatch(/^teams\.ts\[apps\]\/\S+ OpenClaw\/\S+$/);
+    expect(headers?.["User-Agent"]).toMatch(/^teams\.ts\[apps\]\/\S+ EVE\/\S+$/);
   });
 
   it("accepts custom messagingEndpoint", async () => {
@@ -198,7 +198,7 @@ describe("createMSTeamsApp", () => {
       cloud?: { botScope?: string; graphScope?: string };
     };
     // @microsoft/teams.apps still gives app-level sends its public serviceUrl
-    // default. OpenClaw proactive sends use stored reference serviceUrls instead.
+    // default. EVE proactive sends use stored reference serviceUrls instead.
     expect(internals.api?.serviceUrl).toBe("https://smba.trafficmanager.net/teams");
     expect(internals.cloud?.botScope).toBe("https://api.botframework.azure.cn/.default");
     expect(internals.cloud?.graphScope).toBe("https://microsoftgraph.chinacloudapi.cn/.default");

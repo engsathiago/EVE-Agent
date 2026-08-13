@@ -12,11 +12,11 @@ import {
 } from "./launchd-plist.js";
 import {
   installLaunchAgent,
-  disableCurrentOpenClawUpdateLaunchdJob,
-  disableOpenClawUpdateLaunchdJob,
-  findStaleOpenClawUpdateLaunchdJobs,
+  disableCurrentEVEUpdateLaunchdJob,
+  disableEVEUpdateLaunchdJob,
+  findStaleEVEUpdateLaunchdJobs,
   parseLaunchctlPrint,
-  parseLaunchctlListOpenClawUpdateJobs,
+  parseLaunchctlListEVEUpdateJobs,
   readLaunchAgentProgramArguments,
   readLaunchAgentRuntime,
   repairLaunchAgentBootstrap,
@@ -81,7 +81,7 @@ function countMatching<T>(items: readonly T[], predicate: (item: T) => boolean):
 function createDefaultLaunchdEnv(): Record<string, string | undefined> {
   return {
     HOME: "/Users/test",
-    OPENCLAW_PROFILE: "default",
+    EVE_PROFILE: "default",
   };
 }
 
@@ -130,7 +130,7 @@ async function runStopLaunchAgentWithFakeTimers(args: Parameters<typeof stopLaun
 
 function expectLaunchctlEnableBootstrapOrder(env: Record<string, string | undefined>) {
   const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-  const label = "ai.openclaw.gateway";
+  const label = "ai.eve.gateway";
   const plistPath = resolveLaunchAgentPlistPath(env);
   const serviceId = `${domain}/${label}`;
   const enableIndex = state.launchctlCalls.findIndex(
@@ -454,29 +454,29 @@ describe("launchd runtime state", () => {
 });
 
 describe("launchctl list detection", () => {
-  it("parses stale OpenClaw updater jobs from launchctl list", () => {
-    const jobs = parseLaunchctlListOpenClawUpdateJobs(
+  it("parses stale EVE updater jobs from launchctl list", () => {
+    const jobs = parseLaunchctlListEVEUpdateJobs(
       [
-        "123 0 ai.openclaw.gateway",
-        "- 127 ai.openclaw.update.2026.5.12",
-        "- 0 ai.openclaw.manual-update.1717168800",
-        "8142 0 ai.openclaw.update.2026.5.13-beta.1",
-        "- 0 ai.openclaw.manual-updater.1717168800",
+        "123 0 ai.eve.gateway",
+        "- 127 ai.eve.update.2026.5.12",
+        "- 0 ai.eve.manual-update.1717168800",
+        "8142 0 ai.eve.update.2026.5.13-beta.1",
+        "- 0 ai.eve.manual-updater.1717168800",
         "- 0 com.example.other",
       ].join("\n"),
     );
 
     expect(jobs).toEqual([
       {
-        label: "ai.openclaw.manual-update.1717168800",
+        label: "ai.eve.manual-update.1717168800",
         lastExitStatus: 0,
       },
       {
-        label: "ai.openclaw.update.2026.5.12",
+        label: "ai.eve.update.2026.5.12",
         lastExitStatus: 127,
       },
       {
-        label: "ai.openclaw.update.2026.5.13-beta.1",
+        label: "ai.eve.update.2026.5.13-beta.1",
         pid: 8142,
         lastExitStatus: 0,
       },
@@ -484,15 +484,15 @@ describe("launchctl list detection", () => {
   });
 
   it.runIf(process.platform === "darwin")(
-    "finds stale OpenClaw updater jobs via launchctl list",
+    "finds stale EVE updater jobs via launchctl list",
     async () => {
-      state.listOutput = "- 127 ai.openclaw.update.2026.5.12\n";
+      state.listOutput = "- 127 ai.eve.update.2026.5.12\n";
 
-      const jobs = await findStaleOpenClawUpdateLaunchdJobs();
+      const jobs = await findStaleEVEUpdateLaunchdJobs();
 
       expect(jobs).toEqual([
         {
-          label: "ai.openclaw.update.2026.5.12",
+          label: "ai.eve.update.2026.5.12",
           lastExitStatus: 127,
         },
       ]);
@@ -503,21 +503,21 @@ describe("launchctl list detection", () => {
     "does not report current gateway labels that collide with manual update labels",
     async () => {
       state.listOutput = [
-        "- 0 ai.openclaw.manual-update.1717168800",
-        "812 0 ai.openclaw.manual-update.profile",
-        "913 0 ai.openclaw.manual-update.custom-label",
+        "- 0 ai.eve.manual-update.1717168800",
+        "812 0 ai.eve.manual-update.profile",
+        "913 0 ai.eve.manual-update.custom-label",
       ].join("\n");
 
-      const jobs = await findStaleOpenClawUpdateLaunchdJobs({
-        OPENCLAW_PROFILE: "manual-update.profile",
-        OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.custom-label",
-        OPENCLAW_SERVICE_MARKER: GATEWAY_SERVICE_MARKER,
-        OPENCLAW_SERVICE_KIND: GATEWAY_SERVICE_KIND,
+      const jobs = await findStaleEVEUpdateLaunchdJobs({
+        EVE_PROFILE: "manual-update.profile",
+        EVE_LAUNCHD_LABEL: "ai.eve.manual-update.custom-label",
+        EVE_SERVICE_MARKER: GATEWAY_SERVICE_MARKER,
+        EVE_SERVICE_KIND: GATEWAY_SERVICE_KIND,
       } as NodeJS.ProcessEnv);
 
       expect(jobs).toEqual([
         {
-          label: "ai.openclaw.manual-update.1717168800",
+          label: "ai.eve.manual-update.1717168800",
           lastExitStatus: 0,
         },
       ]);
@@ -528,15 +528,15 @@ describe("launchctl list detection", () => {
     "disables the current legacy updater launchd job",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.update.2026.5.12",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.update.2026.5.12",
         }),
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
       expect(state.launchctlCalls).toContainEqual([
         "disable",
-        `${domain}/ai.openclaw.update.2026.5.12`,
+        `${domain}/ai.eve.update.2026.5.12`,
       ]);
       expect(launchctlCommandNames()).not.toContain("remove");
     },
@@ -546,51 +546,51 @@ describe("launchctl list detection", () => {
     "disables the current manual updater launchd job",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.manual-update.1717168800",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.manual-update.1717168800",
         }),
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
       expect(state.launchctlCalls).toContainEqual([
         "disable",
-        `${domain}/ai.openclaw.manual-update.1717168800`,
+        `${domain}/ai.eve.manual-update.1717168800`,
       ]);
       expect(launchctlCommandNames()).not.toContain("remove");
     },
   );
 
   it.runIf(process.platform === "darwin")(
-    "disables the current legacy updater launchd job from OpenClaw label env",
+    "disables the current legacy updater launchd job from EVE label env",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.update.2026.5.12",
+        disableCurrentEVEUpdateLaunchdJob({
+          EVE_LAUNCHD_LABEL: "ai.eve.update.2026.5.12",
         }),
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
       expect(state.launchctlCalls).toContainEqual([
         "disable",
-        `${domain}/ai.openclaw.update.2026.5.12`,
+        `${domain}/ai.eve.update.2026.5.12`,
       ]);
     },
   );
 
   it.runIf(process.platform === "darwin")(
-    "does not let non-update launchd markers mask the OpenClaw update label",
+    "does not let non-update launchd markers mask the EVE update label",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
+        disableCurrentEVEUpdateLaunchdJob({
           XPC_SERVICE_NAME: "0",
-          OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.update.2026.5.12",
+          EVE_LAUNCHD_LABEL: "ai.eve.update.2026.5.12",
         }),
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
       expect(state.launchctlCalls).toContainEqual([
         "disable",
-        `${domain}/ai.openclaw.update.2026.5.12`,
+        `${domain}/ai.eve.update.2026.5.12`,
       ]);
     },
   );
@@ -599,8 +599,8 @@ describe("launchctl list detection", () => {
     "does not disable the current gateway launchd job",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.gateway",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.gateway",
         }),
       ).resolves.toBe(false);
 
@@ -612,9 +612,9 @@ describe("launchctl list detection", () => {
     "does not disable profile-specific gateway launchd jobs that look like updater labels",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.update.2026.5.12",
-          OPENCLAW_PROFILE: "update.2026.5.12",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.update.2026.5.12",
+          EVE_PROFILE: "update.2026.5.12",
         }),
       ).resolves.toBe(false);
 
@@ -626,9 +626,9 @@ describe("launchctl list detection", () => {
     "does not disable profile-specific gateway launchd jobs that look like manual updater labels",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.manual-update.1717168800",
-          OPENCLAW_PROFILE: "manual-update.1717168800",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.manual-update.1717168800",
+          EVE_PROFILE: "manual-update.1717168800",
         }),
       ).resolves.toBe(false);
 
@@ -640,8 +640,8 @@ describe("launchctl list detection", () => {
     "does not disable custom gateway launchd labels under the manual-update prefix",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.manual-update.gateway",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.manual-update.gateway",
         }),
       ).resolves.toBe(false);
 
@@ -653,11 +653,11 @@ describe("launchctl list detection", () => {
     "does not disable custom gateway launchd labels that look like updater labels",
     async () => {
       await expect(
-        disableCurrentOpenClawUpdateLaunchdJob({
-          LAUNCH_JOB_LABEL: "ai.openclaw.update.2026.5.12",
-          OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.update.2026.5.12",
-          OPENCLAW_SERVICE_MARKER: "openclaw",
-          OPENCLAW_SERVICE_KIND: "gateway",
+        disableCurrentEVEUpdateLaunchdJob({
+          LAUNCH_JOB_LABEL: "ai.eve.update.2026.5.12",
+          EVE_LAUNCHD_LABEL: "ai.eve.update.2026.5.12",
+          EVE_SERVICE_MARKER: "eve",
+          EVE_SERVICE_KIND: "gateway",
         }),
       ).resolves.toBe(false);
 
@@ -666,26 +666,26 @@ describe("launchctl list detection", () => {
   );
 
   it.runIf(process.platform === "darwin")("disables explicit legacy updater jobs", async () => {
-    await expect(disableOpenClawUpdateLaunchdJob("ai.openclaw.update.2026.5.12")).resolves.toBe(
+    await expect(disableEVEUpdateLaunchdJob("ai.eve.update.2026.5.12")).resolves.toBe(
       true,
     );
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
     expect(state.launchctlCalls).toContainEqual([
       "disable",
-      `${domain}/ai.openclaw.update.2026.5.12`,
+      `${domain}/ai.eve.update.2026.5.12`,
     ]);
   });
 
   it.runIf(process.platform === "darwin")("disables explicit manual updater jobs", async () => {
     await expect(
-      disableOpenClawUpdateLaunchdJob("ai.openclaw.manual-update.1717168800"),
+      disableEVEUpdateLaunchdJob("ai.eve.manual-update.1717168800"),
     ).resolves.toBe(true);
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
     expect(state.launchctlCalls).toContainEqual([
       "disable",
-      `${domain}/ai.openclaw.manual-update.1717168800`,
+      `${domain}/ai.eve.manual-update.1717168800`,
     ]);
   });
 });
@@ -814,7 +814,7 @@ describe("launchd install", () => {
 
   it("writes LaunchAgent environment to an owner-only env file when provided", async () => {
     const env = createDefaultLaunchdEnv();
-    const tmpDir = "/Users/test/.openclaw/tmp";
+    const tmpDir = "/Users/test/.eve/tmp";
     const apiKey = "secret-api-key";
     await installLaunchAgent({
       env,
@@ -824,8 +824,8 @@ describe("launchd install", () => {
     });
 
     const plistPath = resolveLaunchAgentPlistPath(env);
-    const envFilePath = "/Users/test/.openclaw/service-env/ai.openclaw.gateway.env";
-    const wrapperPath = "/Users/test/.openclaw/service-env/ai.openclaw.gateway-env-wrapper.sh";
+    const envFilePath = "/Users/test/.eve/service-env/ai.eve.gateway.env";
+    const wrapperPath = "/Users/test/.eve/service-env/ai.eve.gateway-env-wrapper.sh";
     const plist = state.files.get(plistPath) ?? "";
     expect(plist).not.toContain("<key>EnvironmentVariables</key>");
     expect(plist).not.toContain(apiKey);
@@ -836,7 +836,7 @@ describe("launchd install", () => {
     expect(envFile).toContain(`export OPENAI_API_KEY='${apiKey}'`);
     expect(state.fileModes.get(envFilePath)).toBe(0o600);
     expect(state.fileModes.get(wrapperPath)).toBe(0o700);
-    expect(state.dirModes.get("/Users/test/.openclaw/service-env")).toBe(0o700);
+    expect(state.dirModes.get("/Users/test/.eve/service-env")).toBe(0o700);
 
     const command = await readLaunchAgentProgramArguments(env);
     expect(command?.programArguments).toEqual(defaultProgramArguments);
@@ -850,29 +850,29 @@ describe("launchd install", () => {
     const callerEnv = createDefaultLaunchdEnv();
     const serviceEnv = {
       ...callerEnv,
-      OPENCLAW_STATE_DIR: "/Users/test/service-env/custom-state",
+      EVE_STATE_DIR: "/Users/test/service-env/custom-state",
     };
     await installLaunchAgent({
       env: serviceEnv,
       stdout: new PassThrough(),
       programArguments: defaultProgramArguments,
       environment: {
-        OPENCLAW_GATEWAY_PORT: "18789",
-        OPENCLAW_STATE_DIR: serviceEnv.OPENCLAW_STATE_DIR,
+        EVE_GATEWAY_PORT: "18789",
+        EVE_STATE_DIR: serviceEnv.EVE_STATE_DIR,
       },
     });
 
     const plistPath = resolveLaunchAgentPlistPath(callerEnv);
-    const envFilePath = "/Users/test/service-env/custom-state/service-env/ai.openclaw.gateway.env";
+    const envFilePath = "/Users/test/service-env/custom-state/service-env/ai.eve.gateway.env";
     const wrapperPath =
-      "/Users/test/service-env/custom-state/service-env/ai.openclaw.gateway-env-wrapper.sh";
-    const callerEnvFilePath = "/Users/test/.openclaw/service-env/ai.openclaw.gateway.env";
+      "/Users/test/service-env/custom-state/service-env/ai.eve.gateway-env-wrapper.sh";
+    const callerEnvFilePath = "/Users/test/.eve/service-env/ai.eve.gateway.env";
     const callerWrapperPath =
-      "/Users/test/.openclaw/service-env/ai.openclaw.gateway-env-wrapper.sh";
+      "/Users/test/.eve/service-env/ai.eve.gateway-env-wrapper.sh";
     const mangledEnvFilePath =
-      "/Users/test/service-env/custom-state/service-env/[ai.openclaw.gateway.env](http:/ai.openclaw.gateway.env)";
+      "/Users/test/service-env/custom-state/service-env/[ai.eve.gateway.env](http:/ai.eve.gateway.env)";
     const mangledWrapperPath =
-      "/Users/test/service-env/custom-state/service-env/[ai.openclaw.gateway-env-wrapper.sh](http:/ai.openclaw.gateway-env-wrapper.sh)";
+      "/Users/test/service-env/custom-state/service-env/[ai.eve.gateway-env-wrapper.sh](http:/ai.eve.gateway-env-wrapper.sh)";
     state.files.set(
       plistPath,
       (state.files.get(plistPath) ?? "")
@@ -882,9 +882,9 @@ describe("launchd install", () => {
 
     const command = await readLaunchAgentProgramArguments(callerEnv);
     expect(command?.programArguments).toEqual(defaultProgramArguments);
-    expect(command?.environment?.OPENCLAW_GATEWAY_PORT).toBe("18789");
-    expect(command?.environment?.OPENCLAW_STATE_DIR).toBe(serviceEnv.OPENCLAW_STATE_DIR);
-    expect(command?.environmentValueSources?.OPENCLAW_GATEWAY_PORT).toBe("file");
+    expect(command?.environment?.EVE_GATEWAY_PORT).toBe("18789");
+    expect(command?.environment?.EVE_STATE_DIR).toBe(serviceEnv.EVE_STATE_DIR);
+    expect(command?.environmentValueSources?.EVE_GATEWAY_PORT).toBe("file");
 
     await restartLaunchAgent({
       env: callerEnv,
@@ -897,15 +897,15 @@ describe("launchd install", () => {
     expect(rewritten).not.toContain(mangledEnvFilePath);
     expect(rewritten).not.toContain(mangledWrapperPath);
     const rewrittenEnv = state.files.get(callerEnvFilePath) ?? "";
-    expect(rewrittenEnv).toContain("export OPENCLAW_GATEWAY_PORT='18789'");
+    expect(rewrittenEnv).toContain("export EVE_GATEWAY_PORT='18789'");
     expect(rewrittenEnv).toContain(
-      "export OPENCLAW_STATE_DIR='/Users/test/service-env/custom-state'",
+      "export EVE_STATE_DIR='/Users/test/service-env/custom-state'",
     );
   });
 
   it("creates the LaunchAgent TMPDIR before bootstrap", async () => {
     const env = createDefaultLaunchdEnv();
-    const tmpDir = "/Users/test/.openclaw/tmp";
+    const tmpDir = "/Users/test/.eve/tmp";
     await installLaunchAgent({
       env,
       stdout: new PassThrough(),
@@ -932,7 +932,7 @@ describe("launchd install", () => {
     expect(plist).toContain("<key>StandardInPath</key>");
     expect(plist).toContain(`<string>${LAUNCH_AGENT_STDIN_PATH}</string>`);
     expect(plist).toContain("<key>StandardOutPath</key>");
-    expect(plist).toContain("<string>/Users/test/Library/Logs/openclaw/gateway.log</string>");
+    expect(plist).toContain("<string>/Users/test/Library/Logs/eve/gateway.log</string>");
     expect(plist).not.toContain("<key>SuccessfulExit</key>");
     expect(plist).toContain("<key>ExitTimeOut</key>");
     expect(plist).toContain(`<integer>${LAUNCH_AGENT_EXIT_TIMEOUT_SECONDS}</integer>`);
@@ -957,7 +957,7 @@ describe("launchd install", () => {
         '<plist version="1.0">',
         "  <dict>",
         "    <key>Label</key>",
-        "    <string>ai.openclaw.gateway</string>",
+        "    <string>ai.eve.gateway</string>",
         "    <key>ProgramArguments</key>",
         "    <array>",
         "      <string>node</string>",
@@ -976,7 +976,7 @@ describe("launchd install", () => {
     const plist = state.files.get(plistPath) ?? "";
     expect(plist).toContain("<key>StandardInPath</key>");
     expect(plist).toContain("<key>StandardOutPath</key>");
-    expect(plist).toContain("<string>/Users/test/Library/Logs/openclaw/gateway.log</string>");
+    expect(plist).toContain("<string>/Users/test/Library/Logs/eve/gateway.log</string>");
     expect(plist).toContain("<key>StandardErrorPath</key>");
     expect(plist).toContain("<string>/dev/null</string>");
     expect(plist).toContain("<key>KeepAlive</key>");
@@ -1019,7 +1019,7 @@ describe("launchd install", () => {
     await stopLaunchAgent({ env, stdout });
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const serviceId = `${domain}/ai.openclaw.gateway`;
+    const serviceId = `${domain}/ai.eve.gateway`;
     expect(state.launchctlCalls).toEqual([["bootout", serviceId]]);
     expect(output).toContain("Stopped LaunchAgent");
   });
@@ -1029,11 +1029,11 @@ describe("launchd install", () => {
 
     await withProcessEnv(
       {
-        LAUNCH_JOB_LABEL: "ai.openclaw.gateway",
+        LAUNCH_JOB_LABEL: "ai.eve.gateway",
       },
       async () => {
         await expect(stopLaunchAgent({ env, stdout: new PassThrough() })).rejects.toThrow(
-          "Refusing to stop LaunchAgent ai.openclaw.gateway from inside the same launchd service",
+          "Refusing to stop LaunchAgent ai.eve.gateway from inside the same launchd service",
         );
       },
     );
@@ -1049,13 +1049,13 @@ describe("launchd install", () => {
         LAUNCH_JOB_LABEL: undefined,
         LAUNCH_JOB_NAME: undefined,
         XPC_SERVICE_NAME: "0",
-        OPENCLAW_SERVICE_MARKER: "openclaw",
-        OPENCLAW_SERVICE_KIND: "gateway",
-        OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.gateway",
+        EVE_SERVICE_MARKER: "eve",
+        EVE_SERVICE_KIND: "gateway",
+        EVE_LAUNCHD_LABEL: "ai.eve.gateway",
       },
       async () => {
         await expect(stopLaunchAgent({ env, stdout: new PassThrough() })).rejects.toThrow(
-          "Refusing to stop LaunchAgent ai.openclaw.gateway from inside the same launchd service",
+          "Refusing to stop LaunchAgent ai.eve.gateway from inside the same launchd service",
         );
       },
     );
@@ -1066,7 +1066,7 @@ describe("launchd install", () => {
   it("allows external LaunchAgent label overrides to stop the selected target", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_LAUNCHD_LABEL: "com.example.openclaw.gateway",
+      EVE_LAUNCHD_LABEL: "com.example.eve.gateway",
     };
     const stdout = new PassThrough();
     let output = "";
@@ -1079,9 +1079,9 @@ describe("launchd install", () => {
         LAUNCH_JOB_LABEL: undefined,
         LAUNCH_JOB_NAME: undefined,
         XPC_SERVICE_NAME: undefined,
-        OPENCLAW_LAUNCHD_LABEL: undefined,
-        OPENCLAW_SERVICE_MARKER: undefined,
-        OPENCLAW_SERVICE_KIND: undefined,
+        EVE_LAUNCHD_LABEL: undefined,
+        EVE_SERVICE_MARKER: undefined,
+        EVE_SERVICE_KIND: undefined,
       },
       async () => {
         await stopLaunchAgent({ env, stdout });
@@ -1089,7 +1089,7 @@ describe("launchd install", () => {
     );
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const serviceId = `${domain}/com.example.openclaw.gateway`;
+    const serviceId = `${domain}/com.example.eve.gateway`;
     expect(state.launchctlCalls).toEqual([["bootout", serviceId]]);
     expect(output).toContain("Stopped LaunchAgent");
   });
@@ -1097,7 +1097,7 @@ describe("launchd install", () => {
   it("verifies the configured gateway port is released before reporting stop success", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19003",
+      EVE_GATEWAY_PORT: "19003",
     };
     const stdout = new PassThrough();
     let output = "";
@@ -1118,7 +1118,7 @@ describe("launchd install", () => {
       env,
       stdout: new PassThrough(),
       programArguments: defaultProgramArguments,
-      environment: { OPENCLAW_GATEWAY_PORT: "19006" },
+      environment: { EVE_GATEWAY_PORT: "19006" },
     });
     state.launchctlCalls.length = 0;
 
@@ -1131,7 +1131,7 @@ describe("launchd install", () => {
   it("fails stop when the verified gateway port remains busy after cleanup", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19004",
+      EVE_GATEWAY_PORT: "19004",
     };
     const stdout = new PassThrough();
     let output = "";
@@ -1166,10 +1166,10 @@ describe("launchd install", () => {
     await stopLaunchAgent({ env, stdout, disable: true });
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const serviceId = `${domain}/ai.openclaw.gateway`;
+    const serviceId = `${domain}/ai.eve.gateway`;
     expect(state.launchctlCalls).toEqual([
       ["disable", serviceId],
-      ["stop", "ai.openclaw.gateway"],
+      ["stop", "ai.eve.gateway"],
       ["print", serviceId],
     ]);
     expect(output).toContain("Stopped LaunchAgent");
@@ -1178,7 +1178,7 @@ describe("launchd install", () => {
   it("verifies the configured gateway port is released before reporting disable stop success", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19005",
+      EVE_GATEWAY_PORT: "19005",
     };
     const stdout = new PassThrough();
     let output = "";
@@ -1198,13 +1198,13 @@ describe("launchd install", () => {
 
     await withProcessEnv(
       {
-        LAUNCH_JOB_LABEL: "ai.openclaw.gateway",
+        LAUNCH_JOB_LABEL: "ai.eve.gateway",
       },
       async () => {
         await expect(
           stopLaunchAgent({ env, stdout: new PassThrough(), disable: true }),
         ).rejects.toThrow(
-          "Refusing to stop LaunchAgent ai.openclaw.gateway from inside the same launchd service",
+          "Refusing to stop LaunchAgent ai.eve.gateway from inside the same launchd service",
         );
       },
     );
@@ -1227,10 +1227,10 @@ describe("launchd install", () => {
     await stopLaunchAgent({ env, stdout, disable: true });
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const serviceId = `${domain}/ai.openclaw.gateway`;
+    const serviceId = `${domain}/ai.eve.gateway`;
     expect(state.launchctlCalls).toEqual([
       ["disable", serviceId],
-      ["stop", "ai.openclaw.gateway"],
+      ["stop", "ai.eve.gateway"],
       ["print", serviceId],
     ]);
     expect(launchctlCommandNames()).not.toContain("bootout");
@@ -1275,7 +1275,7 @@ describe("launchd install", () => {
   it("does not report degraded stop success when fallback cleanup leaves the port busy", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19008",
+      EVE_GATEWAY_PORT: "19008",
     };
     const stdout = new PassThrough();
     let output = "";
@@ -1411,7 +1411,7 @@ describe("launchd install", () => {
   it("restarts LaunchAgent with kickstart and no bootout", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "18789",
+      EVE_GATEWAY_PORT: "18789",
     };
     const result = await restartLaunchAgent({
       env,
@@ -1419,7 +1419,7 @@ describe("launchd install", () => {
     });
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const label = "ai.openclaw.gateway";
+    const label = "ai.eve.gateway";
     const serviceId = `${domain}/${label}`;
     expect(result).toEqual({ outcome: "completed" });
     expect(cleanStaleGatewayProcessesSync).toHaveBeenCalledWith(18789);
@@ -1434,7 +1434,7 @@ describe("launchd install", () => {
   it("reloads launchd after rewriting an existing plist", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "18789",
+      EVE_GATEWAY_PORT: "18789",
     };
     const plistPath = resolveLaunchAgentPlistPath(env);
     state.files.set(
@@ -1444,14 +1444,14 @@ describe("launchd install", () => {
         '<plist version="1.0">',
         "  <dict>",
         "    <key>Label</key>",
-        "    <string>ai.openclaw.gateway</string>",
+        "    <string>ai.eve.gateway</string>",
         "    <key>ProgramArguments</key>",
         "    <array>",
         "      <string>node</string>",
         "      <string>gateway.js</string>",
         "    </array>",
         "    <key>StandardOutPath</key>",
-        "    <string>/Users/test/.openclaw-default/logs/gateway.log</string>",
+        "    <string>/Users/test/.eve-default/logs/gateway.log</string>",
         "  </dict>",
         "</plist>",
       ].join("\n"),
@@ -1465,7 +1465,7 @@ describe("launchd install", () => {
     const plist = state.files.get(plistPath) ?? "";
     expect(plist).toContain("<key>StandardInPath</key>");
     expect(plist).toContain("<string>/dev/null</string>");
-    expect(plist).toContain("<string>/Users/test/Library/Logs/openclaw/gateway.log</string>");
+    expect(plist).toContain("<string>/Users/test/Library/Logs/eve/gateway.log</string>");
     expect(launchctlCommandNames()).toEqual(["enable", "bootout", "enable", "bootstrap"]);
     expect(launchctlCommandNames()).not.toContain("kickstart");
   });
@@ -1473,7 +1473,7 @@ describe("launchd install", () => {
   it("treats a concurrent launchd bootstrap as success when the service is loaded", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "18789",
+      EVE_GATEWAY_PORT: "18789",
     };
     const plistPath = resolveLaunchAgentPlistPath(env);
     state.files.set(
@@ -1483,14 +1483,14 @@ describe("launchd install", () => {
         '<plist version="1.0">',
         "  <dict>",
         "    <key>Label</key>",
-        "    <string>ai.openclaw.gateway</string>",
+        "    <string>ai.eve.gateway</string>",
         "    <key>ProgramArguments</key>",
         "    <array>",
         "      <string>node</string>",
         "      <string>gateway.js</string>",
         "    </array>",
         "    <key>StandardOutPath</key>",
-        "    <string>/Users/test/.openclaw-default/logs/gateway.log</string>",
+        "    <string>/Users/test/.eve-default/logs/gateway.log</string>",
         "  </dict>",
         "</plist>",
       ].join("\n"),
@@ -1511,7 +1511,7 @@ describe("launchd install", () => {
   it("uses the configured gateway port for stale cleanup", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19001",
+      EVE_GATEWAY_PORT: "19001",
     };
 
     await restartLaunchAgent({
@@ -1525,7 +1525,7 @@ describe("launchd install", () => {
   it("ignores invalid configured gateway ports for stale cleanup", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "65536",
+      EVE_GATEWAY_PORT: "65536",
     };
     state.files.clear();
 
@@ -1544,7 +1544,7 @@ describe("launchd install", () => {
       env,
       stdout: new PassThrough(),
       programArguments: defaultProgramArguments,
-      environment: { OPENCLAW_GATEWAY_PORT: "19007" },
+      environment: { EVE_GATEWAY_PORT: "19007" },
     });
     state.launchctlCalls.length = 0;
 
@@ -1563,7 +1563,7 @@ describe("launchd install", () => {
       env,
       stdout: new PassThrough(),
       programArguments: defaultProgramArguments,
-      environment: { OPENCLAW_GATEWAY_PORT: "65536" },
+      environment: { EVE_GATEWAY_PORT: "65536" },
     });
     state.launchctlCalls.length = 0;
 
@@ -1579,7 +1579,7 @@ describe("launchd install", () => {
   it("fails restart before kickstart when the configured gateway port remains busy", async () => {
     const env = {
       ...createDefaultLaunchdEnv(),
-      OPENCLAW_GATEWAY_PORT: "19002",
+      EVE_GATEWAY_PORT: "19002",
     };
     const plistPath = resolveLaunchAgentPlistPath(env);
     const originalPlist = [
@@ -1587,14 +1587,14 @@ describe("launchd install", () => {
       '<plist version="1.0">',
       "  <dict>",
       "    <key>Label</key>",
-      "    <string>ai.openclaw.gateway</string>",
+      "    <string>ai.eve.gateway</string>",
       "    <key>ProgramArguments</key>",
       "    <array>",
       "      <string>node</string>",
       "      <string>gateway.js</string>",
       "    </array>",
       "    <key>StandardOutPath</key>",
-      "    <string>/Users/test/.openclaw-default/logs/gateway.log</string>",
+      "    <string>/Users/test/.eve-default/logs/gateway.log</string>",
       "  </dict>",
       "</plist>",
     ].join("\n");
@@ -1646,7 +1646,7 @@ describe("launchd install", () => {
     });
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    const serviceId = `${domain}/ai.openclaw.gateway`;
+    const serviceId = `${domain}/ai.eve.gateway`;
     const kickstartCalls = state.launchctlCalls.filter(
       (c) => c[0] === "kickstart" && c[1] === "-k" && c[2] === serviceId,
     );
@@ -1695,7 +1695,7 @@ describe("launchd install", () => {
   it("hands restart off to a detached helper when invoked from the current LaunchAgent", async () => {
     const env = createDefaultLaunchdEnv();
 
-    const result = await withProcessEnv({ LAUNCH_JOB_LABEL: "ai.openclaw.gateway" }, async () =>
+    const result = await withProcessEnv({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, async () =>
       restartLaunchAgent({
         env,
         stdout: new PassThrough(),
@@ -1721,20 +1721,20 @@ describe("launchd install", () => {
         '<plist version="1.0">',
         "  <dict>",
         "    <key>Label</key>",
-        "    <string>ai.openclaw.gateway</string>",
+        "    <string>ai.eve.gateway</string>",
         "    <key>ProgramArguments</key>",
         "    <array>",
         "      <string>node</string>",
         "      <string>gateway.js</string>",
         "    </array>",
         "    <key>StandardOutPath</key>",
-        "    <string>/Users/test/.openclaw-default/logs/gateway.log</string>",
+        "    <string>/Users/test/.eve-default/logs/gateway.log</string>",
         "  </dict>",
         "</plist>",
       ].join("\n"),
     );
 
-    const result = await withProcessEnv({ LAUNCH_JOB_LABEL: "ai.openclaw.gateway" }, async () =>
+    const result = await withProcessEnv({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, async () =>
       restartLaunchAgent({
         env,
         stdout: new PassThrough(),
@@ -1747,7 +1747,7 @@ describe("launchd install", () => {
       mode: "reload",
       waitForPid: process.pid,
     });
-    expect(state.files.get(plistPath)).toContain("/Users/test/Library/Logs/openclaw/gateway.log");
+    expect(state.files.get(plistPath)).toContain("/Users/test/Library/Logs/eve/gateway.log");
     expect(state.launchctlCalls).toStrictEqual([]);
   });
 
@@ -1759,7 +1759,7 @@ describe("launchd install", () => {
     });
 
     await expect(
-      withProcessEnv({ LAUNCH_JOB_LABEL: "ai.openclaw.gateway" }, async () =>
+      withProcessEnv({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, async () =>
         restartLaunchAgent({
           env,
           stdout: new PassThrough(),
@@ -1776,9 +1776,9 @@ describe("launchd install", () => {
         LAUNCH_JOB_LABEL: undefined,
         LAUNCH_JOB_NAME: undefined,
         XPC_SERVICE_NAME: "0",
-        OPENCLAW_SERVICE_MARKER: "openclaw",
-        OPENCLAW_SERVICE_KIND: "gateway",
-        OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.gateway",
+        EVE_SERVICE_MARKER: "eve",
+        EVE_SERVICE_KIND: "gateway",
+        EVE_LAUNCHD_LABEL: "ai.eve.gateway",
       },
       async () =>
         restartLaunchAgent({
@@ -1804,9 +1804,9 @@ describe("launchd install", () => {
         LAUNCH_JOB_LABEL: undefined,
         LAUNCH_JOB_NAME: undefined,
         XPC_SERVICE_NAME: "0",
-        OPENCLAW_SERVICE_MARKER: undefined,
-        OPENCLAW_SERVICE_KIND: undefined,
-        OPENCLAW_LAUNCHD_LABEL: undefined,
+        EVE_SERVICE_MARKER: undefined,
+        EVE_SERVICE_KIND: undefined,
+        EVE_LAUNCHD_LABEL: undefined,
       },
       async () =>
         restartLaunchAgent({
@@ -1834,7 +1834,7 @@ describe("launchd install", () => {
     }
     expect(message).toContain("logged-in macOS GUI session");
     expect(message).toContain("wrong user (including sudo)");
-    expect(message).toContain("https://docs.openclaw.ai/gateway");
+    expect(message).toContain("https://docs.eve.ai/gateway");
   });
 
   it("surfaces generic bootstrap failures without GUI-specific guidance", async () => {
@@ -1854,40 +1854,40 @@ describe("launchd install", () => {
 describe("resolveLaunchAgentPlistPath", () => {
   it.each([
     {
-      name: "uses default label when OPENCLAW_PROFILE is unset",
+      name: "uses default label when EVE_PROFILE is unset",
       env: { HOME: "/Users/test" },
-      expected: "/Users/test/Library/LaunchAgents/ai.openclaw.gateway.plist",
+      expected: "/Users/test/Library/LaunchAgents/ai.eve.gateway.plist",
     },
     {
-      name: "uses profile-specific label when OPENCLAW_PROFILE is set to a custom value",
-      env: { HOME: "/Users/test", OPENCLAW_PROFILE: "jbphoenix" },
-      expected: "/Users/test/Library/LaunchAgents/ai.openclaw.jbphoenix.plist",
+      name: "uses profile-specific label when EVE_PROFILE is set to a custom value",
+      env: { HOME: "/Users/test", EVE_PROFILE: "jbphoenix" },
+      expected: "/Users/test/Library/LaunchAgents/ai.eve.jbphoenix.plist",
     },
     {
-      name: "prefers OPENCLAW_LAUNCHD_LABEL over OPENCLAW_PROFILE",
+      name: "prefers EVE_LAUNCHD_LABEL over EVE_PROFILE",
       env: {
         HOME: "/Users/test",
-        OPENCLAW_PROFILE: "jbphoenix",
-        OPENCLAW_LAUNCHD_LABEL: "com.custom.label",
+        EVE_PROFILE: "jbphoenix",
+        EVE_LAUNCHD_LABEL: "com.custom.label",
       },
       expected: "/Users/test/Library/LaunchAgents/com.custom.label.plist",
     },
     {
-      name: "trims whitespace from OPENCLAW_LAUNCHD_LABEL",
+      name: "trims whitespace from EVE_LAUNCHD_LABEL",
       env: {
         HOME: "/Users/test",
-        OPENCLAW_LAUNCHD_LABEL: "  com.custom.label  ",
+        EVE_LAUNCHD_LABEL: "  com.custom.label  ",
       },
       expected: "/Users/test/Library/LaunchAgents/com.custom.label.plist",
     },
     {
-      name: "ignores empty OPENCLAW_LAUNCHD_LABEL and falls back to profile",
+      name: "ignores empty EVE_LAUNCHD_LABEL and falls back to profile",
       env: {
         HOME: "/Users/test",
-        OPENCLAW_PROFILE: "myprofile",
-        OPENCLAW_LAUNCHD_LABEL: "   ",
+        EVE_PROFILE: "myprofile",
+        EVE_LAUNCHD_LABEL: "   ",
       },
-      expected: "/Users/test/Library/LaunchAgents/ai.openclaw.myprofile.plist",
+      expected: "/Users/test/Library/LaunchAgents/ai.eve.myprofile.plist",
     },
   ])("$name", ({ env, expected }) => {
     expect(resolveLaunchAgentPlistPath(env)).toBe(expected);
@@ -1897,7 +1897,7 @@ describe("resolveLaunchAgentPlistPath", () => {
     expect(() =>
       resolveLaunchAgentPlistPath({
         HOME: "/Users/test",
-        OPENCLAW_LAUNCHD_LABEL: "../evil/label",
+        EVE_LAUNCHD_LABEL: "../evil/label",
       }),
     ).toThrow("Invalid launchd label");
   });

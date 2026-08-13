@@ -1,5 +1,5 @@
 // Imessage tests cover monitor.media policy plugin behavior.
-import type { waitForTransportReady } from "openclaw/plugin-sdk/transport-ready-runtime";
+import type { waitForTransportReady } from "eve-agent/plugin-sdk/transport-ready-runtime";
 import { describe, expect, it, vi } from "vitest";
 import type { createIMessageRpcClient } from "./client.js";
 import { monitorIMessageProvider } from "./monitor.js";
@@ -12,12 +12,12 @@ const createIMessageRpcClientMock = vi.hoisted(() => vi.fn<typeof createIMessage
 const stageIMessageAttachmentsMock = vi.hoisted(() => vi.fn<typeof stageIMessageAttachments>());
 const readChannelAllowFromStoreMock = vi.hoisted(() => vi.fn(async () => [] as string[]));
 
-vi.mock("openclaw/plugin-sdk/transport-ready-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/transport-ready-runtime", () => ({
   waitForTransportReady: waitForTransportReadyMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/conversation-runtime")>();
+vi.mock("eve-agent/plugin-sdk/conversation-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/conversation-runtime")>();
   return {
     ...actual,
     readChannelAllowFromStore: readChannelAllowFromStoreMock,
@@ -26,8 +26,8 @@ vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/channel-inbound", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/channel-inbound")>();
+vi.mock("eve-agent/plugin-sdk/channel-inbound", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/channel-inbound")>();
   return {
     ...actual,
     createChannelInboundDebouncer: vi.fn((opts) => ({
@@ -56,7 +56,7 @@ describe("iMessage monitor attachment policy", () => {
     stageIMessageAttachmentsMock.mockResolvedValue([]);
     readChannelAllowFromStoreMock.mockResolvedValue([]);
 
-    const attachmentPath = "/Users/openclaw/Library/Messages/Attachments/AA/BB/photo.heic";
+    const attachmentPath = "/Users/eve/Library/Messages/Attachments/AA/BB/photo.heic";
     let onNotification:
       | ((message: { method: string; params: unknown }) => void | Promise<void>)
       | undefined;
@@ -107,7 +107,7 @@ describe("iMessage monitor attachment policy", () => {
             groups: { "*": { requireMention: true } },
           },
         },
-        messages: { groupChat: { mentionPatterns: ["@openclaw"] } },
+        messages: { groupChat: { mentionPatterns: ["@eve"] } },
         session: { mainKey: "main" },
       } as never,
     });

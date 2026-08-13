@@ -9,7 +9,7 @@ import { upsertAuthProfileWithLock } from "../agents/auth-profiles.js";
 import { formatLiteralProviderPrefixedModelRef } from "../agents/model-ref-shared.js";
 import { resolveDefaultAgentWorkspaceDir } from "../agents/workspace.js";
 import { normalizeAgentModelRefForConfig } from "../config/model-input.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { openUrl } from "../infra/browser-open.js";
 import { isRemoteEnvironment } from "../infra/remote-env.js";
 import type { RuntimeEnv } from "../runtime.js";
@@ -35,7 +35,7 @@ type UpsertAuthProfileParams = Parameters<typeof upsertAuthProfileWithLock>[0];
 
 export type ApplyProviderAuthChoiceParams = {
   authChoice: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
@@ -47,7 +47,7 @@ export type ApplyProviderAuthChoiceParams = {
 };
 
 export type ApplyProviderAuthChoiceResult = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentModelOverride?: string;
   retrySelection?: boolean;
 };
@@ -68,9 +68,9 @@ function formatModelRefForDisplay(modelRef: string, provider: ProviderPlugin): s
 }
 
 function restoreConfiguredPrimaryModel(
-  nextConfig: OpenClawConfig,
-  originalConfig: OpenClawConfig,
-): OpenClawConfig {
+  nextConfig: EVEConfig,
+  originalConfig: EVEConfig,
+): EVEConfig {
   const originalModel = originalConfig.agents?.defaults?.model;
   const nextAgents = nextConfig.agents;
   const nextDefaults = nextAgents?.defaults;
@@ -99,7 +99,7 @@ function restoreConfiguredPrimaryModel(
   };
 }
 
-function resolveConfiguredDefaultModelPrimary(cfg: OpenClawConfig): string | undefined {
+function resolveConfiguredDefaultModelPrimary(cfg: EVEConfig): string | undefined {
   const model = cfg.agents?.defaults?.model;
   if (typeof model === "string") {
     return model;
@@ -140,16 +140,16 @@ async function noteDefaultModelResult(params: {
 }
 
 async function applyDefaultModelFromAuthChoice(params: {
-  config: OpenClawConfig;
-  configBeforeProviderAuth?: OpenClawConfig;
+  config: EVEConfig;
+  configBeforeProviderAuth?: EVEConfig;
   selectedModel: string;
   selectedModelDisplay?: string;
   preserveExistingDefaultModel: boolean | undefined;
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
   workspaceDir?: string;
-  runSelectedModelHook: (config: OpenClawConfig) => Promise<void>;
-}): Promise<OpenClawConfig> {
+  runSelectedModelHook: (config: EVEConfig) => Promise<void>;
+}): Promise<EVEConfig> {
   const defaultModelBaseConfig = params.configBeforeProviderAuth ?? params.config;
   const previousPrimary = resolveConfiguredDefaultModelPrimary(defaultModelBaseConfig);
   const preservesDifferentPrimary =
@@ -227,7 +227,7 @@ async function loadPluginProviderRuntime() {
 
 function resolveManifestAuthChoiceScope(params: {
   authChoice: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir: string;
   env?: NodeJS.ProcessEnv;
 }): ProviderAuthChoiceMetadata | undefined {
@@ -256,7 +256,7 @@ export const testing = {
 } as const;
 
 export async function runProviderPluginAuthMethod(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   runtime: RuntimeEnv;
   prompter: WizardPrompter;
@@ -268,7 +268,7 @@ export async function runProviderPluginAuthMethod(params: {
   secretInputMode?: ProviderAuthOptionBag["secretInputMode"];
   allowSecretRefPrompt?: boolean;
   opts?: Partial<ProviderAuthOptionBag>;
-}): Promise<{ config: OpenClawConfig; defaultModel?: string }> {
+}): Promise<{ config: EVEConfig; defaultModel?: string }> {
   const agentId = params.agentId ?? resolveDefaultAgentId(params.config);
   const agentDir = params.agentDir ?? resolveAgentDir(params.config, agentId);
   const workspaceDir =
@@ -380,7 +380,7 @@ export async function applyAuthChoiceLoadedPluginProvider(
     enabledConfig = enableResult.config;
   }
 
-  const resolveScopedRuntimeProviders = (config: OpenClawConfig): ProviderPlugin[] =>
+  const resolveScopedRuntimeProviders = (config: EVEConfig): ProviderPlugin[] =>
     resolvePluginProviders({
       config,
       workspaceDir,
@@ -533,7 +533,7 @@ export async function applyAuthChoicePluginProvider(
   const provider = resolveProviderMatch(providers, options.providerId);
   if (!provider) {
     await params.prompter.note(
-      `${options.label} auth plugin is not available. Install or enable the plugin, then rerun onboarding. If this started after an update, run "openclaw doctor --fix" first.`,
+      `${options.label} auth plugin is not available. Install or enable the plugin, then rerun onboarding. If this started after an update, run "eve doctor --fix" first.`,
       options.label,
     );
     return { config: nextConfig };

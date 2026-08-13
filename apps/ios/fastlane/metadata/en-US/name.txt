@@ -1,1 +1,1 @@
-OpenClaw - iOS Client
+EVE - iOS Client

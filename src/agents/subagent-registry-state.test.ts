@@ -31,12 +31,12 @@ function createRun(runId: string): SubagentRunRecord {
 }
 
 describe("subagent registry state read cache", () => {
-  const previousReadDiskFlag = process.env.OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK;
+  const previousReadDiskFlag = process.env.EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK;
 
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(1_000);
-    process.env.OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK = "1";
+    process.env.EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK = "1";
     clearSubagentRunsReadCacheForTest();
     mocks.loadSubagentRegistryFromSqlite.mockReset();
     mocks.saveSubagentRegistryToSqlite.mockReset();
@@ -45,9 +45,9 @@ describe("subagent registry state read cache", () => {
   afterEach(() => {
     clearSubagentRunsReadCacheForTest();
     if (previousReadDiskFlag === undefined) {
-      delete process.env.OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK;
+      delete process.env.EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK;
     } else {
-      process.env.OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK = previousReadDiskFlag;
+      process.env.EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK = previousReadDiskFlag;
     }
     vi.useRealTimers();
   });

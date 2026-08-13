@@ -42,7 +42,7 @@ describe("combineIMessagePayloads", () => {
     // Older imsg builds emit no balloon_bundle_id at all. We cannot tell a URL
     // split-send from separate sends, so we preserve the pre-metadata merge
     // rather than regress split-send users to two turns. Back-compat path,
-    // removed once imsg coalesces upstream (openclaw/imsg#141, tracked by #91243).
+    // removed once imsg coalesces upstream (eve/imsg#141, tracked by #91243).
     const text = makePayload({ text: "Dump" });
     const url = makePayload({ text: "https://example.com/article" });
     expect(shouldCombineIMessagePayloadBucket([text, url], false)).toBe(true);

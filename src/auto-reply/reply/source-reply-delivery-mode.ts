@@ -1,7 +1,7 @@
 /** Source-reply visibility and suppression policy for auto-reply delivery. */
 import { normalizeChatType } from "../../channels/chat-type.js";
 import type { InboundEventKind } from "../../channels/inbound-event/kind.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SessionSendPolicyDecision } from "../../sessions/send-policy.js";
 import { INTERNAL_MESSAGE_CHANNEL, normalizeMessageChannel } from "../../utils/message-channel.js";
 import { resolveCommandTurnContext, type CommandTurnContext } from "../command-turn-context.js";
@@ -25,7 +25,7 @@ export type SourceReplyDeliveryModeContext = {
 /** Returns true when the turn explicitly invoked a source-visible command. */
 export function isExplicitSourceReplyCommand(
   ctx: SourceReplyDeliveryModeContext,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): boolean {
   return isExplicitCommandTurnContext(ctx, cfg);
 }
@@ -58,7 +58,7 @@ export function isInternalSourceReplyChannel(ctx: SourceReplyDeliveryModeContext
 
 /** Resolves whether normal final text should auto-deliver or require the message tool. */
 export function resolveSourceReplyDeliveryMode(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: SourceReplyDeliveryModeContext;
   requested?: SourceReplyDeliveryMode;
   strictMessageToolOnly?: boolean;
@@ -118,7 +118,7 @@ type SourceReplyVisibilityPolicy = {
 
 /** Resolves source delivery, hooks, lifecycle, and typing suppression flags. */
 export function resolveSourceReplyVisibilityPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: SourceReplyDeliveryModeContext;
   requested?: SourceReplyDeliveryMode;
   strictMessageToolOnly?: boolean;

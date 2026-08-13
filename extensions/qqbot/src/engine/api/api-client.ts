@@ -9,8 +9,8 @@
  * - `redactBodyKeys` replaces the hardcoded `file_data` redaction.
  */
 
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { ApiError, type ApiClientConfig, type EngineLogger } from "../types.js";
 import { formatErrorMessage } from "../utils/format.js";
 

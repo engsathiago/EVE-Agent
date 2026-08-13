@@ -23,7 +23,7 @@ struct CommandPanel<Content: View>: View {
             tint: self.tint,
             isProminent: self.isProminent,
             padding: self.padding,
-            radius: OpenClawProMetric.cardRadius)
+            radius: EVEProMetric.cardRadius)
         {
             self.content
         }
@@ -91,10 +91,10 @@ struct CommandSessionRow: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .background {
-            RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                 .fill(self.rowFill)
                 .overlay {
-                    RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+                    RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                         .strokeBorder(self.rowBorder, lineWidth: 1)
                 }
         }
@@ -125,14 +125,14 @@ struct CommandViewMoreRow: View {
     var body: some View {
         Text("View More")
             .font(.subheadline.weight(.bold))
-            .foregroundStyle(OpenClawBrand.accent)
+            .foregroundStyle(EVEBrand.accent)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)
             .background {
-                RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+                RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                     .fill(self.rowFill)
                     .overlay {
-                        RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+                        RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                             .strokeBorder(self.rowBorder, lineWidth: 1)
                     }
             }
@@ -156,11 +156,11 @@ struct CommandEmptyStateRow: View {
         HStack(spacing: 10) {
             Image(systemName: self.icon)
                 .font(.caption.weight(.bold))
-                .foregroundStyle(OpenClawBrand.ok)
+                .foregroundStyle(EVEBrand.ok)
                 .frame(width: 30, height: 30)
                 .background {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(OpenClawBrand.ok.opacity(0.10))
+                        .fill(EVEBrand.ok.opacity(0.10))
                 }
             VStack(alignment: .leading, spacing: 2) {
                 Text(self.title)
@@ -176,10 +176,10 @@ struct CommandEmptyStateRow: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 8)
         .background {
-            RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                 .fill(Color(uiColor: .systemBackground))
                 .overlay {
-                    RoundedRectangle(cornerRadius: OpenClawProMetric.controlRadius, style: .continuous)
+                    RoundedRectangle(cornerRadius: EVEProMetric.controlRadius, style: .continuous)
                         .strokeBorder(Color(uiColor: .separator).opacity(0.22), lineWidth: 1)
                 }
         }

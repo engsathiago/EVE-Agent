@@ -10,7 +10,7 @@ import type {
   ChannelMessageCapability,
   ChannelPlugin,
 } from "../../channels/plugins/types.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 
 function sortStrings(values: readonly string[]) {
   return [...values].toSorted((left, right) => left.localeCompare(right));
@@ -18,7 +18,7 @@ function sortStrings(values: readonly string[]) {
 
 function resolveContractMessageDiscovery(params: {
   plugin: Pick<ChannelPlugin, "actions">;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }) {
   const actions = params.plugin.actions;
   if (!actions) {
@@ -62,7 +62,7 @@ export function expectChannelPluginContract(
 
 type ChannelActionsContractCase = {
   name: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   expectedActions: readonly ChannelMessageActionName[];
   expectedCapabilities?: readonly ChannelMessageCapability[];
   beforeTest?: () => void;
@@ -113,14 +113,14 @@ export function installChannelActionsContractSuite(params: {
 
 type ChannelSetupContractCase<ResolvedAccount> = {
   name: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   input: ChannelSetupInput;
   expectedAccountId?: string;
   expectedValidation?: string | null;
   beforeTest?: () => void;
-  assertPatchedConfig?: (cfg: OpenClawConfig) => void;
-  assertResolvedAccount?: (account: ResolvedAccount, cfg: OpenClawConfig) => void;
+  assertPatchedConfig?: (cfg: EVEConfig) => void;
+  assertResolvedAccount?: (account: ResolvedAccount, cfg: EVEConfig) => void;
 };
 
 export function installChannelSetupContractSuite<ResolvedAccount>(params: {
@@ -171,7 +171,7 @@ export function installChannelSetupContractSuite<ResolvedAccount>(params: {
 
 type ChannelStatusContractCase<Probe> = {
   name: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   runtime?: ChannelAccountSnapshot;
   probe?: Probe;

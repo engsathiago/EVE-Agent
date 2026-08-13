@@ -3,7 +3,7 @@
  * Covers request construction, SSE parsing, aborts, tool calls, usage, and
  * provider transport hooks.
  */
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { attachModelProviderRequestTransport } from "./provider-request-config.js";
 
@@ -672,7 +672,7 @@ describe("anthropic transport stream", () => {
     );
 
     expect(result.stopReason).toBe("error");
-    expect(result.errorMessage).toBe("OpenClaw transport error: malformed_streaming_fragment");
+    expect(result.errorMessage).toBe("EVE transport error: malformed_streaming_fragment");
   });
 
   it.each(["anthropic", "anthropic-vertex"])(
@@ -1944,7 +1944,7 @@ describe("anthropic transport stream", () => {
     ]);
   });
 
-  it("backfills MiMo v2-flash tool-use replay when OpenClaw thinking is off", async () => {
+  it("backfills MiMo v2-flash tool-use replay when EVE thinking is off", async () => {
     await runTransportStream(
       makeAnthropicTransportModel({
         id: "mimo-v2-flash",

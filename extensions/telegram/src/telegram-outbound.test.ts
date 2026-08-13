@@ -1,4 +1,4 @@
-import { chunkMarkdownTextWithMode } from "openclaw/plugin-sdk/reply-chunking";
+import { chunkMarkdownTextWithMode } from "eve-agent/plugin-sdk/reply-chunking";
 // Telegram tests cover telegram outbound plugin behavior.
 import { describe, expect, it } from "vitest";
 import { splitTelegramHtmlChunks } from "./format.js";

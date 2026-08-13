@@ -7,12 +7,12 @@ import { describe, expect, it, vi } from "vitest";
 import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import { backupVerifyCommand } from "../commands/backup-verify.js";
 import type { RuntimeEnv } from "../runtime.js";
-import { closeOpenClawAgentDatabasesForTest } from "../state/openclaw-agent-db.js";
+import { closeEVEAgentDatabasesForTest } from "../state/eve-agent-db.js";
 import {
-  closeOpenClawStateDatabase,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+  closeEVEStateDatabase,
+  openEVEStateDatabase,
+} from "../state/eve-state-db.js";
+import { withEVETestState } from "../test-utils/eve-test-state.js";
 import {
   testApi as backupCreateInternals,
   buildExtensionsNodeModulesFilter,
@@ -25,8 +25,8 @@ import { requireNodeSqlite } from "./node-sqlite.js";
 function makeResult(overrides: Partial<BackupCreateResult> = {}): BackupCreateResult {
   return {
     createdAt: "2026-01-01T00:00:00.000Z",
-    archiveRoot: "openclaw-backup-2026-01-01",
-    archivePath: "/tmp/openclaw-backup.tar.gz",
+    archiveRoot: "eve-backup-2026-01-01",
+    archivePath: "/tmp/eve-backup.tar.gz",
     dryRun: false,
     includeWorkspace: true,
     onlyConfig: false,
@@ -71,7 +71,7 @@ async function listArchiveEntryDetails(
 }
 
 describe("formatBackupCreateSummary", () => {
-  const backupArchiveLine = "Backup archive: /tmp/openclaw-backup.tar.gz";
+  const backupArchiveLine = "Backup archive: /tmp/eve-backup.tar.gz";
 
   it.each([
     {
@@ -83,26 +83,26 @@ describe("formatBackupCreateSummary", () => {
             kind: "state",
             sourcePath: "/state",
             archivePath: "archive/state",
-            displayPath: "~/.openclaw",
+            displayPath: "~/.eve",
           },
         ],
         skipped: [
           {
             kind: "workspace",
             sourcePath: "/workspace",
-            displayPath: "~/Projects/openclaw",
+            displayPath: "~/Projects/eve",
             reason: "covered",
-            coveredBy: "~/.openclaw",
+            coveredBy: "~/.eve",
           },
         ],
       }),
       expected: [
         backupArchiveLine,
         "Included 1 path:",
-        "- state: ~/.openclaw",
+        "- state: ~/.eve",
         "Skipped 1 path:",
-        "- workspace: ~/Projects/openclaw (covered by ~/.openclaw)",
-        "Created /tmp/openclaw-backup.tar.gz",
+        "- workspace: ~/Projects/eve (covered by ~/.eve)",
+        "Created /tmp/eve-backup.tar.gz",
         "Archive verification: passed",
       ],
     },
@@ -115,21 +115,21 @@ describe("formatBackupCreateSummary", () => {
             kind: "config",
             sourcePath: "/config",
             archivePath: "archive/config",
-            displayPath: "~/.openclaw/config.json",
+            displayPath: "~/.eve/config.json",
           },
           {
             kind: "credentials",
             sourcePath: "/oauth",
             archivePath: "archive/oauth",
-            displayPath: "~/.openclaw/oauth",
+            displayPath: "~/.eve/oauth",
           },
         ],
       }),
       expected: [
         backupArchiveLine,
         "Included 2 paths:",
-        "- config: ~/.openclaw/config.json",
-        "- credentials: ~/.openclaw/oauth",
+        "- config: ~/.eve/config.json",
+        "- credentials: ~/.eve/oauth",
         "Dry run only; archive was not written.",
       ],
     },
@@ -146,17 +146,17 @@ describe("formatBackupCreateSummary", () => {
               kind: "state",
               sourcePath: "/state",
               archivePath: "archive/state",
-              displayPath: "~/.openclaw",
+              displayPath: "~/.eve",
             },
           ],
           skippedVolatileCount: 3,
         }),
       ),
     ).toEqual([
-      "Backup archive: /tmp/openclaw-backup.tar.gz",
+      "Backup archive: /tmp/eve-backup.tar.gz",
       "Included 1 path:",
-      "- state: ~/.openclaw",
-      "Created /tmp/openclaw-backup.tar.gz",
+      "- state: ~/.eve",
+      "Created /tmp/eve-backup.tar.gz",
       "Skipped 3 volatile files (live sessions, cron logs, queues, sockets, pid/tmp).",
     ]);
   });
@@ -295,7 +295,7 @@ describe("buildExtensionsNodeModulesFilter", () => {
   it("excludes dependency trees only under state extensions", () => {
     const filter = buildExtensionsNodeModulesFilter("/state/");
 
-    expect(filter("/state/extensions/demo/openclaw.plugin.json")).toBe(true);
+    expect(filter("/state/extensions/demo/eve.plugin.json")).toBe(true);
     expect(filter("/state/extensions/demo/src/index.js")).toBe(true);
     expect(filter("/state/extensions/demo/node_modules/dep/index.js")).toBe(false);
     expect(filter("/state/extensions/demo/vendor/node_modules/dep/index.js")).toBe(false);
@@ -304,21 +304,21 @@ describe("buildExtensionsNodeModulesFilter", () => {
   });
 
   it("normalizes Windows path separators", () => {
-    const filter = buildExtensionsNodeModulesFilter("C:\\Users\\me\\.openclaw\\");
+    const filter = buildExtensionsNodeModulesFilter("C:\\Users\\me\\.eve\\");
 
-    expect(filter(String.raw`C:\Users\me\.openclaw\extensions\demo\index.js`)).toBe(true);
+    expect(filter(String.raw`C:\Users\me\.eve\extensions\demo\index.js`)).toBe(true);
     expect(
-      filter(String.raw`C:\Users\me\.openclaw\extensions\demo\node_modules\dep\index.js`),
+      filter(String.raw`C:\Users\me\.eve\extensions\demo\node_modules\dep\index.js`),
     ).toBe(false);
   });
 });
 
 describe("createBackupArchive", () => {
   it("falls back when injected nowMs is outside Date range", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-invalid-now-",
+        prefix: "eve-backup-invalid-now-",
         scenario: "minimal",
       },
       async (state) => {
@@ -335,7 +335,7 @@ describe("createBackupArchive", () => {
           });
 
           expect(result.createdAt).toBe("2026-05-30T12:00:00.000Z");
-          expect(path.basename(result.archivePath)).toContain("openclaw-backup.tar.gz");
+          expect(path.basename(result.archivePath)).toContain("eve-backup.tar.gz");
           expect(path.basename(result.archivePath)).not.toContain("NaN");
         } finally {
           dateNowSpy.mockRestore();
@@ -345,10 +345,10 @@ describe("createBackupArchive", () => {
   });
 
   it("falls back to epoch when injected nowMs and Date.now are outside Date range", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-invalid-fallback-now-",
+        prefix: "eve-backup-invalid-fallback-now-",
         scenario: "minimal",
       },
       async (state) => {
@@ -365,7 +365,7 @@ describe("createBackupArchive", () => {
           });
 
           expect(result.createdAt).toBe("1970-01-01T00:00:00.000Z");
-          expect(path.basename(result.archivePath)).toContain("openclaw-backup.tar.gz");
+          expect(path.basename(result.archivePath)).toContain("eve-backup.tar.gz");
           expect(path.basename(result.archivePath)).not.toContain("NaN");
         } finally {
           dateNowSpy.mockRestore();
@@ -375,10 +375,10 @@ describe("createBackupArchive", () => {
   });
 
   it("skips current live volatile state files while preserving workspace locks", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "split",
-        prefix: "openclaw-backup-volatile-",
+        prefix: "eve-backup-volatile-",
         scenario: "minimal",
       },
       async (state) => {
@@ -441,10 +441,10 @@ describe("createBackupArchive", () => {
   });
 
   it("scrubs transient SQLite delivery queue rows from archive snapshots", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-sqlite-queue-",
+        prefix: "eve-backup-sqlite-queue-",
         scenario: "minimal",
       },
       async (state) => {
@@ -452,7 +452,7 @@ describe("createBackupArchive", () => {
         const extractDir = state.path("extract");
         await fs.mkdir(outputDir, { recursive: true });
         await fs.mkdir(extractDir, { recursive: true });
-        const { db } = openOpenClawStateDatabase({ env: state.env });
+        const { db } = openEVEStateDatabase({ env: state.env });
         db.prepare(
           `
             INSERT INTO delivery_queue_entries (
@@ -469,10 +469,10 @@ describe("createBackupArchive", () => {
           });
           const entries = await listArchiveEntries(result.archivePath);
           const archivedDbEntry = entries.find((entry) =>
-            entry.endsWith("/state/state/openclaw.sqlite"),
+            entry.endsWith("/state/state/eve.sqlite"),
           );
           expect(archivedDbEntry).toBeDefined();
-          expect(entries.some((entry) => entry.endsWith("/state/state/openclaw.sqlite-wal"))).toBe(
+          expect(entries.some((entry) => entry.endsWith("/state/state/eve.sqlite-wal"))).toBe(
             false,
           );
 
@@ -493,17 +493,17 @@ describe("createBackupArchive", () => {
             count: 1,
           });
         } finally {
-          closeOpenClawStateDatabase();
+          closeEVEStateDatabase();
         }
       },
     );
   });
 
   it("snapshots per-agent SQLite auth stores without deleted secret pages", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-agent-sqlite-",
+        prefix: "eve-backup-agent-sqlite-",
         scenario: "minimal",
       },
       async (state) => {
@@ -525,10 +525,10 @@ describe("createBackupArchive", () => {
           state.agentDir(),
           { syncExternalCli: false },
         );
-        closeOpenClawAgentDatabasesForTest();
+        closeEVEAgentDatabasesForTest();
         const sqlite = requireNodeSqlite();
-        const liveDbPath = path.join(state.agentDir(), "openclaw-agent.sqlite");
-        const deletedSecretMarker = "OPENCLAW_DELETED_SECRET_PAGE_MARKER";
+        const liveDbPath = path.join(state.agentDir(), "eve-agent.sqlite");
+        const deletedSecretMarker = "EVE_DELETED_SECRET_PAGE_MARKER";
         const deletedSecret = `${deletedSecretMarker}-${"x".repeat(16_384)}`;
         const liveDb = new sqlite.DatabaseSync(liveDbPath);
         try {
@@ -553,12 +553,12 @@ describe("createBackupArchive", () => {
         });
         const entries = await listArchiveEntries(result.archivePath);
         const archivedDbEntry = entries.find((entry) =>
-          entry.endsWith("/state/agents/main/agent/openclaw-agent.sqlite"),
+          entry.endsWith("/state/agents/main/agent/eve-agent.sqlite"),
         );
         expect(archivedDbEntry).toBeDefined();
         expect(
           entries.some((entry) =>
-            entry.endsWith("/state/agents/main/agent/openclaw-agent.sqlite-wal"),
+            entry.endsWith("/state/agents/main/agent/eve-agent.sqlite-wal"),
           ),
         ).toBe(false);
 
@@ -588,10 +588,10 @@ describe("createBackupArchive", () => {
   });
 
   it("snapshots nested live SQLite databases with transaction continuity", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-nested-sqlite-",
+        prefix: "eve-backup-nested-sqlite-",
         scenario: "minimal",
       },
       async (state) => {
@@ -681,10 +681,10 @@ describe("createBackupArchive", () => {
   });
 
   it("fails instead of raw-copying malformed nested SQLite databases", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-malformed-sqlite-",
+        prefix: "eve-backup-malformed-sqlite-",
         scenario: "minimal",
       },
       async (state) => {
@@ -708,10 +708,10 @@ describe("createBackupArchive", () => {
   it.each(["late.sqlite", "late.sqlite-wal"])(
     "fails when SQLite-looking state appears after snapshot discovery: %s",
     async (lateName) => {
-      await withOpenClawTestState(
+      await withEVETestState(
         {
           layout: "state-only",
-          prefix: "openclaw-backup-late-sqlite-",
+          prefix: "eve-backup-late-sqlite-",
           scenario: "minimal",
         },
         async (state) => {
@@ -756,10 +756,10 @@ describe("createBackupArchive", () => {
   );
 
   it("omits pre-existing orphan SQLite sidecars without failing backup", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-orphan-sqlite-sidecars-",
+        prefix: "eve-backup-orphan-sqlite-sidecars-",
         scenario: "minimal",
       },
       async (state) => {
@@ -790,10 +790,10 @@ describe("createBackupArchive", () => {
   });
 
   it("omits transient memory reindex databases and sidecars", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-memory-reindex-lock-",
+        prefix: "eve-backup-memory-reindex-lock-",
         scenario: "minimal",
       },
       async (state) => {
@@ -843,10 +843,10 @@ describe("createBackupArchive", () => {
       return;
     }
 
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-symlinked-sqlite-",
+        prefix: "eve-backup-symlinked-sqlite-",
         scenario: "minimal",
       },
       async (state) => {
@@ -876,17 +876,17 @@ describe("createBackupArchive", () => {
       return;
     }
 
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-global-sqlite-symlink-",
+        prefix: "eve-backup-global-sqlite-symlink-",
         scenario: "minimal",
       },
       async (state) => {
         const outputDir = state.path("backups");
         const extractDir = state.path("extract");
         const externalDbPath = path.join(state.workspaceDir, "external-global.sqlite");
-        const linkedDbPath = state.statePath("state", "openclaw.sqlite");
+        const linkedDbPath = state.statePath("state", "eve.sqlite");
         await state.writeConfig({
           agents: {
             list: [{ id: "main", default: true, workspace: state.workspaceDir }],
@@ -921,7 +921,7 @@ describe("createBackupArchive", () => {
           });
           const entries = await listArchiveEntryDetails(result.archivePath);
           const archivedDbEntries = entries.filter((entry) =>
-            entry.path.endsWith("/state/state/openclaw.sqlite"),
+            entry.path.endsWith("/state/state/eve.sqlite"),
           );
           expect(archivedDbEntries).toEqual([
             expect.objectContaining({
@@ -967,15 +967,15 @@ describe("createBackupArchive", () => {
   });
 
   it("fails when the canonical global SQLite path is not a file", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-global-sqlite-directory-",
+        prefix: "eve-backup-global-sqlite-directory-",
         scenario: "minimal",
       },
       async (state) => {
         const outputDir = state.path("backups");
-        const globalDbPath = state.statePath("state", "openclaw.sqlite");
+        const globalDbPath = state.statePath("state", "eve.sqlite");
         await fs.mkdir(globalDbPath, { recursive: true });
         await fs.mkdir(outputDir, { recursive: true });
 
@@ -992,10 +992,10 @@ describe("createBackupArchive", () => {
   });
 
   it("omits installed plugin node_modules from the real archive while keeping plugin files", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-plugin-deps-",
+        prefix: "eve-backup-plugin-deps-",
         scenario: "minimal",
       },
       async (state) => {
@@ -1010,7 +1010,7 @@ describe("createBackupArchive", () => {
           recursive: true,
         });
         await fs.writeFile(
-          path.join(stateDir, "extensions", "demo", "openclaw.plugin.json"),
+          path.join(stateDir, "extensions", "demo", "eve.plugin.json"),
           '{"id":"demo"}\n',
           "utf8",
         );
@@ -1054,7 +1054,7 @@ describe("createBackupArchive", () => {
         const entries = await listArchiveEntries(result.archivePath);
 
         const entrySuffixes = entries.map((entry) => entry.replace(/^.*\/state\//, "/state/"));
-        expect(entrySuffixes).toContain("/state/extensions/demo/openclaw.plugin.json");
+        expect(entrySuffixes).toContain("/state/extensions/demo/eve.plugin.json");
         expect(entrySuffixes).toContain("/state/extensions/demo/src/index.js");
         expect(entrySuffixes).toContain("/state/node_modules/root-dep/index.js");
         expect(entrySuffixes).toContain("/state/node_modules/root-dep/fixture.sqlite");
@@ -1072,16 +1072,16 @@ describe("createBackupArchive", () => {
   });
 
   it("dereferences hardlinks instead of emitting restore-hostile Link entries", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-hardlink-",
+        prefix: "eve-backup-hardlink-",
         scenario: "minimal",
       },
       async (state) => {
         const stateDir = state.stateDir;
         const outputDir = state.path("backups");
-        const sourcePath = path.join(stateDir, "workspace-adx", "openclaw-src", "node_modules");
+        const sourcePath = path.join(stateDir, "workspace-adx", "eve-src", "node_modules");
         const targetPath = path.join(sourcePath, "esbuild", "bin", "esbuild");
         const hardlinkPath = path.join(sourcePath, "@esbuild", "darwin-arm64", "bin", "esbuild");
         await fs.mkdir(path.dirname(targetPath), { recursive: true });
@@ -1111,10 +1111,10 @@ describe("createBackupArchive", () => {
   });
 
   it("does not duplicate the root manifest when the system tempdir lives inside the state dir", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-tmp-overlap-",
+        prefix: "eve-backup-tmp-overlap-",
         scenario: "minimal",
       },
       async (state) => {
@@ -1148,10 +1148,10 @@ describe("createBackupArchive", () => {
   });
 
   it("does not duplicate the root manifest when the system tempdir is the state dir itself", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-backup-tmp-equals-state-",
+        prefix: "eve-backup-tmp-equals-state-",
         scenario: "minimal",
       },
       async (state) => {
@@ -1179,7 +1179,7 @@ describe("createBackupArchive", () => {
             entry.endsWith("/state/plugins/dedicated/empty.sqlite"),
           );
           expect(emptyDbEntries).toHaveLength(1);
-          expect(entries.some((entry) => entry.includes("/openclaw-state-db-"))).toBe(false);
+          expect(entries.some((entry) => entry.includes("/eve-state-db-"))).toBe(false);
 
           await tar.x({ file: result.archivePath, gzip: true, cwd: extractDir });
           const sqlite = requireNodeSqlite();

@@ -6,7 +6,7 @@ import { saveCronStore } from "./store.js";
 import type { CronJob } from "./types.js";
 
 const { logger: noopLogger, makeStorePath } = setupCronServiceSuite({
-  prefix: "openclaw-cron-overflow-",
+  prefix: "eve-cron-overflow-",
   baseTimeIso: "2025-12-13T17:00:00.000Z",
 });
 

@@ -15,7 +15,7 @@ const ssrfRuntimeMocks = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ssrfRuntimeMocks);
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", () => ssrfRuntimeMocks);
 
 afterEach(() => {
   vi.useRealTimers();

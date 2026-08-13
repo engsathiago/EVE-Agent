@@ -1,25 +1,25 @@
 ---
-summary: "Configure migrated native Codex plugins for Codex-mode OpenClaw agents"
+summary: "Configure migrated native Codex plugins for Codex-mode EVE agents"
 title: "Native Codex plugins"
 read_when:
-  - You want Codex-mode OpenClaw agents to use native Codex plugins
+  - You want Codex-mode EVE agents to use native Codex plugins
   - You are migrating source-installed openai-curated Codex plugins
   - You are troubleshooting codexPlugins, app inventory, destructive actions, or plugin app diagnostics
 ---
 
-Native Codex plugin support lets a Codex-mode OpenClaw agent use Codex
+Native Codex plugin support lets a Codex-mode EVE agent use Codex
 app-server's own app and plugin capabilities inside the same Codex thread that
-handles the OpenClaw turn.
+handles the EVE turn.
 
-OpenClaw does not translate Codex plugins into synthetic `codex_plugin_*`
-OpenClaw dynamic tools. Plugin calls stay in the native Codex transcript, and
+EVE does not translate Codex plugins into synthetic `codex_plugin_*`
+EVE dynamic tools. Plugin calls stay in the native Codex transcript, and
 Codex app-server owns the app-backed MCP execution.
 
 Use this page after the base [Codex harness](/plugins/codex-harness) is working.
 
 ## Requirements
 
-- The selected OpenClaw agent runtime must be the native Codex harness.
+- The selected EVE agent runtime must be the native Codex harness.
 - `plugins.entries.codex.enabled` must be true.
 - `plugins.entries.codex.config.codexPlugins.enabled` must be true.
 - V1 supports only `openai-curated` plugins that migration observed as
@@ -27,7 +27,7 @@ Use this page after the base [Codex harness](/plugins/codex-harness) is working.
 - The target Codex app-server must be able to see the expected marketplace,
   plugin, and app inventory.
 
-`codexPlugins` has no effect on OpenClaw runs, normal OpenAI provider runs, ACP
+`codexPlugins` has no effect on EVE runs, normal OpenAI provider runs, ACP
 conversation bindings, or other harnesses because those paths do not create
 Codex app-server threads with native `apps` config.
 
@@ -40,20 +40,20 @@ see [Using Codex with your ChatGPT plan](https://help.openai.com/en/articles/113
 Preview migration from the source Codex home:
 
 ```bash
-openclaw migrate codex --dry-run
+eve migrate codex --dry-run
 ```
 
 Use strict source app verification when you want migration to check source app
 accessibility before planning native plugin activation:
 
 ```bash
-openclaw migrate codex --dry-run --verify-plugin-apps
+eve migrate codex --dry-run --verify-plugin-apps
 ```
 
 Apply the migration when the plan looks right:
 
 ```bash
-openclaw migrate apply codex --yes
+eve migrate apply codex --yes
 ```
 
 Migration writes explicit `codexPlugins` entries for eligible plugins and calls
@@ -105,27 +105,27 @@ plugins from the same chat where you operate the Codex harness:
 the configured plugin keys, on/off state, Codex plugin name, and marketplace
 from `plugins.entries.codex.config.codexPlugins.plugins`.
 
-`enable` and `disable` write only to OpenClaw config at
-`~/.openclaw/openclaw.json`; they do not edit `~/.codex/config.toml` or install
+`enable` and `disable` write only to EVE config at
+`~/.eve/eve.json`; they do not edit `~/.codex/config.toml` or install
 new Codex plugins. Only the owner or a gateway client with the
 `operator.admin` scope can change plugin state.
 
 Enabling a configured plugin also turns on the global
 `codexPlugins.enabled` switch. If the plugin was written disabled because
 migration returned `auth_required`, reauthorize the app in Codex before enabling
-it in OpenClaw.
+it in EVE.
 
 ## How native plugin setup works
 
 The integration has three separate states:
 
 - Installed: Codex has the local plugin bundle in the target app-server runtime.
-- Enabled: OpenClaw config is willing to make the plugin available to Codex
+- Enabled: EVE config is willing to make the plugin available to Codex
   harness turns.
 - Accessible: Codex app-server confirms the plugin's app entries are available
   for the active account and can be mapped to the migrated plugin identity.
 
-Migration is the durable install/eligibility step. During planning, OpenClaw
+Migration is the durable install/eligibility step. During planning, EVE
 reads source Codex `plugin/read` details and checks that the source Codex
 app-server account response is a ChatGPT subscription account. Non-ChatGPT or
 missing account responses skip app-backed plugins with
@@ -140,7 +140,7 @@ app-inventory gate. Runtime app inventory is the target-session accessibility
 check after migration. Codex harness session setup then computes a restrictive
 thread app config for the enabled and accessible plugin apps.
 
-Thread app config is computed when OpenClaw establishes a Codex harness session
+Thread app config is computed when EVE establishes a Codex harness session
 or replaces a stale Codex thread binding. It is not recomputed on every turn, so
 `/codex plugins enable` and `/codex plugins disable` affect new Codex
 conversations. Use `/new` or `/reset` when the current conversation should pick
@@ -168,9 +168,9 @@ V1 is intentionally narrow:
 
 ## App inventory and ownership
 
-OpenClaw reads Codex app inventory through app-server `app/list`, caches it for
+EVE reads Codex app inventory through app-server `app/list`, caches it for
 one hour, and refreshes stale or missing entries asynchronously. The cache is
-in memory only; restarting the CLI or gateway drops it, and OpenClaw rebuilds it
+in memory only; restarting the CLI or gateway drops it, and EVE rebuilds it
 from the next `app/list` read.
 
 Migration and runtime use separate cache keys:
@@ -182,7 +182,7 @@ Migration and runtime use separate cache keys:
   builds the Codex thread app config. Plugin activation invalidates that target
   cache key and then force-refreshes it after `plugin/install`.
 
-A plugin app is exposed only when OpenClaw can map it back to the migrated
+A plugin app is exposed only when EVE can map it back to the migrated
 plugin through stable ownership:
 
 - exact app id from plugin detail
@@ -194,16 +194,16 @@ refresh proves ownership.
 
 ## Thread app config
 
-OpenClaw injects a restrictive `config.apps` patch for the Codex thread:
+EVE injects a restrictive `config.apps` patch for the Codex thread:
 `_default` is disabled and only apps owned by enabled migrated plugins are
 enabled.
 
-OpenClaw sets app-level `destructive_enabled` from the effective global or
+EVE sets app-level `destructive_enabled` from the effective global or
 per-plugin `allow_destructive_actions` policy and lets Codex enforce
 destructive tool metadata from its native app tool annotations. `true` and
 `"auto"` both set `destructive_enabled: true`; `false` sets it false. The
 `_default` app config is disabled with `open_world_enabled: false`. Enabled
-plugin apps are emitted with `open_world_enabled: true`; OpenClaw does not
+plugin apps are emitted with `open_world_enabled: true`; EVE does not
 expose a separate plugin open-world policy knob and does not maintain
 per-plugin destructive tool-name deny lists.
 
@@ -219,11 +219,11 @@ plugins, while unsafe schemas and ambiguous ownership still fail closed:
 - Global `allow_destructive_actions` defaults to `true`.
 - Per-plugin `allow_destructive_actions` overrides the global policy for that
   plugin.
-- When policy is `false`, OpenClaw returns a deterministic decline.
-- When policy is `true`, OpenClaw auto-accepts only safe schemas it can map to
+- When policy is `false`, EVE returns a deterministic decline.
+- When policy is `true`, EVE auto-accepts only safe schemas it can map to
   an approval response, such as a boolean approve field.
-- When policy is `"auto"`, OpenClaw exposes destructive plugin actions to
-  Codex but turns ownership-proven MCP approval elicitations into OpenClaw
+- When policy is `"auto"`, EVE exposes destructive plugin actions to
+  Codex but turns ownership-proven MCP approval elicitations into EVE
   plugin approvals before returning the Codex approval response.
 - Missing plugin identity, ambiguous ownership, a missing turn id, a wrong turn
   id, or an unsafe elicitation schema declines instead of prompting.
@@ -260,7 +260,7 @@ cannot see the expected `openai-curated` marketplace or plugin. Rerun migration
 against the target runtime or inspect Codex app-server plugin status.
 
 **`app_inventory_missing` or `app_inventory_stale`:** app readiness came from an
-empty or stale cache. OpenClaw schedules an async refresh and excludes plugin
+empty or stale cache. EVE schedules an async refresh and excludes plugin
 apps until ownership and readiness are known.
 
 **`app_ownership_ambiguous`:** app inventory only matched by display name, so
@@ -268,7 +268,7 @@ the app is not exposed to the Codex thread.
 
 **Config changed but the agent cannot see the plugin:** use `/codex plugins
 list` to confirm the configured state, then use `/new` or `/reset`. Existing
-Codex thread bindings keep the app config they started with until OpenClaw
+Codex thread bindings keep the app config they started with until EVE
 establishes a new harness session or replaces a stale binding.
 
 **Destructive action is declined:** check the global and per-plugin

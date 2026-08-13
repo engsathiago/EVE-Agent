@@ -10,7 +10,7 @@ describe("Codex app-server startup binding", () => {
   let tempDir: string;
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-startup-binding-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-codex-startup-binding-"));
   });
 
   afterEach(async () => {

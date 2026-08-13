@@ -6,7 +6,7 @@ import {
   resolveSiteName,
   wrapWebContent,
   type WebSearchProviderPlugin,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "eve-agent/plugin-sdk/provider-web-search";
 
 export const QA_LAB_WEB_SEARCH_PROVIDER_ID = "qa-lab-search";
 
@@ -29,7 +29,7 @@ const QaLabWebSearchSchema = {
 } satisfies Record<string, unknown>;
 
 function buildQaLabSearchResult(query: string, index: number) {
-  const url = `https://docs.openclaw.ai/qa-lab/search-fixture/${index + 1}`;
+  const url = `https://docs.eve.ai/qa-lab/search-fixture/${index + 1}`;
   return {
     title: wrapWebContent(`QA Lab search fixture result ${index + 1}`, "web_search"),
     url,
@@ -37,7 +37,7 @@ function buildQaLabSearchResult(query: string, index: number) {
       `Deterministic QA Lab web_search result for query: ${query}`,
       "web_search",
     ),
-    siteName: resolveSiteName(url) || "docs.openclaw.ai",
+    siteName: resolveSiteName(url) || "docs.eve.ai",
   };
 }
 
@@ -49,8 +49,8 @@ export function createQaLabWebSearchProvider(): WebSearchProviderPlugin {
     requiresCredential: false,
     envVars: [],
     placeholder: "(no key needed)",
-    signupUrl: "https://docs.openclaw.ai/concepts/qa-e2e-automation",
-    docsUrl: "https://docs.openclaw.ai/concepts/qa-e2e-automation",
+    signupUrl: "https://docs.eve.ai/concepts/qa-e2e-automation",
+    docsUrl: "https://docs.eve.ai/concepts/qa-e2e-automation",
     credentialPath: "",
     inactiveSecretPaths: [],
     getCredentialValue: () => undefined,

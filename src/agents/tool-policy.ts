@@ -3,8 +3,8 @@
  * Normalizes core and plugin tool groups, expands plugin entries, and extracts
  * explicit operator allow/deny lists.
  */
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { sanitizeServerName, TOOL_NAME_SEPARATOR } from "./agent-bundle-mcp-names.js";
 import { IMPLICIT_ALLOW_ALL_FROM_ALSO_ALLOW } from "./sandbox-tool-policy.js";
 import { expandToolGroups, normalizeToolList, normalizeToolName } from "./tool-policy-shared.js";
@@ -45,7 +45,7 @@ export type DeclaredToolAllowlistContext = {
 };
 
 /** Synthetic allowlist entry that means "use default plugin tools". */
-export const DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY = "__openclaw_default_plugin_tools__";
+export const DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY = "__eve_default_plugin_tools__";
 
 /** Returns true when an allow policy is narrower than all/default plugin tools. */
 export function hasRestrictiveAllowPolicy(policy?: { allow?: string[] }): boolean {

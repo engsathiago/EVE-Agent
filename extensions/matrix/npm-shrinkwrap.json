@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/matrix",
+  "name": "@eve/matrix",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/matrix",
+      "name": "@eve/matrix",
       "version": "2026.6.8",
       "dependencies": {
         "@matrix-org/matrix-sdk-crypto-nodejs": "0.6.0",
@@ -18,10 +18,10 @@
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

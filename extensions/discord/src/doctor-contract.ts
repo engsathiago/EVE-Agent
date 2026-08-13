@@ -2,17 +2,17 @@
 import type {
   ChannelDoctorConfigMutation,
   ChannelDoctorLegacyConfigRule,
-} from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   isSupportedRealtimeVoiceActivationName,
   normalizeRealtimeVoiceActivationNamePrefix,
-} from "openclaw/plugin-sdk/realtime-voice";
-import { asObjectRecord, normalizeLegacyChannelAliases } from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/realtime-voice";
+import { asObjectRecord, normalizeLegacyChannelAliases } from "eve-agent/plugin-sdk/runtime-doctor";
 import { resolveDiscordPreviewStreamMode } from "./preview-streaming.js";
 
 const LEGACY_TTS_PROVIDER_KEYS = ["openai", "elevenlabs", "microsoft", "edge"] as const;
-type AgentBindingConfig = NonNullable<OpenClawConfig["bindings"]>[number];
+type AgentBindingConfig = NonNullable<EVEConfig["bindings"]>[number];
 
 function hasLegacyTtsProviderKeys(value: unknown): boolean {
   const tts = asObjectRecord(value);
@@ -202,7 +202,7 @@ function normalizeUnsupportedRealtimeWakeNames(
     const nextRealtime = { ...realtime };
     delete nextRealtime.wakeNames;
     changes.push(
-      `Removed empty ${pathPrefix}.voice.realtime.wakeNames; unset wake names use the default agent/OpenClaw fallback.`,
+      `Removed empty ${pathPrefix}.voice.realtime.wakeNames; unset wake names use the default agent/EVE fallback.`,
     );
     return {
       entry: {
@@ -335,7 +335,7 @@ function isDiscordChannelAgentBinding(
 }
 
 function normalizeDiscordGuildChannelAgentIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   entry: Record<string, unknown>;
   pathPrefix: string;
   accountId?: string;
@@ -421,49 +421,49 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
   {
     path: ["channels", "discord", "voice", "tts"],
     message:
-      'channels.discord.voice.tts.<provider> keys (openai/elevenlabs/microsoft/edge) are legacy; use channels.discord.voice.tts.providers.<provider>. Run "openclaw doctor --fix".',
+      'channels.discord.voice.tts.<provider> keys (openai/elevenlabs/microsoft/edge) are legacy; use channels.discord.voice.tts.providers.<provider>. Run "eve doctor --fix".',
     match: hasLegacyTtsProviderKeys,
   },
   {
     path: ["channels", "discord", "accounts"],
     message:
-      'channels.discord.accounts.<id>.voice.tts.<provider> keys (openai/elevenlabs/microsoft/edge) are legacy; use channels.discord.accounts.<id>.voice.tts.providers.<provider>. Run "openclaw doctor --fix".',
+      'channels.discord.accounts.<id>.voice.tts.<provider> keys (openai/elevenlabs/microsoft/edge) are legacy; use channels.discord.accounts.<id>.voice.tts.providers.<provider>. Run "eve doctor --fix".',
     match: hasLegacyDiscordAccountTtsProviderKeys,
   },
   {
     path: ["channels", "discord"],
     message:
-      'channels.discord.guilds.<id>.channels.<id>.allow is legacy; use channels.discord.guilds.<id>.channels.<id>.enabled instead. Run "openclaw doctor --fix".',
+      'channels.discord.guilds.<id>.channels.<id>.allow is legacy; use channels.discord.guilds.<id>.channels.<id>.enabled instead. Run "eve doctor --fix".',
     match: hasLegacyDiscordGuildChannelAllowAlias,
   },
   {
     path: ["channels", "discord", "accounts"],
     message:
-      'channels.discord.accounts.<id>.guilds.<id>.channels.<id>.allow is legacy; use channels.discord.accounts.<id>.guilds.<id>.channels.<id>.enabled instead. Run "openclaw doctor --fix".',
+      'channels.discord.accounts.<id>.guilds.<id>.channels.<id>.allow is legacy; use channels.discord.accounts.<id>.guilds.<id>.channels.<id>.enabled instead. Run "eve doctor --fix".',
     match: hasLegacyDiscordAccountGuildChannelAllowAlias,
   },
   {
     path: ["channels", "discord"],
     message:
-      'channels.discord.guilds.<id>.channels.<id>.agentId is legacy; use top-level bindings[] for per-channel Discord agent routing. Run "openclaw doctor --fix".',
+      'channels.discord.guilds.<id>.channels.<id>.agentId is legacy; use top-level bindings[] for per-channel Discord agent routing. Run "eve doctor --fix".',
     match: hasLegacyDiscordGuildChannelAgentId,
   },
   {
     path: ["channels", "discord", "accounts"],
     message:
-      'channels.discord.accounts.<id>.guilds.<id>.channels.<id>.agentId is legacy; use top-level bindings[] with match.accountId for per-channel Discord agent routing. Run "openclaw doctor --fix".',
+      'channels.discord.accounts.<id>.guilds.<id>.channels.<id>.agentId is legacy; use top-level bindings[] with match.accountId for per-channel Discord agent routing. Run "eve doctor --fix".',
     match: hasLegacyDiscordAccountGuildChannelAgentId,
   },
   {
     path: ["channels", "discord"],
     message:
-      'channels.discord.voice.realtime.wakeNames entries longer than two words are unsupported; use one- or two-word activation names. Run "openclaw doctor --fix".',
+      'channels.discord.voice.realtime.wakeNames entries longer than two words are unsupported; use one- or two-word activation names. Run "eve doctor --fix".',
     match: hasUnsupportedDiscordRealtimeWakeNames,
   },
   {
     path: ["channels", "discord", "accounts"],
     message:
-      'channels.discord.accounts.<id>.voice.realtime.wakeNames entries longer than two words are unsupported; use one- or two-word activation names. Run "openclaw doctor --fix".',
+      'channels.discord.accounts.<id>.voice.realtime.wakeNames entries longer than two words are unsupported; use one- or two-word activation names. Run "eve doctor --fix".',
     match: hasUnsupportedDiscordAccountRealtimeWakeNames,
   },
 ];
@@ -471,7 +471,7 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
 export function normalizeCompatibilityConfig({
   cfg,
 }: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): ChannelDoctorConfigMutation {
   const rawEntry = asObjectRecord((cfg.channels as Record<string, unknown> | undefined)?.discord);
   if (!rawEntry) {
@@ -605,7 +605,7 @@ export function normalizeCompatibilityConfig({
       channels: {
         ...cfg.channels,
         discord: updated,
-      } as OpenClawConfig["channels"],
+      } as EVEConfig["channels"],
       bindings:
         bindingsToAdd.length > 0 ? [...(cfg.bindings ?? []), ...bindingsToAdd] : cfg.bindings,
     },

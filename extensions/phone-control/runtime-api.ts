@@ -1,8 +1,8 @@
 // Phone Control API module exposes the plugin public contract.
-export { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+export { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 export type {
-  OpenClawPluginApi,
-  OpenClawPluginCommandDefinition,
+  EVEPluginApi,
+  EVEPluginCommandDefinition,
   PluginCommandContext,
-  OpenClawPluginService,
-} from "openclaw/plugin-sdk/plugin-entry";
+  EVEPluginService,
+} from "eve-agent/plugin-sdk/plugin-entry";

@@ -20,7 +20,7 @@ function successfulRun(name: string, id: number, updatedAt: string) {
     path: ".github/workflows/ci.yml",
     created_at: "2026-06-17T10:46:24Z",
     updated_at: updatedAt,
-    html_url: `https://github.com/openclaw/openclaw/actions/runs/${id}`,
+    html_url: `https://github.com/engsathiago/eve-agent/actions/runs/${id}`,
   };
 }
 
@@ -291,19 +291,19 @@ describe("verify-pr-hosted-gates", () => {
     expect(
       parseArgs([
         "--repo",
-        "openclaw/openclaw",
+        "eve/eve",
         "--sha",
         sha,
         "--output",
         ".local/gates-hosted-checks.json",
       ]),
     ).toEqual({
-      repo: "openclaw/openclaw",
+      repo: "eve/eve",
       sha,
       output: ".local/gates-hosted-checks.json",
       changelogOnly: false,
     });
-    expect(() => parseArgs(["--repo", "openclaw/openclaw"])).toThrow("Usage:");
+    expect(() => parseArgs(["--repo", "eve/eve"])).toThrow("Usage:");
   });
 
   it("accepts JSON emitted through a colorizing GitHub CLI shim", () => {

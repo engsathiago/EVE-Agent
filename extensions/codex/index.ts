@@ -2,10 +2,10 @@
  * Bundled Codex plugin entry: app-server harness, model provider, media
  * understanding, migration provider, CLI-session commands, and binding hooks.
  */
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { mutateConfigFile } from "openclaw/plugin-sdk/config-mutation";
-import { resolveLivePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { mutateConfigFile } from "eve-agent/plugin-sdk/config-mutation";
+import { resolveLivePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 import { createCodexAppServerAgentHarness } from "./harness.js";
 import { buildCodexMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import { buildCodexProvider } from "./provider.js";
@@ -31,7 +31,7 @@ export default definePluginEntry({
   description: "Codex app-server harness and Codex-managed GPT model catalog.",
   register(api) {
     const resolveCurrentConfig = () =>
-      api.runtime.config?.current ? (api.runtime.config.current() as OpenClawConfig) : undefined;
+      api.runtime.config?.current ? (api.runtime.config.current() as EVEConfig) : undefined;
     const resolveCurrentPluginConfig = () =>
       // Codex plugin config can change at runtime; resolve from live config for
       // harness attempts and binding claims instead of keeping startup values.
@@ -67,7 +67,7 @@ export default definePluginEntry({
             resolveCodexCliSessionForBindingOnNode({ runtime: api.runtime, ...params }),
           codexPluginsManagementIo: {
             readConfig: () => {
-              const current = (api.runtime.config?.current?.() ?? {}) as OpenClawConfig;
+              const current = (api.runtime.config?.current?.() ?? {}) as EVEConfig;
               const plugins = (current as Record<string, unknown>).plugins;
               if (!plugins || typeof plugins !== "object") {
                 return Promise.resolve({});

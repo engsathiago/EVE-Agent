@@ -5,7 +5,7 @@ import {
   migrateLegacyDreamingPayloadShape,
 } from "./dreaming-payload-migration.js";
 
-const DREAMING_TOKEN = "__openclaw_memory_core_short_term_promotion_dream__";
+const DREAMING_TOKEN = "__eve_memory_core_short_term_promotion_dream__";
 const DREAMING_TAG = "[managed-by=memory-core.short-term-promotion]";
 
 function jsonRoundTrip<T>(value: T): T {

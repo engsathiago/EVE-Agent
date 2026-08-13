@@ -7,7 +7,7 @@
  * dispatcher needs. No decisions / gating.
  */
 
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { ProcessedAttachments } from "../inbound-attachments.js";
 import type { InboundGroupInfo, InboundPipelineDeps, ReplyToInfo } from "../inbound-context.js";
 import type { QueuedMessage } from "../message-queue.js";

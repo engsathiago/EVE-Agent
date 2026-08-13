@@ -1,10 +1,10 @@
 // Telegram tests cover bot native commands.registry plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { clearPluginCommands, registerPluginCommand } from "openclaw/plugin-sdk/plugin-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { clearPluginCommands, registerPluginCommand } from "eve-agent/plugin-sdk/plugin-runtime";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 let registerTelegramNativeCommands: typeof import("./bot-native-commands.js").registerTelegramNativeCommands;
-let setActivePluginRegistry: typeof import("openclaw/plugin-sdk/plugin-test-runtime").setActivePluginRegistry;
+let setActivePluginRegistry: typeof import("eve-agent/plugin-sdk/plugin-test-runtime").setActivePluginRegistry;
 let createCommandBot: typeof import("./bot-native-commands.menu-test-support.js").createCommandBot;
 let createNativeCommandTestParams: typeof import("./bot-native-commands.menu-test-support.js").createNativeCommandTestParams;
 let createPrivateCommandContext: typeof import("./bot-native-commands.menu-test-support.js").createPrivateCommandContext;
@@ -150,7 +150,7 @@ function mockCall(mock: { mock: { calls: unknown[][] } }, index: number): unknow
 
 describe("registerTelegramNativeCommands real plugin registry", () => {
   beforeAll(async () => {
-    ({ setActivePluginRegistry } = await import("openclaw/plugin-sdk/plugin-test-runtime"));
+    ({ setActivePluginRegistry } = await import("eve-agent/plugin-sdk/plugin-test-runtime"));
     ({ registerTelegramNativeCommands } = await import("./bot-native-commands.js"));
     ({
       createCommandBot,
@@ -261,7 +261,7 @@ describe("registerTelegramNativeCommands real plugin registry", () => {
 
     registerTelegramNativeCommands({
       ...createNativeCommandTestParams({
-        commands: { allowFrom: { telegram: ["999"] } } as OpenClawConfig["commands"],
+        commands: { allowFrom: { telegram: ["999"] } } as EVEConfig["commands"],
       }),
       bot,
       allowFrom: ["999"],

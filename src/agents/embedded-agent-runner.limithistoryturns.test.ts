@@ -1,5 +1,5 @@
 // Covers limiting persisted history by recent user turns.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { describe, expect, it } from "vitest";
 import { limitHistoryTurns } from "./embedded-agent-runner/history.js";
 

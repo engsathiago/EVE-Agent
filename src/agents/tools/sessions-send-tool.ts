@@ -4,14 +4,14 @@
  * Sends messages to visible sessions, starts embedded runs, and optionally announces replies.
  */
 import crypto from "node:crypto";
-import { isRequesterParentOfBackgroundAcpSession } from "@openclaw/acp-core/session-interaction-mode";
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { isRequesterParentOfBackgroundAcpSession } from "@eve/acp-core/session-interaction-mode";
+import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { Type } from "typebox";
 import { readAcpSessionMeta } from "../../acp/runtime/session-meta.js";
 import { parseSessionThreadInfoFast } from "../../config/sessions/thread-info.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { callGateway } from "../../gateway/call.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import {
@@ -95,7 +95,7 @@ function normalizeSessionsSendArguments(args: unknown): Record<string, unknown> 
 }
 
 function resolveConfiguredAgentMainSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   mainKey: string;
 }): string | undefined {
@@ -111,7 +111,7 @@ function resolveConfiguredAgentMainSessionKey(params: {
 }
 
 function isConfiguredAgentMainSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   mainKey: string;
 }): boolean {
@@ -127,7 +127,7 @@ function isConfiguredAgentMainSessionKey(params: {
 }
 
 async function ensureConfiguredAgentMainSession(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   callGateway: GatewayCaller;
   sessionKey: string;
   mainKey: string;
@@ -344,7 +344,7 @@ export function createSessionsSendTool(opts?: {
   agentSessionKey?: string;
   agentChannel?: GatewayMessageChannel;
   sandboxed?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   callGateway?: GatewayCaller;
 }): AnyAgentTool {
   return {

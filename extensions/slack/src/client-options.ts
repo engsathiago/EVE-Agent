@@ -1,7 +1,7 @@
 // Slack plugin module implements client options behavior.
 import type { Agent } from "node:http";
 import type { RetryOptions, WebClientOptions } from "@slack/web-api";
-import { createNodeProxyAgent } from "openclaw/plugin-sdk/fetch-runtime";
+import { createNodeProxyAgent } from "eve-agent/plugin-sdk/fetch-runtime";
 
 export const SLACK_DEFAULT_RETRY_OPTIONS: RetryOptions = {
   retries: 2,

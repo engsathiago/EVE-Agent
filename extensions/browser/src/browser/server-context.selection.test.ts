@@ -8,13 +8,13 @@ import { createProfileSelectionOps } from "./server-context.selection.js";
 import type { BrowserTab, ProfileRuntimeState } from "./server-context.types.js";
 
 const LOCAL_PROFILE: ResolvedBrowserProfile = {
-  name: "openclaw",
+  name: "eve",
   cdpPort: 18800,
   cdpUrl: "http://127.0.0.1:18800",
   cdpHost: "127.0.0.1",
   cdpIsLoopback: true,
   color: "#FF4500",
-  driver: "openclaw",
+  driver: "eve",
   headless: true,
   headlessSource: "config",
   attachOnly: false,

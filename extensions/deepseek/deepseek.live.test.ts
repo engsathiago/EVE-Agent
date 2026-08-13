@@ -5,19 +5,19 @@ import {
   type AssistantMessage,
   type Context,
   type Model,
-} from "openclaw/plugin-sdk/llm";
+} from "eve-agent/plugin-sdk/llm";
 import {
   createSingleUserPromptMessage,
   extractNonEmptyAssistantText,
   isLiveTestEnabled,
-} from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/test-env";
 import { Type } from "typebox";
 import { describe, expect, it } from "vitest";
 import { buildDeepSeekProvider } from "./provider-catalog.js";
 import { createDeepSeekV4ThinkingWrapper } from "./stream.js";
 
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY ?? "";
-const DEEPSEEK_LIVE_MODEL = process.env.OPENCLAW_LIVE_DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
+const DEEPSEEK_LIVE_MODEL = process.env.EVE_LIVE_DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
 const LIVE = isLiveTestEnabled(["DEEPSEEK_LIVE_TEST"]);
 
 const describeLive = LIVE && DEEPSEEK_KEY ? describe : describe.skip;

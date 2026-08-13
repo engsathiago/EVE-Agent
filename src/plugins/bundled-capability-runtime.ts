@@ -9,8 +9,8 @@ import {
 } from "./bundled-compat.js";
 import { resolveBundledPluginRepoEntryPath } from "./bundled-plugin-metadata.js";
 import { createCapturedPluginRegistration } from "./captured-registration.js";
-import { resolveOpenClawDevSourceRoot } from "./dev-source-root.js";
-import { discoverOpenClawPlugins, type PluginDiscoveryResult } from "./discovery.js";
+import { resolveEVEDevSourceRoot } from "./dev-source-root.js";
+import { discoverEVEPlugins, type PluginDiscoveryResult } from "./discovery.js";
 import type { PluginLoadOptions } from "./loader.js";
 import { loadPluginManifestRegistry } from "./manifest-registry.js";
 import { unwrapDefaultModuleExport } from "./module-export.js";
@@ -30,7 +30,7 @@ import {
   findUndeclaredPluginToolNames,
   normalizePluginToolContractNames,
 } from "./tool-contracts.js";
-import type { OpenClawPluginDefinition, OpenClawPluginModule } from "./types.js";
+import type { EVEPluginDefinition, EVEPluginModule } from "./types.js";
 
 const log = createSubsystemLogger("plugins");
 
@@ -58,8 +58,8 @@ export function buildVitestCapabilityShimAliasMap(): Record<string, string> {
     CAPABILITY_VITEST_SHIM_ALIASES.flatMap(({ subpath, target }) => {
       const targetPath = fileURLToPath(target);
       return [
-        [`openclaw/plugin-sdk/${subpath}`, targetPath],
-        [`@openclaw/plugin-sdk/${subpath}`, targetPath],
+        [`eve-agent/plugin-sdk/${subpath}`, targetPath],
+        [`@eve/plugin-sdk/${subpath}`, targetPath],
       ];
     }),
   );
@@ -75,8 +75,8 @@ function applyVitestCapabilityAliasOverrides(params: {
   }
 
   const {
-    "openclaw/plugin-sdk": _ignoredLegacyRootAlias,
-    "@openclaw/plugin-sdk": _ignoredScopedRootAlias,
+    "eve-agent/plugin-sdk": _ignoredLegacyRootAlias,
+    "@eve/plugin-sdk": _ignoredScopedRootAlias,
     ...scopedAliasMap
   } = params.aliasMap;
   return {
@@ -111,17 +111,17 @@ export function buildBundledCapabilityRuntimeConfig(
 }
 
 function resolvePluginModuleExport(moduleExport: unknown): {
-  definition?: OpenClawPluginDefinition;
-  register?: OpenClawPluginDefinition["register"];
+  definition?: EVEPluginDefinition;
+  register?: EVEPluginDefinition["register"];
 } {
   const resolved = unwrapDefaultModuleExport(moduleExport);
   if (typeof resolved === "function") {
     return {
-      register: resolved as OpenClawPluginDefinition["register"],
+      register: resolved as EVEPluginDefinition["register"],
     };
   }
   if (resolved && typeof resolved === "object") {
-    const definition = resolved as OpenClawPluginDefinition;
+    const definition = resolved as EVEPluginDefinition;
     return {
       definition,
       register: definition.register ?? definition.activate,
@@ -203,7 +203,7 @@ export function loadBundledCapabilityRuntimeRegistry(params: {
   discovery?: PluginDiscoveryResult;
 }) {
   const env = params.env ?? process.env;
-  const devSourceRoot = resolveOpenClawDevSourceRoot(env);
+  const devSourceRoot = resolveEVEDevSourceRoot(env);
   const pluginIds = new Set(params.pluginIds);
   const registry = createEmptyPluginRegistry();
   const moduleLoaders: PluginModuleLoaderCache = createPluginModuleLoaderCache();
@@ -240,7 +240,7 @@ export function loadBundledCapabilityRuntimeRegistry(params: {
     });
   };
 
-  const discovery = params.discovery ?? discoverOpenClawPlugins({ env });
+  const discovery = params.discovery ?? discoverEVEPlugins({ env });
   const manifestRegistry = loadPluginManifestRegistry({
     config: buildBundledCapabilityRuntimeConfig(params.pluginIds, env),
     env,
@@ -301,9 +301,9 @@ export function loadBundledCapabilityRuntimeRegistry(params: {
     const safeSource = opened.path;
     fs.closeSync(opened.fd);
 
-    let mod: OpenClawPluginModule | null;
+    let mod: EVEPluginModule | null;
     try {
-      mod = getModuleLoader(safeSource)(safeSource) as OpenClawPluginModule;
+      mod = getModuleLoader(safeSource)(safeSource) as EVEPluginModule;
     } catch (error) {
       recordCapabilityLoadError(registry, record, String(error));
       continue;

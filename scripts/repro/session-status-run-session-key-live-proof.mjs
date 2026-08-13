@@ -7,8 +7,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-status-proof-"));
-const configPath = path.join(tmpRoot, "openclaw.json");
+const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-status-proof-"));
+const configPath = path.join(tmpRoot, "eve.json");
 const storePath = path.join(tmpRoot, "sessions.json");
 const store = {
   "agent:main:telegram:default:direct:1234": {
@@ -26,8 +26,8 @@ const store = {
 };
 fs.writeFileSync(configPath, "{}\n");
 fs.writeFileSync(storePath, `${JSON.stringify(store, null, 2)}\n`);
-process.env.OPENCLAW_CONFIG_PATH = configPath;
-process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS = "1";
+process.env.EVE_CONFIG_PATH = configPath;
+process.env.EVE_DISABLE_BUNDLED_PLUGINS = "1";
 
 const originalStderrWrite = process.stderr.write.bind(process.stderr);
 process.stderr.write = (chunk, encoding, callback) => {

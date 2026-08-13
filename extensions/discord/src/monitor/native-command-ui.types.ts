@@ -1,11 +1,11 @@
 // Discord type declarations define plugin contracts.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type { ThreadBindingManager } from "./thread-bindings.js";
 
-type DiscordConfig = NonNullable<OpenClawConfig["channels"]>["discord"];
+type DiscordConfig = NonNullable<EVEConfig["channels"]>["discord"];
 
 export type DiscordCommandArgContext = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   discordConfig: DiscordConfig;
   accountId: string;
   sessionPrefix: string;

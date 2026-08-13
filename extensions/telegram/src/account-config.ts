@@ -2,9 +2,9 @@
 import {
   normalizeAccountId,
   resolveNormalizedAccountEntry,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-core";
-import type { TelegramAccountConfig } from "openclaw/plugin-sdk/config-contracts";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/account-core";
+import type { TelegramAccountConfig } from "eve-agent/plugin-sdk/config-contracts";
 
 function normalizeAllowFromEntry(value: string | number): string {
   return String(value).trim();
@@ -46,7 +46,7 @@ function resolveMergedAllowFrom(params: {
 }
 
 export function resolveTelegramAccountConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId: string,
 ): TelegramAccountConfig | undefined {
   const normalized = normalizeAccountId(accountId);
@@ -58,7 +58,7 @@ export function resolveTelegramAccountConfig(
 }
 
 export function mergeTelegramAccountConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId: string,
 ): TelegramAccountConfig {
   const {

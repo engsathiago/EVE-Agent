@@ -1,5 +1,5 @@
 // Matrix plugin module implements reaction events behavior.
-import { getSessionBindingService } from "openclaw/plugin-sdk/session-binding-runtime";
+import { getSessionBindingService } from "eve-agent/plugin-sdk/session-binding-runtime";
 import {
   resolveMatrixApprovalReactionTargetWithPersistence,
   unregisterMatrixApprovalReactionTarget,

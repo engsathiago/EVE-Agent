@@ -1,16 +1,16 @@
 // Resume post-core plugin convergence after a gateway control-plane git/source
 // update.
 //
-// `runGatewayUpdate` (git mode) runs `openclaw doctor --fix` with
-// `OPENCLAW_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE=1`, which makes the doctor
+// `runGatewayUpdate` (git mode) runs `eve doctor --fix` with
+// `EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE=1`, which makes the doctor
 // pass DEFER configured-plugin repair to a later convergence step (see
-// `shouldDeferConfiguredPluginInstallRepair`). The `openclaw update` CLI resumes
+// `shouldDeferConfiguredPluginInstallRepair`). The `eve update` CLI resumes
 // that deferred work in a fresh post-core process; the gateway `update.run` RPC
 // did not, so a git/source core update would restart on the new core with stale
 // official plugins still pinned to versions built against removed core APIs.
 //
 // This helper closes that CLI/RPC asymmetry by spawning the freshly-built
-// binary's hidden `openclaw update finalize` entrypoint — the designed
+// binary's hidden `eve update finalize` entrypoint — the designed
 // "external core runtime change" finalizer that runs doctor plus
 // `updatePluginsAfterCoreUpdate` (which calls
 // `updateNpmInstalledPlugins({ syncOfficialPluginInstalls: true, disableOnFailure: true })`
@@ -58,12 +58,12 @@ function buildFinalizeEnv(
   sourceConfigPath?: string,
 ): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...baseEnv };
-  delete env.OPENCLAW_SERVICE_MARKER;
-  delete env.OPENCLAW_SERVICE_KIND;
+  delete env.EVE_SERVICE_MARKER;
+  delete env.EVE_SERVICE_KIND;
   delete env[GATEWAY_SERVICE_RUNTIME_PID_ENV];
   env[UPDATE_EFFECTIVE_CHANNEL_ENV] = effectiveChannel;
   if (compatHostVersion) {
-    env.OPENCLAW_COMPATIBILITY_HOST_VERSION = compatHostVersion;
+    env.EVE_COMPATIBILITY_HOST_VERSION = compatHostVersion;
   }
   if (sourceConfigPath) {
     env[POST_CORE_UPDATE_SOURCE_CONFIG_PATH_ENV] = sourceConfigPath;
@@ -99,7 +99,7 @@ const defaultFinalizeSpawner: PostCoreFinalizeSpawner = async ({ argv, cwd, time
 // Only git/source updates routed through `runGatewayUpdate` defer-and-drop
 // plugin convergence. Package-manager/global installs already converge because
 // the RPC routes them through `startManagedServiceUpdateHandoff`, which
-// re-enters the full `openclaw update` CLI. Re-run convergence on no-op retries:
+// re-enters the full `eve update` CLI. Re-run convergence on no-op retries:
 // an earlier finalizer failure must not be bypassed by a same-SHA update that
 // would otherwise restart the gateway with stale plugins.
 function isGitUpdateNeedingFinalize(
@@ -186,7 +186,7 @@ export async function runPostCoreFinalizeAfterGatewayUpdate(params: {
   try {
     let sourceConfigPath: string | undefined;
     if (params.preUpdateConfig) {
-      sourceConfigDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-post-core-"));
+      sourceConfigDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-update-post-core-"));
       sourceConfigPath = path.join(sourceConfigDir, "source-config.json");
       await fs.writeFile(sourceConfigPath, `${JSON.stringify(params.preUpdateConfig)}\n`, "utf-8");
     }
@@ -246,7 +246,7 @@ export function foldPostCoreFinalizeIntoResult(
       ...result.steps,
       {
         name: "post-core plugin finalize",
-        command: "openclaw update finalize",
+        command: "eve update finalize",
         cwd: result.root ?? process.cwd(),
         durationMs: 0,
         exitCode: outcome.reason === "nonzero-exit" ? (outcome.exitCode ?? 1) : 1,

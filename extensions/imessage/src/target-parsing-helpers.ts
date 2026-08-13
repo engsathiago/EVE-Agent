@@ -12,4 +12,4 @@ export {
   type ParsedChatAllowTarget,
   type ParsedChatTarget,
   type ServicePrefix,
-} from "openclaw/plugin-sdk/channel-targets";
+} from "eve-agent/plugin-sdk/channel-targets";

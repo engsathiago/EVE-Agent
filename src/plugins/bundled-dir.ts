@@ -3,14 +3,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import { resolveOpenClawPackageRootSync } from "../infra/openclaw-root.js";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
+import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
 import { isPathInside } from "../infra/path-guards.js";
 import { resolveUserPath } from "../utils.js";
 
-const DISABLED_BUNDLED_PLUGINS_DIR = path.join(os.tmpdir(), "openclaw-empty-bundled-plugins");
-const TEST_TRUST_BUNDLED_PLUGINS_DIR_ENV = "OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR";
+const DISABLED_BUNDLED_PLUGINS_DIR = path.join(os.tmpdir(), "eve-empty-bundled-plugins");
+const TEST_TRUST_BUNDLED_PLUGINS_DIR_ENV = "EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR";
 let bundledPluginsDirOverrideForTest: string | undefined;
 const bundledPluginsDirCache = new Map<string, string | undefined>();
 
@@ -22,7 +22,7 @@ export type SourceCheckoutDependencyDiagnostic = {
 
 /** Returns true when env disables bundled plugin discovery. */
 export function areBundledPluginsDisabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  const raw = normalizeOptionalLowercaseString(env.OPENCLAW_DISABLE_BUNDLED_PLUGINS);
+  const raw = normalizeOptionalLowercaseString(env.EVE_DISABLE_BUNDLED_PLUGINS);
   return raw === "1" || raw === "true";
 }
 
@@ -65,7 +65,7 @@ function hasUsableBundledPluginTree(pluginsDir: string): boolean {
       const pluginDir = path.join(pluginsDir, entry.name);
       return (
         fs.existsSync(path.join(pluginDir, "package.json")) ||
-        fs.existsSync(path.join(pluginDir, "openclaw.plugin.json"))
+        fs.existsSync(path.join(pluginDir, "eve.plugin.json"))
       );
     });
   } catch {
@@ -97,8 +97,8 @@ function trustedBundledPluginRootsForPackageRoot(packageRoot: string): string[] 
 }
 
 function resolvePackageRootsForBundledPlugins(): string[] {
-  const argvRoot = resolveOpenClawPackageRootSync({ argv1: process.argv[1] });
-  const moduleRoot = resolveOpenClawPackageRootSync({ moduleUrl: import.meta.url });
+  const argvRoot = resolveEVEPackageRootSync({ argv1: process.argv[1] });
+  const moduleRoot = resolveEVEPackageRootSync({ moduleUrl: import.meta.url });
   return uniqueStrings([argvRoot, moduleRoot].filter((entry): entry is string => Boolean(entry)));
 }
 
@@ -122,7 +122,7 @@ export function resolveSourceCheckoutDependencyDiagnostic(
     return {
       source: packageRoot,
       message:
-        "OpenClaw source checkout detected without pnpm workspace dependencies; run `pnpm install` from the repo root so bundled plugins can load package-local dependencies.",
+        "EVE source checkout detected without pnpm workspace dependencies; run `pnpm install` from the repo root so bundled plugins can load package-local dependencies.",
     };
   }
   return null;
@@ -134,7 +134,7 @@ function resolveTrustedExistingOverride(resolvedOverride: string): string | null
     return null;
   }
 
-  const modulePackageRoot = resolveOpenClawPackageRootSync({ moduleUrl: import.meta.url });
+  const modulePackageRoot = resolveEVEPackageRootSync({ moduleUrl: import.meta.url });
   const packageRoots = modulePackageRoot ? [modulePackageRoot] : [];
   const trustedRoots = packageRoots
     .flatMap((packageRoot) => trustedBundledPluginRootsForPackageRoot(packageRoot))
@@ -198,8 +198,8 @@ function resolveBundledDirFromPackageRoot(packageRoot: string): string | undefin
 
 function createBundledPluginsDirCacheKey(env: NodeJS.ProcessEnv): string {
   return JSON.stringify({
-    disabled: env.OPENCLAW_DISABLE_BUNDLED_PLUGINS ?? "",
-    override: env.OPENCLAW_BUNDLED_PLUGINS_DIR ?? "",
+    disabled: env.EVE_DISABLE_BUNDLED_PLUGINS ?? "",
+    override: env.EVE_BUNDLED_PLUGINS_DIR ?? "",
     trustOverride: env[TEST_TRUST_BUNDLED_PLUGINS_DIR_ENV] ?? "",
     processTrustOverride: process.env[TEST_TRUST_BUNDLED_PLUGINS_DIR_ENV] ?? "",
     vitest: env.VITEST ?? "",
@@ -207,7 +207,7 @@ function createBundledPluginsDirCacheKey(env: NodeJS.ProcessEnv): string {
     nodeEnv: process.env.NODE_ENV ?? "",
     argv1: process.argv[1] ?? "",
     execPath: process.execPath,
-    openClawHome: env.OPENCLAW_HOME ?? "",
+    eveHome: env.EVE_HOME ?? "",
     home: env.HOME ?? "",
     userProfile: env.USERPROFILE ?? "",
     testOverride: bundledPluginsDirOverrideForTest ?? "",
@@ -223,7 +223,7 @@ function resolveBundledPluginsDirUncached(env: NodeJS.ProcessEnv): string | unde
     return bundledPluginsDirOverrideForTest;
   }
 
-  const override = env.OPENCLAW_BUNDLED_PLUGINS_DIR?.trim();
+  const override = env.EVE_BUNDLED_PLUGINS_DIR?.trim();
   let rejectedExistingOverride: string | null = null;
   if (override) {
     const resolvedOverride = resolveUserPath(override, env);
@@ -240,7 +240,7 @@ function resolveBundledPluginsDirUncached(env: NodeJS.ProcessEnv): string | unde
   }
 
   try {
-    const argvRoot = resolveOpenClawPackageRootSync({ argv1: process.argv[1] });
+    const argvRoot = resolveEVEPackageRootSync({ argv1: process.argv[1] });
     const rejectedOverrideUsesArgvRoot = Boolean(
       argvRoot &&
       rejectedExistingOverride &&
@@ -250,7 +250,7 @@ function resolveBundledPluginsDirUncached(env: NodeJS.ProcessEnv): string | unde
       }),
     );
     const safeArgvRoot = rejectedOverrideUsesArgvRoot ? null : argvRoot;
-    const moduleRoot = resolveOpenClawPackageRootSync({ moduleUrl: import.meta.url });
+    const moduleRoot = resolveEVEPackageRootSync({ moduleUrl: import.meta.url });
     const packageRoots = uniqueStrings(
       [safeArgvRoot, moduleRoot].filter((entry): entry is string => Boolean(entry)),
     );

@@ -3,11 +3,11 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { CURRENT_SESSION_VERSION } from "openclaw/plugin-sdk/agent-sessions";
+import { CURRENT_SESSION_VERSION } from "eve-agent/plugin-sdk/agent-sessions";
 import { Type } from "typebox";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { registerLegacyContextEngine } from "../../context-engine/legacy.registration.js";
 import {
   registerContextEngine,
@@ -101,7 +101,7 @@ const mockBuildActiveMusicGenerationTaskPromptContextForSession = vi.mocked(
 );
 
 function wrappedPluginSystemContext(text: string): string {
-  return `---\n\nOpenClaw plugin-injected system context. This block is not workspace file content.\n\n${text}\n\n---`;
+  return `---\n\nEVE plugin-injected system context. This block is not workspace file content.\n\n${text}\n\n---`;
 }
 
 function createTestMcpLoopbackServerConfig(port: number) {
@@ -109,25 +109,25 @@ function createTestMcpLoopbackServerConfig(port: number) {
   // substitution without starting the real MCP HTTP server.
   return {
     mcpServers: {
-      openclaw: {
+      eve: {
         type: "http",
         url: `http://127.0.0.1:${port}/mcp`,
         headers: {
-          Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
-          "x-session-key": "${OPENCLAW_MCP_SESSION_KEY}",
-          "x-openclaw-session-id": "${OPENCLAW_MCP_SESSION_ID}",
-          "x-openclaw-agent-id": "${OPENCLAW_MCP_AGENT_ID}",
-          "x-openclaw-account-id": "${OPENCLAW_MCP_ACCOUNT_ID}",
-          "x-openclaw-message-channel": "${OPENCLAW_MCP_MESSAGE_CHANNEL}",
-          "x-openclaw-current-channel-id": "${OPENCLAW_MCP_CURRENT_CHANNEL_ID}",
-          "x-openclaw-current-thread-ts": "${OPENCLAW_MCP_CURRENT_THREAD_TS}",
-          "x-openclaw-current-message-id": "${OPENCLAW_MCP_CURRENT_MESSAGE_ID}",
-          "x-openclaw-current-inbound-audio": "${OPENCLAW_MCP_CURRENT_INBOUND_AUDIO}",
-          "x-openclaw-inbound-event-kind": "${OPENCLAW_MCP_INBOUND_EVENT_KIND}",
-          "x-openclaw-source-reply-delivery-mode": "${OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE}",
-          "x-openclaw-require-explicit-message-target":
-            "${OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
-          "x-openclaw-cli-capture-key": "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+          Authorization: "Bearer ${EVE_MCP_TOKEN}",
+          "x-session-key": "${EVE_MCP_SESSION_KEY}",
+          "x-eve-session-id": "${EVE_MCP_SESSION_ID}",
+          "x-eve-agent-id": "${EVE_MCP_AGENT_ID}",
+          "x-eve-account-id": "${EVE_MCP_ACCOUNT_ID}",
+          "x-eve-message-channel": "${EVE_MCP_MESSAGE_CHANNEL}",
+          "x-eve-current-channel-id": "${EVE_MCP_CURRENT_CHANNEL_ID}",
+          "x-eve-current-thread-ts": "${EVE_MCP_CURRENT_THREAD_TS}",
+          "x-eve-current-message-id": "${EVE_MCP_CURRENT_MESSAGE_ID}",
+          "x-eve-current-inbound-audio": "${EVE_MCP_CURRENT_INBOUND_AUDIO}",
+          "x-eve-inbound-event-kind": "${EVE_MCP_INBOUND_EVENT_KIND}",
+          "x-eve-source-reply-delivery-mode": "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
+          "x-eve-require-explicit-message-target":
+            "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+          "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
         },
       },
     },
@@ -146,7 +146,7 @@ function createCliBackendConfig(
     bundleMcp?: boolean;
     reseedFromRawTranscriptWhenUncompacted?: boolean;
   } = {},
-): OpenClawConfig {
+): EVEConfig {
   return {
     agents: {
       defaults: {
@@ -169,7 +169,7 @@ function createCliBackendConfig(
         },
       },
     },
-  } satisfies OpenClawConfig;
+  } satisfies EVEConfig;
 }
 
 function setClaudeCliBackendForPrepareTest() {
@@ -196,11 +196,11 @@ function setClaudeCliBackendForPrepareTest() {
 }
 
 function createSessionFile() {
-  // Prepare tests use canonical OpenClaw session paths because several cases
+  // Prepare tests use canonical EVE session paths because several cases
   // assert that external or stale transcript paths are ignored.
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-cli-prepare-"));
-  sessionFileEnvSnapshot ??= captureEnv(["OPENCLAW_STATE_DIR"]);
-  setTestEnvValue("OPENCLAW_STATE_DIR", dir);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-cli-prepare-"));
+  sessionFileEnvSnapshot ??= captureEnv(["EVE_STATE_DIR"]);
+  setTestEnvValue("EVE_STATE_DIR", dir);
   const sessionFile = path.join(dir, "agents", "main", "sessions", "session-test.jsonl");
   fs.mkdirSync(path.dirname(sessionFile), { recursive: true });
   fs.writeFileSync(
@@ -260,7 +260,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         senderIsOwner ? runtime.ownerToken : runtime.nonOwnerToken,
       ),
       resolveMcpLoopbackScopedTools: vi.fn(() => ({ agentId: "main", tools: [] })),
-      resolveOpenClawReferencePaths: vi.fn(async () => ({ docsPath: null, sourcePath: null })),
+      resolveEVEReferencePaths: vi.fn(async () => ({ docsPath: null, sourcePath: null })),
       prepareClaudeCliSkillsPlugin: vi.fn(async () => ({
         args: [],
         cleanup: vi.fn(async () => undefined),
@@ -585,7 +585,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
       });
 
       expect(resolveApiKeyForProfile).toHaveBeenCalledWith(
@@ -840,8 +840,8 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         mcp?: { allowed?: string[] };
         mcpServers?: Record<string, { url?: string }>;
       };
-      expect(generatedSettings.mcp?.allowed).toEqual(["openclaw"]);
-      expect(generatedSettings.mcpServers?.openclaw?.url).toBe("http://127.0.0.1:31783/mcp");
+      expect(generatedSettings.mcp?.allowed).toEqual(["eve"]);
+      expect(generatedSettings.mcpServers?.eve?.url).toBe("http://127.0.0.1:31783/mcp");
       expect(context.preparedBackend.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe(
         profileSystemSettingsPath,
       );
@@ -976,7 +976,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
           },
         ],
       })),
-      resolveOpenClawReferencePaths: vi.fn(async () => ({ docsPath: "docs", sourcePath: "src" })),
+      resolveEVEReferencePaths: vi.fn(async () => ({ docsPath: "docs", sourcePath: "src" })),
     });
 
     const context = await prepareCliRunContext({
@@ -1005,7 +1005,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
     );
     expect(context.systemPrompt).toBe("BTW system prompt");
     expect(context.params.prompt).toBe("side question prompt");
-    expect(context.openClawHistoryPrompt).toBeUndefined();
+    expect(context.eveHistoryPrompt).toBeUndefined();
     expect(context.contextEngine).toBeUndefined();
     expect(context.contextEngineTurnPrompt).toBeUndefined();
     expect(context.hadSessionFile).toBe(false);
@@ -1207,7 +1207,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
     });
     try {
       // Room resumes carry compact event text into the CLI prompt but keep the
-      // richer room context in OpenClaw history for reseed and audits.
+      // richer room context in EVE history for reseed and audits.
       const context = await prepareCliRunContext({
         sessionId: "session-test",
         sessionKey: "agent:main:test",
@@ -1215,7 +1215,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         trigger: "user",
         sessionFile,
         workspaceDir: dir,
-        prompt: "[OpenClaw room event]",
+        prompt: "[EVE room event]",
         currentInboundEventKind: "room_event",
         currentInboundContext: {
           text: "Room context:\nAlice: lunch?\n\nCurrent event:\nBob: yes",
@@ -1234,9 +1234,9 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.reusableCliSession).toEqual({ sessionId: "cli-session" });
-      expect(context.params.prompt).toBe("Current event:\nBob: yes\n\n[OpenClaw room event]");
-      expect(context.openClawHistoryPrompt).toContain("Room context:\nAlice: lunch?");
-      expect(context.openClawHistoryPrompt).toContain("Current event:\nBob: yes");
+      expect(context.params.prompt).toBe("Current event:\nBob: yes\n\n[EVE room event]");
+      expect(context.eveHistoryPrompt).toContain("Room context:\nAlice: lunch?");
+      expect(context.eveHistoryPrompt).toContain("Current event:\nBob: yes");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -1438,7 +1438,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
 
       expect(context.params.prompt).toBe("latest ask");
       expect(context.systemPrompt).toContain(
-        "You are a personal assistant running inside OpenClaw.",
+        "You are a personal assistant running inside EVE.",
       );
       expect(context.systemPrompt).toContain("Current model identity: test-cli/test-model.");
       expect(context.systemPrompt).not.toContain("hook exploded");
@@ -1463,7 +1463,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
     });
     registerContextEngine(engineId, factory);
     setCliRunnerPrepareTestDeps({
-      resolveOpenClawReferencePaths: vi.fn(async () => {
+      resolveEVEReferencePaths: vi.fn(async () => {
         throw new Error("reference path lookup failed");
       }),
     });
@@ -1560,7 +1560,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
           hostRequirements: {
             "agent-run": {
               requiredCapabilities: ["assemble-before-prompt"],
-              unsupportedMessage: "Use the native Codex or OpenClaw embedded runtime.",
+              unsupportedMessage: "Use the native Codex or EVE embedded runtime.",
             },
           },
         },
@@ -1603,7 +1603,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         list: [{ id: "main", default: true, agentDir: runtimeAgentDir }],
       },
       plugins: { slots: { contextEngine: engineId } },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     const factory = vi.fn((_ctx: unknown): ContextEngine => {
       return {
         info: { id: engineId, name: "CLI runtime config engine" },
@@ -1756,7 +1756,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
 
   it("uses cwd for CLI system prompt workspace guidance", async () => {
     const { dir, sessionFile } = createSessionFile();
-    const taskDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-cli-task-"));
+    const taskDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-cli-task-"));
     try {
       const context = await prepareCliRunContext({
         sessionId: "session-test",
@@ -1884,8 +1884,8 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.reusableCliSession).toEqual({ invalidatedReason: "system-prompt" });
-      expect(context.openClawHistoryPrompt).toContain("prior no-compaction ask");
-      expect(context.openClawHistoryPrompt).toContain("latest ask");
+      expect(context.eveHistoryPrompt).toContain("prior no-compaction ask");
+      expect(context.eveHistoryPrompt).toContain("latest ask");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -1924,8 +1924,8 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.reusableCliSession).toEqual({ sessionId: "cli-session" });
-      expect(context.openClawHistoryPrompt).toContain("prior resumable ask");
-      expect(context.openClawHistoryPrompt).toContain("latest ask");
+      expect(context.eveHistoryPrompt).toContain("prior resumable ask");
+      expect(context.eveHistoryPrompt).toContain("latest ask");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -2262,16 +2262,16 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.preparedBackend.env).toMatchObject({
-        OPENCLAW_MCP_SESSION_ID: "session-test",
-        OPENCLAW_MCP_MESSAGE_CHANNEL: "telegram",
-        OPENCLAW_MCP_CURRENT_CHANNEL_ID: "telegram:-100123:topic:42",
-        OPENCLAW_MCP_CURRENT_THREAD_TS: "42",
-        OPENCLAW_MCP_CURRENT_MESSAGE_ID: "reply-message-1",
-        OPENCLAW_MCP_CURRENT_INBOUND_AUDIO: "true",
-        OPENCLAW_MCP_INBOUND_EVENT_KIND: "room_event",
-        OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE: "message_tool_only",
-        OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET: "true",
-        OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
+        EVE_MCP_SESSION_ID: "session-test",
+        EVE_MCP_MESSAGE_CHANNEL: "telegram",
+        EVE_MCP_CURRENT_CHANNEL_ID: "telegram:-100123:topic:42",
+        EVE_MCP_CURRENT_THREAD_TS: "42",
+        EVE_MCP_CURRENT_MESSAGE_ID: "reply-message-1",
+        EVE_MCP_CURRENT_INBOUND_AUDIO: "true",
+        EVE_MCP_INBOUND_EVENT_KIND: "room_event",
+        EVE_MCP_SOURCE_REPLY_DELIVERY_MODE: "message_tool_only",
+        EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET: "true",
+        EVE_MCP_CLI_CAPTURE_KEY: "",
       });
       expect(context.mcpDeliveryCapture).toBe(true);
       expect(resolveMcpLoopbackScopedTools).toHaveBeenCalledWith(
@@ -2335,7 +2335,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
 
       expect(context.mcpDeliveryCapture).toBe(true);
       expect(context.preparedBackend.env).toMatchObject({
-        OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
+        EVE_MCP_CLI_CAPTURE_KEY: "",
       });
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
@@ -2648,7 +2648,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
 
   it("renders CLI skills from sandbox-readable paths instead of persisted host snapshots", async () => {
     const { dir, sessionFile } = createSessionFile();
-    const hostSkillDir = "/home/tzdai/.npm-global/lib/node_modules/openclaw/skills/gog";
+    const hostSkillDir = "/home/tzdai/.npm-global/lib/node_modules/eve/skills/gog";
     const hostSkillPath = `${hostSkillDir}/SKILL.md`;
     const materializedWorkspace = path.join(dir, "state", "sandbox-skills");
     const materializedSkillDir = path.join(materializedWorkspace, "skills", "gog");
@@ -2703,10 +2703,10 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
               description: "Read Gmail safely.",
               filePath: hostSkillPath,
               baseDir: hostSkillDir,
-              source: "openclaw-bundled",
+              source: "eve-bundled",
               sourceInfo: {
                 path: hostSkillPath,
-                source: "openclaw-bundled",
+                source: "eve-bundled",
                 scope: "project",
                 origin: "top-level",
                 baseDir: hostSkillDir,
@@ -2723,7 +2723,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         workspaceDir: dir,
       });
       expect(context.systemPrompt).toContain(
-        "/workspace/.openclaw/sandbox-skills/skills/gog/SKILL.md",
+        "/workspace/.eve/sandbox-skills/skills/gog/SKILL.md",
       );
       expect(context.systemPrompt).not.toContain(hostSkillPath);
       expect(context.systemPromptReport.skills.promptChars).toBeGreaterThan(0);
@@ -2773,9 +2773,9 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
       setCliRunnerPrepareTestDeps({
         prepareClaudeCliSkillsPlugin: vi.fn(async () => ({
-          args: ["--plugin-dir", path.join(dir, "openclaw-skills")],
+          args: ["--plugin-dir", path.join(dir, "eve-skills")],
           cleanup: vi.fn(async () => undefined),
-          pluginDir: path.join(dir, "openclaw-skills"),
+          pluginDir: path.join(dir, "eve-skills"),
         })),
       });
 
@@ -2825,7 +2825,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       expect(context.systemPromptReport.skills.promptChars).toBe(0);
       expect(context.claudeSkillsPluginArgs).toEqual([
         "--plugin-dir",
-        path.join(dir, "openclaw-skills"),
+        path.join(dir, "eve-skills"),
       ]);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
@@ -3071,9 +3071,9 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         config: createCliBackendConfig(),
       });
 
-      expect(context.openClawHistoryPrompt).toBeDefined();
-      expect(context.openClawHistoryPrompt).toContain(summaryMarker);
-      expect(context.openClawHistoryPrompt).not.toContain("OpenClaw reseed history truncated");
+      expect(context.eveHistoryPrompt).toBeDefined();
+      expect(context.eveHistoryPrompt).toContain(summaryMarker);
+      expect(context.eveHistoryPrompt).not.toContain("EVE reseed history truncated");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -3126,9 +3126,9 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         config: createCliBackendConfig(),
       });
 
-      expect(context.openClawHistoryPrompt).toBeDefined();
-      expect(context.openClawHistoryPrompt).toContain(summaryMarker);
-      expect(context.openClawHistoryPrompt).not.toContain("OpenClaw reseed history truncated");
+      expect(context.eveHistoryPrompt).toBeDefined();
+      expect(context.eveHistoryPrompt).toContain(summaryMarker);
+      expect(context.eveHistoryPrompt).not.toContain("EVE reseed history truncated");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -3160,8 +3160,8 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         config: createCliBackendConfig(),
       });
 
-      expect(context.openClawHistoryPrompt).toBeDefined();
-      expect(context.openClawHistoryPrompt).toContain("OpenClaw reseed history truncated");
+      expect(context.eveHistoryPrompt).toBeDefined();
+      expect(context.eveHistoryPrompt).toContain("EVE reseed history truncated");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -3236,10 +3236,10 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.reusableCliSession).toEqual({ sessionId: "cli-session" });
-      expect(context.openClawHistoryPrompt).toBeDefined();
-      expect(context.openClawHistoryPrompt).toContain(recentMarker);
-      expect(context.openClawHistoryPrompt).toContain("EARLIEST_USER");
-      expect(context.openClawHistoryPrompt).not.toContain("OpenClaw reseed history truncated");
+      expect(context.eveHistoryPrompt).toBeDefined();
+      expect(context.eveHistoryPrompt).toContain(recentMarker);
+      expect(context.eveHistoryPrompt).toContain("EARLIEST_USER");
+      expect(context.eveHistoryPrompt).not.toContain("EVE reseed history truncated");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

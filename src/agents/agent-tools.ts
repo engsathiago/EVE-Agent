@@ -1,19 +1,19 @@
 /**
- * Builds the effective OpenClaw agent tool surface.
- * Assembles core, shell, channel, OpenClaw, plugin, and Tool Search tools, then
+ * Builds the effective EVE agent tool surface.
+ * Assembles core, shell, channel, EVE, plugin, and Tool Search tools, then
  * applies sandbox, profile, provider, sender, group, and sub-agent policy.
  */
 import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { SourceReplyDeliveryMode } from "../auto-reply/get-reply-options.types.js";
 import { HEARTBEAT_RESPONSE_TOOL_NAME } from "../auto-reply/heartbeat-tool-response.js";
 import type { InboundEventKind } from "../channels/inbound-event/kind.js";
 import { resolveExecCommandHighlighting } from "../config/exec-command-highlighting.js";
 import type { ModelCompatConfig } from "../config/types.models.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { DiagnosticTraceContext } from "../infra/diagnostic-trace-context.js";
 import { resolveEventSessionRoutingPolicy } from "../infra/event-session-routing.js";
 import {
@@ -49,7 +49,7 @@ import {
   assertRequiredParams,
   createHostWorkspaceEditTool,
   createHostWorkspaceWriteTool,
-  createOpenClawReadTool,
+  createEVEReadTool,
   createSandboxedEditTool,
   createSandboxedReadTool,
   createSandboxedWriteTool,
@@ -75,8 +75,8 @@ import {
   resolveLocalModelLeanPreserveToolNames,
 } from "./local-model-lean.js";
 import type { ModelAuthMode } from "./model-auth.js";
-import { resolveOpenClawPluginToolsForOptions } from "./openclaw-plugin-tools.js";
-import { createOpenClawTools } from "./openclaw-tools.js";
+import { resolveEVEPluginToolsForOptions } from "./eve-plugin-tools.js";
+import { createEVETools } from "./eve-tools.js";
 import type { SandboxContext } from "./sandbox.js";
 import { SANDBOX_AGENT_WORKSPACE_MOUNT } from "./sandbox/constants.js";
 import { resolveReadOnlyWorkspaceSkillMounts } from "./sandbox/workspace-mounts.js";
@@ -271,7 +271,7 @@ export function resolveProcessToolScopeKey(params: {
 function applyModelProviderToolPolicy(
   toolsInput: AnyAgentTool[],
   params?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     modelProvider?: string;
     modelApi?: string;
     modelId?: string;
@@ -368,7 +368,7 @@ function applyExecPolicyLayer(base: ExecPolicyLayer, layer?: ExecPolicyLayer): E
   return base;
 }
 
-function resolveExecConfig(params: { cfg?: OpenClawConfig; agentId?: string }) {
+function resolveExecConfig(params: { cfg?: EVEConfig; agentId?: string }) {
   const cfg = params.cfg;
   const globalExec = cfg?.tools?.exec;
   const agentExec =
@@ -415,16 +415,16 @@ export const testing = {
   applyModelProviderToolPolicy,
 } as const;
 
-export type OpenClawCodingToolConstructionPlan = {
+export type EVECodingToolConstructionPlan = {
   includeBaseCodingTools: boolean;
   includeShellTools: boolean;
   includeChannelTools: boolean;
-  includeOpenClawTools: boolean;
+  includeEVETools: boolean;
   includePluginTools: boolean;
 };
 
 /** Build the runtime tool list for one agent run. */
-export function createOpenClawCodingTools(options?: {
+export function createEVECodingTools(options?: {
   agentId?: string;
   exec?: ExecToolDefaults & ProcessToolDefaults;
   messageProvider?: string;
@@ -471,7 +471,7 @@ export function createOpenClawCodingTools(options?: {
    * Defaults to workspaceDir when not set.
    */
   spawnWorkspaceDir?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   abortSignal?: AbortSignal;
   /** Disable hook-owned diagnostics when an outer runtime owns tool diagnostics. */
   emitBeforeToolCallDiagnostics?: boolean;
@@ -488,7 +488,7 @@ export function createOpenClawCodingTools(options?: {
   modelContextWindowTokens?: number;
   /** Resolved runtime model compatibility hints. */
   modelCompat?: ModelCompatConfig;
-  /** If false, keep OpenClaw web_search even when a provider-native search tool is active. */
+  /** If false, keep EVE web_search even when a provider-native search tool is active. */
   suppressManagedWebSearch?: boolean;
   /**
    * Auth mode for the current provider. We only need this for Anthropic OAuth
@@ -555,7 +555,7 @@ export function createOpenClawCodingTools(options?: {
   /** Runtime-local Tool Search catalog ref shared with attempt compaction. */
   toolSearchCatalogRef?: ToolSearchCatalogRef;
   /** Limits which tool families are materialized before the shared policy pipeline runs. */
-  toolConstructionPlan?: OpenClawCodingToolConstructionPlan;
+  toolConstructionPlan?: EVECodingToolConstructionPlan;
   /** Trusted sender identity bit for command/channel-action auth; does not filter model tools. */
   senderIsOwner?: boolean;
   /** Auth profiles already loaded for this run; used for prompt-time tool availability. */
@@ -745,12 +745,12 @@ export function createOpenClawCodingTools(options?: {
     includeBaseCodingTools: includeCoreTools,
     includeShellTools: includeCoreTools,
     includeChannelTools: includeCoreTools,
-    includeOpenClawTools: includeCoreTools,
+    includeEVETools: includeCoreTools,
     includePluginTools: true,
   };
   const includeBaseCodingTools = includeCoreTools && toolConstructionPlan.includeBaseCodingTools;
   const includeShellTools = includeCoreTools && toolConstructionPlan.includeShellTools;
-  const includeOpenClawTools = includeCoreTools && toolConstructionPlan.includeOpenClawTools;
+  const includeEVETools = includeCoreTools && toolConstructionPlan.includeEVETools;
   const includeChannelTools = toolConstructionPlan.includeChannelTools;
   const includePluginTools = toolConstructionPlan.includePluginTools;
   const workspaceOnly = fsPolicy.workspaceOnly;
@@ -795,7 +795,7 @@ export function createOpenClawCodingTools(options?: {
           continue;
         }
         const freshReadTool = createReadTool(codingRoot);
-        const wrapped = createOpenClawReadTool(freshReadTool, {
+        const wrapped = createEVEReadTool(freshReadTool, {
           modelContextWindowTokens: options?.modelContextWindowTokens,
           imageSanitization,
         });
@@ -958,9 +958,9 @@ export function createOpenClawCodingTools(options?: {
     (policy) => hasRestrictiveAllowPolicy(policy) || hasExplicitDenyPolicy(policy),
   );
   const pluginToolsOnly =
-    includeOpenClawTools || !includePluginTools
+    includeEVETools || !includePluginTools
       ? []
-      : resolveOpenClawPluginToolsForOptions({
+      : resolveEVEPluginToolsForOptions({
           options: {
             agentSessionKey: options?.sessionKey,
             agentChannel: resolveGatewayMessageChannel(options?.messageProvider),
@@ -1038,8 +1038,8 @@ export function createOpenClawCodingTools(options?: {
     ...(processTool ? [processTool as unknown as AnyAgentTool] : []),
     // Channel docking: include channel-defined agent tools (login, etc.).
     ...(includeChannelTools ? listChannelAgentTools({ cfg: options?.config }) : []),
-    ...(includeOpenClawTools
-      ? createOpenClawTools({
+    ...(includeEVETools
+      ? createEVETools({
           sandboxBrowserBridgeUrl: sandbox?.browser?.bridgeUrl,
           allowHostBrowserControl: sandbox ? sandbox.browserAllowHostControl : true,
           agentSessionKey: options?.sessionKey,
@@ -1102,7 +1102,7 @@ export function createOpenClawCodingTools(options?: {
       : pluginToolsOnly),
     ...toolSearchTools,
   ];
-  options?.recordToolPrepStage?.("openclaw-tools");
+  options?.recordToolPrepStage?.("eve-tools");
   const toolsForMemoryFlush: AnyAgentTool[] = isMemoryFlushRun && memoryFlushWritePath ? [] : tools;
   if (isMemoryFlushRun && memoryFlushWritePath) {
     for (const tool of tools) {
@@ -1202,7 +1202,7 @@ export function createOpenClawCodingTools(options?: {
     );
   }
   options?.recordToolPrepStage?.("authorization-policy");
-  // Always normalize tool JSON Schemas before handing them to OpenClaw model runtime.
+  // Always normalize tool JSON Schemas before handing them to EVE model runtime.
   // Without this, some providers (notably OpenAI) will reject root-level union schemas.
   // Provider-specific cleaning: Gemini needs constraint keywords stripped, but Anthropic expects them.
   const normalized = subagentFiltered.map((tool) =>

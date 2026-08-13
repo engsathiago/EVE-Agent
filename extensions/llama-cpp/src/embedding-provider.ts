@@ -8,14 +8,14 @@ import type {
   EmbeddingProviderAdapter,
   EmbeddingProviderCreateOptions,
   EmbeddingProviderCreateResult,
-} from "openclaw/plugin-sdk/embedding-providers";
+} from "eve-agent/plugin-sdk/embedding-providers";
 import {
   createLocalEmbeddingProvider,
   type EmbeddingInput as MemoryEmbeddingInput,
   type MemoryEmbeddingProvider,
   type MemoryEmbeddingProviderCreateOptions,
   type MemoryEmbeddingProviderCreateResult,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
 
 type LlamaCppLocalOptions = {
   modelPath?: string;
@@ -144,7 +144,7 @@ export function formatLlamaCppSetupError(err: unknown): string {
         : undefined,
     missing && detail ? `Detail: ${detail}` : null,
     "To enable local GGUF embeddings:",
-    "1) Install the official provider plugin: openclaw plugins install @openclaw/llama-cpp-provider",
+    "1) Install the official provider plugin: eve plugins install @eve/llama-cpp-provider",
     "2) Use Node 24 for native installs/updates.",
     "3) If you use pnpm from source: pnpm approve-builds, then pnpm rebuild node-llama-cpp.",
     'Or set agents.defaults.memorySearch.provider to a remote embedding provider such as "openai", "ollama", "lmstudio", or "voyage".',

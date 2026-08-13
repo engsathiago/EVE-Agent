@@ -7,7 +7,7 @@ import {
   removeCommandGroupNames,
   type CommandGroupEntry,
 } from "../cli/program/register-command-groups.js";
-import type { OpenClawPluginCliCommandDescriptor, PluginLogger } from "./types.js";
+import type { EVEPluginCliCommandDescriptor, PluginLogger } from "./types.js";
 
 export type PluginCliCommandGroupEntry = CommandGroupEntry & {
   pluginId: string;
@@ -21,7 +21,7 @@ function canRegisterPluginCliLazily(entry: PluginCliCommandGroupEntry): boolean 
     return false;
   }
   const descriptorNames = new Set(
-    (entry.placeholders as readonly OpenClawPluginCliCommandDescriptor[]).map(
+    (entry.placeholders as readonly EVEPluginCliCommandDescriptor[]).map(
       (descriptor) => descriptor.name,
     ),
   );

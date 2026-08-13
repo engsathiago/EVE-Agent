@@ -1,11 +1,11 @@
-# OpenClaw Amazon Bedrock Provider
+# EVE Amazon Bedrock Provider
 
-Official OpenClaw provider plugin for Amazon Bedrock. It adds Bedrock model discovery, text generation, embeddings, and guardrail-aware provider routing for agents that use AWS-hosted models.
+Official EVE provider plugin for Amazon Bedrock. It adds Bedrock model discovery, text generation, embeddings, and guardrail-aware provider routing for agents that use AWS-hosted models.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/amazon-bedrock-provider
+eve plugin add @eve/amazon-bedrock-provider
 ```
 
-Configure AWS credentials and region through your normal OpenClaw credential/profile setup, then select Bedrock models with the `amazon-bedrock/...` provider prefix.
+Configure AWS credentials and region through your normal EVE credential/profile setup, then select Bedrock models with the `amazon-bedrock/...` provider prefix.

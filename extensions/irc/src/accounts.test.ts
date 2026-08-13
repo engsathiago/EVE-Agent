@@ -148,7 +148,7 @@ describe("resolveIrcAccount", () => {
   });
 
   it.runIf(process.platform !== "win32")("rejects symlinked password files", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-irc-account-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-irc-account-"));
     const passwordFile = path.join(dir, "password.txt");
     const passwordLink = path.join(dir, "password-link.txt");
     fs.writeFileSync(passwordFile, "secret-pass\n", "utf8");
@@ -169,7 +169,7 @@ describe("resolveIrcAccount", () => {
   });
 
   it.runIf(process.platform !== "win32")("rejects symlinked NickServ password files", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-irc-nickserv-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-irc-nickserv-"));
     const passwordFile = path.join(dir, "nickserv-password.txt");
     const passwordLink = path.join(dir, "nickserv-password-link.txt");
     fs.writeFileSync(passwordFile, "nickserv-pass\n", "utf8");

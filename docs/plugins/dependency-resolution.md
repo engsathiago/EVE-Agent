@@ -1,15 +1,15 @@
 ---
-summary: "How OpenClaw installs plugin packages and resolves plugin dependencies"
+summary: "How EVE installs plugin packages and resolves plugin dependencies"
 read_when:
   - You are debugging plugin package installs
   - You are changing plugin startup, doctor, or package-manager install behavior
-  - You are maintaining packaged OpenClaw installs or bundled plugin manifests
+  - You are maintaining packaged EVE installs or bundled plugin manifests
 title: "Plugin dependency resolution"
 sidebarTitle: "Dependencies"
 ---
 
-OpenClaw keeps plugin dependency work at install/update time. Runtime loading
-does not run package managers, repair dependency trees, or mutate the OpenClaw
+EVE keeps plugin dependency work at install/update time. Runtime loading
+does not run package managers, repair dependency trees, or mutate the EVE
 package directory.
 
 ## Responsibility split
@@ -18,11 +18,11 @@ Plugin packages own their dependency graph:
 
 - runtime dependencies live in the plugin package `dependencies` or
   `optionalDependencies`
-- SDK/core imports are peer or supplied OpenClaw imports
+- SDK/core imports are peer or supplied EVE imports
 - local development plugins bring their own already-installed dependencies
-- npm and git plugins are installed into OpenClaw-owned package roots
+- npm and git plugins are installed into EVE-owned package roots
 
-OpenClaw owns only the plugin lifecycle:
+EVE owns only the plugin lifecycle:
 
 - discover the plugin source
 - install or update the package when explicitly requested
@@ -32,22 +32,22 @@ OpenClaw owns only the plugin lifecycle:
 
 ## Install roots
 
-OpenClaw uses stable per-source roots:
+EVE uses stable per-source roots:
 
 - npm packages install into per-plugin projects under
-  `~/.openclaw/npm/projects/<encoded-package>`
-- git packages clone under `~/.openclaw/git`
+  `~/.eve/npm/projects/<encoded-package>`
+- git packages clone under `~/.eve/git`
 - local/path/archive installs are copied or referenced without dependency repair
 
 npm installs run in that per-plugin project root with:
 
 ```bash
-cd ~/.openclaw/npm/projects/<encoded-package>
+cd ~/.eve/npm/projects/<encoded-package>
 npm install --omit=dev --omit=peer --legacy-peer-deps --ignore-scripts --no-audit --no-fund
 ```
 
-`openclaw plugins install npm-pack:<path.tgz>` uses that same per-plugin npm
-project root for a local npm-pack tarball. OpenClaw reads the tarball's npm
+`eve plugins install npm-pack:<path.tgz>` uses that same per-plugin npm
+project root for a local npm-pack tarball. EVE reads the tarball's npm
 metadata, adds it to the managed project as a copied `file:` dependency, runs
 the normal npm install, and then verifies the installed lockfile metadata before
 trusting the plugin.
@@ -55,13 +55,13 @@ This is intended for package-acceptance and release-candidate proof where a
 local pack artifact should behave like the registry artifact it simulates.
 
 npm may hoist transitive dependencies to the per-plugin project's
-`node_modules` beside the plugin package. OpenClaw scans the managed project
+`node_modules` beside the plugin package. EVE scans the managed project
 root before trusting the install and removes that project during uninstall, so
 hoisted runtime dependencies stay inside that plugin's cleanup boundary.
 
 Published npm plugin packages can ship `npm-shrinkwrap.json`. npm uses that
-publishable lockfile during install, and OpenClaw's managed npm project root
-supports it through the normal npm install path. OpenClaw-owned publishable
+publishable lockfile during install, and EVE's managed npm project root
+supports it through the normal npm install path. EVE-owned publishable
 plugin packages must include a package-local shrinkwrap generated from that
 plugin package's published dependency graph:
 
@@ -73,26 +73,26 @@ pnpm deps:shrinkwrap:check
 The generator strips plugin `devDependencies`, applies the workspace override
 policy, and writes `extensions/<id>/npm-shrinkwrap.json` for each
 `publishToNpm` plugin. Third-party plugin packages may also ship shrinkwrap;
-OpenClaw does not require it for community packages, but npm will respect it
+EVE does not require it for community packages, but npm will respect it
 when present.
 
-OpenClaw-owned npm plugin packages can also publish with explicit
+EVE-owned npm plugin packages can also publish with explicit
 `bundledDependencies`. The npm publish path overlays the runtime dependency
 name list, removes dev-only workspace metadata from the published package
 manifest, runs a script-free npm install for package-local runtime
 dependencies, then packs or publishes the plugin tarball with those dependency
 files included. Native-heavy packages, including Codex and ACP runtimes, opt out
-with `openclaw.release.bundleRuntimeDependencies: false`; those packages still
+with `eve.release.bundleRuntimeDependencies: false`; those packages still
 ship their shrinkwrap, but npm resolves runtime dependencies during install
 instead of embedding every platform binary in the plugin tarball. The root
-`openclaw` package does not bundle its full dependency tree.
+`eve` package does not bundle its full dependency tree.
 
-Plugins that import `openclaw/plugin-sdk/*` declare `openclaw` as a peer
-dependency. OpenClaw does not let npm install a separate registry copy of the
+Plugins that import `eve-agent/plugin-sdk/*` declare `eve` as a peer
+dependency. EVE does not let npm install a separate registry copy of the
 host package into a managed project, because stale host packages can affect npm
 peer resolution inside that plugin. Managed npm installs skip npm peer
-resolution/materialization and OpenClaw reasserts plugin-local
-`node_modules/openclaw` links for installed packages that declare the host peer
+resolution/materialization and EVE reasserts plugin-local
+`node_modules/eve` links for installed packages that declare the host peer
 after install or update.
 
 git installs clone or refresh the repository, then run:
@@ -107,7 +107,7 @@ Node package.
 
 ## Local plugins
 
-Local plugins are treated as developer-controlled directories. OpenClaw does not
+Local plugins are treated as developer-controlled directories. EVE does not
 run `npm install`, `pnpm install`, or dependency repair for them. If a local
 plugin has dependencies, install them in that plugin before loading it.
 
@@ -124,19 +124,19 @@ If a dependency is missing at runtime, the plugin fails to load and the error
 should point the operator to an explicit fix:
 
 ```bash
-openclaw plugins update <id>
-openclaw plugins install <source>
-openclaw doctor --fix
+eve plugins update <id>
+eve plugins install <source>
+eve doctor --fix
 ```
 
-`doctor --fix` can clean legacy OpenClaw-generated dependency state and recover
+`doctor --fix` can clean legacy EVE-generated dependency state and recover
 downloadable plugins that are missing from the local install records when config
 references them. Doctor does not repair dependencies for an already-installed
 local plugin.
 
 ## Bundled plugins
 
-Lightweight and core-critical bundled plugins are shipped as part of OpenClaw.
+Lightweight and core-critical bundled plugins are shipped as part of EVE.
 They should either have no heavy runtime dependency tree or be moved out to a
 downloadable package on ClawHub/npm.
 
@@ -147,7 +147,7 @@ Bundled plugin manifests must not request dependency staging. Large or optional
 plugin functionality should be packaged as a normal plugin and installed through
 the same npm/git/ClawHub path as third-party plugins.
 
-In source checkouts, OpenClaw treats the repository as a pnpm monorepo. After
+In source checkouts, EVE treats the repository as a pnpm monorepo. After
 `pnpm install`, bundled plugins load from `extensions/<id>` so package-local
 workspace dependencies are available and edits are picked up directly. Source
 checkout development is pnpm-only; plain `npm install` at the repository root is
@@ -155,22 +155,22 @@ not a supported way to prepare bundled plugin dependencies.
 
 | Install shape                    | Bundled plugin location               | Dependency owner                                                     |
 | -------------------------------- | ------------------------------------- | -------------------------------------------------------------------- |
-| `npm install -g openclaw`        | Built runtime tree inside the package | OpenClaw package and explicit plugin install/update/doctor flows     |
+| `npm install -g eve`        | Built runtime tree inside the package | EVE package and explicit plugin install/update/doctor flows     |
 | Git checkout plus `pnpm install` | `extensions/<id>` workspace packages  | The pnpm workspace, including each plugin package's own dependencies |
-| `openclaw plugins install ...`   | Managed npm project/git/ClawHub root  | The plugin install/update flow                                       |
+| `eve plugins install ...`   | Managed npm project/git/ClawHub root  | The plugin install/update flow                                       |
 
 ## Legacy cleanup
 
-Older OpenClaw versions generated bundled-plugin dependency roots at startup or
+Older EVE versions generated bundled-plugin dependency roots at startup or
 during doctor repair. Current doctor cleanup removes those stale directories and
 symlinks when `--fix` is used, including old `plugin-runtime-deps` roots, global
 Node-prefix package symlinks that point at pruned `plugin-runtime-deps` targets,
-`.openclaw-runtime-deps*` manifests, generated plugin `node_modules`, install
+`.eve-runtime-deps*` manifests, generated plugin `node_modules`, install
 stage directories, and package-local pnpm stores. Packaged postinstall also
 removes those global symlinks before pruning the legacy target roots so upgrades
 do not leave dangling ESM package imports.
 
-Older npm installs also used a shared `~/.openclaw/npm/node_modules` root.
+Older npm installs also used a shared `~/.eve/npm/node_modules` root.
 Current install, update, uninstall, and doctor flows still recognize that legacy
 flat root only for recovery and cleanup. New npm installs should create
 per-plugin project roots instead.

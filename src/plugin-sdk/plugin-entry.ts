@@ -1,5 +1,5 @@
 // Plugin entry contracts define the manifest-facing hooks implemented by plugin packages.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { emptyPluginConfigSchema } from "../plugins/config-schema.js";
 import { createCachedLazyValueGetter } from "./lazy-value.js";
 
@@ -18,32 +18,32 @@ export type MigrationPlan = import("../plugins/types.js").MigrationPlan;
 export type MigrationProviderContext = import("../plugins/types.js").MigrationProviderContext;
 export type MigrationProviderPlugin = import("../plugins/types.js").MigrationProviderPlugin;
 export type MigrationSummary = import("../plugins/types.js").MigrationSummary;
-export type OpenClawPluginApi = import("../plugins/types.js").OpenClawPluginApi;
-export type OpenClawPluginCommandDefinition =
-  import("../plugins/types.js").OpenClawPluginCommandDefinition;
-export type OpenClawPluginConfigSchema = import("../plugins/types.js").OpenClawPluginConfigSchema;
-export type OpenClawPluginDefinition = import("../plugins/types.js").OpenClawPluginDefinition;
-export type OpenClawPluginHttpRouteHandler =
-  import("../plugins/types.js").OpenClawPluginHttpRouteHandler;
-export type OpenClawPluginNodeHostCommand =
-  import("../plugins/types.js").OpenClawPluginNodeHostCommand;
-export type OpenClawPluginNodeInvokePolicy =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicy;
-export type OpenClawPluginNodeInvokePolicyContext =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicyContext;
-export type OpenClawPluginNodeInvokePolicyResult =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicyResult;
-export type OpenClawPluginReloadRegistration =
-  import("../plugins/types.js").OpenClawPluginReloadRegistration;
-export type OpenClawPluginSecurityAuditCollector =
-  import("../plugins/types.js").OpenClawPluginSecurityAuditCollector;
-export type OpenClawPluginSecurityAuditContext =
-  import("../plugins/types.js").OpenClawPluginSecurityAuditContext;
-export type OpenClawPluginService = import("../plugins/types.js").OpenClawPluginService;
-export type OpenClawPluginServiceContext =
-  import("../plugins/types.js").OpenClawPluginServiceContext;
-export type OpenClawPluginToolContext = import("../plugins/types.js").OpenClawPluginToolContext;
-export type OpenClawPluginToolFactory = import("../plugins/types.js").OpenClawPluginToolFactory;
+export type EVEPluginApi = import("../plugins/types.js").EVEPluginApi;
+export type EVEPluginCommandDefinition =
+  import("../plugins/types.js").EVEPluginCommandDefinition;
+export type EVEPluginConfigSchema = import("../plugins/types.js").EVEPluginConfigSchema;
+export type EVEPluginDefinition = import("../plugins/types.js").EVEPluginDefinition;
+export type EVEPluginHttpRouteHandler =
+  import("../plugins/types.js").EVEPluginHttpRouteHandler;
+export type EVEPluginNodeHostCommand =
+  import("../plugins/types.js").EVEPluginNodeHostCommand;
+export type EVEPluginNodeInvokePolicy =
+  import("../plugins/types.js").EVEPluginNodeInvokePolicy;
+export type EVEPluginNodeInvokePolicyContext =
+  import("../plugins/types.js").EVEPluginNodeInvokePolicyContext;
+export type EVEPluginNodeInvokePolicyResult =
+  import("../plugins/types.js").EVEPluginNodeInvokePolicyResult;
+export type EVEPluginReloadRegistration =
+  import("../plugins/types.js").EVEPluginReloadRegistration;
+export type EVEPluginSecurityAuditCollector =
+  import("../plugins/types.js").EVEPluginSecurityAuditCollector;
+export type EVEPluginSecurityAuditContext =
+  import("../plugins/types.js").EVEPluginSecurityAuditContext;
+export type EVEPluginService = import("../plugins/types.js").EVEPluginService;
+export type EVEPluginServiceContext =
+  import("../plugins/types.js").EVEPluginServiceContext;
+export type EVEPluginToolContext = import("../plugins/types.js").EVEPluginToolContext;
+export type EVEPluginToolFactory = import("../plugins/types.js").EVEPluginToolFactory;
 export type PluginLogger = import("../plugins/types.js").PluginLogger;
 export type ProviderAugmentModelCatalogContext =
   import("../plugins/types.js").ProviderAugmentModelCatalogContext;
@@ -134,10 +134,10 @@ export type UnifiedModelCatalogProviderContext =
   import("../plugins/types.js").UnifiedModelCatalogProviderContext;
 export type UnifiedModelCatalogProviderPlugin =
   import("../plugins/types.js").UnifiedModelCatalogProviderPlugin;
-export type OpenClawGatewayDiscoveryAdvertiseContext =
-  import("../plugins/types.js").OpenClawGatewayDiscoveryAdvertiseContext;
-export type OpenClawGatewayDiscoveryService =
-  import("../plugins/types.js").OpenClawGatewayDiscoveryService;
+export type EVEGatewayDiscoveryAdvertiseContext =
+  import("../plugins/types.js").EVEGatewayDiscoveryAdvertiseContext;
+export type EVEGatewayDiscoveryService =
+  import("../plugins/types.js").EVEGatewayDiscoveryService;
 export type SpeechProviderPlugin = import("../plugins/types.js").SpeechProviderPlugin;
 export type PluginCommandContext = import("../plugins/types.js").PluginCommandContext;
 export type PluginCommandResult = import("../plugins/types.js").PluginCommandResult;
@@ -206,8 +206,8 @@ export type {
   UnifiedModelCatalogEntry,
   UnifiedModelCatalogKind,
   UnifiedModelCatalogSource,
-} from "@openclaw/model-catalog-core/model-catalog-types";
-export type { OpenClawConfig };
+} from "@eve/model-catalog-core/model-catalog-types";
+export type { EVEConfig };
 
 export {
   buildJsonPluginConfigSchema,
@@ -221,27 +221,27 @@ type DefinePluginEntryOptions = {
   name: string;
   description: string;
   /**
-   * @deprecated Declare exclusive plugin kind in `openclaw.plugin.json` via
+   * @deprecated Declare exclusive plugin kind in `eve.plugin.json` via
    * manifest `kind`. Runtime-entry `kind` remains only as a compatibility
    * fallback for older plugins.
    */
-  kind?: OpenClawPluginDefinition["kind"];
-  configSchema?: OpenClawPluginConfigSchema | (() => OpenClawPluginConfigSchema);
-  reload?: OpenClawPluginDefinition["reload"];
-  nodeHostCommands?: OpenClawPluginDefinition["nodeHostCommands"];
-  securityAuditCollectors?: OpenClawPluginDefinition["securityAuditCollectors"];
-  register: (api: OpenClawPluginApi) => void;
+  kind?: EVEPluginDefinition["kind"];
+  configSchema?: EVEPluginConfigSchema | (() => EVEPluginConfigSchema);
+  reload?: EVEPluginDefinition["reload"];
+  nodeHostCommands?: EVEPluginDefinition["nodeHostCommands"];
+  securityAuditCollectors?: EVEPluginDefinition["securityAuditCollectors"];
+  register: (api: EVEPluginApi) => void;
 };
 
-/** Normalized object shape that OpenClaw loads from a plugin entry module. */
+/** Normalized object shape that EVE loads from a plugin entry module. */
 type DefinedPluginEntry = {
   id: string;
   name: string;
   description: string;
-  configSchema: OpenClawPluginConfigSchema;
-  register: NonNullable<OpenClawPluginDefinition["register"]>;
+  configSchema: EVEPluginConfigSchema;
+  register: NonNullable<EVEPluginDefinition["register"]>;
 } & Pick<
-  OpenClawPluginDefinition,
+  EVEPluginDefinition,
   "kind" | "reload" | "nodeHostCommands" | "securityAuditCollectors"
 >;
 
@@ -250,7 +250,7 @@ type DefinedPluginEntry = {
  *
  * Use this for provider, tool, command, service, memory, and context-engine
  * plugins. Channel plugins should use `defineChannelPluginEntry(...)` from
- * `openclaw/plugin-sdk/core` so they inherit the channel capability wiring.
+ * `eve-agent/plugin-sdk/core` so they inherit the channel capability wiring.
  */
 export function definePluginEntry({
   id,

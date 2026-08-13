@@ -6,8 +6,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { ProviderRuntimeModel } from "../plugins/provider-runtime-model.types.js";
 import { getActivePluginRegistry } from "../plugins/runtime.js";
 import { buildPluginToolMetadataKey, getPluginToolMeta } from "../plugins/tools.js";
@@ -211,7 +211,7 @@ export function buildEffectiveToolInventoryEntries(
 /** Normalizes tools, quarantines incompatible schemas, and returns inventory output. */
 export function buildRuntimeCompatibleToolInventory(params: {
   tools: readonly AnyAgentTool[];
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   workspaceDir?: string;
   modelProvider?: string;
   modelId?: string;

@@ -247,7 +247,7 @@ describe("statusSummaryRuntime.resolveSessionRuntimeLabel", () => {
           agents: {
             defaults: {
               models: {
-                "openai/gpt-5.5": { agentRuntime: { id: "openclaw" } },
+                "openai/gpt-5.5": { agentRuntime: { id: "eve" } },
               },
             },
             list: [

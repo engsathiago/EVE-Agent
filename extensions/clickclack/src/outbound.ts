@@ -27,7 +27,7 @@ export async function sendClickClackText(params: {
   const explicitThreadId = params.threadId == null ? "" : String(params.threadId);
   const replyToId = params.replyToId == null ? "" : String(params.replyToId);
   if (explicitThreadId || replyToId || parsed.kind === "thread") {
-    // Explicit thread/reply context wins over the target kind so OpenClaw reply
+    // Explicit thread/reply context wins over the target kind so EVE reply
     // hooks keep conversations attached to the original ClickClack root.
     const rootId = explicitThreadId || replyToId || parsed.id;
     const message = await client.createThreadReply(rootId, params.text);

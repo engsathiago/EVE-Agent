@@ -1,17 +1,17 @@
 /**
  * Sanitizes, extracts, and classifies embedded-agent tool execution results.
  */
-import { asOptionalRecord as readRecord } from "@openclaw/normalization-core/record-coerce";
+import { asOptionalRecord as readRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
   normalizeOptionalStringifiedId,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { getChannelPlugin, normalizeChannelId } from "../channels/plugins/index.js";
 import type { ChannelMessageActionName } from "../channels/plugins/types.public.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeTargetForProvider } from "../infra/outbound/target-normalization.js";
 import { normalizeInteractiveReply, normalizeMessagePresentation } from "../interactive/payload.js";
 import { redactSensitiveFieldValue, redactToolPayloadText } from "../logging/redact.js";
@@ -766,7 +766,7 @@ function resolveMessagingToolThreadEvidence(params: {
   allowImplicitThread: boolean;
   threadSuppressed: boolean;
   options?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     currentChannelId?: string;
     currentMessagingTarget?: string;
     currentThreadId?: string;
@@ -835,7 +835,7 @@ export function extractMessagingToolSend(
   toolName: string,
   args: Record<string, unknown>,
   options?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     currentChannelId?: string;
     currentMessagingTarget?: string;
     currentThreadId?: string;

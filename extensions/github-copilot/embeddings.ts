@@ -5,11 +5,11 @@ import {
   withRemoteHttpResponse,
   type MemoryEmbeddingProvider,
   type MemoryEmbeddingProviderAdapter,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { buildCopilotIdeHeaders } from "openclaw/plugin-sdk/provider-auth";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
+import { buildCopilotIdeHeaders } from "eve-agent/plugin-sdk/provider-auth";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { resolveConfiguredSecretInputString } from "eve-agent/plugin-sdk/secret-input-runtime";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { resolveFirstGithubToken } from "./auth.js";
 import { DEFAULT_COPILOT_API_BASE_URL, resolveCopilotApiToken } from "./token.js";
 

@@ -16,8 +16,8 @@ describe("normalizeBrowserEvaluateFunctionSource", () => {
     expect(normalizeBrowserEvaluateFunctionSource("document.title")).toBe(
       [
         "() => {",
-        "const __openclawEvaluateExpressionResult = (document.title);",
-        'return typeof __openclawEvaluateExpressionResult === "function" ? __openclawEvaluateExpressionResult() : __openclawEvaluateExpressionResult;',
+        "const __eveEvaluateExpressionResult = (document.title);",
+        'return typeof __eveEvaluateExpressionResult === "function" ? __eveEvaluateExpressionResult() : __eveEvaluateExpressionResult;',
         "}",
       ].join("\n"),
     );
@@ -27,16 +27,16 @@ describe("normalizeBrowserEvaluateFunctionSource", () => {
     expect(normalizeBrowserEvaluateFunctionSource("extractTitle")).toBe(
       [
         "() => {",
-        "const __openclawEvaluateExpressionResult = (extractTitle);",
-        'return typeof __openclawEvaluateExpressionResult === "function" ? __openclawEvaluateExpressionResult() : __openclawEvaluateExpressionResult;',
+        "const __eveEvaluateExpressionResult = (extractTitle);",
+        'return typeof __eveEvaluateExpressionResult === "function" ? __eveEvaluateExpressionResult() : __eveEvaluateExpressionResult;',
         "}",
       ].join("\n"),
     );
     expect(normalizeBrowserEvaluateFunctionSource("extractText", { argumentName: "el" })).toBe(
       [
         "(el) => {",
-        "const __openclawEvaluateExpressionResult = (extractText);",
-        'return typeof __openclawEvaluateExpressionResult === "function" ? __openclawEvaluateExpressionResult(el) : __openclawEvaluateExpressionResult;',
+        "const __eveEvaluateExpressionResult = (extractText);",
+        'return typeof __eveEvaluateExpressionResult === "function" ? __eveEvaluateExpressionResult(el) : __eveEvaluateExpressionResult;',
         "}",
       ].join("\n"),
     );

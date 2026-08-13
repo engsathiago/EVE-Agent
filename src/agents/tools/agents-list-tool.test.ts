@@ -1,10 +1,10 @@
 // agents_list tests cover subagent discovery, runtime metadata, and legacy
 // runtime override handling.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createAgentsListTool } from "./agents-list-tool.js";
 
-const loadConfigMock = vi.fn<() => OpenClawConfig>();
+const loadConfigMock = vi.fn<() => EVEConfig>();
 
 type AgentListDetails = {
   requester?: string;
@@ -38,7 +38,7 @@ describe("agents_list tool", () => {
       agents: {
         defaults: {
           model: "anthropic/claude-opus-4.5",
-          agentRuntime: { id: "openclaw" },
+          agentRuntime: { id: "eve" },
           subagents: { allowAgents: ["codex"] },
         },
         list: [
@@ -47,14 +47,14 @@ describe("agents_list tool", () => {
             id: "codex",
             name: "Codex",
             model: "openai/gpt-5.5",
-            agentRuntime: { id: "openclaw" },
+            agentRuntime: { id: "eve" },
             models: {
               "openai/gpt-5.5": { agentRuntime: { id: "codex" } },
             },
           },
         ],
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",
@@ -90,7 +90,7 @@ describe("agents_list tool", () => {
           },
         ],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",
@@ -110,7 +110,7 @@ describe("agents_list tool", () => {
       agents: {
         list: [{ id: "main", default: true }, { id: "codex" }],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",
@@ -140,7 +140,7 @@ describe("agents_list tool", () => {
           subagents: { allowAgents: ["main"] },
         },
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",
@@ -166,7 +166,7 @@ describe("agents_list tool", () => {
   it("ignores legacy env-forced plugin runtime selections", async () => {
     // Runtime selection now comes from config/model routing, not a process-wide
     // legacy env override.
-    vi.stubEnv("OPENCLAW_AGENT_RUNTIME", "codex");
+    vi.stubEnv("EVE_AGENT_RUNTIME", "codex");
     loadConfigMock.mockReturnValue({
       agents: {
         defaults: {
@@ -174,7 +174,7 @@ describe("agents_list tool", () => {
         },
         list: [{ id: "main", default: true }],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",
@@ -209,7 +209,7 @@ describe("agents_list tool", () => {
           { id: "strict", agentRuntime: { id: "codex" } },
         ],
       },
-    } satisfies OpenClawConfig);
+    } satisfies EVEConfig);
 
     const result = await createAgentsListTool({ agentSessionKey: "agent:main:main" }).execute(
       "call",

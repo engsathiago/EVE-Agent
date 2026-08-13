@@ -1,6 +1,6 @@
 // Clickclack tests cover inbound plugin behavior.
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { PluginRuntime } from "openclaw/plugin-sdk/core";
+import { createPluginRuntimeMock } from "eve-agent/plugin-sdk/channel-test-helpers";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/core";
 import { describe, expect, it, vi } from "vitest";
 import { handleClickClackInbound } from "./inbound.js";
 import { setClickClackRuntime } from "./runtime.js";

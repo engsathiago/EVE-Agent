@@ -5,17 +5,17 @@ import {
   createChannelApprovalNativeRuntimeAdapter,
   type PendingApprovalView,
   resolvePreparedApprovalAccountId,
-} from "openclaw/plugin-sdk/approval-handler-runtime";
-import { buildChannelApprovalNativeTargetKey } from "openclaw/plugin-sdk/approval-native-runtime";
+} from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { buildChannelApprovalNativeTargetKey } from "eve-agent/plugin-sdk/approval-native-runtime";
 import {
   buildApprovalReactionPendingContent,
   type ApprovalReactionPendingContent,
-} from "openclaw/plugin-sdk/approval-reaction-runtime";
+} from "eve-agent/plugin-sdk/approval-reaction-runtime";
 import type {
   ExecApprovalRequest,
   PluginApprovalRequest,
-} from "openclaw/plugin-sdk/approval-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/approval-runtime";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
 import {
   registerWhatsAppApprovalReactionTarget,
   unregisterWhatsAppApprovalReactionTarget,

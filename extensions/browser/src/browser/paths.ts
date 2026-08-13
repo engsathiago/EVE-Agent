@@ -6,7 +6,7 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 import {
   resolveExistingPathsWithinRoot,
   resolveStrictExistingPathsWithinRoot,
@@ -20,7 +20,7 @@ export {
 } from "../sdk-security-runtime.js";
 export { resolveExistingPathsWithinRoot, resolveStrictExistingPathsWithinRoot };
 
-const DEFAULT_FALLBACK_BROWSER_TMP_DIR = "/tmp/openclaw";
+const DEFAULT_FALLBACK_BROWSER_TMP_DIR = "/tmp/eve";
 
 function canUseNodeFs(): boolean {
   const getBuiltinModule = (
@@ -39,7 +39,7 @@ function canUseNodeFs(): boolean {
 }
 
 const DEFAULT_BROWSER_TMP_DIR = canUseNodeFs()
-  ? resolvePreferredOpenClawTmpDir()
+  ? resolvePreferredEVETmpDir()
   : DEFAULT_FALLBACK_BROWSER_TMP_DIR;
 /** Default root directory for browser trace files. */
 export const DEFAULT_TRACE_DIR = DEFAULT_BROWSER_TMP_DIR;

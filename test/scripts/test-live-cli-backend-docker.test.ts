@@ -27,9 +27,9 @@ describe("scripts/test-live-cli-backend-docker.sh", () => {
   it("forwards both fresh and resume CLI arg overrides into the Docker container", () => {
     const forwardedVars = readForwardedDockerEnvVars();
 
-    expect(forwardedVars).toContain("OPENCLAW_LIVE_CLI_BACKEND_ARGS");
-    expect(forwardedVars).toContain("OPENCLAW_LIVE_CLI_BACKEND_RESUME_ARGS");
-    expect(forwardedVars).toContain("OPENCLAW_TEST_CONSOLE");
+    expect(forwardedVars).toContain("EVE_LIVE_CLI_BACKEND_ARGS");
+    expect(forwardedVars).toContain("EVE_LIVE_CLI_BACKEND_RESUME_ARGS");
+    expect(forwardedVars).toContain("EVE_TEST_CONSOLE");
   });
 
   it("rejects invalid setup timeout values before metadata or Docker setup", () => {
@@ -37,13 +37,13 @@ describe("scripts/test-live-cli-backend-docker.sh", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: "180s",
+        EVE_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: "180s",
       },
     });
 
     expect(result.status).toBe(2);
     expect(result.stderr).toContain(
-      "invalid OPENCLAW_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: 180s",
+      "invalid EVE_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: 180s",
     );
     expect(result.stderr).not.toContain("Cannot find package 'tsx'");
     expect(result.stderr).not.toContain("docker");

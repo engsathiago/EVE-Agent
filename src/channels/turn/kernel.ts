@@ -104,7 +104,7 @@ const DEFAULT_EVENT_CLASS: ChannelEventClass = {
 /**
  * @deprecated Compatibility assembly for legacy buffered reply dispatchers.
  * New channel plugins should expose `defineChannelMessageAdapter(...)` from
- * `openclaw/plugin-sdk/channel-outbound` and route send/receive behavior through
+ * `eve-agent/plugin-sdk/channel-outbound` and route send/receive behavior through
  * the message lifecycle helpers.
  */
 export function createChannelTurnReplyPipeline(

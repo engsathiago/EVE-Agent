@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
-import type { WhatsAppQaDriverSession } from "@openclaw/whatsapp/api.js";
+import type { WhatsAppQaDriverSession } from "@eve/whatsapp/api.js";
 import { describe, expect, it, vi } from "vitest";
 import { testing } from "./whatsapp-live.runtime.js";
 
@@ -256,7 +256,7 @@ describe("WhatsApp QA live runtime", () => {
   });
 
   it("publishes WhatsApp gateway debug artifacts only when files exist", async () => {
-    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-wa-debug-test-"));
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-wa-debug-test-"));
     const debugDir = path.join(tempRoot, "gateway-debug");
     try {
       await expect(testing.hasWhatsAppGatewayDebugArtifacts(debugDir)).resolves.toBe(false);
@@ -270,7 +270,7 @@ describe("WhatsApp QA live runtime", () => {
   });
 
   it("redacts published WhatsApp run output without advertising empty debug artifacts", async () => {
-    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-wa-publish-test-"));
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-wa-publish-test-"));
     const debugDir = path.join(tempRoot, "gateway-debug");
     try {
       await fs.mkdir(debugDir);
@@ -296,7 +296,7 @@ describe("WhatsApp QA live runtime", () => {
       expect(emptyDebugView.gatewayDebugDirPath).toBeUndefined();
       expect(emptyDebugView.cleanupIssues).toEqual([
         "WhatsApp QA failed during driver session start: " +
-          "details redacted (OPENCLAW_QA_REDACT_PUBLIC_METADATA=1)",
+          "details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)",
       ]);
       expect(emptyDebugView.scenarioResults[0]?.details).toBe(
         "WhatsApp QA failed during driver session start",
@@ -362,7 +362,7 @@ describe("WhatsApp QA live runtime", () => {
     ]);
     const report = testing.renderWhatsAppQaMarkdown({
       cleanupIssues: [
-        "temporary auth cleanup failed: details redacted (OPENCLAW_QA_REDACT_PUBLIC_METADATA=1)",
+        "temporary auth cleanup failed: details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)",
       ],
       credentialSource: "convex",
       finishedAt: "2026-05-04T12:01:00.000Z",
@@ -373,7 +373,7 @@ describe("WhatsApp QA live runtime", () => {
     });
 
     expect(publishedScenarios[0]?.details).toBe(
-      "details redacted (OPENCLAW_QA_REDACT_PUBLIC_METADATA=1)",
+      "details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)",
     );
     expect(publishedScenarios[1]?.details).toContain("observed 2 WhatsApp driver message(s)");
     expect(publishedScenarios[1]?.details).toContain("fromExpectedSut=yes");
@@ -388,7 +388,7 @@ describe("WhatsApp QA live runtime", () => {
   });
 
   it("unpacks auth archives into a caller-provided temp directory", async () => {
-    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-wa-qa-test-"));
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-wa-qa-test-"));
     try {
       const archiveBase64 = await createTgz({
         root: tempRoot,
@@ -795,10 +795,10 @@ describe("WhatsApp QA live runtime", () => {
       gateway: {
         call: async () => ({}),
         restart: async () => {},
-        workspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+        workspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       },
       gatewayTarget: "+15550000001",
-      gatewayWorkspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+      gatewayWorkspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       recordObservedMessage: (message: unknown) => {
         recorded.push(message);
       },
@@ -843,10 +843,10 @@ describe("WhatsApp QA live runtime", () => {
       gateway: {
         call: async () => ({}),
         restart: async () => {},
-        workspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+        workspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       },
       gatewayTarget: "120363000000000000@g.us",
-      gatewayWorkspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+      gatewayWorkspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       recordObservedMessage: (message: unknown) => {
         recorded.push(message);
       },
@@ -896,7 +896,7 @@ describe("WhatsApp QA live runtime", () => {
         details: "long reply chunked across raw-message-id-1 and raw-message-id-2",
         redactMetadata: true,
       }),
-    ).toBe("details redacted (OPENCLAW_QA_REDACT_PUBLIC_METADATA=1)");
+    ).toBe("details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)");
     expect(
       testing.formatWhatsAppScenarioProgressDetails({
         details:
@@ -1059,10 +1059,10 @@ describe("WhatsApp QA live runtime", () => {
       gateway: {
         call: async () => ({}),
         restart: async () => {},
-        workspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+        workspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       },
       gatewayTarget: "+15550000001",
-      gatewayWorkspaceDir: "/tmp/openclaw-whatsapp-qa-gateway",
+      gatewayWorkspaceDir: "/tmp/eve-whatsapp-qa-gateway",
       recordObservedMessage: () => {},
       requestStartedAt: new Date("2026-06-05T01:00:00.000Z"),
       scenarioId: "whatsapp-reply-delivery-shape",
@@ -1118,7 +1118,7 @@ describe("WhatsApp QA live runtime", () => {
       {},
       {
         allowFrom: ["+15550000001"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         overrides: {
           approvals: {
@@ -1142,7 +1142,7 @@ describe("WhatsApp QA live runtime", () => {
       {},
       {
         allowFrom: ["+15550000001"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         overrides: {
           audioPreflight: true,
@@ -1163,7 +1163,7 @@ describe("WhatsApp QA live runtime", () => {
       {},
       {
         allowFrom: ["+15550000001"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         overrides: {
           actions: true,
@@ -1230,7 +1230,7 @@ describe("WhatsApp QA live runtime", () => {
       {},
       {
         allowFrom: ["+15550000001"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         overrides: {
           replyToMode: "all",
@@ -1253,7 +1253,7 @@ describe("WhatsApp QA live runtime", () => {
       {},
       {
         allowFrom: ["+15550000000"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         groupJid: "120363000000000000@g.us",
         overrides: {
@@ -1310,21 +1310,21 @@ describe("WhatsApp QA live runtime", () => {
     if (scenarioRun.kind === "approval") {
       throw new Error("whatsapp-mention-gating unexpectedly built an approval scenario run");
     }
-    expect(scenarioRun.input).toContain("openclawqa reply with only this exact marker");
+    expect(scenarioRun.input).toContain("eveqa reply with only this exact marker");
     expect(scenarioRun.input).not.toContain("visible reply tool check");
 
     const cfg = testing.buildWhatsAppQaConfig(
       {},
       {
         allowFrom: ["+15550000001"],
-        authDir: "/tmp/openclaw-whatsapp-qa-auth",
+        authDir: "/tmp/eve-whatsapp-qa-auth",
         dmPolicy: "allowlist",
         groupJid: "120363000000000000@g.us",
         sutAccountId: "sut",
       },
     );
     expect(cfg.messages?.groupChat?.visibleReplies).toBe("automatic");
-    expect(cfg.messages?.groupChat?.mentionPatterns).toContain("\\bopenclawqa\\b");
+    expect(cfg.messages?.groupChat?.mentionPatterns).toContain("\\beveqa\\b");
   });
 
   it("fails explicitly requested group scenarios when group credentials are missing", () => {

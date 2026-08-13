@@ -1,5 +1,5 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveAgentModelPrimaryValue } from "openclaw/plugin-sdk/provider-onboard";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveAgentModelPrimaryValue } from "eve-agent/plugin-sdk/provider-onboard";
 import { describe, expect, it } from "vitest";
 import { buildCohereCatalogModels, COHERE_BASE_URL, COHERE_MODEL_CATALOG } from "./models.js";
 import {
@@ -22,7 +22,7 @@ describe("Cohere onboarding", () => {
   });
 
   it("sets Cohere only when there is no primary model", () => {
-    const existing: OpenClawConfig = {
+    const existing: EVEConfig = {
       agents: {
         defaults: {
           model: { primary: "openai/gpt-5.5" },

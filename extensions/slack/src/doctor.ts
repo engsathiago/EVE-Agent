@@ -1,7 +1,7 @@
 // Slack plugin module implements doctor behavior.
-import type { ChannelDoctorAdapter } from "openclaw/plugin-sdk/channel-contract";
-import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "openclaw/plugin-sdk/channel-policy";
-import type { GroupPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ChannelDoctorAdapter } from "eve-agent/plugin-sdk/channel-contract";
+import { createDangerousNameMatchingMutableAllowlistWarningCollector } from "eve-agent/plugin-sdk/channel-policy";
+import type { GroupPolicy, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { listSlackAccountIds, mergeSlackAccountConfig } from "./accounts.js";
 import {
   legacyConfigRules as SLACK_LEGACY_CONFIG_RULES,
@@ -91,7 +91,7 @@ function looksLikeSlackChannelNameKey(channelKey: string): boolean {
 
 // Startup resolution updates ctx.channelsConfig, but inbound authorization captures the authored
 // channels map and key list when createSlackMonitorContext runs. Diagnose those authored keys.
-function collectSlackNameKeyedChannelWarnings({ cfg }: { cfg: OpenClawConfig }): string[] {
+function collectSlackNameKeyedChannelWarnings({ cfg }: { cfg: EVEConfig }): string[] {
   const warnings = new Set<string>();
   const slackCfg = asObjectRecord(asObjectRecord(cfg.channels)?.slack);
   const providerChannels = asObjectRecord(slackCfg?.channels);

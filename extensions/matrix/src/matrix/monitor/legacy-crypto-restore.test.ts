@@ -1,8 +1,8 @@
 // Matrix tests cover legacy crypto restore plugin behavior.
 import fs from "node:fs";
 import path from "node:path";
-import { resetPluginStateStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import { withTempHome } from "openclaw/plugin-sdk/test-env";
+import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import { withTempHome } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveMatrixAccountStorageRoot } from "../../storage-paths.js";
 import { installMatrixTestRuntime } from "../../test-runtime.js";
@@ -47,7 +47,7 @@ async function runLegacyRestoreScenario(params: {
   restoreRoomKeyBackup: () => Promise<MatrixRoomKeyBackupRestoreResult>;
 }) {
   return withTempHome(async (home) => {
-    const stateDir = path.join(home, ".openclaw");
+    const stateDir = path.join(home, ".eve");
     const auth = params.auth ?? BASE_AUTH;
     const sourceAuth = params.sourceAuth ?? auth;
     const { rootDir } = resolveMatrixAccountStorageRoot({
@@ -71,7 +71,7 @@ async function runLegacyRestoreScenario(params: {
       stateDir,
       env: {
         ...process.env,
-        OPENCLAW_STATE_DIR: stateDir,
+        EVE_STATE_DIR: stateDir,
         HOME: home,
       },
     });

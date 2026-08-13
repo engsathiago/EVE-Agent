@@ -1,6 +1,6 @@
 // Discord tests cover api plugin behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
-import { withFetchPreconnect } from "openclaw/plugin-sdk/test-env";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
+import { withFetchPreconnect } from "eve-agent/plugin-sdk/test-env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordApiError, fetchDiscord, requestDiscord } from "./api.js";
 import { jsonResponse } from "./test-http-helpers.js";

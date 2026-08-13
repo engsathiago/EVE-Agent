@@ -1,5 +1,5 @@
 /** Applies mutually exclusive plugin slot selection for memory and context-engine plugins. */
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { PluginSlotsConfig } from "../config/types.plugins.js";
 import type { PluginKind } from "./plugin-kind.types.js";
 
@@ -59,14 +59,14 @@ export function defaultSlotIdForKey(slotKey: PluginSlotKey): string {
 }
 
 export type SlotSelectionResult = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   warnings: string[];
   changed: boolean;
 };
 
 /** Updates config so the selected plugin owns all slots implied by its kind. */
 export function applyExclusiveSlotSelection(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   selectedId: string;
   selectedKind?: PluginKind | PluginKind[];
   registry?: { plugins: SlotPluginRecord[] };

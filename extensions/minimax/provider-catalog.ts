@@ -2,7 +2,7 @@
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   DEFAULT_MINIMAX_MAX_TOKENS,
   MINIMAX_API_BASE_URL,

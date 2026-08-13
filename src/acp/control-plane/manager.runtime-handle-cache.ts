@@ -2,14 +2,14 @@
 import {
   resolveRuntimeHandleIdentifiersFromIdentity,
   resolveSessionIdentityFromMeta,
-} from "@openclaw/acp-core/runtime/session-identity";
+} from "@eve/acp-core/runtime/session-identity";
 import type {
   AcpRuntime,
   AcpRuntimeHandle,
   AcpRuntimeStatus,
-} from "@openclaw/acp-core/runtime/types";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+} from "@eve/acp-core/runtime/types";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import type { ActiveTurnState, SessionAcpMeta } from "./manager.types.js";
 import { normalizeActorKey, resolveRuntimeIdleTtlMs } from "./manager.utils.js";
@@ -44,7 +44,7 @@ export class ManagerRuntimeHandleCache {
   }
 
   /** Returns cache counters used by ACP manager observability snapshots. */
-  getObservabilitySnapshot(cfg: OpenClawConfig) {
+  getObservabilitySnapshot(cfg: EVEConfig) {
     return {
       activeSessions: this.runtimeCache.size(),
       idleTtlMs: resolveRuntimeIdleTtlMs(cfg),
@@ -84,7 +84,7 @@ export class ManagerRuntimeHandleCache {
 
   /** Closes handles that exceeded the configured idle TTL without racing active turns. */
   async evictIdle(params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     actorQueue: SessionActorQueue;
     activeTurnBySession: Map<string, ActiveTurnState>;
   }): Promise<void> {

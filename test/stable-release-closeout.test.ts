@@ -10,9 +10,9 @@ const release = {
   isDraft: false,
   isPrerelease: false,
   assets: [
-    { name: "OpenClaw-2026.6.8.zip", digest: `sha256:${"a".repeat(64)}` },
-    { name: "OpenClaw-2026.6.8.dmg", digest: `sha256:${"b".repeat(64)}` },
-    { name: "OpenClaw-2026.6.8.dSYM.zip", digest: `sha256:${"c".repeat(64)}` },
+    { name: "EVE-2026.6.8.zip", digest: `sha256:${"a".repeat(64)}` },
+    { name: "EVE-2026.6.8.dmg", digest: `sha256:${"b".repeat(64)}` },
+    { name: "EVE-2026.6.8.dSYM.zip", digest: `sha256:${"c".repeat(64)}` },
   ],
 };
 const changelog =
@@ -24,7 +24,7 @@ const validCloseoutParams = {
   mainChangelog: changelog,
   tagChangelog: changelog,
   mainAppcast:
-    "https://github.com/openclaw/openclaw/releases/download/v2026.6.8/OpenClaw-2026.6.8.zip\n",
+    "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8/EVE-2026.6.8.zip\n",
   release,
   releaseTagSha: "tag-sha",
   mainSha: "main-sha",
@@ -79,11 +79,11 @@ describe("stable release closeout", () => {
         assets: [
           ...release.assets,
           {
-            name: "openclaw-2026.6.8-stable-main-closeout.json",
+            name: "eve-2026.6.8-stable-main-closeout.json",
             digest: `sha256:${"d".repeat(64)}`,
           },
           {
-            name: "openclaw-2026.6.8-stable-main-closeout.json.sha256",
+            name: "eve-2026.6.8-stable-main-closeout.json.sha256",
             digest: `sha256:${"e".repeat(64)}`,
           },
         ],
@@ -114,15 +114,15 @@ describe("stable release closeout", () => {
       ...validCloseoutParams,
       release: {
         ...release,
-        assets: [{ name: "openclaw-2026.6.8-dependency-evidence.zip" }],
+        assets: [{ name: "eve-2026.6.8-dependency-evidence.zip" }],
       },
       mainAppcast:
-        "https://github.com/openclaw/openclaw/releases/download/v2026.6.8/openclaw-2026.6.8-dependency-evidence.zip\n",
+        "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8/eve-2026.6.8-dependency-evidence.zip\n",
       nowMs: Date.parse("2026-06-17T00:00:00Z"),
     });
 
     expect(result.errors).toContain(
-      "GitHub release v2026.6.8 is missing required macOS asset(s): OpenClaw-2026.6.8.zip, OpenClaw-2026.6.8.dmg, OpenClaw-2026.6.8.dSYM.zip.",
+      "GitHub release v2026.6.8 is missing required macOS asset(s): EVE-2026.6.8.zip, EVE-2026.6.8.dmg, EVE-2026.6.8.dSYM.zip.",
     );
   });
 
@@ -144,7 +144,7 @@ describe("stable release closeout", () => {
       tagChangelog: changelog.replaceAll("2026.6.8", "2026.6.8-2"),
       release: correctionRelease,
       mainAppcast:
-        "https://github.com/openclaw/openclaw/releases/download/v2026.6.8-2/OpenClaw-2026.6.8-2.zip\n",
+        "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8-2/EVE-2026.6.8-2.zip\n",
       nowMs: Date.parse("2026-06-17T00:00:00Z"),
     });
 
@@ -165,7 +165,7 @@ describe("stable release closeout", () => {
         tagName: "v2026.6.8-2",
       },
       mainAppcast:
-        "https://github.com/openclaw/openclaw/releases/download/v2026.6.8-2/OpenClaw-2026.6.8.zip\n",
+        "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8-2/EVE-2026.6.8.zip\n",
       nowMs: Date.parse("2026-06-17T00:00:00Z"),
     });
 
@@ -205,7 +205,7 @@ describe("stable release closeout", () => {
       "main CHANGELOG.md ## 2026.6.8 does not exactly match the shipped release section.",
     );
     expect(result.errors).toContain(
-      "main appcast.xml does not point at OpenClaw-2026.6.8.zip from v2026.6.8.",
+      "main appcast.xml does not point at EVE-2026.6.8.zip from v2026.6.8.",
     );
     expect(result.errors).toContain(
       "rollback drill is older than 90 days: 2026-03-01. Run the private rollback drill before stable closeout.",

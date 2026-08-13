@@ -12,17 +12,17 @@ describe("prepareCliBundleMcpConfig codex", () => {
         args: ["exec", "--json"],
         resumeArgs: ["exec", "resume", "{sessionId}"],
       },
-      workspaceDir: "/tmp/openclaw-bundle-mcp-codex",
+      workspaceDir: "/tmp/eve-bundle-mcp-codex",
       config: { plugins: { enabled: false } },
       additionalConfig: {
         mcpServers: {
-          openclaw: {
+          eve: {
             type: "http",
             url: "http://127.0.0.1:23119/mcp",
             headers: {
-              Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
-              "x-session-key": "${OPENCLAW_MCP_SESSION_KEY}",
-              "x-openclaw-cli-capture-key": "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+              Authorization: "Bearer ${EVE_MCP_TOKEN}",
+              "x-session-key": "${EVE_MCP_SESSION_KEY}",
+              "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
             },
           },
         },
@@ -35,14 +35,14 @@ describe("prepareCliBundleMcpConfig codex", () => {
       "exec",
       "--json",
       "-c",
-      'mcp_servers={ openclaw = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "OPENCLAW_MCP_TOKEN", env_http_headers = { x-session-key = "OPENCLAW_MCP_SESSION_KEY", x-openclaw-cli-capture-key = "OPENCLAW_MCP_CLI_CAPTURE_KEY" } } }',
+      'mcp_servers={ eve = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "EVE_MCP_TOKEN", env_http_headers = { x-session-key = "EVE_MCP_SESSION_KEY", x-eve-cli-capture-key = "EVE_MCP_CLI_CAPTURE_KEY" } } }',
     ]);
     expect(prepared.backend.resumeArgs).toEqual([
       "exec",
       "resume",
       "{sessionId}",
       "-c",
-      'mcp_servers={ openclaw = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "OPENCLAW_MCP_TOKEN", env_http_headers = { x-session-key = "OPENCLAW_MCP_SESSION_KEY", x-openclaw-cli-capture-key = "OPENCLAW_MCP_CLI_CAPTURE_KEY" } } }',
+      'mcp_servers={ eve = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "EVE_MCP_TOKEN", env_http_headers = { x-session-key = "EVE_MCP_SESSION_KEY", x-eve-cli-capture-key = "EVE_MCP_CLI_CAPTURE_KEY" } } }',
     ]);
     expect(prepared.cleanup).toBeUndefined();
   });

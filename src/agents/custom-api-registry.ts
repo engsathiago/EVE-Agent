@@ -5,7 +5,7 @@ import { getApiProvider, registerApiProvider } from "../llm/api-registry.js";
 import type { Api, StreamOptions } from "../llm/types.js";
 import type { StreamFn } from "./runtime/index.js";
 
-const CUSTOM_API_SOURCE_PREFIX = "openclaw-custom-api:";
+const CUSTOM_API_SOURCE_PREFIX = "eve-custom-api:";
 
 /** Returns the registry source id used for a custom API stream function. */
 function getCustomApiRegistrySourceId(api: Api): string {

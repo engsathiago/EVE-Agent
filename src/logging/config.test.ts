@@ -10,9 +10,9 @@ const originalArgv = process.argv;
 let tempDirs: string[] = [];
 
 function writeConfig(source: string): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-logging-config-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-logging-config-"));
   tempDirs.push(dir);
-  const configPath = path.join(dir, "openclaw.json");
+  const configPath = path.join(dir, "eve.json");
   fs.writeFileSync(configPath, source);
   return configPath;
 }
@@ -27,11 +27,11 @@ describe("readLoggingConfig", () => {
   });
 
   it("skips mutating config loads for config schema", () => {
-    process.argv = ["node", "openclaw", "config", "schema"];
+    process.argv = ["node", "eve", "config", "schema"];
     const configPath = writeConfig(`{ logging: { file: "/tmp/should-not-read.log" } }`);
     fs.rmSync(configPath);
 
-    withEnv({ OPENCLAW_CONFIG_PATH: configPath }, () => {
+    withEnv({ EVE_CONFIG_PATH: configPath }, () => {
       expect(readLoggingConfig()).toBeUndefined();
     });
   });
@@ -40,15 +40,15 @@ describe("readLoggingConfig", () => {
     const configPath = writeConfig(`{
       logging: {
         level: "debug",
-        file: "/tmp/openclaw-custom.log",
+        file: "/tmp/eve-custom.log",
         maxFileBytes: 1234,
       },
     }`);
 
-    withEnv({ OPENCLAW_CONFIG_PATH: configPath }, () => {
+    withEnv({ EVE_CONFIG_PATH: configPath }, () => {
       expect(readLoggingConfig()).toStrictEqual({
         level: "debug",
-        file: "/tmp/openclaw-custom.log",
+        file: "/tmp/eve-custom.log",
         maxFileBytes: 1234,
       });
     });
@@ -56,13 +56,13 @@ describe("readLoggingConfig", () => {
 
   it("supports JSON5 comments and trailing commas", () => {
     const configPath = writeConfig(`{
-      // users commonly keep comments in openclaw.json
+      // users commonly keep comments in eve.json
       logging: {
         consoleLevel: "warn",
       },
     }`);
 
-    withEnv({ OPENCLAW_CONFIG_PATH: configPath }, () => {
+    withEnv({ EVE_CONFIG_PATH: configPath }, () => {
       expect(readLoggingConfig()).toStrictEqual({
         consoleLevel: "warn",
       });
@@ -71,14 +71,14 @@ describe("readLoggingConfig", () => {
 
   it("returns undefined for missing or malformed config files", () => {
     withEnv(
-      { OPENCLAW_CONFIG_PATH: path.join(os.tmpdir(), "openclaw-missing-config.json") },
+      { EVE_CONFIG_PATH: path.join(os.tmpdir(), "eve-missing-config.json") },
       () => {
         expect(readLoggingConfig()).toBeUndefined();
       },
     );
 
     const configPath = writeConfig(`{ logging: `);
-    withEnv({ OPENCLAW_CONFIG_PATH: configPath }, () => {
+    withEnv({ EVE_CONFIG_PATH: configPath }, () => {
       expect(readLoggingConfig()).toBeUndefined();
     });
   });

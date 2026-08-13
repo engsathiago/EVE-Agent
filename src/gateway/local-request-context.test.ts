@@ -3,7 +3,7 @@
  */
 import { beforeAll, describe, expect, it } from "vitest";
 import type { CliDeps } from "../cli/deps.types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { withLocalGatewayRequestScope } from "./local-request-context.js";
 import { dispatchGatewayMethodInProcessRaw } from "./server-plugins.js";
 
@@ -15,7 +15,7 @@ describe("local gateway request context", () => {
       agents: {
         defaults: {},
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     response = await withLocalGatewayRequestScope(
       {

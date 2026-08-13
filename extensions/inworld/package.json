@@ -1,22 +1,22 @@
 {
-  "name": "@openclaw/inworld-speech",
+  "name": "@eve/inworld-speech",
   "version": "2026.6.8",
-  "description": "OpenClaw Inworld speech plugin.",
+  "description": "EVE Inworld speech plugin.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/inworld-speech",
-      "npmSpec": "@openclaw/inworld-speech",
+      "clawhubSpec": "clawhub:@eve/inworld-speech",
+      "npmSpec": "@eve/inworld-speech",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -24,7 +24,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8",
+      "eveVersion": "2026.6.8",
       "bundledDist": false
     },
     "release": {

@@ -44,11 +44,11 @@ describe("resolveVapidKeys", () => {
     const keys = await resolveVapidKeys(tmpDir);
     expect(keys.publicKey).toBe("test-public-key-base64url");
     expect(keys.privateKey).toBe("test-private-key-base64url");
-    expect(keys.subject).toBe("https://openclaw.ai");
+    expect(keys.subject).toBe("https://eve.ai");
     const persistedKeys = JSON.parse(
       await fs.readFile(path.join(tmpDir, "push", "vapid-keys.json"), "utf8"),
     ) as { subject?: string };
-    expect(persistedKeys.subject).toBe("https://openclaw.ai");
+    expect(persistedKeys.subject).toBe("https://eve.ai");
 
     // Second call returns same keys.
     const keys2 = await resolveVapidKeys(tmpDir);
@@ -62,9 +62,9 @@ describe("resolveVapidKeys", () => {
     await resolveVapidKeys(tmpDir);
 
     // Set env overrides.
-    process.env.OPENCLAW_VAPID_PUBLIC_KEY = "env-public";
-    process.env.OPENCLAW_VAPID_PRIVATE_KEY = "env-private";
-    process.env.OPENCLAW_VAPID_SUBJECT = "mailto:env@test.com";
+    process.env.EVE_VAPID_PUBLIC_KEY = "env-public";
+    process.env.EVE_VAPID_PRIVATE_KEY = "env-private";
+    process.env.EVE_VAPID_SUBJECT = "mailto:env@test.com";
     try {
       const keys = await resolveVapidKeys(tmpDir);
       expect(keys.publicKey).toBe("env-public");
@@ -72,9 +72,9 @@ describe("resolveVapidKeys", () => {
       expect(keys.subject).toBe("mailto:env@test.com");
       expect(vi.mocked(webPush.generateVAPIDKeys)).toHaveBeenCalledTimes(1);
     } finally {
-      delete process.env.OPENCLAW_VAPID_PUBLIC_KEY;
-      delete process.env.OPENCLAW_VAPID_PRIVATE_KEY;
-      delete process.env.OPENCLAW_VAPID_SUBJECT;
+      delete process.env.EVE_VAPID_PUBLIC_KEY;
+      delete process.env.EVE_VAPID_PRIVATE_KEY;
+      delete process.env.EVE_VAPID_SUBJECT;
     }
   });
 });

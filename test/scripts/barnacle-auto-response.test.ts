@@ -56,8 +56,8 @@ function barnacleContext(
 ) {
   return {
     repo: {
-      owner: "openclaw",
-      repo: "openclaw",
+      owner: "eve",
+      repo: "eve",
     },
     payload: {
       action: options.action ?? "opened",
@@ -85,8 +85,8 @@ function barnacleIssueContext(
 ) {
   return {
     repo: {
-      owner: "openclaw",
-      repo: "openclaw",
+      owner: "eve",
+      repo: "eve",
     },
     payload: {
       action: options.action ?? "opened",
@@ -94,7 +94,7 @@ function barnacleIssueContext(
       sender: options.sender,
       issue: {
         number: 456,
-        title: "OpenClaw issue",
+        title: "EVE issue",
         body: "",
         author_association: "CONTRIBUTOR",
         user: {
@@ -211,8 +211,8 @@ function barnacleGithub(
 
 function expectedIssueUpdate(issue_number: number, state: string) {
   return {
-    owner: "openclaw",
-    repo: "openclaw",
+    owner: "eve",
+    repo: "eve",
     issue_number,
     state,
   };
@@ -220,8 +220,8 @@ function expectedIssueUpdate(issue_number: number, state: string) {
 
 function expectedRemoveLabel(issue_number: number, name: string) {
   return {
-    owner: "openclaw",
-    repo: "openclaw",
+    owner: "eve",
+    repo: "eve",
     issue_number,
     name,
   };
@@ -229,8 +229,8 @@ function expectedRemoveLabel(issue_number: number, name: string) {
 
 function expectedAddLabels(issue_number: number, labels: string[]) {
   return {
-    owner: "openclaw",
-    repo: "openclaw",
+    owner: "eve",
+    repo: "eve",
     issue_number,
     labels,
   };
@@ -387,7 +387,7 @@ describe("barnacle-auto-response", () => {
       pr(
         "Fix duplicate plugin auto-enable entries",
         [
-          "- Problem: openclaw doctor --fix adds duplicate installed plugin entries",
+          "- Problem: eve doctor --fix adds duplicate installed plugin entries",
           "- Why it matters: users get noisy config churn",
           "- What changed: respect manifest-provided channel auto-loads",
           "",
@@ -569,13 +569,13 @@ describe("barnacle-auto-response", () => {
 
   it("does not close automation PRs for the active PR limit", async () => {
     for (const automationPullRequest of [
-      { head: { ref: "clawsweeper/openclaw-openclaw-73880" }, login: "app/openclaw-clawsweeper" },
-      { headRefName: "clawsweeper/openclaw-openclaw-73880", login: "app/openclaw-clawsweeper" },
+      { head: { ref: "clawsweeper/eve-eve-73880" }, login: "app/eve-clawsweeper" },
+      { headRefName: "clawsweeper/eve-eve-73880", login: "app/eve-clawsweeper" },
       {
         head: { ref: "clownfish/ghcrawl-156993-autonomous-smoke" },
-        login: "app/openclaw-clownfish",
+        login: "app/eve-clownfish",
       },
-      { headRefName: "clownfish/ghcrawl-156993-autonomous-smoke", login: "app/openclaw-clownfish" },
+      { headRefName: "clownfish/ghcrawl-156993-autonomous-smoke", login: "app/eve-clownfish" },
     ]) {
       const { calls, github } = barnacleGithub([]);
       const { login, ...pullRequest } = automationPullRequest;
@@ -961,7 +961,7 @@ describe("barnacle-auto-response", () => {
         {
           action: "labeled",
           label: { name: PROOF_SUFFICIENT_LABEL },
-          sender: { login: "openclaw-clawsweeper[bot]", type: "Bot" },
+          sender: { login: "eve-clawsweeper[bot]", type: "Bot" },
         },
       ),
       core: {
@@ -980,7 +980,7 @@ describe("barnacle-auto-response", () => {
       context: barnacleContext({}, [PROOF_SUFFICIENT_LABEL], {
         action: "labeled",
         label: { name: "status: ready for maintainer look" },
-        sender: { login: "openclaw-clawsweeper[bot]", type: "Bot" },
+        sender: { login: "eve-clawsweeper[bot]", type: "Bot" },
       }),
       core: {
         info: () => undefined,
@@ -1022,7 +1022,7 @@ describe("barnacle-auto-response", () => {
       context: barnacleContext({}, [PROOF_SUFFICIENT_LABEL, candidateLabels.needsPrContext], {
         action: "labeled",
         label: { name: "status: ready for maintainer look" },
-        sender: { login: "openclaw-clawsweeper[bot]", type: "Bot" },
+        sender: { login: "eve-clawsweeper[bot]", type: "Bot" },
       }),
       core: {
         info: () => undefined,
@@ -1043,7 +1043,7 @@ describe("barnacle-auto-response", () => {
       context: barnacleContext({}, [PROOF_SUFFICIENT_LABEL], {
         action: "labeled",
         label: { name: PROOF_SUFFICIENT_LABEL },
-        sender: { login: "openclaw-clawsweeper[bot]", type: "Bot" },
+        sender: { login: "eve-clawsweeper[bot]", type: "Bot" },
       }),
       core: {
         info: () => undefined,
@@ -1056,7 +1056,7 @@ describe("barnacle-auto-response", () => {
   });
 
   it("actions manually applied candidate labels", async () => {
-    const { calls, github } = barnacleGithub([file("extensions/example/openclaw.plugin.json")]);
+    const { calls, github } = barnacleGithub([file("extensions/example/eve.plugin.json")]);
 
     await runBarnacleAutoResponse({
       github,
@@ -1098,14 +1098,14 @@ describe("barnacle-auto-response", () => {
   });
 
   it("keeps bot-applied candidate labels passive", async () => {
-    const { calls, github } = barnacleGithub([file("extensions/example/openclaw.plugin.json")]);
+    const { calls, github } = barnacleGithub([file("extensions/example/eve.plugin.json")]);
 
     await runBarnacleAutoResponse({
       github,
       context: barnacleContext({}, [candidateLabels.externalPluginCandidate], {
         action: "labeled",
         label: { name: candidateLabels.externalPluginCandidate },
-        sender: { login: "openclaw-bot[bot]", type: "Bot" },
+        sender: { login: "eve-bot[bot]", type: "Bot" },
       }),
       core: {
         info: () => undefined,

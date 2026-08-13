@@ -1,7 +1,7 @@
 // Slack type declarations define plugin contracts.
-import type { ChannelRuntimeSurface } from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig, SlackSlashCommandConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { ChannelRuntimeSurface } from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig, SlackSlashCommandConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import type { SlackMessageEvent } from "../types.js";
 
 export type MonitorSlackOpts = {
@@ -9,7 +9,7 @@ export type MonitorSlackOpts = {
   appToken?: string;
   accountId?: string;
   mode?: "socket" | "http";
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   runtime?: RuntimeEnv;
   channelRuntime?: ChannelRuntimeSurface;
   abortSignal?: AbortSignal;

@@ -1,8 +1,8 @@
 // Qqbot plugin module implements runtime behavior.
-import type { PluginRuntime } from "openclaw/plugin-sdk/core";
-import { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/core";
+import { createPluginRuntimeStore } from "eve-agent/plugin-sdk/runtime-store";
 import type { GatewayPluginRuntime } from "../engine/gateway/types.js";
-import { setOpenClawVersion } from "../engine/messaging/sender.js";
+import { setEVEVersion } from "../engine/messaging/sender.js";
 
 // Single plugin runtime per process — concurrent multi-tenant qqbot runtimes are not supported.
 const {
@@ -18,7 +18,7 @@ const {
 function setQQBotRuntime(runtime: PluginRuntime): void {
   _setRuntime(runtime);
   // Inject the framework version into the User-Agent string (same as standalone).
-  setOpenClawVersion(runtime.version);
+  setEVEVersion(runtime.version);
 }
 
 export { getQQBotRuntime, resetQQBotRuntimeForTest, setQQBotRuntime };

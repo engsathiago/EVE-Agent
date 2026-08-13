@@ -1,10 +1,10 @@
-// Snapshots script supports OpenClaw repository automation.
+// Snapshots script supports EVE repository automation.
 import { die, run } from "./host-command.ts";
 import type { Mode } from "./types.ts";
 import type { SnapshotInfo } from "./types.ts";
 
 const SNAPSHOT_LIST_TIMEOUT_MS = 120_000;
-export const SKIP_SNAPSHOT_RESTORE_ENV = "OPENCLAW_PARALLELS_SKIP_SNAPSHOT_RESTORE";
+export const SKIP_SNAPSHOT_RESTORE_ENV = "EVE_PARALLELS_SKIP_SNAPSHOT_RESTORE";
 
 export function shouldSkipSnapshotRestore(): boolean {
   return /^(1|true|yes|on)$/iu.test(process.env[SKIP_SNAPSHOT_RESTORE_ENV] ?? "");

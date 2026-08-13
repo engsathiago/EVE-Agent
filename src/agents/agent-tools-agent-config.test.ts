@@ -1,7 +1,7 @@
 /**
  * Tests agent-specific tool filtering and filesystem policy.
  * Covers sandbox inheritance, group policies, and workspace-only behavior in
- * createOpenClawCodingTools.
+ * createEVECodingTools.
  */
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -9,12 +9,12 @@ import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import "./test-helpers/fast-bash-tools.js";
 import "./test-helpers/fast-coding-tools.js";
-import "./test-helpers/fast-openclaw-tools.js";
-import type { OpenClawConfig } from "../config/config.js";
+import "./test-helpers/fast-eve-tools.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveChannelGroupToolsPolicy } from "../config/group-policy.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
 import { createSessionConversationTestRegistry } from "../test-utils/session-conversation-registry.js";
-import { createOpenClawCodingTools } from "./agent-tools.js";
+import { createEVECodingTools } from "./agent-tools.js";
 import { resolveEffectiveToolPolicy } from "./agent-tools.policy.js";
 import type { SandboxDockerConfig } from "./sandbox.js";
 import type { SandboxFsBridge } from "./sandbox/fs-bridge.js";
@@ -61,7 +61,7 @@ describe("Agent-specific tool filtering", () => {
       patch: string;
     }) => Promise<void>,
   ) {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-agent-tools-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-agent-tools-"));
     const escapedPath = path.join(
       path.dirname(workspaceDir),
       `escaped-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}.txt`,
@@ -69,7 +69,7 @@ describe("Agent-specific tool filtering", () => {
     const relativeEscape = path.relative(workspaceDir, escapedPath);
 
     try {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         tools: {
           allow: ["read", "write", "exec"],
           exec: {
@@ -78,7 +78,7 @@ describe("Agent-specific tool filtering", () => {
         },
       };
 
-      const tools = createOpenClawCodingTools({
+      const tools = createEVECodingTools({
         config: cfg,
         sessionKey: "agent:main:main",
         workspaceDir,
@@ -108,8 +108,8 @@ describe("Agent-specific tool filtering", () => {
     }
   }
 
-  function createMainSessionTools(cfg: OpenClawConfig) {
-    return createOpenClawCodingTools({
+  function createMainSessionTools(cfg: EVEConfig) {
+    return createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       workspaceDir: "/tmp/test",
@@ -118,16 +118,16 @@ describe("Agent-specific tool filtering", () => {
   }
 
   function createMainAgentConfig(params: {
-    tools: NonNullable<OpenClawConfig["tools"]>;
-    agentTools?: NonNullable<NonNullable<OpenClawConfig["agents"]>["list"]>[number]["tools"];
-  }): OpenClawConfig {
+    tools: NonNullable<EVEConfig["tools"]>;
+    agentTools?: NonNullable<NonNullable<EVEConfig["agents"]>["list"]>[number]["tools"];
+  }): EVEConfig {
     return {
       tools: params.tools,
       agents: {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/eve",
             ...(params.agentTools ? { tools: params.agentTools } : {}),
           },
         ],
@@ -173,7 +173,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("uses the configured default agent for lean local-model filtering on legacy session keys", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         list: [
           {
@@ -187,7 +187,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "main",
       workspaceDir: "/tmp/test",
@@ -204,13 +204,13 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should allow apply_patch for OpenAI models when write is allow-listed", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         allow: ["read", "write", "exec"],
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       workspaceDir: "/tmp/test",
@@ -226,7 +226,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should allow disabling apply_patch explicitly", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         allow: ["read", "write", "exec"],
         exec: {
@@ -235,7 +235,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       workspaceDir: "/tmp/test",
@@ -274,7 +274,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply agent-specific tool policy", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         allow: ["read", "write", "exec"],
         deny: [],
@@ -283,7 +283,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "restricted",
-            workspace: "~/openclaw-restricted",
+            workspace: "~/eve-restricted",
             tools: {
               allow: ["read"], // Agent override: only read
               deny: ["exec", "write", "edit"],
@@ -293,7 +293,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:restricted:main",
       workspaceDir: "/tmp/test-restricted",
@@ -307,7 +307,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply provider-specific tool policy", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         allow: ["read", "write", "exec"],
         byProvider: {
@@ -318,7 +318,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       workspaceDir: "/tmp/test-provider",
@@ -331,7 +331,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply provider-specific tool profile overrides", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         profile: "coding",
         byProvider: {
@@ -342,7 +342,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       workspaceDir: "/tmp/test-provider-profile",
@@ -356,17 +356,17 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should resolve different tool policies for different agents", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         list: [
           {
             id: "main",
-            workspace: "~/openclaw",
+            workspace: "~/eve",
             // No tools restriction - all tools available
           },
           {
             id: "family",
-            workspace: "~/openclaw-family",
+            workspace: "~/eve-family",
             tools: {
               allow: ["read"],
               deny: ["exec", "write", "edit", "process"],
@@ -397,7 +397,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should resolve group tool policy overrides (group-specific beats wildcard)", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         whatsapp: {
           groups: {
@@ -422,7 +422,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply per-sender tool policies for group tools", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         whatsapp: {
           groups: {
@@ -457,7 +457,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply global per-sender tool policy to core tools", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         toolsBySender: {
           "id:guest": { deny: ["exec", "process"] },
@@ -465,7 +465,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       messageProvider: "discord",
       senderId: "guest",
@@ -480,7 +480,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should let agent per-sender policy override global sender wildcard", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         toolsBySender: {
           "*": { deny: ["exec"] },
@@ -490,7 +490,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "trusted",
-            workspace: "~/openclaw-trusted",
+            workspace: "~/eve-trusted",
             tools: {
               toolsBySender: {
                 "id:alice": {},
@@ -501,7 +501,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:trusted:discord:dm:alice",
       messageProvider: "discord",
@@ -516,7 +516,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should not let default sender policy override group tools", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         whatsapp: {
           groups: {
@@ -544,7 +544,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should resolve telegram group tool policy for topic session keys", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         telegram: {
           groups: {
@@ -562,7 +562,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should not apply forged caller group tool policy for non-group sessions", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: { allow: ["read"] },
       channels: {
         whatsapp: {
@@ -575,7 +575,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:main",
       messageProvider: "whatsapp",
@@ -592,7 +592,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should resolve feishu group tool policy for sender-scoped session keys", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         feishu: {
           groups: {
@@ -604,7 +604,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:feishu:group:oc_group_chat:topic:om_topic_root:sender:ou_topic_user",
       messageProvider: "feishu",
@@ -617,7 +617,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should prefer scoped group candidates before wildcard tool policy", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         feishu: {
           groups: {
@@ -632,7 +632,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:main:feishu:group:oc_group_chat:topic:om_topic_root:sender:ou_topic_user",
       messageProvider: "feishu",
@@ -645,7 +645,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should resolve inherited group tool policy for subagent parent groups", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         whatsapp: {
           groups: {
@@ -663,7 +663,7 @@ describe("Agent-specific tool filtering", () => {
   });
 
   it("should apply global tool policy before agent-specific policy", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         deny: ["browser"], // Global deny
       },
@@ -671,7 +671,7 @@ describe("Agent-specific tool filtering", () => {
         list: [
           {
             id: "work",
-            workspace: "~/openclaw-work",
+            workspace: "~/eve-work",
             tools: {
               deny: ["exec", "process"], // Agent deny (override)
             },
@@ -680,7 +680,7 @@ describe("Agent-specific tool filtering", () => {
       },
     };
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:work:slack:dm:user123",
       workspaceDir: "/tmp/test-work",
@@ -707,7 +707,7 @@ describe("Agent-specific tool filtering", () => {
       },
     });
 
-    const tools = createOpenClawCodingTools({
+    const tools = createEVECodingTools({
       config: cfg,
       sessionKey: "agent:restricted:main",
       workspaceDir: "/tmp/test-restricted",

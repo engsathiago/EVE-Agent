@@ -194,8 +194,8 @@ describe("runDaemonRestart health checks", () => {
   });
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_CONTAINER_HINT", "OPENCLAW_PROFILE"]);
-    delete process.env.OPENCLAW_CONTAINER_HINT;
+    envSnapshot = captureEnv(["EVE_CONTAINER_HINT", "EVE_PROFILE"]);
+    delete process.env.EVE_CONTAINER_HINT;
     service.readCommand.mockReset();
     service.restart.mockReset();
     runServiceStart.mockReset();
@@ -218,7 +218,7 @@ describe("runDaemonRestart health checks", () => {
     repairLoadedGatewayServiceForStart.mockReset();
 
     service.readCommand.mockResolvedValue({
-      programArguments: ["openclaw", "gateway", "--port", "18789"],
+      programArguments: ["eve", "gateway", "--port", "18789"],
       environment: {},
     });
     service.restart.mockResolvedValue({ outcome: "completed" });
@@ -366,7 +366,7 @@ describe("runDaemonRestart health checks", () => {
         await params.repairLoadedService?.({
           json: true,
           stdout: process.stdout,
-          state: { command: { environment: { OPENCLAW_SERVICE_VERSION: "2026.4.24" } } },
+          state: { command: { environment: { EVE_SERVICE_VERSION: "2026.4.24" } } },
           issues: [{ code: "version-mismatch", message: "old service" }],
         });
       },
@@ -386,7 +386,7 @@ describe("runDaemonRestart health checks", () => {
     expect(repairParams.service).toBe(service);
     expect(repairParams.json).toBe(true);
     expect(repairParams.state?.command?.environment).toEqual({
-      OPENCLAW_SERVICE_VERSION: "2026.4.24",
+      EVE_SERVICE_VERSION: "2026.4.24",
     });
     expect(repairParams.issues).toHaveLength(1);
     expect(repairParams.issues?.[0]?.code).toBe("version-mismatch");
@@ -450,8 +450,8 @@ describe("runDaemonRestart health checks", () => {
     const error = await expectRestartError(runDaemonRestart({ json: true }));
     expect(error.message).toBe("Gateway restart timed out after 60s waiting for health checks.");
     expect(error.hints).toEqual([
-      formatCliCommand("openclaw gateway status --deep"),
-      formatCliCommand("openclaw doctor"),
+      formatCliCommand("eve gateway status --deep"),
+      formatCliCommand("eve doctor"),
     ]);
     expect(terminateStaleGatewayPids).not.toHaveBeenCalled();
     expect(renderRestartDiagnostics).toHaveBeenCalledTimes(1);
@@ -500,8 +500,8 @@ describe("runDaemonRestart health checks", () => {
       "Gateway restart failed after 13s: service stayed stopped and health checks never came up.",
     );
     expect(error.hints).toEqual([
-      formatCliCommand("openclaw gateway status --deep"),
-      formatCliCommand("openclaw doctor"),
+      formatCliCommand("eve gateway status --deep"),
+      formatCliCommand("eve doctor"),
     ]);
     expect(terminateStaleGatewayPids).not.toHaveBeenCalled();
     expect(renderRestartDiagnostics).toHaveBeenCalledTimes(1);
@@ -577,7 +577,7 @@ describe("runDaemonRestart health checks", () => {
   it("does not fall back to unmanaged restart when launchd repair reports headless GUI bootstrap failure", async () => {
     vi.spyOn(process, "platform", "get").mockReturnValue("darwin");
     recoverInstalledLaunchAgent.mockRejectedValue(
-      new Error("LaunchAgent openclaw gateway restart requires a logged-in macOS GUI session"),
+      new Error("LaunchAgent eve gateway restart requires a logged-in macOS GUI session"),
     );
     findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4200]);
     mockUnmanagedRestart();
@@ -643,12 +643,12 @@ describe("runDaemonRestart health checks", () => {
     );
   });
 
-  it("delegates system-scope restart to systemctl without unmanaged signaling when root (openclaw#87577)", async () => {
+  it("delegates system-scope restart to systemctl without unmanaged signaling when root (eve#87577)", async () => {
     vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     findInstalledSystemdGatewayScope.mockResolvedValue({
       scope: "system",
-      unitName: "openclaw.service",
-      unitPath: "/etc/systemd/system/openclaw.service",
+      unitName: "eve.service",
+      unitPath: "/etc/systemd/system/eve.service",
     });
     restartSystemdService.mockResolvedValue({ outcome: "completed" });
     findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4200]);
@@ -661,35 +661,35 @@ describe("runDaemonRestart health checks", () => {
     expect(probeGateway).not.toHaveBeenCalled();
   });
 
-  it("surfaces systemd sudo guidance and never signals when restarting a system-scope unit as non-root (openclaw#87577)", async () => {
+  it("surfaces systemd sudo guidance and never signals when restarting a system-scope unit as non-root (eve#87577)", async () => {
     vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     findInstalledSystemdGatewayScope.mockResolvedValue({
       scope: "system",
-      unitName: "openclaw.service",
-      unitPath: "/etc/systemd/system/openclaw.service",
+      unitName: "eve.service",
+      unitPath: "/etc/systemd/system/eve.service",
     });
     restartSystemdService.mockRejectedValue(
       new Error(
-        "openclaw.service is a system-scope unit (/etc/systemd/system/openclaw.service); run `sudo systemctl restart openclaw.service` to restart it",
+        "eve.service is a system-scope unit (/etc/systemd/system/eve.service); run `sudo systemctl restart eve.service` to restart it",
       ),
     );
     findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4200]);
     mockUnmanagedRestart();
 
     await expect(runDaemonRestart({ json: true })).rejects.toThrow(
-      /sudo systemctl restart openclaw\.service/,
+      /sudo systemctl restart eve\.service/,
     );
 
     expect(signalVerifiedGatewayPidSync).not.toHaveBeenCalled();
     expect(probeGateway).not.toHaveBeenCalled();
   });
 
-  it("delegates system-scope stop to systemctl without unmanaged signaling when root (openclaw#87577)", async () => {
+  it("delegates system-scope stop to systemctl without unmanaged signaling when root (eve#87577)", async () => {
     vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     findInstalledSystemdGatewayScope.mockResolvedValue({
       scope: "system",
-      unitName: "openclaw-gateway.service",
-      unitPath: "/etc/systemd/system/openclaw-gateway.service",
+      unitName: "eve-gateway.service",
+      unitPath: "/etc/systemd/system/eve-gateway.service",
     });
     stopSystemdService.mockResolvedValue(undefined);
     findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4200]);
@@ -702,16 +702,16 @@ describe("runDaemonRestart health checks", () => {
     expect(signalVerifiedGatewayPidSync).not.toHaveBeenCalled();
   });
 
-  it("surfaces systemd sudo guidance and never signals when stopping a system-scope unit as non-root (openclaw#87577)", async () => {
+  it("surfaces systemd sudo guidance and never signals when stopping a system-scope unit as non-root (eve#87577)", async () => {
     vi.spyOn(process, "platform", "get").mockReturnValue("linux");
     findInstalledSystemdGatewayScope.mockResolvedValue({
       scope: "system",
-      unitName: "openclaw-gateway.service",
-      unitPath: "/etc/systemd/system/openclaw-gateway.service",
+      unitName: "eve-gateway.service",
+      unitPath: "/etc/systemd/system/eve-gateway.service",
     });
     stopSystemdService.mockRejectedValue(
       new Error(
-        "openclaw-gateway.service is a system-scope unit (/etc/systemd/system/openclaw-gateway.service); run `sudo systemctl stop openclaw-gateway.service` to stop it",
+        "eve-gateway.service is a system-scope unit (/etc/systemd/system/eve-gateway.service); run `sudo systemctl stop eve-gateway.service` to stop it",
       ),
     );
     findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4200]);
@@ -720,7 +720,7 @@ describe("runDaemonRestart health checks", () => {
     });
 
     await expect(runDaemonStop({ json: true })).rejects.toThrow(
-      /sudo systemctl stop openclaw-gateway\.service/,
+      /sudo systemctl stop eve-gateway\.service/,
     );
     expect(stopSystemdService).toHaveBeenCalled();
     expect(signalVerifiedGatewayPidSync).not.toHaveBeenCalled();

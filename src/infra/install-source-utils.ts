@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { resolveUserPath } from "../utils.js";
 import { resolveArchiveKind } from "./archive.js";
@@ -18,7 +18,7 @@ export type NpmSpecResolution = {
   integrity?: string;
   shasum?: string;
   resolvedAt?: string;
-  packageOpenClaw?: Record<string, unknown>;
+  packageEVE?: Record<string, unknown>;
 };
 
 /** Flattened npm resolution fields stored on install results and diagnostics. */
@@ -71,7 +71,7 @@ function normalizeNpmViewMetadata(value: unknown): NpmSpecResolution | null {
     resolvedSpec,
     integrity: toOptionalString(rec["dist.integrity"]) ?? toOptionalString(dist.integrity),
     shasum: toOptionalString(rec["dist.shasum"]) ?? toOptionalString(dist.shasum),
-    ...(isRecord(rec.openclaw) ? { packageOpenClaw: rec.openclaw } : {}),
+    ...(isRecord(rec.eve) ? { packageEVE: rec.eve } : {}),
   };
 }
 
@@ -95,7 +95,7 @@ export async function resolveNpmSpecMetadata(params: { spec: string; timeoutMs?:
       "version",
       "dist.integrity",
       "dist.shasum",
-      "openclaw",
+      "eve",
       "--json",
     ],
     {
@@ -108,7 +108,7 @@ export async function resolveNpmSpecMetadata(params: { spec: string; timeoutMs?:
     if (/E404|is not in this registry/i.test(raw)) {
       return {
         ok: false,
-        error: `Package not found on npm: ${params.spec}. See https://docs.openclaw.ai/tools/plugin for installable plugins.`,
+        error: `Package not found on npm: ${params.spec}. See https://docs.eve.ai/tools/plugin for installable plugins.`,
       };
     }
     return { ok: false, error: `npm view failed: ${raw}` };
@@ -320,7 +320,7 @@ export async function packNpmSpecToArchive(params: {
     if (/E404|is not in this registry/i.test(raw)) {
       return {
         ok: false,
-        error: `Package not found on npm: ${params.spec}. See https://docs.openclaw.ai/tools/plugin for installable plugins.`,
+        error: `Package not found on npm: ${params.spec}. See https://docs.eve.ai/tools/plugin for installable plugins.`,
       };
     }
     return { ok: false, error: `npm pack failed: ${raw}` };

@@ -1,5 +1,5 @@
 // Whatsapp plugin module implements util behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export function elide(text?: string, limit = 400) {
   if (!text) {

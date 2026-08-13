@@ -6,9 +6,9 @@ import {
   resolveAuthStorePathForDisplay,
   saveAuthProfileStore,
   type AuthProfileStore,
-} from "openclaw/plugin-sdk/agent-runtime";
-import type { MigrationProviderContext } from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/agent-runtime";
+import type { MigrationProviderContext } from "eve-agent/plugin-sdk/plugin-entry";
+import type { EVEConfig } from "eve-agent/plugin-sdk/provider-auth";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   HERMES_REASON_AUTH_PROFILE_EXISTS,
@@ -79,7 +79,7 @@ describe("Hermes migration secret items", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const plan = await provider.plan(
@@ -147,7 +147,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const runtime = {
       config: {
         current: () => config,
@@ -291,7 +291,7 @@ describe("Hermes migration secret items", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -330,7 +330,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -383,7 +383,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -523,7 +523,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -627,7 +627,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -685,7 +685,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     try {
       process.env.XDG_DATA_HOME = xdgDataHome;
@@ -764,7 +764,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -901,7 +901,7 @@ describe("Hermes migration secret items", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     await writeFile(path.join(source, "auth.json"), "{}");
     await writeFile(
       path.join(root, ".local", "share", "opencode", "auth.json"),
@@ -959,7 +959,7 @@ describe("Hermes migration secret items", () => {
           workspace: workspaceDir,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     await writeFile(path.join(source, "config.yaml"), "model: openai/gpt-5.5\n");
     await writeFile(
       path.join(root, ".local", "share", "opencode", "auth.json"),

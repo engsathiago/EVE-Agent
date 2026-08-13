@@ -2,13 +2,13 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const tempDirs: string[] = [];
 
 function makeTempDir() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-loader-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-loader-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -16,7 +16,7 @@ function makeTempDir() {
 function writeBundledPluginFixture(id: string) {
   const pluginRoot = makeTempDir();
   fs.writeFileSync(
-    path.join(pluginRoot, "openclaw.plugin.json"),
+    path.join(pluginRoot, "eve.plugin.json"),
     JSON.stringify(
       {
         id,
@@ -47,7 +47,7 @@ function writePackagedPluginFixture(id: string) {
       {
         name: id,
         type: "commonjs",
-        openclaw: {
+        eve: {
           extensions: ["./index.cjs"],
         },
       },
@@ -57,7 +57,7 @@ function writePackagedPluginFixture(id: string) {
     "utf-8",
   );
   fs.writeFileSync(
-    path.join(pluginRoot, "openclaw.plugin.json"),
+    path.join(pluginRoot, "eve.plugin.json"),
     JSON.stringify(
       {
         id,
@@ -83,7 +83,7 @@ function writePackagedPluginFixture(id: string) {
 afterEach(() => {
   vi.resetModules();
   vi.doUnmock("./plugin-module-loader-cache.js");
-  delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+  delete process.env.EVE_BUNDLED_PLUGINS_DIR;
   for (const dir of tempDirs.splice(0)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -116,15 +116,15 @@ describe("createPluginModuleLoader", () => {
   it("loads bundled JavaScript without creating a module loader", async () => {
     const sourceLoaderCalls = mockSourceLoaderCalls();
 
-    const { loadOpenClawPlugins } = await importFreshModule<typeof import("./loader.js")>(
+    const { loadEVEPlugins } = await importFreshModule<typeof import("./loader.js")>(
       import.meta.url,
       "./loader.js?scope=native-module-loader",
     );
 
     const pluginRoot = writeBundledPluginFixture("demo");
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = pluginRoot;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = pluginRoot;
 
-    loadOpenClawPlugins({
+    loadEVEPlugins({
       cache: false,
       installRecords: {},
       workspaceDir: pluginRoot,
@@ -146,15 +146,15 @@ describe("createPluginModuleLoader", () => {
   it("loads packaged JavaScript without creating a module loader", async () => {
     const sourceLoaderCalls = mockSourceLoaderCalls();
 
-    const { loadOpenClawPlugins } = await importFreshModule<typeof import("./loader.js")>(
+    const { loadEVEPlugins } = await importFreshModule<typeof import("./loader.js")>(
       import.meta.url,
       "./loader.js?scope=packaged-native-module-loader",
     );
 
     const pluginRoot = writePackagedPluginFixture("npm-demo");
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = makeTempDir();
+    process.env.EVE_BUNDLED_PLUGINS_DIR = makeTempDir();
 
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       cache: false,
       installRecords: {},
       onlyPluginIds: ["npm-demo"],

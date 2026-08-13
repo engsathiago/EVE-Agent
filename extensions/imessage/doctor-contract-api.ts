@@ -2,8 +2,8 @@
 import type {
   ChannelDoctorConfigMutation,
   ChannelDoctorLegacyConfigRule,
-} from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 
 // Disabled `channels.imessage.catchup` blocks are retired. Enabled blocks stay
 // as a compatibility contract: older configs that opted into replay still get
@@ -39,7 +39,7 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
     path: ["channels", "imessage"],
     message:
       "disabled channels.imessage.catchup config is retired; iMessage now recovers via always-on inbound dedupe and a stale-backlog age fence. " +
-      'Run "openclaw doctor --fix" to remove disabled catchup blocks.',
+      'Run "eve doctor --fix" to remove disabled catchup blocks.',
     match: (value) => imessageEntryHasRetiredCatchup(value),
   },
 ];
@@ -47,7 +47,7 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
 export function normalizeCompatibilityConfig({
   cfg,
 }: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): ChannelDoctorConfigMutation {
   const channels = cfg.channels as Record<string, unknown> | undefined;
   const imessage = channels?.imessage;
@@ -84,7 +84,7 @@ export function normalizeCompatibilityConfig({
     config: {
       ...cfg,
       channels: { ...channels, imessage: nextImessage },
-    } as OpenClawConfig,
+    } as EVEConfig,
     changes,
   };
 }

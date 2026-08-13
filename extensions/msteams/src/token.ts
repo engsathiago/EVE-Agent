@@ -1,8 +1,8 @@
 // Msteams plugin module implements token behavior.
 import { readFileSync } from "node:fs";
 import { basename, dirname } from "node:path";
-import { isFutureDateTimestampMs } from "openclaw/plugin-sdk/number-runtime";
-import { privateFileStoreSync } from "openclaw/plugin-sdk/security-runtime";
+import { isFutureDateTimestampMs } from "eve-agent/plugin-sdk/number-runtime";
+import { privateFileStoreSync } from "eve-agent/plugin-sdk/security-runtime";
 import type { MSTeamsConfig } from "../runtime-api.js";
 import type { MSTeamsDelegatedTokens } from "./oauth.shared.js";
 import { refreshMSTeamsDelegatedTokens } from "./oauth.token.js";

@@ -1,5 +1,5 @@
 // Resolves plugin-provided memory embedding providers from config and registry.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SecretInput } from "../config/types.secrets.js";
 import type { EmbeddingInput } from "../memory-host-sdk/host/embedding-inputs.js";
 
@@ -69,7 +69,7 @@ export type MemoryEmbeddingProvider = {
 
 /** Options passed to memory embedding provider adapters. */
 export type MemoryEmbeddingProviderCreateOptions = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir?: string;
   provider?: string;
   fallback?: string;
@@ -129,7 +129,7 @@ export type RegisteredMemoryEmbeddingProvider = {
   ownerPluginId?: string;
 };
 
-const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("openclaw.memoryEmbeddingProviders");
+const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("eve.memoryEmbeddingProviders");
 
 function getMemoryEmbeddingProviders(): Map<string, RegisteredMemoryEmbeddingProvider> {
   const globalStore = globalThis as Record<PropertyKey, unknown>;

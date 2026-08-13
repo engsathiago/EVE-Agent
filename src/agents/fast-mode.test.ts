@@ -1,12 +1,12 @@
 // Verifies fast-mode precedence across session, agent, and model defaults.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveFastModeState } from "./fast-mode.js";
 
 describe("resolveFastModeState", () => {
   it("prefers session overrides", () => {
     const state = resolveFastModeState({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       provider: "openai",
       model: "gpt-4o",
       sessionEntry: { fastMode: true },
@@ -21,7 +21,7 @@ describe("resolveFastModeState", () => {
       agents: {
         list: [{ id: "alpha", fastModeDefault: true }],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const state = resolveFastModeState({
       cfg,
@@ -43,7 +43,7 @@ describe("resolveFastModeState", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const state = resolveFastModeState({
       cfg,
@@ -64,7 +64,7 @@ describe("resolveFastModeState", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const state = resolveFastModeState({
       cfg,
@@ -87,7 +87,7 @@ describe("resolveFastModeState", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const state = resolveFastModeState({
       cfg,
@@ -110,7 +110,7 @@ describe("resolveFastModeState", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const state = resolveFastModeState({
       cfg,
@@ -124,7 +124,7 @@ describe("resolveFastModeState", () => {
 
   it("defaults to off when unset", () => {
     const state = resolveFastModeState({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       provider: "openai",
       model: "gpt-4o",
     });

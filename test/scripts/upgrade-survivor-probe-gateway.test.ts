@@ -13,7 +13,7 @@ const dockerSurvivorPath = path.resolve("scripts/e2e/upgrade-survivor-docker.sh"
 const tempDirs: string[] = [];
 
 function makeTempDir(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-upgrade-probe-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-upgrade-probe-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -118,13 +118,13 @@ describe("scripts/e2e/lib/upgrade-survivor/probe-gateway.mjs", () => {
       ["--base-url", "http://127.0.0.1:9", "--path", "/readyz", "--expect", "ready", "--out", out],
       5_000,
       {
-        OPENCLAW_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: "64bytes",
+        EVE_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: "64bytes",
       },
     );
 
     expect(bodyLimitResult.status).not.toBe(0);
     expect(bodyLimitResult.stderr).toContain(
-      "invalid OPENCLAW_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: 64bytes",
+      "invalid EVE_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: 64bytes",
     );
   });
 
@@ -318,7 +318,7 @@ describe("scripts/e2e/lib/upgrade-survivor/probe-gateway.mjs", () => {
           "1000",
         ],
         5_000,
-        { OPENCLAW_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: "64" },
+        { EVE_UPGRADE_SURVIVOR_PROBE_MAX_BODY_BYTES: "64" },
       );
 
       expect(result.error).toBeUndefined();

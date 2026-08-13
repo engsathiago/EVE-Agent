@@ -37,7 +37,7 @@ type OnboardDynamicProviderOptions = {
   [optionKey: string]: unknown;
 };
 
-/** Parsed options accepted by `openclaw onboard`. */
+/** Parsed options accepted by `eve onboard`. */
 export type OnboardOptions = OnboardDynamicProviderOptions & {
   mode?: OnboardMode;
   /** "manual" is an alias for "advanced". */

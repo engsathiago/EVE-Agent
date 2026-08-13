@@ -1,8 +1,8 @@
 // Memory Wiki helper module supports config behavior.
 import os from "node:os";
 import path from "node:path";
-import { mapPluginConfigIssues } from "openclaw/plugin-sdk/extension-shared";
-import { buildPluginConfigSchema, z, type OpenClawPluginConfigSchema } from "../api.js";
+import { mapPluginConfigIssues } from "eve-agent/plugin-sdk/extension-shared";
+import { buildPluginConfigSchema, z, type EVEPluginConfigSchema } from "../api.js";
 
 export const WIKI_VAULT_MODES = ["isolated", "bridge", "unsafe-local"] as const;
 export const WIKI_RENDER_MODES = ["native", "obsidian"] as const;
@@ -182,7 +182,7 @@ const memoryWikiConfigSchemaBase = buildPluginConfigSchema(MemoryWikiConfigSourc
   },
 });
 
-export const memoryWikiConfigSchema: OpenClawPluginConfigSchema = memoryWikiConfigSchemaBase;
+export const memoryWikiConfigSchema: EVEPluginConfigSchema = memoryWikiConfigSchemaBase;
 
 function expandHomePath(inputPath: string, homedir: string): string {
   if (inputPath === "~") {
@@ -195,7 +195,7 @@ function expandHomePath(inputPath: string, homedir: string): string {
 }
 
 export function resolveDefaultMemoryWikiVaultPath(homedir = os.homedir()): string {
-  return path.join(homedir, ".openclaw", "wiki", "main");
+  return path.join(homedir, ".eve", "wiki", "main");
 }
 
 export function resolveMemoryWikiConfig(

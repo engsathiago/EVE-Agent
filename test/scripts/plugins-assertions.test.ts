@@ -68,7 +68,7 @@ function writeFixtureServerShims(binDir: string, pidPath: string): void {
     path.join(binDir, "node"),
     [
       "#!/bin/bash",
-      'printf "%s\\n" "$$" >"$OPENCLAW_TEST_FIXTURE_SERVER_PID"',
+      'printf "%s\\n" "$$" >"$EVE_TEST_FIXTURE_SERVER_PID"',
       "trap 'exit 0' TERM",
       "while true; do /bin/sleep 1; done",
       "",
@@ -86,7 +86,7 @@ function writeStubbornFixtureServerShims(binDir: string, pidPath: string): void 
     path.join(binDir, "node"),
     [
       "#!/bin/bash",
-      'printf "%s\\n" "$$" >"$OPENCLAW_TEST_FIXTURE_SERVER_PID"',
+      'printf "%s\\n" "$$" >"$EVE_TEST_FIXTURE_SERVER_PID"',
       "trap ':' TERM",
       "while true; do /bin/sleep 1; done",
       "",
@@ -188,26 +188,26 @@ describe("plugins Docker assertions", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1e3",
+        CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1e3",
       },
     });
     expect(timeoutResult.status).not.toBe(0);
     expect(timeoutResult.stderr).toContain(
-      "invalid OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: 1e3",
+      "invalid EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: 1e3",
     );
 
     const bodyLimitResult = spawnSync(process.execPath, [ASSERTIONS_SCRIPT, "clawhub-preflight"], {
       encoding: "utf8",
       env: {
         ...process.env,
-        CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: "1000bytes",
+        CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: "1000bytes",
       },
     });
     expect(bodyLimitResult.status).not.toBe(0);
     expect(bodyLimitResult.stderr).toContain(
-      "invalid OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: 1000bytes",
+      "invalid EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: 1000bytes",
     );
   });
 
@@ -230,29 +230,29 @@ describe("plugins Docker assertions", () => {
     for (const scriptPath of scripts) {
       const script = readFileSync(scriptPath, "utf8");
       const scriptWithoutDefaultScratch = script.replace(
-        'mktemp -d "/tmp/openclaw-plugins.XXXXXX"',
+        'mktemp -d "/tmp/eve-plugins.XXXXXX"',
         "",
       );
-      expect(script).toContain("OPENCLAW_PLUGINS_TMP_DIR");
+      expect(script).toContain("EVE_PLUGINS_TMP_DIR");
       expect(scriptWithoutDefaultScratch).not.toMatch(
-        /\/tmp\/(?:plugins|marketplace|demo-plugin|is-number|openclaw-plugin|openclaw-clawhub)/,
+        /\/tmp\/(?:plugins|marketplace|demo-plugin|is-number|eve-plugin|eve-clawhub)/,
       );
     }
   });
 
   it("cleans the default plugin sweep scratch root", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-sweep-cleanup-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-sweep-cleanup-"));
     const marker = path.join(root, "scratch-path.txt");
     try {
       const result = runPluginsSweepShell(
         `
 set -euo pipefail
-export OPENCLAW_PLUGINS_SWEEP_SOURCE_ONLY=1
+export EVE_PLUGINS_SWEEP_SOURCE_ONLY=1
 source scripts/e2e/lib/plugins/sweep.sh
-printf '%s\\n' "$OPENCLAW_PLUGINS_TMP_DIR" > "$MARKER"
-test -d "$OPENCLAW_PLUGINS_TMP_DIR"
-cleanup_openclaw_plugins_sweep
-test ! -e "$OPENCLAW_PLUGINS_TMP_DIR"
+printf '%s\\n' "$EVE_PLUGINS_TMP_DIR" > "$MARKER"
+test -d "$EVE_PLUGINS_TMP_DIR"
+cleanup_eve_plugins_sweep
+test ! -e "$EVE_PLUGINS_TMP_DIR"
 `,
         { MARKER: marker },
       );
@@ -261,7 +261,7 @@ test ! -e "$OPENCLAW_PLUGINS_TMP_DIR"
       expect(result.stderr).toBe("");
       expect(result.status).toBe(0);
       const scratchRoot = readFileSync(marker, "utf8").trim();
-      expect(scratchRoot).toContain("/tmp/openclaw-plugins.");
+      expect(scratchRoot).toContain("/tmp/eve-plugins.");
       expect(existsSync(scratchRoot)).toBe(false);
     } finally {
       rmSync(root, { force: true, recursive: true });
@@ -269,18 +269,18 @@ test ! -e "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("preserves caller-provided plugin sweep scratch roots", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-sweep-caller-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-sweep-caller-"));
     const scratchRoot = path.join(root, "scratch");
     try {
       const result = runPluginsSweepShell(
         `
 set -euo pipefail
-export OPENCLAW_PLUGINS_SWEEP_SOURCE_ONLY=1
-export OPENCLAW_PLUGINS_TMP_DIR="$SCRATCH_ROOT"
+export EVE_PLUGINS_SWEEP_SOURCE_ONLY=1
+export EVE_PLUGINS_TMP_DIR="$SCRATCH_ROOT"
 source scripts/e2e/lib/plugins/sweep.sh
-test -d "$OPENCLAW_PLUGINS_TMP_DIR"
-cleanup_openclaw_plugins_sweep
-test -d "$OPENCLAW_PLUGINS_TMP_DIR"
+test -d "$EVE_PLUGINS_TMP_DIR"
+cleanup_eve_plugins_sweep
+test -d "$EVE_PLUGINS_TMP_DIR"
 `,
         { SCRATCH_ROOT: scratchRoot },
       );
@@ -295,7 +295,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("scans plugin assertion logs without echoing whole files on failure", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-update-log-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-update-log-"));
     try {
       const passRoot = path.join(root, "pass");
       mkdirSync(passRoot, { recursive: true });
@@ -305,7 +305,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         "utf8",
       );
       const pass = await runAssertionAsync(["plugin-dir-update-skipped"], {
-        OPENCLAW_PLUGINS_TMP_DIR: passRoot,
+        EVE_PLUGINS_TMP_DIR: passRoot,
       });
       expect(pass.status).toBe(0);
 
@@ -317,7 +317,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         "utf8",
       );
       const fail = await runAssertionAsync(["plugin-dir-update-skipped"], {
-        OPENCLAW_PLUGINS_TMP_DIR: failRoot,
+        EVE_PLUGINS_TMP_DIR: failRoot,
       });
       expect(fail.status).toBe(1);
       expect(fail.stderr).toContain("Output tail:");
@@ -329,16 +329,16 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
       mkdirSync(invalidRoot, { recursive: true });
       mkdirSync(invalidHome, { recursive: true });
       writeFileSync(
-        path.join(invalidRoot, "plugins-invalid-openclaw-extensions.log"),
-        `openclaw.extensions[1]\n${"x".repeat(256 * 1024)}\nmissing validation tail`,
+        path.join(invalidRoot, "plugins-invalid-eve-extensions.log"),
+        `eve.extensions[1]\n${"x".repeat(256 * 1024)}\nmissing validation tail`,
         "utf8",
       );
-      writeJson(path.join(invalidRoot, "plugins-invalid-openclaw-extensions-list.json"), {
+      writeJson(path.join(invalidRoot, "plugins-invalid-eve-extensions-list.json"), {
         plugins: [],
       });
-      const invalid = await runAssertionAsync(["invalid-openclaw-extensions"], {
+      const invalid = await runAssertionAsync(["invalid-eve-extensions"], {
         HOME: invalidHome,
-        OPENCLAW_PLUGINS_TMP_DIR: invalidRoot,
+        EVE_PLUGINS_TMP_DIR: invalidRoot,
       });
       expect(invalid.status).toBe(1);
       expect(invalid.stderr).toContain("malformed metadata install output");
@@ -350,7 +350,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("cleans npm fixture registry children when readiness times out", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-npm-fixture-cleanup-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-npm-fixture-cleanup-"));
     try {
       const binDir = path.join(root, "bin");
       const fixtureDir = path.join(root, "fixture");
@@ -378,7 +378,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_TEST_FIXTURE_SERVER_PID: pidPath,
+            EVE_TEST_FIXTURE_SERVER_PID: pidPath,
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
@@ -395,7 +395,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("force-kills stubborn npm fixture registry children during cleanup", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-npm-fixture-kill-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-npm-fixture-kill-"));
     try {
       const binDir = path.join(root, "bin");
       const fixtureDir = path.join(root, "fixture");
@@ -422,9 +422,9 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2",
-            OPENCLAW_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: "0.05",
-            OPENCLAW_TEST_FIXTURE_SERVER_PID: pidPath,
+            EVE_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2",
+            EVE_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: "0.05",
+            EVE_TEST_FIXTURE_SERVER_PID: pidPath,
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
@@ -447,10 +447,10 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         [
           "set -euo pipefail",
           "source scripts/e2e/lib/plugins/fixtures.sh",
-          "openclaw_plugins_signal_fixture_process() { echo signal; }",
-          "openclaw_plugins_fixture_process_alive() { echo probe; return 1; }",
+          "eve_plugins_signal_fixture_process() { echo signal; }",
+          "eve_plugins_fixture_process_alive() { echo probe; return 1; }",
           "set +e",
-          "openclaw_plugins_stop_fixture_process 12345",
+          "eve_plugins_stop_fixture_process 12345",
           'status="$?"',
           "set -e",
           'exit "$status"',
@@ -461,13 +461,13 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         encoding: "utf8",
         env: {
           ...process.env,
-          OPENCLAW_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2x",
+          EVE_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2x",
         },
       },
     );
 
     expect(result.status).toBe(2);
-    expect(result.stderr).toContain("invalid OPENCLAW_PLUGINS_FIXTURE_STOP_ATTEMPTS: 2x");
+    expect(result.stderr).toContain("invalid EVE_PLUGINS_FIXTURE_STOP_ATTEMPTS: 2x");
     expect(result.stdout).not.toContain("signal");
     expect(result.stdout).not.toContain("probe");
   });
@@ -480,10 +480,10 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         [
           "set -euo pipefail",
           "source scripts/e2e/lib/plugins/fixtures.sh",
-          "openclaw_plugins_signal_fixture_process() { echo signal; }",
-          "openclaw_plugins_fixture_process_alive() { echo probe; return 1; }",
+          "eve_plugins_signal_fixture_process() { echo signal; }",
+          "eve_plugins_fixture_process_alive() { echo probe; return 1; }",
           "set +e",
-          "openclaw_plugins_stop_fixture_process 12345",
+          "eve_plugins_stop_fixture_process 12345",
           'status="$?"',
           "set -e",
           'exit "$status"',
@@ -494,20 +494,20 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         encoding: "utf8",
         env: {
           ...process.env,
-          OPENCLAW_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2",
-          OPENCLAW_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: "soon",
+          EVE_PLUGINS_FIXTURE_STOP_ATTEMPTS: "2",
+          EVE_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: "soon",
         },
       },
     );
 
     expect(result.status).toBe(2);
-    expect(result.stderr).toContain("invalid OPENCLAW_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: soon");
+    expect(result.stderr).toContain("invalid EVE_PLUGINS_FIXTURE_STOP_INTERVAL_SECONDS: soon");
     expect(result.stdout).not.toContain("signal");
     expect(result.stdout).not.toContain("probe");
   });
 
   it("bounds npm fixture registry logs when readiness fails", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-npm-fixture-log-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-npm-fixture-log-"));
     try {
       const binDir = path.join(root, "bin");
       const fixtureDir = path.join(root, "fixture");
@@ -534,7 +534,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: "80",
+            EVE_DOCKER_E2E_LOG_PRINT_BYTES: "80",
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
@@ -551,7 +551,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
 
   it("keeps npm fixture registry alive after malformed package paths", async () => {
     const tempDirs: string[] = [];
-    const root = makeTempDir(tempDirs, "openclaw-plugin-npm-fixture-request-");
+    const root = makeTempDir(tempDirs, "eve-plugin-npm-fixture-request-");
     const portFile = path.join(root, "port");
     const tarballPath = path.join(root, "demo-plugin.tgz");
     writeFileSync(tarballPath, "fixture package archive", "utf8");
@@ -561,7 +561,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
       [
         "scripts/e2e/lib/plugins/npm-registry-server.mjs",
         portFile,
-        "@openclaw/demo-plugin-npm",
+        "@eve/demo-plugin-npm",
         "1.0.0",
         tarballPath,
       ],
@@ -584,11 +584,11 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
       expect(malformed.body).toContain("not found");
       expect(child.exitCode, stderr.text()).toBeNull();
 
-      const valid = await requestFixtureRegistry(port, "/@openclaw%2Fdemo-plugin-npm");
+      const valid = await requestFixtureRegistry(port, "/@eve%2Fdemo-plugin-npm");
 
       expect(valid.statusCode, stderr.text()).toBe(200);
       expect(JSON.parse(valid.body)).toMatchObject({
-        name: "@openclaw/demo-plugin-npm",
+        name: "@eve/demo-plugin-npm",
         "dist-tags": { latest: "1.0.0" },
       });
     } finally {
@@ -603,7 +603,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("rejects invalid plugin fixture log byte limits before npm fixture setup", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-npm-fixture-log-invalid-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-npm-fixture-log-invalid-"));
     try {
       const binDir = path.join(root, "bin");
       const fixtureDir = path.join(root, "fixture");
@@ -634,14 +634,14 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: "64kb",
+            EVE_DOCKER_E2E_LOG_PRINT_BYTES: "64kb",
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
       );
 
       expect(result.status).toBe(2);
-      expect(result.stderr).toContain("invalid OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: 64kb");
+      expect(result.stderr).toContain("invalid EVE_DOCKER_E2E_LOG_PRINT_BYTES: 64kb");
       expect(result.stderr).not.toContain("node should not run");
     } finally {
       rmSync(root, { force: true, recursive: true });
@@ -649,7 +649,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("cleans ClawHub fixture children when readiness times out", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-clawhub-fixture-cleanup-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-clawhub-fixture-cleanup-"));
     try {
       const binDir = path.join(root, "bin");
       const cleanupPath = path.join(root, "caller-cleanup");
@@ -678,9 +678,9 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_PLUGINS_E2E_LIVE_CLAWHUB: "0",
-            OPENCLAW_PLUGINS_TMP_DIR: tmpDir,
-            OPENCLAW_TEST_FIXTURE_SERVER_PID: pidPath,
+            EVE_PLUGINS_E2E_LIVE_CLAWHUB: "0",
+            EVE_PLUGINS_TMP_DIR: tmpDir,
+            EVE_TEST_FIXTURE_SERVER_PID: pidPath,
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
@@ -697,7 +697,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("rejects invalid plugin fixture log byte limits before ClawHub fixture setup", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-clawhub-fixture-log-invalid-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-clawhub-fixture-log-invalid-"));
     try {
       const binDir = path.join(root, "bin");
       const tmpDir = path.join(root, "scratch");
@@ -729,16 +729,16 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: "64kb",
-            OPENCLAW_PLUGINS_E2E_LIVE_CLAWHUB: "0",
-            OPENCLAW_PLUGINS_TMP_DIR: tmpDir,
+            EVE_DOCKER_E2E_LOG_PRINT_BYTES: "64kb",
+            EVE_PLUGINS_E2E_LIVE_CLAWHUB: "0",
+            EVE_PLUGINS_TMP_DIR: tmpDir,
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
       );
 
       expect(result.status).toBe(2);
-      expect(result.stderr).toContain("invalid OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: 64kb");
+      expect(result.stderr).toContain("invalid EVE_DOCKER_E2E_LOG_PRINT_BYTES: 64kb");
       expect(result.stderr).not.toContain("node should not run");
     } finally {
       rmSync(root, { force: true, recursive: true });
@@ -746,7 +746,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("bounds ClawHub fixture server logs when readiness fails", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-clawhub-fixture-log-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugin-clawhub-fixture-log-"));
     try {
       const binDir = path.join(root, "bin");
       const tmpDir = path.join(root, "scratch");
@@ -774,9 +774,9 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_DOCKER_E2E_LOG_PRINT_BYTES: "80",
-            OPENCLAW_PLUGINS_E2E_LIVE_CLAWHUB: "0",
-            OPENCLAW_PLUGINS_TMP_DIR: tmpDir,
+            EVE_DOCKER_E2E_LOG_PRINT_BYTES: "80",
+            EVE_PLUGINS_E2E_LIVE_CLAWHUB: "0",
+            EVE_PLUGINS_TMP_DIR: tmpDir,
             PATH: `${binDir}${path.delimiter}/usr/bin${path.delimiter}/bin`,
           },
         },
@@ -792,7 +792,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("uses the configured scratch root and resolves Windows home-relative install paths", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugins-assertions-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugins-assertions-"));
     const home = path.join(root, "home");
     const scratchRoot = path.join(root, "scratch");
     const installPath = path.join(home, "managed-plugin");
@@ -805,7 +805,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
       writeJson(path.join(scratchRoot, "plugins2-inspect.json"), {
         gatewayMethods: ["demo.tgz"],
       });
-      writeJson(path.join(home, ".openclaw", "plugins", "installs.json"), {
+      writeJson(path.join(home, ".eve", "plugins", "installs.json"), {
         installRecords: {
           "demo-plugin-tgz": {
             source: "archive",
@@ -819,8 +819,8 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         env: {
           ...process.env,
           HOME: home,
-          OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1e3",
-          OPENCLAW_PLUGINS_TMP_DIR: scratchRoot,
+          EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1e3",
+          EVE_PLUGINS_TMP_DIR: scratchRoot,
         },
       });
 
@@ -831,13 +831,13 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("compares local plugin source paths by canonical path", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugins-assertions-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugins-assertions-"));
     const home = path.join(root, "home");
     const scratchRoot = path.join(root, "scratch");
     const sourceParent = path.join(root, "source");
     const sourcePath = `${sourceParent}//plugin`;
     const normalizedSourcePath = path.join(sourceParent, "plugin");
-    const installPath = path.join(home, ".openclaw", "extensions", "demo-plugin-dir");
+    const installPath = path.join(home, ".eve", "extensions", "demo-plugin-dir");
     mkdirSync(sourcePath, { recursive: true });
     mkdirSync(installPath, { recursive: true });
 
@@ -848,7 +848,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
       writeJson(path.join(scratchRoot, "plugins3-inspect.json"), {
         gatewayMethods: ["demo.dir"],
       });
-      writeJson(path.join(home, ".openclaw", "plugins", "installs.json"), {
+      writeJson(path.join(home, ".eve", "plugins", "installs.json"), {
         installRecords: {
           "demo-plugin-dir": {
             source: "path",
@@ -863,7 +863,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         env: {
           ...process.env,
           HOME: home,
-          OPENCLAW_PLUGINS_TMP_DIR: scratchRoot,
+          EVE_PLUGINS_TMP_DIR: scratchRoot,
         },
       });
 
@@ -874,16 +874,16 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("still requires archive managed install directories to be removed", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugins-assertions-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugins-assertions-"));
     const home = path.join(root, "home");
     const scratchRoot = path.join(root, "scratch");
-    const installPath = path.join(home, ".openclaw", "extensions", "demo-plugin-tgz");
+    const installPath = path.join(home, ".eve", "extensions", "demo-plugin-tgz");
     mkdirSync(installPath, { recursive: true });
 
     try {
       writeJson(path.join(scratchRoot, "plugins2-uninstalled.json"), { plugins: [] });
       writeFileSync(path.join(scratchRoot, "plugins2-install-path.txt"), installPath, "utf8");
-      writeJson(path.join(home, ".openclaw", "plugins", "installs.json"), {
+      writeJson(path.join(home, ".eve", "plugins", "installs.json"), {
         installRecords: {},
       });
 
@@ -892,7 +892,7 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         env: {
           ...process.env,
           HOME: home,
-          OPENCLAW_PLUGINS_TMP_DIR: scratchRoot,
+          EVE_PLUGINS_TMP_DIR: scratchRoot,
         },
       });
 
@@ -904,10 +904,10 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
   });
 
   it("rejects unreadable config during plugin uninstall proof", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-plugins-assertions-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-plugins-assertions-"));
     const home = path.join(root, "home");
     const scratchRoot = path.join(root, "scratch");
-    const removedInstallPath = path.join(home, ".openclaw", "extensions", "demo-plugin-tgz");
+    const removedInstallPath = path.join(home, ".eve", "extensions", "demo-plugin-tgz");
 
     try {
       writeJson(path.join(scratchRoot, "plugins2-uninstalled.json"), { plugins: [] });
@@ -916,22 +916,22 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         removedInstallPath,
         "utf8",
       );
-      writeJson(path.join(home, ".openclaw", "plugins", "installs.json"), {
+      writeJson(path.join(home, ".eve", "plugins", "installs.json"), {
         installRecords: {},
       });
-      writeFileSync(path.join(home, ".openclaw", "openclaw.json"), "{ malformed\n", "utf8");
+      writeFileSync(path.join(home, ".eve", "eve.json"), "{ malformed\n", "utf8");
 
       const result = spawnSync(process.execPath, [ASSERTIONS_SCRIPT, "plugin-tgz-removed"], {
         encoding: "utf8",
         env: {
           ...process.env,
           HOME: home,
-          OPENCLAW_PLUGINS_TMP_DIR: scratchRoot,
+          EVE_PLUGINS_TMP_DIR: scratchRoot,
         },
       });
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("failed to read OpenClaw config");
+      expect(result.stderr).toContain("failed to read EVE config");
     } finally {
       rmSync(root, { force: true, recursive: true });
     }
@@ -939,31 +939,31 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
 
   it("rejects ClawHub install paths that resolve outside the managed extensions root", () => {
     const tempDirs: string[] = [];
-    const root = makeTempDir(tempDirs, "openclaw-plugins-clawhub-path-");
+    const root = makeTempDir(tempDirs, "eve-plugins-clawhub-path-");
     const home = path.join(root, "home");
     const scratchRoot = path.join(root, "scratch");
-    const extensionsRoot = path.join(home, ".openclaw", "extensions");
+    const extensionsRoot = path.join(home, ".eve", "extensions");
     const escapedInstallPath = `${extensionsRoot}${path.sep}..${path.sep}escaped-clawhub`;
     mkdirSync(extensionsRoot, { recursive: true });
     mkdirSync(escapedInstallPath, { recursive: true });
 
     try {
       writeJson(path.join(scratchRoot, "plugins-clawhub-installed.json"), {
-        plugins: [{ id: "openclaw-kitchen-sink-fixture", status: "loaded" }],
+        plugins: [{ id: "eve-kitchen-sink-fixture", status: "loaded" }],
       });
       writeJson(path.join(scratchRoot, "plugins-clawhub-inspect.json"), {
-        plugin: { id: "openclaw-kitchen-sink-fixture" },
+        plugin: { id: "eve-kitchen-sink-fixture" },
       });
-      writeJson(path.join(home, ".openclaw", "plugins", "installs.json"), {
+      writeJson(path.join(home, ".eve", "plugins", "installs.json"), {
         installRecords: {
-          "openclaw-kitchen-sink-fixture": {
+          "eve-kitchen-sink-fixture": {
             artifactFormat: "zip",
             artifactKind: "legacy-zip",
             clawhubFamily: "code-plugin",
-            clawhubPackage: "@openclaw/kitchen-sink",
+            clawhubPackage: "@eve/kitchen-sink",
             installPath: escapedInstallPath,
             source: "clawhub",
-            spec: "clawhub:@openclaw/kitchen-sink",
+            spec: "clawhub:@eve/kitchen-sink",
           },
         },
       });
@@ -972,10 +972,10 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         encoding: "utf8",
         env: {
           ...process.env,
-          CLAWHUB_PLUGIN_ID: "openclaw-kitchen-sink-fixture",
-          CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
+          CLAWHUB_PLUGIN_ID: "eve-kitchen-sink-fixture",
+          CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
           HOME: home,
-          OPENCLAW_PLUGINS_TMP_DIR: scratchRoot,
+          EVE_PLUGINS_TMP_DIR: scratchRoot,
         },
       });
 
@@ -998,15 +998,15 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         throw new Error("expected TCP server address");
       }
       const result = await runAssertionAsync(["clawhub-preflight"], {
-        CLAWHUB_PLUGIN_ID: "openclaw-kitchen-sink-fixture",
-        CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
-        OPENCLAW_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "25",
+        CLAWHUB_PLUGIN_ID: "eve-kitchen-sink-fixture",
+        CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
+        EVE_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "25",
       });
 
       expect(result.status).not.toBe(0);
       expect(result.stderr).toContain(
-        "ClawHub package preflight for @openclaw/kitchen-sink timed out after 25ms",
+        "ClawHub package preflight for @eve/kitchen-sink timed out after 25ms",
       );
     } finally {
       await new Promise<void>((resolve) => {
@@ -1031,15 +1031,15 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         throw new Error("expected TCP server address");
       }
       const result = await runAssertionAsync(["clawhub-preflight"], {
-        CLAWHUB_PLUGIN_ID: "openclaw-kitchen-sink-fixture",
-        CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
-        OPENCLAW_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "75",
+        CLAWHUB_PLUGIN_ID: "eve-kitchen-sink-fixture",
+        CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
+        EVE_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "75",
       });
 
       expect(result.status).not.toBe(0);
       expect(result.stderr).toContain(
-        "ClawHub package preflight response for @openclaw/kitchen-sink timed out after 75ms",
+        "ClawHub package preflight response for @eve/kitchen-sink timed out after 75ms",
       );
     } finally {
       await new Promise<void>((resolve) => {
@@ -1063,16 +1063,16 @@ test -d "$OPENCLAW_PLUGINS_TMP_DIR"
         throw new Error("expected TCP server address");
       }
       const result = await runAssertionAsync(["clawhub-preflight"], {
-        CLAWHUB_PLUGIN_ID: "openclaw-kitchen-sink-fixture",
-        CLAWHUB_PLUGIN_SPEC: "clawhub:@openclaw/kitchen-sink",
-        OPENCLAW_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: "16",
-        OPENCLAW_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1000",
+        CLAWHUB_PLUGIN_ID: "eve-kitchen-sink-fixture",
+        CLAWHUB_PLUGIN_SPEC: "clawhub:@eve/kitchen-sink",
+        EVE_CLAWHUB_URL: `http://127.0.0.1:${address.port}`,
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_BODY_MAX_BYTES: "16",
+        EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS: "1000",
       });
 
       expect(result.status).not.toBe(0);
       expect(result.stderr).toContain(
-        "ClawHub package preflight response for @openclaw/kitchen-sink response body exceeded 16 bytes",
+        "ClawHub package preflight response for @eve/kitchen-sink response body exceeded 16 bytes",
       );
       expect(result.stderr).not.toContain("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     } finally {

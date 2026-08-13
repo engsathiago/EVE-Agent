@@ -6,13 +6,13 @@ import type {
   ToolCallLocation,
   ToolKind,
 } from "@agentclientprotocol/sdk";
-import { asRecord } from "@openclaw/acp-core/record-shared";
+import { asRecord } from "@eve/acp-core/record-shared";
 import {
   hasNonEmptyString,
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 
 type GatewayAttachment = {
   type: string;

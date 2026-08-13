@@ -1,6 +1,6 @@
 // Workboard tests cover gateway plugin behavior.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawPluginApi } from "../api.js";
+import type { EVEPluginApi } from "../api.js";
 import { registerWorkboardGatewayMethods } from "./gateway.js";
 import { WorkboardStore, type PersistedWorkboardCard, type WorkboardKeyedStore } from "./store.js";
 
@@ -25,8 +25,8 @@ function createMemoryStore<T = PersistedWorkboardCard>(): WorkboardKeyedStore<T>
 describe("workboard gateway methods", () => {
   it("registers CRUD methods with read/write scopes", async () => {
     type RegisteredMethod = {
-      handler: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1];
-      opts: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[2];
+      handler: Parameters<EVEPluginApi["registerGatewayMethod"]>[1];
+      opts: Parameters<EVEPluginApi["registerGatewayMethod"]>[2];
     };
     const methods = new Map<string, RegisteredMethod>();
     const api = {
@@ -40,7 +40,7 @@ describe("workboard gateway methods", () => {
           methods.set(method, { handler, opts });
         },
       ),
-    } as unknown as OpenClawPluginApi;
+    } as unknown as EVEPluginApi;
 
     registerWorkboardGatewayMethods({ api, store: new WorkboardStore(createMemoryStore()) });
 
@@ -141,8 +141,8 @@ describe("workboard gateway methods", () => {
 
   it("stores metadata updates through dedicated card methods", async () => {
     type RegisteredMethod = {
-      handler: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1];
-      opts: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[2];
+      handler: Parameters<EVEPluginApi["registerGatewayMethod"]>[1];
+      opts: Parameters<EVEPluginApi["registerGatewayMethod"]>[2];
     };
     const methods = new Map<string, RegisteredMethod>();
     const api = {
@@ -156,7 +156,7 @@ describe("workboard gateway methods", () => {
           methods.set(method, { handler, opts });
         },
       ),
-    } as unknown as OpenClawPluginApi;
+    } as unknown as EVEPluginApi;
 
     registerWorkboardGatewayMethods({ api, store: new WorkboardStore(createMemoryStore()) });
 
@@ -186,8 +186,8 @@ describe("workboard gateway methods", () => {
 
   it("validates labels from comma-separated gateway input", async () => {
     type RegisteredMethod = {
-      handler: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1];
-      opts: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[2];
+      handler: Parameters<EVEPluginApi["registerGatewayMethod"]>[1];
+      opts: Parameters<EVEPluginApi["registerGatewayMethod"]>[2];
     };
     const methods = new Map<string, RegisteredMethod>();
     const api = {
@@ -201,7 +201,7 @@ describe("workboard gateway methods", () => {
           methods.set(method, { handler, opts });
         },
       ),
-    } as unknown as OpenClawPluginApi;
+    } as unknown as EVEPluginApi;
 
     registerWorkboardGatewayMethods({ api, store: new WorkboardStore(createMemoryStore()) });
 
@@ -220,8 +220,8 @@ describe("workboard gateway methods", () => {
 
   it("dispatches workboard cards when gateway params are omitted", async () => {
     type RegisteredMethod = {
-      handler: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1];
-      opts: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[2];
+      handler: Parameters<EVEPluginApi["registerGatewayMethod"]>[1];
+      opts: Parameters<EVEPluginApi["registerGatewayMethod"]>[2];
     };
     const methods = new Map<string, RegisteredMethod>();
     const run = vi.fn().mockResolvedValue({ runId: "run-card" });
@@ -237,7 +237,7 @@ describe("workboard gateway methods", () => {
           methods.set(method, { handler, opts });
         },
       ),
-    } as unknown as OpenClawPluginApi;
+    } as unknown as EVEPluginApi;
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({
       title: "Ready worker",
@@ -263,8 +263,8 @@ describe("workboard gateway methods", () => {
 
   it("claims, heartbeats, and bulk-updates cards through gateway methods", async () => {
     type RegisteredMethod = {
-      handler: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1];
-      opts: Parameters<OpenClawPluginApi["registerGatewayMethod"]>[2];
+      handler: Parameters<EVEPluginApi["registerGatewayMethod"]>[1];
+      opts: Parameters<EVEPluginApi["registerGatewayMethod"]>[2];
     };
     const methods = new Map<string, RegisteredMethod>();
     const api = {
@@ -278,7 +278,7 @@ describe("workboard gateway methods", () => {
           methods.set(method, { handler, opts });
         },
       ),
-    } as unknown as OpenClawPluginApi;
+    } as unknown as EVEPluginApi;
 
     registerWorkboardGatewayMethods({ api, store: new WorkboardStore(createMemoryStore()) });
 

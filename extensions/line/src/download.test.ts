@@ -14,7 +14,7 @@ vi.mock("@line/bot-sdk", () => ({
   },
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-env", () => ({
   createSubsystemLogger: () => {
     const logger = {
       debug: () => {},
@@ -28,7 +28,7 @@ vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
   logVerbose: () => {},
 }));
 
-vi.mock("openclaw/plugin-sdk/media-store", () => ({
+vi.mock("eve-agent/plugin-sdk/media-store", () => ({
   saveMediaStream: saveMediaStreamMock,
 }));
 
@@ -65,8 +65,8 @@ describe("downloadLineMedia", () => {
 
   afterAll(() => {
     vi.doUnmock("@line/bot-sdk");
-    vi.doUnmock("openclaw/plugin-sdk/runtime-env");
-    vi.doUnmock("openclaw/plugin-sdk/media-store");
+    vi.doUnmock("eve-agent/plugin-sdk/runtime-env");
+    vi.doUnmock("eve-agent/plugin-sdk/media-store");
     vi.resetModules();
   });
 
@@ -82,7 +82,7 @@ describe("downloadLineMedia", () => {
         }
         const buffer = Buffer.concat(chunksLocal);
         return {
-          path: `/home/user/.openclaw/media/${subdir ?? "unknown"}/saved-media`,
+          path: `/home/user/.eve/media/${subdir ?? "unknown"}/saved-media`,
           contentType: detectMockContentType(buffer, contentType),
           size: buffer.length,
         };
@@ -102,7 +102,7 @@ describe("downloadLineMedia", () => {
     expect(call[2]).toBe("inbound");
     expect(call[3]).toBe(10 * 1024 * 1024);
     expect(result).toEqual({
-      path: "/home/user/.openclaw/media/inbound/saved-media",
+      path: "/home/user/.eve/media/inbound/saved-media",
       contentType: "image/jpeg",
       size: jpeg.length,
     });

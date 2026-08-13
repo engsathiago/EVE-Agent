@@ -1,5 +1,5 @@
 // Whatsapp plugin module implements vcard behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type ParsedVcard = {
   name?: string;

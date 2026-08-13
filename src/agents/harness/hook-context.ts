@@ -1,7 +1,7 @@
 /**
  * Builds plugin hook context metadata for native agent harness events.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { DiagnosticTraceContext } from "../../infra/diagnostic-trace-context.js";
 import type {
   PluginHookAgentContext,
@@ -33,7 +33,7 @@ export type AgentHarnessHookContext = {
   contextTokenBudget?: number;
   contextWindowSource?: PluginHookContextWindowSource;
   contextWindowReferenceTokens?: number;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 };
 
 /** Builds the sparse hook context object passed to agent harness plugin hooks. */

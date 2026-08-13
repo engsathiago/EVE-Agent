@@ -1,6 +1,6 @@
 // Status text helpers render runtime status summaries for CLI output.
 import os from "node:os";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import {
   resolveAgentConfig,
   resolveAgentDir,
@@ -31,7 +31,7 @@ import type { ThinkLevel } from "../auto-reply/thinking.js";
 import { toAgentModelListLike } from "../config/model-input.js";
 import type { SessionEntry } from "../config/sessions.js";
 import { hasSessionAutoModelFallbackProvenance } from "../config/sessions/model-override-provenance.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatDurationCompact } from "../infra/format-time/format-duration.ts";
 import {
   formatUsageWindowSummary,
@@ -62,7 +62,7 @@ const USAGE_OAUTH_ONLY_PROVIDERS = new Set([
 ]);
 
 function resolveStatusChannelFeatureLine(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   statusChannel: string;
   statusAccountId?: string;
   sessionEntry?: SessionEntry;
@@ -142,7 +142,7 @@ function loadStatusPluginHealthRuntime(): Promise<
 // Context lookup stays synchronous/non-refreshing so status output does not
 // trigger provider/catalog IO while rendering a command response.
 function resolveStatusRuntimeContextTokens(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
 }): number | undefined {
@@ -195,7 +195,7 @@ function resolveUsageCredentialType(authLabel?: string): "oauth" | "token" | "ap
 
 function resolveCodexSyntheticUsageAuthProfileId(params: {
   profileId: string | undefined;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
 }): string | undefined {
   const normalizedProfileId = params.profileId?.trim();
@@ -253,7 +253,7 @@ function formatSessionTaskLine(sessionKey: string): string | undefined {
 }
 
 async function resolveStatusHarnessId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
   agentId: string;

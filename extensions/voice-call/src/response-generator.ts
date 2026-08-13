@@ -1,15 +1,15 @@
 /**
- * Voice call response generator - uses the embedded OpenClaw agent for tool support.
+ * Voice call response generator - uses the embedded EVE agent for tool support.
  * Routes voice responses through the same agent infrastructure as messaging.
  */
 
 import crypto from "node:crypto";
-import { applyModelOverrideToSessionEntry } from "openclaw/plugin-sdk/model-session-runtime";
+import { applyModelOverrideToSessionEntry } from "eve-agent/plugin-sdk/model-session-runtime";
 import {
   isRecord,
   normalizeLowercaseStringOrEmpty,
   normalizeStringEntries,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveVoiceCallSessionKey, type VoiceCallConfig } from "./config.js";
 import type { CoreAgentDeps, CoreConfig } from "./core-bridge.js";
 import { resolveVoiceResponseModel } from "./response-model.js";
@@ -17,7 +17,7 @@ import { resolveVoiceResponseModel } from "./response-model.js";
 export type VoiceResponseParams = {
   /** Voice call config */
   voiceConfig: VoiceCallConfig;
-  /** Core OpenClaw config */
+  /** Core EVE config */
   coreConfig: CoreConfig;
   /** Injected host agent runtime */
   agentRuntime: CoreAgentDeps;
@@ -207,7 +207,7 @@ function resolveVoiceSandboxSessionKey(agentId: string, sessionKey: string): str
 }
 
 /**
- * Generate a voice response using the embedded OpenClaw agent with full tool support.
+ * Generate a voice response using the embedded EVE agent with full tool support.
  * Uses the same agent infrastructure as messaging for consistent behavior.
  */
 export async function generateVoiceResponse(

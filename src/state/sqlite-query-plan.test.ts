@@ -1,20 +1,20 @@
-// SQLite query-plan tests pin hot OpenClaw state indexes used by perf proof.
+// SQLite query-plan tests pin hot EVE state indexes used by perf proof.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  closeOpenClawAgentDatabasesForTest,
-  openOpenClawAgentDatabase,
-} from "./openclaw-agent-db.js";
+  closeEVEAgentDatabasesForTest,
+  openEVEAgentDatabase,
+} from "./eve-agent-db.js";
 import {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "./openclaw-state-db.js";
+  closeEVEStateDatabaseForTest,
+  openEVEStateDatabase,
+} from "./eve-state-db.js";
 
 function createTempStateDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-plan-"));
+  return fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-plan-"));
 }
 
 function explainQueryPlan(
@@ -49,15 +49,15 @@ function expectPlanIncludes(params: {
 }
 
 afterEach(() => {
-  closeOpenClawAgentDatabasesForTest();
-  closeOpenClawStateDatabaseForTest();
+  closeEVEAgentDatabasesForTest();
+  closeEVEStateDatabaseForTest();
 });
 
 describe("sqlite hot query plans", () => {
   it("uses shared state indexes for list and queue queries", () => {
     const stateDir = createTempStateDir();
-    const database = openOpenClawStateDatabase({
-      env: { OPENCLAW_STATE_DIR: stateDir },
+    const database = openEVEStateDatabase({
+      env: { EVE_STATE_DIR: stateDir },
     });
 
     expectPlanUsesIndex({
@@ -160,9 +160,9 @@ describe("sqlite hot query plans", () => {
 
   it("uses per-agent cache indexes for session metadata and expiry scans", () => {
     const stateDir = createTempStateDir();
-    const database = openOpenClawAgentDatabase({
+    const database = openEVEAgentDatabase({
       agentId: "worker-1",
-      env: { OPENCLAW_STATE_DIR: stateDir },
+      env: { EVE_STATE_DIR: stateDir },
     });
 
     expectPlanIncludes({

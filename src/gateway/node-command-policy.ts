@@ -1,8 +1,8 @@
 // Gateway node command policy.
 // Computes per-platform allowlists from built-in, plugin, runtime, and config inputs.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   NODE_BROWSER_PROXY_COMMAND,
   NODE_SYSTEM_NOTIFY_COMMAND,
@@ -323,7 +323,7 @@ function hasTalkSurface(node?: NodeCommandPolicyNode): boolean {
 }
 
 function resolveNodeCommandAllowlistInternal(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   node?: NodeCommandPolicyNode,
   options?: { includeDesktopHostCommands?: boolean },
 ): Set<string> {
@@ -365,14 +365,14 @@ function resolveNodeCommandAllowlistInternal(
 }
 
 export function resolveNodeCommandAllowlist(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   node?: NodeCommandPolicyNode,
 ): Set<string> {
   return resolveNodeCommandAllowlistInternal(cfg, node);
 }
 
 export function resolveNodePairingCommandAllowlist(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   node?: NodeCommandPolicyNode,
 ): Set<string> {
   return resolveNodeCommandAllowlistInternal(cfg, node, {

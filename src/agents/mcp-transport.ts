@@ -2,7 +2,7 @@
  * MCP client transport factory.
  *
  * This module turns normalized MCP server config into stdio, SSE, or
- * streamable-HTTP SDK transports with OpenClaw auth, redirect, and logging rules.
+ * streamable-HTTP SDK transports with EVE auth, redirect, and logging rules.
  */
 import {
   SSEClientTransport,
@@ -10,7 +10,7 @@ import {
 } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { FetchLike, Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { logDebug } from "../logger.js";
 import {
   buildMcpHttpFetch,
@@ -18,7 +18,7 @@ import {
   withSameOriginMcpHttpHeaders,
 } from "./mcp-http-fetch.js";
 import { createMcpOAuthClientProvider } from "./mcp-oauth.js";
-import { OpenClawStdioClientTransport } from "./mcp-stdio-transport.js";
+import { EVEStdioClientTransport } from "./mcp-stdio-transport.js";
 import { resolveMcpTransportConfig } from "./mcp-transport-config.js";
 
 type ResolvedMcpTransport = {
@@ -31,7 +31,7 @@ type ResolvedMcpTransport = {
   detachStderr?: () => void;
 };
 
-function attachStderrLogging(serverName: string, transport: OpenClawStdioClientTransport) {
+function attachStderrLogging(serverName: string, transport: EVEStdioClientTransport) {
   const stderr = transport.stderr;
   if (!stderr || typeof stderr.on !== "function") {
     return undefined;
@@ -95,7 +95,7 @@ export function resolveMcpTransport(
     return null;
   }
   if (resolved.kind === "stdio") {
-    const transport = new OpenClawStdioClientTransport({
+    const transport = new EVEStdioClientTransport({
       command: resolved.command,
       args: resolved.args,
       env: resolved.env,

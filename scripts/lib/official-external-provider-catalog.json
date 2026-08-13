@@ -1,11 +1,11 @@
 {
   "entries": [
     {
-      "name": "@openclaw/amazon-bedrock-provider",
-      "description": "OpenClaw Amazon Bedrock provider plugin",
+      "name": "@eve/amazon-bedrock-provider",
+      "description": "EVE Amazon Bedrock provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "amazon-bedrock",
           "label": "Amazon Bedrock"
@@ -19,18 +19,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/amazon-bedrock-provider",
+          "npmSpec": "@eve/amazon-bedrock-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/amazon-bedrock-mantle-provider",
-      "description": "OpenClaw Amazon Bedrock Mantle provider plugin",
+      "name": "@eve/amazon-bedrock-mantle-provider",
+      "description": "EVE Amazon Bedrock Mantle provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "amazon-bedrock-mantle",
           "label": "Amazon Bedrock Mantle"
@@ -44,18 +44,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/amazon-bedrock-mantle-provider",
+          "npmSpec": "@eve/amazon-bedrock-mantle-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/anthropic-vertex-provider",
-      "description": "OpenClaw Anthropic Vertex provider plugin",
+      "name": "@eve/anthropic-vertex-provider",
+      "description": "EVE Anthropic Vertex provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "anthropic-vertex",
           "label": "Anthropic Vertex"
@@ -69,18 +69,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/anthropic-vertex-provider",
+          "npmSpec": "@eve/anthropic-vertex-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/arcee-provider",
-      "description": "OpenClaw Arcee provider plugin.",
+      "name": "@eve/arcee-provider",
+      "description": "EVE Arcee provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "arcee",
           "label": "Arcee AI"
@@ -134,19 +134,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/arcee-provider",
-          "npmSpec": "@openclaw/arcee-provider",
+          "clawhubSpec": "clawhub:@eve/arcee-provider",
+          "npmSpec": "@eve/arcee-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cerebras-provider",
-      "description": "OpenClaw Cerebras provider plugin.",
+      "name": "@eve/cerebras-provider",
+      "description": "EVE Cerebras provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "cerebras",
           "label": "Cerebras"
@@ -183,19 +183,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cerebras-provider",
-          "npmSpec": "@openclaw/cerebras-provider",
+          "clawhubSpec": "clawhub:@eve/cerebras-provider",
+          "npmSpec": "@eve/cerebras-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/chutes-provider",
-      "description": "OpenClaw Chutes.ai provider plugin.",
+      "name": "@eve/chutes-provider",
+      "description": "EVE Chutes.ai provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "chutes",
           "label": "Chutes"
@@ -246,19 +246,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/chutes-provider",
-          "npmSpec": "@openclaw/chutes-provider",
+          "clawhubSpec": "clawhub:@eve/chutes-provider",
+          "npmSpec": "@eve/chutes-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cohere-provider",
-      "description": "OpenClaw Cohere provider plugin",
+      "name": "@eve/cohere-provider",
+      "description": "EVE Cohere provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "cohere",
           "label": "Cohere"
@@ -292,19 +292,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cohere-provider",
-          "npmSpec": "@openclaw/cohere-provider",
+          "clawhubSpec": "clawhub:@eve/cohere-provider",
+          "npmSpec": "@eve/cohere-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cloudflare-ai-gateway-provider",
-      "description": "OpenClaw Cloudflare AI Gateway provider plugin.",
+      "name": "@eve/cloudflare-ai-gateway-provider",
+      "description": "EVE Cloudflare AI Gateway provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "cloudflare-ai-gateway",
           "label": "Cloudflare AI Gateway"
@@ -342,19 +342,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cloudflare-ai-gateway-provider",
-          "npmSpec": "@openclaw/cloudflare-ai-gateway-provider",
+          "clawhubSpec": "clawhub:@eve/cloudflare-ai-gateway-provider",
+          "npmSpec": "@eve/cloudflare-ai-gateway-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/codex",
-      "description": "OpenClaw Codex harness and model provider plugin",
+      "name": "@eve/codex",
+      "description": "EVE Codex harness and model provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "codex",
           "label": "Codex"
@@ -381,18 +381,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/codex",
+          "npmSpec": "@eve/codex",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.1-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/deepinfra-provider",
-      "description": "OpenClaw DeepInfra provider plugin.",
+      "name": "@eve/deepinfra-provider",
+      "description": "EVE DeepInfra provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "deepinfra",
           "label": "DeepInfra"
@@ -447,19 +447,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/deepinfra-provider",
-          "npmSpec": "@openclaw/deepinfra-provider",
+          "clawhubSpec": "clawhub:@eve/deepinfra-provider",
+          "npmSpec": "@eve/deepinfra-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/deepseek-provider",
-      "description": "OpenClaw DeepSeek provider plugin.",
+      "name": "@eve/deepseek-provider",
+      "description": "EVE DeepSeek provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "deepseek",
           "label": "DeepSeek"
@@ -496,19 +496,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/deepseek-provider",
-          "npmSpec": "@openclaw/deepseek-provider",
+          "clawhubSpec": "clawhub:@eve/deepseek-provider",
+          "npmSpec": "@eve/deepseek-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/gmi-provider",
-      "description": "OpenClaw GMI Cloud provider plugin",
+      "name": "@eve/gmi-provider",
+      "description": "EVE GMI Cloud provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "gmi",
           "label": "GMI Cloud"
@@ -539,19 +539,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/gmi-provider",
-          "npmSpec": "@openclaw/gmi-provider",
+          "clawhubSpec": "clawhub:@eve/gmi-provider",
+          "npmSpec": "@eve/gmi-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/groq-provider",
-      "description": "OpenClaw Groq media-understanding provider.",
+      "name": "@eve/groq-provider",
+      "description": "EVE Groq media-understanding provider.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "groq",
           "label": "Groq"
@@ -593,19 +593,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/groq-provider",
-          "npmSpec": "@openclaw/groq-provider",
+          "clawhubSpec": "clawhub:@eve/groq-provider",
+          "npmSpec": "@eve/groq-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/kilocode-provider",
-      "description": "OpenClaw Kilo Gateway provider plugin.",
+      "name": "@eve/kilocode-provider",
+      "description": "EVE Kilo Gateway provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "kilocode",
           "label": "Kilo Gateway"
@@ -643,19 +643,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/kilocode-provider",
-          "npmSpec": "@openclaw/kilocode-provider",
+          "clawhubSpec": "clawhub:@eve/kilocode-provider",
+          "npmSpec": "@eve/kilocode-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/kimi-provider",
-      "description": "OpenClaw Kimi provider plugin.",
+      "name": "@eve/kimi-provider",
+      "description": "EVE Kimi provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "kimi",
           "label": "Kimi Coding"
@@ -696,19 +696,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/kimi-provider",
-          "npmSpec": "@openclaw/kimi-provider",
+          "clawhubSpec": "clawhub:@eve/kimi-provider",
+          "npmSpec": "@eve/kimi-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/pixverse-provider",
-      "description": "OpenClaw PixVerse video provider plugin",
+      "name": "@eve/pixverse-provider",
+      "description": "EVE PixVerse video provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "pixverse",
           "label": "PixVerse"
@@ -738,18 +738,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/pixverse-provider",
+          "npmSpec": "@eve/pixverse-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.26"
         }
       }
     },
     {
-      "name": "@openclaw/qianfan-provider",
-      "description": "OpenClaw Qianfan provider plugin.",
+      "name": "@eve/qianfan-provider",
+      "description": "EVE Qianfan provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "qianfan",
           "label": "Qianfan"
@@ -786,19 +786,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/qianfan-provider",
-          "npmSpec": "@openclaw/qianfan-provider",
+          "clawhubSpec": "clawhub:@eve/qianfan-provider",
+          "npmSpec": "@eve/qianfan-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/qwen-provider",
-      "description": "OpenClaw Qwen Cloud provider plugin.",
+      "name": "@eve/qwen-provider",
+      "description": "EVE Qwen Cloud provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "qwen",
           "label": "Qwen Cloud"
@@ -945,19 +945,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/qwen-provider",
-          "npmSpec": "@openclaw/qwen-provider",
+          "clawhubSpec": "clawhub:@eve/qwen-provider",
+          "npmSpec": "@eve/qwen-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/stepfun-provider",
-      "description": "OpenClaw StepFun provider plugin.",
+      "name": "@eve/stepfun-provider",
+      "description": "EVE StepFun provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "eve": {
         "plugin": {
           "id": "stepfun",
           "label": "StepFun"
@@ -1057,7 +1057,7 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/stepfun-provider",
+          "npmSpec": "@eve/stepfun-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }

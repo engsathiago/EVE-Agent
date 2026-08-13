@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/byteplus-provider",
+  "name": "@eve/byteplus-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw BytePlus provider plugin",
+  "description": "EVE BytePlus provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

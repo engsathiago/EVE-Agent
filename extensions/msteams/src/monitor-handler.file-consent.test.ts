@@ -2,8 +2,8 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
-import { createPluginStateKeyedStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
+import { createPluginStateKeyedStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PluginRuntime } from "../runtime-api.js";
 import { runMSTeamsFileConsentInvokeHandler } from "./file-consent-invoke.js";
@@ -51,11 +51,11 @@ function createRuntimeStub(stateDir?: string): PluginRuntime {
       openKeyedStore: (options: OpenKeyedStoreOptions) =>
         createPluginStateKeyedStoreForTests("msteams", options),
       resolveStateDir: (env?: NodeJS.ProcessEnv) => {
-        const override = env?.OPENCLAW_STATE_DIR?.trim();
+        const override = env?.EVE_STATE_DIR?.trim();
         if (override) {
           return override;
         }
-        return stateDir ?? path.join(os.homedir(), ".openclaw");
+        return stateDir ?? path.join(os.homedir(), ".eve");
       },
     },
   } as unknown as PluginRuntime;
@@ -326,9 +326,9 @@ describe("msteams file consent invoke FS fallback", () => {
   let originalStateDir: string | undefined;
 
   beforeEach(async () => {
-    originalStateDir = process.env.OPENCLAW_STATE_DIR;
-    tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-invoke-"));
-    process.env.OPENCLAW_STATE_DIR = tmpDir;
+    originalStateDir = process.env.EVE_STATE_DIR;
+    tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-msteams-invoke-"));
+    process.env.EVE_STATE_DIR = tmpDir;
     setMSTeamsRuntime(createRuntimeStub(tmpDir));
     clearPendingUploads();
     vi.clearAllMocks();
@@ -338,9 +338,9 @@ describe("msteams file consent invoke FS fallback", () => {
 
   afterEach(async () => {
     if (originalStateDir === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = originalStateDir;
+      process.env.EVE_STATE_DIR = originalStateDir;
     }
     try {
       await fs.promises.rm(tmpDir, { recursive: true, force: true });

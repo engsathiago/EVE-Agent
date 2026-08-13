@@ -83,8 +83,8 @@ The proxy:
     ```
 
   </Step>
-  <Step title="Configure OpenClaw">
-    Point OpenClaw at the proxy as a custom OpenAI-compatible endpoint:
+  <Step title="Configure EVE">
+    Point EVE at the proxy as a custom OpenAI-compatible endpoint:
 
     ```json5
     {
@@ -121,7 +121,7 @@ The proxy:
     - Native OpenAI-only request shaping does not apply
     - No `service_tier`, no Responses `store`, no prompt-cache hints, and no
       OpenAI reasoning-compat payload shaping
-    - Hidden OpenClaw attribution headers (`originator`, `version`, `User-Agent`)
+    - Hidden EVE attribution headers (`originator`, `version`, `User-Agent`)
       are not injected on the proxy URL
 
   </Accordion>
@@ -163,7 +163,7 @@ The proxy:
 
 ## Notes
 
-- This is a **community tool**, not officially supported by Anthropic or OpenClaw
+- This is a **community tool**, not officially supported by Anthropic or EVE
 - Requires an active Claude Max/Pro subscription with Claude Code CLI authenticated
 - Inherits Claude Code `claude -p` billing, usage-credit, and rate-limit behavior
 - The proxy runs locally and does not send data to any third-party servers
@@ -177,7 +177,7 @@ For native Anthropic integration with Claude CLI or API keys, see [Anthropic pro
 
 <CardGroup cols={2}>
   <Card title="Anthropic provider" href="/providers/anthropic" icon="bolt">
-    Native OpenClaw integration with Claude CLI or API keys.
+    Native EVE integration with Claude CLI or API keys.
   </Card>
   <Card title="OpenAI provider" href="/providers/openai" icon="robot">
     For OpenAI/Codex subscriptions.

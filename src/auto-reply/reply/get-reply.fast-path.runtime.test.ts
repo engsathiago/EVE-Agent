@@ -1,6 +1,6 @@
 // Tests runtime-loaded fast-path command behavior for get-reply.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import {
   createReplyRuntimeMocks,
   createTempHomeHarness,
@@ -13,7 +13,7 @@ import { loadGetReplyModuleForTest } from "./get-reply.test-loader.js";
 
 let getReplyFromConfig: typeof import("./get-reply.js").getReplyFromConfig;
 const agentMocks = createReplyRuntimeMocks();
-const { withTempHome } = createTempHomeHarness({ prefix: "openclaw-getreply-fast-" });
+const { withTempHome } = createTempHomeHarness({ prefix: "eve-getreply-fast-" });
 
 installReplyRuntimeMocks(agentMocks);
 
@@ -23,7 +23,7 @@ describe("getReplyFromConfig fast-path runtime", () => {
   });
 
   beforeEach(async () => {
-    vi.stubEnv("OPENCLAW_TEST_FAST", "1");
+    vi.stubEnv("EVE_TEST_FAST", "1");
     resetReplyRuntimeMocks(agentMocks);
   });
 
@@ -56,7 +56,7 @@ describe("getReplyFromConfig fast-path runtime", () => {
           ChatType: "direct",
         },
         {},
-        makeReplyConfig(home) as OpenClawConfig,
+        makeReplyConfig(home) as EVEConfig,
       );
 
       const text = Array.isArray(res) ? res[0]?.text : res?.text;
@@ -88,7 +88,7 @@ describe("getReplyFromConfig fast-path runtime", () => {
           ChatType: "direct",
         },
         {},
-        makeReplyConfig(home) as OpenClawConfig,
+        makeReplyConfig(home) as EVEConfig,
       );
 
       expect(agentMocks.runEmbeddedAgent).toHaveBeenCalledWith(
@@ -122,7 +122,7 @@ describe("getReplyFromConfig fast-path runtime", () => {
           ChatType: "direct",
         },
         {},
-        makeReplyConfig(home) as OpenClawConfig,
+        makeReplyConfig(home) as EVEConfig,
       );
 
       expect(agentMocks.runEmbeddedAgent).toHaveBeenCalledWith(

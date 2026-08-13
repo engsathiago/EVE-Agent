@@ -8,7 +8,7 @@ import {
   readSessionUpdatedAt,
   resolveLivePluginConfigObject,
   resolvePluginConfigObject,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "./config-runtime.js";
 import {
   getSessionEntry as getSessionStoreEntry,
@@ -38,7 +38,7 @@ describe("resolvePluginConfigObject", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(resolvePluginConfigObject(config, "demo-plugin")).toEqual({
       enabled: false,
@@ -60,7 +60,7 @@ describe("resolvePluginConfigObject", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(resolvePluginConfigObject(config, "missing-plugin")).toBeUndefined();
     expect(resolvePluginConfigObject(config, "demo-plugin")).toBeUndefined();
@@ -85,7 +85,7 @@ describe("resolveLivePluginConfigObject", () => {
       plugins: {
         entries: {},
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveLivePluginConfigObject(() => config, "demo-plugin", {

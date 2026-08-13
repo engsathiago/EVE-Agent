@@ -30,7 +30,7 @@ Status: the macOS/iOS SwiftUI chat UI talks directly to the Gateway WebSocket.
 - Control UI remembers the backing Gateway `sessionId` returned by `chat.history` and includes it on follow-up `chat.send` calls, so reconnects and page refreshes continue the same stored conversation unless the user starts or resets a session.
 - Control UI coalesces duplicate in-flight submits for the same session, message, and attachments before generating a new `chat.send` run id; the Gateway still dedupes repeated requests that reuse the same idempotency key.
 - Workspace startup files and pending `BOOTSTRAP.md` instructions are supplied through the agent system prompt's Project Context, not copied into the WebChat user message. Bootstrap truncation only adds a concise system-prompt recovery notice; detailed counts and config knobs stay on diagnostic surfaces.
-- `chat.history` is also display-normalized: runtime-only OpenClaw context,
+- `chat.history` is also display-normalized: runtime-only EVE context,
   inbound envelope wrappers, inline delivery directive tags
   such as `[[reply_to_*]]` and `[[audio_as_voice]]`, plain-text tool-call XML
   payloads (including `<tool_call>...</tool_call>`,
@@ -50,7 +50,7 @@ Status: the macOS/iOS SwiftUI chat UI talks directly to the Gateway WebSocket.
 
 WebChat has two separate data paths:
 
-- The session JSONL file is the durable model/runtime transcript. For normal agent runs, the embedded OpenClaw runtime persists model-visible `user`, `assistant`, and `toolResult` messages through its session manager. WebChat does not write arbitrary delivery, status, or helper text into that transcript.
+- The session JSONL file is the durable model/runtime transcript. For normal agent runs, the embedded EVE runtime persists model-visible `user`, `assistant`, and `toolResult` messages through its session manager. WebChat does not write arbitrary delivery, status, or helper text into that transcript.
 - Gateway `ReplyPayload` events are the live delivery projection. They can be normalized for WebChat/channel display, block streaming, directive tags, media embedding, TTS/audio flags, and UI fallback behavior. They are not themselves the canonical session log.
 - Harnesses that require visible replies through `tools.message` still use WebChat as a current-run internal source reply sink. A targetless `message.send` from that active WebChat run is projected into the same chat and mirrored to the session transcript; WebChat does not become a reusable outbound channel and never inherits `lastChannel`.
 - WebChat injects assistant transcript entries only when the Gateway owns a displayed message outside a normal embedded agent turn: `chat.inject`, non-agent command replies, aborted partial output, and WebChat-managed media transcript supplements.
@@ -83,7 +83,7 @@ Normal agent-run final answers should be durable because the embedded runtime wr
 
 Full configuration: [Configuration](/gateway/configuration)
 
-WebChat has no persisted config section. Gateway uses the built-in `chat.history` display limit; API clients can send per-request `maxChars` to override it for a single `chat.history` call. Legacy `channels.webchat` and `gateway.webchat` config is retired; run `openclaw doctor --fix` to remove it.
+WebChat has no persisted config section. Gateway uses the built-in `chat.history` display limit; API clients can send per-request `maxChars` to override it for a single `chat.history` call. Legacy `channels.webchat` and `gateway.webchat` config is retired; run `eve doctor --fix` to remove it.
 
 Related global options:
 

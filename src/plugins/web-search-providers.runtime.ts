@@ -1,5 +1,5 @@
 // Runtime bridge for web-search providers supplied by plugins.
-import { loadOpenClawPlugins } from "./loader.js";
+import { loadEVEPlugins } from "./loader.js";
 import type { PluginLoadOptions } from "./loader.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
 import type { PluginWebSearchProviderEntry } from "./types.js";
@@ -36,7 +36,7 @@ function resolveWebSearchCandidatePluginIds(params: {
 }
 
 function mapRegistryWebSearchProviders(params: {
-  registry: ReturnType<typeof loadOpenClawPlugins>;
+  registry: ReturnType<typeof loadEVEPlugins>;
   onlyPluginIds?: readonly string[];
 }): PluginWebSearchProviderEntry[] {
   return mapRegistryProviders({

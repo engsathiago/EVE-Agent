@@ -2,28 +2,28 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import java.util.Properties
 
 val dnsjavaInetAddressResolverService = "META-INF/services/java.net.spi.InetAddressResolverProvider"
-val openClawAndroidVersionFile = rootProject.file("Config/Version.properties")
-val openClawAndroidVersionProperties =
+val eveAndroidVersionFile = rootProject.file("Config/Version.properties")
+val eveAndroidVersionProperties =
   Properties().apply {
-    if (!openClawAndroidVersionFile.isFile) {
+    if (!eveAndroidVersionFile.isFile) {
       error("Missing Android version properties. Run `pnpm android:version:sync`.")
     }
-    openClawAndroidVersionFile.inputStream().use(::load)
+    eveAndroidVersionFile.inputStream().use(::load)
   }
 
-fun requireOpenClawAndroidVersionProperty(name: String): String =
-  openClawAndroidVersionProperties.getProperty(name)?.trim()?.takeIf { it.isNotEmpty() }
+fun requireEVEAndroidVersionProperty(name: String): String =
+  eveAndroidVersionProperties.getProperty(name)?.trim()?.takeIf { it.isNotEmpty() }
     ?: error("Missing $name in Config/Version.properties. Run `pnpm android:version:sync`.")
 
-val openClawAndroidVersionName = requireOpenClawAndroidVersionProperty("OPENCLAW_ANDROID_VERSION_NAME")
-val openClawAndroidVersionCode =
-  requireOpenClawAndroidVersionProperty("OPENCLAW_ANDROID_VERSION_CODE").toIntOrNull()
-    ?: error("OPENCLAW_ANDROID_VERSION_CODE must be an integer in Config/Version.properties.")
+val eveAndroidVersionName = requireEVEAndroidVersionProperty("EVE_ANDROID_VERSION_NAME")
+val eveAndroidVersionCode =
+  requireEVEAndroidVersionProperty("EVE_ANDROID_VERSION_CODE").toIntOrNull()
+    ?: error("EVE_ANDROID_VERSION_CODE must be an integer in Config/Version.properties.")
 
-val androidStoreFile = providers.gradleProperty("OPENCLAW_ANDROID_STORE_FILE").orNull?.takeIf { it.isNotBlank() }
-val androidStorePassword = providers.gradleProperty("OPENCLAW_ANDROID_STORE_PASSWORD").orNull?.takeIf { it.isNotBlank() }
-val androidKeyAlias = providers.gradleProperty("OPENCLAW_ANDROID_KEY_ALIAS").orNull?.takeIf { it.isNotBlank() }
-val androidKeyPassword = providers.gradleProperty("OPENCLAW_ANDROID_KEY_PASSWORD").orNull?.takeIf { it.isNotBlank() }
+val androidStoreFile = providers.gradleProperty("EVE_ANDROID_STORE_FILE").orNull?.takeIf { it.isNotBlank() }
+val androidStorePassword = providers.gradleProperty("EVE_ANDROID_STORE_PASSWORD").orNull?.takeIf { it.isNotBlank() }
+val androidKeyAlias = providers.gradleProperty("EVE_ANDROID_KEY_ALIAS").orNull?.takeIf { it.isNotBlank() }
+val androidKeyPassword = providers.gradleProperty("EVE_ANDROID_KEY_PASSWORD").orNull?.takeIf { it.isNotBlank() }
 val resolvedAndroidStoreFile =
   androidStoreFile?.let { storeFilePath ->
     if (storeFilePath.startsWith("~/")) {
@@ -44,9 +44,9 @@ val wantsAndroidReleaseBuild =
 
 if (wantsAndroidReleaseBuild && !hasAndroidReleaseSigning) {
   error(
-    "Missing Android release signing properties. Set OPENCLAW_ANDROID_STORE_FILE, " +
-      "OPENCLAW_ANDROID_STORE_PASSWORD, OPENCLAW_ANDROID_KEY_ALIAS, and " +
-      "OPENCLAW_ANDROID_KEY_PASSWORD in ~/.gradle/gradle.properties.",
+    "Missing Android release signing properties. Set EVE_ANDROID_STORE_FILE, " +
+      "EVE_ANDROID_STORE_PASSWORD, EVE_ANDROID_KEY_ALIAS, and " +
+      "EVE_ANDROID_KEY_PASSWORD in ~/.gradle/gradle.properties.",
   )
 }
 
@@ -58,7 +58,7 @@ plugins {
 }
 
 android {
-  namespace = "ai.openclaw.app"
+  namespace = "ai.eve.app"
   compileSdk = 37
 
   // Release signing is local-only; keep the keystore path and passwords out of the repo.
@@ -75,16 +75,16 @@ android {
 
   sourceSets {
     getByName("main") {
-      assets.directories.add("../../shared/OpenClawKit/Sources/OpenClawKit/Resources")
+      assets.directories.add("../../shared/EVEKit/Sources/EVEKit/Resources")
     }
   }
 
   defaultConfig {
-    applicationId = "ai.openclaw.app"
+    applicationId = "ai.eve.app"
     minSdk = 31
     targetSdk = 36
-    versionCode = openClawAndroidVersionCode
-    versionName = openClawAndroidVersionName
+    versionCode = eveAndroidVersionCode
+    versionName = eveAndroidVersionName
     ndk {
       // Support all major ABIs — native libs are tiny (~47 KB per ABI)
       abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
@@ -166,9 +166,9 @@ androidComponents {
         val flavorName = variant.flavorName?.takeIf { it.isNotBlank() }
         val outputFileName =
           if (flavorName == null) {
-            "openclaw-$versionName-$buildType.apk"
+            "eve-$versionName-$buildType.apk"
           } else {
-            "openclaw-$versionName-$flavorName-$buildType.apk"
+            "eve-$versionName-$flavorName-$buildType.apk"
           }
         output.outputFileName = outputFileName
       }

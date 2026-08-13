@@ -7,9 +7,9 @@ import { promisify } from "node:util";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { note } from "../../packages/terminal-core/src/note.js";
-import { replaceConfigFile, type OpenClawConfig } from "../config/config.js";
+import { replaceConfigFile, type EVEConfig } from "../config/config.js";
 import { resolveGatewayPort, resolveIsNixMode } from "../config/paths.js";
 import { resolveSecretInputRef } from "../config/types.secrets.js";
 import {
@@ -17,7 +17,7 @@ import {
   renderGatewayServiceCleanupHints,
   type ExtraGatewayService,
 } from "../daemon/inspect.js";
-import { OPENCLAW_WRAPPER_ENV_KEY } from "../daemon/program-args.js";
+import { EVE_WRAPPER_ENV_KEY } from "../daemon/program-args.js";
 import { renderSystemNodeWarning, resolveSystemNodeInfo } from "../daemon/runtime-paths.js";
 import {
   auditGatewayServiceConfig,
@@ -80,24 +80,24 @@ function findGatewayEntrypoint(programArguments?: string[]): string | null {
 function buildGatewayServiceRepairEnv(
   command: GatewayServiceCommandConfig | null,
 ): NodeJS.ProcessEnv {
-  const wrapperPath = command?.environment?.[OPENCLAW_WRAPPER_ENV_KEY]?.trim();
-  if (!wrapperPath || Object.hasOwn(process.env, OPENCLAW_WRAPPER_ENV_KEY)) {
+  const wrapperPath = command?.environment?.[EVE_WRAPPER_ENV_KEY]?.trim();
+  if (!wrapperPath || Object.hasOwn(process.env, EVE_WRAPPER_ENV_KEY)) {
     return process.env;
   }
   return {
     ...process.env,
-    [OPENCLAW_WRAPPER_ENV_KEY]: wrapperPath,
+    [EVE_WRAPPER_ENV_KEY]: wrapperPath,
   };
 }
 
 function resolveGatewayServiceWrapperPath(
   command: GatewayServiceCommandConfig | null,
 ): string | null {
-  return normalizeOptionalString(command?.environment?.[OPENCLAW_WRAPPER_ENV_KEY]) ?? null;
+  return normalizeOptionalString(command?.environment?.[EVE_WRAPPER_ENV_KEY]) ?? null;
 }
 
 async function buildExpectedGatewayServicePlan(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   command: GatewayServiceCommandConfig;
   serviceInstallEnv: NodeJS.ProcessEnv;
   port: number;
@@ -117,7 +117,7 @@ async function buildExpectedGatewayServicePlan(params: {
 }
 
 async function buildGatewayServiceAuditInputs(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   command: GatewayServiceCommandConfig;
   serviceInstallEnv: NodeJS.ProcessEnv;
 }) {
@@ -168,7 +168,7 @@ function resolveSystemdScopeFromServicePath(sourcePath: string | undefined): Sys
 
 function resolveSystemdUnitNameFromServicePath(sourcePath: string | undefined): string {
   const base = sourcePath ? path.posix.basename(sourcePath.replaceAll("\\", "/")) : "";
-  return base.endsWith(".service") ? base : "openclaw-gateway.service";
+  return base.endsWith(".service") ? base : "eve-gateway.service";
 }
 
 function shouldDeferUpdateModeSystemdServiceRepair(params: {
@@ -357,7 +357,7 @@ async function cleanupLegacyLinuxUserServices(
  * updates during updater repair mode instead of immediately installing them.
  */
 export async function maybeRepairGatewayServiceConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   mode: "local" | "remote",
   runtime: RuntimeEnv,
   prompter: DoctorPrompter,
@@ -386,13 +386,13 @@ export async function maybeRepairGatewayServiceConfig(
   const serviceInstallEnv = buildGatewayServiceRepairEnv(command);
   const serviceWrapperPath = resolveGatewayServiceWrapperPath(command);
   if (serviceWrapperPath) {
-    note(`Gateway service invokes ${OPENCLAW_WRAPPER_ENV_KEY}: ${serviceWrapperPath}`, "Gateway");
+    note(`Gateway service invokes ${EVE_WRAPPER_ENV_KEY}: ${serviceWrapperPath}`, "Gateway");
   }
   const serviceLayout = await summarizeGatewayServiceLayout(command);
   const sourceCheckoutWarning = serviceLayout?.entrypointSourceCheckout
     ? [
         `Gateway service entrypoint resolves to a source checkout: ${serviceLayout.packageRootReal ?? serviceLayout.packageRoot ?? serviceLayout.entrypointReal ?? serviceLayout.entrypoint}.`,
-        "Run `openclaw doctor --fix` from the intended package install, or reinstall the gateway service with `openclaw gateway install --force`.",
+        "Run `eve doctor --fix` from the intended package install, or reinstall the gateway service with `eve gateway install --force`.",
       ].join("\n")
     : null;
 
@@ -431,7 +431,7 @@ export async function maybeRepairGatewayServiceConfig(
     audit.issues.push({
       code: SERVICE_AUDIT_CODES.gatewayTokenMismatch,
       message:
-        "Gateway service OPENCLAW_GATEWAY_TOKEN should be unset when gateway.auth.token is SecretRef-managed",
+        "Gateway service EVE_GATEWAY_TOKEN should be unset when gateway.auth.token is SecretRef-managed",
       detail: "service token is stale",
       level: "recommended",
     });
@@ -538,7 +538,7 @@ export async function maybeRepairGatewayServiceConfig(
 
   if (serviceRewriteBlocked) {
     note(
-      "Gateway service is running; leaving supervisor metadata unchanged. Stop the service first or use `openclaw gateway install --force` when you want to replace the active launcher.",
+      "Gateway service is running; leaving supervisor metadata unchanged. Stop the service first or use `eve gateway install --force` when you want to replace the active launcher.",
       "Gateway service config",
     );
     return;
@@ -552,7 +552,7 @@ export async function maybeRepairGatewayServiceConfig(
     })
   ) {
     note(
-      "Update-mode doctor detected gateway service drift but left the live systemd unit unchanged. Review the service file and run `openclaw gateway install --force` when you want OpenClaw to replace operator-owned systemd directives.",
+      "Update-mode doctor detected gateway service drift but left the live systemd unit unchanged. Review the service file and run `eve gateway install --force` when you want EVE to replace operator-owned systemd directives.",
       "Gateway service config",
     );
     return;
@@ -579,7 +579,7 @@ export async function maybeRepairGatewayServiceConfig(
   if (!repair) {
     if (!emittedSourceCheckoutWarning) {
       note(
-        "Run `openclaw gateway install --force` when you want to replace the gateway service definition.",
+        "Run `eve gateway install --force` when you want to replace the gateway service definition.",
         "Gateway service config",
       );
     }
@@ -598,7 +598,7 @@ export async function maybeRepairGatewayServiceConfig(
     !configuredGatewayToken &&
     gatewayTokenForRepair
   ) {
-    const nextCfg: OpenClawConfig = {
+    const nextCfg: EVEConfig = {
       ...cfg,
       gateway: {
         ...cfg.gateway,
@@ -712,7 +712,7 @@ export async function maybeScanExtraGatewayServices(
         note(failed.map((line) => `- ${line}`).join("\n"), "Legacy gateway cleanup skipped");
       }
       if (removed.length > 0) {
-        runtime.log("Legacy gateway services removed. Installing OpenClaw gateway next.");
+        runtime.log("Legacy gateway services removed. Installing EVE gateway next.");
       }
     }
   }

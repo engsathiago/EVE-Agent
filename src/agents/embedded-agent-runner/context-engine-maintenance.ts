@@ -2,8 +2,8 @@
  * Schedules and runs deferred context-engine turn maintenance.
  */
 import { randomUUID } from "node:crypto";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { resolveContextEngineOwnerPluginId } from "../../context-engine/registry.js";
 import type {
   ContextEngine,
@@ -44,7 +44,7 @@ const TURN_MAINTENANCE_TASK_TASK = "Deferred context-engine maintenance after tu
 const TURN_MAINTENANCE_LANE_PREFIX = "context-engine-turn-maintenance:";
 const TURN_MAINTENANCE_LONG_WAIT_MS = 10_000;
 const DEFERRED_TURN_MAINTENANCE_ABORT_STATE_KEY = Symbol.for(
-  "openclaw.contextEngineTurnMaintenanceAbortState",
+  "eve.contextEngineTurnMaintenanceAbortState",
 );
 type DeferredTurnMaintenanceScheduleParams = {
   contextEngine: ContextEngine;
@@ -55,7 +55,7 @@ type DeferredTurnMaintenanceScheduleParams = {
   runtimeContext?: ContextEngineRuntimeContext;
   runtimeSettings?: ContextEngineRuntimeSettings;
   agentId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   disposeContextEngineAfterMaintenance?: boolean;
   onScheduleFailure?: (error: unknown) => void;
 };
@@ -311,7 +311,7 @@ export function buildContextEngineMaintenanceRuntimeContext(params: {
   runtimeContext?: ContextEngineRuntimeContext;
   agentId?: string;
   allowDeferredCompactionExecution?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   purpose?: string;
   contextEnginePluginId?: string;
 }): ContextEngineRuntimeContext {
@@ -366,7 +366,7 @@ async function executeContextEngineMaintenance(params: {
   runtimeSettings?: ContextEngineRuntimeSettings;
   agentId?: string;
   executionMode: "foreground" | "background";
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): Promise<ContextEngineMaintenanceResult | undefined> {
   if (typeof params.contextEngine.maintain !== "function") {
     return undefined;
@@ -411,7 +411,7 @@ async function runDeferredTurnMaintenanceWorker(params: {
   runtimeSettings?: ContextEngineRuntimeSettings;
   agentId?: string;
   runId: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   disposeContextEngineAfterMaintenance?: boolean;
 }): Promise<void> {
   let surfacedUserNotice = false;
@@ -684,7 +684,7 @@ export async function runContextEngineMaintenance(params: {
   executionMode?: "foreground" | "background";
   onDeferredMaintenance?: (promise: Promise<void>) => void;
   onDeferredMaintenanceFailure?: (error: unknown) => void;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   disposeDeferredContextEngineAfterMaintenance?: boolean;
 }): Promise<ContextEngineMaintenanceResult | undefined> {
   if (typeof params.contextEngine?.maintain !== "function") {

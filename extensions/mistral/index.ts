@@ -1,5 +1,5 @@
-// Mistral plugin entrypoint registers its OpenClaw integration.
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
+// Mistral plugin entrypoint registers its EVE integration.
+import { defineSingleProviderPluginEntry } from "eve-agent/plugin-sdk/provider-entry";
 import { applyMistralModelCompat, MISTRAL_SMALL_LATEST_ID, MISTRAL_MEDIUM_3_5_ID } from "./api.js";
 import { mistralMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import { mistralMemoryEmbeddingProviderAdapter } from "./memory-embedding-adapter.js";

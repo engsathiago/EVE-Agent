@@ -133,7 +133,7 @@ describe("findOcPaths — slash-deep JSONC paths", () => {
   it("expands * in a slash-deep JSON object path", () => {
     const out = findOcPaths(
       jsonc,
-      parseOcPath("oc://openclaw.json/mcp/servers/*/env/GITHUB_TOKEN"),
+      parseOcPath("oc://eve.json/mcp/servers/*/env/GITHUB_TOKEN"),
     );
     expect(out).toHaveLength(2);
     const values = out.map((m) => (m.match.kind === "leaf" ? m.match.valueText : ""));
@@ -141,7 +141,7 @@ describe("findOcPaths — slash-deep JSONC paths", () => {
   });
 
   it("expands * in a slash-deep JSON array path", () => {
-    const out = findOcPaths(jsonc, parseOcPath("oc://openclaw.json/agents/*/tools/exec/security"));
+    const out = findOcPaths(jsonc, parseOcPath("oc://eve.json/agents/*/tools/exec/security"));
     expect(out).toHaveLength(2);
     const values = out.map((m) => (m.match.kind === "leaf" ? m.match.valueText : ""));
     expect(values.toSorted()).toEqual(["allowlist", "deny"]);
@@ -150,21 +150,21 @@ describe("findOcPaths — slash-deep JSONC paths", () => {
   it("expands predicates in slash-deep JSON array paths", () => {
     const out = findOcPaths(
       jsonc,
-      parseOcPath("oc://openclaw.json/agents/[id=reviewer]/tools/exec/security"),
+      parseOcPath("oc://eve.json/agents/[id=reviewer]/tools/exec/security"),
     );
     expect(out).toHaveLength(1);
     expect(out[0]?.match.kind === "leaf" && out[0].match.valueText).toBe("allowlist");
   });
 
   it("expands ** in slash-deep JSON paths", () => {
-    const out = findOcPaths(jsonc, parseOcPath("oc://openclaw.json/mcp/**/GITHUB_TOKEN"));
+    const out = findOcPaths(jsonc, parseOcPath("oc://eve.json/mcp/**/GITHUB_TOKEN"));
     expect(out).toHaveLength(2);
     const values = out.map((m) => (m.match.kind === "leaf" ? m.match.valueText : ""));
     expect(values.toSorted()).toEqual(["gh-token", "gl-token"]);
   });
 
   it("returns slash-deep JSON matches as concrete paths that resolve", () => {
-    const out = findOcPaths(jsonc, parseOcPath("oc://openclaw.json/agents/*/tools/exec/security"));
+    const out = findOcPaths(jsonc, parseOcPath("oc://eve.json/agents/*/tools/exec/security"));
     for (const m of out) {
       expect(resolveOcPath(jsonc, m.path)?.kind).toBe("leaf");
       expect(formatOcPath(m.path)).not.toContain("*");

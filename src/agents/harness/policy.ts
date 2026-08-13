@@ -1,7 +1,7 @@
 /**
  * Resolves configured native harness policy for agent ids.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { AUTO_AGENT_RUNTIME_ID, type EmbeddedAgentRuntime } from "../agent-runtime-id.js";
 import { normalizeOptionalAgentRuntimeId } from "../agent-runtime-id.js";
 import { resolveModelRuntimePolicy } from "../model-runtime-policy.js";
@@ -19,7 +19,7 @@ export type AgentHarnessPolicy = {
 export function resolveAgentHarnessPolicy(params: {
   provider?: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   env?: NodeJS.ProcessEnv;

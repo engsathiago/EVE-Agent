@@ -35,8 +35,8 @@ function waitForExit(child: ReturnType<typeof spawn>) {
 
 describe("E2E temp state dirs", () => {
   it("cleans generated state dirs", async () => {
-    const state = await createE2eStateDir("openclaw-e2e-temp-state-test-", {
-      OPENCLAW_STATE_DIR: "",
+    const state = await createE2eStateDir("eve-e2e-temp-state-test-", {
+      EVE_STATE_DIR: "",
     });
 
     expect(state.created).toBe(true);
@@ -46,10 +46,10 @@ describe("E2E temp state dirs", () => {
   });
 
   it("leaves caller-provided state dirs alone", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-e2e-temp-state-existing-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-e2e-temp-state-existing-"));
     try {
-      const state = await createE2eStateDir("openclaw-e2e-temp-state-test-", {
-        OPENCLAW_STATE_DIR: root,
+      const state = await createE2eStateDir("eve-e2e-temp-state-test-", {
+        EVE_STATE_DIR: root,
       });
 
       expect(state).toMatchObject({ created: false, stateDir: root });
@@ -63,14 +63,14 @@ describe("E2E temp state dirs", () => {
   it.runIf(process.platform !== "win32")(
     "retries generated state cleanup after a failed removal",
     async () => {
-      const root = mkdtempSync(path.join(tmpdir(), "openclaw-e2e-temp-state-retry-"));
+      const root = mkdtempSync(path.join(tmpdir(), "eve-e2e-temp-state-retry-"));
       const lockedParent = path.join(root, "locked");
       mkdirSync(lockedParent);
 
       const state = await createE2eStateDir(
         `${path.relative(tmpdir(), lockedParent)}${path.sep}state-`,
         {
-          OPENCLAW_STATE_DIR: "",
+          EVE_STATE_DIR: "",
         },
       );
 
@@ -90,7 +90,7 @@ describe("E2E temp state dirs", () => {
   );
 
   it("cleans generated state dirs on termination signals", async () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-e2e-temp-state-signal-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-e2e-temp-state-signal-"));
     try {
       const statePathFile = path.join(root, "state-path");
       const scriptPath = path.join(root, "probe.mjs");
@@ -100,8 +100,8 @@ describe("E2E temp state dirs", () => {
         `import { writeFileSync } from "node:fs";
 import { createE2eStateDir } from ${JSON.stringify(helperUrl)};
 
-const state = await createE2eStateDir("openclaw-e2e-temp-state-signal-", {
-  OPENCLAW_STATE_DIR: "",
+const state = await createE2eStateDir("eve-e2e-temp-state-signal-", {
+  EVE_STATE_DIR: "",
 });
 state.registerExitCleanup();
 writeFileSync(${JSON.stringify(statePathFile)}, state.stateDir);

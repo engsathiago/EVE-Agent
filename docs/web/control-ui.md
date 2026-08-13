@@ -10,7 +10,7 @@ sidebarTitle: "Control UI"
 The Control UI is a small **Vite + Lit** single-page app served by the Gateway:
 
 - default: `http://<host>:18789/`
-- optional prefix: set `gateway.controlUi.basePath` (e.g. `/openclaw`)
+- optional prefix: set `gateway.controlUi.basePath` (e.g. `/eve`)
 
 It speaks **directly to the Gateway WebSocket** on the same port.
 
@@ -20,7 +20,7 @@ If the Gateway is running on the same computer, open:
 
 - [http://127.0.0.1:18789/](http://127.0.0.1:18789/) (or [http://localhost:18789/](http://localhost:18789/))
 
-If the page fails to load, start the Gateway first: `openclaw gateway`.
+If the page fails to load, start the Gateway first: `eve gateway`.
 
 Auth is supplied during the WebSocket handshake via:
 
@@ -40,23 +40,23 @@ When you connect to the Control UI from a new browser or device, the Gateway usu
 <Steps>
   <Step title="List pending requests">
     ```bash
-    openclaw devices list
+    eve devices list
     ```
   </Step>
   <Step title="Approve by request ID">
     ```bash
-    openclaw devices approve <requestId>
+    eve devices approve <requestId>
     ```
   </Step>
 </Steps>
 
-If the browser retries pairing with changed auth details (role/scopes/public key), the previous pending request is superseded and a new `requestId` is created. Re-run `openclaw devices list` before approval.
+If the browser retries pairing with changed auth details (role/scopes/public key), the previous pending request is superseded and a new `requestId` is created. Re-run `eve devices list` before approval.
 
-If the browser is already paired and you change it from read access to write/admin access, this is treated as an approval upgrade, not a silent reconnect. OpenClaw keeps the old approval active, blocks the broader reconnect, and asks you to approve the new scope set explicitly.
+If the browser is already paired and you change it from read access to write/admin access, this is treated as an approval upgrade, not a silent reconnect. EVE keeps the old approval active, blocks the broader reconnect, and asks you to approve the new scope set explicitly.
 
-Once approved, the device is remembered and won't require re-approval unless you revoke it with `openclaw devices revoke --device <id> --role <role>`. See [Devices CLI](/cli/devices) for token rotation and revocation.
+Once approved, the device is remembered and won't require re-approval unless you revoke it with `eve devices revoke --device <id> --role <role>`. See [Devices CLI](/cli/devices) for token rotation and revocation.
 
-Paperclip agents that connect through the `openclaw_gateway` adapter use the same first-run approval flow. After the initial connection attempt, run `openclaw devices approve --latest` to preview the pending request, then rerun the printed `openclaw devices approve <requestId>` command to approve it. Pass explicit `--url` and `--token` values for a remote gateway. To keep approvals stable across restarts, configure a persistent `adapterConfig.devicePrivateKeyPem` in Paperclip instead of letting it generate a new ephemeral device identity each run.
+Paperclip agents that connect through the `eve_gateway` adapter use the same first-run approval flow. After the initial connection attempt, run `eve devices approve --latest` to preview the pending request, then rerun the printed `eve devices approve <requestId>` command to approve it. Pass explicit `--url` and `--token` values for a remote gateway. To keep approvals stable across restarts, configure a persistent `adapterConfig.devicePrivateKeyPem` in Paperclip instead of letting it generate a new ephemeral device identity each run.
 
 <Note>
 - Direct local loopback browser connections (`127.0.0.1` / `localhost`) are auto-approved.
@@ -74,7 +74,7 @@ The same browser-local pattern applies to the assistant avatar override. Uploade
 
 ## Runtime config endpoint
 
-The Control UI fetches its runtime settings from `/control-ui-config.json`, resolved relative to the gateway's Control UI base path (for example `/__openclaw__/control-ui-config.json` when the UI is served under `/__openclaw__/`). That endpoint is gated by the same gateway auth as the rest of the HTTP surface: unauthenticated browsers cannot fetch it, and a successful fetch requires either an already valid gateway token/password, Tailscale Serve identity, or a trusted-proxy identity.
+The Control UI fetches its runtime settings from `/control-ui-config.json`, resolved relative to the gateway's Control UI base path (for example `/__eve__/control-ui-config.json` when the UI is served under `/__eve__/`). That endpoint is gated by the same gateway auth as the rest of the HTTP surface: unauthenticated browsers cannot fetch it, and a successful fetch requires either an already valid gateway token/password, Tailscale Serve identity, or a trusted-proxy identity.
 
 ## Language support
 
@@ -101,7 +101,7 @@ Imported themes are stored only in the current browser profile. They are not wri
   <Accordion title="Chat and Talk">
     - Chat with the model via Gateway WS (`chat.history`, `chat.send`, `chat.abort`, `chat.inject`).
     - Chat history refreshes request a bounded recent window with per-message text caps so large sessions do not force the browser to render a full transcript payload before the chat becomes usable.
-    - Talk through browser realtime sessions. OpenAI uses direct WebRTC, Google Live uses a constrained one-use browser token over WebSocket, and backend-only realtime voice plugins use the Gateway relay transport. Client-owned provider sessions start with `talk.client.create`; Gateway relay sessions start with `talk.session.create`. The relay keeps provider credentials on the Gateway while the browser streams microphone PCM through `talk.session.appendAudio`, forwards `openclaw_agent_consult` provider tool calls through `talk.client.toolCall` for Gateway policy and the larger configured OpenClaw model, and routes active-run voice steering through `talk.client.steer` or `talk.session.steer`.
+    - Talk through browser realtime sessions. OpenAI uses direct WebRTC, Google Live uses a constrained one-use browser token over WebSocket, and backend-only realtime voice plugins use the Gateway relay transport. Client-owned provider sessions start with `talk.client.create`; Gateway relay sessions start with `talk.session.create`. The relay keeps provider credentials on the Gateway while the browser streams microphone PCM through `talk.session.appendAudio`, forwards `eve_agent_consult` provider tool calls through `talk.client.toolCall` for Gateway policy and the larger configured EVE model, and routes active-run voice steering through `talk.client.steer` or `talk.session.steer`.
     - Stream tool calls + live tool output cards in Chat (agent events).
     - Activity tab with browser-local, redaction-first summaries of live tool activity from existing `session.tool` / tool event delivery.
 
@@ -122,7 +122,7 @@ Imported themes are stored only in the current browser profile. They are not wri
 
   </Accordion>
   <Accordion title="Config">
-    - View/edit `~/.openclaw/openclaw.json` (`config.get`, `config.set`).
+    - View/edit `~/.eve/eve.json` (`config.get`, `config.set`).
     - MCP has a dedicated settings page for configured servers, enablement, OAuth/filter/parallel summaries, common operator commands, and the scoped `mcp` config editor.
     - Apply + restart with validation (`config.apply`) and wake the last active session.
     - Writes include a base-hash guard to prevent clobbering concurrent edits.
@@ -149,14 +149,14 @@ Imported themes are stored only in the current browser profile. They are not wri
     - Advanced edit controls include delete-after-run, clear agent override, cron exact/stagger options, agent model/thinking overrides, and best-effort delivery toggles.
     - Form validation is inline with field-level errors; invalid values disable the save button until fixed.
     - Set `cron.webhookToken` to send a dedicated bearer token, if omitted the webhook is sent without an auth header.
-    - Deprecated fallback: run `openclaw doctor --fix` to migrate stored legacy jobs with `notify: true` from `cron.webhook` to explicit per-job webhook or completion delivery.
+    - Deprecated fallback: run `eve doctor --fix` to migrate stored legacy jobs with `notify: true` from `cron.webhook` to explicit per-job webhook or completion delivery.
 
   </Accordion>
 </AccordionGroup>
 
 ## MCP page
 
-The dedicated MCP page is an operator view for OpenClaw-managed MCP servers under `mcp.servers`. It does not start MCP transports by itself; use it to inspect and edit saved config, then use `openclaw mcp doctor --probe` when you need live server proof.
+The dedicated MCP page is an operator view for EVE-managed MCP servers under `mcp.servers`. It does not start MCP transports by itself; use it to inspect and edit saved config, then use `eve mcp doctor --probe` when you need live server proof.
 
 Typical workflow:
 
@@ -166,7 +166,7 @@ Typical workflow:
 4. Toggle enablement when a server should remain configured but stay out of runtime discovery.
 5. Edit the scoped `mcp` config section for server definitions, headers, TLS/mTLS paths, OAuth metadata, tool filters, and Codex projection metadata.
 6. Use **Save** for a config write, or **Save & Publish** when the running Gateway should apply the changed config.
-7. Run `openclaw mcp status --verbose`, `openclaw mcp doctor --probe`, or `openclaw mcp reload` from a terminal when the edited process needs static diagnostics, live proof, or cached-runtime disposal.
+7. Run `eve mcp status --verbose`, `eve mcp doctor --probe`, or `eve mcp reload` from a terminal when the edited process needs static diagnostics, live proof, or cached-runtime disposal.
 
 The page redacts credential-bearing URL-like values before rendering and quotes server names in command snippets so copied commands still work with spaces or shell metacharacters. The full CLI and config reference lives in [MCP](/cli/mcp).
 
@@ -205,7 +205,7 @@ Activity entries keep only sanitized summaries and redacted, truncated output pr
 
     The Chat composer includes a Talk options button next to the Talk start/stop button. The options apply to the next Talk session and can override provider, transport, model, voice, reasoning effort, VAD threshold, silence duration, and prefix padding. When an option is blank, the Gateway uses configured defaults where available or the provider default. Selecting Gateway relay forces the backend relay path; selecting WebRTC keeps the session client-owned and fails instead of silently falling back to relay if the provider cannot create a browser session.
 
-    In the Chat composer, the Talk control is the waves button next to the microphone dictation button. When Talk starts, the composer status row shows `Connecting Talk...`, then `Talk live` while audio is connected, or `Asking OpenClaw...` while a realtime tool call is consulting the configured larger model through `talk.client.toolCall`.
+    In the Chat composer, the Talk control is the waves button next to the microphone dictation button. When Talk starts, the composer status row shows `Connecting Talk...`, then `Talk live` while audio is connected, or `Asking EVE...` while a realtime tool call is consulting the configured larger model through `talk.client.toolCall`.
 
     Maintainer live smoke: `OPENAI_API_KEY=... GEMINI_API_KEY=... node --import tsx scripts/dev/realtime-talk-live-smoke.ts` verifies the OpenAI backend WebSocket bridge, OpenAI browser WebRTC SDP exchange, Google Live constrained-token browser WebSocket setup, and the Gateway relay browser adapter with fake microphone media. The command prints provider status only and does not log secrets.
 
@@ -213,7 +213,7 @@ Activity entries keep only sanitized summaries and redacted, truncated output pr
   <Accordion title="Stop and abort">
     - Click **Stop** (calls `chat.abort`).
     - While a run is active, normal follow-ups queue. Click **Steer** on a queued message to inject that follow-up into the running turn.
-    - Type `/stop` (or standalone abort phrases like `stop`, `stop action`, `stop run`, `stop openclaw`, `please stop`) to abort out-of-band.
+    - Type `/stop` (or standalone abort phrases like `stop`, `stop action`, `stop run`, `stop eve`, `please stop`) to abort out-of-band.
     - `chat.abort` supports `{ sessionKey }` (no `runId`) to abort all active runs for that session.
 
   </Accordion>
@@ -229,20 +229,20 @@ Activity entries keep only sanitized summaries and redacted, truncated output pr
 
 The Control UI ships a `manifest.webmanifest` and a service worker, so modern browsers can install it as a standalone PWA. Web Push lets the Gateway wake the installed PWA with notifications even when the tab or browser window is not open.
 
-If the page shows **Protocol mismatch** right after an OpenClaw update, first reopen the dashboard with `openclaw dashboard` and hard-refresh the page. If it still fails, clear site data for the dashboard origin or test in a private browser window; an old tab or browser service-worker cache can keep running a pre-update Control UI bundle against the newer Gateway.
+If the page shows **Protocol mismatch** right after an EVE update, first reopen the dashboard with `eve dashboard` and hard-refresh the page. If it still fails, clear site data for the dashboard origin or test in a private browser window; an old tab or browser service-worker cache can keep running a pre-update Control UI bundle against the newer Gateway.
 
 | Surface                                               | What it does                                                       |
 | ----------------------------------------------------- | ------------------------------------------------------------------ |
 | `ui/public/manifest.webmanifest`                      | PWA manifest. Browsers offer "Install app" once it is reachable.   |
 | `ui/public/sw.js`                                     | Service worker that handles `push` events and notification clicks. |
-| `push/vapid-keys.json` (under the OpenClaw state dir) | Auto-generated VAPID keypair used to sign Web Push payloads.       |
+| `push/vapid-keys.json` (under the EVE state dir) | Auto-generated VAPID keypair used to sign Web Push payloads.       |
 | `push/web-push-subscriptions.json`                    | Persisted browser subscription endpoints.                          |
 
 Override the VAPID keypair through env vars on the Gateway process when you want to pin keys (for multi-host deployments, secrets rotation, or tests):
 
-- `OPENCLAW_VAPID_PUBLIC_KEY`
-- `OPENCLAW_VAPID_PRIVATE_KEY`
-- `OPENCLAW_VAPID_SUBJECT` (defaults to `https://openclaw.ai`)
+- `EVE_VAPID_PUBLIC_KEY`
+- `EVE_VAPID_PRIVATE_KEY`
+- `EVE_VAPID_SUBJECT` (defaults to `https://eve.ai`)
 
 The Control UI uses these scope-gated Gateway methods to register and test browser subscriptions:
 
@@ -312,14 +312,14 @@ The value is validated before it reaches the browser. Supported values include p
     Keep the Gateway on loopback and let Tailscale Serve proxy it with HTTPS:
 
     ```bash
-    openclaw gateway --tailscale serve
+    eve gateway --tailscale serve
     ```
 
     Open:
 
     - `https://<magicdns>/` (or your configured `gateway.controlUi.basePath`)
 
-    By default, Control UI/WebSocket Serve requests can authenticate via Tailscale identity headers (`tailscale-user-login`) when `gateway.auth.allowTailscale` is `true`. OpenClaw verifies the identity by resolving the `x-forwarded-for` address with `tailscale whois` and matching it to the header, and only accepts these when the request hits loopback with Tailscale's `x-forwarded-*` headers. For Control UI operator sessions with browser device identity, this verified Serve path also skips the device-pairing round trip; device-less browsers and node-role connections still follow the normal device checks. Set `gateway.auth.allowTailscale: false` if you want to require explicit shared-secret credentials even for Serve traffic. Then use `gateway.auth.mode: "token"` or `"password"`.
+    By default, Control UI/WebSocket Serve requests can authenticate via Tailscale identity headers (`tailscale-user-login`) when `gateway.auth.allowTailscale` is `true`. EVE verifies the identity by resolving the `x-forwarded-for` address with `tailscale whois` and matching it to the header, and only accepts these when the request hits loopback with Tailscale's `x-forwarded-*` headers. For Control UI operator sessions with browser device identity, this verified Serve path also skips the device-pairing round trip; device-less browsers and node-role connections still follow the normal device checks. Set `gateway.auth.allowTailscale: false` if you want to require explicit shared-secret credentials even for Serve traffic. Then use `gateway.auth.mode: "token"` or `"password"`.
 
     For that async Serve identity path, failed auth attempts for the same client IP and auth scope are serialized before rate-limit writes. Concurrent bad retries from the same browser can therefore show `retry later` on the second request instead of two plain mismatches racing in parallel.
 
@@ -330,7 +330,7 @@ The value is validated before it reaches the browser. Supported values include p
   </Tab>
   <Tab title="Bind to tailnet + token">
     ```bash
-    openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
+    eve gateway --bind tailnet --token "$(openssl rand -hex 32)"
     ```
 
     Then open:
@@ -344,7 +344,7 @@ The value is validated before it reaches the browser. Supported values include p
 
 ## Insecure HTTP
 
-If you open the dashboard over plain HTTP (`http://<lan-ip>` or `http://<tailscale-ip>`), the browser runs in a **non-secure context** and blocks WebCrypto. By default, OpenClaw **blocks** Control UI connections without device identity.
+If you open the dashboard over plain HTTP (`http://<lan-ip>` or `http://<tailscale-ip>`), the browser runs in a **non-secure context** and blocks WebCrypto. By default, EVE **blocks** Control UI connections without device identity.
 
 Documented exceptions:
 
@@ -429,7 +429,7 @@ If you disable gateway auth (not recommended on shared hosts), the avatar route 
 
 When gateway auth is configured, assistant local-media previews use a two-step route:
 
-- `GET /__openclaw__/assistant-media?meta=1&source=<path>` requires the normal Control UI operator auth. The browser sends the gateway token as a bearer header when checking availability.
+- `GET /__eve__/assistant-media?meta=1&source=<path>` requires the normal Control UI operator auth. The browser sends the gateway token as a bearer header when checking availability.
 - Successful metadata responses include a short-lived `mediaTicket` scoped to that exact source path.
 - Browser-rendered image, audio, video, and document URLs use `mediaTicket=<ticket>` instead of the active gateway token or password. The ticket expires quickly and cannot authorize a different source.
 
@@ -446,7 +446,7 @@ pnpm ui:build
 Optional absolute base (when you want fixed asset URLs):
 
 ```bash
-OPENCLAW_CONTROL_UI_BASE_PATH=/openclaw/ pnpm ui:build
+EVE_CONTROL_UI_BASE_PATH=/eve/ pnpm ui:build
 ```
 
 For local development (separate dev server):
@@ -459,7 +459,7 @@ Then point the UI at your Gateway WS URL (e.g. `ws://127.0.0.1:18789`).
 
 ## Blank Control UI page
 
-If the browser loads a blank dashboard and DevTools shows no useful error, an extension or early content script may have prevented the JavaScript module app from evaluating. The static page includes a plain HTML recovery panel that appears when `<openclaw-app>` is not registered after startup.
+If the browser loads a blank dashboard and DevTools shows no useful error, an extension or early content script may have prevented the JavaScript module app from evaluating. The static page includes a plain HTML recovery panel that appears when `<eve-app>` is not registered after startup.
 
 Use the panel's **Try again** action after changing the browser environment, or reload manually after these checks:
 

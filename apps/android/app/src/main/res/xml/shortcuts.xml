@@ -1,12 +1,12 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <capability
-        android:name="custom.actions.intent.ASK_OPENCLAW"
-        app:queryPatterns="@array/ask_openclaw_query_patterns">
+        android:name="custom.actions.intent.ASK_EVE"
+        app:queryPatterns="@array/ask_eve_query_patterns">
         <intent
-            android:action="ai.openclaw.app.action.ASK_OPENCLAW"
-            android:targetPackage="ai.openclaw.app"
-            android:targetClass="ai.openclaw.app.MainActivity">
+            android:action="ai.eve.app.action.ASK_EVE"
+            android:targetPackage="ai.eve.app"
+            android:targetClass="ai.eve.app.MainActivity">
             <parameter
                 android:name="prompt"
                 android:key="prompt"

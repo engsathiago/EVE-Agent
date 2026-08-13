@@ -1,5 +1,5 @@
 // Kimi Coding tests cover onboard plugin behavior.
-import { resolveAgentModelPrimaryValue } from "openclaw/plugin-sdk/provider-onboard";
+import { resolveAgentModelPrimaryValue } from "eve-agent/plugin-sdk/provider-onboard";
 import { describe, expect, it } from "vitest";
 import {
   applyKimiCodeConfig,

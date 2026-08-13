@@ -1,7 +1,7 @@
 // Slack tests cover inbound context.contract plugin behavior.
-import { expectChannelInboundContextContract } from "openclaw/plugin-sdk/channel-contract-testing";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createTempHomeEnv } from "openclaw/plugin-sdk/test-env";
+import { expectChannelInboundContextContract } from "eve-agent/plugin-sdk/channel-contract-testing";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { createTempHomeEnv } from "eve-agent/plugin-sdk/test-env";
 import { describe, it } from "vitest";
 import {
   createInboundSlackTestContext,
@@ -38,12 +38,12 @@ function createSlackMessage(overrides: Partial<SlackMessageEvent>): SlackMessage
 
 describe("Slack inbound context contract", () => {
   it("keeps inbound context finalized", async () => {
-    const tempHome = await createTempHomeEnv("openclaw-slack-inbound-contract-");
+    const tempHome = await createTempHomeEnv("eve-slack-inbound-contract-");
     try {
       const ctx = createInboundSlackTestContext({
         cfg: {
           channels: { slack: { enabled: true } },
-        } as OpenClawConfig,
+        } as EVEConfig,
       });
       ctx.resolveUserName = async () => ({ name: "Alice" }) as never;
 

@@ -63,7 +63,7 @@ const repairableToolCallContentTypes = new Set([
   "tool_use",
 ]);
 
-const invalidJsonlSlotType = "__openclaw_invalid_jsonl_slot";
+const invalidJsonlSlotType = "__eve_invalid_jsonl_slot";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -503,7 +503,7 @@ function readableSessionState(fileEntries: FileEntry[]): ReadableSessionState {
         const isParentLinkedOpaque =
           typeof rawType === "string" &&
           rawType !== "session" &&
-          !id.startsWith("__openclaw_invalid_jsonl_slot_") &&
+          !id.startsWith("__eve_invalid_jsonl_slot_") &&
           !sessionEntryTypes.has(rawType) &&
           Object.hasOwn(rawRecord, "parentId") &&
           (rawParentId === null || isString(rawParentId));
@@ -576,7 +576,7 @@ function fileEntryOrMigrationSlot(value: unknown, index: number): FileEntry {
   }
   return {
     type: invalidJsonlSlotType,
-    id: `__openclaw_invalid_jsonl_slot_${index}`,
+    id: `__eve_invalid_jsonl_slot_${index}`,
     parentId: null,
     timestamp: "1970-01-01T00:00:00.000Z",
   } as unknown as FileEntry;

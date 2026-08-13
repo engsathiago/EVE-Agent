@@ -123,7 +123,7 @@ describe("renderDiffDocument render targets", () => {
     );
 
     const payloads = [
-      ...(rendered.html ?? "").matchAll(/data-openclaw-diff-payload>(.*?)<\/script>/g),
+      ...(rendered.html ?? "").matchAll(/data-eve-diff-payload>(.*?)<\/script>/g),
     ].map((match) => parseViewerPayloadJson(match[1] ?? ""));
 
     expect(payloads).toHaveLength(1);

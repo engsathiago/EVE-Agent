@@ -1,13 +1,13 @@
-# @openclaw/llama-cpp-provider
+# @eve/llama-cpp-provider
 
-Official llama.cpp embedding provider for OpenClaw.
+Official llama.cpp embedding provider for EVE.
 
 This plugin runs local GGUF embedding models through `node-llama-cpp`.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/llama-cpp-provider
+eve plugins install @eve/llama-cpp-provider
 ```
 
 Restart the Gateway after installing or updating the plugin. Use Node 24 for
@@ -23,5 +23,5 @@ Face model URI, or HTTPS model URL.
 ## Package
 
 - Plugin id: `llama-cpp`
-- Package: `@openclaw/llama-cpp-provider`
-- Minimum OpenClaw host: `2026.6.2`
+- Package: `@eve/llama-cpp-provider`
+- Minimum EVE host: `2026.6.2`

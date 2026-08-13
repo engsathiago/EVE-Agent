@@ -2,8 +2,8 @@
 import {
   buildMentionRegexes,
   normalizeMentionText,
-} from "openclaw/plugin-sdk/channel-mention-gating";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-mention-gating";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   getComparableIdentityValues,
   getMentionIdentities,
@@ -27,7 +27,7 @@ export type MentionTargets = {
 };
 
 export function buildMentionConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId?: string,
   options?: Parameters<typeof buildMentionRegexes>[2],
 ): MentionConfig {

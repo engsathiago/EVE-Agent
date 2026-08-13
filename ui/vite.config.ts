@@ -79,7 +79,7 @@ function readGitShortSha(): string | null {
 
 function resolveControlUiBuildId(): string {
   const explicit =
-    process.env.OPENCLAW_CONTROL_UI_BUILD_ID?.trim() || process.env.OPENCLAW_VERSION?.trim();
+    process.env.EVE_CONTROL_UI_BUILD_ID?.trim() || process.env.EVE_VERSION?.trim();
   if (explicit) {
     return normalizeBuildId(explicit);
   }
@@ -137,7 +137,7 @@ function resolveTsconfigPathAlias(key: string, target: string): ControlUiViteAli
 
 function sourcePackageAlias(packageId: string, subpath?: string): ControlUiViteAlias {
   return {
-    find: `@openclaw/${packageId}${subpath ? `/${subpath}` : ""}`,
+    find: `@eve/${packageId}${subpath ? `/${subpath}` : ""}`,
     replacement: path.join(
       repoRoot,
       "packages",
@@ -214,7 +214,7 @@ function controlUiServiceWorkerBuildIdPlugin(buildId: string): Plugin {
       const swPath = path.join(outDir, "sw.js");
       const publicSwPath = path.join(here, "public/sw.js");
       const source = fs.readFileSync(fs.existsSync(swPath) ? swPath : publicSwPath, "utf8");
-      const placeholder = '"__OPENCLAW_CONTROL_UI_BUILD_ID__"';
+      const placeholder = '"__EVE_CONTROL_UI_BUILD_ID__"';
       const updated = source.replace(placeholder, JSON.stringify(buildId));
       if (updated === source) {
         throw new Error(`Control UI service worker build id placeholder missing in ${swPath}`);
@@ -226,14 +226,14 @@ function controlUiServiceWorkerBuildIdPlugin(buildId: string): Plugin {
 }
 
 export default function controlUiViteConfig(): UserConfig {
-  const envBase = process.env.OPENCLAW_CONTROL_UI_BASE_PATH?.trim();
+  const envBase = process.env.EVE_CONTROL_UI_BASE_PATH?.trim();
   const base = envBase ? normalizeBase(envBase) : "./";
   const bootstrapConfigPath = base === "./" ? "/control-ui-config.json" : `${base}control-ui-config.json`;
   const controlUiBuildId = resolveControlUiBuildId();
   return {
     base,
     define: {
-      OPENCLAW_CONTROL_UI_BUILD_ID: JSON.stringify(controlUiBuildId),
+      EVE_CONTROL_UI_BUILD_ID: JSON.stringify(controlUiBuildId),
     },
     publicDir: path.resolve(here, "public"),
     optimizeDeps: {

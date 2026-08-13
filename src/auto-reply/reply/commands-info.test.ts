@@ -1,7 +1,7 @@
 // Tests info-style commands that report context, status, skills, and trajectory exports.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import type { MsgContext } from "../templating.js";
 import { handleContextCommand } from "./commands-context-command.js";
 import {
@@ -74,7 +74,7 @@ function firstMockArg(mock: { mock: { calls: unknown[][] } }, label: string): un
 
 function buildInfoParams(
   commandBodyNormalized: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   ctxOverrides?: Partial<MsgContext>,
 ): HandleCommandsParams {
   return {
@@ -136,7 +136,7 @@ describe("info command handlers", () => {
   it("only lets owners export trajectory bundles", async () => {
     const params = buildInfoParams("/export-trajectory", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.command.isAuthorizedSender = false;
 
     const result = await handleExportTrajectoryCommand(params, true);
@@ -152,7 +152,7 @@ describe("info command handlers", () => {
         {
           commands: { text: true },
           channels: { whatsapp: { allowFrom: ["*"] } },
-        } as OpenClawConfig,
+        } as EVEConfig,
         {
           SenderId: "12345",
           SenderUsername: "TestUser",
@@ -171,7 +171,7 @@ describe("info command handlers", () => {
   it("returns usage for bare /skill without continuing to the agent", async () => {
     const params = buildInfoParams("/skill", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.skillCommands = [
       {
         name: "demo_skill",
@@ -190,7 +190,7 @@ describe("info command handlers", () => {
   it("returns an unknown skill reply for unmatched /skill targets", async () => {
     const params = buildInfoParams("/skill missing input", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
 
     const result = await handleSkillCommandUsage(params, true);
 
@@ -202,7 +202,7 @@ describe("info command handlers", () => {
   it("lets valid /skill invocations continue to the skill command path", async () => {
     const params = buildInfoParams("/skill demo_skill input", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.skillCommands = [
       {
         name: "demo_skill",
@@ -219,7 +219,7 @@ describe("info command handlers", () => {
   it("loads skills asynchronously before deciding named /skill invocations", async () => {
     const params = buildInfoParams("/skill demo_skill input", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.loadSkillCommands = vi.fn(async () => [
       {
         name: "demo_skill",
@@ -238,7 +238,7 @@ describe("info command handlers", () => {
   it("loads skills when named /skill receives an empty precomputed command list", async () => {
     const params = buildInfoParams("/skill demo_skill input", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.skillCommands = [];
     params.loadSkillCommands = vi.fn(async () => [
       {
@@ -258,7 +258,7 @@ describe("info command handlers", () => {
   it("keeps an empty precomputed /skill command list authoritative without a loader", async () => {
     const params = buildInfoParams("/skill demo_skill input", {
       commands: { text: true },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.skillCommands = [];
 
     const result = await handleSkillCommandUsage(params, true);
@@ -274,7 +274,7 @@ describe("info command handlers", () => {
       {
         commands: { text: true },
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       {
         SenderId: "123@lid",
         SenderUsername: "TestUser",
@@ -295,7 +295,7 @@ describe("info command handlers", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const cases = [
       { commandBody: "/context", expectedText: ["/context list", "Inline shortcut"] },
       { commandBody: "/context list", expectedText: ["Injected workspace files:", "AGENTS.md"] },
@@ -320,7 +320,7 @@ describe("info command handlers", () => {
       {
         commands: { text: true },
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       {
         ParentSessionKey: undefined,
       },
@@ -346,7 +346,7 @@ describe("info command handlers", () => {
     const params = buildInfoParams("/status", {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.storePath = "/tmp/target-session-store.json";
 
     const statusResult = await handleStatusCommand(params, true);
@@ -363,7 +363,7 @@ describe("info command handlers", () => {
     const params = buildInfoParams("/status", {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.sessionEntry = {
       sessionId: "wrapper-session",
       updatedAt: Date.now(),
@@ -393,7 +393,7 @@ describe("info command handlers", () => {
     const params = buildInfoParams("/status", {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.resolvedFastMode = true;
 
     const statusResult = await handleStatusCommand(params, true);
@@ -410,7 +410,7 @@ describe("info command handlers", () => {
     const params = buildInfoParams("/status plugins", {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
 
     const statusResult = await handleStatusCommand(params, true);
 
@@ -431,7 +431,7 @@ describe("info command handlers", () => {
     const params = buildInfoParams("/commands", {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
     params.agentId = "main";
     params.sessionKey = "agent:target:whatsapp:direct:12345";
     vi.mocked(resolveSessionAgentId).mockReturnValue("target");

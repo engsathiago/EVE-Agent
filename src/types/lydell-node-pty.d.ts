@@ -12,7 +12,7 @@ declare module "@lydell/node-pty" {
     onExit: (listener: PtyListener<PtyExitEvent>) => void;
   };
 
-  /** PTY spawn function signature consumed by OpenClaw. */
+  /** PTY spawn function signature consumed by EVE. */
   export type PtySpawn = (
     file: string,
     args: string[] | string,

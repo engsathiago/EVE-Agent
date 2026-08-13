@@ -1,11 +1,11 @@
 // Doctor migration from legacy shipped plugin install config into persisted install registry.
 import fs from "node:fs";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   extractShippedPluginInstallConfigRecords,
   stripShippedPluginInstallConfigRecords,
 } from "../../../config/plugin-install-config-migration.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { loadInstalledPluginIndexInstallRecords } from "../../../plugins/installed-plugin-index-records.js";
 import {
   inspectPersistedInstalledPluginIndex,
@@ -24,8 +24,8 @@ import {
 import { loadPluginManifestRegistryForInstalledIndex } from "../../../plugins/manifest-registry-installed.js";
 import type { PluginManifestRecord } from "../../../plugins/manifest-registry.js";
 
-export const DISABLE_PLUGIN_REGISTRY_MIGRATION_ENV = "OPENCLAW_DISABLE_PLUGIN_REGISTRY_MIGRATION";
-export const FORCE_PLUGIN_REGISTRY_MIGRATION_ENV = "OPENCLAW_FORCE_PLUGIN_REGISTRY_MIGRATION";
+export const DISABLE_PLUGIN_REGISTRY_MIGRATION_ENV = "EVE_DISABLE_PLUGIN_REGISTRY_MIGRATION";
+export const FORCE_PLUGIN_REGISTRY_MIGRATION_ENV = "EVE_FORCE_PLUGIN_REGISTRY_MIGRATION";
 const DOCTOR_PLUGIN_ID_ALIASES: Readonly<Record<string, readonly string[]>> = {
   openai: ["openai-codex"],
 };
@@ -64,7 +64,7 @@ export type PluginRegistryInstallMigrationParams = LoadInstalledPluginIndexParam
   InstalledPluginIndexStoreOptions & {
     dryRun?: boolean;
     existsSync?: (path: string) => boolean;
-    readConfig?: () => Promise<OpenClawConfig> | OpenClawConfig;
+    readConfig?: () => Promise<EVEConfig> | EVEConfig;
   };
 
 function hasEnvFlag(env: NodeJS.ProcessEnv | undefined, key: string): boolean {
@@ -114,7 +114,7 @@ export function preflightPluginRegistryInstallMigration(
 
 async function readMigrationConfig(
   params: PluginRegistryInstallMigrationParams,
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   if (params.config) {
     return params.config;
   }
@@ -187,7 +187,7 @@ function addPluginReference(
   }
 }
 
-function listConfiguredChannelIds(config: OpenClawConfig): Set<string> {
+function listConfiguredChannelIds(config: EVEConfig): Set<string> {
   const channels = config.channels;
   if (!channels || typeof channels !== "object" || Array.isArray(channels)) {
     return new Set();
@@ -199,7 +199,7 @@ function listConfiguredChannelIds(config: OpenClawConfig): Set<string> {
   );
 }
 
-function listConfiguredModelProviderIds(config: OpenClawConfig): Set<string> {
+function listConfiguredModelProviderIds(config: EVEConfig): Set<string> {
   const providers = config.models?.providers;
   if (!providers || typeof providers !== "object" || Array.isArray(providers)) {
     return new Set();
@@ -213,7 +213,7 @@ function listConfiguredModelProviderIds(config: OpenClawConfig): Set<string> {
 
 function listMigrationRelevantPluginRecords(params: {
   index: InstalledPluginIndex;
-  config: OpenClawConfig;
+  config: EVEConfig;
   installRecords: Record<string, unknown>;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
@@ -303,7 +303,7 @@ export async function migratePluginRegistryForInstall(
   }
 
   const rawConfig = await readMigrationConfig(params);
-  const config = stripShippedPluginInstallConfigRecords(rawConfig) as OpenClawConfig;
+  const config = stripShippedPluginInstallConfigRecords(rawConfig) as EVEConfig;
   const durableInstallRecords =
     params.installRecords ?? (await loadInstalledPluginIndexInstallRecords(params));
   const installRecords = {

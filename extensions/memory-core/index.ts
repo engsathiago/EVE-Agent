@@ -1,18 +1,18 @@
-// Memory Core plugin entrypoint registers its OpenClaw integration.
+// Memory Core plugin entrypoint registers its EVE integration.
 import {
   jsonResult,
   resolveMemorySearchConfig,
   resolveSessionAgentIds,
   type MemoryPluginRuntime,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/memory-core-host-runtime-core";
-import { resolveMemoryBackendConfig } from "openclaw/plugin-sdk/memory-core-host-runtime-files";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/memory-core-host-runtime-core";
+import { resolveMemoryBackendConfig } from "eve-agent/plugin-sdk/memory-core-host-runtime-files";
 import {
   definePluginEntry,
   type AnyAgentTool,
-  type OpenClawPluginToolContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+  type EVEPluginToolContext,
+} from "eve-agent/plugin-sdk/plugin-entry";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import type { TSchema } from "typebox";
 import { configureMemoryCoreDreamingState } from "./src/dreaming-state.js";
 import { registerShortTermPromotionDreaming } from "./src/dreaming.js";
@@ -24,8 +24,8 @@ type MemoryToolsModule = typeof import("./src/tools.js");
 type RuntimeProviderModule = typeof import("./src/runtime-provider.js");
 
 type MemoryToolOptions = {
-  config?: OpenClawConfig;
-  getConfig?: () => OpenClawConfig | undefined;
+  config?: EVEConfig;
+  getConfig?: () => EVEConfig | undefined;
   agentId?: string;
   agentSessionKey?: string;
   sandboxed?: boolean;
@@ -45,7 +45,7 @@ function loadRuntimeProviderModule(): Promise<RuntimeProviderModule> {
   return runtimeProviderModulePromise;
 }
 
-function getToolConfig(options: MemoryToolOptions): OpenClawConfig | undefined {
+function getToolConfig(options: MemoryToolOptions): EVEConfig | undefined {
   return options.getConfig?.() ?? options.config;
 }
 
@@ -147,7 +147,7 @@ function createLazyMemoryGetTool(options: MemoryToolOptions): AnyAgentTool | nul
   });
 }
 
-function resolveMemoryToolOptions(ctx: OpenClawPluginToolContext): MemoryToolOptions {
+function resolveMemoryToolOptions(ctx: EVEPluginToolContext): MemoryToolOptions {
   const getConfig = () => ctx.getRuntimeConfig?.() ?? ctx.runtimeConfig ?? ctx.config;
   return {
     config: getConfig(),

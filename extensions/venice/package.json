@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/venice-provider",
+  "name": "@eve/venice-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Venice provider plugin",
+  "description": "EVE Venice provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

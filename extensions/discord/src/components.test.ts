@@ -1,6 +1,6 @@
 // Discord tests cover components plugin behavior.
 import { ButtonStyle, MessageFlags } from "discord-api-types/v10";
-import { MAX_DATE_TIMESTAMP_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_DATE_TIMESTAMP_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiscordComponentEntry, DiscordModalEntry } from "./components.js";
 

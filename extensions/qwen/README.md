@@ -1,12 +1,12 @@
-# OpenClaw Qwen Cloud Provider
+# EVE Qwen Cloud Provider
 
-Official OpenClaw provider plugin for Qwen Cloud.
+Official EVE provider plugin for Qwen Cloud.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/qwen-provider
-openclaw gateway restart
+eve plugins install @eve/qwen-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/qwen> for setup and configuration.
+See <https://docs.eve.ai/providers/qwen> for setup and configuration.

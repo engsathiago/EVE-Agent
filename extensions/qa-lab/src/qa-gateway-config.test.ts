@@ -15,15 +15,15 @@ function createQaChannelTransportParams(baseUrl = "http://127.0.0.1:43124") {
         "qa-channel": {
           enabled: true,
           baseUrl,
-          botUserId: "openclaw",
-          botDisplayName: "OpenClaw QA",
+          botUserId: "eve",
+          botDisplayName: "EVE QA",
           allowFrom: ["*"],
           pollTimeoutMs: 250,
         },
       },
       messages: {
         groupChat: {
-          mentionPatterns: ["\\b@?openclaw\\b"],
+          mentionPatterns: ["\\b@?eve\\b"],
           visibleReplies: "automatic",
         },
       },
@@ -90,7 +90,7 @@ describe("buildQaGatewayConfig", () => {
       enabled: true,
       config: {
         pluginToolsMcpBridge: true,
-        openClawToolsMcpBridge: true,
+        eveToolsMcpBridge: true,
       },
     });
     expect(cfg.plugins?.entries?.["memory-core"]).toEqual({ enabled: true });
@@ -102,7 +102,7 @@ describe("buildQaGatewayConfig", () => {
     expect(cfg.channels?.["qa-channel"]?.enabled).toBe(true);
     expect(cfg.channels?.["qa-channel"]?.baseUrl).toBe("http://127.0.0.1:43124");
     expect(cfg.channels?.["qa-channel"]?.pollTimeoutMs).toBe(250);
-    expect(cfg.messages?.groupChat?.mentionPatterns).toEqual(["\\b@?openclaw\\b"]);
+    expect(cfg.messages?.groupChat?.mentionPatterns).toEqual(["\\b@?eve\\b"]);
     expect(cfg.messages?.groupChat?.visibleReplies).toBe("automatic");
   });
 
@@ -355,12 +355,12 @@ describe("buildQaGatewayConfig", () => {
       gatewayPort: 18789,
       gatewayToken: "token",
       workspaceDir: "/tmp/qa-workspace",
-      controlUiRoot: "/tmp/openclaw/dist/control-ui",
+      controlUiRoot: "/tmp/eve/dist/control-ui",
       ...createQaChannelTransportParams(),
     });
 
     expect(cfg.gateway?.controlUi?.enabled).toBe(true);
-    expect(cfg.gateway?.controlUi?.root).toBe("/tmp/openclaw/dist/control-ui");
+    expect(cfg.gateway?.controlUi?.root).toBe("/tmp/eve/dist/control-ui");
   });
 
   it("merges dynamic qa-lab origins without dropping the built control ui root", () => {
@@ -374,12 +374,12 @@ describe("buildQaGatewayConfig", () => {
       gatewayPort: 18789,
       gatewayToken: "token",
       workspaceDir: "/tmp/qa-workspace",
-      controlUiRoot: "/tmp/openclaw/dist/control-ui",
+      controlUiRoot: "/tmp/eve/dist/control-ui",
       controlUiAllowedOrigins: ["http://127.0.0.1:60196"],
       ...createQaChannelTransportParams(),
     });
 
-    expect(cfg.gateway?.controlUi?.root).toBe("/tmp/openclaw/dist/control-ui");
+    expect(cfg.gateway?.controlUi?.root).toBe("/tmp/eve/dist/control-ui");
     expect(cfg.gateway?.controlUi?.allowedOrigins).toEqual([
       ...DEFAULT_QA_CONTROL_UI_ALLOWED_ORIGINS,
       "http://127.0.0.1:60196",

@@ -17,7 +17,7 @@ const optionalBundledClusters = [
 /** Bundled plugin clusters that may be excluded from size-sensitive build lanes. */
 export const optionalBundledClusterSet = new Set(optionalBundledClusters);
 
-const OPTIONAL_BUNDLED_BUILD_ENV = "OPENCLAW_INCLUDE_OPTIONAL_BUNDLED";
+const OPTIONAL_BUNDLED_BUILD_ENV = "EVE_INCLUDE_OPTIONAL_BUNDLED";
 
 function isOptionalBundledCluster(cluster) {
   return optionalBundledClusterSet.has(cluster);
@@ -31,8 +31,8 @@ function shouldIncludeOptionalBundledClusters(env = process.env) {
 
 function hasReleasedBundledInstall(packageJson) {
   return (
-    typeof packageJson?.openclaw?.install?.npmSpec === "string" &&
-    packageJson.openclaw.install.npmSpec.trim().length > 0
+    typeof packageJson?.eve?.install?.npmSpec === "string" &&
+    packageJson.eve.install.npmSpec.trim().length > 0
   );
 }
 

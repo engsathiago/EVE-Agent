@@ -16,7 +16,7 @@ import {
   type LegacySandboxRegistryMigrationResult,
 } from "../agents/sandbox/registry.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { runCommandWithTimeout, runExec } from "../process/exec.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { shortenHomePath } from "../utils.js";
@@ -109,12 +109,12 @@ async function runCodexBwrapNamespaceProbe(
   }
 }
 
-function codexBwrapNeedsNetworkNamespaceProbe(cfg: OpenClawConfig): boolean {
+function codexBwrapNeedsNetworkNamespaceProbe(cfg: EVEConfig): boolean {
   const network = cfg.agents?.defaults?.sandbox?.docker?.network?.trim().toLowerCase();
   return network === undefined || network === "" || network === "none";
 }
 
-async function probeCodexBwrapNamespaces(cfg: OpenClawConfig): Promise<CodexBwrapNamespaceProbe> {
+async function probeCodexBwrapNamespaces(cfg: EVEConfig): Promise<CodexBwrapNamespaceProbe> {
   if (process.platform !== "linux") {
     return { ok: true };
   }
@@ -134,7 +134,7 @@ async function probeCodexBwrapNamespaces(cfg: OpenClawConfig): Promise<CodexBwra
   ]);
 }
 
-async function noteCodexBwrapNamespaceWarning(cfg: OpenClawConfig): Promise<void> {
+async function noteCodexBwrapNamespaceWarning(cfg: EVEConfig): Promise<void> {
   const probe = await probeCodexBwrapNamespaces(cfg);
   if (probe.ok) {
     return;
@@ -154,8 +154,8 @@ async function noteCodexBwrapNamespaceWarning(cfg: OpenClawConfig): Promise<void
     `Probe command: ${probe.command}`,
     `Probe result: ${probe.reason}`,
     "",
-    "Fix the host namespace policy for the OpenClaw service user, then restart the gateway.",
-    "Prefer an AppArmor profile that grants the required namespaces to the OpenClaw service process.",
+    "Fix the host namespace policy for the EVE service user, then restart the gateway.",
+    "Prefer an AppArmor profile that grants the required namespaces to the EVE service process.",
     "`kernel.apparmor_restrict_unprivileged_userns=0` is a host-wide fallback with security tradeoffs; use it only when that host posture is acceptable.",
     "Do not add broad Docker container privileges just to satisfy nested bwrap; that weakens the outer sandbox.",
   ];
@@ -181,22 +181,22 @@ async function dockerImageExists(image: string): Promise<boolean> {
   }
 }
 
-function resolveSandboxDockerImage(cfg: OpenClawConfig): string {
+function resolveSandboxDockerImage(cfg: EVEConfig): string {
   const image = cfg.agents?.defaults?.sandbox?.docker?.image?.trim();
   return image ? image : DEFAULT_SANDBOX_IMAGE;
 }
 
-function resolveSandboxBackend(cfg: OpenClawConfig): string {
+function resolveSandboxBackend(cfg: EVEConfig): string {
   const backend = cfg.agents?.defaults?.sandbox?.backend?.trim();
   return backend || "docker";
 }
 
-function resolveSandboxBrowserImage(cfg: OpenClawConfig): string {
+function resolveSandboxBrowserImage(cfg: EVEConfig): string {
   const image = cfg.agents?.defaults?.sandbox?.browser?.image?.trim();
   return image ? image : DEFAULT_SANDBOX_BROWSER_IMAGE;
 }
 
-function updateSandboxDockerImage(cfg: OpenClawConfig, image: string): OpenClawConfig {
+function updateSandboxDockerImage(cfg: EVEConfig, image: string): EVEConfig {
   return {
     ...cfg,
     agents: {
@@ -215,7 +215,7 @@ function updateSandboxDockerImage(cfg: OpenClawConfig, image: string): OpenClawC
   };
 }
 
-function updateSandboxBrowserImage(cfg: OpenClawConfig, image: string): OpenClawConfig {
+function updateSandboxBrowserImage(cfg: EVEConfig, image: string): EVEConfig {
   return {
     ...cfg,
     agents: {
@@ -274,10 +274,10 @@ async function handleMissingSandboxImage(
  * support because nested app-server shells rely on host user/network namespace policy.
  */
 export async function maybeRepairSandboxImages(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   runtime: RuntimeEnv,
   prompter: DoctorPrompter,
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   const sandbox = cfg.agents?.defaults?.sandbox;
   const mode = sandbox?.mode ?? "off";
   if (!sandbox || mode === "off") {
@@ -303,7 +303,7 @@ export async function maybeRepairSandboxImages(
       "",
       "Options:",
       "- Install Docker and restart the gateway",
-      "- Disable sandbox mode: openclaw config set agents.defaults.sandbox.mode off",
+      "- Disable sandbox mode: eve config set agents.defaults.sandbox.mode off",
     ];
     note(lines.join("\n"), "Sandbox");
     return cfg;
@@ -390,7 +390,7 @@ export async function maybeRepairSandboxRegistryFiles(prompter: DoctorPrompter):
       [
         "Legacy sandbox registry files detected.",
         ...legacyFiles.map(formatLegacyRegistryInspectionLine),
-        `Run ${formatCliCommand("openclaw doctor --fix")} to migrate them to SQLite.`,
+        `Run ${formatCliCommand("eve doctor --fix")} to migrate them to SQLite.`,
       ].join("\n"),
       "Sandbox",
     );
@@ -407,7 +407,7 @@ export async function maybeRepairSandboxRegistryFiles(prompter: DoctorPrompter):
 }
 
 /** Warns when agent sandbox overrides are ignored because sandbox scope resolves to shared. */
-export function noteSandboxScopeWarnings(cfg: OpenClawConfig) {
+export function noteSandboxScopeWarnings(cfg: EVEConfig) {
   const globalSandbox = cfg.agents?.defaults?.sandbox;
   const agents = Array.isArray(cfg.agents?.list) ? cfg.agents.list : [];
   const warnings: string[] = [];

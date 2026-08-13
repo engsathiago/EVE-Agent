@@ -6,8 +6,8 @@
  * All adapter dependencies are assembled here in one place.
  */
 
-import { resolveRuntimeServiceVersion } from "openclaw/plugin-sdk/cli-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { resolveRuntimeServiceVersion } from "eve-agent/plugin-sdk/cli-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type { EngineAdapters } from "../engine/adapter/index.js";
 import {
   startGateway as coreStartGateway,
@@ -35,7 +35,7 @@ import {
 const pluginVersion = resolveQQBotPluginVersion(import.meta.url);
 initSender({
   pluginVersion,
-  openclawVersion: resolveRuntimeServiceVersion(),
+  eveVersion: resolveRuntimeServiceVersion(),
 });
 
 // ============ Public types ============
@@ -43,7 +43,7 @@ initSender({
 export interface GatewayContext {
   account: ResolvedQQBotAccount;
   abortSignal: AbortSignal;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   onReady?: (data: unknown) => void;
   onResumed?: (data: unknown) => void;
   onError?: (error: Error) => void;

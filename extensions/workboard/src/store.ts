@@ -4,7 +4,7 @@ import {
   isFutureDateTimestampMs,
   MAX_DATE_TIMESTAMP_MS,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import type {
   PersistedWorkboardAttachment,
   PersistedWorkboardBoard,

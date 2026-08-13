@@ -1,11 +1,11 @@
 // Openshell helper module supports config behavior.
 import path from "node:path";
-import { buildPluginConfigSchema, type OpenClawPluginConfigSchema } from "openclaw/plugin-sdk/core";
+import { buildPluginConfigSchema, type EVEPluginConfigSchema } from "eve-agent/plugin-sdk/core";
 import {
   formatPluginConfigIssue,
   mapPluginConfigIssues,
-} from "openclaw/plugin-sdk/extension-shared";
-import { MAX_TIMER_TIMEOUT_SECONDS } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/extension-shared";
+import { MAX_TIMER_TIMEOUT_SECONDS } from "eve-agent/plugin-sdk/number-runtime";
 import { z } from "zod";
 
 type OpenShellPluginConfig = {
@@ -40,7 +40,7 @@ export type ResolvedOpenShellPluginConfig = {
 
 const DEFAULT_COMMAND = "openshell";
 const DEFAULT_MODE = "mirror";
-const DEFAULT_SOURCE = "openclaw";
+const DEFAULT_SOURCE = "eve";
 const DEFAULT_REMOTE_WORKSPACE_DIR = "/sandbox";
 const DEFAULT_REMOTE_AGENT_WORKSPACE_DIR = "/agent";
 const DEFAULT_TIMEOUT_MS = 120_000;
@@ -126,7 +126,7 @@ function normalizeOpenShellRemotePath(
   return normalized;
 }
 
-export function createOpenShellPluginConfigSchema(): OpenClawPluginConfigSchema {
+export function createOpenShellPluginConfigSchema(): EVEPluginConfigSchema {
   return buildPluginConfigSchema(OpenShellPluginConfigSchema, {
     safeParse(value) {
       if (value === undefined) {

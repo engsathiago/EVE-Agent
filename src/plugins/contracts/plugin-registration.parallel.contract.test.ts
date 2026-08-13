@@ -1,4 +1,4 @@
-import { pluginRegistrationContractCases } from "openclaw/plugin-sdk/plugin-test-contracts";
-import { describePluginRegistrationContract } from "openclaw/plugin-sdk/plugin-test-contracts";
+import { pluginRegistrationContractCases } from "eve-agent/plugin-sdk/plugin-test-contracts";
+import { describePluginRegistrationContract } from "eve-agent/plugin-sdk/plugin-test-contracts";
 
 describePluginRegistrationContract(pluginRegistrationContractCases.parallel);

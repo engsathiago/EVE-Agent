@@ -3,7 +3,7 @@
  *
  * Reads active runtime channel state without materializing the full registry view.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { ActiveChannelPluginRuntimeShape } from "../../plugins/channel-registry-state.types.js";
 import { getActivePluginChannelRegistryFromState } from "../../plugins/runtime-channel-state.js";
 import type { ChannelPlugin } from "./types.plugin.js";

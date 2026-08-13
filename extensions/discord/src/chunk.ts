@@ -1,6 +1,6 @@
 // Discord plugin module implements chunk behavior.
-import { resolveIntegerOption } from "openclaw/plugin-sdk/number-runtime";
-import { chunkMarkdownTextWithMode, type ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
+import { resolveIntegerOption } from "eve-agent/plugin-sdk/number-runtime";
+import { chunkMarkdownTextWithMode, type ChunkMode } from "eve-agent/plugin-sdk/reply-chunking";
 
 type ChunkDiscordTextOpts = {
   /** Max characters per Discord message. Default: 2000. */

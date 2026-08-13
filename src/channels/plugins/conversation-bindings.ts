@@ -3,7 +3,7 @@
  *
  * Starts plugin binding managers and updates per-session binding idle/max-age limits.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { getChannelPlugin } from "./registry.js";
 import type { ChannelId } from "./types.public.js";
 
@@ -15,7 +15,7 @@ import type { ChannelId } from "./types.public.js";
  */
 export async function createChannelConversationBindingManager(params: {
   channelId: ChannelId;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): Promise<{ stop: () => void | Promise<void> } | null> {
   const createManager = getChannelPlugin(params.channelId)?.conversationBindings?.createManager;

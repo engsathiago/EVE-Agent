@@ -443,7 +443,7 @@ export const de: TranslationMap = {
       "Vorschläge prüfen, verfeinern und anwenden, bevor sie zu aktiven Skills werden.",
     nodes: "Gekoppelte Geräte, Fähigkeiten und Befehlsfreigabe.",
     chat: "Direkte Gateway-Chat-Sitzung für schnelle Eingriffe.",
-    config: "~/.openclaw/openclaw.json sicher bearbeiten.",
+    config: "~/.eve/eve.json sicher bearbeiten.",
     communications: "Kanäle, Nachrichten und Audioeinstellungen.",
     appearance: "Design-, UI- und Einrichtungsassistent-Einstellungen.",
     automation: "Befehle, Hooks, Cron und Plugins.",
@@ -785,7 +785,7 @@ export const de: TranslationMap = {
       metadataUpgradeSummary:
         "Dieses Gerät ist bereits gekoppelt, aber die Änderung der Metadaten wartet auf Genehmigung.",
       mobileHint:
-        "Auf dem Mobilgerät? Kopieren Sie die vollständige URL (einschließlich #token=...) von openclaw dashboard --no-open auf Ihrem Desktop.",
+        "Auf dem Mobilgerät? Kopieren Sie die vollständige URL (einschließlich #token=...) von eve dashboard --no-open auf Ihrem Desktop.",
       docsTitle: "Gerätekopplungs-Dokumentation (öffnet sich in neuem Tab)",
       docsLink: "Docs: Gerätekopplung",
     },
@@ -825,7 +825,7 @@ export const de: TranslationMap = {
       modelAuthAttentionExpiredTitle: "Modell-Authentifizierung abgelaufen",
       modelAuthAttentionExpiringTitle: "Modell-Authentifizierung läuft bald ab",
       modelAuthAttentionExpiredDesc:
-        "{providers} — mit openclaw models auth erneut authentifizieren",
+        "{providers} — mit eve models auth erneut authentifizieren",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1251,9 +1251,9 @@ export const de: TranslationMap = {
         summary:
           "Das Gateway ist erreichbar, benötigt aber ein passendes Token oder Passwort, bevor dieser Browser eine Verbindung herstellen kann.",
         stepPaste:
-          "Füge das Token aus openclaw dashboard --no-open ein oder gib das konfigurierte Passwort ein.",
+          "Füge das Token aus eve dashboard --no-open ein oder gib das konfigurierte Passwort ein.",
         stepGenerate:
-          "Wenn kein Token konfiguriert ist, führe openclaw doctor --generate-gateway-token auf dem Gateway-Host aus.",
+          "Wenn kein Token konfiguriert ist, führe eve doctor --generate-gateway-token auf dem Gateway-Host aus.",
         stepConnect: "Klicke nach dem Aktualisieren der Zugangsdaten erneut auf Connect.",
       },
       authFailed: {
@@ -1261,7 +1261,7 @@ export const de: TranslationMap = {
         summary:
           "Die angegebenen Zugangsdaten wurden abgelehnt. Häufigste Ursache ist ein veraltetes Token oder ein Token von einer anderen Gateway-URL.",
         stepDashboard:
-          "Führe openclaw dashboard --no-open aus und öffne die frische URL oder füge ihr Token ein.",
+          "Führe eve dashboard --no-open aus und öffne die frische URL oder füge ihr Token ein.",
         stepReplace:
           "Ersetze veraltete Token-/Passwortwerte; verwende kein Token von einer anderen Gateway-URL erneut.",
         stepMode:
@@ -1285,8 +1285,8 @@ export const de: TranslationMap = {
           "Dieser Browser benötigt eine einmalige Freigabe vom Gateway-Host, bevor er die Control UI verwenden kann.",
         upgradeSummary:
           "Dieser Browser ist bereits bekannt, aber der angeforderte Zugriff hat sich geändert und benötigt eine neue Freigabe.",
-        stepList: "Führe openclaw devices list auf dem Gateway-Host aus.",
-        stepApproveId: "Genehmige diese Anfrage: openclaw devices approve {requestId}.",
+        stepList: "Führe eve devices list auf dem Gateway-Host aus.",
+        stepApproveId: "Genehmige diese Anfrage: eve devices approve {requestId}.",
         stepApprove: "Genehmige die ausstehende Browser-/Geräteanfrage aus dieser Liste.",
         stepReconnect: "Verbinde dich erneut, nachdem die Freigabe abgeschlossen ist.",
       },
@@ -1315,22 +1315,22 @@ export const de: TranslationMap = {
         summary:
           "Die bereitgestellte Control UI und das laufende Gateway stimmen beim unterstützten Verbindungsprotokoll nicht überein.",
         stepDashboard:
-          "Öffne das bereitgestellte Dashboard mit openclaw dashboard erneut, damit UI und Gateway aus derselben Installation stammen.",
+          "Öffne das bereitgestellte Dashboard mit eve dashboard erneut, damit UI und Gateway aus derselben Installation stammen.",
         stepDevUi:
           "Wenn du pnpm ui:dev verwendest, baue oder starte die Dev-UI gegen den aktuellen Checkout neu.",
         stepRestart:
-          "Starte das Gateway nach dem Aktualisieren von OpenClaw neu, damit es das aktuelle Protokoll bereitstellt.",
+          "Starte das Gateway nach dem Aktualisieren von EVE neu, damit es das aktuelle Protokoll bereitstellt.",
       },
       network: {
         title: "Verbindung nicht möglich",
         summary:
           "Der Browser konnte die Gateway-Verbindung nicht abschließen. Prüfe Ziel und Transport, bevor du Zugangsdaten erneut versuchst.",
         stepGateway:
-          "Bestätige mit openclaw status oder openclaw gateway run, dass das Gateway läuft.",
+          "Bestätige mit eve status oder eve gateway run, dass das Gateway läuft.",
         stepUrl:
           "Prüfe die WebSocket-URL und verwende wss://, wenn das Gateway hinter HTTPS/Tailscale Serve liegt.",
         stepDashboard:
-          "Öffne das Dashboard mit openclaw dashboard --no-open erneut, um die aktuelle URL und Auth-Details zu kopieren.",
+          "Öffne das Dashboard mit eve dashboard --no-open erneut, um die aktuelle URL und Auth-Details zu kopieren.",
       },
     },
   },

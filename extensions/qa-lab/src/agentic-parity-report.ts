@@ -59,11 +59,11 @@ type QaRuntimeParityScenarioReport = {
   status: "pass" | "fail";
   drift: RuntimeParityDrift | "missing";
   driftDetails?: string;
-  openclawStatus: "pass" | "fail" | "missing";
+  eveStatus: "pass" | "fail" | "missing";
   codexStatus: "pass" | "fail" | "missing";
-  openclawTokens: number;
+  eveTokens: number;
   codexTokens: number;
-  openclawToolCalls: number;
+  eveToolCalls: number;
   codexToolCalls: number;
 };
 
@@ -179,7 +179,7 @@ function scenarioHasRuntimeToolCallEvidence(scenario: QaParityReportScenario): b
   return (
     scenario.status === "pass" &&
     isRuntimeParityResultPass(parity) &&
-    parity.cells.openclaw.toolCalls.length > 0 &&
+    parity.cells.eve.toolCalls.length > 0 &&
     parity.cells.codex.toolCalls.length > 0
   );
 }
@@ -270,9 +270,9 @@ function isLiveProviderMode(providerMode: string | undefined) {
 
 function describeLiveUsageFailure(scenarioName: string, scenario: QaRuntimeParityScenarioReport) {
   const missing = [
-    scenario.openclawTokens > 0
+    scenario.eveTokens > 0
       ? undefined
-      : `${scenario.openclawStatus === "pass" ? "openclaw" : "openclaw failed"}=0`,
+      : `${scenario.eveStatus === "pass" ? "eve" : "eve failed"}=0`,
     scenario.codexTokens > 0
       ? undefined
       : `${scenario.codexStatus === "pass" ? "codex" : "codex failed"}=0`,
@@ -289,7 +289,7 @@ function normalizeRuntimePair(
   if (pair?.[0] && pair?.[1]) {
     return pair;
   }
-  return ["openclaw", "codex"];
+  return ["eve", "codex"];
 }
 
 function requiredCoverageStatus(
@@ -586,7 +586,7 @@ export function renderQaAgenticParityMarkdownReport(comparison: QaAgenticParityC
   // openai/gpt-5.5 vs anthropic/claude-opus-4-8, but the helper works for
   // any parity comparison a caller configures.
   const lines = [
-    `# OpenClaw Agentic Parity Report — ${comparison.candidateLabel} vs ${comparison.baselineLabel}`,
+    `# EVE Agentic Parity Report — ${comparison.candidateLabel} vs ${comparison.baselineLabel}`,
     "",
     `- Compared at: ${comparison.comparedAt}`,
     `- Candidate: ${comparison.candidateLabel}`,
@@ -653,18 +653,18 @@ export function buildQaRuntimeParityReport(params: {
         status: scenario.status === "pass" ? "pass" : "fail",
         drift: "missing",
         driftDetails: scenario.details,
-        openclawStatus: "missing",
+        eveStatus: "missing",
         codexStatus: "missing",
-        openclawTokens: 0,
+        eveTokens: 0,
         codexTokens: 0,
-        openclawToolCalls: 0,
+        eveToolCalls: 0,
         codexToolCalls: 0,
       } satisfies QaRuntimeParityScenarioReport;
     }
     driftCounts[parity.drift] += 1;
-    const openclawCell = parity.cells.openclaw;
+    const eveCell = parity.cells.eve;
     const codexCell = parity.cells.codex;
-    const openclawStatus = runtimeParityCellStatus(openclawCell);
+    const eveStatus = runtimeParityCellStatus(eveCell);
     const codexStatus = runtimeParityCellStatus(codexCell);
     const parityStatus = isRuntimeParityResultPass(parity) ? "pass" : "fail";
     const reportScenario = {
@@ -672,11 +672,11 @@ export function buildQaRuntimeParityReport(params: {
       status: parityStatus,
       drift: parity.drift,
       driftDetails: parity.driftDetails,
-      openclawStatus,
+      eveStatus,
       codexStatus,
-      openclawTokens: openclawCell.usage.totalTokens,
+      eveTokens: eveCell.usage.totalTokens,
       codexTokens: codexCell.usage.totalTokens,
-      openclawToolCalls: openclawCell.toolCalls.length,
+      eveToolCalls: eveCell.toolCalls.length,
       codexToolCalls: codexCell.toolCalls.length,
     } satisfies QaRuntimeParityScenarioReport;
     if (parityStatus === "fail") {
@@ -722,7 +722,7 @@ export function buildQaRuntimeParityReport(params: {
 
 export function renderQaRuntimeParityMarkdownReport(report: QaRuntimeParityReport): string {
   const lines = [
-    `# OpenClaw Runtime Parity Report — ${report.runtimePair[0]} vs ${report.runtimePair[1]}`,
+    `# EVE Runtime Parity Report — ${report.runtimePair[0]} vs ${report.runtimePair[1]}`,
     "",
     `- Compared at: ${report.comparedAt}`,
     `- Provider mode: ${report.providerMode ?? "unknown"}`,
@@ -759,7 +759,7 @@ export function renderQaRuntimeParityMarkdownReport(report: QaRuntimeParityRepor
     lines.push(`- status: ${scenario.status}`);
     lines.push(`- drift: ${scenario.drift}`);
     lines.push(
-      `- openclaw: ${scenario.openclawStatus} (${scenario.openclawToolCalls} tool calls, ${scenario.openclawTokens} tokens)`,
+      `- eve: ${scenario.eveStatus} (${scenario.eveToolCalls} tool calls, ${scenario.eveTokens} tokens)`,
     );
     lines.push(
       `- codex: ${scenario.codexStatus} (${scenario.codexToolCalls} tool calls, ${scenario.codexTokens} tokens)`,

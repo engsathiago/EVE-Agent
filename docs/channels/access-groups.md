@@ -42,7 +42,7 @@ Member lists are keyed by message-channel id:
 | `telegram` | Entries checked only for Telegram allowlist matching.                   |
 | `whatsapp` | Entries checked only for WhatsApp allowlist matching.                   |
 
-Entries are matched with the destination channel's normal `allowFrom` rules. OpenClaw does not translate sender ids between channels. If Alice has a Telegram id and a Discord id, list both ids under the appropriate keys.
+Entries are matched with the destination channel's normal `allowFrom` rules. EVE does not translate sender ids between channels. If Alice has a Telegram id and a Discord id, list both ids under the appropriate keys.
 
 ## Reference groups from allowlists
 
@@ -125,14 +125,14 @@ Access groups are available in shared message-channel authorization paths, inclu
 - channel-specific per-room sender allowlists that use the same sender matching rules
 - command authorization paths that reuse message-channel sender allowlists
 
-Channel support depends on whether that channel is wired through the shared OpenClaw sender-authorization helpers. Current bundled support includes Discord, Feishu, Google Chat, iMessage, LINE, Mattermost, Microsoft Teams, Nextcloud Talk, Nostr, QQBot, Signal, WhatsApp, Zalo, and Zalo Personal. Static `message.senders` groups are designed to be channel-agnostic, so new message channels should support them by using the shared plugin SDK helpers instead of custom allowlist expansion.
+Channel support depends on whether that channel is wired through the shared EVE sender-authorization helpers. Current bundled support includes Discord, Feishu, Google Chat, iMessage, LINE, Mattermost, Microsoft Teams, Nextcloud Talk, Nostr, QQBot, Signal, WhatsApp, Zalo, and Zalo Personal. Static `message.senders` groups are designed to be channel-agnostic, so new message channels should support them by using the shared plugin SDK helpers instead of custom allowlist expansion.
 
 ## Plugin diagnostics
 
 Plugin authors can inspect structured access-group state without expanding it back into a flat allowlist:
 
 ```typescript
-import { resolveAccessGroupAllowFromState } from "openclaw/plugin-sdk/security-runtime";
+import { resolveAccessGroupAllowFromState } from "eve-agent/plugin-sdk/security-runtime";
 
 const state = await resolveAccessGroupAllowFromState({
   accessGroups: cfg.accessGroups,
@@ -169,7 +169,7 @@ Discord also supports a dynamic access group type:
 }
 ```
 
-`discord.channelAudience` means "allow Discord DM senders who can currently view this guild channel." OpenClaw resolves the sender through Discord at authorization time and applies Discord `ViewChannel` permission rules.
+`discord.channelAudience` means "allow Discord DM senders who can currently view this guild channel." EVE resolves the sender through Discord at authorization time and applies Discord `ViewChannel` permission rules.
 
 Use this when a Discord channel is already the source of truth for a team, such as `#maintainers` or `#on-call`.
 
@@ -198,4 +198,4 @@ If a sender should match but is blocked:
 4. Confirm the entry uses that channel's normal allowlist syntax.
 5. For Discord channel audiences, confirm the bot can see the guild channel and has Server Members Intent enabled.
 
-Run `openclaw doctor` after editing access-control config. It catches many invalid allowlist and policy combinations before runtime.
+Run `eve doctor` after editing access-control config. It catches many invalid allowlist and policy combinations before runtime.

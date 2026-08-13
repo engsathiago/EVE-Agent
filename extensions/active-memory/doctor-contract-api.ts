@@ -5,7 +5,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
 
 type ActiveMemoryToggleEntry = {
   sessionKey: string;
@@ -85,7 +85,7 @@ async function archiveLegacySource(params: {
   }
 }
 
-/** State migrations exposed to OpenClaw doctor for Active Memory. */
+/** State migrations exposed to EVE doctor for Active Memory. */
 export const stateMigrations: PluginDoctorStateMigration[] = [
   {
     id: "active-memory-session-toggles-json-to-plugin-state",

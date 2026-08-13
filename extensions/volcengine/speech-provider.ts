@@ -1,17 +1,17 @@
 // Volcengine provider module implements model/runtime integration.
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 import type {
   SpeechDirectiveTokenParseContext,
   SpeechProviderConfig,
   SpeechProviderOverrides,
   SpeechProviderPlugin,
-} from "openclaw/plugin-sdk/speech-core";
+} from "eve-agent/plugin-sdk/speech-core";
 import {
   asObject,
   parseSpeechDirectiveNumberOverride,
   trimToUndefined,
-} from "openclaw/plugin-sdk/speech-core";
-import { asFiniteNumberInRange } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/speech-core";
+import { asFiniteNumberInRange } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { volcengineTTS, type VolcengineTtsEncoding } from "./tts.js";
 
 const DEFAULT_VOICE = "en_female_anna_mars_bigtts";

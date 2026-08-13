@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/acpx",
+  "name": "@eve/acpx",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/acpx",
+      "name": "@eve/acpx",
       "version": "2026.6.8",
       "dependencies": {
         "@agentclientprotocol/claude-agent-acp": "0.39.0",

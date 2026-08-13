@@ -1,8 +1,8 @@
 /**
- * Bridges OpenClaw runtime tools into Codex app-server dynamic tool specs and
+ * Bridges EVE runtime tools into Codex app-server dynamic tool specs and
  * tool-call responses.
  */
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
 import {
   consumeAdjustedParamsForToolCall,
   consumePreExecutionBlockedToolCall,
@@ -33,14 +33,14 @@ import {
   type MessagingToolSend,
   type MessagingToolSourceReplyPayload,
   wrapToolWithBeforeToolCallHook,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { emitTrustedDiagnosticEvent } from "openclaw/plugin-sdk/diagnostic-runtime";
-import type { ImageContent, TextContent } from "openclaw/plugin-sdk/llm";
-import { normalizeAgentId } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { emitTrustedDiagnosticEvent } from "eve-agent/plugin-sdk/diagnostic-runtime";
+import type { ImageContent, TextContent } from "eve-agent/plugin-sdk/llm";
+import { normalizeAgentId } from "eve-agent/plugin-sdk/routing";
 import {
   asOptionalRecord as readRecord,
   isRecord,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { CodexDynamicToolsLoading } from "./config.js";
 import { invalidInlineImageText, sanitizeInlineImageDataUrl } from "./image-payload-sanitizer.js";
 import type {
@@ -126,16 +126,16 @@ export type CodexDynamicToolBridge = {
   };
 };
 
-/** Namespace attached to OpenClaw-owned dynamic tools exposed to Codex. */
-export const CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE = "openclaw";
+/** Namespace attached to EVE-owned dynamic tools exposed to Codex. */
+export const CODEX_EVE_DYNAMIC_TOOL_NAMESPACE = "eve";
 
-// Keep OpenClaw session spawning searchable in Codex mode so Codex's native
+// Keep EVE session spawning searchable in Codex mode so Codex's native
 // spawn_agent remains the primary Codex subagent surface.
 const ALWAYS_DIRECT_DYNAMIC_TOOL_NAMES = new Set(["sessions_yield"]);
 const DEFAULT_CODEX_DYNAMIC_TOOL_RESULT_MAX_CHARS = 16_000;
 
 /**
- * Creates dynamic tool specs and a call handler that executes OpenClaw tools,
+ * Creates dynamic tool specs and a call handler that executes EVE tools,
  * applies hooks/middleware, and records delivery/media telemetry.
  */
 export function createCodexDynamicToolBridge(params: {
@@ -217,8 +217,8 @@ export function createCodexDynamicToolBridge(params: {
       const toolEntry = toolMap.get(call.tool);
       if (!toolEntry) {
         const message = registeredToolNames.has(call.tool)
-          ? `OpenClaw tool is not available for this turn: ${call.tool}`
-          : `Unknown OpenClaw tool: ${call.tool}`;
+          ? `EVE tool is not available for this turn: ${call.tool}`
+          : `Unknown EVE tool: ${call.tool}`;
         finalizeToolTerminalPresentation({
           toolCallId: call.callId,
           runId: toolResultHookContext.runId,
@@ -517,7 +517,7 @@ function createCodexDynamicToolSpecs(params: {
   if (namespaceTools.length > 0) {
     specs.push({
       type: "namespace",
-      name: CODEX_OPENCLAW_DYNAMIC_TOOL_NAMESPACE,
+      name: CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
       description: "",
       tools: namespaceTools,
     });
@@ -1012,7 +1012,7 @@ function convertToolContents(
     return content.flatMap(convertToolContent);
   }
 
-  const noticeText = `...(OpenClaw truncated dynamic tool result: original ${totalTextChars} chars, showing ${maxChars}; rerun with narrower args.)`;
+  const noticeText = `...(EVE truncated dynamic tool result: original ${totalTextChars} chars, showing ${maxChars}; rerun with narrower args.)`;
   const notice = `\n${noticeText}`;
   const textBudget = Math.max(0, maxChars - notice.length);
   let remainingTextBudget = textBudget;

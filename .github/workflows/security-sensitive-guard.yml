@@ -12,7 +12,7 @@ permissions:
 env:
   # Temporary rollout bridge for PRs opened before this workflow's script landed.
   # Remove once the pre-rollout PR set has drained.
-  OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA: 5d9c010628ea4de3492a12e32f9be5b8c5dfa9ed
+  EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA: 5d9c010628ea4de3492a12e32f9be5b8c5dfa9ed
 
 concurrency:
   group: security-sensitive-guard-${{ github.event.pull_request.number }}
@@ -32,7 +32,7 @@ jobs:
         run: |
           status="$(
             gh api \
-              "repos/${GITHUB_REPOSITORY}/compare/${OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}" \
+              "repos/${GITHUB_REPOSITORY}/compare/${EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}" \
               --jq '.status'
           )"
           case "$status" in
@@ -41,7 +41,7 @@ jobs:
               ;;
             behind|diverged)
               echo "ready=false" >> "$GITHUB_OUTPUT"
-              echo "::notice::Skipping security-sensitive guard for a PR base that predates rollout commit ${OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}."
+              echo "::notice::Skipping security-sensitive guard for a PR base that predates rollout commit ${EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}."
               ;;
             *)
               echo "Unexpected compare status for security-sensitive guard rollout: $status" >&2
@@ -60,9 +60,9 @@ jobs:
         if: steps.rollout.outputs.ready == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          OPENCLAW_SECURITY_APPROVERS: vincentkoc,steipete,joshavant
-          OPENCLAW_SECURITY_SENSITIVE_GUARD_MODE: detect
-          OPENCLAW_SECURITY_TEAM_SLUG: openclaw-secops
+          EVE_SECURITY_APPROVERS: vincentkoc,steipete,joshavant
+          EVE_SECURITY_SENSITIVE_GUARD_MODE: detect
+          EVE_SECURITY_TEAM_SLUG: eve-secops
         run: node scripts/github/security-sensitive-guard.mjs
 
   security-sensitive-guard:
@@ -80,7 +80,7 @@ jobs:
         run: |
           status="$(
             gh api \
-              "repos/${GITHUB_REPOSITORY}/compare/${OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}" \
+              "repos/${GITHUB_REPOSITORY}/compare/${EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}" \
               --jq '.status'
           )"
           case "$status" in
@@ -89,7 +89,7 @@ jobs:
               ;;
             behind|diverged)
               echo "ready=false" >> "$GITHUB_OUTPUT"
-              echo "::notice::Skipping security-sensitive guard for a PR base that predates rollout commit ${OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}."
+              echo "::notice::Skipping security-sensitive guard for a PR base that predates rollout commit ${EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}."
               ;;
             *)
               echo "Unexpected compare status for security-sensitive guard rollout: $status" >&2
@@ -108,7 +108,7 @@ jobs:
         if: steps.rollout.outputs.ready == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          OPENCLAW_SECURITY_APPROVERS: vincentkoc,steipete,joshavant
-          OPENCLAW_SECURITY_SENSITIVE_GUARD_MODE: enforce
-          OPENCLAW_SECURITY_TEAM_SLUG: openclaw-secops
+          EVE_SECURITY_APPROVERS: vincentkoc,steipete,joshavant
+          EVE_SECURITY_SENSITIVE_GUARD_MODE: enforce
+          EVE_SECURITY_TEAM_SLUG: eve-secops
         run: node scripts/github/security-sensitive-guard.mjs

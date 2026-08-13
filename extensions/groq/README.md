@@ -1,12 +1,12 @@
-# OpenClaw Groq Provider
+# EVE Groq Provider
 
-Official OpenClaw provider plugin for Groq.
+Official EVE provider plugin for Groq.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/groq-provider
-openclaw gateway restart
+eve plugins install @eve/groq-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/groq> for setup and configuration.
+See <https://docs.eve.ai/providers/groq> for setup and configuration.

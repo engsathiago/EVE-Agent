@@ -1,10 +1,10 @@
 // Memory Wiki plugin module implements prompt section behavior.
 import fs from "node:fs";
 import path from "node:path";
-import type { MemoryPromptSectionBuilder } from "openclaw/plugin-sdk/memory-host-core";
+import type { MemoryPromptSectionBuilder } from "eve-agent/plugin-sdk/memory-host-core";
 import type { ResolvedMemoryWikiConfig } from "./config.js";
 
-const AGENT_DIGEST_PATH = ".openclaw-wiki/cache/agent-digest.json";
+const AGENT_DIGEST_PATH = ".eve-wiki/cache/agent-digest.json";
 const DIGEST_MAX_PAGES = 4;
 const DIGEST_MAX_CLAIMS_PER_PAGE = 2;
 

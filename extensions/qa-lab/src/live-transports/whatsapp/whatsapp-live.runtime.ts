@@ -8,12 +8,12 @@ import {
   startWhatsAppQaDriverSession,
   type WhatsAppQaDriverObservedMessage,
   type WhatsAppQaDriverSession,
-} from "@openclaw/whatsapp/api.js";
-import { normalizeE164 } from "openclaw/plugin-sdk/account-resolution";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "@eve/whatsapp/api.js";
+import { normalizeE164 } from "eve-agent/plugin-sdk/account-resolution";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { normalizeStringEntries, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { z } from "zod";
 import { QA_EVIDENCE_FILENAME, buildLiveTransportEvidenceSummary } from "../../evidence-summary.js";
 import { startQaGatewayChild } from "../../gateway-child.js";
@@ -288,18 +288,18 @@ type WhatsAppQaPreScenarioPhase =
   | "driver session start"
   | "scenario execution";
 
-const WHATSAPP_QA_CAPTURE_CONTENT_ENV = "OPENCLAW_QA_WHATSAPP_CAPTURE_CONTENT";
-const QA_REDACT_PUBLIC_METADATA_ENV = "OPENCLAW_QA_REDACT_PUBLIC_METADATA";
+const WHATSAPP_QA_CAPTURE_CONTENT_ENV = "EVE_QA_WHATSAPP_CAPTURE_CONTENT";
+const QA_REDACT_PUBLIC_METADATA_ENV = "EVE_QA_REDACT_PUBLIC_METADATA";
 const WHATSAPP_QA_TRANSIENT_DRIVER_ATTEMPTS = 5;
 const WHATSAPP_QA_READY_TIMEOUT_MS = 150_000;
 const WHATSAPP_QA_READY_STABILITY_MS = 20_000;
 const WHATSAPP_QA_DRIVER_RECONNECT_DELAY_MS = 10_000;
 const WHATSAPP_QA_APPROVAL_DECISION_TIMEOUT_MS = 60_000;
 const WHATSAPP_QA_ENV_KEYS = [
-  "OPENCLAW_QA_WHATSAPP_DRIVER_PHONE_E164",
-  "OPENCLAW_QA_WHATSAPP_SUT_PHONE_E164",
-  "OPENCLAW_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64",
-  "OPENCLAW_QA_WHATSAPP_SUT_AUTH_ARCHIVE_BASE64",
+  "EVE_QA_WHATSAPP_DRIVER_PHONE_E164",
+  "EVE_QA_WHATSAPP_SUT_PHONE_E164",
+  "EVE_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64",
+  "EVE_QA_WHATSAPP_SUT_AUTH_ARCHIVE_BASE64",
 ] as const;
 const WHATSAPP_QA_ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lzK4ZQAAAABJRU5ErkJggg==",
@@ -449,7 +449,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       configMode: "pairing",
       expectReply: true,
       input: `Do not run the agent for this pairing QA marker ${randomUUID().slice(0, 8)}`,
-      matchText: /OpenClaw: access not configured|Pairing code:/iu,
+      matchText: /EVE: access not configured|Pairing code:/iu,
       target: "dm",
     }),
   },
@@ -465,7 +465,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       return {
         configMode: "allowlist",
         expectReply: true,
-        input: `openclawqa reply with only this exact marker: ${replyToken}`,
+        input: `eveqa reply with only this exact marker: ${replyToken}`,
         matchText: replyToken,
         quietInput: `This group message is intentionally unmentioned. If you respond, include ${quietToken}.`,
         quietMatchText: quietToken,
@@ -542,7 +542,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       configMode: "allowlist",
       expectReply: true,
       input: "/help",
-      matchText: /OpenClaw|commands|status|\/new/iu,
+      matchText: /EVE|commands|status|\/new/iu,
       target: "dm",
     }),
   },
@@ -554,7 +554,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       configMode: "allowlist",
       expectReply: true,
       input: "/status",
-      matchText: /OpenClaw|status|session|agent/iu,
+      matchText: /EVE|status|session|agent/iu,
       target: "dm",
     }),
   },
@@ -1154,7 +1154,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       return {
         configMode: "allowlist",
         expectReply: true,
-        input: `openclawqa reply with only this exact marker under groupPolicy open: ${token}`,
+        input: `eveqa reply with only this exact marker under groupPolicy open: ${token}`,
         matchText: token,
         target: "group",
       };
@@ -1174,7 +1174,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       return {
         configMode: "allowlist",
         expectReply: false,
-        input: `openclawqa groupPolicy disabled must not reply with ${token}`,
+        input: `eveqa groupPolicy disabled must not reply with ${token}`,
         matchText: token,
         target: "group",
       };
@@ -1332,7 +1332,7 @@ const WHATSAPP_QA_SCENARIOS: WhatsAppQaScenarioDefinition[] = [
       return {
         configMode: "allowlist",
         expectReply: false,
-        input: `openclawqa blocked group should not reply with ${quietToken}`,
+        input: `eveqa blocked group should not reply with ${quietToken}`,
         matchText: quietToken,
         target: "group",
       };
@@ -1434,16 +1434,16 @@ function validateWhatsAppQaRuntimeEnv(
 function resolveWhatsAppQaRuntimeEnv(env: NodeJS.ProcessEnv = process.env): WhatsAppQaRuntimeEnv {
   return validateWhatsAppQaRuntimeEnv(
     {
-      driverPhoneE164: resolveEnvValue(env, "OPENCLAW_QA_WHATSAPP_DRIVER_PHONE_E164"),
-      sutPhoneE164: resolveEnvValue(env, "OPENCLAW_QA_WHATSAPP_SUT_PHONE_E164"),
+      driverPhoneE164: resolveEnvValue(env, "EVE_QA_WHATSAPP_DRIVER_PHONE_E164"),
+      sutPhoneE164: resolveEnvValue(env, "EVE_QA_WHATSAPP_SUT_PHONE_E164"),
       driverAuthArchiveBase64: resolveEnvValue(
         env,
-        "OPENCLAW_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64",
+        "EVE_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64",
       ),
-      sutAuthArchiveBase64: resolveEnvValue(env, "OPENCLAW_QA_WHATSAPP_SUT_AUTH_ARCHIVE_BASE64"),
-      groupJid: env.OPENCLAW_QA_WHATSAPP_GROUP_JID?.trim() || undefined,
+      sutAuthArchiveBase64: resolveEnvValue(env, "EVE_QA_WHATSAPP_SUT_AUTH_ARCHIVE_BASE64"),
+      groupJid: env.EVE_QA_WHATSAPP_GROUP_JID?.trim() || undefined,
     },
-    "OPENCLAW_QA_WHATSAPP",
+    "EVE_QA_WHATSAPP",
   );
 }
 
@@ -1498,7 +1498,7 @@ function buildNonMatchingWhatsAppQaAllowFrom(existingAllowFrom: string[]) {
 }
 
 function buildWhatsAppQaConfig(
-  baseCfg: OpenClawConfig,
+  baseCfg: EVEConfig,
   params: {
     allowFrom: string[];
     authDir: string;
@@ -1507,7 +1507,7 @@ function buildWhatsAppQaConfig(
     overrides?: WhatsAppQaConfigOverrides;
     sutAccountId: string;
   },
-): OpenClawConfig {
+): EVEConfig {
   const pluginAllow = uniqueStrings([...(baseCfg.plugins?.allow ?? []), "whatsapp"]);
   const approvalOverrides = params.overrides?.approvals;
   const groupPolicy = params.overrides?.groupPolicy ?? "open";
@@ -1639,7 +1639,7 @@ function buildWhatsAppQaConfig(
                     mentionPatterns: [
                       ...new Set([
                         ...(baseCfg.messages?.groupChat?.mentionPatterns ?? []),
-                        "\\bopenclawqa\\b",
+                        "\\beveqa\\b",
                       ]),
                     ],
                   },
@@ -1799,7 +1799,7 @@ async function writeWhatsAppQaWorkspaceFixture(
     fileName: string;
   },
 ) {
-  const fixtureDir = path.join(context.gatewayWorkspaceDir, ".openclaw", "qa-whatsapp-media");
+  const fixtureDir = path.join(context.gatewayWorkspaceDir, ".eve", "qa-whatsapp-media");
   await fs.mkdir(fixtureDir, { recursive: true });
   const filePath = path.join(fixtureDir, params.fileName);
   await fs.writeFile(filePath, params.buffer);
@@ -3056,7 +3056,7 @@ export async function runWhatsAppQaLive(params: {
     };
     runtimeEnv = credentialLease.payload;
     tempAuthRoot = await fs.mkdtemp(
-      path.join(resolvePreferredOpenClawTmpDir(), "openclaw-whatsapp-qa-"),
+      path.join(resolvePreferredEVETmpDir(), "eve-whatsapp-qa-"),
     );
     preScenarioPhase = "auth archive unpack";
     const [driverAuthDir, sutAuthDir] = await Promise.all([

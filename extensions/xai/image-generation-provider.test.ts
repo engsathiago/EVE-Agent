@@ -22,9 +22,9 @@ const {
     const headers = new Headers(params.defaultHeaders as HeadersInit | undefined);
     // Stub mirroring the xAI attribution policy headers (real wire is locked in provider-attribution.test.ts).
     if (params.provider === "xai") {
-      const version = process.env.OPENCLAW_VERSION?.trim() || "unknown";
-      headers.set("User-Agent", `openclaw/${version}`);
-      headers.set("originator", "openclaw");
+      const version = process.env.EVE_VERSION?.trim() || "unknown";
+      headers.set("User-Agent", `eve/${version}`);
+      headers.set("originator", "eve");
       headers.set("version", version);
     }
     return {
@@ -44,15 +44,15 @@ const {
   sanitizeConfiguredModelProviderRequestMock: vi.fn((request) => request),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-auth-runtime", () => ({
   resolveApiKeyForProvider: resolveApiKeyForProviderMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-auth", () => ({
   isProviderApiKeyConfigured: isProviderApiKeyConfiguredMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-http", () => ({
   assertOkOrThrowHttpError: assertOkOrThrowHttpErrorMock,
   createProviderOperationDeadline: createProviderOperationDeadlineMock,
   postJsonRequest: postJsonRequestMock,
@@ -62,7 +62,7 @@ vi.mock("openclaw/plugin-sdk/provider-http", () => ({
   sanitizeConfiguredModelProviderRequest: sanitizeConfiguredModelProviderRequestMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/string-coerce-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/string-coerce-runtime", () => ({
   normalizeOptionalString: (v: unknown) => (typeof v === "string" ? v.trim() : undefined),
   normalizeOptionalLowercaseString: (v: unknown) =>
     typeof v === "string" ? v.trim().toLowerCase() : undefined,
@@ -124,10 +124,10 @@ describe("xai image generation provider", () => {
     if (!isConfigured) {
       throw new Error("expected XAI image provider config predicate");
     }
-    expect(isConfigured({ agentDir: "/tmp/openclaw-xai-test" })).toBe(true);
+    expect(isConfigured({ agentDir: "/tmp/eve-xai-test" })).toBe(true);
     expect(isProviderApiKeyConfiguredMock).toHaveBeenCalledWith({
       provider: "xai",
-      agentDir: "/tmp/openclaw-xai-test",
+      agentDir: "/tmp/eve-xai-test",
     });
   });
 
@@ -230,7 +230,7 @@ describe("xai image generation provider", () => {
   });
 
   it("forwards xAI attribution User-Agent through the SDK image request", async () => {
-    vi.stubEnv("OPENCLAW_VERSION", "2026.3.22");
+    vi.stubEnv("EVE_VERSION", "2026.3.22");
     postJsonRequestMock.mockResolvedValue({
       response: {
         json: async () => ({
@@ -249,8 +249,8 @@ describe("xai image generation provider", () => {
     } as any);
 
     const request = requirePostJsonCall();
-    expect(request.headers?.get("user-agent")).toBe("openclaw/2026.3.22");
-    expect(request.headers?.get("originator")).toBe("openclaw");
+    expect(request.headers?.get("user-agent")).toBe("eve/2026.3.22");
+    expect(request.headers?.get("originator")).toBe("eve");
     expect(request.headers?.get("version")).toBe("2026.3.22");
     vi.unstubAllEnvs();
   });

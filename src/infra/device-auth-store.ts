@@ -69,7 +69,7 @@ function writeStore(filePath: string, store: DeviceAuthStore): void {
   }
 }
 
-/** Load a cached device-auth token from the configured OpenClaw state directory. */
+/** Load a cached device-auth token from the configured EVE state directory. */
 export function loadDeviceAuthToken(params: {
   deviceId: string;
   role: string;

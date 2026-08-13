@@ -1,7 +1,7 @@
 // Persists and resolves voice wake routing rules.
 import path from "node:path";
-import { isRecord as isPlainObject } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { isRecord as isPlainObject } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveStateDir } from "../config/paths.js";
 import {
   classifySessionKeyShape,

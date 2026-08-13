@@ -4,11 +4,11 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import type { ModelDefinitionConfig } from "../../config/types.models.js";
 import type { ImageDescriptionRequest } from "../../plugin-sdk/media-understanding.js";
 import { getApiKeyForModel, hasUsableCustomProviderApiKey } from "../model-auth.js";
-import { resolveImageToolFactoryAvailable } from "../openclaw-tools.media-factory-plan.js";
+import { resolveImageToolFactoryAvailable } from "../eve-tools.media-factory-plan.js";
 import { createImageTool, resolveImageModelConfigForTool, testing } from "./image-tool.js";
 import { hasProviderAuthForTool } from "./model-config.helpers.js";
 
@@ -53,7 +53,7 @@ function makeVisionModel(id: string): ModelDefinitionConfig {
   };
 }
 
-function createUserReportedConfig(params?: { includeApiKey?: boolean }): OpenClawConfig {
+function createUserReportedConfig(params?: { includeApiKey?: boolean }): EVEConfig {
   const includeApiKey = params?.includeApiKey ?? true;
   return {
     agents: {
@@ -75,7 +75,7 @@ function createUserReportedConfig(params?: { includeApiKey?: boolean }): OpenCla
 }
 
 async function withEmptyAgentDir<T>(run: (agentDir: string) => Promise<T>): Promise<T> {
-  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-image-auth-regression-"));
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-image-auth-regression-"));
   try {
     return await run(agentDir);
   } finally {

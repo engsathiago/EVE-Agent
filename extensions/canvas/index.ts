@@ -4,8 +4,8 @@
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { definePluginEntry, type AnyAgentTool } from "openclaw/plugin-sdk/plugin-entry";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { definePluginEntry, type AnyAgentTool } from "eve-agent/plugin-sdk/plugin-entry";
 import { canvasConfigSchema, isCanvasHostEnabled } from "./src/config.js";
 import { A2UI_PATH, CANVAS_HOST_PATH, CANVAS_WS_PATH } from "./src/host/a2ui-shared.js";
 import { CanvasToolSchema } from "./src/tool-schema.js";
@@ -22,7 +22,7 @@ const CANVAS_NODE_COMMANDS = [
 ];
 
 function createLazyCanvasTool(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): AnyAgentTool {
   let toolPromise: Promise<AnyAgentTool> | undefined;

@@ -4,7 +4,7 @@
  * runtime formatting behavior.
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { withEnvAsync } from "../../test-utils/env.js";
 import type { AuthProfileStore } from "./types.js";
 
@@ -34,7 +34,7 @@ function cfgFor(profileId: string, provider: string, mode: "api_key" | "token" |
         [profileId]: { provider, mode },
       },
     },
-  } satisfies OpenClawConfig;
+  } satisfies EVEConfig;
 }
 
 function tokenStore(params: {

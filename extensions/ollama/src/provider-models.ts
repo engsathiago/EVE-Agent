@@ -1,7 +1,7 @@
 // Ollama provider module implements model/runtime integration.
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-onboard";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
+import type { ModelDefinitionConfig } from "eve-agent/plugin-sdk/provider-onboard";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   OLLAMA_DEFAULT_BASE_URL,
   OLLAMA_DEFAULT_CONTEXT_WINDOW,

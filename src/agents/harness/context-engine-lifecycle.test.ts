@@ -1,15 +1,15 @@
 // Covers context-engine message filtering, assemble validation, and turn finalization.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { describe, expect, it, vi } from "vitest";
 import {
   CODEX_APP_SERVER_CONTEXT_ENGINE_HOST,
-  OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+  EVE_EMBEDDED_CONTEXT_ENGINE_HOST,
 } from "../../context-engine/host-compat.js";
 import { registerContextEngine, resolveContextEngine } from "../../context-engine/registry.js";
 import { buildContextEngineRuntimeSettings } from "../../context-engine/runtime-settings.js";
 import type { ContextEngine, ContextEngineRuntimeSettings } from "../../context-engine/types.js";
 import { compactContextEngineWithSafetyTimeout } from "../embedded-agent-runner/compaction-safety-timeout.js";
-import { OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../internal-runtime-context.js";
+import { EVE_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../internal-runtime-context.js";
 import {
   assembleHarnessContextEngine,
   bootstrapHarnessContextEngine,
@@ -29,10 +29,10 @@ function runtimeContextMessage(content: string, timestamp: number): AgentMessage
   // user/assistant transcript messages, not this internal custom channel.
   return {
     role: "custom",
-    customType: OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE,
+    customType: EVE_RUNTIME_CONTEXT_CUSTOM_TYPE,
     content,
     display: false,
-    details: { source: "openclaw-runtime-context" },
+    details: { source: "eve-runtime-context" },
     timestamp,
   } as AgentMessage;
 }
@@ -107,7 +107,7 @@ describe("harness context engine lifecycle", () => {
     expect(assembleParams?.runtimeSettings).toMatchObject({
       schemaVersion: 1,
       runtime: {
-        host: "openclaw",
+        host: "eve",
         mode: "normal",
       },
       model: {
@@ -212,7 +212,7 @@ describe("harness context engine lifecycle", () => {
     });
 
     const compactRuntimeSettings = buildContextEngineRuntimeSettings({
-      contextEngineHost: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+      contextEngineHost: EVE_EMBEDDED_CONTEXT_ENGINE_HOST,
       provider: "openai",
       requestedModel: "openai/gpt-5.5",
       resolvedModel: "anthropic/claude-sonnet-4-6",

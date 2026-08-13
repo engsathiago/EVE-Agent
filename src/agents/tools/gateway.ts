@@ -6,13 +6,13 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
 } from "../../../packages/gateway-protocol/src/client-info.js";
 import { getRuntimeConfig, resolveGatewayPort } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { callGateway } from "../../gateway/call.js";
 import { resolveGatewayCredentialsFromConfig, trimToUndefined } from "../../gateway/credentials.js";
 import {
@@ -81,7 +81,7 @@ function canonicalizeToolGatewayWsUrl(raw: string): { origin: string; key: strin
   return { origin, key };
 }
 
-function resolveLocalGatewayUrlKeys(cfg: OpenClawConfig): Set<string> {
+function resolveLocalGatewayUrlKeys(cfg: EVEConfig): Set<string> {
   const port = resolveGatewayPort(cfg);
   return new Set<string>([
     `ws://127.0.0.1:${port}`,
@@ -93,7 +93,7 @@ function resolveLocalGatewayUrlKeys(cfg: OpenClawConfig): Set<string> {
   ]);
 }
 
-function resolveConfiguredRemoteGatewayKey(cfg: OpenClawConfig): string | undefined {
+function resolveConfiguredRemoteGatewayKey(cfg: EVEConfig): string | undefined {
   let remoteKey: string | undefined;
   const remoteUrl = normalizeOptionalString(cfg.gateway?.remote?.url) ?? "";
   if (remoteUrl) {
@@ -109,7 +109,7 @@ function resolveConfiguredRemoteGatewayKey(cfg: OpenClawConfig): string | undefi
 }
 
 function resolveDefaultGatewayTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   envGatewayUrl?: string;
 }): GatewayOverrideTarget {
   if (params.envGatewayUrl) {
@@ -127,7 +127,7 @@ function resolveDefaultGatewayTarget(params: {
 }
 
 function validateGatewayUrlOverrideForAgentTools(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   urlOverride: string;
 }): { url: string; target: GatewayOverrideTarget } {
   const { cfg } = params;
@@ -152,7 +152,7 @@ function validateGatewayUrlOverrideForAgentTools(params: {
 }
 
 function resolveGatewayOverrideToken(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: GatewayOverrideTarget;
   explicitToken?: string;
 }): string | undefined {
@@ -192,7 +192,7 @@ export function resolveGatewayOptions(opts?: GatewayCallOptions) {
     typeof opts?.timeoutMs === "number" && Number.isFinite(opts.timeoutMs)
       ? Math.max(1, Math.floor(opts.timeoutMs))
       : 30_000;
-  const envGatewayUrl = trimToUndefined(process.env.OPENCLAW_GATEWAY_URL);
+  const envGatewayUrl = trimToUndefined(process.env.EVE_GATEWAY_URL);
   const target =
     validatedOverride?.target ??
     resolveDefaultGatewayTarget({
@@ -258,7 +258,7 @@ function resolveApprovalRequesterDeviceIdentityForGatewayTool(params: {
     throw new Error(
       [
         "remote approval gateway calls require a stable device identity.",
-        "Fix the OpenClaw state directory permissions or use the local approval-runtime gateway.",
+        "Fix the EVE state directory permissions or use the local approval-runtime gateway.",
       ].join(" "),
       { cause: error },
     );

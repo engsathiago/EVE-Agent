@@ -1,39 +1,39 @@
 // Speech Core module implements tts behavior.
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { resolveChannelTtsVoiceDelivery } from "openclaw/plugin-sdk/channel-targets";
+import { resolveChannelTtsVoiceDelivery } from "eve-agent/plugin-sdk/channel-targets";
 import type {
-  OpenClawConfig,
+  EVEConfig,
   ResolvedTtsPersona,
   TtsAutoMode,
   TtsConfig,
   TtsModelOverrideConfig,
   TtsProvider,
-} from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { redactSensitiveText } from "openclaw/plugin-sdk/logging-core";
-import { transcodeAudioBuffer } from "openclaw/plugin-sdk/media-runtime";
-import { clampTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { redactSensitiveText } from "eve-agent/plugin-sdk/logging-core";
+import { transcodeAudioBuffer } from "eve-agent/plugin-sdk/media-runtime";
+import { clampTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 import {
   markReplyPayloadAsTtsSupplement,
   resolveSendableOutboundReplyParts,
   type ReplyPayload,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import {
   getRuntimeConfigSnapshot,
   getRuntimeConfigSourceSnapshot,
   selectApplicableRuntimeConfig,
-} from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { isVerbose, logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { tempWorkspaceSync, resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/sandbox";
-import { privateFileStoreSync } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { isVerbose, logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { tempWorkspaceSync, resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/sandbox";
+import { privateFileStoreSync } from "eve-agent/plugin-sdk/security-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { stripMarkdown } from "openclaw/plugin-sdk/text-chunking";
-import { resolveConfigDir, resolveUserPath } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { stripMarkdown } from "eve-agent/plugin-sdk/text-chunking";
+import { resolveConfigDir, resolveUserPath } from "eve-agent/plugin-sdk/text-utility-runtime";
 import {
   canonicalizeSpeechProviderId,
   getSpeechProvider,
@@ -237,7 +237,7 @@ function resolveTtsPrefsPathValue(prefsPath: string | undefined): string {
   if (prefsPath?.trim()) {
     return resolveUserPath(prefsPath.trim());
   }
-  const envPath = process.env.OPENCLAW_TTS_PREFS?.trim();
+  const envPath = process.env.EVE_TTS_PREFS?.trim();
   if (envPath) {
     return resolveUserPath(envPath);
   }
@@ -273,7 +273,7 @@ function resolveModelOverridePolicy(
   };
 }
 
-function resolveConfiguredSpeechVoiceModelRefs(cfg: OpenClawConfig | undefined): VoiceModelRef[] {
+function resolveConfiguredSpeechVoiceModelRefs(cfg: EVEConfig | undefined): VoiceModelRef[] {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : undefined;
   return resolveSupportedVoiceModelRefs({
     config: effectiveCfg?.agents?.defaults?.voiceModel,
@@ -282,7 +282,7 @@ function resolveConfiguredSpeechVoiceModelRefs(cfg: OpenClawConfig | undefined):
 }
 
 function resolveConfiguredSpeechVoiceModelForProvider(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   providerId: string;
   provider?: VoiceModelProvider;
   voiceModel?: VoiceModelRef;
@@ -301,7 +301,7 @@ function resolveConfiguredSpeechVoiceModelForProvider(params: {
 }
 
 function applyVoiceModelToSpeechProviderConfig(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   providerId: string;
   providerConfig: SpeechProviderConfig;
   provider?: VoiceModelProvider;
@@ -329,7 +329,7 @@ function applyVoiceModelToSpeechProviderConfig(params: {
   };
 }
 
-function sortSpeechProvidersForAutoSelection(cfg?: OpenClawConfig) {
+function sortSpeechProvidersForAutoSelection(cfg?: EVEConfig) {
   return listSpeechProviders(cfg).toSorted((left, right) => {
     const leftOrder = left.autoSelectOrder ?? Number.MAX_SAFE_INTEGER;
     const rightOrder = right.autoSelectOrder ?? Number.MAX_SAFE_INTEGER;
@@ -340,7 +340,7 @@ function sortSpeechProvidersForAutoSelection(cfg?: OpenClawConfig) {
   });
 }
 
-function resolveTtsRuntimeConfig(cfg: OpenClawConfig): OpenClawConfig {
+function resolveTtsRuntimeConfig(cfg: EVEConfig): EVEConfig {
   return (
     selectApplicableRuntimeConfig({
       inputConfig: cfg,
@@ -458,7 +458,7 @@ function resolveRawProviderConfig(
 function resolveLazyProviderConfig(
   config: ResolvedTtsConfig,
   providerId: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   voiceModel?: VoiceModelRef,
 ): SpeechProviderConfig {
   const canonical =
@@ -571,7 +571,7 @@ function collectDirectProviderConfigEntries(raw: TtsConfig): Record<string, Spee
 export function getResolvedSpeechProviderConfig(
   config: ResolvedTtsConfig,
   providerId: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): SpeechProviderConfig {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : config.sourceConfig;
   const canonical =
@@ -584,7 +584,7 @@ export function getResolvedSpeechProviderConfig(
 function getResolvedSpeechProviderConfigForVoiceModel(params: {
   config: ResolvedTtsConfig;
   providerId: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   voiceModel?: VoiceModelRef;
 }): SpeechProviderConfig {
   if (!params.voiceModel) {
@@ -599,7 +599,7 @@ function getResolvedSpeechProviderConfigForVoiceModel(params: {
 }
 
 export function resolveTtsConfig(
-  cfgInput: OpenClawConfig,
+  cfgInput: EVEConfig,
   contextOrAgentId?: string | TtsConfigResolutionContext,
 ): ResolvedTtsConfig {
   let cfg = cfgInput;
@@ -663,7 +663,7 @@ export function resolveTtsAutoMode(params: {
 }
 
 function resolveEffectiveTtsAutoState(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionAuto?: string;
   agentId?: string;
   channelId?: string;
@@ -693,7 +693,7 @@ function resolveEffectiveTtsAutoState(params: {
 }
 
 export function buildTtsSystemPromptHint(
-  cfgInput: OpenClawConfig,
+  cfgInput: EVEConfig,
   agentId?: string,
 ): string | undefined {
   let cfg = cfgInput;
@@ -846,7 +846,7 @@ export function setTtsProvider(prefsPath: string, provider: TtsProvider): void {
 }
 
 export function resolveExplicitTtsOverrides(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   provider?: string;
   modelId?: string;
@@ -1000,7 +1000,7 @@ function shouldDeliverTtsAsVoice(params: {
   return params.voiceCompatible === true || delivery.transcodesAudio === true;
 }
 
-export function resolveTtsProviderOrder(primary: TtsProvider, cfg?: OpenClawConfig): TtsProvider[] {
+export function resolveTtsProviderOrder(primary: TtsProvider, cfg?: EVEConfig): TtsProvider[] {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : undefined;
   const normalizedPrimary = canonicalizeSpeechProviderId(primary, effectiveCfg) ?? primary;
   const ordered = new Set<TtsProvider>([normalizedPrimary]);
@@ -1021,7 +1021,7 @@ export function resolveTtsProviderOrder(primary: TtsProvider, cfg?: OpenClawConf
 
 function resolveTtsProviderCandidates(
   primary: TtsProvider,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): VoiceProviderCandidate[] {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : undefined;
   const normalizedPrimary = canonicalizeSpeechProviderId(primary, effectiveCfg) ?? primary;
@@ -1034,7 +1034,7 @@ function resolveTtsProviderCandidates(
 
 function resolvePrimaryTtsProviderCandidate(
   primary: TtsProvider,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): VoiceProviderCandidate {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : undefined;
   return resolvePrimaryVoiceProviderCandidate({
@@ -1047,7 +1047,7 @@ function resolvePrimaryTtsProviderCandidate(
 export function isTtsProviderConfigured(
   config: ResolvedTtsConfig,
   provider: TtsProvider,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): boolean {
   const effectiveCfg = cfg ? resolveTtsRuntimeConfig(cfg) : config.sourceConfig;
   const resolvedProvider = getSpeechProvider(provider, effectiveCfg);
@@ -1115,7 +1115,7 @@ type TtsProviderReadyResolution =
 
 function resolveReadySpeechProvider(params: {
   provider: TtsProvider;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   config: ResolvedTtsConfig;
   persona?: ResolvedTtsPersona;
   voiceModel?: VoiceModelRef;
@@ -1187,7 +1187,7 @@ function resolveReadySpeechProvider(params: {
 async function prepareSpeechSynthesis(params: {
   provider: NonNullable<ReturnType<typeof getSpeechProvider>>;
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   providerConfig: SpeechProviderConfig;
   providerOverrides?: SpeechProviderOverrides;
   persona?: ResolvedTtsPersona;
@@ -1229,7 +1229,7 @@ async function prepareSpeechSynthesis(params: {
 
 function resolveTtsRequestSetup(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   providerOverride?: TtsProvider;
   disableFallback?: boolean;
@@ -1238,7 +1238,7 @@ function resolveTtsRequestSetup(params: {
   accountId?: string;
 }):
   | {
-      cfg: OpenClawConfig;
+      cfg: EVEConfig;
       config: ResolvedTtsConfig;
       persona?: ResolvedTtsPersona;
       providers: VoiceProviderCandidate[];
@@ -1307,7 +1307,7 @@ function resolveTtsResultVoice(
 
 export async function textToSpeech(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   channel?: string;
   overrides?: TtsDirectiveOverrides;
@@ -1344,7 +1344,7 @@ export async function textToSpeech(params: {
   }
 
   const temp = tempWorkspaceSync({
-    rootDir: resolvePreferredOpenClawTmpDir(),
+    rootDir: resolvePreferredEVETmpDir(),
     prefix: "tts-",
   });
   const audioPath = temp.write(`voice-${Date.now()}${fileExtension}`, audioBuffer);
@@ -1419,7 +1419,7 @@ async function maybePreTranscodeForVoiceDelivery(params: {
 
 export async function synthesizeSpeech(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   channel?: string;
   overrides?: TtsDirectiveOverrides;
@@ -1569,7 +1569,7 @@ export async function synthesizeSpeech(params: {
 
 export async function streamSpeech(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   channel?: string;
   overrides?: TtsDirectiveOverrides;
@@ -1733,7 +1733,7 @@ export async function streamSpeech(params: {
 
 export async function textToSpeechStream(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   channel?: string;
   overrides?: TtsDirectiveOverrides;
@@ -1757,7 +1757,7 @@ export async function textToSpeechStream(params: {
 
 export async function textToSpeechTelephony(params: {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   overrides?: TtsDirectiveOverrides;
   timeoutMs?: number;
@@ -1899,7 +1899,7 @@ export async function textToSpeechTelephony(params: {
 
 export async function listSpeechVoices(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   config?: ResolvedTtsConfig;
   apiKey?: string;
   baseUrl?: string;
@@ -1934,7 +1934,7 @@ function hasLegacyFinalMediaDirective(text: string): boolean {
 
 export async function maybeApplyTtsToPayload(params: {
   payload: ReplyPayload;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string;
   kind?: "tool" | "block" | "final";
   inboundAudio?: boolean;

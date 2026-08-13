@@ -12,7 +12,7 @@ import { resolveAgentIdFromSessionKey } from "../../routing/session-key.js";
 import { emitSessionTranscriptUpdate } from "../../sessions/transcript-events.js";
 import type { SessionTranscriptUpdate } from "../../sessions/transcript-events.js";
 import { getRuntimeConfig } from "../io.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import type { EVEConfig } from "../types.eve.js";
 import { formatSessionArchiveTimestamp } from "./artifacts.js";
 import { extractGeneratedTranscriptSessionId } from "./generated-transcript-session-id.js";
 import {
@@ -177,7 +177,7 @@ export type TranscriptEvent = unknown;
 
 export type TranscriptMessageAppendOptions<TMessage> = {
   /** Runtime config used for message redaction and transcript header metadata. */
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   /** Working directory recorded in a newly created transcript header. */
   cwd?: string;
   /** How duplicate message idempotency keys are detected before append. */
@@ -224,7 +224,7 @@ export type SessionTranscriptTurnWriteContext = {
 
 export type SessionTranscriptTurnPersistOptions = {
   /** Runtime config used for lock settings, redaction, and header metadata. */
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   /** Working directory recorded in a newly created transcript header. */
   cwd?: string;
   /**
@@ -1261,7 +1261,7 @@ function resolveManualCompactTranscriptCandidates(params: {
 
   const legacyDir = path.join(
     resolveRequiredHomeDir(process.env, os.homedir),
-    ".openclaw",
+    ".eve",
     "sessions",
   );
   pushCandidate(() => resolveSessionTranscriptPathInDir(params.sessionId, legacyDir));

@@ -2,16 +2,16 @@
 import {
   resolveOutboundSendDep,
   type OutboundSendDeps,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import {
   attachChannelToResult,
   createAttachedChannelResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
+} from "eve-agent/plugin-sdk/channel-send-result";
 import {
   resolvePayloadMediaUrls,
   resolveTextChunksWithFallback,
   sendPayloadMediaSequence,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import {
   chunkTextForOutbound,
   normalizeStringEntries,

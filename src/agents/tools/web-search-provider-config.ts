@@ -4,7 +4,7 @@
  * Bridges legacy top-level credentials with plugin-owned provider configuration.
  */
 import { resolvePluginWebSearchConfig } from "../../config/plugin-web-search-config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { isLegacyWebSearchProviderConfigKey } from "../../config/web-search-legacy-provider-keys.js";
 
 /** Reads the legacy top-level web search credential value. */
@@ -90,7 +90,7 @@ export function mergeScopedSearchConfig(
 
 /** Resolves plugin-owned web-search config for a provider plugin id. */
 export function resolveProviderWebSearchPluginConfig(
-  config: OpenClawConfig | undefined,
+  config: EVEConfig | undefined,
   pluginId: string,
 ): Record<string, unknown> | undefined {
   return resolvePluginWebSearchConfig(config, pluginId);
@@ -108,7 +108,7 @@ function ensureObject(target: Record<string, unknown>, key: string): Record<stri
 
 /** Writes a single plugin-owned web-search config value and enables the plugin entry if needed. */
 export function setProviderWebSearchPluginConfigValue(
-  configTarget: OpenClawConfig,
+  configTarget: EVEConfig,
   pluginId: string,
   key: string,
   value: unknown,

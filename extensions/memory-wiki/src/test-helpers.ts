@@ -1,11 +1,11 @@
 // Memory Wiki helper module supports test helpers behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginStateEntry } from "openclaw/plugin-sdk/plugin-state-runtime";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import type { PluginStateEntry } from "eve-agent/plugin-sdk/plugin-state-runtime";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { afterEach, vi } from "vitest";
-import type { OpenClawPluginApi } from "../api.js";
+import type { EVEPluginApi } from "../api.js";
 import {
   resolveMemoryWikiConfig,
   type MemoryWikiPluginConfig,
@@ -21,7 +21,7 @@ type MemoryWikiTestVault = {
 };
 
 type MemoryWikiPluginApiHarness = {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   registerCli: ReturnType<typeof vi.fn>;
   registerGatewayMethod: ReturnType<typeof vi.fn>;
   registerMemoryCorpusSupplement: ReturnType<typeof vi.fn>;
@@ -79,7 +79,7 @@ export function createMemoryWikiTestHarness() {
   });
 
   async function createTempDir(prefix: string): Promise<string> {
-    const tempDir = await fs.mkdtemp(path.join(resolvePreferredOpenClawTmpDir(), prefix));
+    const tempDir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), prefix));
     tempDirs.push(tempDir);
     return tempDir;
   }
@@ -125,7 +125,7 @@ export function createMemoryWikiTestHarness() {
         state: {
           openKeyedStore: vi.fn(<T>() => createMemoryKeyedStore<T>()),
         },
-      } as unknown as OpenClawPluginApi["runtime"],
+      } as unknown as EVEPluginApi["runtime"],
       registerCli,
       registerGatewayMethod,
       registerMemoryCorpusSupplement,

@@ -1,7 +1,7 @@
 // Simple completion runtime tests cover model resolution, provider auth, and
 // one-shot completion wiring before requests reach the shared LLM stream path.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { Model } from "../llm/types.js";
 
 // Hoisted mocks keep Vitest module replacement stable while the implementation
@@ -127,7 +127,7 @@ describe("prepareSimpleCompletionModel", () => {
       cfg: undefined,
       provider: "anthropic",
       modelId: "claude-opus-4-6",
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expectPreparedModelResult(result);
@@ -409,7 +409,7 @@ describe("prepareSimpleCompletionModel", () => {
       cfg: undefined,
       provider: "amazon-bedrock-mantle",
       modelId: "anthropic.claude-opus-4-7",
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     const runtimeAuthInput = callArg(hoisted.prepareProviderRuntimeAuthMock) as {
@@ -423,7 +423,7 @@ describe("prepareSimpleCompletionModel", () => {
       };
     };
     expect(runtimeAuthInput.provider).toBe("amazon-bedrock-mantle");
-    expect(runtimeAuthInput.workspaceDir).toBe("/tmp/openclaw-agent");
+    expect(runtimeAuthInput.workspaceDir).toBe("/tmp/eve-agent");
     expect(runtimeAuthInput.context?.apiKey).toBe("__amazon_bedrock_mantle_iam__");
     expect(runtimeAuthInput.context?.authMode).toBe("api-key");
     expect(runtimeAuthInput.context?.modelId).toBe("anthropic.claude-opus-4-7");
@@ -559,7 +559,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     hoisted.resolveModelAsyncMock.mockResolvedValueOnce({
       model: {
         provider: "openai",
@@ -613,7 +613,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     } satisfies Model<"ollama">;
     const preparedModel = {
       ...model,
-      api: "openclaw-ollama-simple-test",
+      api: "eve-ollama-simple-test",
     };
     const cfg = {
       models: { providers: { ollama: { baseUrl: "http://remote-ollama:11434", models: [] } } },
@@ -645,7 +645,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     );
   });
 
-  it("normalizes OpenClaw-only thinking levels before using shared model runtime simple completion", async () => {
+  it("normalizes EVE-only thinking levels before using shared model runtime simple completion", async () => {
     const model = {
       provider: "openai",
       id: "gpt-5.4",

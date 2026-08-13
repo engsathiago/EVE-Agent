@@ -12,7 +12,7 @@ function runAgentsDeleteAssert(root: string, outputPath: string, env: Record<str
     encoding: "utf8",
     env: {
       ...process.env,
-      OPENCLAW_STATE_DIR: path.join(root, "state"),
+      EVE_STATE_DIR: path.join(root, "state"),
       SHARED_WORKSPACE: path.join(root, "workspace"),
       ...env,
     },
@@ -21,7 +21,7 @@ function runAgentsDeleteAssert(root: string, outputPath: string, env: Record<str
 
 describe("workspace fixture assertions", () => {
   it("rejects oversized agents delete output before parsing it", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-fixture-workspace-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-fixture-workspace-"));
     const outputPath = path.join(root, "agents-delete.json");
     try {
       mkdirSync(root, { recursive: true });
@@ -32,7 +32,7 @@ describe("workspace fixture assertions", () => {
       );
 
       const result = runAgentsDeleteAssert(root, outputPath, {
-        OPENCLAW_FIXTURE_AGENTS_DELETE_OUTPUT_MAX_BYTES: "1024",
+        EVE_FIXTURE_AGENTS_DELETE_OUTPUT_MAX_BYTES: "1024",
       });
 
       expect(result.status).not.toBe(0);
@@ -45,7 +45,7 @@ describe("workspace fixture assertions", () => {
   });
 
   it("bounds invalid agents delete JSON diagnostics", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "openclaw-fixture-workspace-"));
+    const root = mkdtempSync(path.join(tmpdir(), "eve-fixture-workspace-"));
     const outputPath = path.join(root, "agents-delete.json");
     try {
       mkdirSync(root, { recursive: true });
@@ -56,7 +56,7 @@ describe("workspace fixture assertions", () => {
       );
 
       const result = runAgentsDeleteAssert(root, outputPath, {
-        OPENCLAW_FIXTURE_AGENTS_DELETE_OUTPUT_MAX_BYTES: "131072",
+        EVE_FIXTURE_AGENTS_DELETE_OUTPUT_MAX_BYTES: "131072",
       });
 
       expect(result.status).not.toBe(0);

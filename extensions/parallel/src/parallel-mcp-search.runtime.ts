@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
-import { readPluginPackageVersion } from "openclaw/plugin-sdk/extension-shared";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { withTrustedWebSearchEndpoint } from "openclaw/plugin-sdk/provider-web-search";
+import { readPluginPackageVersion } from "eve-agent/plugin-sdk/extension-shared";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { withTrustedWebSearchEndpoint } from "eve-agent/plugin-sdk/provider-web-search";
 
 // Free hosted Search MCP. This keyless transport is used only after the user
 // explicitly selects the `parallel-free` web_search provider. Docs:
@@ -17,9 +17,9 @@ const PARALLEL_MCP_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 const require = createRequire(import.meta.url);
 const PLUGIN_VERSION = readPluginPackageVersion({ require });
 // Identify free-tier traffic at the HTTP layer (mirrors the paid REST path);
-// without this, undici sends a generic `node` UA and OpenClaw usage is only
+// without this, undici sends a generic `node` UA and EVE usage is only
 // visible via the JSON-RPC `clientInfo` payload.
-const USER_AGENT = `openclaw-parallel/${PLUGIN_VERSION} (${process.platform})`;
+const USER_AGENT = `eve-parallel/${PLUGIN_VERSION} (${process.platform})`;
 
 type JsonRpcMessage = Record<string, unknown>;
 
@@ -249,7 +249,7 @@ async function mcpCall(
       params: {
         protocolVersion: MCP_PROTOCOL_VERSION,
         capabilities: {},
-        clientInfo: { name: "openclaw-parallel", version: PLUGIN_VERSION },
+        clientInfo: { name: "eve-parallel", version: PLUGIN_VERSION },
       },
     },
   });

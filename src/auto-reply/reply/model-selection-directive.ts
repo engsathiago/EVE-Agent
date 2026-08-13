@@ -1,6 +1,6 @@
 // Normalizes model selection directives into provider and model ids.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { splitTrailingAuthProfile } from "../../agents/model-ref-profile.js";
 import { isModelKeyAllowedBySet } from "../../agents/model-selection-shared.js";
 
@@ -25,7 +25,7 @@ export type ModelDirectiveSelection = {
 };
 
 function formatAddModelCommand(modelRef: string): string {
-  return `openclaw config set agents.defaults.models '${JSON.stringify({ [modelRef]: {} })}' --strict-json --merge`;
+  return `eve config set agents.defaults.models '${JSON.stringify({ [modelRef]: {} })}' --strict-json --merge`;
 }
 
 function formatNotAllowedError(params: {
@@ -42,7 +42,7 @@ function formatNotAllowedError(params: {
     `Then retry: ${retryCommand}`,
   ];
   if (rawRuntime && normalizeProviderId(rawRuntime) === "codex") {
-    lines.push("If the Codex runtime is missing, run: openclaw plugins enable codex");
+    lines.push("If the Codex runtime is missing, run: eve plugins enable codex");
   }
   return lines.join("\n");
 }

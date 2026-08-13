@@ -1,13 +1,13 @@
 // Discord plugin module implements channel actions behavior.
-import { createUnionActionGate } from "openclaw/plugin-sdk/channel-actions";
+import { createUnionActionGate } from "eve-agent/plugin-sdk/channel-actions";
 import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
   ChannelMessageToolDiscovery,
-} from "openclaw/plugin-sdk/channel-contract";
-import type { DiscordActionConfig, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { extractToolSend } from "openclaw/plugin-sdk/tool-send";
+} from "eve-agent/plugin-sdk/channel-contract";
+import type { DiscordActionConfig, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { extractToolSend } from "eve-agent/plugin-sdk/tool-send";
 import { inspectDiscordAccount } from "./account-inspect.js";
 import { createDiscordActionGate, listDiscordAccountIds } from "./accounts.js";
 import { readDiscordComponentSpec } from "./components.js";
@@ -37,13 +37,13 @@ async function loadDiscordChannelActionsRuntime() {
   return await discordChannelActionsRuntimePromise;
 }
 
-function listDiscoverableDiscordAccounts(cfg: OpenClawConfig) {
+function listDiscoverableDiscordAccounts(cfg: EVEConfig) {
   return listDiscordAccountIds(cfg)
     .map((accountId) => inspectDiscordAccount({ cfg, accountId }))
     .filter((account) => account.enabled && account.configured);
 }
 
-function resolveDiscordActionDiscovery(cfg: OpenClawConfig) {
+function resolveDiscordActionDiscovery(cfg: EVEConfig) {
   const accounts = listDiscoverableDiscordAccounts(cfg);
   if (accounts.length === 0) {
     return null;
@@ -61,7 +61,7 @@ function resolveDiscordActionDiscovery(cfg: OpenClawConfig) {
 }
 
 function resolveScopedDiscordActionDiscovery(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }) {
   if (!params.accountId) {

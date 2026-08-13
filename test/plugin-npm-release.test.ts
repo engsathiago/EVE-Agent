@@ -1,7 +1,7 @@
 // Plugin npm release tests validate plugin npm release artifacts.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { bundledPluginFile, bundledPluginRoot } from "openclaw/plugin-sdk/test-fixtures";
+import { bundledPluginFile, bundledPluginRoot } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it } from "vitest";
 import { collectClawHubPublishablePluginPackages } from "../scripts/lib/plugin-clawhub-release.ts";
 import {
@@ -9,7 +9,7 @@ import {
   collectPluginReleaseVersionFloorErrors,
   collectPublishablePluginPackages,
   collectPublishablePluginPackageErrors,
-  OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+  EVE_PLUGIN_NPM_REPOSITORY_URL,
   parsePluginReleaseArgs,
   parsePluginReleaseSelection,
   parsePluginReleaseSelectionMode,
@@ -34,8 +34,8 @@ describe("parsePluginReleaseSelection", () => {
 
   it("dedupes and sorts comma or whitespace separated package names", () => {
     expect(
-      parsePluginReleaseSelection(" @openclaw/zalo, @openclaw/feishu  @openclaw/zalo "),
-    ).toEqual(["@openclaw/feishu", "@openclaw/zalo"]);
+      parsePluginReleaseSelection(" @eve/zalo, @eve/feishu  @eve/zalo "),
+    ).toEqual(["@eve/feishu", "@eve/zalo"]);
   });
 });
 
@@ -91,7 +91,7 @@ describe("parsePluginReleaseArgs", () => {
         "--selection-mode",
         "all-publishable",
         "--plugins",
-        "@openclaw/zalo",
+        "@eve/zalo",
       ]),
     ).toThrowError("`--selection-mode all-publishable` must not be combined with `--plugins`.");
   });
@@ -113,7 +113,7 @@ function externalPluginContract(version: string) {
       pluginApi: `>=${version}`,
     },
     build: {
-      openclawVersion: version,
+      eveVersion: version,
     },
   };
 }
@@ -132,18 +132,18 @@ describe("collectPublishablePluginPackageErrors", () => {
         packageDir: bundledPluginRoot("zalo"),
         readmeText: "# Zalo\n",
         packageJson: {
-          name: "@openclaw/zalo",
+          name: "@eve/zalo",
           version: "2026.3.15",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: EVE_PLUGIN_NPM_REPOSITORY_URL,
           },
-          openclaw: {
+          eve: {
             extensions: ["./index.ts"],
             ...externalPluginContract("2026.3.15"),
             install: {
-              npmSpec: "@openclaw/zalo",
+              npmSpec: "@eve/zalo",
             },
             release: {
               publishToNpm: true,
@@ -164,7 +164,7 @@ describe("collectPublishablePluginPackageErrors", () => {
           name: "broken",
           version: "latest",
           private: true,
-          openclaw: {
+          eve: {
             extensions: [""],
             ...externalPluginContract("2026.3.15"),
             install: {
@@ -177,13 +177,13 @@ describe("collectPublishablePluginPackageErrors", () => {
         },
       }),
     ).toEqual([
-      'package name must start with "@openclaw/"; found "broken".',
+      'package name must start with "@eve/"; found "broken".',
       "package.json private must not be true.",
       'package.json type must be "module" so built .js runtime entries load as ESM.',
-      `package.json repository.url must be "${OPENCLAW_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
+      `package.json repository.url must be "${EVE_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
       'package.json version must match YYYY.M.PATCH, YYYY.M.PATCH-N, YYYY.M.PATCH-alpha.N, or YYYY.M.PATCH-beta.N; found "latest".',
-      "openclaw.extensions must contain only non-empty strings.",
-      "openclaw.install.npmSpec must be a non-empty string for publishable plugins.",
+      "eve.extensions must contain only non-empty strings.",
+      "eve.install.npmSpec must be a non-empty string for publishable plugins.",
     ]);
   });
 
@@ -194,14 +194,14 @@ describe("collectPublishablePluginPackageErrors", () => {
         packageDir: bundledPluginRoot("twitch"),
         readmeText: "# Twitch\n",
         packageJson: {
-          name: "@openclaw/twitch",
+          name: "@eve/twitch",
           version: "2026.5.1-beta.1",
           type: "module",
-          openclaw: {
+          eve: {
             extensions: ["./index.ts"],
             ...externalPluginContract("2026.5.1-beta.1"),
             install: {
-              npmSpec: "@openclaw/twitch",
+              npmSpec: "@eve/twitch",
             },
             release: {
               publishToNpm: true,
@@ -210,7 +210,7 @@ describe("collectPublishablePluginPackageErrors", () => {
         },
       }),
     ).toEqual([
-      `package.json repository.url must be "${OPENCLAW_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
+      `package.json repository.url must be "${EVE_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
     ]);
   });
 
@@ -221,14 +221,14 @@ describe("collectPublishablePluginPackageErrors", () => {
         packageDir: bundledPluginRoot("voice-call"),
         readmeText: "# Voice call\n",
         packageJson: {
-          name: "@openclaw/voice-call",
+          name: "@eve/voice-call",
           version: "2026.5.1-beta.1",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: EVE_PLUGIN_NPM_REPOSITORY_URL,
           },
-          openclaw: {
+          eve: {
             extensions: ["./index.ts"],
             ...externalPluginContract("2026.5.1-beta.1"),
             release: {
@@ -237,7 +237,7 @@ describe("collectPublishablePluginPackageErrors", () => {
           },
         },
       }),
-    ).toEqual(["openclaw.install.npmSpec must be a non-empty string for publishable plugins."]);
+    ).toEqual(["eve.install.npmSpec must be a non-empty string for publishable plugins."]);
   });
 
   it("requires the external plugin package compatibility contract for npm publish", () => {
@@ -247,17 +247,17 @@ describe("collectPublishablePluginPackageErrors", () => {
         packageDir: bundledPluginRoot("voice-call"),
         readmeText: "# Voice call\n",
         packageJson: {
-          name: "@openclaw/voice-call",
+          name: "@eve/voice-call",
           version: "2026.5.1-beta.1",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: EVE_PLUGIN_NPM_REPOSITORY_URL,
           },
-          openclaw: {
+          eve: {
             extensions: ["./index.ts"],
             install: {
-              npmSpec: "@openclaw/voice-call",
+              npmSpec: "@eve/voice-call",
             },
             release: {
               publishToNpm: true,
@@ -266,8 +266,8 @@ describe("collectPublishablePluginPackageErrors", () => {
         },
       }),
     ).toEqual([
-      "openclaw.compat.pluginApi is required for external code plugin packages.",
-      "openclaw.build.openclawVersion is required for external code plugin packages.",
+      "eve.compat.pluginApi is required for external code plugin packages.",
+      "eve.build.eveVersion is required for external code plugin packages.",
     ]);
   });
 
@@ -278,18 +278,18 @@ describe("collectPublishablePluginPackageErrors", () => {
         packageDir: bundledPluginRoot("zalo"),
         readmeText: " \n",
         packageJson: {
-          name: "@openclaw/zalo",
+          name: "@eve/zalo",
           version: "2026.3.15",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: EVE_PLUGIN_NPM_REPOSITORY_URL,
           },
-          openclaw: {
+          eve: {
             extensions: ["./index.ts"],
             ...externalPluginContract("2026.3.15"),
             install: {
-              npmSpec: "@openclaw/zalo",
+              npmSpec: "@eve/zalo",
             },
             release: {
               publishToNpm: true,
@@ -306,12 +306,12 @@ describe("collectPluginReleaseVersionFloorErrors", () => {
     expect(
       collectPluginReleaseVersionFloorErrors([
         {
-          packageName: "@openclaw/demo",
+          packageName: "@eve/demo",
           version: "2026.6.4-beta.1",
         },
       ]),
     ).toEqual([
-      '@openclaw/demo@2026.6.4-beta.1: June 2026 stable and beta release trains must use patch 5 or higher because 2026.6.5-beta.1 is already published; found "2026.6.4-beta.1".',
+      '@eve/demo@2026.6.4-beta.1: June 2026 stable and beta release trains must use patch 5 or higher because 2026.6.5-beta.1 is already published; found "2026.6.4-beta.1".',
     ]);
   });
 
@@ -319,11 +319,11 @@ describe("collectPluginReleaseVersionFloorErrors", () => {
     expect(
       collectPluginReleaseVersionFloorErrors([
         {
-          packageName: "@openclaw/demo",
+          packageName: "@eve/demo",
           version: "2026.6.4-alpha.1",
         },
         {
-          packageName: "@openclaw/demo",
+          packageName: "@eve/demo",
           version: "2026.6.5-beta.2",
         },
       ]),
@@ -346,13 +346,13 @@ describe("collectPublishablePluginPackages", () => {
       const packageJson = JSON.parse(
         readFileSync(join(plugin.packageDir, "package.json"), "utf8"),
       ) as {
-        openclaw?: {
+        eve?: {
           build?: {
             bundledDist?: unknown;
           };
         };
       };
-      if (packageJson.openclaw?.build?.bundledDist === true) {
+      if (packageJson.eve?.build?.bundledDist === true) {
         corePackageRuntimePluginIds.add(plugin.extensionId);
       }
     }
@@ -368,22 +368,22 @@ describe("collectPublishablePluginPackages", () => {
   });
 
   it("collects publishable npm plugins from extension package manifests", () => {
-    const repoDir = makeTempRepoRoot(tempDirs, "openclaw-plugin-npm-release-");
+    const repoDir = makeTempRepoRoot(tempDirs, "eve-plugin-npm-release-");
     mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
     writePluginReadme(repoDir, "demo-plugin");
     writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
-      name: "@openclaw/demo-plugin",
+      name: "@eve/demo-plugin",
       version: "2026.4.10",
       type: "module",
       repository: {
         type: "git",
-        url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+        url: EVE_PLUGIN_NPM_REPOSITORY_URL,
       },
-      openclaw: {
+      eve: {
         extensions: ["./index.ts"],
         ...externalPluginContract("2026.4.10"),
         install: {
-          npmSpec: "@openclaw/demo-plugin",
+          npmSpec: "@eve/demo-plugin",
         },
         release: {
           publishToNpm: true,
@@ -395,32 +395,32 @@ describe("collectPublishablePluginPackages", () => {
       {
         extensionId: "demo-plugin",
         packageDir: "extensions/demo-plugin",
-        packageName: "@openclaw/demo-plugin",
+        packageName: "@eve/demo-plugin",
         version: "2026.4.10",
         channel: "stable",
         publishTag: "latest",
-        installNpmSpec: "@openclaw/demo-plugin",
+        installNpmSpec: "@eve/demo-plugin",
       },
     ]);
   });
 
   it("does not validate unselected publishable plugin manifests", () => {
-    const repoDir = makeTempRepoRoot(tempDirs, "openclaw-plugin-npm-release-");
+    const repoDir = makeTempRepoRoot(tempDirs, "eve-plugin-npm-release-");
     mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
     writePluginReadme(repoDir, "demo-plugin");
     writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
-      name: "@openclaw/demo-plugin",
+      name: "@eve/demo-plugin",
       version: "2026.4.10-beta.1",
       type: "module",
       repository: {
         type: "git",
-        url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+        url: EVE_PLUGIN_NPM_REPOSITORY_URL,
       },
-      openclaw: {
+      eve: {
         extensions: ["./index.ts"],
         ...externalPluginContract("2026.4.10-beta.1"),
         install: {
-          npmSpec: "@openclaw/demo-plugin",
+          npmSpec: "@eve/demo-plugin",
         },
         release: {
           publishToNpm: true,
@@ -429,14 +429,14 @@ describe("collectPublishablePluginPackages", () => {
     });
     mkdirSync(join(repoDir, "extensions", "private-plugin"), { recursive: true });
     writeJsonFile(join(repoDir, "extensions", "private-plugin", "package.json"), {
-      name: "@openclaw/private-plugin",
+      name: "@eve/private-plugin",
       version: "2026.4.10-beta.1",
       private: true,
-      openclaw: {
+      eve: {
         extensions: ["./index.ts"],
         ...externalPluginContract("2026.4.10-beta.1"),
         install: {
-          npmSpec: "@openclaw/private-plugin",
+          npmSpec: "@eve/private-plugin",
         },
         release: {
           publishToNpm: true,
@@ -446,15 +446,15 @@ describe("collectPublishablePluginPackages", () => {
 
     expect(
       collectPublishablePluginPackages(repoDir, {
-        packageNames: ["@openclaw/demo-plugin"],
+        packageNames: ["@eve/demo-plugin"],
       }),
     ).toEqual([
       {
         extensionId: "demo-plugin",
         packageDir: "extensions/demo-plugin",
-        installNpmSpec: "@openclaw/demo-plugin",
+        installNpmSpec: "@eve/demo-plugin",
         channel: "beta",
-        packageName: "@openclaw/demo-plugin",
+        packageName: "@eve/demo-plugin",
         publishTag: "beta",
         version: "2026.4.10-beta.1",
       },
@@ -462,13 +462,13 @@ describe("collectPublishablePluginPackages", () => {
   });
 
   it("treats an explicit empty extension filter as no candidates", () => {
-    const repoDir = makeTempRepoRoot(tempDirs, "openclaw-plugin-npm-release-");
+    const repoDir = makeTempRepoRoot(tempDirs, "eve-plugin-npm-release-");
     mkdirSync(join(repoDir, "extensions", "private-plugin"), { recursive: true });
     writeJsonFile(join(repoDir, "extensions", "private-plugin", "package.json"), {
-      name: "@openclaw/private-plugin",
+      name: "@eve/private-plugin",
       version: "2026.4.10-beta.1",
       private: true,
-      openclaw: {
+      eve: {
         extensions: ["./index.ts"],
         ...externalPluginContract("2026.4.10-beta.1"),
         release: {
@@ -485,22 +485,22 @@ describe("collectPublishablePluginPackages", () => {
   });
 
   it("publishes alpha plugin packages to the alpha dist-tag", () => {
-    const repoDir = makeTempRepoRoot(tempDirs, "openclaw-plugin-npm-release-");
+    const repoDir = makeTempRepoRoot(tempDirs, "eve-plugin-npm-release-");
     mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
     writePluginReadme(repoDir, "demo-plugin");
     writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
-      name: "@openclaw/demo-plugin",
+      name: "@eve/demo-plugin",
       version: "2026.4.10-alpha.1",
       type: "module",
       repository: {
         type: "git",
-        url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+        url: EVE_PLUGIN_NPM_REPOSITORY_URL,
       },
-      openclaw: {
+      eve: {
         extensions: ["./index.ts"],
         ...externalPluginContract("2026.4.10-alpha.1"),
         install: {
-          npmSpec: "@openclaw/demo-plugin",
+          npmSpec: "@eve/demo-plugin",
         },
         release: {
           publishToNpm: true,
@@ -512,8 +512,8 @@ describe("collectPublishablePluginPackages", () => {
       {
         extensionId: "demo-plugin",
         packageDir: "extensions/demo-plugin",
-        installNpmSpec: "@openclaw/demo-plugin",
-        packageName: "@openclaw/demo-plugin",
+        installNpmSpec: "@eve/demo-plugin",
+        packageName: "@eve/demo-plugin",
         channel: "alpha",
         publishTag: "alpha",
         version: "2026.4.10-alpha.1",
@@ -527,7 +527,7 @@ describe("resolveSelectedPublishablePluginPackages", () => {
     {
       extensionId: "feishu",
       packageDir: bundledPluginRoot("feishu"),
-      packageName: "@openclaw/feishu",
+      packageName: "@eve/feishu",
       version: "2026.3.15",
       channel: "stable",
       publishTag: "latest",
@@ -535,7 +535,7 @@ describe("resolveSelectedPublishablePluginPackages", () => {
     {
       extensionId: "zalo",
       packageDir: bundledPluginRoot("zalo"),
-      packageName: "@openclaw/zalo",
+      packageName: "@eve/zalo",
       version: "2026.3.15-beta.1",
       channel: "beta",
       publishTag: "beta",
@@ -555,7 +555,7 @@ describe("resolveSelectedPublishablePluginPackages", () => {
     expect(
       resolveSelectedPublishablePluginPackages({
         plugins: publishablePlugins,
-        selection: ["@openclaw/zalo"],
+        selection: ["@eve/zalo"],
       }),
     ).toEqual([publishablePlugins[1]]);
   });
@@ -564,9 +564,9 @@ describe("resolveSelectedPublishablePluginPackages", () => {
     expect(() =>
       resolveSelectedPublishablePluginPackages({
         plugins: publishablePlugins,
-        selection: ["@openclaw/missing"],
+        selection: ["@eve/missing"],
       }),
-    ).toThrowError("Unknown or non-publishable plugin package selection: @openclaw/missing.");
+    ).toThrowError("Unknown or non-publishable plugin package selection: @eve/missing.");
   });
 });
 
@@ -588,7 +588,7 @@ describe("resolveChangedPublishablePluginPackages", () => {
     {
       extensionId: "feishu",
       packageDir: bundledPluginRoot("feishu"),
-      packageName: "@openclaw/feishu",
+      packageName: "@eve/feishu",
       version: "2026.3.15",
       channel: "stable",
       publishTag: "latest",
@@ -596,7 +596,7 @@ describe("resolveChangedPublishablePluginPackages", () => {
     {
       extensionId: "zalo",
       packageDir: bundledPluginRoot("zalo"),
-      packageName: "@openclaw/zalo",
+      packageName: "@eve/zalo",
       version: "2026.3.15-beta.1",
       channel: "beta",
       publishTag: "beta",

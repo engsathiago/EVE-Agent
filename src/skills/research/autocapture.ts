@@ -1,5 +1,5 @@
 // Research autocapture helpers decide when skill research signals should be captured.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import { readWorkspaceSkillFile } from "../lifecycle/workspace-skill-write.js";
 import { resolveSkillWorkshopConfig } from "../workshop/config.js";
@@ -53,7 +53,7 @@ function isSkillResearchAutoCaptureEligible(ctx: SkillResearchAgentContext): boo
 export async function runSkillResearchAutoCapture(params: {
   event: SkillResearchAgentEndEvent;
   ctx: SkillResearchAgentContext;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): Promise<void> {
   const workshopConfig = resolveSkillWorkshopConfig(params.config);
   if (!workshopConfig.autonomous.enabled) {

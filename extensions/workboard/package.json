@@ -1,25 +1,25 @@
 {
-  "name": "@openclaw/workboard",
+  "name": "@eve/workboard",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw dashboard workboard plugin",
+  "description": "EVE dashboard workboard plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

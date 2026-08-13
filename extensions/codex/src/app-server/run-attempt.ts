@@ -34,20 +34,20 @@ import {
   type EmbeddedRunAttemptResult,
   type NativeHookRelayEvent,
   type NativeHookRelayRegistrationHandle,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { resolveAgentDir } from "openclaw/plugin-sdk/agent-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { resolveAgentDir } from "eve-agent/plugin-sdk/agent-runtime";
 import {
   createDiagnosticTraceContextFromActiveScope,
   emitTrustedDiagnosticEvent,
   freezeDiagnosticTraceContext,
   onInternalDiagnosticEvent,
   resolveDiagnosticModelContentCapturePolicy,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
-import { loadExecApprovals } from "openclaw/plugin-sdk/exec-approvals-runtime";
-import { pathExists } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/diagnostic-runtime";
+import { loadExecApprovals } from "eve-agent/plugin-sdk/exec-approvals-runtime";
+import { pathExists } from "eve-agent/plugin-sdk/security-runtime";
 import {
   resolveCodexAppServerForModelProvider,
-  resolveCodexAppServerForOpenClawToolPolicy,
+  resolveCodexAppServerForEVEToolPolicy,
 } from "./app-server-policy.js";
 import { handleCodexAppServerApprovalRequest } from "./approval-bridge.js";
 import {
@@ -58,11 +58,11 @@ import {
   unsubscribeCodexThreadBestEffort,
 } from "./attempt-client-cleanup.js";
 import {
-  buildCodexOpenClawPromptContext,
+  buildCodexEVEPromptContext,
   buildCodexSystemPromptReport,
   buildCodexWorkspaceBootstrapContext,
   getCodexWorkspaceMemoryToolNames,
-  prependCodexOpenClawPromptContext,
+  prependCodexEVEPromptContext,
   readContextEngineThreadBootstrapProjection,
   readMirroredSessionHistoryMessages,
   renderCodexSkillsCollaborationInstructions,
@@ -134,10 +134,10 @@ import {
   resolveCodexComputerUseConfig,
   resolveCodexAppServerRuntimeOptions,
   resolveCodexModelBackedReviewerPolicyContext,
-  resolveOpenClawExecPolicyForCodexAppServer,
+  resolveEVEExecPolicyForCodexAppServer,
   shouldAutoApproveCodexAppServerApprovals,
   type CodexAppServerRuntimeOptions,
-  type OpenClawExecPolicyForCodexAppServer,
+  type EVEExecPolicyForCodexAppServer,
 } from "./config.js";
 import {
   type CodexProjectedContextRange,
@@ -154,9 +154,9 @@ import {
   includeForcedCodexDynamicToolAllow,
   resolveCodexAppServerHookChannelId,
   resolveCodexMessageToolProvider,
-  resolveOpenClawCodingToolsSessionKeys,
-  resetOpenClawCodingToolsFactoryForTests,
-  setOpenClawCodingToolsFactoryForTests,
+  resolveEVECodingToolsSessionKeys,
+  resetEVECodingToolsFactoryForTests,
+  setEVECodingToolsFactoryForTests,
   shouldEnableCodexAppServerNativeToolSurface,
   shouldForceMessageTool,
   shouldWarnCodexDynamicToolBuildStageSummary,
@@ -443,7 +443,7 @@ export async function runCodexAppServerAttempt(
     workspaceDir: resolvedWorkspace,
   });
   preDynamicStartupStages.mark("sandbox");
-  const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+  const execPolicy = resolveEVEExecPolicyForCodexAppServer({
     execOverrides: params.execOverrides,
     approvals: loadExecApprovals(),
     config: params.config,
@@ -497,7 +497,7 @@ export async function runCodexAppServerAttempt(
     model: reviewerPolicyContext.model,
     config: params.config,
     agentDir,
-    openClawSandboxActive: sandbox?.enabled === true,
+    eveSandboxActive: sandbox?.enabled === true,
   });
   const effectiveWorkspace = sandbox?.enabled
     ? sandbox.workspaceAccess === "rw"
@@ -513,7 +513,7 @@ export async function runCodexAppServerAttempt(
   const effectiveCwd = sandbox?.enabled ? effectiveWorkspace : (requestedCwd ?? effectiveWorkspace);
   await ensureCodexWorkspaceDirOnce(effectiveWorkspace);
   preDynamicStartupStages.mark("effective-workspace");
-  let policyAppServer = resolveCodexAppServerForOpenClawToolPolicy({
+  let policyAppServer = resolveCodexAppServerForEVEToolPolicy({
     appServer: configuredAppServer,
     pluginConfig,
     env: process.env,
@@ -534,7 +534,7 @@ export async function runCodexAppServerAttempt(
     agentDir,
   });
   if (configuredAppServer.approvalPolicy === "never" && appServer.approvalPolicy === "untrusted") {
-    embeddedAgentLog.info("codex app-server approval policy promoted for OpenClaw tool policy", {
+    embeddedAgentLog.info("codex app-server approval policy promoted for EVE tool policy", {
       from: "never",
       to: "untrusted",
       beforeToolCallHook: beforeToolCallPolicy.hasBeforeToolCallHook,
@@ -589,9 +589,9 @@ export async function runCodexAppServerAttempt(
     model: reviewerPolicyContext.model,
     config: params.config,
     agentDir,
-    openClawSandboxActive: sandbox?.enabled === true,
+    eveSandboxActive: sandbox?.enabled === true,
   });
-  policyAppServer = resolveCodexAppServerForOpenClawToolPolicy({
+  policyAppServer = resolveCodexAppServerForEVEToolPolicy({
     appServer: configuredAppServer,
     pluginConfig,
     env: process.env,
@@ -894,7 +894,7 @@ export async function runCodexAppServerAttempt(
     }),
     workspaceBootstrapContext.developerInstructions,
   );
-  const openClawPromptContext = buildCodexOpenClawPromptContext({
+  const evePromptContext = buildCodexEVEPromptContext({
     params,
     workspacePromptContext: workspaceBootstrapContext.promptContext,
   });
@@ -1016,7 +1016,7 @@ export async function runCodexAppServerAttempt(
     }
   }
   // Codex app-server threads own conversation continuity. The mirrored
-  // OpenClaw transcript is persistence/search state. Context-engine output is
+  // EVE transcript is persistence/search state. Context-engine output is
   // rendered into the prompt/developer instructions, not parallel history.
   const codexModelInputHistoryMessages: typeof historyMessages = [];
   const buildPromptFromCurrentInputs = () =>
@@ -1105,9 +1105,9 @@ export async function runCodexAppServerAttempt(
     prompt: string;
     promptInputRange?: { start: number; end: number };
   }) => {
-    const turnPromptText = prependCodexOpenClawPromptContext(
+    const turnPromptText = prependCodexEVEPromptContext(
       promptBuildResult.prompt,
-      openClawPromptContext,
+      evePromptContext,
       {
         preservePromptWithoutContext:
           params.bootstrapContextMode === "lightweight" &&
@@ -1180,7 +1180,7 @@ export async function runCodexAppServerAttempt(
       if (typeof idempotencyKey === "string" && idempotencyKey.startsWith("codex-app-server:")) {
         return false;
       }
-      const meta = record["__openclaw"];
+      const meta = record["__eve"];
       const mirrorIdentity =
         meta && typeof meta === "object" && !Array.isArray(meta)
           ? (meta as Record<string, unknown>).mirrorIdentity
@@ -1535,7 +1535,7 @@ export async function runCodexAppServerAttempt(
   const turnAttemptIdleTimeoutMs = Math.max(100, Math.floor(params.timeoutMs));
   let nativeHookRelayLastRenewedAt = 0;
   let activeAppServerTurnRequests = 0;
-  const pendingOpenClawDynamicToolCompletionIds = new Set<string>();
+  const pendingEVEDynamicToolCompletionIds = new Set<string>();
   const activeTurnItemIds = new Set<string>();
   let turnCrossedToolHandoff = false;
   let pendingTerminalDynamicToolRelease:
@@ -1643,7 +1643,7 @@ export async function runCodexAppServerAttempt(
         currentTurnHadNonTerminalDynamicToolResult,
         activeAppServerTurnRequests,
         activeTurnItemIdsCount: activeTurnItemIds.size,
-        pendingOpenClawDynamicToolCompletionIdsCount: pendingOpenClawDynamicToolCompletionIds.size,
+        pendingEVEDynamicToolCompletionIdsCount: pendingEVEDynamicToolCompletionIds.size,
       })
     ) {
       return;
@@ -1689,7 +1689,7 @@ export async function runCodexAppServerAttempt(
       const action = resolveTerminalDynamicToolBatchAction({
         activeAppServerTurnRequests,
         activeTurnItemIdsCount: activeTurnItemIds.size,
-        pendingOpenClawDynamicToolCompletionIdsCount: pendingOpenClawDynamicToolCompletionIds.size,
+        pendingEVEDynamicToolCompletionIdsCount: pendingEVEDynamicToolCompletionIds.size,
         currentTurnHadNonTerminalDynamicToolResult,
         hasPendingTerminalDynamicToolRelease: pendingTerminalDynamicToolRelease !== undefined,
       });
@@ -1790,7 +1790,7 @@ export async function runCodexAppServerAttempt(
       turnWatches,
       activeTurnItemIds,
       activeAppServerTurnRequests,
-      pendingOpenClawDynamicToolCompletionIds,
+      pendingEVEDynamicToolCompletionIds,
       turnCrossedToolHandoff,
       postToolRawAssistantCompletionIdleTimeoutMs,
       onScheduleTerminalDynamicToolReleaseCheck: scheduleTerminalDynamicToolReleaseCheck,
@@ -1799,7 +1799,7 @@ export async function runCodexAppServerAttempt(
     turnCrossedToolHandoff = notificationState.turnCrossedToolHandoff;
     // Determine terminal-turn status before invoking the projector so a throw
     // inside projector.handleNotification still releases the session lane.
-    // See openclaw/openclaw#67996.
+    // See eve/eve#67996.
     if (notificationState.isTurnTerminal) {
       terminalTurnNotificationQueued = true;
     }
@@ -2053,7 +2053,7 @@ export async function runCodexAppServerAttempt(
       armCompletionWatchOnResponse = true;
       markCurrentTurnRequestProgress();
       turnCrossedToolHandoff = true;
-      pendingOpenClawDynamicToolCompletionIds.add(call.callId);
+      pendingEVEDynamicToolCompletionIds.add(call.callId);
       trajectoryRecorder?.recordEvent("tool.call", {
         threadId: call.threadId,
         turnId: call.turnId,
@@ -2202,7 +2202,7 @@ export async function runCodexAppServerAttempt(
             durationMs: toolDurationMs,
           });
         }
-        pendingOpenClawDynamicToolCompletionIds.delete(call.callId);
+        pendingEVEDynamicToolCompletionIds.delete(call.callId);
         if (response.terminate === true) {
           scheduleTurnReleaseAfterTerminalDynamicTool({
             call,
@@ -2217,7 +2217,7 @@ export async function runCodexAppServerAttempt(
         }
         return protocolResponse as JsonValue;
       } catch (error) {
-        pendingOpenClawDynamicToolCompletionIds.delete(call.callId);
+        pendingEVEDynamicToolCompletionIds.delete(call.callId);
         if (
           !terminalDiagnosticObserved &&
           !hasPendingDynamicToolTerminalDiagnostic({
@@ -2351,7 +2351,7 @@ export async function runCodexAppServerAttempt(
     thread.lifecycle.action === "resumed" ? (thread.lifecycle.activeTurnIds ?? []) : [];
   if (activeNativeTurnIds.length > 0) {
     // A resumed Codex thread can already be running a native compact/review turn.
-    // Starting an OpenClaw turn before that native turn completes can wedge the
+    // Starting an EVE turn before that native turn completes can wedge the
     // accepted turn behind a completion event we intentionally ignore.
     embeddedAgentLog.info(
       "codex app-server resumed thread has active native turn; waiting before turn/start",
@@ -2389,7 +2389,7 @@ export async function runCodexAppServerAttempt(
     let turnStartError = error;
     if (isCodexActiveCompactTurnError(turnStartError)) {
       // Codex native compaction returns before its compact turn finishes. If
-      // the next OpenClaw turn collides with that compact turn, wait for the
+      // the next EVE turn collides with that compact turn, wait for the
       // terminal notification and retry once instead of surfacing drift.
       embeddedAgentLog.info(
         "codex app-server turn/start blocked by active compact turn; waiting to retry",
@@ -2417,8 +2417,8 @@ export async function runCodexAppServerAttempt(
       }) &&
       restartContextEngineCodexThread
     ) {
-      // Do not try to pre-compact or summarize through OpenClaw here. Codex owns
-      // automatic compaction; OpenClaw may only discard a stale projection thread
+      // Do not try to pre-compact or summarize through EVE here. Codex owns
+      // automatic compaction; EVE may only discard a stale projection thread
       // and let Codex start cleanly.
       embeddedAgentLog.warn(
         "codex app-server context-engine turn overflowed on resume; retrying with fresh thread",
@@ -2760,7 +2760,7 @@ export async function runCodexAppServerAttempt(
       activeProjector.hasCompletedTerminalAssistantText() &&
       activeAppServerTurnRequests === 0 &&
       activeTurnItemIds.size === 0 &&
-      pendingOpenClawDynamicToolCompletionIds.size === 0;
+      pendingEVEDynamicToolCompletionIds.size === 0;
     const clientClosedPromptErrorForFinal =
       clientClosedPromptError && canUseCompletedAssistantTextAfterClientClose
         ? undefined
@@ -3294,7 +3294,7 @@ function handleApprovalRequest(params: {
   threadId: string;
   turnId: string;
   nativeHookRelay?: NativeHookRelayRegistrationHandle;
-  execPolicy?: Pick<OpenClawExecPolicyForCodexAppServer, "mode">;
+  execPolicy?: Pick<EVEExecPolicyForCodexAppServer, "mode">;
   execReviewerAgentId?: string;
   internalExecAutoReview?: boolean;
   autoApprove?: boolean;
@@ -3332,15 +3332,15 @@ export const testing = {
   resolveCodexDynamicToolsLoadingForModel,
   resolveCodexAppServerHookChannelId,
   buildCodexAppServerPromptTimeoutOutcome,
-  resolveOpenClawCodingToolsSessionKeys,
+  resolveEVECodingToolsSessionKeys,
   shouldEnableCodexAppServerNativeToolSurface,
   shouldForceMessageTool,
   resolveCodexDynamicToolDirectNames,
   hasPendingDynamicToolTerminalDiagnostic,
   toTranscriptToolResultForTests: toTranscriptToolResult,
   withCodexStartupTimeout,
-  setOpenClawCodingToolsFactoryForTests,
-  resetOpenClawCodingToolsFactoryForTests,
+  setEVECodingToolsFactoryForTests,
+  resetEVECodingToolsFactoryForTests,
   async ensureCodexWorkspaceDirOnceForTests(workspaceDir: string): Promise<void> {
     await ensureCodexWorkspaceDirOnce(workspaceDir);
   },

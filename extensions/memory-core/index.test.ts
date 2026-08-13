@@ -1,8 +1,8 @@
 // Memory Core tests cover index plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { OpenClawPluginCommandDefinition } from "openclaw/plugin-sdk/core";
-import type { MemoryPluginRuntime } from "openclaw/plugin-sdk/memory-core-host-runtime-core";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { EVEPluginCommandDefinition } from "eve-agent/plugin-sdk/core";
+import type { MemoryPluginRuntime } from "eve-agent/plugin-sdk/memory-core-host-runtime-core";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildMemoryFlushPlan,
@@ -90,7 +90,7 @@ describe("memory-core plugin runtime registration", () => {
   });
 
   it("registers the dreaming runtime slash command", () => {
-    let command: OpenClawPluginCommandDefinition | undefined;
+    let command: EVEPluginCommandDefinition | undefined;
     plugin.register(
       createTestPluginApi({
         registerCommand(definition) {
@@ -106,7 +106,7 @@ describe("memory-core plugin runtime registration", () => {
 
   it("wires scoped memory search cleanup through the lazy runtime", async () => {
     const runtime = registerMemoryCoreRuntime();
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as EVEConfig;
 
     await runtime.closeMemorySearchManager?.({ cfg, agentId: "main" });
 
@@ -122,7 +122,7 @@ describe("buildMemoryFlushPlan", () => {
         timeFormat: "12",
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 
   it("replaces YYYY-MM-DD using user timezone and appends current time", () => {
     const plan = buildMemoryFlushPlan({

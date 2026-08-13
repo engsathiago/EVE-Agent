@@ -9,7 +9,7 @@ import {
 import { usesFastLoopbackCdpProbeClass } from "./cdp-timeouts.js";
 import { redactCdpUrl } from "./cdp.helpers.js";
 import { listChromeMcpTabs } from "./chrome-mcp.js";
-import { isChromeReachable, resolveOpenClawUserDataDir } from "./chrome.js";
+import { isChromeReachable, resolveEVEUserDataDir } from "./chrome.js";
 import type { ResolvedBrowserProfile } from "./config.js";
 import { resolveProfile } from "./config.js";
 import { BrowserProfileNotFoundError, toBrowserErrorResponse } from "./errors.js";
@@ -114,7 +114,7 @@ function createProfileContext(
     getProfileState,
     stopRunningBrowser,
     isHttpReachable,
-    resolveOpenClawUserDataDir,
+    resolveEVEUserDataDir,
   });
 
   return {

@@ -1,7 +1,7 @@
 // Gateway model-pricing cache state.
 // Stores normalized pricing rows and source-health failures for runtime reads.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { normalizeModelRef } from "../agents/model-selection.js";
 
 export type CachedPricingTier = {

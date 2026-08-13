@@ -2,12 +2,12 @@
 import {
   getCachedLiveProviderModelRows,
   LiveModelCatalogHttpError,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
-import { buildManifestModelProviderConfig } from "openclaw/plugin-sdk/provider-catalog-shared";
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-model-shared";
-import { createSubsystemLogger, retryAsync } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
-import manifest from "./openclaw.plugin.json" with { type: "json" };
+} from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
+import { buildManifestModelProviderConfig } from "eve-agent/plugin-sdk/provider-catalog-shared";
+import type { ModelDefinitionConfig } from "eve-agent/plugin-sdk/provider-model-shared";
+import { createSubsystemLogger, retryAsync } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import manifest from "./eve.plugin.json" with { type: "json" };
 
 const log = createSubsystemLogger("venice-models");
 

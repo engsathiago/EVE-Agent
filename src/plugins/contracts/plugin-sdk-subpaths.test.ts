@@ -15,15 +15,15 @@ import type {
   ChannelStatusIssue as ContractChannelStatusIssue,
   ChannelThreadingContext as ContractChannelThreadingContext,
   ChannelThreadingToolContext as ContractChannelThreadingToolContext,
-} from "openclaw/plugin-sdk/channel-contract";
-import * as commandAuthSdk from "openclaw/plugin-sdk/command-auth";
+} from "eve-agent/plugin-sdk/channel-contract";
+import * as commandAuthSdk from "eve-agent/plugin-sdk/command-auth";
 import type {
   ChannelMessageActionContext as CoreChannelMessageActionContext,
-  OpenClawPluginApi as CoreOpenClawPluginApi,
+  EVEPluginApi as CoreEVEPluginApi,
   PluginRuntime as CorePluginRuntime,
-} from "openclaw/plugin-sdk/core";
-import * as providerEntrySdk from "openclaw/plugin-sdk/provider-entry";
-import * as zalouserSdk from "openclaw/plugin-sdk/zalouser";
+} from "eve-agent/plugin-sdk/core";
+import * as providerEntrySdk from "eve-agent/plugin-sdk/provider-entry";
+import * as zalouserSdk from "eve-agent/plugin-sdk/zalouser";
 import ts from "typescript";
 import { beforeAll, describe, expect, expectTypeOf, it } from "vitest";
 import type { ChannelMessageActionContext } from "../../channels/plugins/types.js";
@@ -44,7 +44,7 @@ import * as channelActionsDirectSdk from "../../plugin-sdk/channel-actions.js";
 import * as channelLifecycleDirectSdk from "../../plugin-sdk/channel-lifecycle.js";
 import type {
   ChannelMessageActionContext as SharedChannelMessageActionContext,
-  OpenClawPluginApi as SharedOpenClawPluginApi,
+  EVEPluginApi as SharedEVEPluginApi,
   PluginRuntime as SharedPluginRuntime,
 } from "../../plugin-sdk/channel-plugin-common.js";
 import * as channelReplyPipelineDirectSdk from "../../plugin-sdk/channel-reply-pipeline.js";
@@ -55,7 +55,7 @@ import * as providerEntryDirectSdk from "../../plugin-sdk/provider-entry.js";
 import { expectNoReaddirSyncDuring } from "../../test-utils/fs-scan-assertions.js";
 import { listGitTrackedFiles, toRepoRelativePath } from "../../test-utils/repo-files.js";
 import type { PluginRuntime } from "../runtime/types.js";
-import type { OpenClawPluginApi } from "../types.js";
+import type { EVEPluginApi } from "../types.js";
 
 const SRC_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO_ROOT = resolve(SRC_ROOT, "..");
@@ -158,9 +158,9 @@ const BROWSER_HELPER_EXPORT_PARITY_CONTRACTS: readonly BrowserHelperExportParity
       "DEFAULT_BROWSER_ACTION_TIMEOUT_MS",
       "DEFAULT_BROWSER_DEFAULT_PROFILE_NAME",
       "DEFAULT_BROWSER_EVALUATE_ENABLED",
-      "DEFAULT_OPENCLAW_BROWSER_COLOR",
-      "DEFAULT_OPENCLAW_BROWSER_ENABLED",
-      "DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME",
+      "DEFAULT_EVE_BROWSER_COLOR",
+      "DEFAULT_EVE_BROWSER_ENABLED",
+      "DEFAULT_EVE_BROWSER_PROFILE_NAME",
       "DEFAULT_UPLOAD_DIR",
       "ResolvedBrowserConfig",
       "ResolvedBrowserProfile",
@@ -488,7 +488,7 @@ describe("plugin-sdk subpath exports", () => {
         resolve(REPO_ROOT, "test"),
       ],
       pattern:
-        /(?:from\s+|import\s+(?:type\s+)?|import\s*\(\s*)["']openclaw\/plugin-sdk\/channel-runtime(?=["'])/u,
+        /(?:from\s+|import\s+(?:type\s+)?|import\s*\(\s*)["']eve\/plugin-sdk\/channel-runtime(?=["'])/u,
       exclude: [
         "src/plugins/compat/registry.ts",
         "src/plugins/sdk-alias.test.ts",
@@ -1331,35 +1331,35 @@ describe("plugin-sdk subpath exports", () => {
     expectTypeOf<ContractChannelStatusIssue>().toMatchTypeOf<ChannelStatusIssue>();
     expectTypeOf<ContractChannelThreadingContext>().toMatchTypeOf<ChannelThreadingContext>();
     expectTypeOf<ContractChannelThreadingToolContext>().toMatchTypeOf<ChannelThreadingToolContext>();
-    expectTypeOf<CoreOpenClawPluginApi>().toMatchTypeOf<OpenClawPluginApi>();
+    expectTypeOf<CoreEVEPluginApi>().toMatchTypeOf<EVEPluginApi>();
     expectTypeOf<CorePluginRuntime>().toMatchTypeOf<PluginRuntime>();
     expectTypeOf<CoreChannelMessageActionContext>().toMatchTypeOf<ChannelMessageActionContext>();
-    expectTypeOf<CoreOpenClawPluginApi>().toMatchTypeOf<SharedOpenClawPluginApi>();
+    expectTypeOf<CoreEVEPluginApi>().toMatchTypeOf<SharedEVEPluginApi>();
     expectTypeOf<CorePluginRuntime>().toMatchTypeOf<SharedPluginRuntime>();
     expectTypeOf<CoreChannelMessageActionContext>().toMatchTypeOf<SharedChannelMessageActionContext>();
   });
 
   it("keeps runtime entry subpaths importable", async () => {
-    const coreSdk = await importResolvedPluginSdkSubpath("openclaw/plugin-sdk/core");
+    const coreSdk = await importResolvedPluginSdkSubpath("eve-agent/plugin-sdk/core");
     const channelActionsSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/channel-actions",
+      "eve-agent/plugin-sdk/channel-actions",
     );
     const globalSingletonSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/global-singleton",
+      "eve-agent/plugin-sdk/global-singleton",
     );
-    const pluginEntrySdk = await importResolvedPluginSdkSubpath("openclaw/plugin-sdk/plugin-entry");
+    const pluginEntrySdk = await importResolvedPluginSdkSubpath("eve-agent/plugin-sdk/plugin-entry");
     const channelLifecycleSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/channel-lifecycle",
+      "eve-agent/plugin-sdk/channel-lifecycle",
     );
     const channelPairingSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/channel-pairing",
+      "eve-agent/plugin-sdk/channel-pairing",
     );
     const channelReplyPipelineSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/channel-reply-pipeline",
+      "eve-agent/plugin-sdk/channel-reply-pipeline",
     );
     const representativeModules = [];
     for (const id of representativeRuntimeSmokeSubpaths) {
-      representativeModules.push(await importResolvedPluginSdkSubpath(`openclaw/plugin-sdk/${id}`));
+      representativeModules.push(await importResolvedPluginSdkSubpath(`eve-agent/plugin-sdk/${id}`));
     }
 
     expect(coreSdk.definePluginEntry).toBe(pluginEntrySdk.definePluginEntry);
@@ -1436,7 +1436,7 @@ describe("plugin-sdk subpath exports", () => {
 
   it("keeps repeated silent-token semantics visible through the reply-chunking subpath", async () => {
     const replyChunkingSdk = await importResolvedPluginSdkSubpath(
-      "openclaw/plugin-sdk/reply-chunking",
+      "eve-agent/plugin-sdk/reply-chunking",
     );
 
     expect(replyChunkingSdk.isSilentReplyText("NO_REPLY\n\nNO_REPLY")).toBe(true);

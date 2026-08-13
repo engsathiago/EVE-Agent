@@ -1,10 +1,10 @@
 // Line plugin module implements reply payload transform behavior.
-import { parseStrictFiniteNumber } from "openclaw/plugin-sdk/number-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+import { parseStrictFiniteNumber } from "eve-agent/plugin-sdk/number-runtime";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeStringEntries,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   createAgendaCard,
   createAppleTvRemoteCard,

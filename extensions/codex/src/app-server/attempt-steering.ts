@@ -2,7 +2,7 @@
  * Debounced steering queue for forwarding user text to an active Codex
  * app-server turn.
  */
-import { embeddedAgentLog } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import type { CodexAppServerClient } from "./client.js";
 import type { CodexUserInput } from "./protocol.js";
 

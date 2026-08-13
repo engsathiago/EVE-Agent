@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/kilocode-provider",
+  "name": "@eve/kilocode-provider",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/kilocode-provider",
+      "name": "@eve/kilocode-provider",
       "version": "2026.6.8"
     }
   }

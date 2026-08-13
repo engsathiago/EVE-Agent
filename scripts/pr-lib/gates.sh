@@ -26,7 +26,7 @@ run_hosted_prepare_gates() {
 run_prepare_push_retry_gates() {
   local docs_only="${1:-false}"
 
-  if [ "${OPENCLAW_TESTBOX:-}" = "1" ]; then
+  if [ "${EVE_TESTBOX:-}" = "1" ]; then
     echo "A lease retry changed the prepared head, so its exact-head hosted evidence no longer applies."
     echo "Stop here, wait for CI/Testbox on the pushed head, then re-run prepare-run."
     return 1
@@ -121,7 +121,7 @@ prepare_gates() {
   local gates_mode="full"
   local hosted_gates_head=""
   local reuse_gates=false
-  if [ "${OPENCLAW_TESTBOX:-}" != "1" ] && [ "$docs_only" = "true" ] && [ -n "$previous_last_verified_head" ] && git merge-base --is-ancestor "$previous_last_verified_head" HEAD 2>/dev/null; then
+  if [ "${EVE_TESTBOX:-}" != "1" ] && [ "$docs_only" = "true" ] && [ -n "$previous_last_verified_head" ] && git merge-base --is-ancestor "$previous_last_verified_head" HEAD 2>/dev/null; then
     local delta_since_verified
     delta_since_verified=$(git diff --name-only "$previous_last_verified_head"..HEAD)
     if [ -z "$delta_since_verified" ] || file_list_is_docsish_only "$delta_since_verified"; then
@@ -129,7 +129,7 @@ prepare_gates() {
     fi
   fi
 
-  if [ "${OPENCLAW_TESTBOX:-}" = "1" ]; then
+  if [ "${EVE_TESTBOX:-}" = "1" ]; then
     gates_mode="hosted_exact_head"
     if [ "$changelog_only" = "true" ]; then
       run_quiet_logged "git diff --check" ".local/gates-diff-check.log" git diff --check origin/main...HEAD
@@ -149,12 +149,12 @@ prepare_gates() {
       echo "Docs-only change detected with high confidence; skipping pnpm test."
     else
       gates_mode="full"
-      if [ -n "${OPENCLAW_VITEST_MAX_WORKERS:-}" ]; then
-        echo "Running pnpm test with OPENCLAW_VITEST_MAX_WORKERS=$OPENCLAW_VITEST_MAX_WORKERS."
+      if [ -n "${EVE_VITEST_MAX_WORKERS:-}" ]; then
+        echo "Running pnpm test with EVE_VITEST_MAX_WORKERS=$EVE_VITEST_MAX_WORKERS."
         run_quiet_logged \
           "pnpm test" \
           ".local/gates-test.log" \
-          env OPENCLAW_VITEST_MAX_WORKERS="$OPENCLAW_VITEST_MAX_WORKERS" pnpm test
+          env EVE_VITEST_MAX_WORKERS="$EVE_VITEST_MAX_WORKERS" pnpm test
       else
         echo "Running pnpm test with host-aware scheduling defaults."
         run_quiet_logged "pnpm test" ".local/gates-test.log" pnpm test

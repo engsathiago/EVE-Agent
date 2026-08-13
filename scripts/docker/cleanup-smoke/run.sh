@@ -3,8 +3,8 @@ set -euo pipefail
 
 cd /repo
 
-export OPENCLAW_STATE_DIR="/tmp/openclaw-test"
-export OPENCLAW_CONFIG_PATH="${OPENCLAW_STATE_DIR}/openclaw.json"
+export EVE_STATE_DIR="/tmp/eve-test"
+export EVE_CONFIG_PATH="${EVE_STATE_DIR}/eve.json"
 
 read_positive_int_env() {
   local name="${1:?missing environment variable name}"
@@ -23,7 +23,7 @@ read_positive_int_env() {
 print_log_tail() {
   local log_file="$1"
   local max_bytes
-  max_bytes="$(read_positive_int_env OPENCLAW_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536)" || return $?
+  max_bytes="$(read_positive_int_env EVE_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536)" || return $?
   if [ ! -f "$log_file" ]; then
     return 0
   fi
@@ -41,7 +41,7 @@ print_log_tail() {
   tail -c "$max_bytes" "$log_file"
 }
 
-read_positive_int_env OPENCLAW_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536 >/dev/null
+read_positive_int_env EVE_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536 >/dev/null
 
 ensure_cleanup_smoke_node_options() {
   local current="${NODE_OPTIONS:-}"
@@ -57,38 +57,38 @@ ensure_cleanup_smoke_node_options() {
 ensure_cleanup_smoke_node_options
 
 echo "==> Build"
-if ! pnpm build >/tmp/openclaw-cleanup-build.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-build.log
+if ! pnpm build >/tmp/eve-cleanup-build.log 2>&1; then
+  print_log_tail /tmp/eve-cleanup-build.log
   exit 1
 fi
 
 echo "==> Seed state"
-mkdir -p "${OPENCLAW_STATE_DIR}/credentials"
-mkdir -p "${OPENCLAW_STATE_DIR}/agents/main/sessions"
-echo '{}' >"${OPENCLAW_CONFIG_PATH}"
-echo 'creds' >"${OPENCLAW_STATE_DIR}/credentials/marker.txt"
-echo 'session' >"${OPENCLAW_STATE_DIR}/agents/main/sessions/sessions.json"
+mkdir -p "${EVE_STATE_DIR}/credentials"
+mkdir -p "${EVE_STATE_DIR}/agents/main/sessions"
+echo '{}' >"${EVE_CONFIG_PATH}"
+echo 'creds' >"${EVE_STATE_DIR}/credentials/marker.txt"
+echo 'session' >"${EVE_STATE_DIR}/agents/main/sessions/sessions.json"
 
 echo "==> Reset (config+creds+sessions)"
-if ! pnpm openclaw reset --scope config+creds+sessions --yes --non-interactive >/tmp/openclaw-cleanup-reset.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-reset.log
+if ! pnpm eve reset --scope config+creds+sessions --yes --non-interactive >/tmp/eve-cleanup-reset.log 2>&1; then
+  print_log_tail /tmp/eve-cleanup-reset.log
   exit 1
 fi
 
-test ! -f "${OPENCLAW_CONFIG_PATH}"
-test ! -d "${OPENCLAW_STATE_DIR}/credentials"
-test ! -d "${OPENCLAW_STATE_DIR}/agents/main/sessions"
+test ! -f "${EVE_CONFIG_PATH}"
+test ! -d "${EVE_STATE_DIR}/credentials"
+test ! -d "${EVE_STATE_DIR}/agents/main/sessions"
 
 echo "==> Recreate minimal config"
-mkdir -p "${OPENCLAW_STATE_DIR}/credentials"
-echo '{}' >"${OPENCLAW_CONFIG_PATH}"
+mkdir -p "${EVE_STATE_DIR}/credentials"
+echo '{}' >"${EVE_CONFIG_PATH}"
 
 echo "==> Uninstall (state only)"
-if ! pnpm openclaw uninstall --state --yes --non-interactive >/tmp/openclaw-cleanup-uninstall.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-uninstall.log
+if ! pnpm eve uninstall --state --yes --non-interactive >/tmp/eve-cleanup-uninstall.log 2>&1; then
+  print_log_tail /tmp/eve-cleanup-uninstall.log
   exit 1
 fi
 
-test ! -d "${OPENCLAW_STATE_DIR}"
+test ! -d "${EVE_STATE_DIR}"
 
 echo "OK"

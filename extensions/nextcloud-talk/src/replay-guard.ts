@@ -1,5 +1,5 @@
 // Nextcloud Talk plugin module implements replay guard behavior.
-import { createClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+import { createClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 
 export const NEXTCLOUD_TALK_PLUGIN_ID = "nextcloud-talk";
 export const NEXTCLOUD_TALK_REPLAY_DEDUPE_NAMESPACE_PREFIX = "replay-dedupe";
@@ -68,7 +68,7 @@ export function createNextcloudTalkReplayGuard(
             options.stateMaxEntries ?? options.fileMaxEntries ?? DEFAULT_STATE_MAX_ENTRIES,
           env: {
             ...process.env,
-            OPENCLAW_STATE_DIR: stateDir,
+            EVE_STATE_DIR: stateDir,
           },
           onDiskError: options.onDiskError,
         }

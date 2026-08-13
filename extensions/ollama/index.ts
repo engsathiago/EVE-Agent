@@ -1,10 +1,10 @@
-// Ollama plugin entrypoint registers its OpenClaw integration.
-import { collectConfiguredModelRefValues } from "@openclaw/model-catalog-core/configured-model-refs";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
+// Ollama plugin entrypoint registers its EVE integration.
+import { collectConfiguredModelRefValues } from "@eve/model-catalog-core/configured-model-refs";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolvePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
 import {
   definePluginEntry,
-  type OpenClawPluginApi,
+  type EVEPluginApi,
   type ProviderAuthContext,
   type ProviderAuthMethodNonInteractiveContext,
   type ProviderAuthResult,
@@ -12,21 +12,21 @@ import {
   type ProviderCatalogContext,
   type ProviderReplayPolicy,
   type ProviderRuntimeModel,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   buildApiKeyCredential,
   coerceSecretRef,
   isNonSecretApiKeyMarker,
-} from "openclaw/plugin-sdk/provider-auth";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
+} from "eve-agent/plugin-sdk/provider-auth";
+import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth-api-key";
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   buildOpenAICompatibleReplayPolicy,
   OPENAI_COMPATIBLE_REPLAY_HOOKS,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   buildOllamaModelDefinition,
   buildOllamaProvider,
@@ -227,7 +227,7 @@ function readUsableOllamaShowApiKey(params: {
 }
 
 function collectConfiguredOllamaModelIds(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider: string;
   entries?: ProviderAugmentModelCatalogContext["entries"];
 }): Array<{
@@ -336,7 +336,7 @@ async function resolveRequestedDynamicOllamaModel(params: {
 }
 
 async function augmentConfiguredOllamaCatalogModels(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   defaultBaseUrl: string;
   env: NodeJS.ProcessEnv;
   provider: string;
@@ -411,14 +411,14 @@ export default definePluginEntry({
   id: "ollama",
   name: "Ollama Provider",
   description: "Bundled Ollama provider plugin",
-  register(api: OpenClawPluginApi) {
+  register(api: EVEPluginApi) {
     if (api.registrationMode === "full") {
       void checkWsl2CrashLoopRisk(api.logger);
     }
     api.registerMemoryEmbeddingProvider(ollamaMemoryEmbeddingProviderAdapter);
     api.registerMediaUnderstandingProvider(ollamaMediaUnderstandingProvider);
     const startupPluginConfig = (api.pluginConfig ?? {}) as OllamaPluginConfig;
-    const resolveCurrentPluginConfig = (config?: OpenClawConfig): OllamaPluginConfig => {
+    const resolveCurrentPluginConfig = (config?: EVEConfig): OllamaPluginConfig => {
       const runtimePluginConfig = resolvePluginConfigObject(config, "ollama");
       if (runtimePluginConfig) {
         return runtimePluginConfig as OllamaPluginConfig;
@@ -509,8 +509,8 @@ export default definePluginEntry({
         /\btruncating input\b.*\btoo long\b/i.test(errorMessage),
       buildUnknownModelHint: () =>
         "Ollama Cloud requires an API key. " +
-        'Set OLLAMA_API_KEY or run "openclaw onboard --auth-choice ollama-cloud". ' +
-        "See: https://docs.openclaw.ai/providers/ollama",
+        'Set OLLAMA_API_KEY or run "eve onboard --auth-choice ollama-cloud". ' +
+        "See: https://docs.eve.ai/providers/ollama",
     });
     api.registerProvider({
       id: OLLAMA_PROVIDER_ID,
@@ -705,8 +705,8 @@ export default definePluginEntry({
       },
       buildUnknownModelHint: () =>
         "Ollama requires authentication to be registered as a provider. " +
-        'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "openclaw configure". ' +
-        "See: https://docs.openclaw.ai/providers/ollama",
+        'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "eve configure". ' +
+        "See: https://docs.eve.ai/providers/ollama",
     });
   },
 });

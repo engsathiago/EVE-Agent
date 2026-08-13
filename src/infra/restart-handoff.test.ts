@@ -15,16 +15,16 @@ import type { GatewayRestartHandoff } from "./restart-handoff.js";
 const tempDirs: string[] = [];
 
 function createHandoffEnv(): NodeJS.ProcessEnv {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-restart-handoff-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-restart-handoff-"));
   tempDirs.push(dir);
   return {
     ...process.env,
-    OPENCLAW_STATE_DIR: dir,
+    EVE_STATE_DIR: dir,
   };
 }
 
 function handoffPath(env: NodeJS.ProcessEnv): string {
-  return path.join(env.OPENCLAW_STATE_DIR ?? "", GATEWAY_SUPERVISOR_RESTART_HANDOFF_FILENAME);
+  return path.join(env.EVE_STATE_DIR ?? "", GATEWAY_SUPERVISOR_RESTART_HANDOFF_FILENAME);
 }
 
 function expectWrittenHandoff(
@@ -187,7 +187,7 @@ describe("gateway restart handoff", () => {
 
   it("does not follow an existing handoff-path symlink when writing", () => {
     const env = createHandoffEnv();
-    const targetPath = path.join(env.OPENCLAW_STATE_DIR ?? "", "attacker-target.txt");
+    const targetPath = path.join(env.EVE_STATE_DIR ?? "", "attacker-target.txt");
     fs.writeFileSync(targetPath, "keep", "utf8");
     try {
       fs.symlinkSync(targetPath, handoffPath(env));

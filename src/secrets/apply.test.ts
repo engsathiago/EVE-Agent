@@ -7,9 +7,9 @@ import { resolveAuthProfileDatabasePath } from "../agents/auth-profiles/sqlite.j
 import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import type { AuthProfileStore } from "../agents/auth-profiles/types.js";
 import {
-  closeOpenClawAgentDatabasesForTest,
-  openOpenClawAgentDatabase,
-} from "../state/openclaw-agent-db.js";
+  closeEVEAgentDatabasesForTest,
+  openEVEAgentDatabase,
+} from "../state/eve-agent-db.js";
 import {
   buildTalkTestProviderConfig,
   TALK_TEST_PROVIDER_API_KEY_PATH,
@@ -65,7 +65,7 @@ function stripVolatileConfigMeta(input: string): Record<string, unknown> {
 }
 
 async function writeJsonFile(filePath: string, value: unknown): Promise<void> {
-  if (path.basename(filePath) === "openclaw-agent.sqlite") {
+  if (path.basename(filePath) === "eve-agent.sqlite") {
     saveAuthProfileStore(value as AuthProfileStore, path.dirname(filePath), {
       filterExternalAuthProfiles: false,
       syncExternalCli: false,
@@ -90,12 +90,12 @@ function createOpenAiProviderConfig(apiKey: unknown = "sk-openai-plaintext") {
 }
 
 function buildFixturePaths(rootDir: string) {
-  const stateDir = path.join(rootDir, ".openclaw");
+  const stateDir = path.join(rootDir, ".eve");
   const agentDir = path.join(stateDir, "agents", "main", "agent");
   return {
     rootDir,
     stateDir,
-    configPath: path.join(stateDir, "openclaw.json"),
+    configPath: path.join(stateDir, "eve.json"),
     agentDir,
     authStorePath: resolveAuthProfileDatabasePath(agentDir),
     authJsonPath: path.join(agentDir, "auth.json"),
@@ -105,15 +105,15 @@ function buildFixturePaths(rootDir: string) {
 
 async function createApplyFixture(): Promise<ApplyFixture> {
   const paths = buildFixturePaths(
-    await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-secrets-apply-")),
+    await fs.mkdtemp(path.join(os.tmpdir(), "eve-secrets-apply-")),
   );
   await fs.mkdir(path.dirname(paths.configPath), { recursive: true });
   await fs.mkdir(paths.agentDir, { recursive: true });
   return {
     ...paths,
     env: {
-      OPENCLAW_STATE_DIR: paths.stateDir,
-      OPENCLAW_CONFIG_PATH: paths.configPath,
+      EVE_STATE_DIR: paths.stateDir,
+      EVE_CONFIG_PATH: paths.configPath,
       OPENAI_API_KEY: "sk-live-env", // pragma: allowlist secret
     },
   };
@@ -285,7 +285,7 @@ describe("secrets apply", () => {
 
   afterEach(async () => {
     clearSecretsRuntimeSnapshot();
-    closeOpenClawAgentDatabasesForTest();
+    closeEVEAgentDatabasesForTest();
     await fs.rm(fixture.rootDir, { recursive: true, force: true });
   });
 
@@ -604,7 +604,7 @@ describe("secrets apply", () => {
     const result = await runSecretsApply({ plan, env: fixture.env, write: true });
 
     expect(result.changedFiles).toContain(coderStorePath);
-    const database = openOpenClawAgentDatabase({
+    const database = openEVEAgentDatabase({
       agentId: "coder",
       path: coderStorePath,
     });

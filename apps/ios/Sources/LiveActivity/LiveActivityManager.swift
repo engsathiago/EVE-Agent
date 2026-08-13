@@ -7,10 +7,10 @@ import os
 final class LiveActivityManager {
     static let shared = LiveActivityManager()
 
-    private let logger = Logger(subsystem: "ai.openclawfoundation.app", category: "LiveActivity")
+    private let logger = Logger(subsystem: "ai.evefoundation.app", category: "LiveActivity")
     private let connectingStaleSeconds: TimeInterval = 120
     private let hydrationStaleSeconds: TimeInterval = 300
-    private var currentActivity: Activity<OpenClawActivityAttributes>?
+    private var currentActivity: Activity<EVEActivityAttributes>?
     private var activityStartDate: Date = .now
 
     private init() {
@@ -32,7 +32,7 @@ final class LiveActivityManager {
         }
 
         self.activityStartDate = .now
-        let attributes = OpenClawActivityAttributes(agentName: agentName, sessionKey: sessionKey)
+        let attributes = EVEActivityAttributes(agentName: agentName, sessionKey: sessionKey)
         let state = self.connectingState(statusText: statusText)
 
         do {
@@ -59,7 +59,7 @@ final class LiveActivityManager {
                 return
             }
             self.activityStartDate = .now
-            let attributes = OpenClawActivityAttributes(agentName: agentName, sessionKey: sessionKey)
+            let attributes = EVEActivityAttributes(agentName: agentName, sessionKey: sessionKey)
             do {
                 let activity = try Activity.request(
                     attributes: attributes,
@@ -99,7 +99,7 @@ final class LiveActivityManager {
     }
 
     private func hydrateCurrentAndPruneDuplicates() {
-        let active = Activity<OpenClawActivityAttributes>.activities
+        let active = Activity<EVEActivityAttributes>.activities
         guard !active.isEmpty else {
             self.currentActivity = nil
             return
@@ -134,7 +134,7 @@ final class LiveActivityManager {
         }
     }
 
-    private func updateCurrent(state: OpenClawActivityAttributes.ContentState, staleDate: Date? = nil) {
+    private func updateCurrent(state: EVEActivityAttributes.ContentState, staleDate: Date? = nil) {
         guard let activity = self.currentActivity, activity.activityState == .active else {
             self.currentActivity = nil
             return
@@ -144,7 +144,7 @@ final class LiveActivityManager {
         }
     }
 
-    private func end(activity: Activity<OpenClawActivityAttributes>) {
+    private func end(activity: Activity<EVEActivityAttributes>) {
         Task {
             await activity.end(
                 ActivityContent(state: self.disconnectedState(), staleDate: nil),
@@ -152,8 +152,8 @@ final class LiveActivityManager {
         }
     }
 
-    private func connectingState(statusText: String = "Connecting...") -> OpenClawActivityAttributes.ContentState {
-        OpenClawActivityAttributes.ContentState(
+    private func connectingState(statusText: String = "Connecting...") -> EVEActivityAttributes.ContentState {
+        EVEActivityAttributes.ContentState(
             statusText: statusText,
             isIdle: false,
             isDisconnected: false,
@@ -161,8 +161,8 @@ final class LiveActivityManager {
             startedAt: self.activityStartDate)
     }
 
-    private func attentionState(statusText: String) -> OpenClawActivityAttributes.ContentState {
-        OpenClawActivityAttributes.ContentState(
+    private func attentionState(statusText: String) -> EVEActivityAttributes.ContentState {
+        EVEActivityAttributes.ContentState(
             statusText: statusText,
             isIdle: false,
             isDisconnected: false,
@@ -170,8 +170,8 @@ final class LiveActivityManager {
             startedAt: self.activityStartDate)
     }
 
-    private func disconnectedState() -> OpenClawActivityAttributes.ContentState {
-        OpenClawActivityAttributes.ContentState(
+    private func disconnectedState() -> EVEActivityAttributes.ContentState {
+        EVEActivityAttributes.ContentState(
             statusText: "Disconnected",
             isIdle: false,
             isDisconnected: true,

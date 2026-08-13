@@ -1,0 +1,4 @@
+interface:
+  display_name: "EVE Landable Bug Sweep"
+  short_description: "Find five small non-SDK landable bugfix PRs"
+  default_prompt: "Use $eve-landable-bug-sweep to find or repair five small high-confidence non-SDK-boundary EVE bugfix PRs and get them landable."

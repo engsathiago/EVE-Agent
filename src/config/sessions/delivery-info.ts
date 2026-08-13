@@ -1,5 +1,5 @@
 // Delivery lookup recovers routable channel context from persisted session stores.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import {
   resolveSessionStoreAgentId,
   resolveSessionStoreKey,
@@ -7,7 +7,7 @@ import {
 import { requiresFoldedSessionKeyAliasProof } from "../../sessions/session-key-utils.js";
 import { deliveryContextFromSession } from "../../utils/delivery-context.shared.js";
 import { getRuntimeConfig } from "../io.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import type { EVEConfig } from "../types.eve.js";
 import { resolveStorePath } from "./paths.js";
 import {
   foldedSessionKeyAliasCandidates,
@@ -43,7 +43,7 @@ function hasRoutableDeliveryContext(context?: {
  */
 export function extractDeliveryInfo(
   sessionKey: string | undefined,
-  options?: { cfg?: OpenClawConfig },
+  options?: { cfg?: EVEConfig },
 ): {
   deliveryContext:
     | { channel?: string; to?: string; accountId?: string; threadId?: string | number }
@@ -81,7 +81,7 @@ export function extractDeliveryInfo(
   return { deliveryContext, threadId };
 }
 
-function resolveDeliveryStorePaths(cfg: OpenClawConfig, agentId: string): string[] {
+function resolveDeliveryStorePaths(cfg: EVEConfig, agentId: string): string[] {
   const paths = new Set<string>();
   paths.add(resolveStorePath(cfg.session?.store, { agentId }));
   // Delivery can be restored from any resolved agent target; store order keeps the configured
@@ -231,7 +231,7 @@ function buildFreshestSessionEntryIndex(
 }
 
 function loadDeliverySessionEntry(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   baseSessionKey: string;
 }) {

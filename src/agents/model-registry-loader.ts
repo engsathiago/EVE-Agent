@@ -2,7 +2,7 @@
  * Shared model-registry loader for agent paths that need auth storage and
  * plugin metadata resolved together before model discovery.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { discoverAuthStorage, discoverModels } from "./agent-model-discovery.js";
 import { resolveDefaultAgentDir } from "./agent-scope.js";
 import { resolveModelPluginMetadataSnapshot } from "./model-discovery-context.js";
@@ -19,7 +19,7 @@ type LoadAgentModelRegistryOptions = {
 
 /** Load the agent model registry with optional provider filtering/normalization. */
 export function loadAgentModelRegistry(
-  config: OpenClawConfig,
+  config: EVEConfig,
   options: LoadAgentModelRegistryOptions = {},
 ): { agentDir: string; registry: ModelRegistry } {
   const agentDir = resolveDefaultAgentDir(config);

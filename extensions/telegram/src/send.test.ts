@@ -5,8 +5,8 @@ import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { markdownToTelegramHtml } from "./format.js";
 import {
@@ -47,7 +47,7 @@ const {
   probeVideoDimensions,
 } = getTelegramSendTestMocks();
 const telegramSendModule = await importTelegramSendModule();
-const { resetLogger, setLoggerOverride } = await import("openclaw/plugin-sdk/runtime-env");
+const { resetLogger, setLoggerOverride } = await import("eve-agent/plugin-sdk/runtime-env");
 const {
   buildInlineKeyboard,
   createForumTopicTelegram,
@@ -301,7 +301,7 @@ let logCaptureCounter = 0;
 
 function captureInfoLogs(): string {
   logCaptureCounter += 1;
-  const logFile = `/tmp/openclaw-telegram-send-log-${process.pid}-${logCaptureCounter}.jsonl`;
+  const logFile = `/tmp/eve-telegram-send-log-${process.pid}-${logCaptureCounter}.jsonl`;
   fs.rmSync(logFile, { force: true });
   setLoggerOverride({ level: "info", consoleLevel: "silent", file: logFile });
   return logFile;
@@ -389,7 +389,7 @@ describe("sent-message-cache", () => {
   });
 
   it("keeps sent-message ownership across restart", async () => {
-    const persistedStorePath = `/tmp/openclaw-telegram-send-tests-${process.pid}-restart.json`;
+    const persistedStorePath = `/tmp/eve-telegram-send-tests-${process.pid}-restart.json`;
     const sentMessageCfg = { session: { store: persistedStorePath } };
 
     recordSentMessage(123, 1, sentMessageCfg);
@@ -412,7 +412,7 @@ describe("sent-message-cache", () => {
   });
 
   it("keeps expired custom-store cleanup away from the default store", () => {
-    const customStorePath = `/tmp/openclaw-telegram-send-tests-${process.pid}-custom-cleanup.json`;
+    const customStorePath = `/tmp/eve-telegram-send-tests-${process.pid}-custom-cleanup.json`;
     const customCfg = { session: { store: customStorePath } };
     const startedAt = new Date("2026-01-01T00:00:00.000Z");
     vi.useFakeTimers();
@@ -433,7 +433,7 @@ describe("sent-message-cache", () => {
   });
 
   it("keeps default and custom stores isolated while both are loaded", () => {
-    const customStorePath = `/tmp/openclaw-telegram-send-tests-${process.pid}-custom-isolated.json`;
+    const customStorePath = `/tmp/eve-telegram-send-tests-${process.pid}-custom-isolated.json`;
     const customCfg = { session: { store: customStorePath } };
 
     try {
@@ -806,7 +806,7 @@ describe("sendMessageTelegram", () => {
   });
 
   it("records sent text messages into the Telegram prompt context cache", async () => {
-    const storePath = `/tmp/openclaw-telegram-send-context-${process.pid}-${Date.now()}.json`;
+    const storePath = `/tmp/eve-telegram-send-context-${process.pid}-${Date.now()}.json`;
     const cfg = { session: { store: storePath } };
     botApi.sendMessage.mockResolvedValueOnce({
       message_id: 1497,
@@ -1048,13 +1048,13 @@ describe("sendMessageTelegram", () => {
     {
       name: "local path",
       markdown:
-        "See [scripts/yougile.py](/home/user/.openclaw/workspace/scripts/yougile.py#L41) and [docs](https://example.com/docs)",
+        "See [scripts/yougile.py](/home/user/.eve/workspace/scripts/yougile.py#L41) and [docs](https://example.com/docs)",
       rejectedAnchor: '<a href="/home',
       visibleLabel: "<code>scripts/yougile.py</code>",
     },
     {
       name: "relative path",
-      markdown: "Edit [config](./openclaw.json) or see [docs](https://example.com/docs)",
+      markdown: "Edit [config](./eve.json) or see [docs](https://example.com/docs)",
       rejectedAnchor: '<a href="./',
       visibleLabel: "config",
     },

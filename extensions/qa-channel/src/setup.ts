@@ -1,13 +1,13 @@
 // Qa Channel setup module handles plugin onboarding behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { DEFAULT_ACCOUNT_ID } from "./accounts.js";
 import type { CoreConfig } from "./types.js";
 
 export function applyQaSetup(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   input: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   const nextCfg = structuredClone(params.cfg) as CoreConfig;
   const section = nextCfg.channels?.["qa-channel"] ?? {};
   const accounts = { ...section.accounts };
@@ -35,5 +35,5 @@ export function applyQaSetup(params: {
       accounts,
     };
   }
-  return nextCfg as OpenClawConfig;
+  return nextCfg as EVEConfig;
 }

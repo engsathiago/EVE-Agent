@@ -1,6 +1,6 @@
-# @openclaw/voice-call
+# @eve/voice-call
 
-Official Voice Call plugin for **OpenClaw**.
+Official Voice Call plugin for **EVE**.
 
 Providers:
 
@@ -9,13 +9,13 @@ Providers:
 - **Plivo** (Voice API + XML transfer + GetInput speech)
 - **Mock** (dev/no network)
 
-Docs: `https://docs.openclaw.ai/plugins/voice-call`
-Plugin system: `https://docs.openclaw.ai/tools/plugin`
+Docs: `https://docs.eve.ai/plugins/voice-call`
+Plugin system: `https://docs.eve.ai/tools/plugin`
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+eve plugins install @eve/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -23,7 +23,7 @@ Restart the Gateway afterwards.
 ## Local dev install
 
 ```bash
-PLUGIN_HOME=~/.openclaw/extensions
+PLUGIN_HOME=~/.eve/extensions
 mkdir -p "$PLUGIN_HOME"
 cp -R <local-plugin-checkout> "$PLUGIN_HOME/voice-call"
 cd "$PLUGIN_HOME/voice-call" && pnpm install
@@ -100,35 +100,35 @@ Notes:
 - Twilio/Telnyx/Plivo require a **publicly reachable** webhook URL.
 - `mock` is a local dev provider (no network calls).
 - Telnyx requires `telnyx.publicKey` (or `TELNYX_PUBLIC_KEY`) unless `skipSignatureVerification` is true.
-- If older configs still use `provider: "log"`, `twilio.from`, or legacy `streaming.*` OpenAI keys, run `openclaw doctor --fix` to rewrite them.
-- advanced webhook, streaming, and tunnel notes: `https://docs.openclaw.ai/plugins/voice-call`
+- If older configs still use `provider: "log"`, `twilio.from`, or legacy `streaming.*` OpenAI keys, run `eve doctor --fix` to rewrite them.
+- advanced webhook, streaming, and tunnel notes: `https://docs.eve.ai/plugins/voice-call`
 - `responseModel` is optional. When unset, voice responses use the runtime default model.
 - `sessionScope` defaults to `per-phone`, preserving caller memory across calls. Use `per-call` for reception, booking, IVR, and bridge flows where each carrier call should start fresh.
-- `realtime.consultThinkingLevel` is optional. When set, it overrides the thinking level used by the model behind realtime `openclaw_agent_consult` calls.
-- `realtime.consultFastMode` is optional. When set, it toggles fast mode for realtime `openclaw_agent_consult` calls.
+- `realtime.consultThinkingLevel` is optional. When set, it overrides the thinking level used by the model behind realtime `eve_agent_consult` calls.
+- `realtime.consultFastMode` is optional. When set, it toggles fast mode for realtime `eve_agent_consult` calls.
 
 ## Stale call reaper
 
 See the plugin docs for recommended ranges and production examples:
-`https://docs.openclaw.ai/plugins/voice-call#stale-call-reaper`
+`https://docs.eve.ai/plugins/voice-call#stale-call-reaper`
 
 ## TTS for calls
 
 Voice Call uses the core `messages.tts` configuration for
 streaming speech on calls. Override examples and provider caveats live here:
-`https://docs.openclaw.ai/plugins/voice-call#tts-for-calls`
+`https://docs.eve.ai/plugins/voice-call#tts-for-calls`
 
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --json
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+eve voicecall call --to "+15555550123" --message "Hello from EVE"
+eve voicecall continue --call-id <id> --message "Any questions?"
+eve voicecall speak --call-id <id> --message "One moment"
+eve voicecall end --call-id <id>
+eve voicecall status --json
+eve voicecall status --call-id <id>
+eve voicecall tail
+eve voicecall expose --mode funnel
 ```
 
 ## Tool

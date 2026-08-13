@@ -1,11 +1,11 @@
 {
-  "name": "openclaw",
+  "name": "eve-agent",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "openclaw",
+      "name": "eve-agent",
       "version": "2026.6.8",
       "hasInstallScript": true,
       "license": "MIT",
@@ -66,7 +66,7 @@
         "zod": "4.4.3"
       },
       "bin": {
-        "openclaw": "openclaw.mjs"
+        "eve": "eve.mjs"
       },
       "engines": {
         "node": ">=22.19.0"

@@ -5,6 +5,7 @@ import {
   clearPluginHostRuntimeState,
   dispatchPluginAgentEventSubscriptions,
 } from "./host-hook-runtime.js";
+import { cleanupReplacedPluginHostRegistry } from "./host-hook-cleanup.js";
 import { clearPluginMetadataLifecycleCaches } from "./plugin-metadata-lifecycle.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { markPluginRegistryActive, markPluginRegistryRetired } from "./registry-lifecycle.js";
@@ -85,10 +86,7 @@ function isRegistryLive(registry: PluginRegistry): boolean {
 async function cleanupPreviousPluginHostRegistry(params: {
   previousRegistry: PluginRegistry;
 }): Promise<void> {
-  const [{ getRuntimeConfig }, { cleanupReplacedPluginHostRegistry }] = await Promise.all([
-    import("../config/config.js"),
-    import("./host-hook-cleanup.js"),
-  ]);
+  const { getRuntimeConfig } = await import("../config/config.js");
   const nextRegistry = asPluginRegistry(state.activeRegistry);
   if (!nextRegistry || nextRegistry === params.previousRegistry) {
     return;

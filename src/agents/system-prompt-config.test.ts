@@ -1,7 +1,7 @@
 // System prompt config tests cover config-to-prompt parameter resolution through
 // the canonical agent prompt facade.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   buildConfiguredAgentSystemPrompt,
   resolveAgentSystemPromptConfig,
@@ -25,7 +25,7 @@ describe("resolveAgentSystemPromptConfig", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(resolveAgentSystemPromptConfig({ config, agentId: "main" }).subagentDelegationMode).toBe(
       "prefer",
@@ -49,7 +49,7 @@ describe("resolveAgentSystemPromptConfig", () => {
           },
         ],
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       resolveAgentSystemPromptConfig({ config, agentId: "coordinator" }).subagentDelegationMode,
@@ -70,7 +70,7 @@ describe("buildConfiguredAgentSystemPrompt", () => {
         },
       },
       agentId: "main",
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       toolNames: ["sessions_spawn", "subagents"],
     });
 

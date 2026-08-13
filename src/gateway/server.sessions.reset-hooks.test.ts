@@ -87,7 +87,7 @@ function expectStringWithPrefix(value: unknown, prefix: string, label: string): 
 
 async function configureGlobalAgentSessionStore(dir: string) {
   const storeTemplate = path.join(dir, "{agentId}", "sessions.json");
-  const configPath = expectStringValue(process.env.OPENCLAW_CONFIG_PATH, "OPENCLAW_CONFIG_PATH");
+  const configPath = expectStringValue(process.env.EVE_CONFIG_PATH, "EVE_CONFIG_PATH");
   const { clearConfigCache, clearRuntimeConfigSnapshot } = await import("../config/config.js");
   testState.sessionStorePath = storeTemplate;
   testState.sessionConfig = { scope: "global" };

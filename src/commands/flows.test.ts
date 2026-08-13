@@ -13,7 +13,7 @@ import {
 } from "../tasks/task-registry.js";
 import type { TaskRecord } from "../tasks/task-registry.types.js";
 import { captureEnv } from "../test-utils/env.js";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { withEVETestState } from "../test-utils/eve-test-state.js";
 import { flowsCancelCommand, flowsListCommand, flowsShowCommand } from "./flows.js";
 
 vi.mock("../config/config.js", () => ({
@@ -63,10 +63,10 @@ function createRuntime(): TestRuntime {
 }
 
 async function withTaskFlowCommandStateDir(run: (root: string) => Promise<void>): Promise<void> {
-  await withOpenClawTestState(
+  await withEVETestState(
     {
       layout: "state-only",
-      prefix: "openclaw-flows-command-",
+      prefix: "eve-flows-command-",
     },
     async (state) => {
       resetTaskRegistryDeliveryRuntimeForTests();
@@ -87,7 +87,7 @@ describe("flows commands", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_STATE_DIR"]);
+    envSnapshot = captureEnv(["EVE_STATE_DIR"]);
   });
 
   afterEach(() => {

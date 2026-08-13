@@ -3,7 +3,7 @@
  *
  * Truncates and reshapes portable presentation blocks to match per-channel limits.
  */
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { resolveMessagePresentationActionValue } from "../../../interactive/payload.js";
 import type {
   MessagePresentation,

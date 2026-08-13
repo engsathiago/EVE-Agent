@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/nvidia-provider",
+  "name": "@eve/nvidia-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw NVIDIA provider plugin",
+  "description": "EVE NVIDIA provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

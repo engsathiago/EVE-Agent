@@ -1,4 +1,4 @@
-// Validates the current runtime against OpenClaw's Node engine floor.
+// Validates the current runtime against EVE's Node engine floor.
 import process from "node:process";
 import { defaultRuntime, type RuntimeEnv } from "../runtime.js";
 
@@ -67,7 +67,7 @@ export function detectRuntime(): RuntimeDetails {
   };
 }
 
-/** Returns whether a detected runtime meets OpenClaw's minimum runtime contract. */
+/** Returns whether a detected runtime meets EVE's minimum runtime contract. */
 export function runtimeSatisfies(details: RuntimeDetails): boolean {
   const parsed = parseSemver(details.version);
   if (details.kind === "node") {
@@ -76,7 +76,7 @@ export function runtimeSatisfies(details: RuntimeDetails): boolean {
   return false;
 }
 
-/** Checks a Node version label against OpenClaw's current minimum Node version. */
+/** Checks a Node version label against EVE's current minimum Node version. */
 export function isSupportedNodeVersion(version: string | null): boolean {
   return isAtLeast(parseSemver(version), MIN_NODE);
 }
@@ -121,11 +121,11 @@ export function assertSupportedRuntime(
 
   runtime.error(
     [
-      "openclaw requires Node >=22.19.0.",
+      "eve requires Node >=22.19.0.",
       `Detected: ${runtimeLabel} (exec: ${execLabel}).`,
       `PATH searched: ${details.pathEnv}`,
       "Install Node: https://nodejs.org/en/download",
-      "Upgrade Node and re-run openclaw.",
+      "Upgrade Node and re-run eve.",
     ].join("\n"),
   );
   runtime.exit(1);

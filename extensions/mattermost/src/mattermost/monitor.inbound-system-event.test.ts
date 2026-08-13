@@ -1,8 +1,8 @@
 // Mattermost tests cover monitor.inbound system event plugin behavior.
-import { createInboundDebouncer } from "openclaw/plugin-sdk/channel-inbound-debounce";
+import { createInboundDebouncer } from "eve-agent/plugin-sdk/channel-inbound-debounce";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { monitorMattermostProvider } from "./monitor.js";
-import type { OpenClawConfig, RuntimeEnv } from "./runtime-api.js";
+import type { EVEConfig, RuntimeEnv } from "./runtime-api.js";
 
 class FakeWebSocket {
   public readonly sent: string[] = [];
@@ -141,7 +141,7 @@ vi.mock("./runtime-api.js", async () => {
 });
 
 function createRuntimeCore(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   routeOverride?: {
     accountId?: string;
     agentId?: string;
@@ -298,7 +298,7 @@ function createRuntimeCore(
         }),
       },
       session: {
-        resolveStorePath: () => "/tmp/openclaw-test-sessions.json",
+        resolveStorePath: () => "/tmp/eve-test-sessions.json",
         recordInboundSession: vi.fn(
           async (_params: {
             createIfMissing?: unknown;
@@ -336,7 +336,7 @@ function createRuntimeCore(
   };
 }
 
-const testConfig: OpenClawConfig = {
+const testConfig: EVEConfig = {
   channels: {
     mattermost: {
       enabled: true,
@@ -375,7 +375,7 @@ describe("mattermost inbound user posts", () => {
     });
     mockState.fetchMattermostMe.mockResolvedValue({
       id: "bot-user",
-      username: "openclaw",
+      username: "eve",
       update_at: 1,
     });
     mockState.registerMattermostMonitorSlashCommands.mockResolvedValue(undefined);
@@ -472,7 +472,7 @@ describe("mattermost inbound user posts", () => {
           id: "post-bare-mention",
           channel_id: "chan-1",
           user_id: "user-1",
-          message: "@openclaw",
+          message: "@eve",
           create_at: 1_714_000_000_001,
         }),
       },
@@ -486,7 +486,7 @@ describe("mattermost inbound user posts", () => {
 
     expect(mockState.dispatchReplyFromConfig).toHaveBeenCalledTimes(1);
     const ctx = mockState.dispatchReplyFromConfig.mock.calls.at(0)?.[0].ctx;
-    expect(ctx?.BodyForAgent).toBe("@openclaw");
+    expect(ctx?.BodyForAgent).toBe("@eve");
     expect(ctx?.MessageSid).toBe("post-bare-mention");
     expect(ctx?.OriginatingChannel).toBe("mattermost");
     expect(ctx?.Provider).toBe("mattermost");
@@ -503,7 +503,7 @@ describe("mattermost inbound user posts", () => {
       stop: vi.fn(async () => {}),
     };
     mockState.createMattermostDraftStream.mockReturnValue(draftStream);
-    const progressConfig: OpenClawConfig = {
+    const progressConfig: EVEConfig = {
       channels: {
         mattermost: {
           enabled: true,
@@ -607,7 +607,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const inlineCommandConfig: OpenClawConfig = {
+    const inlineCommandConfig: EVEConfig = {
       commands: { useAccessGroups: true },
       channels: {
         mattermost: {
@@ -683,7 +683,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const directConfig: OpenClawConfig = {
+    const directConfig: EVEConfig = {
       channels: {
         mattermost: {
           enabled: true,
@@ -810,7 +810,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const channelTypeConfig: OpenClawConfig = {
+    const channelTypeConfig: EVEConfig = {
       channels: {
         mattermost: {
           enabled: true,
@@ -869,7 +869,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const mentionConfig: OpenClawConfig = {
+    const mentionConfig: EVEConfig = {
       commands: { useAccessGroups: false },
       messages: { inbound: { debounceMs: 60_000 } },
       channels: {
@@ -961,7 +961,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const directConfig: OpenClawConfig = {
+    const directConfig: EVEConfig = {
       channels: {
         mattermost: {
           enabled: true,
@@ -1018,7 +1018,7 @@ describe("mattermost inbound user posts", () => {
 
     expect(runtimeCore.channel.session.recordInboundSession).toHaveBeenCalledTimes(1);
     const [recordCall] = runtimeCore.channel.session.recordInboundSession.mock.calls.at(0) ?? [];
-    expect(recordCall?.storePath).toBe("/tmp/openclaw-test-sessions.json");
+    expect(recordCall?.storePath).toBe("/tmp/eve-test-sessions.json");
     expect(recordCall?.sessionKey).toBe("mattermost:default:channel:chan-1");
     const updateLastRoute = recordCall?.updateLastRoute;
     expect(updateLastRoute?.sessionKey).toBe("mattermost:default:channel:chan-1");
@@ -1037,7 +1037,7 @@ describe("mattermost inbound user posts", () => {
     const socket = new FakeWebSocket();
     const abortController = new AbortController();
     mockState.abortController = abortController;
-    const directConfig: OpenClawConfig = {
+    const directConfig: EVEConfig = {
       session: { dmScope: "per-channel-peer" },
       channels: {
         mattermost: {

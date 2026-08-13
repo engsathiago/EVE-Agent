@@ -1,6 +1,6 @@
 /** Tests web_fetch runtime provider selection, credential discovery, and sandbox filtering. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { PluginWebFetchProviderEntry } from "../plugins/types.js";
 import type { RuntimeWebFetchMetadata } from "../secrets/runtime-web-tools.types.js";
 import { withEnv } from "../test-utils/env.js";
@@ -27,7 +27,7 @@ vi.mock("../plugins/web-fetch-providers.runtime.js", () => ({
   resolveRuntimeWebFetchProviders: resolveRuntimeWebFetchProvidersMock,
 }));
 
-function getFirecrawlApiKey(config?: OpenClawConfig): unknown {
+function getFirecrawlApiKey(config?: EVEConfig): unknown {
   const pluginConfig = config?.plugins?.entries?.firecrawl?.config as
     | TestPluginWebFetchConfig
     | undefined;
@@ -56,7 +56,7 @@ function createThirdPartyFetchProvider(): PluginWebFetchProviderEntry {
   });
 }
 
-function createFirecrawlPluginConfig(apiKey: unknown): OpenClawConfig {
+function createFirecrawlPluginConfig(apiKey: unknown): EVEConfig {
   return {
     plugins: {
       entries: {
@@ -194,7 +194,7 @@ describe("web fetch runtime", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(requireResolvedWebFetch(resolved).provider.id).toBe("firecrawl");
@@ -238,7 +238,7 @@ describe("web fetch runtime", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(requireResolvedWebFetch(resolved).provider.id).toBe("firecrawl");
@@ -277,7 +277,7 @@ describe("web fetch runtime", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(requireResolvedWebFetch(resolved).provider.id).toBe("firecrawl");
@@ -298,7 +298,7 @@ describe("web fetch runtime", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(requireResolvedWebFetch(resolved).provider.id).toBe("firecrawl");
@@ -353,7 +353,7 @@ describe("web fetch runtime", () => {
     const resolved = resolveWebFetchDefinition({
       config: {
         tools: { web: { fetch: { provider: "thirdparty" } } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       sandboxed: false,
       preferRuntimeProviders: false,
     });
@@ -371,7 +371,7 @@ describe("web fetch runtime", () => {
     const resolved = resolveWebFetchDefinition({
       config: {
         tools: { web: { fetch: { provider: "thirdparty" } } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       runtimeWebFetch: {
         providerSource: "auto-detect",
         selectedProvider: "firecrawl",

@@ -1,7 +1,7 @@
 // Public model-catalog facade. Keep exports here curated so callers use the
 // normalized planning APIs instead of reaching into provider-index internals.
 export { mergeModelCatalogRowsByAuthority } from "./authority.js";
-export { loadOpenClawProviderIndex } from "./provider-index/index.js";
+export { loadEVEProviderIndex } from "./provider-index/index.js";
 export {
   planManifestModelCatalogRows,
   planManifestModelCatalogSuppressions,
@@ -24,5 +24,5 @@ export type {
   UnifiedModelCatalogEntry,
   UnifiedModelCatalogKind,
   UnifiedModelCatalogSource,
-} from "@openclaw/model-catalog-core/model-catalog-types";
-export type { OpenClawProviderIndexProvider } from "./provider-index/index.js";
+} from "@eve/model-catalog-core/model-catalog-types";
+export type { EVEProviderIndexProvider } from "./provider-index/index.js";

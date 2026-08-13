@@ -1,5 +1,5 @@
 // Feishu plugin module implements tool result behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 
 export function jsonToolResult(data: unknown) {
   return {

@@ -1,6 +1,6 @@
 // Tests background side-question command routing and typing controller integration.
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import {
   expectObjectFields,
   mockCall,
@@ -25,7 +25,7 @@ function buildParams(commandBody: string) {
   const cfg = {
     commands: { text: true },
     channels: { whatsapp: { allowFrom: ["*"] } },
-  } as OpenClawConfig;
+  } as EVEConfig;
   return buildCommandTestParams(commandBody, cfg, undefined, { workspaceDir: "/tmp/workspace" });
 }
 
@@ -34,7 +34,7 @@ describe("handleBtwCommand", () => {
     runBtwSideQuestionMock.mockReset();
     resolveAgentDirMock.mockReset();
     resolveAgentDirMock.mockImplementation(
-      (_cfg: unknown, agentId: string) => `/tmp/workspace/.openclaw/agents/${agentId}/agent`,
+      (_cfg: unknown, agentId: string) => `/tmp/workspace/.eve/agents/${agentId}/agent`,
     );
     resolveSessionAgentIdMock.mockReset();
     resolveSessionAgentIdMock.mockReturnValue("main");

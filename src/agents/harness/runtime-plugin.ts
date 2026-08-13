@@ -1,7 +1,7 @@
 /**
  * Ensures runtime plugins required by selected native harnesses are installed.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { withActivatedPluginIds } from "../../plugins/activation-context.js";
 import { resolveEffectivePluginActivationState } from "../../plugins/config-state.js";
 import { isPluginEnabledByDefaultForPlatform } from "../../plugins/default-enablement.js";
@@ -14,14 +14,14 @@ import {
   resolveBundledProviderCompatPluginIds,
   resolveOwningPluginIdsForProviderRef,
 } from "../../plugins/providers.js";
-import { isDefaultAgentRuntimeId, OPENCLAW_AGENT_RUNTIME_ID } from "../agent-runtime-id.js";
+import { isDefaultAgentRuntimeId, EVE_AGENT_RUNTIME_ID } from "../agent-runtime-id.js";
 import { normalizeOptionalAgentRuntimeId } from "../agent-runtime-id.js";
 import { resolveAgentHarnessPolicy } from "./policy.js";
 
 /**
  * Lazy-loads plugin-backed harness runtimes before selection.
  *
- * Only cold-loadable runtimes live here; always-loaded core/openclaw runtimes should not trigger
+ * Only cold-loadable runtimes live here; always-loaded core/eve runtimes should not trigger
  * plugin registry scans on every embedded-agent turn.
  */
 const COLD_LOADABLE_HARNESS_PLUGIN_IDS = new Set(["codex", "copilot"]);
@@ -40,13 +40,13 @@ function dedupePluginIds(values: readonly string[]): string[] {
   return result;
 }
 
-function restrictiveAllowlistOmitsPlugin(config: OpenClawConfig | undefined, pluginId: string) {
+function restrictiveAllowlistOmitsPlugin(config: EVEConfig | undefined, pluginId: string) {
   const allow = config?.plugins?.allow ?? [];
   return allow.length > 0 && !allow.includes(pluginId);
 }
 
 function resolveSelectedMemoryPluginIds(params: {
-  config: OpenClawConfig | undefined;
+  config: EVEConfig | undefined;
   workspaceDir: string;
 }): string[] {
   const registry = loadPluginRegistrySnapshot({
@@ -79,7 +79,7 @@ function resolveSelectedMemoryPluginIds(params: {
 function resolveHarnessPluginIds(params: {
   runtime: string;
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir: string;
 }): string[] {
   if (params.runtime !== "codex") {
@@ -121,10 +121,10 @@ function resolveHarnessPluginIds(params: {
 }
 
 function withRuntimePluginIdsAllowed(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   requiredPluginId: string;
   pluginIds: readonly string[];
-}): OpenClawConfig | undefined {
+}): EVEConfig | undefined {
   if (params.pluginIds.length === 0) {
     return params.config;
   }
@@ -145,7 +145,7 @@ function withRuntimePluginIdsAllowed(params: {
 export async function ensureSelectedAgentHarnessPlugin(params: {
   provider: string;
   modelId: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   agentHarnessRuntimeOverride?: string;
@@ -163,7 +163,7 @@ export async function ensureSelectedAgentHarnessPlugin(params: {
     runtimeOverride && !isDefaultAgentRuntimeId(runtimeOverride) ? runtimeOverride : policy.runtime;
   if (
     isDefaultAgentRuntimeId(runtime) ||
-    runtime === OPENCLAW_AGENT_RUNTIME_ID ||
+    runtime === EVE_AGENT_RUNTIME_ID ||
     !COLD_LOADABLE_HARNESS_PLUGIN_IDS.has(runtime)
   ) {
     return;

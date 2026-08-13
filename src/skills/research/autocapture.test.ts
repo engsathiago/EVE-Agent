@@ -3,9 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../../test-utils/eve-test-state.js";
 import { createTrackedTempDirs } from "../../test-utils/tracked-temp-dirs.js";
 import {
   applySkillProposal,
@@ -15,12 +15,12 @@ import {
 import { runSkillResearchAutoCapture } from "./autocapture.js";
 
 const tempDirs = createTrackedTempDirs();
-let testState: OpenClawTestState;
+let testState: EVETestState;
 
 beforeEach(async () => {
-  testState = await createOpenClawTestState({
+  testState = await createEVETestState({
     layout: "state-only",
-    prefix: "openclaw-skill-workshop-state-",
+    prefix: "eve-skill-workshop-state-",
   });
 });
 
@@ -30,7 +30,7 @@ afterEach(async () => {
 });
 
 async function makeWorkspace(): Promise<string> {
-  return await tempDirs.make("openclaw-skill-workshop-");
+  return await tempDirs.make("eve-skill-workshop-");
 }
 
 describe("skill research auto-capture", () => {

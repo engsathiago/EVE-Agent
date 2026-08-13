@@ -483,7 +483,7 @@ describe("qa mock openai server", () => {
         {
           type: "function_call_output",
           call_id: "call_mock_read_1",
-          output: JSON.stringify({ text: "QA mission: understand this OpenClaw repo." }),
+          output: JSON.stringify({ text: "QA mission: understand this EVE repo." }),
         },
       ],
     });
@@ -504,7 +504,7 @@ describe("qa mock openai server", () => {
         {
           type: "function_call_output",
           call_id: "call_mock_read_1",
-          output: JSON.stringify({ text: "QA mission: understand this OpenClaw repo." }),
+          output: JSON.stringify({ text: "QA mission: understand this EVE repo." }),
         },
       ],
     });
@@ -1080,7 +1080,7 @@ describe("qa mock openai server", () => {
             content: [
               {
                 type: "input_text",
-                text: "Task: prepare a local OpenClaw PR readiness note.\nPending: wait for maintainer feedback before publishing.\nBlocked: publishing needs explicit user approval.\nDone: local evidence captured in personal-task-status.txt.\n",
+                text: "Task: prepare a local EVE PR readiness note.\nPending: wait for maintainer feedback before publishing.\nBlocked: publishing needs explicit user approval.\nDone: local evidence captured in personal-task-status.txt.\n",
               },
             ],
           },
@@ -1795,7 +1795,7 @@ describe("qa mock openai server", () => {
       body: JSON.stringify({
         stream: true,
         instructions:
-          "@openclaw Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
+          "@eve Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
         input: [
           {
             role: "user",
@@ -1822,7 +1822,7 @@ describe("qa mock openai server", () => {
       body: JSON.stringify({
         stream: false,
         instructions:
-          "@openclaw Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
+          "@eve Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
         input: [
           {
             type: "function_call_output",
@@ -1853,7 +1853,7 @@ describe("qa mock openai server", () => {
       body: JSON.stringify({
         stream: false,
         instructions:
-          "@openclaw Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
+          "@eve Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
         input: [
           {
             type: "function_call_output",
@@ -1890,7 +1890,7 @@ describe("qa mock openai server", () => {
               "Available tools include sessions_spawn.\n## /workspace/MEMORY.md\nThread-hidden codename: ORBIT-22.",
           },
           makeUserInput(
-            "@openclaw Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
+            "@eve Thread memory check: what is the hidden thread codename stored only in memory? Use memory tools first and reply only in this thread.",
           ),
           {
             type: "function_call_output",
@@ -3112,7 +3112,7 @@ describe("qa mock openai server", () => {
 
     const response = await postResponses(server, {
       stream: false,
-      instructions: "Codex dynamic OpenClaw tools available in this turn: web_search.",
+      instructions: "Codex dynamic EVE tools available in this turn: web_search.",
       input: [
         makeUserInput(
           "tool search qa check target=web_search. Call exactly that tool once and then summarize.",
@@ -3124,7 +3124,7 @@ describe("qa mock openai server", () => {
     const toolPlanOutput = outputItem(await response.json());
     expect(toolPlanOutput.type).toBe("function_call");
     expect(toolPlanOutput.name).toBe("web_search");
-    expect(String(toolPlanOutput.arguments)).toContain("OpenClaw runtime parity fixed query");
+    expect(String(toolPlanOutput.arguments)).toContain("EVE runtime parity fixed query");
   });
 
   it("plans QA tool-search calls from explicit fixture targets even without Responses tools", async () => {
@@ -3610,7 +3610,7 @@ describe("qa mock openai server", () => {
           },
           {
             type: "function_call_output",
-            output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+            output: "QA mission: Understand this EVE repo from source + docs before acting.",
           },
         ],
       }),
@@ -3722,7 +3722,7 @@ describe("qa mock openai server", () => {
 
     expect(triggered.status).toBe(200);
     await expect(triggered.json()).resolves.toEqual({
-      text: "openclawqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK",
+      text: "eveqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK",
     });
     expect(quiet.status).toBe(200);
     await expect(quiet.json()).resolves.toEqual({
@@ -4323,7 +4323,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_REASONING_ONLY_RECOVERY_PROMPT),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });
@@ -4345,7 +4345,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_REASONING_ONLY_RETRY_INSTRUCTION),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });
@@ -4476,7 +4476,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_EMPTY_RESPONSE_RECOVERY_PROMPT),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });
@@ -4494,7 +4494,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_EMPTY_RESPONSE_RETRY_INSTRUCTION),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });
@@ -4519,7 +4519,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_EMPTY_RESPONSE_EXHAUSTION_PROMPT),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });
@@ -4535,7 +4535,7 @@ describe("qa mock openai server", () => {
         makeUserInput(QA_EMPTY_RESPONSE_RETRY_INSTRUCTION),
         {
           type: "function_call_output",
-          output: "QA mission: Understand this OpenClaw repo from source + docs before acting.",
+          output: "QA mission: Understand this EVE repo from source + docs before acting.",
         },
       ],
     });

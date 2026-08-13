@@ -5,7 +5,7 @@ import { parse } from "yaml";
 import { createReleaseWorkflowMatrixPlan } from "../../scripts/plan-release-workflow-matrix.mjs";
 
 function workflow() {
-  return parse(readFileSync(".github/workflows/openclaw-live-and-e2e-checks-reusable.yml", "utf8"));
+  return parse(readFileSync(".github/workflows/eve-live-and-e2e-checks-reusable.yml", "utf8"));
 }
 
 const PROFILE_GATED_STATIC_MATRIX_ALLOWLIST = [
@@ -185,10 +185,10 @@ describe("scripts/plan-release-workflow-matrix.mjs", () => {
     expect(jobs.validate_live_models_docker.strategy.matrix).toBe(
       "${{ fromJson(needs.plan_release_workflow_matrices.outputs.live_models_matrix) }}",
     );
-    expect(jobs.validate_live_models_docker.env.OPENCLAW_LIVE_MODELS).toBe(
+    expect(jobs.validate_live_models_docker.env.EVE_LIVE_MODELS).toBe(
       "${{ matrix.models || 'modern' }}",
     );
-    expect(jobs.validate_live_models_docker.env.OPENCLAW_LIVE_MAX_MODELS).toBe(
+    expect(jobs.validate_live_models_docker.env.EVE_LIVE_MAX_MODELS).toBe(
       "${{ matrix.max_models || '6' }}",
     );
   });

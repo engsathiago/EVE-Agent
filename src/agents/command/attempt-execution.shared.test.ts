@@ -17,7 +17,7 @@ import type { AgentCommandOpts } from "./types.js";
 
 function makeTaskCompletionEvents(): NonNullable<AgentCommandOpts["internalEvents"]> {
   // The result deliberately contains internal markers to prove child output
-  // cannot spoof OpenClaw runtime-context envelopes.
+  // cannot spoof EVE runtime-context envelopes.
   return [
     {
       type: "task_completion",
@@ -41,11 +41,11 @@ function makeTaskCompletionEvents(): NonNullable<AgentCommandOpts["internalEvent
 }
 
 describe("attempt execution prompt materialization", () => {
-  it("materializes ACP internal events without OpenClaw internal runtime markers", () => {
+  it("materializes ACP internal events without EVE internal runtime markers", () => {
     const events = makeTaskCompletionEvents();
     const body = [
       INTERNAL_RUNTIME_CONTEXT_BEGIN,
-      "OpenClaw runtime context (internal):",
+      "EVE runtime context (internal):",
       "hidden completion event",
       INTERNAL_RUNTIME_CONTEXT_END,
       "",
@@ -72,7 +72,7 @@ describe("attempt execution prompt materialization", () => {
     const transcriptBody = resolveInternalEventTranscriptBody(
       [
         INTERNAL_RUNTIME_CONTEXT_BEGIN,
-        "OpenClaw runtime context (internal):",
+        "EVE runtime context (internal):",
         "hidden completion event",
         INTERNAL_RUNTIME_CONTEXT_END,
       ].join("\n"),
@@ -88,7 +88,7 @@ describe("attempt execution prompt materialization", () => {
 
 describe("persistSessionEntry", () => {
   it("clears stale local entries when guarded persistence sees no persisted entry", async () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-store-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-store-"));
     try {
       const storePath = path.join(dir, "sessions.json");
       const sessionStore = {

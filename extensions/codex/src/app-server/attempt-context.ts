@@ -13,10 +13,10 @@ import {
   type EmbeddedContextFile,
   type EmbeddedRunAttemptParams,
   type EmbeddedRunAttemptResult,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { resolveAgentWorkspaceDir } from "openclaw/plugin-sdk/agent-runtime";
-import { buildMemorySystemPromptAddition } from "openclaw/plugin-sdk/core";
-import { MESSAGE_TOOL_DELIVERY_HINTS } from "openclaw/plugin-sdk/message-tool-delivery-hints";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { resolveAgentWorkspaceDir } from "eve-agent/plugin-sdk/agent-runtime";
+import { buildMemorySystemPromptAddition } from "eve-agent/plugin-sdk/core";
+import { MESSAGE_TOOL_DELIVERY_HINTS } from "eve-agent/plugin-sdk/message-tool-delivery-hints";
 import type { CodexDynamicToolFunctionSpec, CodexDynamicToolSpec, JsonValue } from "./protocol.js";
 import { flattenCodexDynamicToolFunctions } from "./protocol.js";
 import { isJsonObject } from "./protocol.js";
@@ -225,10 +225,10 @@ export async function buildCodexWorkspaceBootstrapContext(params: {
       excludeMemory: memoryToolsAvailable,
       memoryWorkspaceDir: params.effectiveWorkspace,
     });
-    const developerInstructionFiles = shouldInjectCodexOpenClawPromptContext(params.params)
+    const developerInstructionFiles = shouldInjectCodexEVEPromptContext(params.params)
       ? selectCodexWorkspaceInheritedDeveloperInstructionFiles(contextFiles)
       : [];
-    const turnScopedDeveloperInstructionFiles = shouldInjectCodexOpenClawPromptContext(
+    const turnScopedDeveloperInstructionFiles = shouldInjectCodexEVEPromptContext(
       params.params,
     )
       ? selectCodexWorkspaceTurnScopedDeveloperInstructionFiles(contextFiles)
@@ -251,7 +251,7 @@ export async function buildCodexWorkspaceBootstrapContext(params: {
       turnScopedDeveloperInstructions: renderCodexWorkspaceCollaborationDeveloperInstructions(
         turnScopedDeveloperInstructionFiles,
       ),
-      memoryCollaborationInstructions: shouldInjectCodexOpenClawPromptContext(params.params)
+      memoryCollaborationInstructions: shouldInjectCodexEVEPromptContext(params.params)
         ? renderCodexWorkspaceMemoryCollaborationInstructions({
             files: memoryReferenceFiles,
             toolNames: params.memoryToolNames,
@@ -512,32 +512,32 @@ function readNonEmptyString(value: unknown): string | undefined {
 }
 
 /**
- * Builds OpenClaw-provided workspace prompt context for the current Codex turn.
+ * Builds EVE-provided workspace prompt context for the current Codex turn.
  */
-export function buildCodexOpenClawPromptContext(params: {
+export function buildCodexEVEPromptContext(params: {
   params: EmbeddedRunAttemptParams;
   workspacePromptContext?: string;
 }): string | undefined {
-  if (!shouldInjectCodexOpenClawPromptContext(params.params)) {
+  if (!shouldInjectCodexEVEPromptContext(params.params)) {
     return undefined;
   }
   const sections = [
     params.workspacePromptContext?.trim()
-      ? ["## OpenClaw Workspace Context", "", params.workspacePromptContext.trim()].join("\n")
+      ? ["## EVE Workspace Context", "", params.workspacePromptContext.trim()].join("\n")
       : undefined,
   ].filter(isNonEmptyString);
   if (sections.length === 0) {
     return undefined;
   }
   return [
-    "OpenClaw runtime context for this turn:",
-    "Treat this OpenClaw-provided context as supporting project/user reference for the current request.",
+    "EVE runtime context for this turn:",
+    "Treat this EVE-provided context as supporting project/user reference for the current request.",
     "",
     ...sections,
   ].join("\n");
 }
 
-function shouldInjectCodexOpenClawPromptContext(params: EmbeddedRunAttemptParams): boolean {
+function shouldInjectCodexEVEPromptContext(params: EmbeddedRunAttemptParams): boolean {
   // Lightweight cron runs are commonly exact commands. Keep the user input byte-for-byte
   // to avoid changing command intent while Codex keeps its native project-doc loader.
   return !(
@@ -545,24 +545,24 @@ function shouldInjectCodexOpenClawPromptContext(params: EmbeddedRunAttemptParams
   );
 }
 
-/** Renders loaded OpenClaw skill prompts as Codex collaboration instructions. */
+/** Renders loaded EVE skill prompts as Codex collaboration instructions. */
 export function renderCodexSkillsCollaborationInstructions(params: {
   attempt: EmbeddedRunAttemptParams;
   skillsPrompt?: string;
 }): string | undefined {
-  if (!shouldInjectCodexOpenClawPromptContext(params.attempt)) {
+  if (!shouldInjectCodexEVEPromptContext(params.attempt)) {
     return undefined;
   }
   return params.skillsPrompt?.trim()
-    ? ["## OpenClaw Skills", "", params.skillsPrompt.trim()].join("\n")
+    ? ["## EVE Skills", "", params.skillsPrompt.trim()].join("\n")
     : undefined;
 }
 
 /**
- * Prepends OpenClaw context while preserving leading delivery metadata as
+ * Prepends EVE context while preserving leading delivery metadata as
  * routing guidance instead of user request text.
  */
-export function prependCodexOpenClawPromptContext(
+export function prependCodexEVEPromptContext(
   prompt: string,
   context: string | undefined,
   options: { preservePromptWithoutContext?: boolean } = {},
@@ -572,13 +572,13 @@ export function prependCodexOpenClawPromptContext(
     return prompt;
   }
   const promptSection = promptWithoutDeliveryHint.startsWith(
-    "OpenClaw assembled context for this turn:",
+    "EVE assembled context for this turn:",
   )
     ? promptWithoutDeliveryHint
     : ["Current user request:", promptWithoutDeliveryHint].join("\n");
   const deliverySection = deliveryHint
     ? [
-        "OpenClaw delivery metadata:",
+        "EVE delivery metadata:",
         "This delivery metadata is runtime routing guidance, not the user's request.",
         deliveryHint,
       ].join("\n")
@@ -657,7 +657,7 @@ function renderCodexWorkspaceBootstrapPromptContext(
     return undefined;
   }
   const lines = [
-    "OpenClaw loaded these user-editable workspace files for the current turn. Codex loads AGENTS.md natively. TOOLS.md is provided as inherited Codex developer instructions. SOUL.md, IDENTITY.md, and USER.md are provided as turn-scoped collaboration instructions so native Codex subagents do not inherit them. HEARTBEAT.md is handled by heartbeat collaboration-mode guidance. Those files are not repeated here.",
+    "EVE loaded these user-editable workspace files for the current turn. Codex loads AGENTS.md natively. TOOLS.md is provided as inherited Codex developer instructions. SOUL.md, IDENTITY.md, and USER.md are provided as turn-scoped collaboration instructions so native Codex subagents do not inherit them. HEARTBEAT.md is handled by heartbeat collaboration-mode guidance. Those files are not repeated here.",
     "",
     "# Project Context",
     "",
@@ -734,9 +734,9 @@ function renderCodexWorkspaceThreadDeveloperInstructions(
 ): string | undefined {
   return renderCodexWorkspaceDeveloperInstructions({
     files,
-    header: "## OpenClaw Workspace Instructions",
+    header: "## EVE Workspace Instructions",
     preamble:
-      "OpenClaw loaded these workspace instruction files from the active agent workspace. Internalize and follow them accordingly.",
+      "EVE loaded these workspace instruction files from the active agent workspace. Internalize and follow them accordingly.",
   });
 }
 
@@ -745,9 +745,9 @@ function renderCodexWorkspaceCollaborationDeveloperInstructions(
 ): string | undefined {
   return renderCodexWorkspaceDeveloperInstructions({
     files,
-    header: "## OpenClaw Agent Soul",
+    header: "## EVE Agent Soul",
     preamble:
-      "OpenClaw loaded these workspace instruction files from the active agent workspace. They are the canonical definitions of who you are, how you think and work, and the human you work alongside. Internalize and follow them accordingly.",
+      "EVE loaded these workspace instruction files from the active agent workspace. They are the canonical definitions of who you are, how you think and work, and the human you work alongside. Internalize and follow them accordingly.",
     wrapperTag: "AGENT_SOUL",
   });
 }
@@ -795,7 +795,7 @@ function renderCodexWorkspaceHeartbeatReference(files: EmbeddedContextFile[]): s
     return undefined;
   }
   const lines = [
-    "## OpenClaw Heartbeat Workspace",
+    "## EVE Heartbeat Workspace",
     "",
     "HEARTBEAT.md exists in the active agent workspace. Read it before proceeding with this heartbeat, then decide what action is appropriate.",
     "",
@@ -839,9 +839,9 @@ export function renderCodexWorkspaceMemoryReference(params: {
     ? params.toolNames
     : Array.from(CODEX_MEMORY_TOOL_NAMES);
   const lines = [
-    "## OpenClaw Workspace Memory",
+    "## EVE Workspace Memory",
     "",
-    `MEMORY.md exists in the active agent workspace as a memory file, not an instruction file. OpenClaw does not paste its contents into native Codex turns; use ${toolNames.join(" or ")} when durable memory is relevant and the tools are available.`,
+    `MEMORY.md exists in the active agent workspace as a memory file, not an instruction file. EVE does not paste its contents into native Codex turns; use ${toolNames.join(" or ")} when durable memory is relevant and the tools are available.`,
     "",
   ];
   for (const file of params.files) {

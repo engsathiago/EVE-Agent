@@ -3,7 +3,7 @@ import {
   controlRealtimeVoiceAgentRun,
   shouldAutoControlRealtimeVoiceAgentText,
   type RealtimeVoiceAgentControlResult,
-} from "openclaw/plugin-sdk/realtime-voice";
+} from "eve-agent/plugin-sdk/realtime-voice";
 import type { VoiceSessionEntry } from "./session.js";
 
 export type DiscordVoiceAgentControlOutcome =

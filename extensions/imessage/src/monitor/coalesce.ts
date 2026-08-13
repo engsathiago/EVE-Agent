@@ -2,7 +2,7 @@
 import type { IMessagePayload } from "./types.js";
 
 // Keep the coalescing contract narrow (caps, ID tracking, reply-context
-// preference) so a future SDK lift into `openclaw/plugin-sdk/channel-inbound`
+// preference) so a future SDK lift into `eve-agent/plugin-sdk/channel-inbound`
 // is a mechanical extraction instead of a behavioral redesign. Apple's
 // split-send pipeline is the behavior this protects.
 
@@ -55,7 +55,7 @@ export function shouldCombineIMessagePayloadBucket(
     return false;
   }
   // Back-compat (remove once imsg coalesces split-sends upstream — see
-  // openclaw/imsg#141, tracked by #91243): a build that has never emitted any
+  // eve/imsg#141, tracked by #91243): a build that has never emitted any
   // balloon metadata cannot structurally tell a `Dump <url>` split-send from
   // separate sends. Preserve the pre-metadata merge so split-send users do not
   // regress to two turns on a released imsg that lacks the field.

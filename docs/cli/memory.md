@@ -1,5 +1,5 @@
 ---
-summary: "CLI reference for `openclaw memory` (status/index/search/promote/promote-explain/rem-harness)"
+summary: "CLI reference for `eve memory` (status/index/search/promote/promote-explain/rem-harness)"
 read_when:
   - You want to index or search semantic memory
   - You're debugging memory availability or indexing
@@ -7,7 +7,7 @@ read_when:
 title: "Memory"
 ---
 
-# `openclaw memory`
+# `eve memory`
 
 Manage semantic memory indexing and search.
 Provided by the bundled `memory-core` plugin. The command is available when
@@ -24,24 +24,24 @@ Related:
 ## Examples
 
 ```bash
-openclaw memory status
-openclaw memory status --deep
-openclaw memory status --fix
-openclaw memory index --force
-openclaw memory search "meeting notes"
-openclaw memory search --query "deployment" --max-results 20
-openclaw memory promote --limit 10 --min-score 0.75
-openclaw memory promote --apply
-openclaw memory promote --json --min-recall-count 0 --min-unique-queries 0
-openclaw memory promote-explain "router vlan"
-openclaw memory promote-explain "router vlan" --json
-openclaw memory rem-harness
-openclaw memory rem-harness --json
-openclaw memory status --json
-openclaw memory status --deep --index
-openclaw memory status --deep --index --verbose
-openclaw memory status --agent main
-openclaw memory index --agent main --verbose
+eve memory status
+eve memory status --deep
+eve memory status --fix
+eve memory index --force
+eve memory search "meeting notes"
+eve memory search --query "deployment" --max-results 20
+eve memory promote --limit 10 --min-score 0.75
+eve memory promote --apply
+eve memory promote --json --min-recall-count 0 --min-unique-queries 0
+eve memory promote-explain "router vlan"
+eve memory promote-explain "router vlan" --json
+eve memory rem-harness
+eve memory rem-harness --json
+eve memory status --json
+eve memory status --deep --index
+eve memory status --deep --index --verbose
+eve memory status --agent main
+eve memory index --agent main --verbose
 ```
 
 ## Options
@@ -79,7 +79,7 @@ If `memory status` shows `Dreaming status: blocked`, the managed dreaming cron i
 Preview and apply short-term memory promotions.
 
 ```bash
-openclaw memory promote [--apply] [--limit <n>] [--include-promoted]
+eve memory promote [--apply] [--limit <n>] [--include-promoted]
 ```
 
 - `--apply` -- write promotions to `MEMORY.md` (default: preview only).
@@ -90,7 +90,7 @@ Full options:
 
 - Ranks short-term candidates from `memory/YYYY-MM-DD.md` using weighted promotion signals (`frequency`, `relevance`, `query diversity`, `recency`, `consolidation`, `conceptual richness`).
 - Uses short-term signals from both memory recalls and daily-ingestion passes, plus light/REM phase reinforcement signals.
-- When dreaming is enabled, `memory-core` auto-manages one cron job that runs a full sweep (`light -> REM -> deep`) in the background (no manual `openclaw cron add` required).
+- When dreaming is enabled, `memory-core` auto-manages one cron job that runs a full sweep (`light -> REM -> deep`) in the background (no manual `eve cron add` required).
 - `--agent <id>`: scope to a single agent (default: the default agent).
 - `--limit <n>`: max candidates to return/apply.
 - `--min-score <n>`: minimum weighted promotion score.
@@ -105,7 +105,7 @@ Full options:
 Explain a specific promotion candidate and its score breakdown.
 
 ```bash
-openclaw memory promote-explain <selector> [--agent <id>] [--include-promoted] [--json]
+eve memory promote-explain <selector> [--agent <id>] [--include-promoted] [--json]
 ```
 
 - `<selector>`: candidate key, path fragment, or snippet fragment to look up.
@@ -118,7 +118,7 @@ openclaw memory promote-explain <selector> [--agent <id>] [--include-promoted] [
 Preview REM reflections, candidate truths, and deep promotion output without writing anything.
 
 ```bash
-openclaw memory rem-harness [--agent <id>] [--include-promoted] [--json]
+eve memory rem-harness [--agent <id>] [--include-promoted] [--json]
 ```
 
 - `--agent <id>`: scope to a single agent (default: the default agent).

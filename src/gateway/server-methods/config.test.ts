@@ -62,16 +62,16 @@ afterEach(() => {
 
 describe("resolveConfigOpenCommand", () => {
   it("uses open on macOS", () => {
-    expect(resolveConfigOpenCommand("/tmp/openclaw.json", "darwin")).toEqual({
+    expect(resolveConfigOpenCommand("/tmp/eve.json", "darwin")).toEqual({
       command: "open",
-      args: ["/tmp/openclaw.json"],
+      args: ["/tmp/eve.json"],
     });
   });
 
   it("uses xdg-open on Linux", () => {
-    expect(resolveConfigOpenCommand("/tmp/openclaw.json", "linux")).toEqual({
+    expect(resolveConfigOpenCommand("/tmp/eve.json", "linux")).toEqual({
       command: "xdg-open",
-      args: ["/tmp/openclaw.json"],
+      args: ["/tmp/eve.json"],
     });
   });
 
@@ -90,7 +90,7 @@ describe("resolveConfigOpenCommand", () => {
 
 describe("config.openFile", () => {
   it("opens the configured file without shell interpolation", async () => {
-    await withEnvAsync({ OPENCLAW_CONFIG_PATH: "/tmp/config $(touch pwned).json" }, async () => {
+    await withEnvAsync({ EVE_CONFIG_PATH: "/tmp/config $(touch pwned).json" }, async () => {
       execFileMock.mockImplementation((...args: unknown[]) => {
         expect(["open", "xdg-open", "powershell.exe"]).toContain(args[0]);
         expect(args[1]).toEqual(["/tmp/config $(touch pwned).json"]);
@@ -112,7 +112,7 @@ describe("config.openFile", () => {
   });
 
   it("returns a detailed error and logs details when the opener fails", async () => {
-    await withEnvAsync({ OPENCLAW_CONFIG_PATH: "/tmp/config.json" }, async () => {
+    await withEnvAsync({ EVE_CONFIG_PATH: "/tmp/config.json" }, async () => {
       mockExecFileError(Object.assign(new Error("spawn xdg-open ENOENT"), { code: "ENOENT" }));
 
       const { respond, logGateway } = await invokeConfigOpenFile();
@@ -133,7 +133,7 @@ describe("config.openFile", () => {
   });
 
   it("returns actionable headless environment error when xdg-open reports no method available", async () => {
-    await withEnvAsync({ OPENCLAW_CONFIG_PATH: "/tmp/config.json" }, async () => {
+    await withEnvAsync({ EVE_CONFIG_PATH: "/tmp/config.json" }, async () => {
       mockExecFileError(new Error("xdg-open: no method available for opening '/tmp/config.json'"));
 
       const { respond, logGateway } = await invokeConfigOpenFile();

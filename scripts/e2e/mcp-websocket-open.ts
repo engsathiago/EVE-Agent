@@ -1,4 +1,4 @@
-// Mcp Websocket Open script supports OpenClaw repository automation.
+// Mcp Websocket Open script supports EVE repository automation.
 type WebSocketOpenHandle = {
   close?: () => void;
   off?: (event: "open" | "error" | "close", listener: (...args: unknown[]) => void) => void;

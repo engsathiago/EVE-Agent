@@ -15,7 +15,7 @@ async function readRequestBody(req: IncomingMessage): Promise<string> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-async function spawnOpenClaw(
+async function spawnEVE(
   args: string[],
   options: { cwd: string; env: NodeJS.ProcessEnv },
 ): Promise<{ status: number | null; stdout: string; stderr: string }> {
@@ -48,7 +48,7 @@ async function buildGitHubSkillZip(): Promise<Buffer> {
   return await zip.generateAsync({ type: "nodebuffer" });
 }
 
-describe("openclaw skills install ClawHub GitHub-backed E2E", () => {
+describe("eve skills install ClawHub GitHub-backed E2E", () => {
   it("installs from the install resolver and reports install telemetry", async () => {
     const commit = "c".repeat(40);
     const telemetryBodies: unknown[] = [];
@@ -106,20 +106,20 @@ describe("openclaw skills install ClawHub GitHub-backed E2E", () => {
     });
 
     const registry = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-clawhub-cli-e2e-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-clawhub-cli-e2e-"));
     try {
-      const result = await spawnOpenClaw(["skills", "install", "aiq-deploy", "--global"], {
+      const result = await spawnEVE(["skills", "install", "aiq-deploy", "--global"], {
         cwd: process.cwd(),
         env: {
           ...process.env,
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_CONFIG_PATH: path.join(stateDir, "openclaw.json"),
-          OPENCLAW_CLAWHUB_URL: registry,
-          OPENCLAW_CLAWHUB_TOKEN: "test-token",
-          OPENCLAW_CLAWHUB_GITHUB_CODELOAD_BASE_URL: registry,
+          EVE_STATE_DIR: stateDir,
+          EVE_CONFIG_PATH: path.join(stateDir, "eve.json"),
+          EVE_CLAWHUB_URL: registry,
+          EVE_CLAWHUB_TOKEN: "test-token",
+          EVE_CLAWHUB_GITHUB_CODELOAD_BASE_URL: registry,
           CLAWHUB_DISABLE_TELEMETRY: "",
           CLAWDHUB_DISABLE_TELEMETRY: "",
-          OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
+          EVE_DISABLE_BUNDLED_PLUGINS: "1",
         },
       });
 

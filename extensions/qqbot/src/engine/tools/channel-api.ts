@@ -8,8 +8,8 @@
  * validation, fetch, and structured response formatting.
  */
 
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { formatErrorMessage } from "../utils/format.js";
 import { debugLog, debugError } from "../utils/log.js";
 

@@ -13,11 +13,11 @@ on:
         default: ""
         type: string
       release_publish_run_id:
-        description: Approved OpenClaw Release Publish workflow run id
+        description: Approved EVE Release Publish workflow run id
         required: false
         type: string
       release_publish_branch:
-        description: Branch name of the approving OpenClaw Release Publish workflow run
+        description: Branch name of the approving EVE Release Publish workflow run
         required: false
         type: string
       dry_run:
@@ -154,12 +154,12 @@ jobs:
           invalid_scope="$(
             jq -r '
               (.bootstrapCandidates[]?, .missingTrustedPublisher[]?)
-              | select(.packageName | startswith("@openclaw/") | not)
+              | select(.packageName | startswith("@eve/") | not)
               | "- \(.packageName)@\(.version)"
             ' .local/plugin-clawhub-release-plan.json
           )"
           if [[ -n "${invalid_scope}" ]]; then
-            echo "Plugin ClawHub bootstrap only supports @openclaw/* packages." >&2
+            echo "Plugin ClawHub bootstrap only supports @eve/* packages." >&2
             printf '%s\n' "${invalid_scope}" >&2
             exit 1
           fi
@@ -274,12 +274,12 @@ jobs:
           )"
           printf '%s\n' "${help_output}"
           if ! grep -Fq "Usage: clawhub package trusted-publisher set" <<<"${help_output}"; then
-            echo "::error::CLAW-277 03 - Split OpenClaw plugin ClawHub publishing into OIDC release and token bootstrap workflows requires ${CLAWHUB_CLI_PACKAGE} to expose 'package trusted-publisher set' before token bootstrap publish can run. The pinned CLI returned parent help or no set command, so this workflow is stopping before creating a ClawHub package row."
+            echo "::error::CLAW-277 03 - Split EVE plugin ClawHub publishing into OIDC release and token bootstrap workflows requires ${CLAWHUB_CLI_PACKAGE} to expose 'package trusted-publisher set' before token bootstrap publish can run. The pinned CLI returned parent help or no set command, so this workflow is stopping before creating a ClawHub package row."
             exit 1
           fi
           for required_flag in --repository --workflow-filename; do
             if ! grep -Fq -- "${required_flag}" <<<"${help_output}"; then
-              echo "::error::CLAW-277 03 - Split OpenClaw plugin ClawHub publishing into OIDC release and token bootstrap workflows requires ${CLAWHUB_CLI_PACKAGE} trusted-publisher set help to include ${required_flag}."
+              echo "::error::CLAW-277 03 - Split EVE plugin ClawHub publishing into OIDC release and token bootstrap workflows requires ${CLAWHUB_CLI_PACKAGE} trusted-publisher set help to include ${required_flag}."
               exit 1
             fi
           done
@@ -382,7 +382,7 @@ jobs:
           BOOTSTRAP_MODE: ${{ matrix.plugin.bootstrapMode }}
           REQUIRES_MANUAL_OVERRIDE: ${{ matrix.plugin.requiresManualOverride && 'true' || 'false' }}
           DRY_RUN: ${{ inputs.dry_run && 'true' || 'false' }}
-          OPENCLAW_PLUGIN_NPM_RUNTIME_BUILD: "0"
+          EVE_PLUGIN_NPM_RUNTIME_BUILD: "0"
         run: |
           set -euo pipefail
           if [[ "${BOOTSTRAP_MODE}" == "configure-only" ]]; then
@@ -391,7 +391,7 @@ jobs:
             bash scripts/plugin-clawhub-publish.sh --dry-run "${PACKAGE_DIR}"
           else
             if [[ "${REQUIRES_MANUAL_OVERRIDE}" == "true" ]]; then
-              export OPENCLAW_CLAWHUB_MANUAL_OVERRIDE_REASON="GitHub Actions trusted publisher repair before OIDC migration"
+              export EVE_CLAWHUB_MANUAL_OVERRIDE_REASON="GitHub Actions trusted publisher repair before OIDC migration"
             fi
             bash scripts/plugin-clawhub-publish.sh --publish "${PACKAGE_DIR}"
           fi
@@ -405,7 +405,7 @@ jobs:
           set -euo pipefail
           npm exec --yes --package "${CLAWHUB_CLI_PACKAGE}" -- \
             clawhub package trusted-publisher set "${PACKAGE_NAME}" \
-              --repository openclaw/openclaw \
+              --repository eve/eve \
               --workflow-filename plugin-clawhub-release.yml
 
   verify_bootstrap_clawhub_package:
@@ -483,12 +483,12 @@ jobs:
           const trustedPublisherDetail = await trustedPublisherResponse.json();
           const trustedPublisher = trustedPublisherDetail?.trustedPublisher;
           if (
-            trustedPublisher?.repository !== "openclaw/openclaw" ||
+            trustedPublisher?.repository !== "eve/eve" ||
             trustedPublisher?.workflowFilename !== "plugin-clawhub-release.yml" ||
             trustedPublisher?.environment != null
           ) {
             throw new Error(
-              `${packageName}: trusted publisher config did not match openclaw/openclaw plugin-clawhub-release.yml without an environment pin.`,
+              `${packageName}: trusted publisher config did not match eve/eve plugin-clawhub-release.yml without an environment pin.`,
             );
           }
 

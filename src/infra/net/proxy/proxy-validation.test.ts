@@ -20,14 +20,14 @@ describe("proxy validation", () => {
   });
 
   function writeTempCa(contents = "proxy-ca"): string {
-    const dir = mkdtempSync(path.join(os.tmpdir(), "openclaw-proxy-validation-ca-"));
+    const dir = mkdtempSync(path.join(os.tmpdir(), "eve-proxy-validation-ca-"));
     tempDirs.push(dir);
     const caFile = path.join(dir, "proxy-ca.pem");
     writeFileSync(caFile, contents, "utf8");
     return caFile;
   }
 
-  it("resolves proxy URL overrides before config and OPENCLAW_PROXY_URL", () => {
+  it("resolves proxy URL overrides before config and EVE_PROXY_URL", () => {
     const result = resolveProxyValidationConfig({
       proxyUrlOverride: "http://override-proxy.example:3128",
       config: {
@@ -35,7 +35,7 @@ describe("proxy validation", () => {
         proxyUrl: "http://config-proxy.example:3128",
       },
       env: {
-        OPENCLAW_PROXY_URL: "http://env-proxy.example:3128",
+        EVE_PROXY_URL: "http://env-proxy.example:3128",
       },
     });
 
@@ -47,14 +47,14 @@ describe("proxy validation", () => {
     });
   });
 
-  it("resolves config proxy URLs before OPENCLAW_PROXY_URL", () => {
+  it("resolves config proxy URLs before EVE_PROXY_URL", () => {
     const result = resolveProxyValidationConfig({
       config: {
         enabled: true,
         proxyUrl: "http://config-proxy.example:3128",
       },
       env: {
-        OPENCLAW_PROXY_URL: "http://env-proxy.example:3128",
+        EVE_PROXY_URL: "http://env-proxy.example:3128",
       },
     });
 
@@ -66,11 +66,11 @@ describe("proxy validation", () => {
     });
   });
 
-  it("uses OPENCLAW_PROXY_URL when enabled config has no URL", () => {
+  it("uses EVE_PROXY_URL when enabled config has no URL", () => {
     const result = resolveProxyValidationConfig({
       config: { enabled: true },
       env: {
-        OPENCLAW_PROXY_URL: "http://env-proxy.example:3128",
+        EVE_PROXY_URL: "http://env-proxy.example:3128",
       },
     });
 
@@ -107,13 +107,13 @@ describe("proxy validation", () => {
     });
   });
 
-  it("reports disabled proxy config when only OPENCLAW_PROXY_URL is present", async () => {
+  it("reports disabled proxy config when only EVE_PROXY_URL is present", async () => {
     const fetchCheck = vi.fn();
 
     const result = await runProxyValidation({
       config: {},
       env: {
-        OPENCLAW_PROXY_URL: "http://env-proxy.example:3128",
+        EVE_PROXY_URL: "http://env-proxy.example:3128",
       },
       fetchCheck,
     });
@@ -125,7 +125,7 @@ describe("proxy validation", () => {
         enabled: false,
         proxyUrl: "http://env-proxy.example:3128",
         source: "env",
-        errors: ["proxy validation requires proxy.enabled to be true for OPENCLAW_PROXY_URL"],
+        errors: ["proxy validation requires proxy.enabled to be true for EVE_PROXY_URL"],
       },
       checks: [],
     });
@@ -160,7 +160,7 @@ describe("proxy validation", () => {
     expect(result.proxyUrl).toBeUndefined();
     expect(result.source).toBe("missing");
     expect(result.errors).toEqual([
-      "proxy validation requires proxy.proxyUrl, --proxy-url, or OPENCLAW_PROXY_URL",
+      "proxy validation requires proxy.proxyUrl, --proxy-url, or EVE_PROXY_URL",
     ]);
   });
 
@@ -180,7 +180,7 @@ describe("proxy validation", () => {
         enabled: false,
         source: "disabled",
         errors: [
-          "proxy validation requires proxy.enabled=true with proxy.proxyUrl or OPENCLAW_PROXY_URL, or --proxy-url",
+          "proxy validation requires proxy.enabled=true with proxy.proxyUrl or EVE_PROXY_URL, or --proxy-url",
         ],
       },
       checks: [],
@@ -557,7 +557,7 @@ describe("proxy validation", () => {
   });
 
   it("does not load proxy CA files for plain HTTP proxy validation", async () => {
-    const missingCaFile = path.join(os.tmpdir(), "openclaw-missing-http-proxy-validation-ca.pem");
+    const missingCaFile = path.join(os.tmpdir(), "eve-missing-http-proxy-validation-ca.pem");
     const fetchCheck = vi.fn().mockResolvedValue({ ok: true, status: 200 });
 
     const result = await runProxyValidation({
@@ -601,7 +601,7 @@ describe("proxy validation", () => {
   });
 
   it("fails closed before probing when proxy CA file cannot be loaded", async () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), "openclaw-proxy-validation-missing-ca-"));
+    const dir = mkdtempSync(path.join(os.tmpdir(), "eve-proxy-validation-missing-ca-"));
     tempDirs.push(dir);
     const fetchCheck = vi.fn();
 

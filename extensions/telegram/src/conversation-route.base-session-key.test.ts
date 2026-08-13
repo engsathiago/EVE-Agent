@@ -1,11 +1,11 @@
 // Telegram tests cover conversation route.base session key plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   testing as conversationBindingTesting,
   registerSessionBindingAdapter,
   type SessionBindingAdapter,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { resolveThreadSessionKeys } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/conversation-runtime";
+import { resolveThreadSessionKeys } from "eve-agent/plugin-sdk/routing";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   resolveTelegramConversationBaseSessionKey,
@@ -13,7 +13,7 @@ import {
 } from "./conversation-route.js";
 
 describe("resolveTelegramConversationBaseSessionKey", () => {
-  const cfg: OpenClawConfig = {};
+  const cfg: EVEConfig = {};
 
   beforeEach(() => {
     conversationBindingTesting.resetSessionBindingAdaptersForTests();
@@ -171,7 +171,7 @@ describe("resolveTelegramConversationBaseSessionKey", () => {
       listBySession: () => [],
       resolveByConversation: () => ({
         bindingId: "binding-plugin-owned",
-        targetSessionKey: "plugin-binding:openclaw-codex-app-server:abc123",
+        targetSessionKey: "plugin-binding:eve-codex-app-server:abc123",
         targetKind: "session",
         conversation: {
           channel: "telegram",
@@ -182,8 +182,8 @@ describe("resolveTelegramConversationBaseSessionKey", () => {
         boundAt: 1,
         metadata: {
           pluginBindingOwner: "plugin",
-          pluginId: "openclaw-codex-app-server",
-          pluginRoot: "/tmp/openclaw-codex-app-server",
+          pluginId: "eve-codex-app-server",
+          pluginRoot: "/tmp/eve-codex-app-server",
         },
       }),
       touch,

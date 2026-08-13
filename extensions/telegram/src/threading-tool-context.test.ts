@@ -1,5 +1,5 @@
 // Telegram tests cover threading tool context plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import { buildTelegramThreadingToolContext } from "./threading-tool-context.js";
 
@@ -8,7 +8,7 @@ describe("buildTelegramThreadingToolContext", () => {
     const hasRepliedRef = { value: false };
     expect(
       buildTelegramThreadingToolContext({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         accountId: "default",
         context: {
           To: "telegram:-1001:topic:77",
@@ -27,7 +27,7 @@ describe("buildTelegramThreadingToolContext", () => {
   it("parses topic thread state from target grammar when MessageThreadId is absent", () => {
     expect(
       buildTelegramThreadingToolContext({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         accountId: "default",
         context: {
           To: "telegram:-1001:topic:77",

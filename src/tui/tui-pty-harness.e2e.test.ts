@@ -81,11 +81,11 @@ async function writeTuiPtyFixtureScript(dir: string) {
       import type { TuiBackend } from ${JSON.stringify(tuiModuleUrl.replace("/tui.ts", "/tui-backend.ts"))};
       import { runTui } from ${JSON.stringify(tuiModuleUrl)};
 
-      const actionLogPath = process.env.OPENCLAW_TUI_PTY_LOG_PATH;
-      const gatewayStatus = process.env.OPENCLAW_TUI_PTY_GATEWAY_STATUS ?? "fixture gateway ok";
+      const actionLogPath = process.env.EVE_TUI_PTY_LOG_PATH;
+      const gatewayStatus = process.env.EVE_TUI_PTY_GATEWAY_STATUS ?? "fixture gateway ok";
       const xaiLimitError = '403 {"code":"The caller does not have permission to execute the specified operation","error":"Your team team-redacted has either used all available credits or reached its monthly spending limit. To continue making API requests, please purchase more credits or raise your spending limit."}';
       let currentModel = "fixture-provider/fixture-model";
-      let fastMode = process.env.OPENCLAW_TUI_PTY_FAST_MODE === "true";
+      let fastMode = process.env.EVE_TUI_PTY_FAST_MODE === "true";
 
       function record(method: string, payload?: unknown) {
         if (!actionLogPath) {
@@ -303,7 +303,7 @@ async function writeTuiPtyFixtureScript(dir: string) {
           },
           deliver: false,
           historyLimit: 5,
-          title: "openclaw tui pty fixture",
+          title: "eve tui pty fixture",
         });
       }
 
@@ -318,15 +318,15 @@ async function writeTuiPtyFixtureScript(dir: string) {
 }
 
 async function startTuiFixture(opts: { env?: NodeJS.ProcessEnv } = {}) {
-  const tempDir = await mkdtemp(path.join(tmpdir(), "openclaw-tui-pty-"));
+  const tempDir = await mkdtemp(path.join(tmpdir(), "eve-tui-pty-"));
   const scriptPath = await writeTuiPtyFixtureScript(tempDir);
   const logPath = path.join(tempDir, "fixture-log.jsonl");
   const run = startPty(process.execPath, ["--import", "tsx", scriptPath], {
     activeRuns,
     cwd: process.cwd(),
     env: {
-      OPENCLAW_THEME: "dark",
-      OPENCLAW_TUI_PTY_LOG_PATH: logPath,
+      EVE_THEME: "dark",
+      EVE_TUI_PTY_LOG_PATH: logPath,
       NO_COLOR: undefined,
       ...opts.env,
     },

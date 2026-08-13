@@ -1,6 +1,6 @@
 // Resolves effective exec approval policy from config and policy files.
-import { sortUniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.eve.js";
 import { DEFAULT_AGENT_ID } from "../routing/session-key.js";
 import {
   DEFAULT_EXEC_APPROVAL_ASK_FALLBACK,
@@ -98,13 +98,13 @@ function formatRequestedSource(params: {
   defaultValue: ExecSecurity | ExecAsk;
 }): string {
   return params.sourcePath === "__default__"
-    ? `OpenClaw default (${params.defaultValue})`
+    ? `EVE default (${params.defaultValue})`
     : `${params.sourcePath}.${params.field}`;
 }
 
 function formatModeSource(params: { sourcePath: string; configPath: string }): string {
   if (params.sourcePath === "__default__") {
-    return "derived from OpenClaw defaults";
+    return "derived from EVE defaults";
   }
   return `${params.sourcePath === "scope" ? params.configPath : params.sourcePath}.mode`;
 }
@@ -268,7 +268,7 @@ function formatHostFieldSource(params: {
     return `${params.hostPath} ${params.sourceSuffix}`;
   }
   if (params.field === "askFallback") {
-    return `OpenClaw default (${DEFAULT_EXEC_APPROVAL_ASK_FALLBACK})`;
+    return `EVE default (${DEFAULT_EXEC_APPROVAL_ASK_FALLBACK})`;
   }
   return "inherits requested tool policy";
 }
@@ -285,7 +285,7 @@ function resolveAskNote(params: {
 }
 
 export function collectExecPolicyScopeSnapshots(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   approvals: ExecApprovalsFile;
   hostPath?: string;
 }): ExecPolicyScopeSnapshot[] {
@@ -370,7 +370,7 @@ export function resolveExecPolicyScopeSnapshot(params: {
       requested: requestedHost.value,
       requestedSource:
         requestedHost.sourcePath === "__default__"
-          ? "OpenClaw default (auto)"
+          ? "EVE default (auto)"
           : `${requestedHost.sourcePath === "scope" ? params.configPath : requestedHost.sourcePath}.host`,
     },
     mode: {

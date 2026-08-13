@@ -15,16 +15,16 @@ import {
   type ChannelSetupAdapter,
   type ChannelSetupWizard,
   type ChannelSetupWizardTextInput,
-  type OpenClawConfig,
+  type EVEConfig,
   createSetupTranslator,
   type WizardPrompter,
-} from "openclaw/plugin-sdk/setup-runtime";
-import { formatCliCommand, formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+} from "eve-agent/plugin-sdk/setup-runtime";
+import { formatCliCommand, formatDocsLink } from "eve-agent/plugin-sdk/setup-tools";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { normalizeE164 } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { resolveDefaultSignalAccountId, resolveSignalAccount } from "./accounts.js";
 
 const t = createSetupTranslator();
@@ -93,10 +93,10 @@ function buildSignalSetupPatch(input: {
 }
 
 async function promptSignalAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: WizardPrompter;
   accountId?: string;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   return promptParsedAllowFromForAccount({
     cfg: params.cfg,
     accountId: params.accountId,
@@ -131,7 +131,7 @@ export const signalDmPolicy = {
   channel,
   policyKey: "channels.signal.dmPolicy",
   allowFromKey: "channels.signal.allowFrom",
-  resolveConfigKeys: (cfg: OpenClawConfig, accountId?: string) =>
+  resolveConfigKeys: (cfg: EVEConfig, accountId?: string) =>
     (accountId ?? resolveDefaultSignalAccountId(cfg)) !== DEFAULT_ACCOUNT_ID
       ? {
           policyKey: `channels.signal.accounts.${accountId ?? resolveDefaultSignalAccountId(cfg)}.dmPolicy`,
@@ -141,11 +141,11 @@ export const signalDmPolicy = {
           policyKey: "channels.signal.dmPolicy",
           allowFromKey: "channels.signal.allowFrom",
         },
-  getCurrent: (cfg: OpenClawConfig, accountId?: string) =>
+  getCurrent: (cfg: EVEConfig, accountId?: string) =>
     resolveSignalAccount({ cfg, accountId: accountId ?? resolveDefaultSignalAccountId(cfg) }).config
       .dmPolicy ?? "pairing",
   setPolicy: (
-    cfg: OpenClawConfig,
+    cfg: EVEConfig,
     policy: "pairing" | "allowlist" | "open" | "disabled",
     accountId?: string,
   ) =>
@@ -171,7 +171,7 @@ export const signalDmPolicy = {
 };
 
 function resolveSignalCliPath(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   credentialValues: Record<string, unknown>;
 }) {
@@ -217,7 +217,7 @@ export const signalCompletionNote = {
   lines: [
     t("wizard.signal.nextLinkDevice"),
     t("wizard.signal.nextScanQr"),
-    `Then run: ${formatCliCommand("openclaw gateway call channels.status --params '{\"probe\":true}'")}`,
+    `Then run: ${formatCliCommand("eve gateway call channels.status --params '{\"probe\":true}'")}`,
     `Docs: ${formatDocsLink("/signal", "signal")}`,
   ],
 };
@@ -266,6 +266,6 @@ export function createSignalSetupWizardProxy(loadWizard: () => Promise<ChannelSe
     ],
     completionNote: signalCompletionNote,
     dmPolicy: signalDmPolicy,
-    disable: (cfg: OpenClawConfig) => setSetupChannelEnabled(cfg, channel, false),
+    disable: (cfg: EVEConfig) => setSetupChannelEnabled(cfg, channel, false),
   });
 }

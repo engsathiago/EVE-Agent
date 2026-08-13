@@ -2,8 +2,8 @@
 import {
   resolveClaudeFable5ModelIdentity,
   resolveClaudeModelIdentity,
-} from "@openclaw/llm-core";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/llm-core";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 export {
   resolveClaudeFable5ModelIdentity,
   resolveClaudeModelIdentity,
@@ -11,7 +11,7 @@ export {
   supportsClaudeAdaptiveThinking,
   supportsClaudeNativeMaxEffort,
   supportsClaudeNativeXhighEffort,
-} from "@openclaw/llm-core";
+} from "@eve/llm-core";
 
 type ReplayModelRef = {
   provider?: string;
@@ -31,7 +31,7 @@ function normalizeModelId(modelId?: string): string {
 
 function normalizeApi(api?: string): string {
   const normalized = normalizeLowercaseStringOrEmpty(api);
-  return normalized === "openclaw-anthropic-messages-transport" ? "anthropic-messages" : normalized;
+  return normalized === "eve-anthropic-messages-transport" ? "anthropic-messages" : normalized;
 }
 
 function hasConcreteResponseModel(ref: ReplayModelRef): boolean {

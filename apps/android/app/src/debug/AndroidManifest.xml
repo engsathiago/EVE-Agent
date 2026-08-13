@@ -4,7 +4,7 @@
             android:name=".VoiceE2eReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="ai.openclaw.app.debug.RUN_VOICE_E2E" />
+                <action android:name="ai.eve.app.debug.RUN_VOICE_E2E" />
             </intent-filter>
         </receiver>
         <service

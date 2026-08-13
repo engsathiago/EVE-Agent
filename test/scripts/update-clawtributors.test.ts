@@ -50,7 +50,7 @@ function mockClawtributorsFixture() {
     contributions: 3,
   };
   const execSync = vi.fn((cmd: string) => {
-    if (cmd === 'gh api "repos/openclaw/openclaw/contributors?per_page=100&anon=1" --paginate') {
+    if (cmd === 'gh api "repos/eve/eve/contributors?per_page=100&anon=1" --paginate') {
       return `${JSON.stringify([contributor])}\n`;
     }
     if (cmd === "git log --reverse --format=%aN%x1f%aE%x1f%aI --numstat") {
@@ -58,7 +58,7 @@ function mockClawtributorsFixture() {
     }
     if (
       cmd ===
-      "gh pr list -R openclaw/openclaw --state merged --limit 5000 --json author --jq '.[].author.login'"
+      "gh pr list -R eve/eve --state merged --limit 5000 --json author --jq '.[].author.login'"
     ) {
       return "";
     }

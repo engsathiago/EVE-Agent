@@ -85,7 +85,7 @@ describe("control-ui-i18n process runner", () => {
     "kills descendant processes after the process timeout",
     async () => {
       const tempDirs = createTempDirTracker();
-      const tempDir = tempDirs.make("openclaw-control-ui-i18n-timeout-");
+      const tempDir = tempDirs.make("eve-control-ui-i18n-timeout-");
       try {
         const markerPath = path.join(tempDir, "grandchild.pid");
         const grandchildScript = [
@@ -121,7 +121,7 @@ describe("control-ui-i18n process runner", () => {
     "waits for all process groups before re-raising parent signals",
     async () => {
       const tempDirs = createTempDirTracker();
-      const tempDir = tempDirs.make("openclaw-control-ui-i18n-signal-");
+      const tempDir = tempDirs.make("eve-control-ui-i18n-signal-");
       const fastReadyPath = path.join(tempDir, "fast-ready");
       const fastCommandPath = path.join(tempDir, "fast-command.mjs");
       const commandPath = path.join(tempDir, "command.mjs");

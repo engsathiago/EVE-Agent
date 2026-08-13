@@ -141,9 +141,9 @@ describe("subagent registry persistence resume", () => {
   it("persists runs to disk and resumes after restart", async () => {
     // Persisted requesterOrigin is the current contract; legacy flat requester
     // channel/account fields should not reappear during resume.
-    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-subagent-"));
+    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-subagent-"));
     const stateDir = tempStateDir;
-    await withEnvAsync({ OPENCLAW_STATE_DIR: stateDir }, async () => {
+    await withEnvAsync({ EVE_STATE_DIR: stateDir }, async () => {
       const registryPath = path.join(stateDir, "subagents", "runs.json");
       hoisted.registryPath = registryPath;
       await fs.mkdir(path.dirname(registryPath), { recursive: true });

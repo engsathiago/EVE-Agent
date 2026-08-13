@@ -1,12 +1,12 @@
-# OpenClaw Firecrawl Plugin
+# EVE Firecrawl Plugin
 
-Official OpenClaw plugin for Firecrawl.
+Official EVE plugin for Firecrawl.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/firecrawl-plugin
-openclaw gateway restart
+eve plugins install @eve/firecrawl-plugin
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/tools/firecrawl> for setup and configuration.
+See <https://docs.eve.ai/tools/firecrawl> for setup and configuration.

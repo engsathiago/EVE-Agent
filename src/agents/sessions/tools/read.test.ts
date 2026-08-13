@@ -31,7 +31,7 @@ describe("read tool", () => {
   });
 
   it("reads managed inbound media refs as image files", async () => {
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-read-media-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-read-media-"));
     const mediaId = `read-tool-${Date.now()}-${Math.random().toString(36).slice(2)}.png`;
     const mediaPath = path.join(stateDir, "media", "inbound", mediaId);
     await fs.mkdir(path.dirname(mediaPath), { recursive: true });
@@ -39,7 +39,7 @@ describe("read tool", () => {
 
     const tool = createReadToolDefinition("/workspace", { autoResizeImages: false });
     try {
-      await withEnvAsync({ OPENCLAW_STATE_DIR: stateDir }, async () => {
+      await withEnvAsync({ EVE_STATE_DIR: stateDir }, async () => {
         const result = await tool.execute(
           "call-1",
           { path: `media://inbound/${mediaId}` },
@@ -112,7 +112,7 @@ describe("read tool", () => {
   });
 
   it("uses the shared Windows decoder for local filesystem reads", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-read-encoding-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-read-encoding-"));
     const filePath = path.join(tempDir, "legacy.txt");
     const legacyBytes = Buffer.from([0xc4, 0xe3, 0xba, 0xc3]);
     decodeWindowsTextFileBufferMock.mockReturnValueOnce("decoded legacy text");

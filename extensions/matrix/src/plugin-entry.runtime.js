@@ -21,27 +21,27 @@ function normalizeLowercaseStringOrEmpty(value) {
   return typeof value === "string" ? value.toLowerCase() : "";
 }
 
-function hasTrustedOpenClawRootIndicator(packageRoot, packageJson) {
+function hasTrustedEVERootIndicator(packageRoot, packageJson) {
   const packageExports = packageJson?.exports ?? {};
   if (!Object.hasOwn(packageExports, "./plugin-sdk")) {
     return false;
   }
   const hasCliEntryExport = Object.hasOwn(packageExports, "./cli-entry");
-  const hasOpenClawBin =
+  const hasEVEBin =
     (typeof packageJson?.bin === "string" &&
-      normalizeLowercaseStringOrEmpty(packageJson.bin).includes("openclaw")) ||
+      normalizeLowercaseStringOrEmpty(packageJson.bin).includes("eve")) ||
     (typeof packageJson?.bin === "object" &&
       packageJson.bin !== null &&
-      typeof packageJson.bin.openclaw === "string");
-  const hasOpenClawEntrypoint = fs.existsSync(path.join(packageRoot, "openclaw.mjs"));
-  return hasCliEntryExport || hasOpenClawBin || hasOpenClawEntrypoint;
+      typeof packageJson.bin.eve === "string");
+  const hasEVEEntrypoint = fs.existsSync(path.join(packageRoot, "eve.mjs"));
+  return hasCliEntryExport || hasEVEBin || hasEVEEntrypoint;
 }
 
-function findOpenClawPackageRoot(startDir) {
+function findEVEPackageRoot(startDir) {
   let cursor = path.resolve(startDir);
   for (let i = 0; i < 12; i += 1) {
     const pkg = readPackageJson(cursor);
-    if (pkg?.name === "openclaw" && hasTrustedOpenClawRootIndicator(cursor, pkg)) {
+    if (pkg?.name === "eve" && hasTrustedEVERootIndicator(cursor, pkg)) {
       return { packageRoot: cursor, packageJson: pkg };
     }
     const parent = path.dirname(cursor);
@@ -78,7 +78,7 @@ function resolveBundledPluginRuntimeModulePath(moduleUrl, params) {
     }
   }
 
-  const location = findOpenClawPackageRoot(moduleDir);
+  const location = findEVEPackageRoot(moduleDir);
   if (location) {
     const { packageRoot } = location;
     const packageCandidates = [

@@ -7,7 +7,7 @@ import privateLocalOnlyPluginSdkSubpathList from "../../scripts/lib/plugin-sdk-p
 /** All declared SDK entrypoints, including public, deprecated, and local-only subpaths. */
 export const pluginSdkEntrypoints = [...pluginSdkEntryList];
 
-/** SDK subpaths without the root `openclaw/plugin-sdk` barrel entry. */
+/** SDK subpaths without the root `eve-agent/plugin-sdk` barrel entry. */
 export const pluginSdkSubpaths = pluginSdkEntrypoints.filter((entry) => entry !== "index");
 
 const privateLocalOnlyPluginSdkSubpathSet = new Set<string>(

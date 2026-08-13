@@ -145,8 +145,8 @@ async function runMockRuntimeToolFixtureWithOutputs(params: {
     {
       toolName: params.toolName,
       toolCoverage: {
-        bucket: "openclaw-dynamic-integration",
-        expectedLayer: "openclaw-dynamic",
+        bucket: "eve-dynamic-integration",
+        expectedLayer: "eve-dynamic",
       },
       promptSnippet,
       failurePromptSnippet,
@@ -183,8 +183,8 @@ describe("runtime tool fixture", () => {
       {
         toolName: "read",
         toolCoverage: {
-          bucket: "openclaw-dynamic-integration",
-          expectedLayer: "openclaw-dynamic",
+          bucket: "eve-dynamic-integration",
+          expectedLayer: "eve-dynamic",
         },
       },
       {
@@ -227,8 +227,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
         },
         {
@@ -251,8 +251,8 @@ describe("runtime tool fixture", () => {
       {
         toolName: "read",
         toolCoverage: {
-          bucket: "openclaw-dynamic-integration",
-          expectedLayer: "openclaw-dynamic",
+          bucket: "eve-dynamic-integration",
+          expectedLayer: "eve-dynamic",
         },
       },
       {
@@ -315,8 +315,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
         },
         {
@@ -379,8 +379,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
         },
         {
@@ -394,14 +394,14 @@ describe("runtime tool fixture", () => {
     ).rejects.toThrow("expected live happy-path successful tool output for read");
   });
 
-  it("does not fail Codex-native fixtures solely because OpenClaw dynamic exposure is absent", async () => {
+  it("does not fail Codex-native fixtures solely because EVE dynamic exposure is absent", async () => {
     const env = await makeEnv({
       mock: { baseUrl: "http://127.0.0.1:9999" },
       gateway: {
         baseUrl: "http://127.0.0.1:1",
         tempRoot: "",
         workspaceDir: "",
-        runtimeEnv: { OPENCLAW_QA_FORCE_RUNTIME: "codex" },
+        runtimeEnv: { EVE_QA_FORCE_RUNTIME: "codex" },
         call: vi.fn(),
       },
     });
@@ -441,7 +441,7 @@ describe("runtime tool fixture", () => {
     );
 
     expect(details).toContain("codex-native-workspace read");
-    expect(details).toContain("OpenClaw dynamic exposure is intentionally omitted");
+    expect(details).toContain("EVE dynamic exposure is intentionally omitted");
     expect(details).toContain("mock provider happy planned args (diagnostic only)");
   });
 
@@ -475,8 +475,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
           promptSnippet: "target=read",
           failurePromptSnippet: "failure target=read",
@@ -529,8 +529,8 @@ describe("runtime tool fixture", () => {
       {
         toolName: "read",
         toolCoverage: {
-          bucket: "openclaw-dynamic-integration",
-          expectedLayer: "openclaw-dynamic",
+          bucket: "eve-dynamic-integration",
+          expectedLayer: "eve-dynamic",
         },
         promptSnippet: "target=read",
         failurePromptSnippet: "failure target=read",
@@ -586,8 +586,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
           promptSnippet: "target=read",
           failurePromptSnippet: "failure target=read",
@@ -641,8 +641,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
           promptSnippet: "target=read",
           failurePromptSnippet: "failure target=read",
@@ -669,7 +669,7 @@ describe("runtime tool fixture", () => {
     {
       name: "unavailable-provider",
       toolName: "web_search",
-      happyArgs: { query: "OpenClaw runtime parity fixed query" },
+      happyArgs: { query: "EVE runtime parity fixed query" },
       happyOutput: "result",
       failureOutput: "web_search is disabled or no provider is available.",
     },
@@ -694,7 +694,7 @@ describe("runtime tool fixture", () => {
     {
       name: "unavailable-provider happy output",
       toolName: "web_search",
-      happyArgs: { query: "OpenClaw runtime parity fixed query" },
+      happyArgs: { query: "EVE runtime parity fixed query" },
       happyOutput: "web_search is disabled or no provider is available.",
       failureOutput: "web_search is disabled or no provider is available.",
       expectedError: "expected mock happy-path successful tool output for web_search",
@@ -748,8 +748,8 @@ describe("runtime tool fixture", () => {
       {
         toolName: "read",
         toolCoverage: {
-          bucket: "openclaw-dynamic-integration",
-          expectedLayer: "openclaw-dynamic",
+          bucket: "eve-dynamic-integration",
+          expectedLayer: "eve-dynamic",
         },
         promptSnippet: "target=read",
         failurePromptSnippet: "failure target=read",
@@ -804,8 +804,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
           promptSnippet: "target=read",
           failurePromptSnippet: "failure target=read",
@@ -856,8 +856,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "read",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
           promptSnippet: "target=read",
           failurePromptSnippet: "failure target=read",
@@ -873,7 +873,7 @@ describe("runtime tool fixture", () => {
     ).rejects.toThrow("expected mock happy-path tool output for read");
   });
 
-  it("still fails required OpenClaw dynamic fixtures when the tool is absent", async () => {
+  it("still fails required EVE dynamic fixtures when the tool is absent", async () => {
     const env = await makeEnv();
 
     await expect(
@@ -882,8 +882,8 @@ describe("runtime tool fixture", () => {
         {
           toolName: "web_search",
           toolCoverage: {
-            bucket: "openclaw-dynamic-integration",
-            expectedLayer: "openclaw-dynamic",
+            bucket: "eve-dynamic-integration",
+            expectedLayer: "eve-dynamic",
           },
         },
         {

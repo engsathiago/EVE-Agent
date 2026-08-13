@@ -26,7 +26,7 @@ describe("live vitest config", () => {
     ]);
     expect(normalizeConfigPaths(liveConfig.test?.setupFiles)).toEqual([
       "test/setup.ts",
-      "test/setup-openclaw-runtime.ts",
+      "test/setup-eve-runtime.ts",
     ]);
   });
 });

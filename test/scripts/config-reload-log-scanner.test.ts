@@ -8,7 +8,7 @@ import { createConfigReloadLogScanner } from "../../scripts/e2e/lib/config-reloa
 const tempRoots: string[] = [];
 
 function makeTempRoot(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "openclaw-config-reload-log-"));
+  const root = mkdtempSync(path.join(tmpdir(), "eve-config-reload-log-"));
   tempRoots.push(root);
   return root;
 }

@@ -8,8 +8,8 @@ import {
   MAX_TIMER_TIMEOUT_SECONDS,
   resolveExpiresAtMsFromDurationMs,
   resolveTimerTimeoutMs,
-} from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 
 export type CacheEntry<T> = {
   value: T;

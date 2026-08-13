@@ -2,8 +2,8 @@
  * Playwright-backed browser interaction tools, including clicks, form input,
  * screenshots, batch actions, and SSRF-aware post-interaction navigation checks.
  */
-import { resolveNonNegativeIntegerOption } from "openclaw/plugin-sdk/number-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveNonNegativeIntegerOption } from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { Frame, Page } from "playwright-core";
 import { formatErrorMessage } from "../infra/errors.js";
 import type { SsrFPolicy } from "../infra/net/ssrf.js";

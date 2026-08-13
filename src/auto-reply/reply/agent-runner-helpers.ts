@@ -1,9 +1,9 @@
 /** Helper predicates and gates used while streaming agent-runner payloads. */
-import { isAudioFileName } from "@openclaw/media-core/mime";
+import { isAudioFileName } from "@eve/media-core/mime";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import { loadSessionEntry } from "../../config/sessions/session-accessor.js";
 import { normalizeVerboseLevel, type VerboseLevel } from "../thinking.js";
 import type { ReplyPayload } from "../types.js";

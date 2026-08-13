@@ -3,8 +3,8 @@
  *
  * Produces compact one-line summaries for verbose tool descriptions in inventory/list views.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 
 function normalizeSummaryWhitespace(value: string): string {
   return value.replace(/\s+/g, " ").trim();

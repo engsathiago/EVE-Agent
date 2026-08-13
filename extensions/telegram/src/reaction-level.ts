@@ -1,10 +1,10 @@
 // Telegram plugin module implements reaction level behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   resolveReactionLevel,
   type ReactionLevel,
   type ResolvedReactionLevel as BaseResolvedReactionLevel,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "eve-agent/plugin-sdk/status-helpers";
 import { inspectTelegramAccount } from "./account-inspect.js";
 
 export type TelegramReactionLevel = ReactionLevel;
@@ -14,7 +14,7 @@ export type ResolvedReactionLevel = BaseResolvedReactionLevel;
  * Resolve the effective reaction level and its implications.
  */
 export function resolveTelegramReactionLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
 }): ResolvedReactionLevel {
   const account = inspectTelegramAccount({

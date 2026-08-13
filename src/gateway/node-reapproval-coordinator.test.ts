@@ -10,7 +10,7 @@ import {
 import { createSuiteTempRootTracker } from "../test-helpers/temp-dir.js";
 import { createNodeReapprovalCoordinator } from "./node-reapproval-coordinator.js";
 
-const tempDirs = createSuiteTempRootTracker({ prefix: "openclaw-node-reapproval-" });
+const tempDirs = createSuiteTempRootTracker({ prefix: "eve-node-reapproval-" });
 
 async function setupPairedNode(baseDir: string): Promise<void> {
   const request = await requestNodePairing(

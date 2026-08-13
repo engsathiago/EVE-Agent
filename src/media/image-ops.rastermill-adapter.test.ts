@@ -8,7 +8,7 @@ describe("image ops Rastermill adapter", () => {
     vi.resetModules();
   });
 
-  it("configures Rastermill with OpenClaw limits, temp root, and command resolution", async () => {
+  it("configures Rastermill with EVE limits, temp root, and command resolution", async () => {
     const encode = vi.fn(async () => ({ data: Buffer.from("jpeg") }));
     const createRastermill = vi.fn((_options: unknown) => ({ encode }));
     const resolveSystemBin = vi.fn(() => "/usr/bin/tool");
@@ -39,7 +39,7 @@ describe("image ops Rastermill adapter", () => {
         outputPixels: MAX_IMAGE_INPUT_PIXELS,
       },
       temp: expect.objectContaining({
-        prefix: "openclaw-img-",
+        prefix: "eve-img-",
       }),
       commandResolver: expect.any(Function),
     });

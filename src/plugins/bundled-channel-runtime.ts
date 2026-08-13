@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { resolveBundledPluginGeneratedPath } from "./bundled-plugin-metadata.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
-import type { OpenClawPackageManifest } from "./manifest.js";
+import type { EVEPackageManifest } from "./manifest.js";
 import { loadPluginManifestRegistryForPluginRegistry } from "./plugin-registry.js";
 
 type BundledChannelEntryPathPair = {
@@ -25,7 +25,7 @@ export type BundledChannelPluginMetadata = {
     id: string;
     channels?: readonly string[];
   };
-  packageManifest?: OpenClawPackageManifest;
+  packageManifest?: EVEPackageManifest;
   rootDir: string;
 };
 
@@ -48,8 +48,8 @@ function resolveBundledMetadataScope(params?: {
     kind: "env",
     env: {
       ...process.env,
-      OPENCLAW_BUNDLED_PLUGINS_DIR: overrideDir,
-      OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
+      EVE_BUNDLED_PLUGINS_DIR: overrideDir,
+      EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
     },
   };
 }

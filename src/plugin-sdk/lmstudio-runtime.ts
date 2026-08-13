@@ -2,7 +2,7 @@
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-  OpenClawConfig,
+  EVEConfig,
 } from "../config/types.js";
 import {
   createLazyFacadeValue as createLazyFacadeRuntimeValue,
@@ -34,7 +34,7 @@ export type LmstudioModelWire = {
   } | null>;
 };
 
-/** Normalized model metadata used by OpenClaw provider catalogs. */
+/** Normalized model metadata used by EVE provider catalogs. */
 export type LmstudioModelBase = {
   id: string;
   displayName: string;
@@ -84,7 +84,7 @@ type FacadeModule = {
   }) => Promise<FetchLmstudioModelsResult>;
   mapLmstudioWireEntry: (entry: LmstudioModelWire) => LmstudioModelBase | null;
   discoverLmstudioModels: (params?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     baseUrl?: string;
     apiKey?: string;
     headers?: Record<string, string>;
@@ -96,18 +96,18 @@ type FacadeModule = {
     headers?: Record<string, string>;
   }) => Record<string, string> | undefined;
   resolveLmstudioConfiguredApiKey: (params: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     env?: NodeJS.ProcessEnv;
     path?: string;
   }) => Promise<string | undefined>;
   resolveLmstudioProviderHeaders: (params: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     env?: NodeJS.ProcessEnv;
     headers?: unknown;
     path?: string;
   }) => Promise<Record<string, string> | undefined>;
   resolveLmstudioRequestContext: (params: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     env?: NodeJS.ProcessEnv;
     headers?: unknown;
     providerHeaders?: unknown;
@@ -117,7 +117,7 @@ type FacadeModule = {
     headers?: Record<string, string>;
   }>;
   resolveLmstudioRuntimeApiKey: (params: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     agentDir?: string;
     env?: NodeJS.ProcessEnv;
     headers?: unknown;
@@ -157,7 +157,7 @@ export const LMSTUDIO_DEFAULT_LOAD_CONTEXT_LENGTH: FacadeModule["LMSTUDIO_DEFAUL
 /** Default chat model id used when no local LM Studio model has been selected. */
 export const LMSTUDIO_DEFAULT_MODEL_ID: FacadeModule["LMSTUDIO_DEFAULT_MODEL_ID"] =
   "qwen/qwen3.5-9b";
-/** Stable provider id used in OpenClaw config and provider catalogs. */
+/** Stable provider id used in EVE config and provider catalogs. */
 export const LMSTUDIO_PROVIDER_ID: FacadeModule["LMSTUDIO_PROVIDER_ID"] = "lmstudio";
 
 /** Resolve whether an LM Studio wire entry advertises reasoning support. */
@@ -178,10 +178,10 @@ export const normalizeLmstudioProviderConfig: FacadeModule["normalizeLmstudioPro
 /** Fetch raw LM Studio model entries with SSRF and timeout handling owned by the facade. */
 export const fetchLmstudioModels: FacadeModule["fetchLmstudioModels"] =
   createLazyFacadeRuntimeValue(loadFacadeModule, "fetchLmstudioModels");
-/** Map one raw LM Studio model entry into OpenClaw model metadata. */
+/** Map one raw LM Studio model entry into EVE model metadata. */
 export const mapLmstudioWireEntry: FacadeModule["mapLmstudioWireEntry"] =
   createLazyFacadeRuntimeValue(loadFacadeModule, "mapLmstudioWireEntry");
-/** Discover OpenClaw model definitions from an LM Studio server. */
+/** Discover EVE model definitions from an LM Studio server. */
 export const discoverLmstudioModels: FacadeModule["discoverLmstudioModels"] =
   createLazyFacadeRuntimeValue(loadFacadeModule, "discoverLmstudioModels");
 /** Ensure a specific LM Studio model is loaded before use. */

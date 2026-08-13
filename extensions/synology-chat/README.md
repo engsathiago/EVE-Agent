@@ -1,11 +1,11 @@
-# OpenClaw Synology Chat
+# EVE Synology Chat
 
-Official OpenClaw channel plugin for Synology Chat conversations and direct messages.
+Official EVE channel plugin for Synology Chat conversations and direct messages.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/synology-chat
+eve plugin add @eve/synology-chat
 ```
 
-Configure Synology Chat credentials and allowed conversations in OpenClaw, then use the plugin to route messages between Synology Chat and OpenClaw agents.
+Configure Synology Chat credentials and allowed conversations in EVE, then use the plugin to route messages between Synology Chat and EVE agents.

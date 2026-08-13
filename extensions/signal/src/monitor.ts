@@ -1,42 +1,42 @@
 // Signal plugin module implements monitor behavior.
-import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "openclaw/plugin-sdk/approval-handler-adapter-runtime";
-import type { ChannelRuntimeSurface } from "openclaw/plugin-sdk/channel-contract";
-import { registerChannelRuntimeContext } from "openclaw/plugin-sdk/channel-runtime-context";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { SignalReactionNotificationMode } from "openclaw/plugin-sdk/config-contracts";
+import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "eve-agent/plugin-sdk/approval-handler-adapter-runtime";
+import type { ChannelRuntimeSurface } from "eve-agent/plugin-sdk/channel-contract";
+import { registerChannelRuntimeContext } from "eve-agent/plugin-sdk/channel-runtime-context";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { SignalReactionNotificationMode } from "eve-agent/plugin-sdk/config-contracts";
 import {
   detectMime,
   estimateBase64DecodedBytes,
   saveMediaBuffer,
-} from "openclaw/plugin-sdk/media-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
+} from "eve-agent/plugin-sdk/media-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
 import {
   deliverTextOrMediaReply,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import {
   chunkTextWithMode,
   resolveChunkMode,
   resolveTextChunkLimit,
-} from "openclaw/plugin-sdk/reply-runtime";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
+} from "eve-agent/plugin-sdk/reply-runtime";
+import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
 import {
   createNonExitingRuntime,
   type BackoffPolicy,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/runtime-env";
 import {
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
+} from "eve-agent/plugin-sdk/runtime-group-policy";
 import {
   normalizeOptionalString,
   normalizeStringEntries,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
-import { waitForTransportReady } from "openclaw/plugin-sdk/transport-ready-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { normalizeE164 } from "eve-agent/plugin-sdk/text-utility-runtime";
+import { waitForTransportReady } from "eve-agent/plugin-sdk/transport-ready-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 import { isSignalNativeApprovalHandlerConfigured } from "./approval-native.js";
 import { signalRpcRequest, signalCheck } from "./client-adapter.js";
@@ -56,7 +56,7 @@ export type MonitorSignalOpts = {
   abortSignal?: AbortSignal;
   account?: string;
   accountId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   baseUrl?: string;
   channelRuntime?: ChannelRuntimeSurface;
   autoStart?: boolean;
@@ -355,7 +355,7 @@ async function fetchAttachment(params: {
 }
 
 async function deliverReplies(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   replies: ReplyPayload[];
   target: string;
   baseUrl: string;

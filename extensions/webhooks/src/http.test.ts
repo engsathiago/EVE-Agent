@@ -1,10 +1,10 @@
 // Webhooks tests cover http plugin behavior.
 import { EventEmitter } from "node:events";
 import type { IncomingMessage } from "node:http";
-import { createRuntimeTaskFlow } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { createMockServerResponse } from "openclaw/plugin-sdk/test-env";
+import { createRuntimeTaskFlow } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { createMockServerResponse } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { createTaskFlowWebhookRequestHandler, type TaskFlowWebhookTarget } from "./http.js";
 
 type BoundTaskFlow = TaskFlowWebhookTarget["taskFlow"];
@@ -57,7 +57,7 @@ function createJsonRequest(params: {
   req.url = params.path;
   req.headers = {
     "content-type": "application/json",
-    ...(params.secret ? { "x-openclaw-webhook-secret": params.secret } : {}),
+    ...(params.secret ? { "x-eve-webhook-secret": params.secret } : {}),
   };
   req.socket = { remoteAddress: "127.0.0.1" } as MockIncomingMessage["socket"];
   req.destroyed = false;
@@ -95,7 +95,7 @@ function createHandler(): {
   const targetsByPath = new Map<string, TaskFlowWebhookTarget[]>([[target.path, [target]]]);
   return {
     handler: createTaskFlowWebhookRequestHandler({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       targetsByPath,
     }),
     target,
@@ -105,7 +105,7 @@ function createHandler(): {
 
 function createHandlerWithTarget(
   target: TaskFlowWebhookTarget,
-  cfg: OpenClawConfig = {} as OpenClawConfig,
+  cfg: EVEConfig = {} as EVEConfig,
 ): ReturnType<typeof createTaskFlowWebhookRequestHandler> {
   const targetsByPath = new Map<string, TaskFlowWebhookTarget[]>([[target.path, [target]]]);
   return createTaskFlowWebhookRequestHandler({
@@ -164,7 +164,7 @@ describe("createTaskFlowWebhookRequestHandler", () => {
       secretInput: {
         source: "env",
         provider: "default",
-        id: "OPENCLAW_WEBHOOK_SECRET",
+        id: "EVE_WEBHOOK_SECRET",
       },
       secretConfigPath: "plugins.entries.webhooks.routes.cached.secret",
       defaultControllerId: "webhooks/cached",

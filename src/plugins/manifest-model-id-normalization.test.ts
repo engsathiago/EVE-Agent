@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { captureEnv, deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
 import {
   clearCurrentPluginMetadataSnapshot,
@@ -13,7 +13,7 @@ import {
 import { resolveInstalledPluginIndexPolicyHash } from "./installed-plugin-index-policy.js";
 import { writePersistedInstalledPluginIndexSync } from "./installed-plugin-index-store.js";
 import type { InstalledPluginIndex } from "./installed-plugin-index.js";
-import { listOpenClawPluginManifestMetadata } from "./manifest-metadata-scan.js";
+import { listEVEPluginManifestMetadata } from "./manifest-metadata-scan.js";
 import { normalizeProviderModelIdWithManifest } from "./manifest-model-id-normalization.js";
 import { clearPluginMetadataLifecycleCaches } from "./plugin-metadata-lifecycle.js";
 import type { PluginMetadataSnapshot } from "./plugin-metadata-snapshot.js";
@@ -22,10 +22,10 @@ import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "./runti
 
 const tempDirs: string[] = [];
 const testEnvSnapshot = captureEnv([
-  "OPENCLAW_STATE_DIR",
-  "OPENCLAW_HOME",
-  "OPENCLAW_DISABLE_BUNDLED_PLUGINS",
-  "OPENCLAW_BUNDLED_PLUGINS_DIR",
+  "EVE_STATE_DIR",
+  "EVE_HOME",
+  "EVE_DISABLE_BUNDLED_PLUGINS",
+  "EVE_BUNDLED_PLUGINS_DIR",
 ]);
 
 function restoreEnv(): void {
@@ -33,7 +33,7 @@ function restoreEnv(): void {
 }
 
 function makeTempDir(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-model-id-normalization-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-model-id-normalization-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -51,7 +51,7 @@ function writeInstallIndex(params: { stateDir: string; pluginDir: string }): voi
       plugins: [
         {
           pluginId: "normalizer",
-          manifestPath: path.join(params.pluginDir, "openclaw.plugin.json"),
+          manifestPath: path.join(params.pluginDir, "eve.plugin.json"),
           manifestHash: "normalizer-manifest",
           rootDir: params.pluginDir,
           origin: "global",
@@ -79,7 +79,7 @@ function writeNormalizerManifest(params: { pluginDir: string; prefix: string }):
     "utf-8",
   );
   fs.writeFileSync(
-    path.join(params.pluginDir, "openclaw.plugin.json"),
+    path.join(params.pluginDir, "eve.plugin.json"),
     JSON.stringify({
       id: "normalizer",
       configSchema: { type: "object" },
@@ -100,7 +100,7 @@ function createCurrentSnapshot(params: {
   manifestHash: string;
   prefix: string;
   workspaceDir?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): PluginMetadataSnapshot {
   const config = params.config ?? {};
   const policyHash = resolveInstalledPluginIndexPolicyHash(config);
@@ -115,7 +115,7 @@ function createCurrentSnapshot(params: {
     plugins: [
       {
         pluginId: "normalizer",
-        manifestPath: `/tmp/normalizer-${params.manifestHash}/openclaw.plugin.json`,
+        manifestPath: `/tmp/normalizer-${params.manifestHash}/eve.plugin.json`,
         manifestHash: params.manifestHash,
         source: `/tmp/normalizer-${params.manifestHash}/index.ts`,
         rootDir: `/tmp/normalizer-${params.manifestHash}`,
@@ -260,7 +260,7 @@ describe("manifest model id normalization", () => {
   });
 
   it("reuses current metadata when callers omit config", () => {
-    const config: OpenClawConfig = { plugins: { allow: ["normalizer"] } };
+    const config: EVEConfig = { plugins: { allow: ["normalizer"] } };
     setCurrentPluginMetadataSnapshot(
       createCurrentSnapshot({
         manifestHash: "alpha",
@@ -289,10 +289,10 @@ describe("manifest model id normalization", () => {
 
     const env = {
       ...process.env,
-      OPENCLAW_STATE_DIR: stateDir,
-      OPENCLAW_HOME: undefined,
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-      OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
+      EVE_STATE_DIR: stateDir,
+      EVE_HOME: undefined,
+      EVE_DISABLE_BUNDLED_PLUGINS: "1",
+      EVE_BUNDLED_PLUGINS_DIR: undefined,
     };
 
     expect(normalizeDemoModelWithEnv(env)).toBe("bravo/demo-model");
@@ -304,10 +304,10 @@ describe("manifest model id normalization", () => {
     writeInstallIndex({ stateDir: stateDirA, pluginDir: pluginDirA });
     writeNormalizerManifest({ pluginDir: pluginDirA, prefix: "alpha" });
 
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDirA);
-    deleteTestEnvValue("OPENCLAW_HOME");
-    setTestEnvValue("OPENCLAW_DISABLE_BUNDLED_PLUGINS", "1");
-    deleteTestEnvValue("OPENCLAW_BUNDLED_PLUGINS_DIR");
+    setTestEnvValue("EVE_STATE_DIR", stateDirA);
+    deleteTestEnvValue("EVE_HOME");
+    setTestEnvValue("EVE_DISABLE_BUNDLED_PLUGINS", "1");
+    deleteTestEnvValue("EVE_BUNDLED_PLUGINS_DIR");
 
     expect(normalizeDemoModel()).toBe("alpha/demo-model");
 
@@ -319,7 +319,7 @@ describe("manifest model id normalization", () => {
     writeInstallIndex({ stateDir: stateDirB, pluginDir: pluginDirB });
     writeNormalizerManifest({ pluginDir: pluginDirB, prefix: "charlie" });
 
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDirB);
+    setTestEnvValue("EVE_STATE_DIR", stateDirB);
     clearPluginMetadataLifecycleCaches();
     expect(normalizeDemoModel()).toBe("charlie/demo-model");
   });
@@ -327,19 +327,19 @@ describe("manifest model id normalization", () => {
   it("reuses manifest metadata while file fingerprints are unchanged", () => {
     const stateDir = makeTempDir();
     const pluginDir = path.join(stateDir, "extensions", "normalizer");
-    const manifestPath = path.join(pluginDir, "openclaw.plugin.json");
+    const manifestPath = path.join(pluginDir, "eve.plugin.json");
     writeInstallIndex({ stateDir, pluginDir });
     writeNormalizerManifest({ pluginDir, prefix: "alpha" });
 
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
-    deleteTestEnvValue("OPENCLAW_HOME");
-    setTestEnvValue("OPENCLAW_DISABLE_BUNDLED_PLUGINS", "1");
-    deleteTestEnvValue("OPENCLAW_BUNDLED_PLUGINS_DIR");
+    setTestEnvValue("EVE_STATE_DIR", stateDir);
+    deleteTestEnvValue("EVE_HOME");
+    setTestEnvValue("EVE_DISABLE_BUNDLED_PLUGINS", "1");
+    deleteTestEnvValue("EVE_BUNDLED_PLUGINS_DIR");
 
     const readFileSyncSpy = vi.spyOn(fs, "readFileSync");
 
-    expect(listOpenClawPluginManifestMetadata(process.env)).toHaveLength(1);
-    expect(listOpenClawPluginManifestMetadata(process.env)).toHaveLength(1);
+    expect(listEVEPluginManifestMetadata(process.env)).toHaveLength(1);
+    expect(listEVEPluginManifestMetadata(process.env)).toHaveLength(1);
 
     const manifestReads = readFileSyncSpy.mock.calls.filter(
       ([filePath]) => String(filePath) === manifestPath,

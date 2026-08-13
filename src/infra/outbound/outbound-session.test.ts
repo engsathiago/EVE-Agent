@@ -2,7 +2,7 @@
 // target parsing, plus best-effort session metadata persistence.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { createChannelTestPluginBase } from "../../test-utils/channel-plugins.js";
 import { ensureOutboundSessionEntry, resolveOutboundSessionRoute } from "./outbound-session.js";
 import { setMinimalOutboundSessionPluginRegistryForTests } from "./outbound-session.test-helpers.js";
@@ -46,8 +46,8 @@ describe("resolveOutboundSessionRoute", () => {
     setMinimalOutboundSessionPluginRegistryForTests();
   });
 
-  const baseConfig = {} as OpenClawConfig;
-  const perChannelPeerCfg = { session: { dmScope: "per-channel-peer" } } as OpenClawConfig;
+  const baseConfig = {} as EVEConfig;
+  const perChannelPeerCfg = { session: { dmScope: "per-channel-peer" } } as EVEConfig;
   const identityLinksCfg = {
     session: {
       dmScope: "per-peer",
@@ -55,7 +55,7 @@ describe("resolveOutboundSessionRoute", () => {
         alice: ["guildchat:123"],
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
   const workspaceMpimCfg = {
     channels: {
       workspace: {
@@ -64,7 +64,7 @@ describe("resolveOutboundSessionRoute", () => {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 
   it("uses a prepared runtime plugin for session-route resolution", async () => {
     const plugin = {
@@ -94,7 +94,7 @@ describe("resolveOutboundSessionRoute", () => {
   });
 
   async function expectResolvedRoute(params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     channel: string;
     target: string;
     replyToId?: string;
@@ -133,7 +133,7 @@ describe("resolveOutboundSessionRoute", () => {
   type RouteCase = Parameters<typeof expectResolvedRoute>[0];
   type NamedRouteCase = RouteCase & { name: string };
 
-  const perChannelPeerSessionCfg = { session: { dmScope: "per-channel-peer" } } as OpenClawConfig;
+  const perChannelPeerSessionCfg = { session: { dmScope: "per-channel-peer" } } as EVEConfig;
 
   it.each([
     {
@@ -501,7 +501,7 @@ describe("resolveOutboundSessionRoute", () => {
     {
       name: "uses resolved direct-only channel user targets to avoid phantom group sessions",
       target: "wxid_abc123@im.wechat",
-      channel: "openclaw-weixin",
+      channel: "eve-weixin",
       resolvedTarget: {
         to: "wxid_abc123@im.wechat",
         kind: "user" as const,
@@ -509,8 +509,8 @@ describe("resolveOutboundSessionRoute", () => {
         resolutionSource: "normalized" as const,
       },
       expected: {
-        sessionKey: "agent:main:openclaw-weixin:direct:wxid_abc123@im.wechat",
-        from: "openclaw-weixin:wxid_abc123@im.wechat",
+        sessionKey: "agent:main:eve-weixin:direct:wxid_abc123@im.wechat",
+        from: "eve-weixin:wxid_abc123@im.wechat",
         to: "user:wxid_abc123@im.wechat",
         chatType: "direct",
       },
@@ -554,7 +554,7 @@ describe("ensureOutboundSessionEntry", () => {
         session: {
           store: "/stores/{agentId}.json",
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       channel: "workspace",
       route: {
         sessionKey: "agent:main:workspace:channel:c1",

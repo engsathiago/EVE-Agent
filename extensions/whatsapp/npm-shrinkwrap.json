@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/whatsapp",
+  "name": "@eve/whatsapp",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/whatsapp",
+      "name": "@eve/whatsapp",
       "version": "2026.6.8",
       "dependencies": {
         "audio-decode": "2.2.3",
@@ -13,10 +13,10 @@
         "typebox": "1.1.39"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

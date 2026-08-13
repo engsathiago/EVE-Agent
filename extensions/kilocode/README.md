@@ -1,12 +1,12 @@
-# OpenClaw Kilo Gateway Provider
+# EVE Kilo Gateway Provider
 
-Official OpenClaw provider plugin for Kilo Gateway.
+Official EVE provider plugin for Kilo Gateway.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/kilocode-provider
-openclaw gateway restart
+eve plugins install @eve/kilocode-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/kilocode> for setup and configuration.
+See <https://docs.eve.ai/providers/kilocode> for setup and configuration.

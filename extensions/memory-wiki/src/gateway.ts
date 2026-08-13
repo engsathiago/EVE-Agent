@@ -1,8 +1,8 @@
 // Memory Wiki plugin module implements gateway behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { resolveDefaultAgentId } from "openclaw/plugin-sdk/memory-host-core";
-import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { OpenClawConfig, OpenClawPluginApi } from "../api.js";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { resolveDefaultAgentId } from "eve-agent/plugin-sdk/memory-host-core";
+import { readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import type { EVEConfig, EVEPluginApi } from "../api.js";
 import { applyMemoryWikiMutation, normalizeMemoryWikiMutationInput } from "./apply.js";
 import { compileMemoryWikiVault } from "./compile.js";
 import {
@@ -32,7 +32,7 @@ const WRITE_SCOPE = "operator.write" as const;
 const ADMIN_SCOPE = "operator.admin" as const;
 const LOCAL_FILE_INGEST_SCOPE = ADMIN_SCOPE;
 type GatewayMethodContext = Parameters<
-  Parameters<OpenClawPluginApi["registerGatewayMethod"]>[1]
+  Parameters<EVEPluginApi["registerGatewayMethod"]>[1]
 >[0];
 type GatewayRespond = GatewayMethodContext["respond"];
 
@@ -79,7 +79,7 @@ function respondError(respond: GatewayRespond, error: unknown) {
 
 function resolveGatewayAgentId(
   requestParams: Record<string, unknown>,
-  appConfig: OpenClawConfig | undefined,
+  appConfig: EVEConfig | undefined,
 ): string | undefined {
   return (
     readStringParam(requestParams, "agentId") ??
@@ -89,15 +89,15 @@ function resolveGatewayAgentId(
 
 async function syncImportedSourcesIfNeeded(
   config: ResolvedMemoryWikiConfig,
-  appConfig?: OpenClawConfig,
+  appConfig?: EVEConfig,
 ) {
   await syncMemoryWikiImportedSources({ config, appConfig });
 }
 
 export function registerMemoryWikiGatewayMethods(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   config: ResolvedMemoryWikiConfig;
-  appConfig?: OpenClawConfig;
+  appConfig?: EVEConfig;
 }) {
   const { api, config, appConfig } = params;
 

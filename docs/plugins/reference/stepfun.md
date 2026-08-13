@@ -1,5 +1,5 @@
 ---
-summary: "Adds StepFun, StepFun Plan model provider support to OpenClaw."
+summary: "Adds StepFun, StepFun Plan model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the stepfun plugin
 title: "StepFun plugin"
@@ -7,11 +7,11 @@ title: "StepFun plugin"
 
 # StepFun plugin
 
-Adds StepFun, StepFun Plan model provider support to OpenClaw.
+Adds StepFun, StepFun Plan model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/stepfun-provider`
+- Package: `@eve/stepfun-provider`
 - Install route: npm
 
 ## Surface

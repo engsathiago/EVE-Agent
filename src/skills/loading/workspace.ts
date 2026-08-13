@@ -2,13 +2,13 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   normalizeTrimmedStringList,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import { resolveSandboxPath } from "../../agents/sandbox-paths.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { walkDirectorySync } from "../../infra/fs-safe.js";
 import { resolveOsHomeDir } from "../../infra/home-dir.js";
 import { isPathInside } from "../../infra/path-guards.js";
@@ -21,7 +21,7 @@ import {
 import { normalizeSkillFilter } from "../discovery/filter.js";
 import { filterPromptVisibleSkillEntries } from "../discovery/skill-index.js";
 import type {
-  OpenClawSkillMetadata,
+  EVESkillMetadata,
   ParsedSkillFrontmatter,
   SkillEligibilityContext,
   SkillEntry,
@@ -30,7 +30,7 @@ import type {
 import { WORKSPACE_SKILLS_PROMPT_FORMAT_VERSION } from "../types.js";
 import { resolveBundledSkillsDir } from "./bundled-dir.js";
 import { resolveBundledAllowlist, shouldIncludeSkill } from "./config.js";
-import { resolveOpenClawMetadata, resolveSkillInvocationPolicy } from "./frontmatter.js";
+import { resolveEVEMetadata, resolveSkillInvocationPolicy } from "./frontmatter.js";
 import { loadSkillsFromDirSafe, readSkillFrontmatterSafe } from "./local-loader.js";
 import { resolvePluginSkillDirs } from "./plugin-skills.js";
 import { serializeByKey } from "./serialize.js";
@@ -39,7 +39,7 @@ import { resolveAllowedSkillSymlinkTargetRealPaths, tryRealpath } from "./symlin
 
 const fsp = fs.promises;
 const skillsLogger = createSubsystemLogger("skills");
-const SKILL_SOURCE_ORIGIN_RELATIVE_PATH = path.join(".openclaw", "source-origin.json");
+const SKILL_SOURCE_ORIGIN_RELATIVE_PATH = path.join(".eve", "source-origin.json");
 const MAX_SKILL_SOURCE_ORIGIN_BYTES = 16 * 1024;
 
 /**
@@ -119,7 +119,7 @@ function resolvePromptTildeRoots(): string[] {
 
 function isContainerStateHomeWherePromptTildeEscapes(home: string): boolean {
   const configDir = path.resolve(resolveConfigDir());
-  return home === "/data" && (configDir === "/data/.openclaw" || isPathInside("/data/.openclaw", configDir));
+  return home === "/data" && (configDir === "/data/.eve" || isPathInside("/data/.eve", configDir));
 }
 
 function shouldPreservePromptSkillPath(
@@ -168,7 +168,7 @@ function compactPathForConsoleMessage(filePath: string): string {
 
 function filterSkillEntries(
   entries: SkillEntry[],
-  config?: OpenClawConfig,
+  config?: EVEConfig,
   skillFilter?: string[],
   eligibility?: SkillEligibilityContext,
 ): SkillEntry[] {
@@ -240,7 +240,7 @@ type SkillDiscoveryBudget = {
   truncated: boolean;
 };
 
-function resolveSkillsLimits(config?: OpenClawConfig, agentId?: string): ResolvedSkillsLimits {
+function resolveSkillsLimits(config?: EVEConfig, agentId?: string): ResolvedSkillsLimits {
   const limits = config?.skills?.limits;
   const agentSkillsLimits = resolveEffectiveAgentSkillsLimits(config, agentId);
   return {
@@ -439,7 +439,7 @@ function buildEscapedSkillPathReason(params: { source: string; candidatePath: st
   consoleHint: string;
 } {
   const candidateIsSymlink = isSymlinkPath(params.candidatePath);
-  if (params.source === "openclaw-bundled" && candidateIsSymlink) {
+  if (params.source === "eve-bundled" && candidateIsSymlink) {
     return {
       reason: "bundled-symlink-escape",
       consoleHint:
@@ -452,7 +452,7 @@ function buildEscapedSkillPathReason(params: { source: string; candidatePath: st
       consoleHint: "reason=symlink-escape",
     };
   }
-  if (params.source === "openclaw-bundled") {
+  if (params.source === "eve-bundled") {
     return {
       reason: "bundled-root-escape",
       consoleHint:
@@ -653,8 +653,8 @@ function readSourceInstallSkillKey(skillDir: string): string | undefined {
 function resolveSkillEntryMetadata(params: {
   frontmatter: ParsedSkillFrontmatter;
   skillDir: string;
-}): OpenClawSkillMetadata | undefined {
-  const metadata = resolveOpenClawMetadata(params.frontmatter);
+}): EVESkillMetadata | undefined {
+  const metadata = resolveEVEMetadata(params.frontmatter);
   if (metadata?.skillKey) {
     return metadata;
   }
@@ -722,13 +722,13 @@ function isPathInsideAnyRoot(rootRealPaths: readonly string[], candidateRealPath
 }
 
 function shouldEnforceConfiguredSkillRootContainment(source: string): boolean {
-  return source !== "openclaw-managed" && source !== "agents-skills-personal";
+  return source !== "eve-managed" && source !== "agents-skills-personal";
 }
 
 function shouldUseConfiguredSymlinkTargets(source: string): boolean {
   return (
-    source === "openclaw-workspace" ||
-    source === "openclaw-extra" ||
+    source === "eve-workspace" ||
+    source === "eve-extra" ||
     source === "agents-skills-project"
   );
 }
@@ -848,7 +848,7 @@ function loadGeneratedPluginSkillRecords(params: {
       continue;
     }
 
-    // Plugin skills live as symlinks under ~/.openclaw/plugin-skills/, so
+    // Plugin skills live as symlinks under ~/.eve/plugin-skills/, so
     // skillDir is the symlink path while skillDirRealPath is the real target.
     // We set syncSourceDir to the real path so syncSkillsToWorkspace can copy
     // the actual skill directory into the sandbox workspace, but we preserve
@@ -881,7 +881,7 @@ function loadGeneratedPluginSkillRecords(params: {
 function loadSkillEntries(
   workspaceDir: string,
   opts?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     agentId?: string;
     managedSkillsDir?: string;
     bundledSkillsDir?: string;
@@ -1068,7 +1068,7 @@ function loadSkillEntries(
 
       const candidatePath = path.resolve(candidate.skillDir);
       const maxGroupedDepth =
-        params.source === "openclaw-extra" &&
+        params.source === "eve-extra" &&
         !baseDirIsNestedSkillsRoot &&
         !baseDirLooksLikeSkillsRoot &&
         candidatePath !== nestedSkillsRootPath &&
@@ -1167,7 +1167,7 @@ function loadSkillEntries(
   const bundledSkills = bundledSkillsDir
     ? loadSkills({
         dir: bundledSkillsDir,
-        source: "openclaw-bundled",
+        source: "eve-bundled",
       })
     : [];
   const extraSkills = [
@@ -1175,13 +1175,13 @@ function loadSkillEntries(
       const resolved = resolveUserPath(dir);
       return loadSkills({
         dir: resolved,
-        source: "openclaw-extra",
+        source: "eve-extra",
       });
     }),
     ...loadGeneratedPluginSkillRecords({
       pluginSkillsDir,
       pluginSkillDirs,
-      source: "openclaw-extra",
+      source: "eve-extra",
       limits,
     }),
   ];
@@ -1189,7 +1189,7 @@ function loadSkillEntries(
     ? []
     : loadSkills({
         dir: managedSkillsDir,
-        source: "openclaw-managed",
+        source: "eve-managed",
       });
   const osHomeDir = resolveUserHomeDir();
   const personalAgentsSkillsDir = osHomeDir
@@ -1210,7 +1210,7 @@ function loadSkillEntries(
       });
   const workspaceSkills = loadSkills({
     dir: workspaceSkillsDir,
-    source: "openclaw-workspace",
+    source: "eve-workspace",
   });
 
   const merged = new Map<string, LoadedSkillRecord>();
@@ -1318,10 +1318,10 @@ function buildSkillsLimitNote(params: {
   total: number;
 }): string {
   if (params.truncated) {
-    return `⚠️ Skills truncated: included ${params.included} of ${params.total}${params.compact ? " (compact format, descriptions omitted)" : ""}. Run \`openclaw skills check\` to audit.`;
+    return `⚠️ Skills truncated: included ${params.included} of ${params.total}${params.compact ? " (compact format, descriptions omitted)" : ""}. Run \`eve skills check\` to audit.`;
   }
   if (params.compact) {
-    return `⚠️ Skills catalog using compact format (descriptions omitted). Run \`openclaw skills check\` to audit.`;
+    return `⚠️ Skills catalog using compact format (descriptions omitted). Run \`eve skills check\` to audit.`;
   }
   return "";
 }
@@ -1347,7 +1347,7 @@ function buildRenderedSkillsPrompt(params: {
 
 function applySkillsPromptLimits(params: {
   skills: Skill[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   remoteNote?: string;
 }): {
@@ -1434,7 +1434,7 @@ export const testing = {
 };
 
 type WorkspaceSkillBuildOptions = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   managedSkillsDir?: string;
   bundledSkillsDir?: string;
   entries?: SkillEntry[];
@@ -1503,7 +1503,7 @@ function resolveWorkspaceSkillPromptState(
 export function resolveSkillsPromptForRun(params: {
   skillsSnapshot?: SkillSnapshot;
   entries?: SkillEntry[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir: string;
   agentId?: string;
   eligibility?: SkillEligibilityContext;
@@ -1527,7 +1527,7 @@ export function resolveSkillsPromptForRun(params: {
 export function loadWorkspaceSkillEntries(
   workspaceDir: string,
   opts?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     managedSkillsDir?: string;
     bundledSkillsDir?: string;
     pluginSkillsDir?: string;
@@ -1548,7 +1548,7 @@ export function loadWorkspaceSkillEntries(
 export function loadVisibleWorkspaceSkillEntries(
   workspaceDir: string,
   opts?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     managedSkillsDir?: string;
     bundledSkillsDir?: string;
     skillFilter?: string[];
@@ -1628,7 +1628,7 @@ async function prepareSyncedSkillsDirectory(targetSkillsDir: string): Promise<vo
 export async function syncSkillsToWorkspace(params: {
   sourceWorkspaceDir: string;
   targetWorkspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   skillFilter?: string[];
   agentId?: string;
   eligibility?: SkillEligibilityContext;
@@ -1697,7 +1697,7 @@ export async function syncSkillsToWorkspace(params: {
 export function filterWorkspaceSkillEntriesWithOptions(
   entries: SkillEntry[],
   opts?: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     skillFilter?: string[];
     eligibility?: SkillEligibilityContext;
   },

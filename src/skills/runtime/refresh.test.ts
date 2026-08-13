@@ -58,7 +58,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches skill roots and filters non-skill churn", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-root-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-root-"));
     try {
       refreshModule.ensureSkillsWatcher({ workspaceDir });
 
@@ -115,7 +115,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("keeps SKILL.md file watches in chokidar polling mode", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-polling-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-polling-"));
     const previousPolling = process.env.CHOKIDAR_USEPOLLING;
     try {
       process.env.CHOKIDAR_USEPOLLING = "true";
@@ -148,7 +148,7 @@ describe("ensureSkillsWatcher", () => {
 
   it("does not double-refresh polling SKILL.md changes from raw events", async () => {
     vi.useFakeTimers();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-polling-raw-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-polling-raw-"));
     const previousPolling = process.env.CHOKIDAR_USEPOLLING;
     const seen: SkillsChangeEvent[] = [];
     try {
@@ -184,7 +184,7 @@ describe("ensureSkillsWatcher", () => {
 
   it("keeps grouped skill folders within the watcher traversal depth", async () => {
     vi.useFakeTimers();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-depth-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-depth-"));
     const seen: SkillsChangeEvent[] = [];
     try {
       refreshModule.registerSkillsChangeListener((change) => {
@@ -281,7 +281,7 @@ describe("ensureSkillsWatcher", () => {
 
   it("waits for raw SKILL.md files to stabilize before refreshing", async () => {
     vi.useFakeTimers();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-stable-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-stable-"));
     const skillDir = path.join(workspaceDir, "skills", "demo");
     const skillFile = path.join(skillDir, "SKILL.md");
     const seen: SkillsChangeEvent[] = [];
@@ -318,8 +318,8 @@ describe("ensureSkillsWatcher", () => {
   it.runIf(process.platform !== "win32")(
     "watches allowed symlink skill targets without following every root symlink",
     async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-symlink-"));
-      const targetRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-symlink-target-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-symlink-"));
+      const targetRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-symlink-target-"));
       try {
         const workspaceSkillsDir = path.join(workspaceDir, "skills");
         const targetSkillDir = path.join(targetRoot, "linked-skill");
@@ -352,9 +352,9 @@ describe("ensureSkillsWatcher", () => {
   );
 
   it.runIf(process.platform !== "win32")("watches symlinked skill root targets", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-root-link-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-root-link-"));
     const targetSkillsDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-watch-root-link-target-"),
+      path.join(os.tmpdir(), "eve-watch-root-link-target-"),
     );
     try {
       await fs.writeFile(
@@ -382,11 +382,11 @@ describe("ensureSkillsWatcher", () => {
     "does not watch untrusted companion skills symlink targets",
     async () => {
       const workspaceDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "openclaw-watch-untrusted-link-"),
+        path.join(os.tmpdir(), "eve-watch-untrusted-link-"),
       );
-      const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-untrusted-repo-"));
+      const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-untrusted-repo-"));
       const outsideDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "openclaw-watch-untrusted-target-"),
+        path.join(os.tmpdir(), "eve-watch-untrusted-target-"),
       );
       try {
         await fs.writeFile(
@@ -414,7 +414,7 @@ describe("ensureSkillsWatcher", () => {
   );
 
   it("watches nested skills roots for repo-style extra dirs", async () => {
-    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-watch-"));
+    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-skills-watch-"));
     try {
       await fs.mkdir(path.join(repoDir, "skills", "group", "demo"), { recursive: true });
       await fs.writeFile(
@@ -442,7 +442,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches nested skills roots for built-in workspace skill dirs", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-workspace-skills-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-workspace-skills-"));
     try {
       await fs.mkdir(path.join(workspaceDir, "skills", "skills", "group", "demo"), {
         recursive: true,
@@ -465,7 +465,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("reuses watch roots while config is unchanged", async () => {
-    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-watch-cache-"));
+    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-skills-watch-cache-"));
     try {
       await fs.mkdir(path.join(repoDir, "skills", "group", "demo"), { recursive: true });
       await fs.writeFile(
@@ -494,7 +494,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches extra-dir roots and companion skills folders without resolving them", async () => {
-    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-watch-pair-"));
+    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-skills-watch-pair-"));
     try {
       refreshModule.ensureSkillsWatcher({
         workspaceDir: "/tmp/workspace",
@@ -515,7 +515,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("bumps missing configured root depth for first nested skill creation", async () => {
-    const parentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-missing-skill-root-"));
+    const parentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-missing-skill-root-"));
     try {
       const missingRoot = path.join(parentDir, "repo");
       refreshModule.ensureSkillsWatcher({
@@ -534,7 +534,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches configured roots named skills at grouped depth", async () => {
-    const parentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-configured-skills-root-"));
+    const parentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-configured-skills-root-"));
     try {
       const skillsDir = path.join(parentDir, "skills");
       await fs.mkdir(skillsDir, { recursive: true });
@@ -552,7 +552,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("dedupes overlapping watch roots by path while keeping the deepest depth", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-dedupe-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-dedupe-"));
     try {
       const skillsDir = path.join(workspaceDir, "skills");
       await fs.mkdir(skillsDir, { recursive: true });
@@ -572,8 +572,8 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("does not downgrade a shared watcher when a shallow subscriber arrives later", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-share-a-"));
-    const otherDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-watch-share-b-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-share-a-"));
+    const otherDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-share-b-"));
     try {
       const skillsDir = path.join(workspaceDir, "skills");
       await fs.mkdir(skillsDir, { recursive: true });
@@ -599,7 +599,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches extra-dir skills folders for first nested skill creation", async () => {
-    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-watch-create-"));
+    const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-skills-watch-create-"));
     try {
       refreshModule.ensureSkillsWatcher({
         workspaceDir: "/tmp/workspace",
@@ -618,7 +618,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches nested skills roots for plugin skill dirs", async () => {
-    const pluginDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-plugin-skills-watch-"));
+    const pluginDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-plugin-skills-watch-"));
     try {
       await fs.mkdir(path.join(pluginDir, "skills", "group", "demo"), { recursive: true });
       await fs.writeFile(
@@ -645,7 +645,7 @@ describe("ensureSkillsWatcher", () => {
 
   it("watches plugin skills folders for first nested skill creation", async () => {
     const pluginDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-plugin-skills-watch-create-"),
+      path.join(os.tmpdir(), "eve-plugin-skills-watch-create-"),
     );
     try {
       const pluginSkills = await import("../loading/plugin-skills.js");
@@ -668,10 +668,10 @@ describe("ensureSkillsWatcher", () => {
     "does not watch untrusted plugin skill symlink targets",
     async () => {
       const pluginDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "openclaw-plugin-skills-untrusted-link-"),
+        path.join(os.tmpdir(), "eve-plugin-skills-untrusted-link-"),
       );
       const outsideDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "openclaw-plugin-skills-untrusted-target-"),
+        path.join(os.tmpdir(), "eve-plugin-skills-untrusted-target-"),
       );
       try {
         await fs.mkdir(path.join(pluginDir, "skills"), { recursive: true });

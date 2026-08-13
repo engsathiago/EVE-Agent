@@ -1,4 +1,4 @@
-// Mcp Channels Docker Client script supports OpenClaw repository automation.
+// Mcp Channels Docker Client script supports EVE repository automation.
 import { randomUUID } from "node:crypto";
 import {
   assert,
@@ -195,7 +195,7 @@ async function main() {
       "seeded attachment message",
       () =>
         messages.find((entry) => {
-          const raw = entry["__openclaw"];
+          const raw = entry["__eve"];
           return (
             raw && typeof raw === "object" && (raw as { id?: unknown }).id === "msg-attachment"
           );

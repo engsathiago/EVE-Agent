@@ -1,21 +1,21 @@
 // Slack plugin module implements replies behavior.
 import type { MessageMetadata } from "@slack/types";
-import type { MarkdownTableMode, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import type { MarkdownTableMode, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   chunkMarkdownTextWithMode,
   isSilentReplyText,
   SILENT_REPLY_TOKEN,
   type ChunkMode,
-} from "openclaw/plugin-sdk/reply-chunking";
+} from "eve-agent/plugin-sdk/reply-chunking";
 import {
   deliverTextOrMediaReply,
   getReplyPayloadTtsSupplement,
   resolveSendableOutboundReplyParts,
   type ReplyPayload,
-} from "openclaw/plugin-sdk/reply-payload";
-import { createReplyReferencePlanner } from "openclaw/plugin-sdk/reply-reference";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/reply-payload";
+import { createReplyReferencePlanner } from "eve-agent/plugin-sdk/reply-reference";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { markdownToSlackMrkdwnChunks } from "../format.js";
 import { SLACK_TEXT_LIMIT } from "../limits.js";
 import { emitSlackMessageSentHooks } from "../message-sent-hook.js";
@@ -43,7 +43,7 @@ export function resolveDeliveredSlackReplyThreadTs(params: {
 }
 
 export async function deliverReplies(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   replies: ReplyPayload[];
   target: string;
   token: string;

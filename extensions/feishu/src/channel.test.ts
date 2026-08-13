@@ -1,6 +1,6 @@
 // Feishu tests cover channel plugin behavior.
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { feishuPlugin } from "./channel.js";
 import { looksLikeFeishuId, normalizeFeishuTarget, resolveReceiveIdType } from "./targets.js";
 
@@ -56,7 +56,7 @@ vi.mock("./channel.runtime.js", () => ({
   },
 }));
 
-function getDescribedActions(cfg: OpenClawConfig, accountId?: string): string[] {
+function getDescribedActions(cfg: EVEConfig, accountId?: string): string[] {
   return [...(feishuPlugin.actions?.describeMessageTool?.({ cfg, accountId })?.actions ?? [])];
 }
 
@@ -118,7 +118,7 @@ describe("feishuPlugin.status.probeAccount", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const account = feishuPlugin.config.resolveAccount(cfg, "main");
     probeFeishuMock.mockResolvedValueOnce({ ok: true, appId: "cli_main" });
@@ -162,7 +162,7 @@ describe("feishuPlugin.pairing.notifyApproval", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await feishuPlugin.pairing?.notifyApproval?.({
       cfg,
@@ -227,7 +227,7 @@ describe("feishuPlugin actions", () => {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -263,7 +263,7 @@ describe("feishuPlugin actions", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(getDescribedActions(disabledCfg)).toEqual([
       "send",
@@ -301,7 +301,7 @@ describe("feishuPlugin actions", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(getDescribedActions(cfgLocal, "default")).toEqual([
       "send",

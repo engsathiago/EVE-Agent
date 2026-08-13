@@ -1,4 +1,4 @@
-// Tool Display script supports OpenClaw repository automation.
+// Tool Display script supports EVE repository automation.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,7 +8,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const outputPath = path.join(
   repoRoot,
-  "apps/shared/OpenClawKit/Sources/OpenClawKit/Resources/tool-display.json",
+  "apps/shared/EVEKit/Sources/EVEKit/Resources/tool-display.json",
 );
 const toolSources = [
   path.join(repoRoot, "src/agents/apply-patch.ts"),

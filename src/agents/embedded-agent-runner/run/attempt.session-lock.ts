@@ -6,7 +6,7 @@ import { createHash } from "node:crypto";
 import { createReadStream, readFileSync, statSync } from "node:fs";
 import fs from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import {
   type OwnedSessionTranscriptPublishedEntry,
   type OwnedSessionTranscriptWriteOptions,
@@ -14,7 +14,7 @@ import {
   withOwnedSessionTranscriptWrites,
 } from "../../../config/sessions/transcript-write-context.js";
 import { resolveGlobalSingleton } from "../../../shared/global-singleton.js";
-import { isTranscriptOnlyOpenClawAssistantMessage } from "../../../shared/transcript-only-openclaw-assistant.js";
+import { isTranscriptOnlyEVEAssistantMessage } from "../../../shared/transcript-only-eve-assistant.js";
 import { isSessionWriteLockAcquireError } from "../../session-write-lock-error.js";
 import type { acquireSessionWriteLock } from "../../session-write-lock.js";
 import type {
@@ -110,7 +110,7 @@ type SessionWithAgentPrompt = {
 };
 
 type PromptReleaseStreamFn = ((...args: unknown[]) => unknown) & {
-  __openclawSessionLockPromptReleaseInstalled?: boolean;
+  __eveSessionLockPromptReleaseInstalled?: boolean;
 };
 
 type SessionFileFingerprint =
@@ -211,10 +211,10 @@ function parsePromptReleasedMessageLine(
     if (!isJsonRecord(message)) {
       return undefined;
     }
-    const isOpenClawTranscriptOnlyAssistant = isTranscriptOnlyOpenClawAssistantMessage(message);
+    const isEVETranscriptOnlyAssistant = isTranscriptOnlyEVEAssistantMessage(message);
     if (
       typeof message.role !== "string" ||
-      (!options?.allowAnyMessage && !isOpenClawTranscriptOnlyAssistant)
+      (!options?.allowAnyMessage && !isEVETranscriptOnlyAssistant)
     ) {
       return undefined;
     }
@@ -814,9 +814,9 @@ type TrustedSessionFileState = {
   fingerprint: SessionFileFingerprint;
 };
 
-// Controllers in the same OpenClaw process can legitimately take turns writing
+// Controllers in the same EVE process can legitimately take turns writing
 // the same session file while another attempt is released for model I/O. Track
-// only fingerprints that changed while OpenClaw held the write lock so the
+// only fingerprints that changed while EVE held the write lock so the
 // takeover fence can distinguish those locked in-process writes from unowned
 // external file changes.
 const ownedSessionFileWrites = new Map<string, OwnedSessionFileWriteHistory>();
@@ -845,7 +845,7 @@ type SessionFileOwnerState = {
 };
 
 const EMBEDDED_ATTEMPT_SESSION_FILE_OWNER_STATE_KEY = Symbol.for(
-  "openclaw.embeddedAttemptSessionFileOwnerState",
+  "eve.embeddedAttemptSessionFileOwnerState",
 );
 
 const sessionFileOwnerState = resolveGlobalSingleton(
@@ -2046,7 +2046,7 @@ export function installPromptSubmissionLockRelease(params: {
     return;
   }
   const currentStreamFn = agent.streamFn;
-  if (currentStreamFn["__openclawSessionLockPromptReleaseInstalled"] === true) {
+  if (currentStreamFn["__eveSessionLockPromptReleaseInstalled"] === true) {
     return;
   }
   const originalStreamFn = currentStreamFn.bind(agent);
@@ -2072,7 +2072,7 @@ export function installPromptSubmissionLockRelease(params: {
       await params.reacquireAfterPrompt();
     }
   };
-  wrappedStreamFn["__openclawSessionLockPromptReleaseInstalled"] = true;
+  wrappedStreamFn["__eveSessionLockPromptReleaseInstalled"] = true;
   agent.streamFn = wrappedStreamFn;
 }
 

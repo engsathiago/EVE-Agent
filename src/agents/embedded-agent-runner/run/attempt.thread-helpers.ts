@@ -1,12 +1,12 @@
 /**
  * Handles per-attempt thread prompt composition and cache TTL markers.
  */
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { joinPresentTextSegments } from "../../../shared/text/join-segments.js";
 import { normalizeStructuredPromptSection } from "../../prompt-cache-stability.js";
 
 /** Custom transcript marker used to preserve cache-TTL pruning state across attempts. */
-export const ATTEMPT_CACHE_TTL_CUSTOM_TYPE = "openclaw.cache-ttl";
+export const ATTEMPT_CACHE_TTL_CUSTOM_TYPE = "eve.cache-ttl";
 
 /**
  * Combines hook-provided system context with the base prompt while preserving
@@ -59,7 +59,7 @@ export function resolveAttemptSpawnWorkspaceDir(params: {
 function shouldAppendAttemptCacheTtl(params: {
   timedOutDuringCompaction: boolean;
   compactionOccurredThisAttempt: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider: string;
   modelId: string;
   modelApi?: string;
@@ -85,7 +85,7 @@ export function appendAttemptCacheTtlIfNeeded(params: {
   };
   timedOutDuringCompaction: boolean;
   compactionOccurredThisAttempt: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider: string;
   modelId: string;
   modelApi?: string;

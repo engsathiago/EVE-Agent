@@ -5,8 +5,8 @@ import type { SessionManager } from "../../agents/sessions/session-manager.js";
 import { redactTranscriptMessage } from "../../agents/transcript-redact.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import { extractAssistantVisibleText } from "../../shared/chat-message-content.js";
-import { isTranscriptOnlyOpenClawAssistantModel } from "../../shared/transcript-only-openclaw-assistant.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import { isTranscriptOnlyEVEAssistantModel } from "../../shared/transcript-only-eve-assistant.js";
+import type { EVEConfig } from "../types.eve.js";
 import { resolveDefaultSessionStorePath } from "./paths.js";
 import { persistSessionTranscriptTurn } from "./session-accessor.js";
 import { resolveAndPersistSessionFile } from "./session-file.js";
@@ -75,7 +75,7 @@ export { resolveSessionTranscriptFile } from "./transcript-file-resolve.js";
 
 function parseAssistantTranscriptText(
   line: string,
-  options?: { excludeTranscriptOnlyOpenClawAssistant?: boolean },
+  options?: { excludeTranscriptOnlyEVEAssistant?: boolean },
 ): AssistantTranscriptText | undefined {
   const parsed = JSON.parse(line) as {
     id?: unknown;
@@ -88,8 +88,8 @@ function parseAssistantTranscriptText(
     return undefined;
   }
   if (
-    options?.excludeTranscriptOnlyOpenClawAssistant &&
-    isTranscriptOnlyOpenClawAssistantMessage(message)
+    options?.excludeTranscriptOnlyEVEAssistant &&
+    isTranscriptOnlyEVEAssistantMessage(message)
   ) {
     return undefined;
   }
@@ -106,11 +106,11 @@ function parseAssistantTranscriptText(
   };
 }
 
-function isTranscriptOnlyOpenClawAssistantMessage(message: {
+function isTranscriptOnlyEVEAssistantMessage(message: {
   provider?: unknown;
   model?: unknown;
 }): boolean {
-  return isTranscriptOnlyOpenClawAssistantModel(message.provider, message.model);
+  return isTranscriptOnlyEVEAssistantModel(message.provider, message.model);
 }
 
 export async function readLatestAssistantTextFromSessionTranscript(
@@ -123,7 +123,7 @@ export async function readLatestAssistantTextFromSessionTranscript(
   for await (const line of streamSessionTranscriptLinesReverse(sessionFile)) {
     try {
       const assistantText = parseAssistantTranscriptText(line, {
-        excludeTranscriptOnlyOpenClawAssistant: true,
+        excludeTranscriptOnlyEVEAssistant: true,
       });
       if (assistantText) {
         return assistantText;
@@ -145,7 +145,7 @@ export async function readTailAssistantTextFromSessionTranscript(
   for await (const line of streamSessionTranscriptLinesReverse(sessionFile)) {
     try {
       const parsed = JSON.parse(line) as { message?: unknown };
-      // Skip non-message entries (e.g. `openclaw.cache-ttl` custom events) so
+      // Skip non-message entries (e.g. `eve.cache-ttl` custom events) so
       // a metadata line emitted after the canonical assistant turn doesn't
       // make the tail reader fall through to "no assistant tail" and cause
       // persistTextTurnTranscript to append a duplicate. Stop at any real
@@ -173,7 +173,7 @@ export async function appendAssistantMessageToSessionTranscript(params: {
   /** Optional override for store path (mostly for tests). */
   storePath?: string;
   updateMode?: SessionTranscriptUpdateMode;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   beforeMessageWrite?: AssistantBeforeMessageWrite;
 }): Promise<SessionTranscriptAppendResult> {
   const sessionKey = params.sessionKey.trim();
@@ -202,7 +202,7 @@ export async function appendAssistantMessageToSessionTranscript(params: {
       role: "assistant" as const,
       content: [{ type: "text", text: mirrorText }],
       api: "openai-responses",
-      provider: "openclaw",
+      provider: "eve",
       model: "delivery-mirror",
       usage: {
         input: 0,
@@ -220,7 +220,7 @@ export async function appendAssistantMessageToSessionTranscript(params: {
       },
       stopReason: "stop" as const,
       timestamp: Date.now(),
-      ...(params.deliveryMirror ? { openclawDeliveryMirror: params.deliveryMirror } : {}),
+      ...(params.deliveryMirror ? { eveDeliveryMirror: params.deliveryMirror } : {}),
     } as SessionTranscriptAssistantMessage,
   });
 }
@@ -233,7 +233,7 @@ export async function appendExactAssistantMessageToSessionTranscript(params: {
   idempotencyKey?: string;
   storePath?: string;
   updateMode?: SessionTranscriptUpdateMode;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   beforeMessageWrite?: AssistantBeforeMessageWrite;
 }): Promise<SessionTranscriptAppendResult> {
   const sessionKey = params.sessionKey.trim();
@@ -386,12 +386,12 @@ export async function appendExactAssistantMessageToSessionTranscript(params: {
 }
 
 function isRedundantDeliveryMirror(message: SessionTranscriptAssistantMessage): boolean {
-  return message.provider === "openclaw" && message.model === "delivery-mirror";
+  return message.provider === "eve" && message.model === "delivery-mirror";
 }
 
 function isChannelFinalDeliveryMirror(message: SessionTranscriptAssistantMessage): boolean {
-  const marker = (message as { openclawDeliveryMirror?: SessionTranscriptDeliveryMirror })
-    .openclawDeliveryMirror;
+  const marker = (message as { eveDeliveryMirror?: SessionTranscriptDeliveryMirror })
+    .eveDeliveryMirror;
   return isRedundantDeliveryMirror(message) && marker?.kind === "channel-final";
 }
 
@@ -417,7 +417,7 @@ function extractAssistantMessageText(message: SessionTranscriptAssistantMessage)
 async function findLatestEquivalentAssistantMessageId(
   transcriptPath: string,
   message: SessionTranscriptAssistantMessage,
-  config?: OpenClawConfig,
+  config?: EVEConfig,
 ): Promise<string | undefined> {
   const expectedText = extractAssistantMessageText(
     redactTranscriptMessage(message, config) as unknown as SessionTranscriptAssistantMessage,

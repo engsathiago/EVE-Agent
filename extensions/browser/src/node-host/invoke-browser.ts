@@ -3,8 +3,8 @@
  * requests.
  */
 import fsPromises from "node:fs/promises";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { redactCdpUrl } from "../browser/cdp.helpers.js";
 import { loadBrowserConfigForRuntimeRefresh } from "../browser/config-refresh-source.js";
 import { resolveBrowserConfig } from "../browser/config.js";

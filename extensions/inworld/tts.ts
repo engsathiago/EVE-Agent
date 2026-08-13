@@ -1,6 +1,6 @@
 // Inworld plugin module implements tts behavior.
-import type { SpeechVoiceOption } from "openclaw/plugin-sdk/speech-core";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { SpeechVoiceOption } from "eve-agent/plugin-sdk/speech-core";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 
 const DEFAULT_INWORLD_BASE_URL = "https://api.inworld.ai";
 export const DEFAULT_INWORLD_VOICE_ID = "Sarah";

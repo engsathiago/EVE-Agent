@@ -1,9 +1,9 @@
 /**
  * BytePlus provider plugin entrypoint for model and video generation providers.
  */
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { ensureModelAllowlistEntry } from "openclaw/plugin-sdk/provider-onboard";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth-api-key";
+import { ensureModelAllowlistEntry } from "eve-agent/plugin-sdk/provider-onboard";
 import { BYTEPLUS_CODING_MODEL_CATALOG, BYTEPLUS_MODEL_CATALOG } from "./models.js";
 import { buildBytePlusCodingProvider, buildBytePlusProvider } from "./provider-catalog.js";
 import { buildBytePlusVideoGenerationProvider } from "./video-generation-provider.js";

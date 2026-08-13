@@ -1,19 +1,19 @@
 // Discord plugin module implements rest fetch behavior.
 import { randomUUID } from "node:crypto";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   createHttp1EnvHttpProxyAgent,
   createHttp1ProxyAgent,
   resolveEnvHttpProxyAgentOptions,
   wrapFetchWithAbortSignal,
-} from "openclaw/plugin-sdk/fetch-runtime";
+} from "eve-agent/plugin-sdk/fetch-runtime";
 import {
   captureHttpExchange,
   resolveEffectiveDebugProxyUrl,
-} from "openclaw/plugin-sdk/proxy-capture";
-import { resolveRequestUrl } from "openclaw/plugin-sdk/request-url";
-import { danger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/proxy-capture";
+import { resolveRequestUrl } from "eve-agent/plugin-sdk/request-url";
+import { danger } from "eve-agent/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { Agent, fetch as undiciFetch } from "undici";
 import { createDiscordDnsLookup } from "../network-config.js";
 import { withValidatedDiscordProxy } from "../proxy-fetch.js";

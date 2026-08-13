@@ -2,9 +2,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { AuthStorage, ModelRegistry } from "openclaw/plugin-sdk/agent-sessions";
-import { resolveAgentModelPrimaryValue } from "openclaw/plugin-sdk/provider-onboard";
-import { expectProviderOnboardPreservesPrimary } from "openclaw/plugin-sdk/provider-test-contracts";
+import { AuthStorage, ModelRegistry } from "eve-agent/plugin-sdk/agent-sessions";
+import { resolveAgentModelPrimaryValue } from "eve-agent/plugin-sdk/provider-onboard";
+import { expectProviderOnboardPreservesPrimary } from "eve-agent/plugin-sdk/provider-test-contracts";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
   ZAI_CODING_CN_BASE_URL,
@@ -74,7 +74,7 @@ describe("zai onboard", () => {
         "https://proxy.example.test/zai",
       ],
     ] as const) {
-      const dir = await fs.mkdtemp(path.join(os.tmpdir(), `openclaw-zai-${name}-`));
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), `eve-zai-${name}-`));
       try {
         const modelsPath = path.join(dir, "models.json");
         await fs.writeFile(

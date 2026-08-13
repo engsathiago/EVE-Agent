@@ -1,14 +1,14 @@
 /** Main reply dispatch pipeline from finalized config/context to delivery payloads. */
 import crypto from "node:crypto";
-import { isParentOwnedBackgroundAcpSession } from "@openclaw/acp-core/session-interaction-mode";
+import { isParentOwnedBackgroundAcpSession } from "@eve/acp-core/session-interaction-mode";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import { readAcpSessionMeta } from "../../acp/runtime/session-meta.js";
 import {
   resolveAgentConfig,
@@ -50,7 +50,7 @@ import {
   type SessionTranscriptDeliveryMirror,
 } from "../../config/sessions/transcript.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { fireAndForgetHook } from "../../hooks/fire-and-forget.js";
 import {
@@ -381,7 +381,7 @@ const resolveRoutedPolicyConversationType = (
 
 const resolveSessionStoreLookup = (
   ctx: FinalizedMsgContext,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): {
   sessionKey?: string;
   storePath?: string;
@@ -413,7 +413,7 @@ const resolveSessionStoreLookup = (
 
 const resolveBoundAcpDispatchSessionKey = (params: {
   ctx: FinalizedMsgContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): string | undefined => {
   const bindingContext = resolveConversationBindingContextFromMessage({
     cfg: params.cfg,
@@ -534,7 +534,7 @@ function resolveTurnModelOverride(
 
 function resolveChannelModelCandidate(params: {
   aliasIndex: ModelAliasIndex;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: FinalizedMsgContext;
   defaultProvider: string;
   entry?: SessionEntry;
@@ -607,7 +607,7 @@ function resolveModelOverrideCandidate(params: {
 }
 
 const resolveHarnessSourceVisibleRepliesDefault = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: FinalizedMsgContext;
   entry?: SessionEntry;
   sessionAgentId: string;
@@ -689,7 +689,7 @@ const resolveHarnessSourceVisibleRepliesDefault = (params: {
 
 function shouldBypassPluginOwnedBindingForCommand(
   ctx: FinalizedMsgContext,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): boolean {
   const commandTurn = resolveCommandTurnContext(ctx);
   if (
@@ -762,7 +762,7 @@ async function clearPendingFinalDeliveryAfterSuccess(params: {
 
 async function mirrorDeliveredReplyToTranscript(params: {
   metadata?: TranscriptMirror;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Promise<void> {
   const mirror = params.metadata;
   if (!mirror) {
@@ -885,7 +885,7 @@ async function mirrorTranscriptAfterDispatcherDelivery(params: {
   dispatcher: ReplyDispatcher;
   before: { cancelled: number; failed: number };
   metadata: () => TranscriptMirror | undefined;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Promise<void> {
   await params.dispatcher.waitForIdle();
   const after = getDispatcherFinalOutcomeCounts(params.dispatcher);
@@ -2864,7 +2864,7 @@ export async function dispatchReplyFromConfig(
       (await traceReplyPhase("reply.load_reply_resolver", () => loadGetReplyFromConfigRuntime()))
         .getReplyFromConfig;
     const replyConfig = withFullRuntimeReplyConfig(
-      params.configOverride ? (applyMergePatch(cfg, params.configOverride) as OpenClawConfig) : cfg,
+      params.configOverride ? (applyMergePatch(cfg, params.configOverride) as EVEConfig) : cfg,
     );
     recordAgentDispatchStarted();
     const replyResult = await runWithDispatchAbortSignal(getDispatchAbortSignal(), () =>

@@ -1,9 +1,9 @@
 // Diffs Language Pack plugin module implements plugin behavior.
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { OpenClawPluginApi } from "../api.js";
+import type { EVEPluginApi } from "../api.js";
 import { VIEWER_ASSET_PREFIX, getServedViewerAsset } from "./viewer-assets.js";
 
-export function registerDiffsLanguagePackPlugin(api: OpenClawPluginApi): void {
+export function registerDiffsLanguagePackPlugin(api: EVEPluginApi): void {
   api.registerHttpRoute({
     path: "/plugins/diffs-language-pack",
     auth: "plugin",

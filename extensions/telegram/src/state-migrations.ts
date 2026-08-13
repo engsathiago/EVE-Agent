@@ -1,20 +1,20 @@
 // Telegram plugin module implements state migrations behavior.
 import fs from "node:fs";
 import path from "node:path";
-import type { ChannelLegacyStateMigrationPlan } from "openclaw/plugin-sdk/channel-contract";
-import { resolveChannelAllowFromPath } from "openclaw/plugin-sdk/channel-pairing";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ChannelLegacyStateMigrationPlan } from "eve-agent/plugin-sdk/channel-contract";
+import { resolveChannelAllowFromPath } from "eve-agent/plugin-sdk/channel-pairing";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   type PersistentDedupeLegacyJsonImportEntry,
   createPersistentDedupeImportEntry,
   listPersistentDedupeLegacyJsonFileEntries,
   resolvePersistentDedupePluginStateNamespace,
   shouldReplacePersistentDedupeEntry,
-} from "openclaw/plugin-sdk/persistent-dedupe";
-import { createPluginStateSyncKeyedStore } from "openclaw/plugin-sdk/runtime-doctor";
-import { statRegularFileSync } from "openclaw/plugin-sdk/security-runtime";
-import { resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/persistent-dedupe";
+import { createPluginStateSyncKeyedStore } from "eve-agent/plugin-sdk/runtime-doctor";
+import { statRegularFileSync } from "eve-agent/plugin-sdk/security-runtime";
+import { resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { listTelegramAccountIds, resolveDefaultTelegramAccountId } from "./account-selection.js";
 import {
   listTelegramLegacyBotInfoCacheEntries,
@@ -212,7 +212,7 @@ function mapTelegramMessageDispatchDedupeImportEntries(params: {
 }
 
 function listTelegramLegacySidecarAccountIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   stateDir: string;
   prefix: string;
   suffix: string;
@@ -236,7 +236,7 @@ function listTelegramLegacySidecarAccountIds(params: {
 }
 
 function detectTelegramMessageCacheLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
@@ -272,7 +272,7 @@ function detectTelegramMessageCacheLegacyStateMigration(params: {
 }
 
 function detectTelegramBotInfoCacheLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
 }): ChannelLegacyStateMigrationPlan[] {
   return listTelegramAccountIds(params.cfg).flatMap((accountId) => {
@@ -302,7 +302,7 @@ function detectTelegramBotInfoCacheLegacyStateMigration(params: {
 }
 
 function detectTelegramUpdateOffsetLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
@@ -377,7 +377,7 @@ function detectTelegramStickerCacheLegacyStateMigration(params: {
 }
 
 function detectTelegramSentMessageCacheLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
@@ -412,7 +412,7 @@ function detectTelegramSentMessageCacheLegacyStateMigration(params: {
 }
 
 function detectTelegramThreadBindingLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
@@ -444,13 +444,13 @@ function detectTelegramThreadBindingLegacyStateMigration(params: {
 }
 
 function detectTelegramMessageDispatchLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
   const storePath = resolveStorePath(params.cfg.session?.store, { env: params.env });
   const legacyStorePath = resolveLegacySessionStorePath(params);
-  const env = params.stateDir ? { ...params.env, OPENCLAW_STATE_DIR: params.stateDir } : params.env;
+  const env = params.stateDir ? { ...params.env, EVE_STATE_DIR: params.stateDir } : params.env;
   const namespace = resolvePersistentDedupePluginStateNamespace({
     namespace: TELEGRAM_MESSAGE_DISPATCH_DEDUPE_NAMESPACE,
     namespacePrefix: TELEGRAM_MESSAGE_DISPATCH_DEDUPE_NAMESPACE_PREFIX,
@@ -536,7 +536,7 @@ function topicNameCacheImportSource(params: {
 }
 
 function detectTelegramTopicNameCacheLegacyStateMigration(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): ChannelLegacyStateMigrationPlan[] {
@@ -589,7 +589,7 @@ function detectTelegramTopicNameCacheLegacyStateMigration(params: {
 }
 
 export async function detectTelegramLegacyStateMigrations(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   stateDir?: string;
 }): Promise<ChannelLegacyStateMigrationPlan[]> {

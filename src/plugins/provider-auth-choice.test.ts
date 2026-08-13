@@ -1,7 +1,7 @@
 // Covers provider auth choice selection for plugin-owned providers.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createWizardPrompter } from "../../test/helpers/wizard-prompter.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createNonExitingRuntime } from "../runtime.js";
 import type { ProviderPlugin } from "./types.js";
 
@@ -48,7 +48,7 @@ describe("applyAuthChoicePluginProvider", () => {
     ensureCodexRuntimePluginForModelSelection.mockReset();
     ensureCopilotRuntimePluginForModelSelection.mockReset();
     ensureCopilotRuntimePluginForModelSelection.mockImplementation(
-      async ({ cfg }: { cfg: OpenClawConfig }) => ({
+      async ({ cfg }: { cfg: EVEConfig }) => ({
         cfg,
         required: false,
         installed: false,
@@ -68,7 +68,7 @@ describe("applyAuthChoicePluginProvider", () => {
         }) as never,
     });
     ensureCodexRuntimePluginForModelSelection.mockImplementation(
-      async ({ cfg }: { cfg: OpenClawConfig }) => ({
+      async ({ cfg }: { cfg: EVEConfig }) => ({
         installed: true,
         cfg: {
           ...cfg,
@@ -83,7 +83,7 @@ describe("applyAuthChoicePluginProvider", () => {
       }),
     );
     offerPostInstallMigrations.mockImplementation(
-      async ({ config }: { config: OpenClawConfig }) => ({
+      async ({ config }: { config: EVEConfig }) => ({
         config: {
           ...config,
           plugins: {

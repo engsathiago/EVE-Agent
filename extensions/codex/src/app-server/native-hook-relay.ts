@@ -1,6 +1,6 @@
 /**
- * Bridges Codex native hook callbacks into OpenClaw's native hook relay so
- * app-server tool events can still run OpenClaw policy and diagnostics.
+ * Bridges Codex native hook callbacks into EVE's native hook relay so
+ * app-server tool events can still run EVE policy and diagnostics.
  */
 import { createHash } from "node:crypto";
 import {
@@ -8,15 +8,15 @@ import {
   type EmbeddedRunAttemptParams,
   type NativeHookRelayEvent,
   type NativeHookRelayRegistrationHandle,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   addTimerTimeoutGraceMs,
   finiteSecondsToTimerSafeMilliseconds,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import type { CodexAppServerRuntimeOptions } from "./config.js";
 import type { JsonObject, JsonValue } from "./protocol.js";
 
-/** Codex hook events that can be registered through OpenClaw's native relay. */
+/** Codex hook events that can be registered through EVE's native relay. */
 export const CODEX_NATIVE_HOOK_RELAY_EVENTS: readonly NativeHookRelayEvent[] = [
   "pre_tool_use",
   "post_tool_use",
@@ -103,7 +103,7 @@ export function clearPendingCodexNativeHookRelayUnregistersForTests(): void {
   pendingCodexNativeHookRelayUnregisters.clear();
 }
 
-/** Registers an OpenClaw native hook relay for a Codex app-server turn. */
+/** Registers an EVE native hook relay for a Codex app-server turn. */
 export function createCodexNativeHookRelay(params: {
   options:
     | {
@@ -174,7 +174,7 @@ export function resolveCodexNativeHookRelayEvents(params: {
   // Codex emits PermissionRequest before the app-server approval reviewer has
   // resolved the command. In native approval modes, let Codex's app-server
   // approval bridge own the real escalation instead of surfacing a stale
-  // pre-guardian OpenClaw plugin approval prompt.
+  // pre-guardian EVE plugin approval prompt.
   return params.appServer.approvalPolicy === "never"
     ? CODEX_NATIVE_HOOK_RELAY_EVENTS
     : CODEX_NATIVE_HOOK_RELAY_EVENTS_WITH_APP_SERVER_APPROVALS;
@@ -205,7 +205,7 @@ export function buildCodexNativeHookRelayId(params: {
   sessionKey: string | undefined;
 }): string {
   const hash = createHash("sha256");
-  hash.update("openclaw:codex:native-hook-relay:v1");
+  hash.update("eve:codex:native-hook-relay:v1");
   hash.update("\0");
   hash.update(params.agentId?.trim() || "");
   hash.update("\0");
@@ -277,7 +277,7 @@ export function buildCodexNativeHookRelayConfig(params: {
             command,
             timeout,
             async: false,
-            statusMessage: "OpenClaw native hook relay",
+            statusMessage: "EVE native hook relay",
           },
         ],
       },
@@ -288,7 +288,7 @@ export function buildCodexNativeHookRelayConfig(params: {
         event,
         command,
         timeout,
-        statusMessage: "OpenClaw native hook relay",
+        statusMessage: "EVE native hook relay",
       }),
     };
     for (const sourcePath of CODEX_SESSION_FLAGS_HOOK_SOURCE_PATHS) {

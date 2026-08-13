@@ -1,7 +1,7 @@
 // Whatsapp plugin module implements media behavior.
 import type { proto, WAMessage } from "baileys";
-import { saveMediaStream, type SavedMedia } from "openclaw/plugin-sdk/media-store";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { saveMediaStream, type SavedMedia } from "eve-agent/plugin-sdk/media-store";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import type { createWaSocket } from "../session.js";
 import { extractContextInfo } from "./extract.js";
 import { resolveInboundMediaMimetype } from "./media-mimetype.js";

@@ -1,6 +1,6 @@
 // Msteams tests cover send context plugin behavior.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MSTeamsConfig, OpenClawConfig } from "../runtime-api.js";
+import type { MSTeamsConfig, EVEConfig } from "../runtime-api.js";
 import type { StoredConversationReference } from "./conversation-store.js";
 import { resolveMSTeamsProactiveReplyStyle, resolveMSTeamsSendContext } from "./send-context.js";
 
@@ -80,7 +80,7 @@ describe("resolveMSTeamsSendContext", () => {
           tenantId: "tenant-id",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await expect(
       resolveMSTeamsSendContext({
@@ -110,7 +110,7 @@ describe("resolveMSTeamsSendContext", () => {
           tenantId: "tenant-id",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await expect(
       resolveMSTeamsSendContext({

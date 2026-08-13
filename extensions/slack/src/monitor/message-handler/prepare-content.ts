@@ -1,11 +1,11 @@
 // Slack plugin module implements prepare content behavior.
 import type { WebClient as SlackWebClient } from "@slack/web-api";
-import { runTasksWithConcurrency } from "openclaw/plugin-sdk/concurrency-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { runTasksWithConcurrency } from "eve-agent/plugin-sdk/concurrency-runtime";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import {
   normalizeOptionalString,
   readStringValue as readString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { formatSlackFileReference } from "../../file-reference.js";
 import type { SlackFile, SlackMessageEvent } from "../../types.js";
 import { MAX_SLACK_MEDIA_FILES, type SlackMediaResult } from "../media-types.js";

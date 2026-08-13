@@ -11,8 +11,8 @@ const endpointMockState = vi.hoisted(() => ({
   responses: [] as Response[],
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/provider-web-search")>();
+vi.mock("eve-agent/plugin-sdk/provider-web-search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/provider-web-search")>();
   const runEndpoint = async (
     params: EndpointCall,
     run: (response: Response) => Promise<unknown>,

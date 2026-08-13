@@ -6,7 +6,7 @@ import {
   type ResolverContext,
   type SecretDefaults,
   type SecretTargetRegistryEntry,
-} from "openclaw/plugin-sdk/channel-secret-basic-runtime";
+} from "eve-agent/plugin-sdk/channel-secret-basic-runtime";
 
 const DEFAULT_ACCOUNT_ID = "default";
 
@@ -14,7 +14,7 @@ export const secretTargetRegistryEntries = [
   {
     id: "channels.sms.accounts.*.authToken",
     targetType: "channels.sms.accounts.*.authToken",
-    configFile: "openclaw.json",
+    configFile: "eve.json",
     pathPattern: "channels.sms.accounts.*.authToken",
     secretShape: "secret_input",
     expectedResolvedValue: "string",
@@ -25,7 +25,7 @@ export const secretTargetRegistryEntries = [
   {
     id: "channels.sms.authToken",
     targetType: "channels.sms.authToken",
-    configFile: "openclaw.json",
+    configFile: "eve.json",
     pathPattern: "channels.sms.authToken",
     secretShape: "secret_input",
     expectedResolvedValue: "string",

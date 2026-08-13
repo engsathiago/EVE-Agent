@@ -1,5 +1,5 @@
 ---
-summary: "OpenClaw Zalo Personal Account plugin via native zca-js integration."
+summary: "EVE Zalo Personal Account plugin via native zca-js integration."
 read_when:
   - You are installing, configuring, or auditing the zalouser plugin
 title: "Zalo Personal plugin"
@@ -7,11 +7,11 @@ title: "Zalo Personal plugin"
 
 # Zalo Personal plugin
 
-OpenClaw Zalo Personal Account plugin via native zca-js integration.
+EVE Zalo Personal Account plugin via native zca-js integration.
 
 ## Distribution
 
-- Package: `@openclaw/zalouser`
+- Package: `@eve/zalouser`
 - Install route: npm; ClawHub
 
 ## Surface

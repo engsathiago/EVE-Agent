@@ -4,8 +4,8 @@ import { ButtonStyle } from "discord-api-types/v10";
 import type {
   ModelsProviderData,
   ModelsRuntimeChoice,
-} from "openclaw/plugin-sdk/models-provider-runtime";
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/models-provider-runtime";
+import { normalizeProviderId } from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   Button,
   Container,
@@ -214,9 +214,9 @@ function getRuntimeChoices(params: {
   }
   return [
     {
-      id: "openclaw",
-      label: "OpenClaw Default",
-      description: "Use the built-in OpenClaw runtime.",
+      id: "eve",
+      label: "EVE Default",
+      description: "Use the built-in EVE runtime.",
     },
   ];
 }
@@ -237,7 +237,7 @@ function resolveSelectedRuntime(params: {
   if (current && allowed.has(current)) {
     return current;
   }
-  return choices[0]?.id ?? "openclaw";
+  return choices[0]?.id ?? "eve";
 }
 
 function resolveExplicitRuntimeState(params: {

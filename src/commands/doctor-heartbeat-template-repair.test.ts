@@ -18,7 +18,7 @@ vi.mock("../../packages/terminal-core/src/note.js", () => ({
 const tempDirs: string[] = [];
 
 async function makeTempRoot(): Promise<string> {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-heartbeat-template-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-heartbeat-template-"));
   tempDirs.push(root);
   return root;
 }
@@ -112,7 +112,7 @@ Keep this file empty unless you want a tiny checklist. Keep it small.
   it("recognizes the current docs page boilerplate template as repairable", () => {
     const analysis = analyzeHeartbeatTemplateForRepair(`# HEARTBEAT.md template
 
-\`HEARTBEAT.md\` lives in the agent workspace. Keep the file empty, or with only Markdown comments and headings, when you want OpenClaw to skip heartbeat model calls.
+\`HEARTBEAT.md\` lives in the agent workspace. Keep the file empty, or with only Markdown comments and headings, when you want EVE to skip heartbeat model calls.
 
 The default runtime template is:
 

@@ -31,7 +31,7 @@ function createRuntime(): RuntimeEnv {
 describe("exportTrajectoryCommand", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.resolveDefaultSessionStorePath.mockReturnValue("/tmp/openclaw/sessions.json");
+    mocks.resolveDefaultSessionStorePath.mockReturnValue("/tmp/eve/sessions.json");
     mocks.loadSessionEntry.mockReturnValue(undefined);
   });
 
@@ -41,7 +41,7 @@ describe("exportTrajectoryCommand", () => {
     await exportTrajectoryCommand({}, runtime);
 
     expect(runtime.error).toHaveBeenCalledWith(
-      "--session-key is required. Run openclaw sessions to choose a session.",
+      "--session-key is required. Run eve sessions to choose a session.",
     );
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
@@ -81,7 +81,7 @@ describe("exportTrajectoryCommand", () => {
       storePath: "/tmp/direct-store.json",
     });
     expect(runtime.error).toHaveBeenCalledWith(
-      "Session not found: agent:main:telegram:direct:123. Run openclaw sessions to see available sessions.",
+      "Session not found: agent:main:telegram:direct:123. Run eve sessions to see available sessions.",
     );
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
@@ -92,7 +92,7 @@ describe("exportTrajectoryCommand", () => {
     await exportTrajectoryCommand({ sessionKey: "agent:main:telegram:direct:123" }, runtime);
 
     expect(runtime.error).toHaveBeenCalledWith(
-      "Session not found: agent:main:telegram:direct:123. Run openclaw sessions to see available sessions.",
+      "Session not found: agent:main:telegram:direct:123. Run eve sessions to see available sessions.",
     );
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });

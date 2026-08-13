@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/browser-plugin",
+  "name": "@eve/browser-plugin",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw browser tool plugin",
+  "description": "EVE browser tool plugin",
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
@@ -13,10 +13,10 @@
     "ws": "8.21.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
+    "@eve/plugin-sdk": "workspace:*",
     "undici": "8.5.0"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

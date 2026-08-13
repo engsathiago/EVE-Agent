@@ -13,7 +13,7 @@ function findUnquotedBracketPathExamples(markdown: string, docPath: string): str
   const failures: string[] = [];
 
   for (const [index, line] of markdown.split(/\r?\n/).entries()) {
-    const match = line.match(/\bopenclaw\s+config\s+(?:get|set|unset)\s+(\S+)/);
+    const match = line.match(/\beve\s+config\s+(?:get|set|unset)\s+(\S+)/);
     if (!match) {
       continue;
     }

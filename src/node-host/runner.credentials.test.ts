@@ -1,7 +1,7 @@
 /** Tests node-host runner credential routing and env handling. */
 import { describe, expect, it, vi } from "vitest";
 import { ConnectErrorDetailCodes } from "../../packages/gateway-protocol/src/connect-error-details.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import {
   handleNodeHostReconnectPaused,
@@ -9,7 +9,7 @@ import {
   shouldExitNodeHostOnReconnectPaused,
 } from "./runner.js";
 
-function createRemoteGatewayTokenRefConfig(tokenId: string): OpenClawConfig {
+function createRemoteGatewayTokenRefConfig(tokenId: string): EVEConfig {
   return {
     secrets: {
       providers: {
@@ -22,11 +22,11 @@ function createRemoteGatewayTokenRefConfig(tokenId: string): OpenClawConfig {
         token: { source: "env", provider: "default", id: tokenId },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 async function expectNoGatewayCredentials(
-  config: OpenClawConfig,
+  config: EVEConfig,
   env: Record<string, string | undefined>,
 ) {
   await withEnvAsync(env, async () => {
@@ -43,11 +43,11 @@ describe("resolveNodeHostGatewayCredentials", () => {
         mode: "local",
         remote: { token: "remote-only-token" },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await expectNoGatewayCredentials(config, {
-      OPENCLAW_GATEWAY_TOKEN: undefined,
-      OPENCLAW_GATEWAY_PASSWORD: undefined,
+      EVE_GATEWAY_TOKEN: undefined,
+      EVE_GATEWAY_PASSWORD: undefined,
     });
   });
 
@@ -64,11 +64,11 @@ describe("resolveNodeHostGatewayCredentials", () => {
           token: { source: "env", provider: "default", id: "MISSING_REMOTE_GATEWAY_TOKEN" },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await expectNoGatewayCredentials(config, {
-      OPENCLAW_GATEWAY_TOKEN: undefined,
-      OPENCLAW_GATEWAY_PASSWORD: undefined,
+      EVE_GATEWAY_TOKEN: undefined,
+      EVE_GATEWAY_PASSWORD: undefined,
       MISSING_REMOTE_GATEWAY_TOKEN: undefined,
     });
   });
@@ -78,8 +78,8 @@ describe("resolveNodeHostGatewayCredentials", () => {
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: undefined,
-        OPENCLAW_GATEWAY_PASSWORD: undefined,
+        EVE_GATEWAY_TOKEN: undefined,
+        EVE_GATEWAY_PASSWORD: undefined,
         REMOTE_GATEWAY_TOKEN: "token-from-ref",
       },
       async () => {
@@ -89,13 +89,13 @@ describe("resolveNodeHostGatewayCredentials", () => {
     );
   });
 
-  it("prefers OPENCLAW_GATEWAY_TOKEN over configured refs", async () => {
+  it("prefers EVE_GATEWAY_TOKEN over configured refs", async () => {
     const config = createRemoteGatewayTokenRefConfig("REMOTE_GATEWAY_TOKEN");
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: "token-from-env",
-        OPENCLAW_GATEWAY_PASSWORD: undefined,
+        EVE_GATEWAY_TOKEN: "token-from-env",
+        EVE_GATEWAY_PASSWORD: undefined,
         REMOTE_GATEWAY_TOKEN: "token-from-ref",
       },
       async () => {
@@ -110,8 +110,8 @@ describe("resolveNodeHostGatewayCredentials", () => {
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: undefined,
-        OPENCLAW_GATEWAY_PASSWORD: undefined,
+        EVE_GATEWAY_TOKEN: undefined,
+        EVE_GATEWAY_PASSWORD: undefined,
         MISSING_REMOTE_GATEWAY_TOKEN: undefined,
       },
       async () => {
@@ -136,12 +136,12 @@ describe("resolveNodeHostGatewayCredentials", () => {
           password: { source: "env", provider: "default", id: "MISSING_REMOTE_GATEWAY_PASSWORD" },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: undefined,
-        OPENCLAW_GATEWAY_PASSWORD: undefined,
+        EVE_GATEWAY_TOKEN: undefined,
+        EVE_GATEWAY_PASSWORD: undefined,
         REMOTE_GATEWAY_TOKEN: "token-from-ref",
         MISSING_REMOTE_GATEWAY_PASSWORD: undefined,
       },

@@ -11,11 +11,11 @@ function requireEnv(name) {
   return value;
 }
 
-const configPath = requireEnv("OPENCLAW_CONFIG_PATH");
-const stateDir = requireEnv("OPENCLAW_STATE_DIR");
-const workspaceDir = requireEnv("OPENCLAW_TEST_WORKSPACE_DIR");
-const token = requireEnv("OPENCLAW_GATEWAY_TOKEN");
-const timeoutSeconds = readPositiveIntEnv("OPENCLAW_CODEX_MEDIA_PATH_TIMEOUT_SECONDS", 180);
+const configPath = requireEnv("EVE_CONFIG_PATH");
+const stateDir = requireEnv("EVE_STATE_DIR");
+const workspaceDir = requireEnv("EVE_TEST_WORKSPACE_DIR");
+const token = requireEnv("EVE_GATEWAY_TOKEN");
+const timeoutSeconds = readPositiveIntEnv("EVE_CODEX_MEDIA_PATH_TIMEOUT_SECONDS", 180);
 const gatewayPort = readTcpPortEnv("PORT", 18790);
 
 const config = {

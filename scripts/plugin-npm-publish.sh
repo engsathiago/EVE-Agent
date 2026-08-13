@@ -83,7 +83,7 @@ mirror_auth_requirement="$(printf '%s\n' "${publish_plan_output}" | sed -n '5p')
 mirror_auth_source="${mirror_auth_source:-none}"
 mirror_auth_requirement="${mirror_auth_requirement:-optional}"
 publish_cmd=(npm publish --access public --tag "${publish_tag}")
-if [[ "${OPENCLAW_NPM_PUBLISH_PROVENANCE:-1}" != "0" && "${OPENCLAW_NPM_PUBLISH_PROVENANCE:-1}" != "false" ]]; then
+if [[ "${EVE_NPM_PUBLISH_PROVENANCE:-1}" != "0" && "${EVE_NPM_PUBLISH_PROVENANCE:-1}" != "false" ]]; then
   publish_cmd+=(--provenance)
 fi
 
@@ -98,7 +98,7 @@ log "Mirror dist-tag auth source: ${mirror_auth_source}"
 log "Mirror dist-tag auth requirement: ${mirror_auth_requirement}"
 
 build_package_runtime() {
-  if [[ "${OPENCLAW_PLUGIN_NPM_RUNTIME_BUILD:-1}" == "0" || "${OPENCLAW_PLUGIN_NPM_RUNTIME_BUILD:-1}" == "false" ]]; then
+  if [[ "${EVE_PLUGIN_NPM_RUNTIME_BUILD:-1}" == "0" || "${EVE_PLUGIN_NPM_RUNTIME_BUILD:-1}" == "false" ]]; then
     log "Package-local runtime build: skipped"
     return
   fi
@@ -122,7 +122,7 @@ case "${mirror_auth_source}" in
 esac
 publish_auth_token="${mirror_auth_token}"
 publish_auth_source="${mirror_auth_source}"
-if [[ "${OPENCLAW_NPM_PUBLISH_AUTH_MODE:-}" == "trusted-publisher" ]]; then
+if [[ "${EVE_NPM_PUBLISH_AUTH_MODE:-}" == "trusted-publisher" ]]; then
   publish_auth_token=""
   publish_auth_source="trusted-publisher"
 fi
@@ -162,7 +162,7 @@ build_package_runtime
 check_package_shrinkwrap
 
 if [[ "${mode}" == "--pack-dry-run" ]]; then
-  OPENCLAW_PLUGIN_NPM_BUNDLE_DEPENDENCIES=1 \
+  EVE_PLUGIN_NPM_BUNDLE_DEPENDENCIES=1 \
     node scripts/lib/plugin-npm-package-manifest.mjs --run "${package_dir}" -- \
     npm pack --dry-run --json --ignore-scripts
   exit 0
@@ -172,7 +172,7 @@ fi
   cleanup_files=()
   trap 'rm -f "${cleanup_files[@]}"' EXIT
   run_with_manifest_overlay() {
-    OPENCLAW_PLUGIN_NPM_BUNDLE_DEPENDENCIES=1 \
+    EVE_PLUGIN_NPM_BUNDLE_DEPENDENCIES=1 \
       node scripts/lib/plugin-npm-package-manifest.mjs --run "${package_dir}" -- "$@"
   }
   publish_userconfig=""

@@ -11,7 +11,7 @@
 //   ROWID but the original (old) send date, so it arrives on the live watch as
 //   a "new" row. The age fence is what recognizes it as stale.
 import { createHash } from "node:crypto";
-import { createClaimableDedupe, type ClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+import { createClaimableDedupe, type ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 import type { IMessagePayload } from "./types.js";
 
 export const IMESSAGE_INBOUND_DEDUPE_PLUGIN_ID = "imessage";

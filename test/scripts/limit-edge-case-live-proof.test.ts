@@ -8,7 +8,7 @@ import { withEnvAsync } from "../../src/test-utils/env.js";
 
 describe("limit-edge-case live proof", () => {
   it("cleans the generated session-log temp root", async () => {
-    const tempRoot = mkdtempSync(path.join(tmpdir(), "openclaw-limit-proof-test-"));
+    const tempRoot = mkdtempSync(path.join(tmpdir(), "eve-limit-proof-test-"));
     try {
       let proofRoot = "";
       await withEnvAsync({ TMPDIR: tempRoot }, async () => {
@@ -21,7 +21,7 @@ describe("limit-edge-case live proof", () => {
 
       expect(proofRoot).not.toBe("");
       expect(existsSync(proofRoot)).toBe(false);
-      expect(readdirSync(tempRoot).filter((entry) => entry.startsWith("openclaw-proof-"))).toEqual(
+      expect(readdirSync(tempRoot).filter((entry) => entry.startsWith("eve-proof-"))).toEqual(
         [],
       );
     } finally {

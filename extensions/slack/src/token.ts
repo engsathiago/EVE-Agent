@@ -1,5 +1,5 @@
 // Slack plugin module implements token behavior.
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 
 export function resolveSlackBotToken(
   raw?: unknown,

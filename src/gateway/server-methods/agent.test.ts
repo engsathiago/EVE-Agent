@@ -31,7 +31,7 @@ import { chatHandlers } from "./chat.js";
 import { expectSubagentFollowupReactivation } from "./subagent-followup.test-helpers.js";
 import type { GatewayRequestContext } from "./types.js";
 
-const ORIGINAL_STATE_DIR = process.env.OPENCLAW_STATE_DIR;
+const ORIGINAL_STATE_DIR = process.env.EVE_STATE_DIR;
 
 const mocks = vi.hoisted(() => ({
   loadSessionEntry: vi.fn(),
@@ -563,9 +563,9 @@ async function invokeAgentIdentityGet(
 describe("gateway agent handler", () => {
   afterEach(() => {
     if (ORIGINAL_STATE_DIR === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = ORIGINAL_STATE_DIR;
+      process.env.EVE_STATE_DIR = ORIGINAL_STATE_DIR;
     }
     resetDetachedTaskLifecycleRuntimeForTests();
     resetTaskRegistryForTests();
@@ -716,7 +716,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(new Date("2026-05-07T12:00:00.000Z"));
     const staleEntry = {
       sessionId: "old-session-id",
-      sessionFile: "/tmp/openclaw/agents/main/sessions/old-session-id.jsonl",
+      sessionFile: "/tmp/eve/agents/main/sessions/old-session-id.jsonl",
       updatedAt: 0,
       sessionStartedAt: 0,
     };
@@ -749,7 +749,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(now);
     const missingTranscriptEntry = {
       sessionId: "failed-missing-session-id",
-      sessionFile: "/tmp/openclaw/missing/failed-missing-session-id.jsonl",
+      sessionFile: "/tmp/eve/missing/failed-missing-session-id.jsonl",
       status: "failed",
       updatedAt: now,
       sessionStartedAt: now,
@@ -786,7 +786,7 @@ describe("gateway agent handler", () => {
       vi.setSystemTime(now);
 
       await withTempDir(
-        { prefix: "openclaw-gateway-terminal-main-newer-transcript-" },
+        { prefix: "eve-gateway-terminal-main-newer-transcript-" },
         async (root) => {
           const sessionsDir = `${root}/sessions`;
           await fs.mkdir(sessionsDir, { recursive: true });
@@ -850,7 +850,7 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-terminal-main-fresh-marker-" }, async (root) => {
+    await withTempDir({ prefix: "eve-gateway-terminal-main-fresh-marker-" }, async (root) => {
       const sessionsDir = `${root}/sessions`;
       await fs.mkdir(sessionsDir, { recursive: true });
       const sessionFile = "terminal-main-session.jsonl";
@@ -917,7 +917,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(now);
 
     await withTempDir(
-      { prefix: "openclaw-gateway-terminal-main-explicit-resume-" },
+      { prefix: "eve-gateway-terminal-main-explicit-resume-" },
       async (root) => {
         const sessionsDir = `${root}/sessions`;
         await fs.mkdir(sessionsDir, { recursive: true });
@@ -989,7 +989,7 @@ describe("gateway agent handler", () => {
       vi.setSystemTime(now);
 
       await withTempDir(
-        { prefix: `openclaw-gateway-terminal-main-${runKind}-reuse-` },
+        { prefix: `eve-gateway-terminal-main-${runKind}-reuse-` },
         async (root) => {
           const sessionsDir = `${root}/sessions`;
           await fs.mkdir(sessionsDir, { recursive: true });
@@ -1081,7 +1081,7 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-failed-default-session-file-" }, async (root) => {
+    await withTempDir({ prefix: "eve-gateway-failed-default-session-file-" }, async (root) => {
       const sessionsDir = `${root}/sessions`;
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(`${sessionsDir}/failed-present-default-session-id.jsonl`, "", "utf8");
@@ -1117,7 +1117,7 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-failed-session-file-" }, async (root) => {
+    await withTempDir({ prefix: "eve-gateway-failed-session-file-" }, async (root) => {
       const sessionsDir = `${root}/sessions`;
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(`${sessionsDir}/relative-present.jsonl`, "", "utf8");
@@ -2594,8 +2594,8 @@ describe("gateway agent handler", () => {
     await invokeAgent(
       {
         message: [
-          "[Mon 2026-04-06 02:42 GMT+1] <<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
-          "OpenClaw runtime context (internal):",
+          "[Mon 2026-04-06 02:42 GMT+1] <<<BEGIN_EVE_INTERNAL_CONTEXT>>>",
+          "EVE runtime context (internal):",
           "This context is runtime-generated, not user-authored. Keep internal details private.",
         ].join("\n"),
         sessionKey: "agent:main:main",
@@ -3180,8 +3180,8 @@ describe("gateway agent handler", () => {
   });
 
   it("terminalizes successful async gateway agent runs in the shared task registry", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
 
@@ -3206,8 +3206,8 @@ describe("gateway agent handler", () => {
   });
 
   it("tracks plugin SDK subagent agent runs through the subagent registry only", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-plugin-subagent-task-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-plugin-subagent-task-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       resetSubagentRegistryForTests({ persist: false });
       const runId = "plugin-subagent-task-run";
@@ -3325,9 +3325,9 @@ describe("gateway agent handler", () => {
 
   it("keeps plugin SDK subagent runs best-effort when registry persistence fails", async () => {
     await withTempDir(
-      { prefix: "openclaw-gateway-plugin-subagent-registry-fail-" },
+      { prefix: "eve-gateway-plugin-subagent-registry-fail-" },
       async (root) => {
-        process.env.OPENCLAW_STATE_DIR = root;
+        process.env.EVE_STATE_DIR = root;
         resetTaskRegistryForTests();
         resetSubagentRegistryForTests({ persist: false });
         subagentRegistryTesting.setDepsForTest({
@@ -3405,8 +3405,8 @@ describe("gateway agent handler", () => {
   });
 
   it("terminalizes failed async gateway agent runs in the shared task registry", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-error-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-error-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       mocks.agentCommand.mockRejectedValueOnce(new Error("agent unavailable"));
@@ -3432,8 +3432,8 @@ describe("gateway agent handler", () => {
   });
 
   it("preserves aborted async gateway agent runs as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-aborted-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-aborted-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       mocks.agentCommand.mockResolvedValueOnce({
@@ -3468,8 +3468,8 @@ describe("gateway agent handler", () => {
   });
 
   it("classifies aborted async gateway agent rejections as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-abort-error-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-abort-error-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       const abortError = new Error("This operation was aborted");
@@ -3511,8 +3511,8 @@ describe("gateway agent handler", () => {
   });
 
   it("preserves restart ownership for aborted async gateway agent rejections", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-restart-abort-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-restart-abort-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       const abortError = createAgentRunRestartAbortError();
@@ -3548,8 +3548,8 @@ describe("gateway agent handler", () => {
   });
 
   it("classifies timeout async gateway agent rejections as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-timeout-error-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-timeout-error-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       const timeoutError = new Error("chat run timed out");
@@ -3592,9 +3592,9 @@ describe("gateway agent handler", () => {
 
   it("classifies wrapped rejections after gateway timeout as timed out", async () => {
     await withTempDir(
-      { prefix: "openclaw-gateway-agent-task-wrapped-timeout-error-" },
+      { prefix: "eve-gateway-agent-task-wrapped-timeout-error-" },
       async (root) => {
-        process.env.OPENCLAW_STATE_DIR = root;
+        process.env.EVE_STATE_DIR = root;
         resetTaskRegistryForTests();
         primeMainAgentRun();
         const timeoutReason = new Error("chat run timed out");
@@ -3642,8 +3642,8 @@ describe("gateway agent handler", () => {
   });
 
   it("does not hide provider timeout async gateway agent rejections", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-provider-timeout-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-provider-timeout-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       const providerError = new Error("provider request timed out");
@@ -3683,8 +3683,8 @@ describe("gateway agent handler", () => {
   });
 
   it("does not overwrite operator-cancelled async gateway agent tasks after late completion", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-cancelled-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-task-cancelled-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
       let resolveRun: (value: {
@@ -3791,7 +3791,7 @@ describe("gateway agent handler", () => {
   });
 
   it("uses an agent-scoped to value as the gateway session selector", async () => {
-    const sessionKey = "agent:main:openclaw-weixin:direct:o9cq802hhmfc@im.wechat";
+    const sessionKey = "agent:main:eve-weixin:direct:o9cq802hhmfc@im.wechat";
     mocks.resolveExplicitAgentSessionKey.mockReturnValue("agent:main:main");
     mocks.loadSessionEntry.mockImplementation((key: string) => ({
       cfg: {},
@@ -4577,8 +4577,8 @@ describe("gateway agent handler", () => {
   });
 
   it("dispatches async gateway agent task creation through the detached task runtime seam", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-seam-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-seam-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
 
@@ -4636,8 +4636,8 @@ describe("gateway agent handler", () => {
   });
 
   it("logs a swallowed finalize error without blocking the background run", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-finalize-throw-" }, async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+    await withTempDir({ prefix: "eve-gateway-agent-finalize-throw-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       primeMainAgentRun();
 
@@ -5214,7 +5214,7 @@ describe("gateway agent handler", () => {
   });
 
   it("uses the selected session target for bare /reset delivery when to is an agent session key", async () => {
-    const sessionKey = "agent:main:openclaw-weixin:direct:o9cq802hhmfc@im.wechat";
+    const sessionKey = "agent:main:eve-weixin:direct:o9cq802hhmfc@im.wechat";
     mockSessionResetSuccess({ reason: "reset", key: sessionKey, sessionId: "wechat-session-id" });
     mocks.loadSessionEntry.mockImplementation((key: string) => ({
       cfg: {},
@@ -5222,15 +5222,15 @@ describe("gateway agent handler", () => {
       entry: {
         sessionId: key === sessionKey ? "wechat-session-id" : "main-session-id",
         updatedAt: Date.now(),
-        lastChannel: "openclaw-weixin",
+        lastChannel: "eve-weixin",
         lastTo: "o9cq802hhmfc@im.wechat",
       },
       canonicalKey: key,
     }));
     mocks.getChannelPlugin.mockImplementation((channel: string) =>
-      channel === "openclaw-weixin"
+      channel === "eve-weixin"
         ? {
-            id: "openclaw-weixin",
+            id: "eve-weixin",
             meta: { label: "WeChat" },
             capabilities: { chatTypes: ["direct"] },
             config: {},
@@ -5280,7 +5280,7 @@ describe("gateway agent handler", () => {
     });
     expect(mocks.sendDurableMessageBatch).toHaveBeenCalledWith(
       expect.objectContaining({
-        channel: "openclaw-weixin",
+        channel: "eve-weixin",
         to: "o9cq802hhmfc@im.wechat",
       }),
     );
@@ -5609,9 +5609,9 @@ describe("gateway agent handler", () => {
 describe("gateway agent handler chat.abort integration", () => {
   function resetIntegrationState() {
     if (ORIGINAL_STATE_DIR === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = ORIGINAL_STATE_DIR;
+      process.env.EVE_STATE_DIR = ORIGINAL_STATE_DIR;
     }
     resetDetachedTaskLifecycleRuntimeForTests();
     resetTaskRegistryForTests();

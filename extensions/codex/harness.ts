@@ -6,7 +6,7 @@ import type {
   AgentHarnessCompactParams,
   AgentHarnessCompactResult,
   ContextEngineHostCapability,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import type {
   CodexAppServerListModelsOptions,
   CodexAppServerModel,

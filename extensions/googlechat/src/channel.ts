@@ -1,13 +1,13 @@
 // Googlechat plugin module implements channel behavior.
-import type { ChannelMessageActionName } from "openclaw/plugin-sdk/channel-contract";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
-import { createLazyRuntimeNamedExport } from "openclaw/plugin-sdk/lazy-runtime";
+import type { ChannelMessageActionName } from "eve-agent/plugin-sdk/channel-contract";
+import { createChatChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
+import { buildPassiveProbedChannelStatusSummary } from "eve-agent/plugin-sdk/extension-shared";
+import { createLazyRuntimeNamedExport } from "eve-agent/plugin-sdk/lazy-runtime";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
-import { extractToolSend } from "openclaw/plugin-sdk/tool-send";
+} from "eve-agent/plugin-sdk/status-helpers";
+import { extractToolSend } from "eve-agent/plugin-sdk/tool-send";
 import {
   googleChatApprovalCapability,
   shouldSuppressLocalGoogleChatExecApprovalPrompt,

@@ -12,8 +12,8 @@ describe("terminal ansi helpers", () => {
   it("strips ANSI and OSC8 sequences", () => {
     expect(stripAnsi("\u001B[31mred\u001B[0m")).toBe("red");
     expect(stripAnsi("\u001B[2K\u001B[1Ared")).toBe("red");
-    expect(stripAnsi("\u001B]8;;https://openclaw.ai\u001B\\link\u001B]8;;\u001B\\")).toBe("link");
-    expect(stripAnsi("\u001B]8;;https://openclaw.ai\u0007link\u001B]8;;\u0007")).toBe("link");
+    expect(stripAnsi("\u001B]8;;https://eve.ai\u001B\\link\u001B]8;;\u001B\\")).toBe("link");
+    expect(stripAnsi("\u001B]8;;https://eve.ai\u0007link\u001B]8;;\u0007")).toBe("link");
     expect(stripAnsi("copy\u001B]52;c;YWJj\u0007safe")).toBe("copysafe");
   });
 
@@ -65,8 +65,8 @@ describe("terminal ansi helpers", () => {
     expect(truncateToVisibleWidth("\u001B[31mabc\u001B[0m", 2)).toBe("\u001B[31mab\u001B[0m");
     expect(truncateToVisibleWidth("plain", 3)).toBe("pla");
     expect(
-      truncateToVisibleWidth("\u001B]8;;https://openclaw.ai\u001B\\link\u001B]8;;\u001B\\", 2),
-    ).toBe("\u001B]8;;https://openclaw.ai\u001B\\li\u001B]8;;\u001B\\");
+      truncateToVisibleWidth("\u001B]8;;https://eve.ai\u001B\\link\u001B]8;;\u001B\\", 2),
+    ).toBe("\u001B]8;;https://eve.ai\u001B\\li\u001B]8;;\u001B\\");
     expect(truncateToVisibleWidth("\u001B[32mxy\u001B[0m", 1)).toBe("\u001B[32mx\u001B[0m");
   });
 });

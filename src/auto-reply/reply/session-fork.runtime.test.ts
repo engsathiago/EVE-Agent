@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AssistantMessage } from "openclaw/plugin-sdk/llm";
+import type { AssistantMessage } from "eve-agent/plugin-sdk/llm";
 import { afterEach, describe, expect, it } from "vitest";
 import { SessionManager } from "../../agents/sessions/session-manager.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
@@ -25,7 +25,7 @@ afterEach(async () => {
 
 describe("resolveParentForkTokenCountRuntime", () => {
   it("falls back to recent transcript usage when cached totals are stale", async () => {
-    const root = await makeRoot("openclaw-parent-fork-token-estimate-");
+    const root = await makeRoot("eve-parent-fork-token-estimate-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
 
@@ -82,7 +82,7 @@ describe("resolveParentForkTokenCountRuntime", () => {
   });
 
   it("falls back to a conservative byte estimate when stale parent transcript has no usage", async () => {
-    const root = await makeRoot("openclaw-parent-fork-byte-estimate-");
+    const root = await makeRoot("eve-parent-fork-byte-estimate-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
 
@@ -126,7 +126,7 @@ describe("resolveParentForkTokenCountRuntime", () => {
   });
 
   it("uses the latest usage snapshot instead of tail aggregates for parent fork checks", async () => {
-    const root = await makeRoot("openclaw-parent-fork-latest-usage-");
+    const root = await makeRoot("eve-parent-fork-latest-usage-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
 
@@ -176,7 +176,7 @@ describe("resolveParentForkTokenCountRuntime", () => {
   });
 
   it("keeps parent fork checks conservative for content appended after latest usage", async () => {
-    const root = await makeRoot("openclaw-parent-fork-post-usage-tail-");
+    const root = await makeRoot("eve-parent-fork-post-usage-tail-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
 
@@ -227,7 +227,7 @@ describe("resolveParentForkTokenCountRuntime", () => {
 
 describe("forkSessionFromParentRuntime", () => {
   it("forks the active branch without synchronously opening the session manager", async () => {
-    const root = await makeRoot("openclaw-parent-fork-");
+    const root = await makeRoot("eve-parent-fork-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -339,7 +339,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("keeps opaque append-parent metadata on the active fork branch", async () => {
-    const root = await makeRoot("openclaw-parent-fork-opaque-");
+    const root = await makeRoot("eve-parent-fork-opaque-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -445,7 +445,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("keeps parentless visible history with a disjoint append cursor", async () => {
-    const root = await makeRoot("openclaw-parent-fork-disjoint-");
+    const root = await makeRoot("eve-parent-fork-disjoint-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -519,7 +519,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("keeps an explicit empty visible branch separate from its opaque append parent", async () => {
-    const root = await makeRoot("openclaw-parent-fork-empty-opaque-");
+    const root = await makeRoot("eve-parent-fork-empty-opaque-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -600,7 +600,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("keeps a reachable branch suffix when an older parent is missing", async () => {
-    const root = await makeRoot("openclaw-parent-fork-missing-ancestor-");
+    const root = await makeRoot("eve-parent-fork-missing-ancestor-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -646,7 +646,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("keeps visible history when the next append explicitly starts a root branch", async () => {
-    const root = await makeRoot("openclaw-parent-fork-root-append-");
+    const root = await makeRoot("eve-parent-fork-root-append-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -705,7 +705,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("preserves supported current-version linear transcripts", async () => {
-    const root = await makeRoot("openclaw-parent-fork-linear-");
+    const root = await makeRoot("eve-parent-fork-linear-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");
@@ -779,7 +779,7 @@ describe("forkSessionFromParentRuntime", () => {
   });
 
   it("creates a header-only child when the parent has no entries", async () => {
-    const root = await makeRoot("openclaw-parent-fork-empty-");
+    const root = await makeRoot("eve-parent-fork-empty-");
     const sessionsDir = path.join(root, "sessions");
     await fs.mkdir(sessionsDir);
     const parentSessionFile = path.join(sessionsDir, "parent.jsonl");

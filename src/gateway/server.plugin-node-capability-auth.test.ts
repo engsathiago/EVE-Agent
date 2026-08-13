@@ -17,9 +17,9 @@ const WS_REJECT_TIMEOUT_MS = 2_000;
 const WS_CONNECT_TIMEOUT_MS = 5_000;
 const HTTP_REQUEST_TIMEOUT_MS = 15_000;
 const SERVER_CLOSE_TIMEOUT_MS = 5_000;
-const A2UI_PATH = "/__openclaw__/a2ui";
-const CANVAS_HOST_PATH = "/__openclaw__/canvas";
-const CANVAS_WS_PATH = "/__openclaw__/ws";
+const A2UI_PATH = "/__eve__/a2ui";
+const CANVAS_HOST_PATH = "/__eve__/canvas";
+const CANVAS_WS_PATH = "/__eve__/ws";
 const CANVAS_CAPABILITY_PATH_PREFIX = PLUGIN_NODE_CAPABILITY_PATH_PREFIX;
 
 type CanvasHostHandler = {
@@ -500,7 +500,7 @@ describe("gateway plugin node capability auth", () => {
           await expectWsRejected(`ws://${host}:${listener.port}${activeWsPath}`, {});
         },
       });
-    }, "openclaw-canvas-auth-test-");
+    }, "eve-canvas-auth-test-");
   }, 60_000);
 
   test("rejects malformed raw HTTP request targets without disrupting gateway", async () => {

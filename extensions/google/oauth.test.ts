@@ -2,9 +2,9 @@
 import { join, parse } from "node:path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/runtime-env")>(
-    "openclaw/plugin-sdk/runtime-env",
+vi.mock("eve-agent/plugin-sdk/runtime-env", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/runtime-env")>(
+    "eve-agent/plugin-sdk/runtime-env",
   );
   return {
     ...actual,
@@ -12,9 +12,9 @@ vi.mock("openclaw/plugin-sdk/runtime-env", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/ssrf-runtime")>(
-    "openclaw/plugin-sdk/ssrf-runtime",
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/ssrf-runtime")>(
+    "eve-agent/plugin-sdk/ssrf-runtime",
   );
   return {
     ...actual,
@@ -35,8 +35,8 @@ vi.mock("openclaw/plugin-sdk/ssrf-runtime", async () => {
 });
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/runtime-env");
-  vi.doUnmock("openclaw/plugin-sdk/ssrf-runtime");
+  vi.doUnmock("eve-agent/plugin-sdk/runtime-env");
+  vi.doUnmock("eve-agent/plugin-sdk/ssrf-runtime");
   vi.resetModules();
 });
 
@@ -143,8 +143,8 @@ describe("resolveGeminiCliSelectedAuthType", () => {
 
 describe("extractGeminiCliCredentials", () => {
   const ENV_KEYS = [
-    "OPENCLAW_GEMINI_OAUTH_CLIENT_ID",
-    "OPENCLAW_GEMINI_OAUTH_CLIENT_SECRET",
+    "EVE_GEMINI_OAUTH_CLIENT_ID",
+    "EVE_GEMINI_OAUTH_CLIENT_SECRET",
     "GEMINI_CLI_OAUTH_CLIENT_ID",
     "GEMINI_CLI_OAUTH_CLIENT_SECRET",
   ] as const;
@@ -635,8 +635,8 @@ describe("loginGeminiCliOAuth", () => {
     "https://autopush-cloudcode-pa.sandbox.googleapis.com/v1internal:loadCodeAssist";
 
   const ENV_KEYS = [
-    "OPENCLAW_GEMINI_OAUTH_CLIENT_ID",
-    "OPENCLAW_GEMINI_OAUTH_CLIENT_SECRET",
+    "EVE_GEMINI_OAUTH_CLIENT_ID",
+    "EVE_GEMINI_OAUTH_CLIENT_SECRET",
     "GEMINI_CLI_OAUTH_CLIENT_ID",
     "GEMINI_CLI_OAUTH_CLIENT_SECRET",
     "GOOGLE_CLOUD_PROJECT",
@@ -689,7 +689,7 @@ describe("loginGeminiCliOAuth", () => {
   }
 
   function userInfoResponse(): Response {
-    return responseJson({ email: "lobster@openclaw.ai" });
+    return responseJson({ email: "lobster@eve.ai" });
   }
 
   type RecordedFetchRequest = {
@@ -799,8 +799,8 @@ describe("loginGeminiCliOAuth", () => {
 
   beforeEach(() => {
     envSnapshot = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
-    process.env.OPENCLAW_GEMINI_OAUTH_CLIENT_ID = "test-client-id.apps.googleusercontent.com";
-    process.env.OPENCLAW_GEMINI_OAUTH_CLIENT_SECRET = "GOCSPX-test-client-secret"; // pragma: allowlist secret
+    process.env.EVE_GEMINI_OAUTH_CLIENT_ID = "test-client-id.apps.googleusercontent.com";
+    process.env.EVE_GEMINI_OAUTH_CLIENT_SECRET = "GOCSPX-test-client-secret"; // pragma: allowlist secret
     delete process.env.GEMINI_CLI_OAUTH_CLIENT_ID;
     delete process.env.GEMINI_CLI_OAUTH_CLIENT_SECRET;
     delete process.env.GOOGLE_CLOUD_PROJECT;
@@ -978,13 +978,13 @@ describe("loginGeminiCliOAuth", () => {
     const { refreshTokensForGeminiCli } = await import("./oauth.token.js");
     const result = await refreshTokensForGeminiCli({
       refresh: "refresh-token",
-      email: "lobster@openclaw.ai",
+      email: "lobster@eve.ai",
     });
 
     expect(result).toMatchObject({
       access: "access-token",
       refresh: "refresh-token",
-      email: "lobster@openclaw.ai",
+      email: "lobster@eve.ai",
       projectId: undefined,
     });
     expect(requests.map(({ url }) => url)).toEqual([TOKEN_URL, USERINFO_URL]);
@@ -1013,7 +1013,7 @@ describe("loginGeminiCliOAuth", () => {
     const { refreshTokensForGeminiCli } = await import("./oauth.token.js");
     const result = await refreshTokensForGeminiCli({
       refresh: "refresh-token",
-      email: "lobster@openclaw.ai",
+      email: "lobster@eve.ai",
     });
 
     expect(Number.isFinite(result.expires)).toBe(true);
@@ -1044,7 +1044,7 @@ describe("loginGeminiCliOAuth", () => {
       const { refreshTokensForGeminiCli } = await import("./oauth.token.js");
       const result = await refreshTokensForGeminiCli({
         refresh: "refresh-token",
-        email: "lobster@openclaw.ai",
+        email: "lobster@eve.ai",
       });
 
       expect(result.expires).toBe(0);
@@ -1076,7 +1076,7 @@ describe("loginGeminiCliOAuth", () => {
     const { refreshTokensForGeminiCli } = await import("./oauth.token.js");
     const result = await refreshTokensForGeminiCli({
       refresh: "refresh-token",
-      email: "lobster@openclaw.ai",
+      email: "lobster@eve.ai",
     });
 
     expect(Number.isSafeInteger(result.expires)).toBe(true);

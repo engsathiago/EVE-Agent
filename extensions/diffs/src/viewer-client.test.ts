@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const disableAutoStartKey = Symbol.for("openclaw.diffs.disableAutoStart");
+const disableAutoStartKey = Symbol.for("eve.diffs.disableAutoStart");
 (globalThis as typeof globalThis & Record<symbol, unknown>)[disableAutoStartKey] = true;
 
 const VIEWER_CLIENT_SRC = readFileSync(
@@ -64,8 +64,8 @@ function renderCard(payloadOverride?: string): void {
   document.body.insertAdjacentHTML(
     "beforeend",
     `<section class="oc-diff-card">
-      <div data-openclaw-diff-host></div>
-      <script type="application/json" data-openclaw-diff-payload>${payload}</script>
+      <div data-eve-diff-host></div>
+      <script type="application/json" data-eve-diff-payload>${payload}</script>
     </section>`,
   );
 }
@@ -123,8 +123,8 @@ describe("createToolbarButton icon safety", () => {
 describe("hydrateViewer", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
-    delete document.documentElement.dataset.openclawDiffsError;
-    delete document.documentElement.dataset.openclawDiffsReady;
+    delete document.documentElement.dataset.eveDiffsError;
+    delete document.documentElement.dataset.eveDiffsReady;
     vi.clearAllMocks();
   });
 
@@ -146,7 +146,7 @@ describe("hydrateViewer", () => {
       "Skipping diff card that failed to hydrate",
       expect.any(Error),
     );
-    expect(document.documentElement.dataset.openclawDiffsError).toBeUndefined();
+    expect(document.documentElement.dataset.eveDiffsError).toBeUndefined();
     warn.mockRestore();
   });
 
@@ -169,7 +169,7 @@ describe("hydrateViewer", () => {
       "Skipping diff card that failed to hydrate",
       expect.any(Error),
     );
-    expect(document.documentElement.dataset.openclawDiffsError).toBeUndefined();
+    expect(document.documentElement.dataset.eveDiffsError).toBeUndefined();
     warn.mockRestore();
   });
 });
@@ -177,8 +177,8 @@ describe("hydrateViewer", () => {
 describe("viewerState initialization", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
-    delete document.documentElement.dataset.openclawDiffsError;
-    delete document.documentElement.dataset.openclawDiffsReady;
+    delete document.documentElement.dataset.eveDiffsError;
+    delete document.documentElement.dataset.eveDiffsReady;
     delete document.body.dataset.theme;
     vi.clearAllMocks();
   });
@@ -380,7 +380,7 @@ describe("ensureShadowRoot", () => {
 
   it("attaches shadow root from template and removes template element", async () => {
     renderCard();
-    const host = document.querySelector<HTMLElement>("[data-openclaw-diff-host]")!;
+    const host = document.querySelector<HTMLElement>("[data-eve-diff-host]")!;
     const template = document.createElement("template");
     template.setAttribute("shadowrootmode", "open");
     template.innerHTML = "<div>shadow content</div>";
@@ -396,7 +396,7 @@ describe("ensureShadowRoot", () => {
 
   it("skips shadow root attachment when no template is present", async () => {
     renderCard();
-    const host = document.querySelector<HTMLElement>("[data-openclaw-diff-host]")!;
+    const host = document.querySelector<HTMLElement>("[data-eve-diff-host]")!;
 
     const { hydrateViewer } = await import("./viewer-client.js");
     await hydrateViewer();
@@ -407,7 +407,7 @@ describe("ensureShadowRoot", () => {
 
   it("skips shadow root when already attached", async () => {
     renderCard();
-    const host = document.querySelector<HTMLElement>("[data-openclaw-diff-host]")!;
+    const host = document.querySelector<HTMLElement>("[data-eve-diff-host]")!;
     host.attachShadow({ mode: "open" });
     host.shadowRoot!.innerHTML = "<span>existing</span>";
 

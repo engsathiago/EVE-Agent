@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import { resolveArchiveKind } from "../infra/archive.js";
 import { formatErrorMessage } from "../infra/errors.js";
@@ -534,7 +534,7 @@ async function cloneMarketplaceRepo(params: {
     return { ok: false, error: `unsupported marketplace source: ${params.source}` };
   }
 
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-marketplace-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-marketplace-"));
   const repoDir = path.join(tmpDir, "repo");
   const refIsCommit = isImmutableGitCommitRef(normalized.ref);
   const argv = ["git", "clone"];
@@ -920,7 +920,7 @@ async function downloadUrlToTempFile(
 
       const finalFileName = resolveSafeMarketplaceDownloadFileName(finalUrl, sourceFileName);
       const fileName = resolveArchiveKind(finalFileName) ? finalFileName : sourceFileName;
-      tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-marketplace-download-"));
+      tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-marketplace-download-"));
       const createdTmpDir = tmpDir;
       const targetPath = path.resolve(createdTmpDir, fileName);
       const relativeTargetPath = path.relative(createdTmpDir, targetPath);

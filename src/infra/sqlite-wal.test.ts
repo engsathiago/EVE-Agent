@@ -52,14 +52,14 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("uses rollback journaling for databases on NFS-backed volumes", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       const statfs = vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0x6969));
 
       const maintenance = configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "missing", "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "missing", "eve.sqlite"),
       });
 
       expect(statfs).toHaveBeenCalledWith(fs.realpathSync(tempDir));
@@ -78,14 +78,14 @@ describe("sqlite WAL maintenance", () => {
     ["CIFS", 0xff534d42],
     ["SMB2", 0xfe534d42],
   ])("uses rollback journaling for databases on Linux %s volumes", (_label, fsType) => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-network-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-network-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(fsType));
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["prepare"]).toHaveBeenCalledWith("PRAGMA journal_mode = DELETE;");
@@ -95,10 +95,10 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it.each([
-    String.raw`\\server\share\openclaw.sqlite`,
-    String.raw`\\?\UNC\server\share\openclaw.sqlite`,
-    "//server/share/openclaw.sqlite",
-    "//?/UNC/server/share/openclaw.sqlite",
+    String.raw`\\server\share\eve.sqlite`,
+    String.raw`\\?\UNC\server\share\eve.sqlite`,
+    "//server/share/eve.sqlite",
+    "//?/UNC/server/share/eve.sqlite",
   ])("uses rollback journaling for databases on Windows UNC paths: %s", (databasePath) => {
     const db = createMockDb();
     vi.spyOn(process, "platform", "get").mockReturnValue("win32");
@@ -114,11 +114,11 @@ describe("sqlite WAL maintenance", () => {
 
   it("uses rollback journaling for mapped Windows network drives", () => {
     const db = createMockDb();
-    const databasePath = String.raw`Z:\state\openclaw.sqlite`;
+    const databasePath = String.raw`Z:\state\eve.sqlite`;
     vi.spyOn(process, "platform", "get").mockReturnValue("win32");
     const realpath = vi
       .spyOn(fs.realpathSync, "native")
-      .mockReturnValue(String.raw`\\server\share\state\openclaw.sqlite`);
+      .mockReturnValue(String.raw`\\server\share\state\eve.sqlite`);
 
     configureSqliteWalMaintenance(db, {
       checkpointIntervalMs: 0,
@@ -132,7 +132,7 @@ describe("sqlite WAL maintenance", () => {
 
   it("does not treat namespaced Windows local drives as UNC paths", () => {
     const db = createMockDb();
-    const databasePath = String.raw`\\?\C:\state\openclaw.sqlite`;
+    const databasePath = String.raw`\\?\C:\state\eve.sqlite`;
     vi.spyOn(process, "platform", "get").mockReturnValue("win32");
     const realpath = vi.spyOn(fs.realpathSync, "native").mockReturnValue(databasePath);
 
@@ -148,7 +148,7 @@ describe("sqlite WAL maintenance", () => {
 
   it("uses rollback journaling when Windows cannot classify an opened drive path", () => {
     const db = createMockDb();
-    const databasePath = String.raw`Z:\restricted\openclaw.sqlite`;
+    const databasePath = String.raw`Z:\restricted\eve.sqlite`;
     vi.spyOn(process, "platform", "get").mockReturnValue("win32");
     vi.spyOn(fs.realpathSync, "native").mockImplementation(() => {
       throw new Error("access denied");
@@ -164,7 +164,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("refuses network-backed databases when SQLite keeps WAL active", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       vi.mocked(db["prepare"]).mockReturnValue({
@@ -176,7 +176,7 @@ describe("sqlite WAL maintenance", () => {
         configureSqliteWalMaintenance(db, {
           checkpointIntervalMs: 0,
           databaseLabel: "test-db",
-          databasePath: path.join(tempDir, "openclaw.sqlite"),
+          databasePath: path.join(tempDir, "eve.sqlite"),
         }),
       ).toThrow(/test-db .*journal_mode=wal/);
     } finally {
@@ -185,7 +185,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("uses mountinfo filesystem names when statfs magic is not enough", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -195,7 +195,7 @@ describe("sqlite WAL maintenance", () => {
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["prepare"]).toHaveBeenCalledWith("PRAGMA journal_mode = DELETE;");
@@ -205,7 +205,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("refuses fuse.sshfs mountinfo entries", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-sshfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-sshfs-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -217,7 +217,7 @@ describe("sqlite WAL maintenance", () => {
         configureSqliteWalMaintenance(db, {
           checkpointIntervalMs: 0,
           databaseLabel: "test-db",
-          databasePath: path.join(tempDir, "openclaw.sqlite"),
+          databasePath: path.join(tempDir, "eve.sqlite"),
         }),
       ).toThrow(/test-db .*SSHFS.*refusing to open/);
 
@@ -232,7 +232,7 @@ describe("sqlite WAL maintenance", () => {
     if (process.platform === "win32") {
       return;
     }
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-sshfs-link-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-sshfs-link-"));
     const mountDir = path.join(tempDir, "mount");
     const linkedDir = path.join(tempDir, "linked");
     try {
@@ -247,7 +247,7 @@ describe("sqlite WAL maintenance", () => {
       expect(() =>
         configureSqliteWalMaintenance(createMockDb(), {
           checkpointIntervalMs: 0,
-          databasePath: path.join(linkedDir, "openclaw.sqlite"),
+          databasePath: path.join(linkedDir, "eve.sqlite"),
         }),
       ).toThrow(/SSHFS.*refusing to open/);
     } finally {
@@ -259,7 +259,7 @@ describe("sqlite WAL maintenance", () => {
     if (process.platform === "win32") {
       return;
     }
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-sshfs-prefix-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-sshfs-prefix-"));
     const canonicalMountDir = path.join(tempDir, "canonical-mount");
     const rawMountDir = path.join(tempDir, "raw-mount");
     try {
@@ -273,7 +273,7 @@ describe("sqlite WAL maintenance", () => {
       expect(() =>
         configureSqliteWalMaintenance(createMockDb(), {
           checkpointIntervalMs: 0,
-          databasePath: path.join(rawMountDir, "openclaw.sqlite"),
+          databasePath: path.join(rawMountDir, "eve.sqlite"),
         }),
       ).toThrow(/SSHFS.*refusing to open/);
     } finally {
@@ -282,7 +282,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("uses mount command filesystem names on platforms without proc mountinfo", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -295,7 +295,7 @@ describe("sqlite WAL maintenance", () => {
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["prepare"]).toHaveBeenCalledWith("PRAGMA journal_mode = DELETE;");
@@ -305,7 +305,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("uses macOS SMB mount filesystem names", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-smb-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-smb-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -318,7 +318,7 @@ describe("sqlite WAL maintenance", () => {
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["prepare"]).toHaveBeenCalledWith("PRAGMA journal_mode = DELETE;");
@@ -334,7 +334,7 @@ describe("sqlite WAL maintenance", () => {
     ["osxfuse", "user@host:/share"],
     ["osxfuse", "sshfs@osxfuse0"],
   ])("refuses SSHFS reported as %s by mount", (fsType, source) => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-sshfs-macfuse-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-sshfs-macfuse-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -348,7 +348,7 @@ describe("sqlite WAL maintenance", () => {
       expect(() =>
         configureSqliteWalMaintenance(db, {
           checkpointIntervalMs: 0,
-          databasePath: path.join(tempDir, "openclaw.sqlite"),
+          databasePath: path.join(tempDir, "eve.sqlite"),
         }),
       ).toThrow(/refusing to open/);
 
@@ -359,7 +359,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("keeps WAL enabled for non-remote macFUSE mounts", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-macfuse-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-macfuse-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -372,7 +372,7 @@ describe("sqlite WAL maintenance", () => {
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["exec"]).toHaveBeenNthCalledWith(1, "PRAGMA journal_mode = WAL;");
@@ -382,7 +382,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("parses Linux mount command filesystem names when proc mountinfo is unavailable", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0));
@@ -395,7 +395,7 @@ describe("sqlite WAL maintenance", () => {
 
       configureSqliteWalMaintenance(db, {
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
       });
 
       expect(db["prepare"]).toHaveBeenCalledWith("PRAGMA journal_mode = DELETE;");
@@ -492,7 +492,7 @@ describe("sqlite WAL maintenance", () => {
   });
 
   it("sets busy timeout before rollback journaling on NFS-backed volumes", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-nfs-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-nfs-"));
     try {
       const db = createMockDb();
       vi.spyOn(fs, "statfsSync").mockReturnValue(statfsFixture(0x6969));
@@ -500,7 +500,7 @@ describe("sqlite WAL maintenance", () => {
       configureSqliteConnectionPragmas(db, {
         busyTimeoutMs: 5000,
         checkpointIntervalMs: 0,
-        databasePath: path.join(tempDir, "openclaw.sqlite"),
+        databasePath: path.join(tempDir, "eve.sqlite"),
         synchronous: "NORMAL",
       });
 

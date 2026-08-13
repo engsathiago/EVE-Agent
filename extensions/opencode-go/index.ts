@@ -1,7 +1,7 @@
-// Opencode Go plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { PASSTHROUGH_GEMINI_REPLAY_HOOKS } from "openclaw/plugin-sdk/provider-model-shared";
+// Opencode Go plugin entrypoint registers its EVE integration.
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth-api-key";
+import { PASSTHROUGH_GEMINI_REPLAY_HOOKS } from "eve-agent/plugin-sdk/provider-model-shared";
 import { applyOpencodeGoConfig, OPENCODE_GO_DEFAULT_MODEL_REF } from "./api.js";
 import { opencodeGoMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import {

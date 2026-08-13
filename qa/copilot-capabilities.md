@@ -137,7 +137,7 @@ The generated `SessionEvent` union is authoritative and currently includes all o
 
 - `StartEvent`, `ResumeEvent`, `RemoteSteerableChangedEvent`, `ErrorEvent`, `IdleEvent`, `TitleChangedEvent`, `ScheduleCreatedEvent`, `ScheduleCancelledEvent`, `InfoEvent`, `WarningEvent`, `ModelChangeEvent`, `ModeChangedEvent`, `PlanChangedEvent`, `WorkspaceFileChangedEvent`, `HandoffEvent`, `TruncationEvent`, `SnapshotRewindEvent`, `ShutdownEvent`, `ContextChangedEvent`, `UsageInfoEvent`, `CompactionStartEvent`, `CompactionCompleteEvent`, `TaskCompleteEvent`, `UserMessageEvent`, `PendingMessagesModifiedEvent`, `AssistantTurnStartEvent`, `AssistantIntentEvent`, `AssistantReasoningEvent`, `AssistantReasoningDeltaEvent`, `AssistantStreamingDeltaEvent`, `AssistantMessageEvent`, `AssistantMessageStartEvent`, `AssistantMessageDeltaEvent`, `AssistantTurnEndEvent`, `AssistantUsageEvent`, `ModelCallFailureEvent`, `AbortEvent`, `ToolUserRequestedEvent`, `ToolExecutionStartEvent`, `ToolExecutionPartialResultEvent`, `ToolExecutionProgressEvent`, `ToolExecutionCompleteEvent`, `SkillInvokedEvent`, `SubagentStartedEvent`, `SubagentCompletedEvent`, `SubagentFailedEvent`, `SubagentSelectedEvent`, `SubagentDeselectedEvent`, `HookStartEvent`, `HookEndEvent`, `SystemMessageEvent`, `SystemNotificationEvent`, `PermissionRequestedEvent`, `PermissionCompletedEvent`, `UserInputRequestedEvent`, `UserInputCompletedEvent`, `ElicitationRequestedEvent`, `ElicitationCompletedEvent`, `SamplingRequestedEvent`, `SamplingCompletedEvent`, `McpOauthRequiredEvent`, `McpOauthCompletedEvent`, `ExternalToolRequestedEvent`, `ExternalToolCompletedEvent`, `CommandQueuedEvent`, `CommandExecuteEvent`, `CommandCompletedEvent`, `AutoModeSwitchRequestedEvent`, `AutoModeSwitchCompletedEvent`, `CommandsChangedEvent`, `CapabilitiesChangedEvent`, `ExitPlanModeRequestedEvent`, `ExitPlanModeCompletedEvent`, `ToolsUpdatedEvent`, `BackgroundTasksChangedEvent`, `SkillsLoadedEvent`, `CustomAgentsUpdatedEvent`, `McpServersLoadedEvent`, `McpServerStatusChangedEvent`, `ExtensionsLoadedEvent`.
 
-For OpenClaw harness work, the inspected payloads above are the important ones; the remaining union members exist in the shipped schema but are not otherwise documented in the README.
+For EVE harness work, the inspected payloads above are the important ones; the remaining union members exist in the shipped schema but are not otherwise documented in the README.
 
 Source: `dist/generated/session-events.d.ts`: 5.
 
@@ -297,7 +297,7 @@ What is **not** explicit in the inventory:
 - File/lock semantics for multiple `CopilotClient` instances sharing the same `copilotHome`
 - Whether same-process sharing is safe under concurrent session creation/resume/delete
 
-OpenClaw implication: the docs are not strong enough to justify shared `copilotHome` pools. Q5's per-agent-pool decision should therefore keep isolated `copilotHome` directories until `spike-app` proves concurrency safety.
+EVE implication: the docs are not strong enough to justify shared `copilotHome` pools. Q5's per-agent-pool decision should therefore keep isolated `copilotHome` directories until `spike-app` proves concurrency safety.
 
 Sources: README options/infinite-session docs (sdk-inventory.txt:90-94, 627-660); `dist/types.d.ts` (sdk-inventory.txt:2067-2073); `dist/session.d.ts` (sdk-inventory.txt:1594-1598).
 
@@ -383,7 +383,7 @@ Concrete gaps to answer in `spike-app` before landing a real harness:
 5. **Exact `copilotHome` layout:** beyond `session-state/<id>/{checkpoints,plan.md,files}`, what other top-level files/directories are created, and which are session-global versus client-global?
 6. **Provider/auth combination matrix:** what combinations of client-level `gitHubToken`, session-level `gitHubToken`, `useLoggedInUser`, and `provider` are accepted or rejected in practice?
 7. **Resume behavior for encrypted reasoning fields:** `assistant.message` notes `encryptedContent`/`reasoningOpaque` are session-bound and stripped on resume. What survives after process restart versus live reconnect?
-8. **Event coverage needed by OpenClaw:** do we need additional exact-string handling for non-core events like `ToolsUpdatedEvent`, `SkillsLoadedEvent`, `McpServersLoadedEvent`, `ExtensionsLoadedEvent`, or is the harness safe to ignore them?
+8. **Event coverage needed by EVE:** do we need additional exact-string handling for non-core events like `ToolsUpdatedEvent`, `SkillsLoadedEvent`, `McpServersLoadedEvent`, `ExtensionsLoadedEvent`, or is the harness safe to ignore them?
 9. **Cold-resume pending work:** with `continuePendingWork: true`, what concrete low-level RPCs are required to finish previously pending external tool calls in an SDK-only consumer?
 10. **Model discovery under BYOK:** when `provider` is set without `onListModels`, what does `listModels()` return, if anything?
 

@@ -1,4 +1,4 @@
-import type { OpenClawConfig, TelegramAccountConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig, TelegramAccountConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { mergeTelegramAccountConfig } from "./account-config.js";
 
 export type TelegramGroupHistoryContextMode = NonNullable<
@@ -15,7 +15,7 @@ export function resolveTelegramGroupHistoryContextMode(
 }
 
 export function resolveTelegramGroupHistoryContextModeForAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
 }): TelegramGroupHistoryContextMode {
   return resolveTelegramGroupHistoryContextMode(

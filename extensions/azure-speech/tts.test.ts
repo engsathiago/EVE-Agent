@@ -1,5 +1,5 @@
 // Azure Speech tests cover tts plugin behavior.
-import { installPinnedHostnameTestHooks } from "openclaw/plugin-sdk/test-env";
+import { installPinnedHostnameTestHooks } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   azureSpeechTTS,

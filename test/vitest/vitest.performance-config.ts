@@ -40,19 +40,19 @@ export function loadVitestExperimentalConfig(
   } = {};
   const windowsEnv = isWindowsEnv(env, platform);
 
-  if (!windowsEnv && !isDisabled(env.OPENCLAW_VITEST_FS_MODULE_CACHE)) {
+  if (!windowsEnv && !isDisabled(env.EVE_VITEST_FS_MODULE_CACHE)) {
     experimental.fsModuleCache = true;
   }
-  if (windowsEnv && isEnabled(env.OPENCLAW_VITEST_FS_MODULE_CACHE)) {
+  if (windowsEnv && isEnabled(env.EVE_VITEST_FS_MODULE_CACHE)) {
     experimental.fsModuleCache = true;
   }
-  if (experimental.fsModuleCache && env.OPENCLAW_VITEST_FS_MODULE_CACHE_PATH?.trim()) {
-    experimental.fsModuleCachePath = env.OPENCLAW_VITEST_FS_MODULE_CACHE_PATH.trim();
+  if (experimental.fsModuleCache && env.EVE_VITEST_FS_MODULE_CACHE_PATH?.trim()) {
+    experimental.fsModuleCachePath = env.EVE_VITEST_FS_MODULE_CACHE_PATH.trim();
   }
-  if (isEnabled(env.OPENCLAW_VITEST_IMPORT_DURATIONS)) {
+  if (isEnabled(env.EVE_VITEST_IMPORT_DURATIONS)) {
     experimental.importDurations = { print: true };
   }
-  if (isEnabled(env.OPENCLAW_VITEST_PRINT_IMPORT_BREAKDOWN)) {
+  if (isEnabled(env.EVE_VITEST_PRINT_IMPORT_BREAKDOWN)) {
     experimental.printImportBreakdown = true;
   }
 

@@ -54,11 +54,11 @@ private struct IPadWorkboardCompactRowsPreview: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     self.previewHeader
-                    ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+                    ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                         VStack(spacing: 0) {
                             ProPanelHeader(
                                 title: "Queue",
@@ -81,7 +81,7 @@ private struct IPadWorkboardCompactRowsPreview: View {
                         }
                     }
 
-                    ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+                    ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "tray",
                             title: "No cards",
@@ -92,7 +92,7 @@ private struct IPadWorkboardCompactRowsPreview: View {
                             action: nil)
                     }
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -116,11 +116,11 @@ private struct IPadSkillWorkshopCompactRowsPreview: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     self.previewHeader
-                    ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+                    ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                         VStack(spacing: 0) {
                             ProPanelHeader(
                                 title: "Queue",
@@ -139,7 +139,7 @@ private struct IPadSkillWorkshopCompactRowsPreview: View {
                         }
                     }
 
-                    ProCard(radius: OpenClawProMetric.cardRadius) {
+                    ProCard(radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "hammer",
                             title: "No proposals",
@@ -150,7 +150,7 @@ private struct IPadSkillWorkshopCompactRowsPreview: View {
                             action: nil)
                     }
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -192,7 +192,7 @@ private struct IPadActivityStatesPreview: View {
             detail: "Updated just now",
             state: "active",
             trailing: "open",
-            color: OpenClawBrand.ok,
+            color: EVEBrand.ok,
             progress: nil,
             route: .chat("main")),
         CommandCenterTab.WorkItem(
@@ -202,14 +202,14 @@ private struct IPadActivityStatesPreview: View {
             detail: "Updated 8m ago",
             state: "recent",
             trailing: "open",
-            color: OpenClawBrand.accent,
+            color: EVEBrand.accent,
             progress: nil,
             route: .chat("ipad-audit")),
     ]
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     self.previewHeader("Connected")
@@ -217,7 +217,7 @@ private struct IPadActivityStatesPreview: View {
                         gatewayTitle: "Gateway",
                         gatewayDetail: "tailscale.local:18789",
                         gatewayValue: "online",
-                        gatewayColor: OpenClawBrand.ok,
+                        gatewayColor: EVEBrand.ok,
                         sessionRows: self.connectedSessions,
                         tailRows: [])
 
@@ -226,7 +226,7 @@ private struct IPadActivityStatesPreview: View {
                         gatewayTitle: "Gateway",
                         gatewayDetail: "Fetching recent activity from the gateway.",
                         gatewayValue: "online",
-                        gatewayColor: OpenClawBrand.ok,
+                        gatewayColor: EVEBrand.ok,
                         sessionRows: [],
                         tailRows: [
                             ActivityPreviewRow(
@@ -234,7 +234,7 @@ private struct IPadActivityStatesPreview: View {
                                 title: "Loading sessions",
                                 detail: "Fetching recent activity from the gateway.",
                                 value: "loading",
-                                color: OpenClawBrand.accent),
+                                color: EVEBrand.accent),
                         ])
 
                     self.previewHeader("Empty")
@@ -242,7 +242,7 @@ private struct IPadActivityStatesPreview: View {
                         gatewayTitle: "Gateway",
                         gatewayDetail: "tailscale.local:18789",
                         gatewayValue: "online",
-                        gatewayColor: OpenClawBrand.ok,
+                        gatewayColor: EVEBrand.ok,
                         sessionRows: [],
                         tailRows: [
                             ActivityPreviewRow(
@@ -266,10 +266,10 @@ private struct IPadActivityStatesPreview: View {
                                 title: "Sessions unavailable",
                                 detail: "Try again after the gateway reconnects.",
                                 value: "error",
-                                color: OpenClawBrand.warn),
+                                color: EVEBrand.warn),
                         ])
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -290,7 +290,7 @@ private struct IPadActivityStatesPreview: View {
         sessionRows: [CommandCenterTab.WorkItem],
         tailRows: [ActivityPreviewRow]) -> some View
     {
-        ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+        ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
             VStack(spacing: 0) {
                 ProPanelHeader(
                     title: "Recent activity",
@@ -311,7 +311,7 @@ private struct IPadActivityStatesPreview: View {
                     title: "Share intake",
                     detail: "No share events yet.",
                     value: "iPad",
-                    color: OpenClawBrand.accent,
+                    color: EVEBrand.accent,
                     actionTitle: nil,
                     action: nil)
                 ForEach(sessionRows) { row in
@@ -355,7 +355,7 @@ private struct IPadWorkboardStatesPreview: View {
     private let connectedCards = IPadWorkboardPreviewFixtures.cards
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     self.previewHeader("Connected")
@@ -374,25 +374,25 @@ private struct IPadWorkboardStatesPreview: View {
                         .frame(maxWidth: 320)
 
                     self.previewHeader("Loading")
-                    ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+                    ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "arrow.clockwise",
                             title: "Loading cards",
                             detail: "Refreshing the workboard from the gateway.",
                             value: "loading",
-                            color: OpenClawBrand.accent,
+                            color: EVEBrand.accent,
                             actionTitle: nil,
                             action: nil)
                     }
 
                     self.previewHeader("Error")
-                    ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+                    ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "exclamationmark.triangle",
                             title: "Cards unavailable",
                             detail: "Check the gateway connection, then refresh.",
                             value: "error",
-                            color: OpenClawBrand.warn,
+                            color: EVEBrand.warn,
                             actionTitle: "Retry",
                             action: {})
                     }
@@ -475,7 +475,7 @@ private struct IPadSkillWorkshopStatesPreview: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     self.previewHeader("Connected")
@@ -485,7 +485,7 @@ private struct IPadSkillWorkshopStatesPreview: View {
                     self.queueCard(self.proposals, selectedID: "preview-pending", busyID: "preview-pending")
 
                     self.previewHeader("Empty")
-                    ProCard(radius: OpenClawProMetric.cardRadius) {
+                    ProCard(radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "hammer",
                             title: "No proposals",
@@ -497,7 +497,7 @@ private struct IPadSkillWorkshopStatesPreview: View {
                     }
 
                     self.previewHeader("Offline / Error")
-                    ProCard(radius: OpenClawProMetric.cardRadius) {
+                    ProCard(radius: EVEProMetric.cardRadius) {
                         ProStatusRow(
                             icon: "wifi.slash",
                             title: "Workshop offline",
@@ -512,12 +512,12 @@ private struct IPadSkillWorkshopStatesPreview: View {
                             title: "Proposal unavailable",
                             detail: "Try again after the gateway reconnects.",
                             value: "error",
-                            color: OpenClawBrand.warn,
+                            color: EVEBrand.warn,
                             actionTitle: nil,
                             action: nil)
                     }
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -534,7 +534,7 @@ private struct IPadSkillWorkshopStatesPreview: View {
         selectedID: String?,
         busyID: String?) -> some View
     {
-        ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+        ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
             VStack(spacing: 0) {
                 ProPanelHeader(
                     title: "Queue",
@@ -561,7 +561,7 @@ private struct IPadSkillWorkshopKanbanPreview: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             VStack(alignment: .leading, spacing: 18) {
                 self.previewHeader
                 ScrollView(.horizontal) {
@@ -581,7 +581,7 @@ private struct IPadSkillWorkshopKanbanPreview: View {
                                 .frame(width: 282)
                         }
                     }
-                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                    .padding(.horizontal, EVEProMetric.pagePadding)
                 }
             }
             .padding(.vertical, 22)
@@ -598,7 +598,7 @@ private struct IPadSkillWorkshopKanbanPreview: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 }
 

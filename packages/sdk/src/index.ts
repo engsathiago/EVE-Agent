@@ -1,4 +1,4 @@
-// Public OpenClaw SDK entrypoint. Re-export client namespaces, event helpers,
+// Public EVE SDK entrypoint. Re-export client namespaces, event helpers,
 // transport, and stable SDK types from focused modules.
 export {
   Agent,
@@ -7,14 +7,14 @@ export {
   ArtifactsNamespace,
   EnvironmentsNamespace,
   ModelsNamespace,
-  OpenClaw,
+  EVE,
   Run,
   RunsNamespace,
   Session,
   SessionsNamespace,
   TasksNamespace,
   ToolsNamespace,
-  type OpenClawOptions,
+  type EVEOptions,
 } from "./client.js";
 export { EventHub, isGatewayEvent } from "./event-hub.js";
 export { normalizeGatewayEvent } from "./normalize.js";
@@ -31,16 +31,16 @@ export type {
   ArtifactsDownloadResult,
   ArtifactsGetResult,
   ArtifactsListResult,
-  ConnectableOpenClawTransport,
+  ConnectableEVETransport,
   EnvironmentSelection,
   EnvironmentSummary,
   EnvironmentsListResult,
   GatewayEvent,
   GatewayRequestOptions,
   JsonObject,
-  OpenClawEvent,
-  OpenClawEventType,
-  OpenClawTransport,
+  EVEEvent,
+  EVEEventType,
+  EVETransport,
   RunCreateParams,
   RunResult,
   RunStatus,

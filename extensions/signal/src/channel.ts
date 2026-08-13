@@ -1,26 +1,26 @@
 // Signal plugin module implements channel behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import { buildDmGroupAccountAllowlistAdapter } from "openclaw/plugin-sdk/allowlist-config-edit";
-import { createChatChannelPlugin, type ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { defineChannelMessageAdapter } from "openclaw/plugin-sdk/channel-outbound";
-import { resolveOutboundSendDep } from "openclaw/plugin-sdk/channel-outbound";
-import { createPairingPrefixStripper } from "openclaw/plugin-sdk/channel-pairing";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
+import { buildDmGroupAccountAllowlistAdapter } from "eve-agent/plugin-sdk/allowlist-config-edit";
+import { createChatChannelPlugin, type ChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
+import { defineChannelMessageAdapter } from "eve-agent/plugin-sdk/channel-outbound";
+import { resolveOutboundSendDep } from "eve-agent/plugin-sdk/channel-outbound";
+import { createPairingPrefixStripper } from "eve-agent/plugin-sdk/channel-pairing";
 import {
   attachChannelToResult,
   attachChannelToResults,
-} from "openclaw/plugin-sdk/channel-send-result";
-import { PAIRING_APPROVED_MESSAGE } from "openclaw/plugin-sdk/channel-status";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { resolveChannelMediaMaxBytes } from "openclaw/plugin-sdk/media-runtime";
-import { chunkText, resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { buildOutboundBaseSessionKey, type RoutePeer } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/channel-send-result";
+import { PAIRING_APPROVED_MESSAGE } from "eve-agent/plugin-sdk/channel-status";
+import { resolveMarkdownTableMode } from "eve-agent/plugin-sdk/markdown-table-runtime";
+import { resolveChannelMediaMaxBytes } from "eve-agent/plugin-sdk/media-runtime";
+import { chunkText, resolveTextChunkLimit } from "eve-agent/plugin-sdk/reply-chunking";
+import { buildOutboundBaseSessionKey, type RoutePeer } from "eve-agent/plugin-sdk/routing";
 import {
   buildBaseChannelStatusSummary,
   collectStatusIssuesFromLastError,
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/status-helpers";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveSignalAccount, type ResolvedSignalAccount } from "./accounts.js";
 import {
   shouldSuppressLocalSignalExecApprovalPrompt,

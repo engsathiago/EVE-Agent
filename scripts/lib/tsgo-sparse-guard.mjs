@@ -12,12 +12,12 @@ const CORE_TEST_CONFIGS = new Set([
 ]);
 
 const CORE_PROD_CONFIGS = new Set(["tsconfig.core.json"]);
-const TSGO_SPARSE_SKIP_ENV_KEY = "OPENCLAW_TSGO_SPARSE_SKIP";
+const TSGO_SPARSE_SKIP_ENV_KEY = "EVE_TSGO_SPARSE_SKIP";
 const CORE_SPARSE_ROOTS = ["packages", "ui/config", "ui/src"];
 
 const CORE_PROD_REQUIRED_PATHS = [
   {
-    path: "apps/shared/OpenClawKit/Sources/OpenClawKit/Resources/tool-display.json",
+    path: "apps/shared/EVEKit/Sources/EVEKit/Resources/tool-display.json",
     whenPresent: "ui/src/ui/tool-display.ts",
   },
   {

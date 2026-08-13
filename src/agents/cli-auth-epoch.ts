@@ -3,7 +3,7 @@
  * when the owning local credential identity changes.
  */
 import crypto from "node:crypto";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { loadAuthProfileStoreForRuntime } from "./auth-profiles/store.js";
 import type { AuthProfileCredential, AuthProfileStore } from "./auth-profiles/types.js";
 import {

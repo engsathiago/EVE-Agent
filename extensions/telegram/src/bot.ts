@@ -1,5 +1,5 @@
 // Telegram plugin module implements bot behavior.
-import { getSessionEntry, listSessionEntries } from "openclaw/plugin-sdk/session-store-runtime";
+import { getSessionEntry, listSessionEntries } from "eve-agent/plugin-sdk/session-store-runtime";
 import {
   createTelegramBotCore,
   getTelegramSequentialKey,

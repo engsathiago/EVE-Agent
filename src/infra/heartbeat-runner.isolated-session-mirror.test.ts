@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveMainSessionKey } from "../config/sessions.js";
 import { runHeartbeatOnce } from "./heartbeat-runner.js";
 import { installHeartbeatRunnerTestRuntime } from "./heartbeat-runner.test-harness.js";
@@ -40,7 +40,7 @@ function latestDeliveryRequest(): DeliveryRequest {
   return request as DeliveryRequest;
 }
 
-function makeIsolatedLastTargetConfig(tmpDir: string, storePath: string): OpenClawConfig {
+function makeIsolatedLastTargetConfig(tmpDir: string, storePath: string): EVEConfig {
   return {
     agents: {
       list: [{ id: "main", default: true }],

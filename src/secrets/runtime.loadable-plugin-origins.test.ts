@@ -126,7 +126,7 @@ describe("prepareSecretsRuntimeSnapshot loadable plugin origins", () => {
       id: "vault-secrets",
       rootDir,
       source: path.join(rootDir, "index.ts"),
-      manifestPath: path.join(rootDir, "openclaw.plugin.json"),
+      manifestPath: path.join(rootDir, "eve.plugin.json"),
       origin: "global",
       channels: [],
       providers: [],

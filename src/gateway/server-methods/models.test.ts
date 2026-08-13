@@ -2,9 +2,9 @@
 // validation errors, and protocol response shapes.
 import { describe, expect, it, vi } from "vitest";
 import { ErrorCodes } from "../../../packages/gateway-protocol/src/index.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { withEnvAsync } from "../../test-utils/env.js";
-import { withOpenClawTestState } from "../../test-utils/openclaw-test-state.js";
+import { withEVETestState } from "../../test-utils/eve-test-state.js";
 import { createDeferred } from "../test-helpers.deferred.js";
 import { expectGatewayErrorResponse } from "./gateway-response.test-helpers.js";
 import { modelsHandlers } from "./models.js";
@@ -24,7 +24,7 @@ const withoutOpenAIEnvAuth = async <T>(run: () => Promise<T>): Promise<T> =>
 function requestModelsList(params: {
   view: "configured" | "all";
   respond?: ReturnType<typeof vi.fn>;
-  runtimeConfig?: OpenClawConfig;
+  runtimeConfig?: EVEConfig;
   loadGatewayModelCatalog: () => Promise<Array<Record<string, unknown>>>;
   reqId?: string;
 }) {
@@ -41,7 +41,7 @@ function requestModelsList(params: {
     client: null,
     isWebchatConnect: () => false,
     context: {
-      getRuntimeConfig: () => params.runtimeConfig ?? ({} as OpenClawConfig),
+      getRuntimeConfig: () => params.runtimeConfig ?? ({} as EVEConfig),
       loadGatewayModelCatalog: params.loadGatewayModelCatalog,
       logGateway: {
         debug: vi.fn(),
@@ -65,7 +65,7 @@ describe("models.list", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig;
+      } as unknown as EVEConfig;
 
       vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
       try {
@@ -117,7 +117,7 @@ describe("models.list", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     try {
@@ -230,7 +230,7 @@ describe("models.list", () => {
           vllm: { apiKey: "test-key" },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const loadConfiguredCatalog = vi.fn(() => Promise.resolve(catalog));
     const { request: configuredRequest, respond: configuredRespond } = requestModelsList({
@@ -279,10 +279,10 @@ describe("models.list", () => {
   });
 
   it("marks legacy OpenAI Codex aliases available through ChatGPT OAuth", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-models-list-codex-alias-",
+        prefix: "eve-models-list-codex-alias-",
         agentEnv: "main",
       },
       async (state) => {
@@ -355,7 +355,7 @@ describe("models.list", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const { request, respond } = requestModelsList({
       view: "all",
@@ -391,7 +391,7 @@ describe("models.list", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const { request, respond } = requestModelsList({
       view: "all",
@@ -413,10 +413,10 @@ describe("models.list", () => {
   });
 
   it("does not mark catalog rows available from expired OAuth profiles", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-models-list-expired-profile-",
+        prefix: "eve-models-list-expired-profile-",
         agentEnv: "main",
       },
       async (state) => {
@@ -461,10 +461,10 @@ describe("models.list", () => {
   });
 
   it("marks env SecretRef-backed auth profiles available", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-models-list-env-profile-",
+        prefix: "eve-models-list-env-profile-",
         agentEnv: "main",
         env: {
           DEMO_PROVIDER_TOKEN: "test-token",
@@ -515,10 +515,10 @@ describe("models.list", () => {
   });
 
   it("keeps non-env SecretRef-backed auth profile availability unknown", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-models-list-file-profile-",
+        prefix: "eve-models-list-file-profile-",
         agentEnv: "main",
       },
       async (state) => {
@@ -577,13 +577,13 @@ describe("models.list", () => {
       },
       { name: "managed-marker", apiKey: "secretref-managed" },
     ] as const) {
-      await withOpenClawTestState(
+      await withEVETestState(
         {
           layout: "state-only",
-          prefix: `openclaw-models-list-provider-${fixture.name}-profile-`,
+          prefix: `eve-models-list-provider-${fixture.name}-profile-`,
           agentEnv: "main",
           env: {
-            OPENCLAW_TEST_PROFILE_API_KEY: "test-token",
+            EVE_TEST_PROFILE_API_KEY: "test-token",
             VLLM_API_KEY: undefined,
           },
         },
@@ -597,7 +597,7 @@ describe("models.list", () => {
                 keyRef: {
                   source: "env",
                   provider: "default",
-                  id: "OPENCLAW_TEST_PROFILE_API_KEY",
+                  id: "EVE_TEST_PROFILE_API_KEY",
                 },
               },
             },
@@ -618,7 +618,7 @@ describe("models.list", () => {
                 },
               },
             },
-          } as unknown as OpenClawConfig;
+          } as unknown as EVEConfig;
 
           const { request, respond } = requestModelsList({
             view: "all",

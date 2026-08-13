@@ -2,31 +2,31 @@
 import {
   formatErrorMessage,
   resolveSandboxContext,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { resolveSessionAgentIds } from "openclaw/plugin-sdk/agent-runtime";
-import { loadExecApprovals } from "openclaw/plugin-sdk/exec-approvals-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { resolveSessionAgentIds } from "eve-agent/plugin-sdk/agent-runtime";
+import { loadExecApprovals } from "eve-agent/plugin-sdk/exec-approvals-runtime";
 import type {
   PluginConversationBindingResolvedEvent,
   PluginHookInboundClaimContext,
   PluginHookInboundClaimEvent,
-} from "openclaw/plugin-sdk/plugin-entry";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/plugin-entry";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-payload";
 import {
   loadSessionStore,
   resolveSessionStoreEntry,
   resolveStorePath,
-} from "openclaw/plugin-sdk/session-store-runtime";
+} from "eve-agent/plugin-sdk/session-store-runtime";
 import { resolveCodexAppServerForModelProvider } from "./app-server/app-server-policy.js";
 import { resolveCodexAppServerAuthProfileIdForAgent } from "./app-server/auth-bridge.js";
 import { CODEX_CONTROL_METHODS } from "./app-server/capabilities.js";
 import {
   canUseCodexModelBackedApprovalsReviewerForModel,
   codexSandboxPolicyForTurn,
-  resolveOpenClawExecPolicyForCodexAppServer,
+  resolveEVEExecPolicyForCodexAppServer,
   resolveCodexAppServerRuntimeOptions,
   type CodexAppServerApprovalPolicy,
   type CodexAppServerSandboxMode,
-  type OpenClawExecPolicyForCodexAppServer,
+  type EVEExecPolicyForCodexAppServer,
 } from "./app-server/config.js";
 import { assertCodexThreadStartResponse } from "./app-server/protocol-validators.js";
 import type {
@@ -77,7 +77,7 @@ const INVALID_AGENT_ID_CHARS_PATTERN = /[^a-z0-9_-]+/g;
 const LEADING_DASH_PATTERN = /^-+/;
 const TRAILING_DASH_PATTERN = /-+$/;
 const NATIVE_CONVERSATION_INTERACTIVE_APPROVALS_UNAVAILABLE =
-  "OpenClaw native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.";
+  "EVE native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.";
 
 export {
   createCodexCliNodeConversationBindingData,
@@ -136,7 +136,7 @@ async function resolveConversationAppServerRuntime(params: {
   modelProvider?: string;
   model?: string;
 }): Promise<{
-  execPolicy?: OpenClawExecPolicyForCodexAppServer;
+  execPolicy?: EVEExecPolicyForCodexAppServer;
   runtime: ReturnType<typeof resolveCodexAppServerRuntimeOptions>;
 }> {
   const execPolicy = resolveConversationExecPolicy({
@@ -159,14 +159,14 @@ async function resolveConversationAppServerRuntime(params: {
     model: params.model,
     config: params.config,
     agentDir: params.agentDir,
-    openClawSandboxActive: Boolean(sandboxForPolicy?.enabled),
+    eveSandboxActive: Boolean(sandboxForPolicy?.enabled),
   });
   return { execPolicy, runtime };
 }
 
-const CODEX_CONVERSATION_GLOBAL_STATE = Symbol.for("openclaw.codex.conversationBinding");
+const CODEX_CONVERSATION_GLOBAL_STATE = Symbol.for("eve.codex.conversationBinding");
 const CODEX_CONVERSATION_THREAD_DEVELOPER_INSTRUCTIONS =
-  "This Codex thread is bound to an OpenClaw conversation. Answer normally; OpenClaw will deliver your final response back to the conversation.";
+  "This Codex thread is bound to an EVE conversation. Answer normally; EVE will deliver your final response back to the conversation.";
 
 function getGlobalState(): CodexConversationGlobalState {
   const globalState = globalThis as typeof globalThis & {
@@ -707,7 +707,7 @@ async function runBoundTurn(params: {
           contentItems: [
             {
               type: "inputText",
-              text: "OpenClaw native Codex conversation binding does not expose dynamic OpenClaw tools yet.",
+              text: "EVE native Codex conversation binding does not expose dynamic EVE tools yet.",
             },
           ],
           success: false,
@@ -720,7 +720,7 @@ async function runBoundTurn(params: {
         return {
           decision: "decline",
           reason:
-            "OpenClaw native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.",
+            "EVE native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.",
         };
       }
       if (request.method === "item/permissions/requestApproval") {
@@ -730,7 +730,7 @@ async function runBoundTurn(params: {
         return {
           decision: "decline",
           reason:
-            "OpenClaw native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.",
+            "EVE native Codex conversation binding cannot route interactive approvals yet; use the Codex harness or explicit /acp spawn codex for that workflow.",
         };
       }
       return undefined;
@@ -781,7 +781,7 @@ async function runBoundTurn(params: {
 }
 
 function assertNativeConversationApprovalPolicySupported(params: {
-  execPolicy?: OpenClawExecPolicyForCodexAppServer;
+  execPolicy?: EVEExecPolicyForCodexAppServer;
   approvalPolicy: ReturnType<typeof resolveCodexAppServerRuntimeOptions>["approvalPolicy"];
   approvalsReviewer: ReturnType<typeof resolveCodexAppServerRuntimeOptions>["approvalsReviewer"];
   modelBackedApprovalsReviewerUnavailable: boolean;
@@ -850,7 +850,7 @@ function resolveConversationExecPolicy(params: {
           config: params.config,
         }).sessionAgentId
       : undefined);
-  return resolveOpenClawExecPolicyForCodexAppServer({
+  return resolveEVEExecPolicyForCodexAppServer({
     config: params.config,
     agentId,
     execOverrides: readSessionExecOverrides({

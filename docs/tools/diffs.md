@@ -28,7 +28,7 @@ When enabled, the plugin prepends concise usage guidance into system-prompt spac
 <Steps>
   <Step title="Install the plugin">
     ```bash
-    openclaw plugins install diffs
+    eve plugins install diffs
     ```
   </Step>
   <Step title="Enable the plugin">
@@ -204,7 +204,7 @@ All fields are optional unless noted.
 
 ## Syntax highlighting
 
-OpenClaw includes syntax highlighting for common source, config, and documentation languages:
+EVE includes syntax highlighting for common source, config, and documentation languages:
 
 `javascript`, `typescript`, `tsx`, `jsx`, `json`, `markdown`, `yaml`, `css`, `html`, `sh`, `python`, `go`, `rust`, `java`, `c`, `cpp`, `csharp`, `php`, `sql`, `docker`, `ruby`, `swift`, `kotlin`, `r`, `dart`, `lua`, `powershell`, `xml`, and `toml`.
 
@@ -213,10 +213,10 @@ Common aliases such as `js`, `ts`, `bash`, `md`, `yml`, `c++`, `dockerfile`, `rb
 Install the Diff Viewer Language Pack plugin to highlight other languages:
 
 ```bash
-openclaw plugins install clawhub:@openclaw/diffs-language-pack
+eve plugins install clawhub:@eve/diffs-language-pack
 ```
 
-With the language pack available, OpenClaw can highlight many more languages. If the pack is not installed, files outside the default list still render as readable plain text. Examples include Astro, Vue, Svelte, MDX, GraphQL, Terraform/HCL, Nix, Clojure, Elixir, Haskell, OCaml, Scala, Zig, Solidity, Verilog/VHDL, Fortran, MATLAB, LaTeX, Mermaid, Sass/Less/SCSS, Nginx, Apache, CSV, dotenv, INI, and diff files.
+With the language pack available, EVE can highlight many more languages. If the pack is not installed, files outside the default list still render as readable plain text. Examples include Astro, Vue, Svelte, MDX, GraphQL, Terraform/HCL, Nix, Clojure, Elixir, Haskell, OCaml, Scala, Zig, Solidity, Verilog/VHDL, Fortran, MATLAB, LaTeX, Mermaid, Sass/Less/SCSS, Nginx, Apache, CSV, dotenv, INI, and diff files.
 
 See [Diffs Language Pack plugin](/plugins/reference/diffs-language-pack) for details and [Shiki languages](https://shiki.style/languages) for Shiki's upstream language and alias catalog.
 
@@ -284,7 +284,7 @@ Mode behavior summary:
 
 ## Plugin defaults
 
-Set plugin-wide defaults in `~/.openclaw/openclaw.json`:
+Set plugin-wide defaults in `~/.eve/eve.json`:
 
 ```json5
 {
@@ -350,7 +350,7 @@ Explicit tool parameters override these defaults.
       diffs: {
         enabled: true,
         config: {
-          viewerBaseUrl: "https://gateway.example.com/openclaw",
+          viewerBaseUrl: "https://gateway.example.com/eve",
         },
       },
     },
@@ -383,7 +383,7 @@ Explicit tool parameters override these defaults.
 
 ## Artifact lifecycle and storage
 
-- Artifacts are stored under the temp subfolder: `$TMPDIR/openclaw-diffs`.
+- Artifacts are stored under the temp subfolder: `$TMPDIR/eve-diffs`.
 - Viewer artifact metadata contains:
   - random artifact ID (20 hex chars)
   - random token (48 hex chars)
@@ -453,10 +453,10 @@ Resolution order:
 
 <Steps>
   <Step title="Config">
-    `browser.executablePath` in OpenClaw config.
+    `browser.executablePath` in EVE config.
   </Step>
   <Step title="Environment variables">
-    - `OPENCLAW_BROWSER_EXECUTABLE_PATH`
+    - `EVE_BROWSER_EXECUTABLE_PATH`
     - `BROWSER_EXECUTABLE_PATH`
     - `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`
 

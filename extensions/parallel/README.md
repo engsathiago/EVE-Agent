@@ -1,12 +1,12 @@
-# OpenClaw Parallel Plugin
+# EVE Parallel Plugin
 
-Official OpenClaw plugin for Parallel.
+Official EVE plugin for Parallel.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/parallel-plugin
-openclaw gateway restart
+eve plugins install @eve/parallel-plugin
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/tools/parallel-search> for setup and configuration.
+See <https://docs.eve.ai/tools/parallel-search> for setup and configuration.

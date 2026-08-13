@@ -1,5 +1,5 @@
 /** Cleanup helpers for failed ACP spawn flows. */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { callGateway } from "../../gateway/call.js";
 import { logVerbose } from "../../globals.js";
 import { getSessionBindingService } from "../../infra/outbound/session-binding-service.js";
@@ -18,7 +18,7 @@ export type AcpSpawnRuntimeCloseHandle = {
 
 /** Best-effort cleanup for partially created ACP sessions, bindings, and transcripts. */
 export async function cleanupFailedAcpSpawn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   shouldDeleteSession: boolean;
   deleteTranscript: boolean;

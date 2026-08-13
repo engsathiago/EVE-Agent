@@ -38,19 +38,19 @@ describe("plugin node capability helpers", () => {
         "http://127.0.0.1:18789/root/?debug=1#hash",
         "token value",
       ),
-    ).toBe("http://127.0.0.1:18789/root/__openclaw__/cap/token%20value");
+    ).toBe("http://127.0.0.1:18789/root/__eve__/cap/token%20value");
     expect(buildPluginNodeCapabilityScopedHostUrl("not a url", "token")).toBeUndefined();
     expect(buildPluginNodeCapabilityScopedHostUrl("http://127.0.0.1:18789", " ")).toBeUndefined();
   });
 
   test("normalizes scoped urls and moves capability into the query string", () => {
     const normalized = normalizePluginNodeCapabilityScopedUrl(
-      "/__openclaw__/cap/token%20value/__openclaw__/canvas/file.txt?download=1",
+      "/__eve__/cap/token%20value/__eve__/canvas/file.txt?download=1",
     );
     expect(normalized).toEqual({
-      pathname: "/__openclaw__/canvas/file.txt",
+      pathname: "/__eve__/canvas/file.txt",
       capability: "token value",
-      rewrittenUrl: "/__openclaw__/canvas/file.txt?download=1&oc_cap=token+value",
+      rewrittenUrl: "/__eve__/canvas/file.txt?download=1&oc_cap=token+value",
       scopedPath: true,
       malformedScopedPath: false,
     });
@@ -59,14 +59,14 @@ describe("plugin node capability helpers", () => {
   test("replaces scoped capability tokens without nesting capability prefixes", () => {
     expect(
       replacePluginNodeCapabilityInScopedHostUrl(
-        "http://127.0.0.1:18789/__openclaw__/cap/old-token/__openclaw__/a2ui/",
+        "http://127.0.0.1:18789/__eve__/cap/old-token/__eve__/a2ui/",
         "new token",
       ),
-    ).toBe("http://127.0.0.1:18789/__openclaw__/cap/new%20token/__openclaw__/a2ui");
+    ).toBe("http://127.0.0.1:18789/__eve__/cap/new%20token/__eve__/a2ui");
   });
 
   test("marks malformed scoped urls without authorizing a path capability", () => {
-    const normalized = normalizePluginNodeCapabilityScopedUrl("/__openclaw__/cap/broken");
+    const normalized = normalizePluginNodeCapabilityScopedUrl("/__eve__/cap/broken");
     expect(normalized.scopedPath).toBe(true);
     expect(normalized.malformedScopedPath).toBe(true);
     expect(normalized.capability).toBeUndefined();
@@ -143,7 +143,7 @@ describe("plugin node capability helpers", () => {
   test("refreshes client plugin surface url and stored capability", () => {
     const client = makeClient({
       pluginSurfaceUrls: {
-        canvas: "http://127.0.0.1:18789/__openclaw__/cap/old-token",
+        canvas: "http://127.0.0.1:18789/__eve__/cap/old-token",
       },
       pluginNodeCapabilitySurfaces: {
         canvas: { surface: "canvas", ttlMs: 100 },
@@ -158,8 +158,8 @@ describe("plugin node capability helpers", () => {
     expect(refreshed?.expiresAtMs).toBe(1_100);
     expect(refreshed?.capability).toBeTypeOf("string");
     expect(refreshed?.capability).not.toBe("");
-    expect(refreshed?.scopedUrl).toContain("/__openclaw__/cap/");
-    expect(refreshed?.scopedUrl).not.toContain("old-token/__openclaw__/cap/");
+    expect(refreshed?.scopedUrl).toContain("/__eve__/cap/");
+    expect(refreshed?.scopedUrl).not.toContain("old-token/__eve__/cap/");
     expect(client.pluginSurfaceUrls?.canvas).toBe(refreshed?.scopedUrl);
     expect(client.pluginNodeCapabilities?.canvas).toEqual({
       capability: refreshed?.capability,
@@ -170,7 +170,7 @@ describe("plugin node capability helpers", () => {
   test("does not refresh client plugin capabilities when the clock is invalid", () => {
     const client = makeClient({
       pluginSurfaceUrls: {
-        canvas: "http://127.0.0.1:18789/__openclaw__/cap/old-token",
+        canvas: "http://127.0.0.1:18789/__eve__/cap/old-token",
       },
       pluginNodeCapabilitySurfaces: {
         canvas: { surface: "canvas", ttlMs: 100 },
@@ -185,7 +185,7 @@ describe("plugin node capability helpers", () => {
       }),
     ).toBeUndefined();
     expect(client.pluginSurfaceUrls?.canvas).toBe(
-      "http://127.0.0.1:18789/__openclaw__/cap/old-token",
+      "http://127.0.0.1:18789/__eve__/cap/old-token",
     );
     expect(client.pluginNodeCapabilities).toBeUndefined();
   });

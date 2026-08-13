@@ -1,6 +1,6 @@
 // Mattermost tests cover slash state plugin behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig, RuntimeEnv } from "../runtime-api.js";
+import type { EVEConfig, RuntimeEnv } from "../runtime-api.js";
 import type { ResolvedMattermostAccount } from "./accounts.js";
 import type { MattermostRegisteredCommand } from "./slash-commands.js";
 import {
@@ -44,11 +44,11 @@ const slashApi = {
     exit: () => {},
   },
 } satisfies {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   runtime: RuntimeEnv;
 };
 
-const ACCOUNT_STATES_KEY = Symbol.for("openclaw.mattermost.slash-account-states");
+const ACCOUNT_STATES_KEY = Symbol.for("eve.mattermost.slash-account-states");
 
 describe("slash-state global singleton", () => {
   afterEach(() => {

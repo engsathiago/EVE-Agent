@@ -78,7 +78,7 @@ export type ContextEngineHostRequirements = {
 export type ContextEngineRuntimeSettings = {
   schemaVersion: 1;
   runtime: {
-    host: "openclaw";
+    host: "eve";
     mode: ContextEngineRuntimeMode;
     harnessId: string | null;
     runtimeId: string | null;

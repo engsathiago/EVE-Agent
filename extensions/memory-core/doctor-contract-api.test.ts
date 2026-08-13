@@ -2,15 +2,15 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import type {
   OpenKeyedStoreOptions,
   PluginDoctorStateMigrationContext,
-} from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/runtime-doctor";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stateMigrations } from "./doctor-contract-api.js";
 import { testing as dreamingTesting } from "./src/dreaming-phases.js";
@@ -38,10 +38,10 @@ describe("memory-core doctor dreaming migration", () => {
 
   beforeEach(async () => {
     resetPluginStateStoreForTests();
-    rootDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-memory-core-doctor-"));
+    rootDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-memory-core-doctor-"));
     workspaceDir = path.join(rootDir, "workspace");
     await fs.mkdir(path.join(workspaceDir, "memory", ".dreams"), { recursive: true });
-    env = { ...process.env, OPENCLAW_STATE_DIR: path.join(rootDir, "state") };
+    env = { ...process.env, EVE_STATE_DIR: path.join(rootDir, "state") };
   });
 
   afterEach(async () => {
@@ -54,7 +54,7 @@ describe("memory-core doctor dreaming migration", () => {
   }
 
   function migrationParams(
-    config: OpenClawConfig = {
+    config: EVEConfig = {
       agents: {
         list: [{ id: "main", workspace: workspaceDir }],
       },
@@ -217,7 +217,7 @@ describe("memory-core doctor dreaming migration", () => {
   });
 
   it("uses migration env when resolving default workspaces", async () => {
-    env = { ...env, OPENCLAW_WORKSPACE_DIR: workspaceDir };
+    env = { ...env, EVE_WORKSPACE_DIR: workspaceDir };
     const recallPath = path.join(workspaceDir, "memory", ".dreams", "short-term-recall.json");
     await fs.writeFile(
       recallPath,

@@ -3,8 +3,8 @@ import fs from "node:fs/promises";
 import {
   clearMemoryPluginState,
   registerMemoryCorpusSupplement,
-} from "openclaw/plugin-sdk/memory-host-core";
-import { readMemoryHostEvents } from "openclaw/plugin-sdk/memory-host-events";
+} from "eve-agent/plugin-sdk/memory-host-core";
+import { readMemoryHostEvents } from "eve-agent/plugin-sdk/memory-host-events";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getMemoryCloseMockCalls,
@@ -22,7 +22,7 @@ import { testing as shortTermPromotionTesting } from "./short-term-promotion.js"
 import { createMemoryCoreTestHarness } from "./test-helpers.js";
 import { testing as memoryToolsTesting } from "./tools.js";
 import {
-  asOpenClawConfig,
+  asEVEConfig,
   createAutoCitationsMemorySearchTool,
   createDefaultMemoryToolConfig,
   createMemoryGetToolOrThrow,
@@ -89,7 +89,7 @@ describe("memory search citations", () => {
 
   it("appends source information when citations are enabled", async () => {
     setMemoryBackend("builtin");
-    const cfg = asOpenClawConfig({
+    const cfg = asEVEConfig({
       memory: { citations: "on" },
       agents: { list: [{ id: "main", default: true }] },
     });
@@ -103,7 +103,7 @@ describe("memory search citations", () => {
 
   it("leaves snippet untouched when citations are off", async () => {
     setMemoryBackend("builtin");
-    const cfg = asOpenClawConfig({
+    const cfg = asEVEConfig({
       memory: { citations: "off" },
       agents: { list: [{ id: "main", default: true }] },
     });
@@ -117,7 +117,7 @@ describe("memory search citations", () => {
 
   it("clamps decorated snippets to qmd injected budget", async () => {
     setMemoryBackend("qmd");
-    const cfg = asOpenClawConfig({
+    const cfg = asEVEConfig({
       memory: { citations: "on", backend: "qmd", qmd: { limits: { maxInjectedChars: 20 } } },
       agents: { list: [{ id: "main", default: true }] },
     });
@@ -167,7 +167,7 @@ describe("memory tools", () => {
   it("uses default memory manager mode for shared memory_search", async () => {
     setMemoryBackend("qmd");
     const tool = createMemorySearchToolOrThrow({
-      config: asOpenClawConfig({
+      config: asEVEConfig({
         memory: { backend: "qmd", qmd: { command: "qmd" } },
         agents: { list: [{ id: "main", default: true }] },
       }),
@@ -187,7 +187,7 @@ describe("memory tools", () => {
   it("uses one-shot CLI memory manager mode for explicit local CLI memory_search", async () => {
     setMemoryBackend("qmd");
     const tool = createMemorySearchToolOrThrow({
-      config: asOpenClawConfig({
+      config: asEVEConfig({
         memory: { backend: "qmd", qmd: { command: "qmd" } },
         agents: { list: [{ id: "main", default: true }] },
       }),
@@ -309,7 +309,7 @@ describe("memory tools", () => {
       ]);
 
       const tool = createMemorySearchToolOrThrow({
-        config: asOpenClawConfig({
+        config: asEVEConfig({
           agents: { list: [{ id: "main", default: true }] },
           plugins: {
             entries: {

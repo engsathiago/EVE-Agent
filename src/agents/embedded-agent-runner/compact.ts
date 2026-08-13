@@ -6,7 +6,7 @@ import os from "node:os";
 import { isAcpRuntimeSpawnAvailable } from "../../acp/runtime/availability.js";
 import type { ThinkLevel } from "../../auto-reply/thinking.js";
 import { resolveAgentModelFallbackValues } from "../../config/model-input.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   captureCompactionCheckpointSnapshotAsync,
   cleanupCompactionCheckpointSnapshot,
@@ -67,7 +67,7 @@ import {
   applyAgentCompactionSettingsFromConfig,
   isSilentOverflowProneModel,
 } from "../agent-settings.js";
-import { createOpenClawCodingTools, resolveProcessToolScopeKey } from "../agent-tools.js";
+import { createEVECodingTools, resolveProcessToolScopeKey } from "../agent-tools.js";
 import { listActiveProcessSessionReferences } from "../bash-process-references.js";
 import {
   makeBootstrapWarn,
@@ -86,7 +86,7 @@ import {
 import { resolveContextWindowInfo } from "../context-window-guard.js";
 import { formatUserTime, resolveUserTimeFormat, resolveUserTimezone } from "../date-time.js";
 import { DEFAULT_CONTEXT_TOKENS, DEFAULT_MODEL, DEFAULT_PROVIDER } from "../defaults.js";
-import { resolveOpenClawReferencePaths } from "../docs-path.js";
+import { resolveEVEReferencePaths } from "../docs-path.js";
 import { ensureSessionHeader } from "../embedded-agent-helpers.js";
 import { pickFallbackThinkingLevel } from "../embedded-agent-helpers.js";
 import { coerceToFailoverError, describeFailoverError } from "../failover-error.js";
@@ -102,7 +102,7 @@ import {
 } from "../model-auth.js";
 import { isFallbackSummaryError, runWithModelFallback } from "../model-fallback.js";
 import { supportsModelTools } from "../model-tool-support.js";
-import { ensureOpenClawModelsJson } from "../models-config.js";
+import { ensureEVEModelsJson } from "../models-config.js";
 import { wrapStreamFnTextTransforms } from "../plugin-text-transforms.js";
 import { resolveAgentPromptSurfaceForSessionKey } from "../prompt-surface.js";
 import { applyPreparedRuntimeAuthToModel } from "../provider-request-config.js";
@@ -212,7 +212,7 @@ function prepareCompactionSessionAgent(params: {
   effectiveModel: ProviderRuntimeModel;
   resolvedApiKey?: string;
   authStorage: unknown;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider: string;
   modelId: string;
   thinkLevel: ThinkLevel;
@@ -298,7 +298,7 @@ function prepareCompactionSessionAgent(params: {
 
 function resolveCompactionProviderStream(params: {
   effectiveModel: ProviderRuntimeModel;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentDir: string;
   effectiveWorkspace: string;
 }) {
@@ -643,7 +643,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
         : undefined,
     };
   };
-  await ensureOpenClawModelsJson(params.config, agentDir, {
+  await ensureEVEModelsJson(params.config, agentDir, {
     workspaceDir: resolvedWorkspace,
   });
   const { model, error, authStorage, modelRegistry } = await resolveModelAsync(
@@ -848,7 +848,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
       });
 
     const runAbortController = new AbortController();
-    const toolsRaw = createOpenClawCodingTools({
+    const toolsRaw = createEVECodingTools({
       exec: {
         ...params.execOverrides,
         config: params.config,
@@ -940,7 +940,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
       sandboxToolPolicy: sandbox?.tools,
       sessionKey: sandboxSessionKey,
       // Intentionally omit explicit agentId: the core tools just built with
-      // createOpenClawCodingTools(...) also omit it, so both paths resolve
+      // createEVECodingTools(...) also omit it, so both paths resolve
       // agentId the same way via resolveAgentIdFromSessionKey(sessionKey).
       // Passing effectiveSkillAgentId here would diverge from the core-tool
       // policy for legacy/non-agent session keys where the two sources fall
@@ -1082,7 +1082,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
     const nativeCommandGuidanceLines = listRegisteredPluginAgentPromptGuidance({
       surface: promptSurface,
     });
-    const openClawReferences = await resolveOpenClawReferencePaths({
+    const eveReferences = await resolveEVEReferencePaths({
       workspaceDir: effectiveWorkspace,
       argv1: process.argv[1],
       cwd: effectiveCwd,
@@ -1119,8 +1119,8 @@ async function compactEmbeddedAgentSessionDirectOnce(
           defaultAgentId,
         }),
         skillsPrompt,
-        docsPath: openClawReferences.docsPath ?? undefined,
-        sourcePath: openClawReferences.sourcePath ?? undefined,
+        docsPath: eveReferences.docsPath ?? undefined,
+        sourcePath: eveReferences.sourcePath ?? undefined,
         promptMode,
         promptSurface,
         sourceReplyDeliveryMode: params.sourceReplyDeliveryMode,
@@ -1223,9 +1223,9 @@ async function compactEmbeddedAgentSessionDirectOnce(
         extensionFactories,
       });
       await resourceLoader.reload();
-      // DefaultResourceLoader.reload() rehydrates settings from disk and can drop OpenClaw
+      // DefaultResourceLoader.reload() rehydrates settings from disk and can drop EVE
       // compaction overrides applied in createPreparedEmbeddedAgentSettingsManager — same
-      // rehydration also restores OpenClaw runtime's auto-compaction (openclaw#75799), so re-apply
+      // rehydration also restores EVE runtime's auto-compaction (eve#75799), so re-apply
       // both guards. effectiveModel.baseUrl matches the surrounding scope so
       // auth-profile-injected baseUrls reach the endpoint-class detector.
       applyAgentCompactionSettingsFromConfig({
@@ -1259,7 +1259,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
         },
       });
       // The session runtime treats `tools` as a name allowlist during session creation. Pass the
-      // exact OpenClaw-managed registrations so custom tools survive startup.
+      // exact EVE-managed registrations so custom tools survive startup.
       const sessionToolAllowlist = toSessionToolAllowlist(collectRegisteredToolNames(customTools));
 
       const providerStreamFn = resolveCompactionProviderStream({

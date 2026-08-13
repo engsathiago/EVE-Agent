@@ -1,9 +1,9 @@
 /** Shared helpers for gateway status target selection, auth, summaries, and probe rendering. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { colorize, theme } from "../../../packages/terminal-core/src/theme.js";
 import { parseTimeoutMsWithFallback } from "../../cli/parse-timeout.js";
 import { resolveGatewayPort } from "../../config/config.js";
-import type { OpenClawConfig, ConfigFileSnapshot } from "../../config/types.js";
+import type { EVEConfig, ConfigFileSnapshot } from "../../config/types.js";
 import { hasConfiguredSecretInput } from "../../config/types.secrets.js";
 import { resolveGatewayProbeSurfaceAuth } from "../../gateway/auth-surface-resolution.js";
 import { isLoopbackHost } from "../../gateway/net.js";
@@ -87,7 +87,7 @@ function normalizeWsUrl(value: string): string | null {
 }
 
 /** Builds the deduplicated ordered gateway probe targets from CLI input and config. */
-export function resolveTargets(cfg: OpenClawConfig, explicitUrl?: string): GatewayStatusTarget[] {
+export function resolveTargets(cfg: EVEConfig, explicitUrl?: string): GatewayStatusTarget[] {
   const targets: GatewayStatusTarget[] = [];
   const add = (t: GatewayStatusTarget) => {
     if (!targets.some((x) => x.url === t.url)) {
@@ -167,7 +167,7 @@ export function sanitizeSshTarget(value: unknown): string | null {
 
 /** Resolves auth for the probe surface represented by the selected status target. */
 export async function resolveAuthForTarget(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   target: GatewayStatusTarget,
   overrides: { token?: string; password?: string },
 ): Promise<{ token?: string; password?: string; diagnostics?: string[] }> {
@@ -185,7 +185,7 @@ export async function resolveAuthForTarget(
 
 export { pickGatewaySelfPresence };
 
-/** Extracts the config fields displayed by `openclaw gateway status --deep`. */
+/** Extracts the config fields displayed by `eve gateway status --deep`. */
 export function extractConfigSummary(snapshotUnknown: unknown): GatewayConfigSummary {
   const snap = snapshotUnknown as Partial<ConfigFileSnapshot> | null;
   const path = typeof snap?.path === "string" ? snap.path : null;
@@ -253,7 +253,7 @@ export function extractConfigSummary(snapshotUnknown: unknown): GatewayConfigSum
 }
 
 /** Builds local and tailnet gateway URL hints for the configured gateway port. */
-export function buildNetworkHints(cfg: OpenClawConfig) {
+export function buildNetworkHints(cfg: EVEConfig) {
   const { tailnetIPv4 } = inspectBestEffortPrimaryTailnetIPv4();
   const port = resolveGatewayPort(cfg);
   const localScheme = cfg.gateway?.tls?.enabled === true ? "wss" : "ws";

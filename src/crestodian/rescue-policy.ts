@@ -1,5 +1,5 @@
 // Crestodian rescue policy gates remote writes by owner, DM, sandbox, and YOLO posture.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeAgentId } from "../routing/session-key.js";
 
 /**
@@ -29,7 +29,7 @@ type CrestodianRescueDecision =
     };
 
 type CrestodianRescuePolicyInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   senderIsOwner: boolean;
   isDirectMessage: boolean;
@@ -39,7 +39,7 @@ function resolvePendingTtlMinutes(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : 15;
 }
 
-function resolveAgentEntry(cfg: OpenClawConfig, agentId?: string) {
+function resolveAgentEntry(cfg: EVEConfig, agentId?: string) {
   if (!agentId) {
     return undefined;
   }
@@ -49,12 +49,12 @@ function resolveAgentEntry(cfg: OpenClawConfig, agentId?: string) {
   );
 }
 
-function resolveScopedExecConfig(cfg: OpenClawConfig, agentId?: string) {
+function resolveScopedExecConfig(cfg: EVEConfig, agentId?: string) {
   return resolveAgentEntry(cfg, agentId)?.tools?.exec;
 }
 
 function resolveScopedSandboxMode(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId?: string,
 ): "off" | "non-main" | "all" {
   return (
@@ -62,7 +62,7 @@ function resolveScopedSandboxMode(
   );
 }
 
-function isYoloHostPosture(cfg: OpenClawConfig, agentId?: string): boolean {
+function isYoloHostPosture(cfg: EVEConfig, agentId?: string): boolean {
   const scopedExec = resolveScopedExecConfig(cfg, agentId);
   const globalExec = cfg.tools?.exec;
   const security = scopedExec?.security ?? globalExec?.security ?? "full";
@@ -106,7 +106,7 @@ export function resolveCrestodianRescuePolicy(
       sandboxActive,
       reason: "sandbox-active",
       message:
-        "Crestodian rescue is blocked because OpenClaw sandboxing is active. Fix the install locally or disable sandboxing before using remote rescue.",
+        "Crestodian rescue is blocked because EVE sandboxing is active. Fix the install locally or disable sandboxing before using remote rescue.",
     };
   }
   if (configuredEnabled === "auto" && !yolo) {
@@ -131,7 +131,7 @@ export function resolveCrestodianRescuePolicy(
       yolo,
       sandboxActive,
       reason: "not-owner",
-      message: "Crestodian rescue only accepts commands from an OpenClaw owner.",
+      message: "Crestodian rescue only accepts commands from an EVE owner.",
     };
   }
   if (ownerDmOnly && !input.isDirectMessage) {

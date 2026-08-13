@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/ollama-provider",
+  "name": "@eve/ollama-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Ollama provider plugin",
+  "description": "EVE Ollama provider plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

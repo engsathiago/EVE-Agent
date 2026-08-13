@@ -1,8 +1,8 @@
 // Telegram plugin module implements probe behavior.
-import type { BaseProbeResult } from "openclaw/plugin-sdk/channel-contract";
-import type { TelegramNetworkConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { fetchWithTimeout } from "openclaw/plugin-sdk/text-utility-runtime";
+import type { BaseProbeResult } from "eve-agent/plugin-sdk/channel-contract";
+import type { TelegramNetworkConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { fetchWithTimeout } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { normalizeTelegramBotInfo, type TelegramBotInfo } from "./bot-info.js";
 import {
   resolveTelegramApiBase,

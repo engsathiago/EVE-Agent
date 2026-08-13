@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-  namespace = "ai.openclaw.app.benchmark"
+  namespace = "ai.eve.app.benchmark"
   compileSdk = 37
 
   defaultConfig {

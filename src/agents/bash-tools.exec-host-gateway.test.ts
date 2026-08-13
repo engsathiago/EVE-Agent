@@ -1100,7 +1100,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     const result = await runGatewayAllowlist({
-      command: "openclaw config set security.audit.suppressions '[]'",
+      command: "eve config set security.audit.suppressions '[]'",
       security: "full",
       ask: "on-miss",
     });
@@ -1119,7 +1119,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     const result = await runGatewayAllowlist({
-      command: "openclaw config set security.audit.suppressions '[]'",
+      command: "eve config set security.audit.suppressions '[]'",
       security: "full",
       ask: "on-miss",
       autoReview: true,
@@ -1141,7 +1141,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     await runGatewayAllowlist({
-      command: "openclaw config set security.audit.suppressions '[]'",
+      command: "eve config set security.audit.suppressions '[]'",
       security: "full",
       ask: "off",
     });
@@ -1155,7 +1155,7 @@ describe("processGatewayAllowlist", () => {
       analysisOk: true,
       allowlistSatisfied: true,
       segments: [
-        { resolution: null, argv: ["openclaw", "config", "get", "security.audit.suppressions"] },
+        { resolution: null, argv: ["eve", "config", "get", "security.audit.suppressions"] },
       ],
       segmentAllowlistEntries: [],
     });
@@ -1167,7 +1167,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     await runGatewayAllowlist({
-      command: "openclaw config get security.audit.suppressions",
+      command: "eve config get security.audit.suppressions",
       security: "full",
       ask: "on-miss",
     });
@@ -1183,7 +1183,7 @@ describe("processGatewayAllowlist", () => {
       segments: [
         {
           resolution: null,
-          argv: ["openclaw", "--profile", "rescue", "config", "get", "security.audit.suppressions"],
+          argv: ["eve", "--profile", "rescue", "config", "get", "security.audit.suppressions"],
         },
       ],
       segmentAllowlistEntries: [],
@@ -1196,7 +1196,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     await runGatewayAllowlist({
-      command: "openclaw --profile rescue config get security.audit.suppressions",
+      command: "eve --profile rescue config get security.audit.suppressions",
       security: "full",
       ask: "on-miss",
     });
@@ -1210,10 +1210,10 @@ describe("processGatewayAllowlist", () => {
       analysisOk: true,
       allowlistSatisfied: true,
       segments: [
-        { resolution: null, argv: ["openclaw", "config", "get", "security.audit.suppressions"] },
+        { resolution: null, argv: ["eve", "config", "get", "security.audit.suppressions"] },
         {
           resolution: null,
-          argv: ["openclaw", "config", "set", "security.audit.suppressions", "[]"],
+          argv: ["eve", "config", "set", "security.audit.suppressions", "[]"],
         },
       ],
       segmentAllowlistEntries: [],
@@ -1227,7 +1227,7 @@ describe("processGatewayAllowlist", () => {
 
     const result = await runGatewayAllowlist({
       command:
-        "openclaw config get security.audit.suppressions; openclaw config set security.audit.suppressions '[]'",
+        "eve config get security.audit.suppressions; eve config set security.audit.suppressions '[]'",
       security: "full",
       ask: "on-miss",
     });
@@ -1242,7 +1242,7 @@ describe("processGatewayAllowlist", () => {
       analysisOk: true,
       allowlistSatisfied: false,
       segments: [
-        { resolution: null, argv: ["openclaw", "config", "get", "security.audit.suppressions"] },
+        { resolution: null, argv: ["eve", "config", "get", "security.audit.suppressions"] },
       ],
       segmentAllowlistEntries: [],
     });
@@ -1255,7 +1255,7 @@ describe("processGatewayAllowlist", () => {
 
     const result = await runGatewayAllowlist({
       command:
-        "openclaw config get security.audit.suppressions; openclaw config set security.audit.suppressions '[]'",
+        "eve config get security.audit.suppressions; eve config set security.audit.suppressions '[]'",
       security: "full",
       ask: "on-miss",
     });
@@ -1271,14 +1271,14 @@ describe("processGatewayAllowlist", () => {
       allowlistSatisfied: false,
       segments: [
         {
-          raw: "openclaw config get security.audit.suppressions",
+          raw: "eve config get security.audit.suppressions",
           resolution: null,
-          argv: ["openclaw", "config", "get", "security.audit.suppressions"],
+          argv: ["eve", "config", "get", "security.audit.suppressions"],
         },
         {
-          raw: "openclaw config patch --stdin <<'EOF'",
+          raw: "eve config patch --stdin <<'EOF'",
           resolution: null,
-          argv: ["openclaw", "config", "patch", "--stdin"],
+          argv: ["eve", "config", "patch", "--stdin"],
         },
       ],
       segmentAllowlistEntries: [],
@@ -1291,7 +1291,7 @@ describe("processGatewayAllowlist", () => {
     });
 
     const result = await runGatewayAllowlist({
-      command: `openclaw config get security.audit.suppressions; openclaw config patch --stdin <<'EOF'
+      command: `eve config get security.audit.suppressions; eve config patch --stdin <<'EOF'
 {"security":{"audit":{"suppressions":[]}}}
 EOF`,
       security: "full",
@@ -1364,11 +1364,11 @@ EOF`,
       durationMs: 12,
       timedOut: false,
       aggregated: JSON.stringify({
-        path: "/tmp/openclaw-diagnostics.zip",
+        path: "/tmp/eve-diagnostics.zip",
         bytes: 1234,
         manifest: {
           generatedAt: "2026-04-28T20:58:29.311Z",
-          openclawVersion: "2026.4.27",
+          eveVersion: "2026.4.27",
           contents: [
             { path: "diagnostics.json", bytes: 100 },
             { path: "summary.md", bytes: 200 },
@@ -1393,13 +1393,13 @@ EOF`,
         "Codex diagnostics sent to OpenAI servers:",
         "Session 1",
         "Channel: telegram",
-        "OpenClaw session id: `session-1`",
+        "EVE session id: `session-1`",
         "Codex thread id: `thread-1`",
       ].join("\n"),
     );
 
     const result = await runGatewayAllowlist({
-      command: "openclaw gateway diagnostics export --json",
+      command: "eve gateway diagnostics export --json",
       trigger: "diagnostics",
       approvalFollowupMode: "direct",
       approvalFollowup,
@@ -1416,7 +1416,7 @@ EOF`,
     expect(followupTarget?.direct).toBe(true);
     const followupText = requireSentFollowupText(0);
     expect(followupText).toContain("Diagnostics export created.");
-    expect(followupText).toContain("Path: /tmp/openclaw-diagnostics.zip");
+    expect(followupText).toContain("Path: /tmp/eve-diagnostics.zip");
     expect(followupText).toContain("Contents (2 files):");
     expect(followupText).toContain("OpenAI Codex harness:");
     expect(followupText).toContain("Codex diagnostics sent to OpenAI servers:");
@@ -1454,10 +1454,10 @@ EOF`,
     });
 
     const result = await runGatewayAllowlist({
-      command: "openclaw sessions export-trajectory --json",
+      command: "eve sessions export-trajectory --json",
       approvalFollowupMode: "agent",
       sessionId: "approval-session",
-      sessionStore: "/tmp/openclaw-sessions.json",
+      sessionStore: "/tmp/eve-sessions.json",
       turnSourceChannel: "webchat",
     });
 
@@ -1468,7 +1468,7 @@ EOF`,
     expect(requireBuildFollowupTargetInput(0)).toMatchObject({
       direct: false,
       expectedSessionId: "approval-session",
-      sessionStore: "/tmp/openclaw-sessions.json",
+      sessionStore: "/tmp/eve-sessions.json",
     });
     expect(requireSentFollowupTarget(0)?.direct).toBe(false);
     expect(requireSentFollowupText(0)).toContain("done");

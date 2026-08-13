@@ -23,7 +23,7 @@ describe("DefaultPackageManager", () => {
   it("keeps manifest resource entries inside the package root", async () => {
     // Manifest globs are package-owned; path traversal or symlink hops must not
     // expose arbitrary host files as skills.
-    const root = await makeTempDir("openclaw-package-manager-");
+    const root = await makeTempDir("eve-package-manager-");
     const packageRoot = join(root, "package");
     const outsideRoot = join(root, "outside");
     const insideSkill = join(packageRoot, "skills", "inside", "SKILL.md");
@@ -43,7 +43,7 @@ describe("DefaultPackageManager", () => {
 
     await writeFile(
       join(packageRoot, "package.json"),
-      JSON.stringify({ openclaw: { skills: entries } }),
+      JSON.stringify({ eve: { skills: entries } }),
       "utf-8",
     );
 
@@ -61,7 +61,7 @@ describe("DefaultPackageManager", () => {
   });
 
   it("keeps convention-discovered resource entries inside the package root", async () => {
-    const root = await makeTempDir("openclaw-package-manager-");
+    const root = await makeTempDir("eve-package-manager-");
     const packageRoot = join(root, "package");
     const outsideRoot = join(root, "outside");
     const insideSkill = join(packageRoot, "skills", "inside", "SKILL.md");
@@ -93,7 +93,7 @@ describe("DefaultPackageManager", () => {
   });
 
   it("keeps auto-discovered project skills inside their skill root", async () => {
-    const root = await makeTempDir("openclaw-package-manager-");
+    const root = await makeTempDir("eve-package-manager-");
     const agentsSkillsRoot = join(root, ".agents", "skills");
     const insideSkill = join(agentsSkillsRoot, "inside", "SKILL.md");
     const outsideRoot = join(root, "outside");
@@ -127,8 +127,8 @@ describe("DefaultPackageManager", () => {
   it("keeps auto-discovered project resources inside their resource roots", async () => {
     // Project resources may be auto-discovered, but each resource type remains
     // confined to its expected root.
-    const root = await makeTempDir("openclaw-package-manager-");
-    const configRoot = join(root, ".openclaw");
+    const root = await makeTempDir("eve-package-manager-");
+    const configRoot = join(root, ".eve");
     const outsideRoot = join(root, "outside");
     const insidePrompt = join(configRoot, "prompts", "inside.md");
     const insideTheme = join(configRoot, "themes", "inside.json");
@@ -171,11 +171,11 @@ describe("DefaultPackageManager", () => {
   });
 
   it("does not auto-install missing npm package resources", async () => {
-    const root = await makeTempDir("openclaw-package-manager-");
+    const root = await makeTempDir("eve-package-manager-");
     const manager = new DefaultPackageManager({
       cwd: root,
       agentDir: join(root, "agent"),
-      settingsManager: SettingsManager.inMemory({ packages: ["npm:@openclaw/missing-test"] }),
+      settingsManager: SettingsManager.inMemory({ packages: ["npm:@eve/missing-test"] }),
     });
 
     const resolved = await manager.resolve();

@@ -1,23 +1,23 @@
 // Telegram plugin module implements polling session behavior.
 import { type RunOptions, run } from "@grammyjs/runner";
-import type { ChannelAccountSnapshot } from "openclaw/plugin-sdk/channel-contract";
-import type { TelegramNetworkConfig } from "openclaw/plugin-sdk/config-contracts";
-import { drainPendingDeliveries } from "openclaw/plugin-sdk/delivery-queue-runtime";
+import type { ChannelAccountSnapshot } from "eve-agent/plugin-sdk/channel-contract";
+import type { TelegramNetworkConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { drainPendingDeliveries } from "eve-agent/plugin-sdk/delivery-queue-runtime";
 import {
   collectErrorGraphCandidates,
   formatErrorMessage,
   readErrorName,
-} from "openclaw/plugin-sdk/error-runtime";
+} from "eve-agent/plugin-sdk/error-runtime";
 import {
   clampPositiveTimerTimeoutMs,
   resolvePositiveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   computeBackoff,
   formatDurationPrecise,
   sleepWithAbort,
-} from "openclaw/plugin-sdk/runtime-env";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import {
   runWithTelegramSpooledReplayUpdate,
@@ -119,7 +119,7 @@ function resolveTelegramRestartDelayMs(
 // Surfaced in logs and channel status when getUpdates returns 409; the only
 // user-fixable causes are a second poller on the same token or a stale webhook.
 const TELEGRAM_GET_UPDATES_CONFLICT_HINT =
-  " Another OpenClaw gateway, script, or Telegram poller may be using this bot token; stop the duplicate poller or switch this account to webhook mode.";
+  " Another EVE gateway, script, or Telegram poller may be using this bot token; stop the duplicate poller or switch this account to webhook mode.";
 
 const DEFAULT_POLL_STALL_THRESHOLD_MS = 120_000;
 const MIN_POLL_STALL_THRESHOLD_MS = 30_000;
@@ -128,7 +128,7 @@ const POLL_WATCHDOG_INTERVAL_MS = 30_000;
 const POLL_STOP_GRACE_MS = 15_000;
 const ISOLATED_INGRESS_BACKLOG_STALL_MS = 25 * 60_000;
 const TELEGRAM_SPOOLED_HANDLER_ABORT_GRACE_MS = 5_000;
-const TELEGRAM_SPOOLED_HANDLER_TIMEOUT_ENV = "OPENCLAW_TELEGRAM_SPOOLED_HANDLER_TIMEOUT_MS";
+const TELEGRAM_SPOOLED_HANDLER_TIMEOUT_ENV = "EVE_TELEGRAM_SPOOLED_HANDLER_TIMEOUT_MS";
 const TELEGRAM_SPOOLED_DRAIN_START_LIMIT = 100;
 const TELEGRAM_SPOOLED_DRAIN_SCAN_LIMIT = TELEGRAM_SPOOLED_DRAIN_START_LIMIT * 10;
 const TELEGRAM_POLLING_CLIENT_TIMEOUT_FLOOR_SECONDS = Math.ceil(
@@ -402,7 +402,7 @@ export class TelegramPollingSession {
     } finally {
       // Release the transport's dispatchers on session shutdown. Without
       // this, the undici keep-alive sockets survive beyond the session and
-      // leak to api.telegram.org; see openclaw#68128.
+      // leak to api.telegram.org; see eve#68128.
       await this.#transportState.dispose();
       this.#status.notePollingStop();
     }

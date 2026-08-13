@@ -12,7 +12,7 @@ import {
 
 const chromiumExecutablePath = resolvePlaywrightChromiumExecutablePath(chromium.executablePath());
 const chromiumAvailable = canRunPlaywrightChromium(chromiumExecutablePath);
-const allowMissingChromium = process.env.OPENCLAW_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
+const allowMissingChromium = process.env.EVE_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
 const describeControlUiE2e = chromiumAvailable || !allowMissingChromium ? describe : describe.skip;
 
 let server: ControlUiE2eServer;
@@ -63,7 +63,7 @@ async function waitForChatScrollIdle(page: Page): Promise<void> {
     .poll(
       () =>
         page.evaluate(() => {
-          const app = document.querySelector("openclaw-app") as
+          const app = document.querySelector("eve-app") as
             | (Element & {
                 chatIsProgrammaticScroll?: boolean;
                 chatScrollFrame?: number | null;
@@ -122,7 +122,7 @@ async function controlUiEventPayloads(
   event: string,
 ): Promise<Array<Record<string, unknown>>> {
   return page.evaluate((eventName) => {
-    const app = document.querySelector("openclaw-app") as
+    const app = document.querySelector("eve-app") as
       | (Element & { eventLogBuffer?: unknown[] })
       | null;
     return (app?.eventLogBuffer ?? [])
@@ -144,7 +144,7 @@ async function waitForControlUiChatSendPhases(
 ): Promise<void> {
   await page.waitForFunction(
     ({ expectedPhases, expectedRunId }) => {
-      const app = document.querySelector("openclaw-app") as
+      const app = document.querySelector("eve-app") as
         | (Element & { eventLogBuffer?: unknown[] })
         | null;
       const observedPhases = new Set(
@@ -197,7 +197,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
   beforeAll(async () => {
     if (!chromiumAvailable) {
       throw new Error(
-        `Playwright Chromium is not installed or cannot start at ${chromiumExecutablePath}. Run \`pnpm --dir ui exec playwright install --with-deps chromium\`, set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH to a compatible browser, or set OPENCLAW_UI_E2E_ALLOW_MISSING_CHROMIUM=1 only when intentionally skipping this lane.`,
+        `Playwright Chromium is not installed or cannot start at ${chromiumExecutablePath}. Run \`pnpm --dir ui exec playwright install --with-deps chromium\`, set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH to a compatible browser, or set EVE_UI_E2E_ALLOW_MISSING_CHROMIUM=1 only when intentionally skipping this lane.`,
       );
     }
     server = await startControlUiE2eServer();
@@ -450,7 +450,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
 
       await gateway.resolveDeferred("chat.send", { runId, status: "started" });
       await page.waitForFunction(() => {
-        const app = document.querySelector("openclaw-app") as
+        const app = document.querySelector("eve-app") as
           | (Element & { chatSending?: unknown })
           | null;
         return app?.chatSending === false;
@@ -658,7 +658,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       expect(firstVisibleTiming?.requestToFirstAssistantEventMs).toEqual(expect.any(Number));
       await gateway.resolveDeferred("chat.startup", {
         agentsList: {
-          agents: [{ id: "ops", name: "OpenClaw" }],
+          agents: [{ id: "ops", name: "EVE" }],
           defaultId: "ops",
           mainKey: "main",
           scope: "agent",

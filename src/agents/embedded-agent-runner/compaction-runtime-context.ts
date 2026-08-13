@@ -4,7 +4,7 @@
 import type { SourceReplyDeliveryMode } from "../../auto-reply/get-reply-options.types.js";
 import type { ReasoningLevel, ThinkLevel } from "../../auto-reply/thinking.js";
 import type { ChatType } from "../../channels/chat-type.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SkillSnapshot } from "../../skills/types.js";
 import { normalizeOptionalAgentRuntimeId } from "../agent-runtime-id.js";
 import {
@@ -37,7 +37,7 @@ type EmbeddedCompactionRuntimeContext = {
   workspaceDir: string;
   cwd?: string;
   agentDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   skillsSnapshot?: SkillSnapshot;
   senderIsOwner?: boolean;
   senderId?: string;
@@ -59,7 +59,7 @@ type EmbeddedCompactionRuntimeContext = {
  * caller-supplied provider/model and optionally applying runtime defaults.
  */
 export function resolveEmbeddedCompactionTarget(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider?: string | null;
   modelId?: string | null;
   authProfileId?: string | null;
@@ -88,7 +88,7 @@ export function resolveEmbeddedCompactionTarget(params: {
       provider: targetProvider,
       harnessRuntime: params.harnessRuntime,
     });
-    const harnessRuntime = useCodexHarnessRuntime ? params.harnessRuntime : "openclaw";
+    const harnessRuntime = useCodexHarnessRuntime ? params.harnessRuntime : "eve";
     const runtimeProvider = resolveSelectedOpenAIRuntimeProvider({
       provider: targetProvider,
       harnessRuntime: harnessRuntime ?? undefined,
@@ -192,7 +192,7 @@ function normalizeCompactionConfigKey(value: string): string {
 }
 
 function hasBareConfiguredModelForProvider(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
 }): boolean {
@@ -224,7 +224,7 @@ function hasBareConfiguredModelForProvider(params: {
 }
 
 function shouldUseCodexRuntimeProviderForCompaction(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   provider: string;
   harnessRuntime?: string | null;
 }): boolean {
@@ -250,7 +250,7 @@ export function buildEmbeddedCompactionRuntimeContext(params: {
   workspaceDir: string;
   cwd?: string | null;
   agentDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   skillsSnapshot?: SkillSnapshot;
   senderIsOwner?: boolean;
   senderId?: string | null;

@@ -1,10 +1,10 @@
 // Discord plugin module implements manager behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { DiscordAccountConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { DiscordAccountConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { resolveDiscordAccountAllowFrom } from "../accounts.js";
 import {
   type APIVoiceState,
@@ -228,7 +228,7 @@ function startAutoJoin(manager: Pick<DiscordVoiceManager, "autoJoin">) {
 }
 
 function resolveDiscordVoiceAgentRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   guildId: string;
   sessionChannelId: string;
@@ -302,7 +302,7 @@ export class DiscordVoiceManager {
   constructor(
     private params: {
       client: Client;
-      cfg: OpenClawConfig;
+      cfg: EVEConfig;
       discordConfig: DiscordAccountConfig;
       accountId: string;
       runtime: RuntimeEnv;

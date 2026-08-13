@@ -160,14 +160,14 @@ export type ChannelIngressSenderGroupAccessProjection = {
   reason: "allowed" | "disabled" | "empty_allowlist" | "sender_not_allowlisted";
 };
 
-/** @deprecated Use `resolveChannelMessageIngress` from `openclaw/plugin-sdk/channel-ingress-runtime`. */
+/** @deprecated Use `resolveChannelMessageIngress` from `eve-agent/plugin-sdk/channel-ingress-runtime`. */
 export type ResolveChannelIngressAccessParams = ChannelIngressStateInput & {
   policy: ChannelIngressPolicyInput;
   effectiveAllowFrom?: readonly string[];
   effectiveGroupAllowFrom?: readonly string[];
 };
 
-/** @deprecated Use `resolveChannelMessageIngress` from `openclaw/plugin-sdk/channel-ingress-runtime`. */
+/** @deprecated Use `resolveChannelMessageIngress` from `eve-agent/plugin-sdk/channel-ingress-runtime`. */
 export type ResolvedChannelIngressAccess = {
   state: ChannelIngressState;
   ingress: ChannelIngressDecision;
@@ -652,7 +652,7 @@ export async function resolveChannelIngressState(
 /**
  * Resolve legacy ingress access with compatibility projections and effective allowlists.
  *
- * @deprecated Use `resolveChannelMessageIngress` from `openclaw/plugin-sdk/channel-ingress-runtime`.
+ * @deprecated Use `resolveChannelMessageIngress` from `eve-agent/plugin-sdk/channel-ingress-runtime`.
  */
 export async function resolveChannelIngressAccess(
   params: ResolveChannelIngressAccessParams,

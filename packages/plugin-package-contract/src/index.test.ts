@@ -7,25 +7,25 @@ import {
   validateExternalCodePluginPackageJson,
 } from "./index.js";
 
-describe("@openclaw/plugin-package-contract", () => {
-  it("normalizes the OpenClaw compatibility block for external plugins", () => {
+describe("@eve/plugin-package-contract", () => {
+  it("normalizes the EVE compatibility block for external plugins", () => {
     expect(
       normalizeExternalPluginCompatibility({
         version: "1.2.3",
-        openclaw: {
+        eve: {
           compat: {
             pluginApi: ">=2026.3.24-beta.2",
             minGatewayVersion: "2026.3.24-beta.2",
           },
           build: {
-            openclawVersion: "2026.3.24-beta.2",
+            eveVersion: "2026.3.24-beta.2",
             pluginSdkVersion: "0.9.0",
           },
         },
       }),
     ).toEqual({
       pluginApiRange: ">=2026.3.24-beta.2",
-      builtWithOpenClawVersion: "2026.3.24-beta.2",
+      builtWithEVEVersion: "2026.3.24-beta.2",
       pluginSdkVersion: "0.9.0",
       minGatewayVersion: "2026.3.24-beta.2",
     });
@@ -35,7 +35,7 @@ describe("@openclaw/plugin-package-contract", () => {
     expect(
       normalizeExternalPluginCompatibility({
         version: "1.2.3",
-        openclaw: {
+        eve: {
           compat: {
             pluginApi: ">=1.0.0",
           },
@@ -46,38 +46,38 @@ describe("@openclaw/plugin-package-contract", () => {
       }),
     ).toEqual({
       pluginApiRange: ">=1.0.0",
-      builtWithOpenClawVersion: "1.2.3",
+      builtWithEVEVersion: "1.2.3",
       minGatewayVersion: "2026.3.24-beta.2",
     });
   });
 
   it("lists the required external code-plugin fields", () => {
     expect(EXTERNAL_CODE_PLUGIN_REQUIRED_FIELD_PATHS).toEqual([
-      "openclaw.compat.pluginApi",
-      "openclaw.build.openclawVersion",
+      "eve.compat.pluginApi",
+      "eve.build.eveVersion",
     ]);
   });
 
   it("reports missing required fields with stable field paths", () => {
     const packageJson = {
-      openclaw: {
+      eve: {
         compat: {},
         build: {},
       },
     };
 
     expect(listMissingExternalCodePluginFieldPaths(packageJson)).toEqual([
-      "openclaw.compat.pluginApi",
-      "openclaw.build.openclawVersion",
+      "eve.compat.pluginApi",
+      "eve.build.eveVersion",
     ]);
     expect(validateExternalCodePluginPackageJson(packageJson).issues).toEqual([
       {
-        fieldPath: "openclaw.compat.pluginApi",
-        message: "openclaw.compat.pluginApi is required for external code plugin packages.",
+        fieldPath: "eve.compat.pluginApi",
+        message: "eve.compat.pluginApi is required for external code plugin packages.",
       },
       {
-        fieldPath: "openclaw.build.openclawVersion",
-        message: "openclaw.build.openclawVersion is required for external code plugin packages.",
+        fieldPath: "eve.build.eveVersion",
+        message: "eve.build.eveVersion is required for external code plugin packages.",
       },
     ]);
   });

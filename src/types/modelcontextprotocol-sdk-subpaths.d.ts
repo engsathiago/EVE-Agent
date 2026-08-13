@@ -7,7 +7,7 @@ declare module "@modelcontextprotocol/sdk/server/streamableHttp.js" {
     sessionIdGenerator?: (() => string) | undefined;
   };
 
-  /** Server transport subset consumed by OpenClaw's MCP HTTP surfaces. */
+  /** Server transport subset consumed by EVE's MCP HTTP surfaces. */
   export class StreamableHTTPServerTransport {
     constructor(options?: StreamableHTTPServerTransportOptions);
     get sessionId(): string | undefined;

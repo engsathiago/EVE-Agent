@@ -1,12 +1,12 @@
 // Workshop types define generated skill draft, policy, and config contracts.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SkillScanFinding } from "../security/scanner.js";
 
 /** Schema id for persisted skill workshop proposal records. */
-export const SKILL_WORKSHOP_SCHEMA = "openclaw.skill-workshop.proposal.v1" as const;
+export const SKILL_WORKSHOP_SCHEMA = "eve.skill-workshop.proposal.v1" as const;
 export const SKILL_WORKSHOP_MANIFEST_SCHEMA =
-  "openclaw.skill-workshop.proposals-manifest.v1" as const;
-export const SKILL_WORKSHOP_ROLLBACK_SCHEMA = "openclaw.skill-workshop.rollback.v1" as const;
+  "eve.skill-workshop.proposals-manifest.v1" as const;
+export const SKILL_WORKSHOP_ROLLBACK_SCHEMA = "eve.skill-workshop.rollback.v1" as const;
 
 type SkillProposalKind = "create" | "update";
 export type SkillProposalStatus = "pending" | "applied" | "rejected" | "quarantined" | "stale";
@@ -114,7 +114,7 @@ export type SkillProposalSupportFileInput = {
 
 export type SkillProposalCreateInput = {
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   name: string;
   description: string;
   content: string;
@@ -127,7 +127,7 @@ export type SkillProposalCreateInput = {
 
 export type SkillProposalUpdateInput = {
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   skillName: string;
   description?: string;
   content: string;
@@ -140,7 +140,7 @@ export type SkillProposalUpdateInput = {
 
 export type SkillProposalReviseInput = {
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   proposalId: string;
   content: string;
   supportFiles?: SkillProposalSupportFileInput[];
@@ -151,7 +151,7 @@ export type SkillProposalReviseInput = {
 
 export type SkillProposalActionInput = {
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   proposalId: string;
   reason?: string;
 };

@@ -3,14 +3,14 @@ import {
   MAX_DATE_TIMESTAMP_MS,
   resolveDateTimestampMs,
   resolveExpiresAtMsFromDurationSeconds,
-} from "openclaw/plugin-sdk/number-runtime";
-import { generateHexPkceVerifierChallenge } from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { generateHexPkceVerifierChallenge } from "eve-agent/plugin-sdk/provider-auth";
 import {
   generateOAuthState,
   parseOAuthCallbackInput,
   waitForLocalOAuthCallback,
-} from "openclaw/plugin-sdk/provider-auth-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/provider-auth-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { readGoogleApiErrorDetail } from "./google-api-errors.js";
 
 const GOOGLE_MEET_REDIRECT_URI = "http://localhost:8085/oauth2callback";

@@ -3,11 +3,11 @@ import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
   ChannelOutboundAdapter,
-} from "openclaw/plugin-sdk/channel-contract";
-import { resolveOutboundSendDep } from "openclaw/plugin-sdk/channel-outbound";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/core";
-import { collectStatusIssuesFromLastError } from "openclaw/plugin-sdk/status-helpers";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-contract";
+import { resolveOutboundSendDep } from "eve-agent/plugin-sdk/channel-outbound";
+import type { ChannelPlugin } from "eve-agent/plugin-sdk/core";
+import { collectStatusIssuesFromLastError } from "eve-agent/plugin-sdk/status-helpers";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 function normalizeIMessageTestHandle(raw: string): string {
   let trimmed = raw.trim();

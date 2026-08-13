@@ -27,7 +27,7 @@ describe("mantis Telegram desktop builder runtime", () => {
     await fs.rm(repoRoot, { force: true, recursive: true });
   });
 
-  it("leases a desktop box, installs Telegram Desktop, configures OpenClaw, and keeps the gateway lease", async () => {
+  it("leases a desktop box, installs Telegram Desktop, configures EVE, and keeps the gateway lease", async () => {
     const commands: { args: readonly string[]; command: string; env?: NodeJS.ProcessEnv }[] = [];
     const runner = vi.fn(
       async (command: string, args: readonly string[], options: { env?: NodeJS.ProcessEnv }) => {
@@ -77,9 +77,9 @@ describe("mantis Telegram desktop builder runtime", () => {
       credentialSource: "env",
       env: {
         OPENAI_API_KEY: "openai-runtime-key",
-        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: "driver-token",
-        OPENCLAW_QA_TELEGRAM_GROUP_ID: "-1001234567890",
-        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "sut-token",
+        EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN: "driver-token",
+        EVE_QA_TELEGRAM_GROUP_ID: "-1001234567890",
+        EVE_QA_TELEGRAM_SUT_BOT_TOKEN: "sut-token",
         PATH: process.env.PATH,
         TELEGRAM_PROFILE_TGZ_B64: "profile-archive",
       },
@@ -100,23 +100,23 @@ describe("mantis Telegram desktop builder runtime", () => {
     const runCommand = commands.find(
       (entry) => entry.command === "/tmp/crabbox" && entry.args[0] === "run",
     );
-    expect(runCommand?.env?.OPENCLAW_LIVE_OPENAI_KEY).toBe("openai-runtime-key");
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64).toBe(
+    expect(runCommand?.env?.EVE_LIVE_OPENAI_KEY).toBe("openai-runtime-key");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64).toBe(
       "profile-archive",
     );
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-token");
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_GROUP_ID).toBe("-1001234567890");
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-token");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-token");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_GROUP_ID).toBe("-1001234567890");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-token");
     const remoteScript = runCommand?.args.at(-1);
     expect(remoteScript).toContain("https://telegram.org/dl/desktop/linux");
     expect(remoteScript).toContain('-workdir "$telegram_profile_dir"');
-    expect(remoteScript).toContain("OPENCLAW_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64");
+    expect(remoteScript).toContain("EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64");
     expect(remoteScript).toContain(
       'botToken: { source: "env", provider: "default", id: "TELEGRAM_BOT_TOKEN" }',
     );
     expect(remoteScript).not.toContain("groupAllowFrom");
     expect(remoteScript).not.toContain("allowFrom:");
-    expect(remoteScript).toContain("openclaw gateway run");
+    expect(remoteScript).toContain("eve gateway run");
     expect(remoteScript).toContain("telegram-ready-message.json");
     expect(remoteScript).toContain("telegram-desktop-builder.mp4");
     expect(
@@ -217,8 +217,8 @@ describe("mantis Telegram desktop builder runtime", () => {
       credentialSource: "convex",
       env: {
         CI: "1",
-        OPENCLAW_QA_CONVEX_SECRET_CI: "convex-secret",
-        OPENCLAW_QA_CONVEX_SITE_URL: "https://example.convex.site",
+        EVE_QA_CONVEX_SECRET_CI: "convex-secret",
+        EVE_QA_CONVEX_SITE_URL: "https://example.convex.site",
         PATH: process.env.PATH,
       },
       keepLease: false,
@@ -232,12 +232,12 @@ describe("mantis Telegram desktop builder runtime", () => {
     const runCommand = commands.find(
       (entry) => entry.command === "/tmp/crabbox" && entry.args[0] === "run",
     );
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-leased");
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_GROUP_ID).toBe("-100222333444");
-    expect(runCommand?.env?.OPENCLAW_MANTIS_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-leased");
-    expect(runCommand?.env?.OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-leased");
-    expect(runCommand?.env?.OPENCLAW_QA_TELEGRAM_GROUP_ID).toBe("-100222333444");
-    expect(runCommand?.env?.OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-leased");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-leased");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_GROUP_ID).toBe("-100222333444");
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-leased");
+    expect(runCommand?.env?.EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-leased");
+    expect(runCommand?.env?.EVE_QA_TELEGRAM_GROUP_ID).toBe("-100222333444");
+    expect(runCommand?.env?.EVE_QA_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-leased");
     expect(
       commands.some((entry) => entry.command === "/tmp/crabbox" && entry.args[0] === "stop"),
     ).toBe(true);

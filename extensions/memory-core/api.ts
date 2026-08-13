@@ -1,10 +1,10 @@
 // Memory Core API module exposes the plugin public contract.
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 export type {
   MemoryEmbeddingProbeResult,
   MemoryProviderStatus,
   MemorySyncProgressUpdate,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 export {
   dedupeDreamDiaryEntries,
   removeBackfillDiaryEntries,

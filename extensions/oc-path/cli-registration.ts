@@ -1,7 +1,7 @@
 // OC Path module implements cli registration behavior.
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
 
-export function registerOcPathCli(api: OpenClawPluginApi): void {
+export function registerOcPathCli(api: EVEPluginApi): void {
   api.registerCli(
     async ({ program }) => {
       const { registerPathCli } = await import("./src/cli.js");

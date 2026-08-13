@@ -1,5 +1,5 @@
 // Memory Core helper module supports test manager helpers behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+import type { EVEConfig } from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
 import type { MemoryIndexManager } from "./index.js";
 
 type MemoryIndexModule = typeof import("./index.js");
@@ -19,7 +19,7 @@ async function loadGetMemorySearchManager(): Promise<MemoryIndexModule["getMemor
 }
 
 export async function getRequiredMemoryIndexManager(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   purpose?: "default" | "status" | "cli";
 }): Promise<MemoryIndexManager> {

@@ -1,5 +1,5 @@
 ---
-summary: "Adds the Mattermost channel surface for sending and receiving OpenClaw messages."
+summary: "Adds the Mattermost channel surface for sending and receiving EVE messages."
 read_when:
   - You are installing, configuring, or auditing the mattermost plugin
 title: "Mattermost plugin"
@@ -7,12 +7,12 @@ title: "Mattermost plugin"
 
 # Mattermost plugin
 
-Adds the Mattermost channel surface for sending and receiving OpenClaw messages.
+Adds the Mattermost channel surface for sending and receiving EVE messages.
 
 ## Distribution
 
-- Package: `@openclaw/mattermost`
-- Install route: included in OpenClaw
+- Package: `@eve/mattermost`
+- Install route: included in EVE
 
 ## Surface
 

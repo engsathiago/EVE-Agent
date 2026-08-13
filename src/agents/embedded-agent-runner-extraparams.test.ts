@@ -1,7 +1,7 @@
 // Covers extra-params stream wrapper composition across provider families.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { Context, Model, SimpleStreamOptions } from "openclaw/plugin-sdk/llm";
-import { createAssistantMessageEventStream } from "openclaw/plugin-sdk/llm";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
+import type { Context, Model, SimpleStreamOptions } from "eve-agent/plugin-sdk/llm";
+import { createAssistantMessageEventStream } from "eve-agent/plugin-sdk/llm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { testing as extraParamsTesting } from "./embedded-agent-runner/extra-params.js";
 
@@ -586,9 +586,9 @@ describe("applyExtraParamsToAgent", () => {
       undefined,
       "high",
       "cass",
-      "/tmp/openclaw-workspace",
+      "/tmp/eve-workspace",
       model,
-      "/tmp/openclaw-agent",
+      "/tmp/eve-agent",
       undefined,
       {
         nativeWebSearchPolicyContext: {
@@ -608,8 +608,8 @@ describe("applyExtraParamsToAgent", () => {
       },
     );
 
-    expect(capturedContext?.agentDir).toBe("/tmp/openclaw-agent");
-    expect(capturedContext?.workspaceDir).toBe("/tmp/openclaw-workspace");
+    expect(capturedContext?.agentDir).toBe("/tmp/eve-agent");
+    expect(capturedContext?.workspaceDir).toBe("/tmp/eve-workspace");
     expect(capturedContext?.nativeWebSearchAllowedByToolPolicy).toBe(false);
     expect("nativeWebSearchPolicyContext" in (capturedContext ?? {})).toBe(false);
   });

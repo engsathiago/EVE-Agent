@@ -8,7 +8,7 @@ title: "Skill Workshop"
 sidebarTitle: "Skill Workshop"
 ---
 
-Skill Workshop is OpenClaw's governed path for creating and updating workspace
+Skill Workshop is EVE's governed path for creating and updating workspace
 skills.
 
 Agents and operators do not write active `SKILL.md` files directly through this
@@ -82,7 +82,7 @@ approval prompt before they run. Set `skills.workshop.approvalPolicy` to
 Create a new skill proposal:
 
 ```bash
-openclaw skills workshop propose-create \
+eve skills workshop propose-create \
   --name morning-catchup \
   --description "Daily inbox catch-up: triage, archive, surface, draft, plan" \
   --proposal ./PROPOSAL.md
@@ -91,28 +91,28 @@ openclaw skills workshop propose-create \
 Create an update proposal for an existing workspace skill:
 
 ```bash
-openclaw skills workshop propose-update trip-planning --proposal ./PROPOSAL.md
+eve skills workshop propose-update trip-planning --proposal ./PROPOSAL.md
 ```
 
 List and inspect:
 
 ```bash
-openclaw skills workshop list
-openclaw skills workshop inspect <proposal-id>
+eve skills workshop list
+eve skills workshop inspect <proposal-id>
 ```
 
 Revise before approval:
 
 ```bash
-openclaw skills workshop revise <proposal-id> --proposal ./PROPOSAL.md
+eve skills workshop revise <proposal-id> --proposal ./PROPOSAL.md
 ```
 
 Close out the proposal:
 
 ```bash
-openclaw skills workshop apply <proposal-id>
-openclaw skills workshop reject <proposal-id> --reason "Duplicate"
-openclaw skills workshop quarantine <proposal-id> --reason "Needs security review"
+eve skills workshop apply <proposal-id>
+eve skills workshop reject <proposal-id> --reason "Duplicate"
+eve skills workshop quarantine <proposal-id> --reason "Needs security review"
 ```
 
 ## Proposal content
@@ -138,7 +138,7 @@ fields: `status`, proposal `version`, and proposal `date`.
 Use `--proposal-dir` when the proposed skill needs files beside `PROPOSAL.md`:
 
 ```bash
-openclaw skills workshop propose-create \
+eve skills workshop propose-create \
   --name weekly-update \
   --description "Friday wrap-up: stats, highlights, next week's top three" \
   --proposal-dir ./weekly-update-proposal
@@ -199,7 +199,7 @@ agent session or the CLI.
 }
 ```
 
-- `autonomous.enabled`: allows OpenClaw to create pending proposals from durable
+- `autonomous.enabled`: allows EVE to create pending proposals from durable
   conversation signals after successful turns. Default: `false`.
 - `allowSymlinkTargetWrites`: allows apply to write through workspace skill
   symlinks whose real target is listed in `skills.load.allowSymlinkTargets`.
@@ -232,7 +232,7 @@ Read-only methods require `operator.read`. Mutating methods require
 ## Storage
 
 ```text
-<OPENCLAW_STATE_DIR>/skill-workshop/
+<EVE_STATE_DIR>/skill-workshop/
   proposals.json
   proposals/<proposal-id>/
     proposal.json
@@ -245,7 +245,7 @@ Read-only methods require `operator.read`. Mutating methods require
     templates/
 ```
 
-Default state directory: `~/.openclaw`.
+Default state directory: `~/.eve`.
 
 - `proposal.json`: canonical proposal record.
 - `proposals.json`: fast listing index, rebuildable from proposal folders.
@@ -271,7 +271,7 @@ Default state directory: `~/.openclaw`.
 | `Proposal scan failed`                         | Inspect scanner findings, then revise or quarantine the proposal.                                                                                                                                           |
 | `untrusted symlink target`                     | Configure `skills.load.allowSymlinkTargets` and enable `skills.workshop.allowSymlinkTargetWrites` only for intentional shared skill roots.                                                                  |
 | `Support file paths must be under one of...`   | Move support files under `assets/`, `examples/`, `references/`, `scripts/`, or `templates/`.                                                                                                                |
-| Proposal does not show in list                 | Check the selected `--agent` workspace and `OPENCLAW_STATE_DIR`.                                                                                                                                            |
+| Proposal does not show in list                 | Check the selected `--agent` workspace and `EVE_STATE_DIR`.                                                                                                                                            |
 | Agent cannot call `skill_workshop`             | Check the active tool policy and run mode. `coding` includes the tool; restrictive `tools.allow` policies must list it explicitly, and sandboxed runs must use a normal host-side agent session or the CLI. |
 
 ## Related
@@ -280,4 +280,4 @@ Default state directory: `~/.openclaw`.
 - [Creating skills](/tools/creating-skills) for hand-written `SKILL.md`
   basics
 - [Skills config](/tools/skills-config) for the full `skills.workshop` schema
-- [Skills CLI](/cli/skills) for `openclaw skills` commands
+- [Skills CLI](/cli/skills) for `eve skills` commands

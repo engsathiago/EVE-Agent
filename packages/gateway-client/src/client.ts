@@ -6,13 +6,13 @@ import type {
   HelloOk,
   RequestFrame,
   ResponseFrame,
-} from "@openclaw/gateway-protocol";
+} from "@eve/gateway-protocol";
 import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
   type GatewayClientMode,
   type GatewayClientName,
-} from "@openclaw/gateway-protocol/client-info";
+} from "@eve/gateway-protocol/client-info";
 import {
   ConnectErrorDetailCodes,
   formatConnectErrorMessage,
@@ -20,9 +20,9 @@ import {
   readConnectErrorRecoveryAdvice,
   readPairingConnectErrorDetails,
   type ConnectErrorRecoveryAdvice,
-} from "@openclaw/gateway-protocol/connect-error-details";
-import { resolveGatewayStartupRetryAfterMs } from "@openclaw/gateway-protocol/startup-unavailable";
-import { MIN_CLIENT_PROTOCOL_VERSION, PROTOCOL_VERSION } from "@openclaw/gateway-protocol/version";
+} from "@eve/gateway-protocol/connect-error-details";
+import { resolveGatewayStartupRetryAfterMs } from "@eve/gateway-protocol/startup-unavailable";
+import { MIN_CLIENT_PROTOCOL_VERSION, PROTOCOL_VERSION } from "@eve/gateway-protocol/version";
 import ipaddr from "ipaddr.js";
 import { WebSocket, type ClientOptions, type CertMeta } from "ws";
 import { buildDeviceAuthPayloadV3 } from "./device-auth.js";
@@ -39,7 +39,7 @@ export type DeviceAuthTokenRecord = {
   scopes?: string[];
 };
 
-// The package stays reusable by depending on host callbacks for OpenClaw-owned
+// The package stays reusable by depending on host callbacks for EVE-owned
 // state: device keys, token storage, proxy routing, logging, and TLS formatting.
 export type GatewayClientHostDeps = {
   loadOrCreateDeviceIdentity?: () => DeviceIdentity | undefined;
@@ -554,7 +554,7 @@ export class GatewayClient {
 
   constructor(opts: GatewayClientOptions) {
     this.deps = {
-      // Defaults keep the package inert outside OpenClaw; device signing throws
+      // Defaults keep the package inert outside EVE; device signing throws
       // only when a caller actually supplies a device identity without host deps.
       loadOrCreateDeviceIdentity: opts.hostDeps?.loadOrCreateDeviceIdentity ?? (() => undefined),
       signDevicePayload:
@@ -606,7 +606,7 @@ export class GatewayClient {
     }
 
     const allowPrivateWs =
-      (this.opts.env ?? process.env).OPENCLAW_ALLOW_INSECURE_PRIVATE_WS === "1";
+      (this.opts.env ?? process.env).EVE_ALLOW_INSECURE_PRIVATE_WS === "1";
     // Block plaintext before device-token lookup. Credentials may be loaded from
     // host storage later in sendConnect(), and chat payloads are sensitive too.
     if (!isSecureWebSocketUrl(url, { allowPrivateWs })) {
@@ -624,8 +624,8 @@ export class GatewayClient {
           "(ssh -N -L 18789:127.0.0.1:18789 user@gateway-host), or use Tailscale Serve/Funnel. " +
           (allowPrivateWs
             ? ""
-            : "Break-glass (trusted private networks only): set OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1. ") +
-          "Run `openclaw doctor --fix` for guidance.",
+            : "Break-glass (trusted private networks only): set EVE_ALLOW_INSECURE_PRIVATE_WS=1. ") +
+          "Run `eve doctor --fix` for guidance.",
       );
       this.notifyConnectError(error);
       return;

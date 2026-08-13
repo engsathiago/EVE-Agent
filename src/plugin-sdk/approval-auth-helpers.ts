@@ -1,6 +1,6 @@
 // Approval auth helpers resolve actor and channel identity for approval requests.
 import { normalizeOptionalString } from "../../packages/normalization-core/src/string-coerce.js";
-import type { OpenClawConfig } from "./config-runtime.js";
+import type { EVEConfig } from "./config-runtime.js";
 
 type ApprovalKind = "exec" | "plugin";
 type ApprovalAuthorizationResult = {
@@ -10,7 +10,7 @@ type ApprovalAuthorizationResult = {
   reason?: string;
 };
 const IMPLICIT_SAME_CHAT_APPROVAL_AUTHORIZATION = Symbol(
-  "openclaw.implicitSameChatApprovalAuthorization",
+  "eve.implicitSameChatApprovalAuthorization",
 );
 
 /**
@@ -58,7 +58,7 @@ export function createResolvedApproverActionAuthAdapter(params: {
   /** Human-readable channel label used in denial messages. */
   channelLabel: string;
   /** Resolves normalized approver ids from config and optional account scope. */
-  resolveApprovers: (params: { cfg: OpenClawConfig; accountId?: string | null }) => string[];
+  resolveApprovers: (params: { cfg: EVEConfig; accountId?: string | null }) => string[];
   /** Optional sender normalizer; defaults to trimmed string normalization. */
   normalizeSenderId?: (value: string) => string | undefined;
 }) {
@@ -72,7 +72,7 @@ export function createResolvedApproverActionAuthAdapter(params: {
       approvalKind,
     }: {
       /** Full config used to resolve account-scoped approvers. */
-      cfg: OpenClawConfig;
+      cfg: EVEConfig;
       /** Optional channel account id for account-scoped approver config. */
       accountId?: string | null;
       /** Actor attempting the approval action. */

@@ -3,11 +3,11 @@ import {
   installChannelOutboundPayloadContractSuite,
   primeChannelOutboundSendMock,
   type OutboundPayloadHarnessParams,
-} from "openclaw/plugin-sdk/channel-contract-testing";
+} from "eve-agent/plugin-sdk/channel-contract-testing";
 import {
   createMessageReceiptFromOutboundResults,
   verifyChannelMessageAdapterCapabilityProofs,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import { describe, expect, it, vi } from "vitest";
 import { zaloMessageAdapter, zaloPlugin } from "./channel.js";
 

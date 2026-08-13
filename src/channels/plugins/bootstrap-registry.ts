@@ -3,7 +3,7 @@
  *
  * Provides channel plugin metadata before the full runtime registry is installed.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { listBundledChannelPluginIdsForRoot } from "./bundled-ids.js";
 import { resolveBundledChannelRootScope } from "./bundled-root.js";
 import {

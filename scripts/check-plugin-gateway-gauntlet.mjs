@@ -52,8 +52,8 @@ export function parseArgs(argv) {
       new Date().toISOString().replace(/[:.]/g, "-"),
     ),
     pluginIds: [],
-    shardTotal: readOptionalPositiveIntEnv("OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_TOTAL") ?? 1,
-    shardIndex: readOptionalNonNegativeIntEnv("OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_INDEX") ?? 0,
+    shardTotal: readOptionalPositiveIntEnv("EVE_PLUGIN_GATEWAY_GAUNTLET_TOTAL") ?? 1,
+    shardIndex: readOptionalNonNegativeIntEnv("EVE_PLUGIN_GATEWAY_GAUNTLET_INDEX") ?? 0,
     limit: undefined,
     skipPrebuild: false,
     skipLifecycle: false,
@@ -73,10 +73,10 @@ export function parseArgs(argv) {
     buildTimeoutMs: 600_000,
     qaTimeoutMs: 900_000,
     allowEmpty: false,
-    failOnObservation: process.env.OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_FAIL_ON_OBSERVATION === "1",
-    keepRunRoot: process.env.OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_KEEP_RUN_ROOT === "1",
+    failOnObservation: process.env.EVE_PLUGIN_GATEWAY_GAUNTLET_FAIL_ON_OBSERVATION === "1",
+    keepRunRoot: process.env.EVE_PLUGIN_GATEWAY_GAUNTLET_KEEP_RUN_ROOT === "1",
   };
-  const envIds = normalizeCsv(process.env.OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_IDS);
+  const envIds = normalizeCsv(process.env.EVE_PLUGIN_GATEWAY_GAUNTLET_IDS);
   options.pluginIds.push(...envIds);
   parseArgv: for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -225,12 +225,12 @@ Options:
   --keep-run-root               Preserve isolated HOME/state/log temp root after success
 
 Environment:
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_IDS   Comma-separated plugin ids to include
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_TOTAL Total plugin shards
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_INDEX Zero-based shard index
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_FAIL_ON_OBSERVATION=1
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_KEEP_RUN_ROOT=1
-  OPENCLAW_PLUGIN_GATEWAY_GAUNTLET_QA_SUMMARY_MAX_BYTES  QA summary read ceiling
+  EVE_PLUGIN_GATEWAY_GAUNTLET_IDS   Comma-separated plugin ids to include
+  EVE_PLUGIN_GATEWAY_GAUNTLET_TOTAL Total plugin shards
+  EVE_PLUGIN_GATEWAY_GAUNTLET_INDEX Zero-based shard index
+  EVE_PLUGIN_GATEWAY_GAUNTLET_FAIL_ON_OBSERVATION=1
+  EVE_PLUGIN_GATEWAY_GAUNTLET_KEEP_RUN_ROOT=1
+  EVE_PLUGIN_GATEWAY_GAUNTLET_QA_SUMMARY_MAX_BYTES  QA summary read ceiling
 `);
 }
 
@@ -282,7 +282,7 @@ export function createGauntletPrebuildCommand(repoRoot) {
   };
 }
 
-function openclawCommand(repoRoot, args) {
+function eveCommand(repoRoot, args) {
   return {
     command: process.execPath,
     args: [path.join(repoRoot, "dist", "entry.js"), ...args],
@@ -312,7 +312,7 @@ function requiresBuiltEntry(options, selectedPlugins) {
   return selectedPlugins.some((plugin) => selectSlashHelpAliases(plugin, true).length > 0);
 }
 
-function sourceOpenclawCommand(repoRoot, args) {
+function sourceEveCommand(repoRoot, args) {
   return {
     command: process.execPath,
     args: [path.join(repoRoot, "scripts", "run-node.mjs"), ...args],
@@ -355,10 +355,10 @@ function createIsolatedEnv(repoRoot, runRoot) {
     XDG_CONFIG_HOME: path.join(home, ".config"),
     XDG_CACHE_HOME: path.join(home, ".cache"),
     XDG_DATA_HOME: path.join(home, ".local", "share"),
-    OPENCLAW_STATE_DIR: stateDir,
-    OPENCLAW_CONFIG_PATH: path.join(stateDir, "openclaw.json"),
-    OPENCLAW_LOG_DIR: path.join(runRoot, "logs"),
-    OPENCLAW_QA_SUITE_PROGRESS: process.env.OPENCLAW_QA_SUITE_PROGRESS ?? "1",
+    EVE_STATE_DIR: stateDir,
+    EVE_CONFIG_PATH: path.join(stateDir, "eve.json"),
+    EVE_LOG_DIR: path.join(runRoot, "logs"),
+    EVE_QA_SUITE_PROGRESS: process.env.EVE_QA_SUITE_PROGRESS ?? "1",
     PATH: process.env.PATH,
     PWD: repoRoot,
   };
@@ -774,7 +774,7 @@ function buildSlashHelpProbe(params) {
     cwd: params.repoRoot,
     env: params.env,
     logDir: path.join(params.outputDir, "logs", "slash-help"),
-    ...openclawCommand(params.repoRoot, [command, "--help"]),
+    ...eveCommand(params.repoRoot, [command, "--help"]),
     label: `${params.plugin.id}-slash-${params.alias.name}`,
     phase: "slash:help",
     pluginId: params.plugin.id,
@@ -789,7 +789,7 @@ async function runPluginLifecycleCommand(params) {
       cwd: params.repoRoot,
       env: params.env,
       logDir: path.join(params.outputDir, "logs", "lifecycle"),
-      ...openclawCommand(params.repoRoot, ["plugins", ...params.args]),
+      ...eveCommand(params.repoRoot, ["plugins", ...params.args]),
       label: params.label,
       phase: `lifecycle:${params.phase}`,
       pluginId: params.pluginId,
@@ -913,7 +913,7 @@ async function runQaChunks(params) {
       cwd: params.repoRoot,
       env: params.env,
       logDir: path.join(params.outputDir, "logs", "qa-suite"),
-      ...sourceOpenclawCommand(params.repoRoot, [
+      ...sourceEveCommand(params.repoRoot, [
         "qa",
         "suite",
         "--provider-mode",
@@ -955,7 +955,7 @@ async function main() {
   const repoRoot = path.resolve(options.repoRoot);
   validateOutputDir(options, repoRoot);
   fs.mkdirSync(options.outputDir, { recursive: true });
-  const runRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-gauntlet-"));
+  const runRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-gauntlet-"));
   let preserveRunRoot = options.keepRunRoot;
   const env = createIsolatedEnv(repoRoot, runRoot);
   try {

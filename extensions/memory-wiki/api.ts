@@ -3,8 +3,8 @@ export {
   buildPluginConfigSchema,
   definePluginEntry,
   type AnyAgentTool,
-  type OpenClawConfig,
-  type OpenClawPluginApi,
-  type OpenClawPluginConfigSchema,
-} from "openclaw/plugin-sdk/plugin-entry";
+  type EVEConfig,
+  type EVEPluginApi,
+  type EVEPluginConfigSchema,
+} from "eve-agent/plugin-sdk/plugin-entry";
 export { z } from "zod";

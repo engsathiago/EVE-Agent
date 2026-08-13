@@ -223,7 +223,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
           exists: true,
           issues: [],
           legacyIssues: [],
-          path: "/tmp/openclaw.json",
+          path: "/tmp/eve.json",
           resolved: {},
           runtimeConfig: {},
           sourceConfig: {},
@@ -264,7 +264,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
 
     await expect(
       startGateway({
-        configPath: "/tmp/openclaw.json",
+        configPath: "/tmp/eve.json",
         env: { PATH: "/bin" },
         openImpl,
         port: 23456,
@@ -299,9 +299,9 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
         detached: process.platform !== "win32",
         env: expect.objectContaining({
           HOME: "/tmp/rpc-rtt/home",
-          OPENCLAW_CONFIG_PATH: "/tmp/openclaw.json",
-          OPENCLAW_GATEWAY_TOKEN: "secret-token",
-          OPENCLAW_STATE_DIR: "/tmp/rpc-rtt/state",
+          EVE_CONFIG_PATH: "/tmp/eve.json",
+          EVE_GATEWAY_TOKEN: "secret-token",
+          EVE_STATE_DIR: "/tmp/rpc-rtt/state",
           PATH: "/bin",
         }),
         stdio: ["ignore", 41, 42],

@@ -1,6 +1,6 @@
 // Twitch tests cover plugin plugin behavior.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../api.js";
+import type { EVEConfig } from "../api.js";
 import { twitchPlugin } from "./plugin.js";
 
 describe("twitchPlugin pairing", () => {
@@ -35,7 +35,7 @@ describe("twitchPlugin.status.buildAccountSnapshot", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const snapshot = await twitchPlugin.status?.buildAccountSnapshot?.({
       account: secondary,
@@ -70,7 +70,7 @@ describe("twitchPlugin.config", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(twitchPlugin.config.defaultAccountId?.(cfg)).toBe("secondary");
     expect(twitchPlugin.config.resolveAccount(cfg).accountId).toBe("secondary");

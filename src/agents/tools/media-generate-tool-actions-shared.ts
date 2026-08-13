@@ -8,7 +8,7 @@ import {
   synthesizeMediaGenerationCatalogEntries,
   type MediaGenerationCatalogKind,
 } from "../../../packages/media-generation-core/src/catalog.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { getProviderEnvVars } from "../../secrets/provider-env-vars.js";
 import type { AuthProfileStore } from "../auth-profiles/types.js";
 import { isCapabilityProviderConfigured } from "./media-tool-shared.js";
@@ -26,7 +26,7 @@ type MediaGenerateProvider = {
   defaultModel?: string;
   models?: readonly string[];
   capabilities: unknown;
-  isConfigured?: (ctx: { cfg?: OpenClawConfig; agentDir?: string }) => boolean;
+  isConfigured?: (ctx: { cfg?: EVEConfig; agentDir?: string }) => boolean;
 };
 
 type MediaGenerateListProviderDetails<TProvider extends MediaGenerateProvider> = {
@@ -51,7 +51,7 @@ export function createMediaGenerateProviderListActionResult<
   kind: MediaGenerationCatalogKind;
   providers: TProvider[];
   emptyText: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   agentDir?: string;
   authStore?: AuthProfileStore;

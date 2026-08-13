@@ -6,13 +6,13 @@ import type { CopilotClient, Tool as SdkTool } from "@github/copilot-sdk";
 import type {
   AgentHarnessAttemptParams,
   AgentHarnessAttemptResult,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import type { SandboxContext } from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import type { SandboxContext } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   initializeGlobalHookRunner,
   resetGlobalHookRunner,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { createMockPluginRegistry } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/hook-runtime";
+import { createMockPluginRegistry } from "eve-agent/plugin-sdk/plugin-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runCopilotAttempt } from "./attempt.js";
 import type { CopilotClientPool } from "./runtime.js";
@@ -32,7 +32,7 @@ const dualWriteMock = vi.hoisted(() => ({
     const record = message as unknown as Record<string, unknown>;
     return {
       ...record,
-      __openclaw: { ...(record["__openclaw"] as object | undefined), mirrorIdentity: identity },
+      __eve: { ...(record["__eve"] as object | undefined), mirrorIdentity: identity },
     } as unknown as T;
   },
 }));
@@ -732,7 +732,7 @@ describe("runCopilotAttempt", () => {
     const mediaId = "telegram-photo.png";
     await fsp.mkdir(inboundDir, { recursive: true });
     await fsp.writeFile(path.join(inboundDir, mediaId), Buffer.from(TINY_PNG_BASE64, "base64"));
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
     const sdk = makeFakeSdk();
     const pool = makeFakePool(sdk);
 
@@ -1558,7 +1558,7 @@ describe("runCopilotAttempt", () => {
       // receives it as system context without having to read the file
       // via its read tool. The SDK's `append` mode keeps the SDK
       // foundation (identity/safety/tool-instruction sections) intact
-      // while layering OpenClaw context after it. See
+      // while layering EVE context after it. See
       // workspace-bootstrap.ts and @github/copilot-sdk types.d.ts
       // L1052 (SystemMessageConfig).
       const cfg = (sdk.createSession.mock.calls[0] as unknown[] | undefined)?.[0] as {
@@ -1714,7 +1714,7 @@ describe("runCopilotAttempt", () => {
 
       // SystemMessage is in ResumeSessionConfig's Pick set (per SDK
       // types.d.ts:1198), so it must be propagated on resume too,
-      // otherwise resumed sessions would silently lose OpenClaw
+      // otherwise resumed sessions would silently lose EVE
       // persona/identity context after every reconnect.
       const cfg = sdk.resumeSession.mock.calls[0]?.[1] as {
         systemMessage?: { mode?: string; content?: string };
@@ -2357,17 +2357,17 @@ describe("runCopilotAttempt", () => {
 
       // No env tokens, no contract token, no explicit token: falls
       // through to default useLoggedInUser mode.
-      const prevOpenclaw = process.env.OPENCLAW_GITHUB_TOKEN;
+      const prevEve = process.env.EVE_GITHUB_TOKEN;
       const prevGithub = process.env.GITHUB_TOKEN;
-      delete process.env.OPENCLAW_GITHUB_TOKEN;
+      delete process.env.EVE_GITHUB_TOKEN;
       delete process.env.GITHUB_TOKEN;
       try {
         await runCopilotAttempt(makeParams({ auth: {} as never }), { pool });
         const cfg = sdk.createSession.mock.calls[0]?.[0];
         expect("gitHubToken" in cfg).toBe(false);
       } finally {
-        if (prevOpenclaw !== undefined) {
-          process.env.OPENCLAW_GITHUB_TOKEN = prevOpenclaw;
+        if (prevEve !== undefined) {
+          process.env.EVE_GITHUB_TOKEN = prevEve;
         }
         if (prevGithub !== undefined) {
           process.env.GITHUB_TOKEN = prevGithub;
@@ -2435,7 +2435,7 @@ describe("runCopilotAttempt", () => {
       await runCopilotAttempt(makeParams(), { pool });
 
       const args = dualWriteMock.dualWriteCopilotTranscriptBestEffort.mock.calls[0]?.[0] as {
-        messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+        messages: Array<{ role: string; __eve?: { mirrorIdentity?: string } }>;
       };
       for (const [index, message] of args.messages.entries()) {
         if (
@@ -2445,7 +2445,7 @@ describe("runCopilotAttempt", () => {
         ) {
           continue;
         }
-        const identity = message["__openclaw"]?.mirrorIdentity ?? "";
+        const identity = message["__eve"]?.mirrorIdentity ?? "";
         // The terminal assistant carries the turn-stable
         // `${runId}:assistant:final` identity attached by attempt.ts
         // (rubber-duck-validated identity scheme — survives SDK session
@@ -2480,11 +2480,11 @@ describe("runCopilotAttempt", () => {
 
     // ---------------------------------------------------------------
     // Dogfood finding #3: synthetic current-turn user message in the
-    // OpenClaw audit transcript (mirrors codex event-projector pattern).
+    // EVE audit transcript (mirrors codex event-projector pattern).
     //
     // Without this synthesis the dashboard / CLI history shows only
     // assistant bubbles — the user's typed turn is lost — because the
-    // OpenClaw shell's `persistTextTurnTranscript` skips its own user
+    // EVE shell's `persistTextTurnTranscript` skips its own user
     // write when `embeddedAssistantGapFill` is true, trusting the
     // harness to mirror the user turn.
     // ---------------------------------------------------------------
@@ -2508,15 +2508,15 @@ describe("runCopilotAttempt", () => {
         messages: Array<{
           role: string;
           content: unknown;
-          __openclaw?: { mirrorIdentity?: string };
+          __eve?: { mirrorIdentity?: string };
         }>;
       };
       expect(args.messages.length).toBe(2);
       expect(args.messages[0]?.role).toBe("user");
       expect(args.messages[0]?.content).toBe("what's my name?");
-      expect(args.messages[0]?.["__openclaw"]?.mirrorIdentity).toBe("run-A:prompt");
+      expect(args.messages[0]?.["__eve"]?.mirrorIdentity).toBe("run-A:prompt");
       expect(args.messages[1]?.role).toBe("assistant");
-      expect(args.messages[1]?.["__openclaw"]?.mirrorIdentity).toBe("run-A:assistant:final");
+      expect(args.messages[1]?.["__eve"]?.mirrorIdentity).toBe("run-A:assistant:final");
     });
 
     it("does not duplicate synthetic user when caller passed the same prompt as the messages tail", async () => {
@@ -2600,19 +2600,19 @@ describe("runCopilotAttempt", () => {
       const calls = dualWriteMock.dualWriteCopilotTranscriptBestEffort.mock.calls;
       expect(calls.length).toBe(2);
       const turn1 = calls[0]?.[0] as {
-        messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+        messages: Array<{ role: string; __eve?: { mirrorIdentity?: string } }>;
       };
       const turn2 = calls[1]?.[0] as {
-        messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+        messages: Array<{ role: string; __eve?: { mirrorIdentity?: string } }>;
       };
       const turn1User = turn1.messages.find((m) => m.role === "user");
       const turn2User = turn2.messages.find((m) => m.role === "user");
       const turn1Assistant = turn1.messages.find((m) => m.role === "assistant");
       const turn2Assistant = turn2.messages.find((m) => m.role === "assistant");
-      expect(turn1User?.["__openclaw"]?.mirrorIdentity).toBe("run-1:prompt");
-      expect(turn2User?.["__openclaw"]?.mirrorIdentity).toBe("run-2:prompt");
-      expect(turn1Assistant?.["__openclaw"]?.mirrorIdentity).toBe("run-1:assistant:final");
-      expect(turn2Assistant?.["__openclaw"]?.mirrorIdentity).toBe("run-2:assistant:final");
+      expect(turn1User?.["__eve"]?.mirrorIdentity).toBe("run-1:prompt");
+      expect(turn2User?.["__eve"]?.mirrorIdentity).toBe("run-2:prompt");
+      expect(turn1Assistant?.["__eve"]?.mirrorIdentity).toBe("run-1:assistant:final");
+      expect(turn2Assistant?.["__eve"]?.mirrorIdentity).toBe("run-2:assistant:final");
     });
 
     it("two attempts with identical prompts but different runIds remain distinct (no content-fingerprint collapse)", async () => {
@@ -2644,14 +2644,14 @@ describe("runCopilotAttempt", () => {
       const calls = dualWriteMock.dualWriteCopilotTranscriptBestEffort.mock.calls;
       const id1 = (
         calls[0][0] as {
-          messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+          messages: Array<{ role: string; __eve?: { mirrorIdentity?: string } }>;
         }
-      ).messages.find((m) => m.role === "user")?.["__openclaw"]?.mirrorIdentity;
+      ).messages.find((m) => m.role === "user")?.["__eve"]?.mirrorIdentity;
       const id2 = (
         calls[1][0] as {
-          messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+          messages: Array<{ role: string; __eve?: { mirrorIdentity?: string } }>;
         }
-      ).messages.find((m) => m.role === "user")?.["__openclaw"]?.mirrorIdentity;
+      ).messages.find((m) => m.role === "user")?.["__eve"]?.mirrorIdentity;
       expect(id1).toBe("run-X:prompt");
       expect(id2).toBe("run-Y:prompt");
       expect(id1).not.toBe(id2);
@@ -3062,7 +3062,7 @@ describe("runCopilotAttempt", () => {
   // (`@github/copilot-sdk/dist/types.d.ts:1059-1066`). Without it, the
   // CLI keeps its native read/write/shell/url/mcp/memory/hook tools
   // visible to the model alongside our bridged overrides, which would
-  // bypass OpenClaw's wrapped-tool enforcement under any permissive
+  // bypass EVE's wrapped-tool enforcement under any permissive
   // permission policy and pollute the catalog under the default reject
   // policy. `createSessionConfig` derives `availableTools` from the
   // post-filter `sdkTools` so create- and resume-session always carry

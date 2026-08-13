@@ -1,5 +1,5 @@
 // Msteams plugin module implements graph members behavior.
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { fetchGraphJson, resolveGraphToken } from "./graph.js";
 
 type GraphUserProfile = {
@@ -12,7 +12,7 @@ type GraphUserProfile = {
 };
 
 type GetMemberInfoMSTeamsParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   userId: string;
 };
 

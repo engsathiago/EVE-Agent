@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "OpenClaw",
+  "name": "EVE",
   "description": "Self-hosted gateway that connects Discord, Google Chat, iMessage, Matrix, Microsoft Teams, Signal, Slack, Telegram, WhatsApp, Zalo, and more to AI coding agents. Run one Gateway process on your own machine and message your AI assistant from anywhere.",
   "theme": "mint",
   "icons": {
@@ -36,12 +36,12 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/openclaw/openclaw",
+        "href": "https://github.com/engsathiago/eve-agent",
         "icon": "github"
       },
       {
         "label": "Releases",
-        "href": "https://github.com/openclaw/openclaw/releases",
+        "href": "https://github.com/engsathiago/eve-agent/releases",
         "icon": "package"
       },
       {
@@ -61,11 +61,11 @@
       "destination": "/channels/matrix-migration"
     },
     {
-      "source": "/concepts/openclaw-sdk",
+      "source": "/concepts/eve-sdk",
       "destination": "/gateway/external-apps"
     },
     {
-      "source": "/reference/openclaw-sdk-api-design",
+      "source": "/reference/eve-sdk-api-design",
       "destination": "/gateway/external-apps"
     },
     {
@@ -94,7 +94,7 @@
     },
     {
       "source": "/pi-dev",
-      "destination": "/openclaw-agent-runtime"
+      "destination": "/eve-agent-runtime"
     },
     {
       "source": "/providers/modelstudio",
@@ -317,7 +317,7 @@
       "destination": "/channels/zalo"
     },
     {
-      "source": "/channels/openclaw-zaloclawbot",
+      "source": "/channels/eve-zaloclawbot",
       "destination": "/channels/zaloclawbot"
     },
     {
@@ -414,15 +414,15 @@
     },
     {
       "source": "/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/eve"
     },
     {
       "source": "/start/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/eve"
     },
     {
       "source": "/start/clawd/",
-      "destination": "/start/openclaw"
+      "destination": "/start/eve"
     },
     {
       "source": "/start/pairing",
@@ -521,7 +521,7 @@
       "destination": "/channels/telegram"
     },
     {
-      "source": "/channels/openclaw-weixin",
+      "source": "/channels/eve-weixin",
       "destination": "/channels/wechat"
     },
     {
@@ -1021,7 +1021,7 @@
               {
                 "group": "Guides",
                 "pages": [
-                  "start/openclaw",
+                  "start/eve",
                   "start/wizard-cli-reference",
                   "start/wizard-cli-automation"
                 ]
@@ -1086,7 +1086,7 @@
               },
               {
                 "group": "Advanced setup",
-                "pages": ["start/setup", "openclaw-agent-runtime"]
+                "pages": ["start/setup", "eve-agent-runtime"]
               }
             ]
           },

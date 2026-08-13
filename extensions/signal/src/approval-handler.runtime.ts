@@ -1,23 +1,23 @@
 // Signal plugin module implements approval handler behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
 import {
   buildChannelApprovalExpiredText,
   buildChannelApprovalResolvedText,
   createChannelApprovalNativeRuntimeAdapter,
   type PendingApprovalView,
   resolvePreparedApprovalAccountId,
-} from "openclaw/plugin-sdk/approval-handler-runtime";
-import { buildChannelApprovalNativeTargetKey } from "openclaw/plugin-sdk/approval-native-runtime";
+} from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { buildChannelApprovalNativeTargetKey } from "eve-agent/plugin-sdk/approval-native-runtime";
 import {
   buildApprovalReactionPendingContent,
   type ApprovalReactionPendingContent,
-} from "openclaw/plugin-sdk/approval-reaction-runtime";
+} from "eve-agent/plugin-sdk/approval-reaction-runtime";
 import type {
   ExecApprovalRequest,
   PluginApprovalRequest,
-} from "openclaw/plugin-sdk/approval-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/approval-runtime";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   hasSignalApprovalReactionApprovers,
   registerSignalApprovalReactionTarget,

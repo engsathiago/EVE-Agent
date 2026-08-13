@@ -2,7 +2,7 @@
 summary: "Migration plan for making SQLite the primary durable state and cache layer while keeping config file-backed"
 title: "Database-first state refactor"
 read_when:
-  - Moving OpenClaw runtime data, cache, transcripts, task state, or scratch files into SQLite
+  - Moving EVE runtime data, cache, transcripts, task state, or scratch files into SQLite
   - Designing doctor migrations from legacy JSON or JSONL files
   - Changing backup, restore, VFS, or worker storage behavior
   - Removing session locks, pruning, truncation, or JSON compatibility paths
@@ -14,12 +14,12 @@ read_when:
 
 Use a two-level SQLite layout:
 
-- Global database: `~/.openclaw/state/openclaw.sqlite`
+- Global database: `~/.eve/state/eve.sqlite`
 - Agent database: one SQLite database per agent for agent-owned workspace,
   transcript, VFS, artifact, and large per-agent runtime state
-- Configuration stays file-backed: `openclaw.json` remains outside the
+- Configuration stays file-backed: `eve.json` remains outside the
   database. Runtime auth profiles move to SQLite; external provider or CLI
-  credential files remain owner-managed outside OpenClaw's database.
+  credential files remain owner-managed outside EVE's database.
 
 The global database is the control-plane database. It owns agent discovery,
 shared gateway state, pairing, device/node state, task and flow ledgers, plugin
@@ -78,9 +78,9 @@ This migration has one canonical runtime shape:
   Runtime diagnostics must not expose JSONL file override knobs or generic
   transcript JSONL export helpers; user-facing exports can materialize explicit
   artifacts from database rows without feeding file names back into runtime.
-- Raw stream logging uses `OPENCLAW_RAW_STREAM=1` plus SQLite diagnostics rows.
+- Raw stream logging uses `EVE_RAW_STREAM=1` plus SQLite diagnostics rows.
   The old pi-mono `PI_RAW_STREAM`, `PI_RAW_STREAM_PATH`, and
-  `raw-openai-completions.jsonl` file logger contract is not part of OpenClaw
+  `raw-openai-completions.jsonl` file logger contract is not part of EVE
   runtime or tests.
 - QMD memory indexing must not export SQLite transcripts to markdown files.
   QMD indexes configured memory files only; session transcript search stays
@@ -101,10 +101,10 @@ without exceptions outside doctor/import/export/debug boundaries.
 ### Hard goal
 
 - One global SQLite database owns control-plane state:
-  `state/openclaw.sqlite`.
+  `state/eve.sqlite`.
 - One per-agent SQLite database owns data-plane state:
-  `agents/<agentId>/agent/openclaw-agent.sqlite`.
-- Config remains file-backed. `openclaw.json` is not part of this database
+  `agents/<agentId>/agent/eve-agent.sqlite`.
+- Config remains file-backed. `eve.json` is not part of this database
   refactor.
 - Legacy files are doctor migration inputs only.
 - Runtime never writes or reads session or transcript JSONL as active state.
@@ -136,7 +136,7 @@ without exceptions outside doctor/import/export/debug boundaries.
   runtime tests use SQLite `storeKey` naming, and file-era cron paths remain in
   doctor legacy migration tests only.
 - Task registry: `clean`. Task and Task Flow runtime rows live in
-  `state/openclaw.sqlite`; unshipped sidecar SQLite importers are deleted.
+  `state/eve.sqlite`; unshipped sidecar SQLite importers are deleted.
 - Plugin state: `clean`. Plugin state/blob rows live in the shared global
   database; old plugin-state sidecar SQLite helpers are guarded against.
 - Memory: `sqlite-runtime` for built-in memory and session transcript indexing.
@@ -173,8 +173,8 @@ without exceptions outside doctor/import/export/debug boundaries.
       Proof: `rg -n 'sessions\\.json|sessionFile|\\.jsonl' scripts/e2e/session-runtime-context-docker-client.ts` shows only
       `seedBrokenLegacySessionForDoctorMigration`.
 - [x] Keep Kysely generated types aligned after any schema change.
-      Files: `src/state/openclaw-state-schema.sql`,
-      `src/state/openclaw-agent-schema.sql`,
+      Files: `src/state/eve-state-schema.sql`,
+      `src/state/eve-agent-schema.sql`,
       `src/state/*generated*`.
       Proof: no schema change in this pass; `pnpm db:kysely:check`;
       `pnpm lint:kysely`.
@@ -206,8 +206,8 @@ proceed with these assumptions:
 - Runtime compatibility files are not required. Legacy JSON and JSONL files are
   migration inputs only. The branch-local SQLite sidecars never shipped and are
   deleted instead of imported.
-- `openclaw doctor --fix` owns the legacy file-to-database migration step.
-  Runtime startup and `openclaw migrate` should not carry legacy OpenClaw
+- `eve doctor --fix` owns the legacy file-to-database migration step.
+  Runtime startup and `eve migrate` should not carry legacy EVE
   database-upgrade paths.
 - Credential compatibility follows the same rule: runtime credentials live in
   SQLite. Old `auth-profiles.json`, per-agent `auth.json`, and shared
@@ -233,7 +233,7 @@ proceed with these assumptions:
 - The old runtime-owned JSONL transcript streaming helper was deleted. Doctor
   import code owns explicit legacy file reads; runtime session history reads
   SQLite rows.
-- Codex app-server bindings use the OpenClaw `sessionId` as the canonical
+- Codex app-server bindings use the EVE `sessionId` as the canonical
   key in the Codex plugin-state namespace. `sessionKey` is metadata for
   routing/display and must not replace the durable session id or resurrect
   transcript-file identity.
@@ -252,8 +252,8 @@ proceed with these assumptions:
 
 The current branch is already past the proof-of-concept stage. The shared
 database exists, Node `node:sqlite` is wired through a small runtime helper, and
-former stores now write to `state/openclaw.sqlite` or the owning
-`openclaw-agent.sqlite` database.
+former stores now write to `state/eve.sqlite` or the owning
+`eve-agent.sqlite` database.
 
 The remaining work is not choosing SQLite; it is keeping the new boundary clean
 and deleting any compatibility-shaped interfaces that still look like the old
@@ -284,10 +284,10 @@ The branch already has a real shared SQLite base:
 - The runtime floor is now Node 22+: `package.json`, the CLI runtime guard,
   installer defaults, macOS runtime locator, CI, and public install docs all
   agree. The old Node 22 compatibility lane is removed.
-- `src/state/openclaw-state-db.ts` opens `openclaw.sqlite`, sets WAL,
+- `src/state/eve-state-db.ts` opens `eve.sqlite`, sets WAL,
   `synchronous=NORMAL`, `busy_timeout=30000`, `foreign_keys=ON`, and applies
   the generated schema module derived from
-  `src/state/openclaw-state-schema.sql`.
+  `src/state/eve-state-schema.sql`.
 - Kysely table types and runtime schema modules are generated from disposable
   SQLite databases created from the committed `.sql` files; runtime code no
   longer keeps copy-pasted schema strings for global, per-agent, or proxy
@@ -324,10 +324,10 @@ The branch already has a real shared SQLite base:
   schema migrations. A plugin can migrate its own versioned state/blob entries
   through a migration provider, and the host records source/run status in the
   normal migration ledger. New plugin installs do not require changing
-  `openclaw-state-schema.sql` unless the host itself is taking ownership of a
+  `eve-state-schema.sql` unless the host itself is taking ownership of a
   new cross-plugin contract.
-- `src/state/openclaw-agent-db.ts` opens
-  `agents/<agentId>/agent/openclaw-agent.sqlite`, registers the database in the
+- `src/state/eve-agent-db.ts` opens
+  `agents/<agentId>/agent/eve-agent.sqlite`, registers the database in the
   global DB, and owns agent-local session, transcript, VFS, artifact, cache,
   and memory-index tables. Shared runtime discovery now reads the generated-typed
   `agent_databases` registry instead of reimplementing that query at each call
@@ -347,13 +347,13 @@ The branch already has a real shared SQLite base:
   schema-level representation of a session.
 - Per-agent external conversation identity is relational too:
   `conversations` stores normalized provider/account/conversation identity, and
-  `session_conversations` links one OpenClaw session to one or more external
+  `session_conversations` links one EVE session to one or more external
   conversations. This covers shared-main DM sessions where multiple peers can
   intentionally map to one session without lying in `session_key`. SQLite also
   enforces uniqueness for the natural provider identity so the same
   channel/account/kind/peer/thread tuple cannot fork across conversation ids.
   Shared-main direct peers are linked with a `participant` role, so one
-  OpenClaw session can represent multiple external DM peers without demoting
+  EVE session can represent multiple external DM peers without demoting
   older peers into vague related rows. `sessions.primary_conversation_id` still
   points at the current typed delivery target. Closed routing/status columns
   are enforced with SQLite `CHECK` constraints instead of relying only on
@@ -415,7 +415,7 @@ The branch already has a real shared SQLite base:
   input only; runtime no longer reads or writes TTS prefs JSON files, and the
   legacy path resolver lives in the doctor migration module.
 - Secret target metadata now talks about stores instead of pretending every
-  credential target is a config file. `openclaw.json` remains the config store;
+  credential target is a config file. `eve.json` remains the config store;
   auth-profile targets use typed SQLite `auth_profile_stores` rows with
   provider-shaped credentials kept as JSON payloads.
 - Secret audit no longer scans retired per-agent `auth.json` files. Doctor owns
@@ -439,14 +439,14 @@ The branch already has a real shared SQLite base:
   run artifact, and scoped cache stores for workers.
 - Workspace bootstrap completion markers now live in typed shared
   `workspace_setup_state` rows keyed by resolved workspace path instead of
-  `.openclaw/workspace-state.json`; runtime no longer reads or rewrites the
+  `.eve/workspace-state.json`; runtime no longer reads or rewrites the
   legacy workspace marker, and helper APIs no longer pass around a fake
-  `.openclaw/setup-state` path just to derive storage identity.
+  `.eve/setup-state` path just to derive storage identity.
 - Exec approvals now live in the typed shared SQLite `exec_approvals_config`
-  singleton row. Doctor imports legacy `~/.openclaw/exec-approvals.json`;
+  singleton row. Doctor imports legacy `~/.eve/exec-approvals.json`;
   runtime writes no longer create, rewrite, or report that file as its active
   store location. The macOS companion reads and writes the same
-  `state/openclaw.sqlite` table row; it keeps only the Unix prompt socket on disk
+  `state/eve.sqlite` table row; it keeps only the Unix prompt socket on disk
   because that is IPC, not durable runtime state.
 - Device identity, device auth, and bootstrap runtime modules now keep their
   SQLite snapshot readers/writers separate from doctor-only legacy JSON import
@@ -458,22 +458,22 @@ The branch already has a real shared SQLite base:
 - GitHub Copilot token exchange cache uses the shared SQLite plugin-state table
   under `github-copilot/token-cache/default`. It is provider-owned cache state,
   so it intentionally does not add a host schema table.
-- GitHub Copilot compaction no longer writes `openclaw-compaction-*.json`
+- GitHub Copilot compaction no longer writes `eve-compaction-*.json`
   workspace sidecars. The harness calls the SDK history compaction RPC for the
-  tracked SDK session, and OpenClaw keeps durable session/transcript state in
+  tracked SDK session, and EVE keeps durable session/transcript state in
   SQLite instead of compatibility marker files.
-- The shared Swift runtime (`OpenClawKit`) uses the same
-  `state/openclaw.sqlite` rows for device identity and device auth. macOS app
+- The shared Swift runtime (`EVEKit`) uses the same
+  `state/eve.sqlite` rows for device identity and device auth. macOS app
   helpers import the shared SQLite helpers instead of owning a second JSON or
   SQLite path. A leftover legacy `identity/device.json` blocks identity creation
   until doctor imports it into SQLite, matching the TypeScript and Android
   startup gate.
 - Android device identity uses the same TypeScript-compatible key material
-  stored in typed `state/openclaw.sqlite#table/device_identities` rows. It never
-  reads or writes `openclaw/identity/device.json`; a leftover legacy file blocks
+  stored in typed `state/eve.sqlite#table/device_identities` rows. It never
+  reads or writes `eve/identity/device.json`; a leftover legacy file blocks
   startup until doctor imports it into SQLite.
 - Android cached device auth tokens also use typed
-  `state/openclaw.sqlite#table/device_auth_tokens` rows and share the same
+  `state/eve.sqlite#table/device_auth_tokens` rows and share the same
   version-1 token semantics as TypeScript and Swift. Runtime no longer reads `SecurePrefs`
   `gateway.deviceToken*` compatibility keys; those belong to migration/doctor
   logic only.
@@ -499,7 +499,7 @@ The branch already has a real shared SQLite base:
   under
   `src/commands/doctor/legacy/oauth-profile-ids.ts`.
 - Non-doctor commands do not auto-run legacy config repair. For example,
-  `openclaw update --channel` now fails on invalid legacy config and asks the
+  `eve update --channel` now fails on invalid legacy config and asks the
   user to run doctor, rather than silently importing doctor migration code.
 - Web push, APNs, Voice Wake, update checks, and config health now use typed shared SQLite
   tables for subscriptions, VAPID keys, node registrations, trigger rows,
@@ -558,12 +558,12 @@ The branch already has a real shared SQLite base:
 
 Completed consolidation/deletion highlights:
 
-- Plugin state now uses the shared `state/openclaw.sqlite` database. The old
+- Plugin state now uses the shared `state/eve.sqlite` database. The old
   branch-local `plugin-state/state.sqlite` sidecar importer is removed because
   that SQLite layout never shipped. Probe/test helpers report the shared
   `databasePath` instead of exposing a plugin-state-specific SQLite path.
 - Task and Task Flow runtime tables now live in the shared
-  `state/openclaw.sqlite` database instead of `tasks/runs.sqlite` and
+  `state/eve.sqlite` database instead of `tasks/runs.sqlite` and
   `tasks/flows/registry.sqlite`; the old sidecar importers are removed for the
   same unshipped-layout reason.
 - `src/config/sessions/store.ts` no longer needs `storePath` for inbound
@@ -573,7 +573,7 @@ Completed consolidation/deletion highlights:
   with optimistic conflict retry.
 - Session target resolution now exposes per-agent database targets, not legacy
   `sessions.json` paths. Shared gateway, ACP metadata, doctor route repair, and
-  `openclaw sessions` enumerate `agent_databases` plus configured agents.
+  `eve sessions` enumerate `agent_databases` plus configured agents.
 - Gateway session routing now uses `resolveGatewaySessionDatabaseTarget`; the
   returned target carries `databasePath` and candidate SQLite row keys instead
   of a legacy session-store file path.
@@ -942,9 +942,9 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
 - Cache trace, Anthropic payload, raw stream, and diagnostics timeline records
   now write to typed SQLite `diagnostic_events` rows. Gateway stability bundles
   now write to typed SQLite `diagnostic_stability_bundles` rows. The old
-  `diagnostics.cacheTrace.filePath`, `OPENCLAW_CACHE_TRACE_FILE`,
-  `OPENCLAW_ANTHROPIC_PAYLOAD_LOG_FILE`, and
-  `OPENCLAW_DIAGNOSTICS_TIMELINE_PATH` JSONL override paths are removed, and
+  `diagnostics.cacheTrace.filePath`, `EVE_CACHE_TRACE_FILE`,
+  `EVE_ANTHROPIC_PAYLOAD_LOG_FILE`, and
+  `EVE_DIAGNOSTICS_TIMELINE_PATH` JSONL override paths are removed, and
   normal stability capture no longer writes `logs/stability/*.json` files.
 - Cron persistence now reconciles SQLite `cron_jobs` rows instead of
   deleting/reinserting the whole job table on each save. Plugin target
@@ -1018,11 +1018,11 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   credentials are SQLite plugin-state rows; their old JSON files are doctor
   migration inputs only.
 - Memory Wiki activity logs now use SQLite plugin state instead of
-  `.openclaw-wiki/log.jsonl`. The Memory Wiki migration provider imports old
+  `.eve-wiki/log.jsonl`. The Memory Wiki migration provider imports old
   JSONL logs; wiki markdown and user vault content stay file-backed as
   workspace content.
-- Memory Wiki no longer creates `.openclaw-wiki/state.json` or the unused
-  `.openclaw-wiki/locks` directory. The migration provider removes those retired
+- Memory Wiki no longer creates `.eve-wiki/state.json` or the unused
+  `.eve-wiki/locks` directory. The migration provider removes those retired
   plugin metadata files if an older vault still has them.
 - Crestodian audit entries now use core SQLite plugin state instead of
   `audit/crestodian.jsonl`. Doctor imports the legacy JSONL audit log and
@@ -1031,7 +1031,7 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   of `logs/config-audit.jsonl`. Doctor imports the legacy JSONL audit log and
   removes it after successful import.
 - The macOS companion no longer writes app-local `logs/config-audit.jsonl` or
-  `logs/config-health.json` sidecars while editing `openclaw.json`. The config
+  `logs/config-health.json` sidecars while editing `eve.json`. The config
   file remains file-backed, recovery snapshots stay next to the config file,
   and durable config audit/health state belongs to the Gateway SQLite store.
 - Crestodian rescue pending approvals now use core SQLite plugin state instead
@@ -1046,7 +1046,7 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   SQLite reads. Its helper no longer accepts or derives transcript locators,
   legacy file reads, or file-rewrite options.
 - Codex app-server conversation bindings now key SQLite plugin state by
-  OpenClaw session key or explicit `{agentId, sessionId}` scope. They must not
+  EVE session key or explicit `{agentId, sessionId}` scope. They must not
   preserve transcript-path fallback bindings.
 - Codex app-server mirrored-history reads use the SQLite transcript scope only;
   they must not recover identity from transcript file paths.
@@ -1140,7 +1140,7 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   from these stores. Its legacy JSON import plan lives in the Microsoft Teams
   plugin setup/doctor migration surface.
 - Zalo hosted outbound media now uses shared SQLite `plugin_blob_entries`
-  instead of `openclaw-zalo-outbound-media` JSON/bin temp sidecars.
+  instead of `eve-zalo-outbound-media` JSON/bin temp sidecars.
 - Diffs viewer HTML and metadata now use shared SQLite `plugin_blob_entries`
   instead of `meta.json`/`viewer.html` temp files. Rendered PNG/PDF outputs stay
   temp materializations because channel delivery still needs a file path.
@@ -1157,7 +1157,7 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   state. Doctor imports the legacy `gateway-instance-id` file into plugin state
   and removes the source.
 - ACPX generated wrapper scripts and the isolated Codex home are temporary
-  materialization under the OpenClaw temp root, not durable OpenClaw state. The
+  materialization under the EVE temp root, not durable EVE state. The
   durable ACPX runtime records are the SQLite lease and gateway-instance rows;
   the old ACPX `stateDir` config surface is removed because no runtime state is
   written there anymore.
@@ -1165,9 +1165,9 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   the canonical byte store. Local paths returned to channel and sandbox
   compatibility surfaces are temp materializations of the database row, not the
   durable media store. Runtime media allowlists no longer include legacy
-  `$OPENCLAW_STATE_DIR/media` or config-dir `media` roots; those directories are
+  `$EVE_STATE_DIR/media` or config-dir `media` roots; those directories are
   doctor import sources only.
-- Shell completion no longer writes `$OPENCLAW_STATE_DIR/completions/*` cache
+- Shell completion no longer writes `$EVE_STATE_DIR/completions/*` cache
   files. Install, doctor, update, and release smoke paths use generated
   completion output or profile sourcing instead of durable completion cache
   files.
@@ -1176,11 +1176,11 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   only receives a temporary materialized archive path while an install is
   running.
 - Subagent inline attachments no longer materialize under workspace
-  `.openclaw/attachments/*`. The spawn path prepares SQLite VFS seed entries,
+  `.eve/attachments/*`. The spawn path prepares SQLite VFS seed entries,
   inline runs seed those entries into the per-agent runtime scratch namespace,
   and disk-backed tools overlay that SQLite scratch for attachment paths. The
   old subagent-run attachment-dir registry columns and cleanup hooks are gone.
-- CLI image hydration no longer maintains stable `openclaw-cli-images` cache
+- CLI image hydration no longer maintains stable `eve-cli-images` cache
   files. External CLI backends still receive file paths, but those paths are
   per-run temp materializations with cleanup.
 - Cache-trace diagnostics, Anthropic payload diagnostics, raw model stream
@@ -1234,14 +1234,14 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   that are removed after import.
 - Auth profile save/state tests now assert typed SQLite auth tables directly
   and only use legacy auth-profile filenames for doctor migration inputs.
-- `openclaw secrets apply` scrubs the config file, env file, and SQLite
+- `eve secrets apply` scrubs the config file, env file, and SQLite
   auth-profile store only. It no longer carries compatibility logic that edits
   retired per-agent `auth.json`; doctor owns importing and deleting that file.
 - Hermes secret migration plans and applies imported API-key profiles directly
   into the SQLite auth-profile store. It no longer writes or verifies
   `auth-profiles.json` as an intermediate target.
 - User-facing auth docs now describe
-  `state/openclaw.sqlite#table/auth_profile_stores/<agentDir>` instead of
+  `state/eve.sqlite#table/auth_profile_stores/<agentDir>` instead of
   telling users to inspect or copy `auth-profiles.json`; legacy OAuth/auth JSON
   names remain documented only as doctor-import inputs.
 - Core state-path helpers no longer expose the retired `credentials/oauth.json`
@@ -1270,15 +1270,15 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   `bindings/current-conversations.json`; doctor imports the legacy JSON file and
   removes it after a successful migration.
 - Memory Wiki imported-source sync ledgers now store one SQLite plugin-state row
-  per vault/source key instead of rewriting `.openclaw-wiki/source-sync.json`;
+  per vault/source key instead of rewriting `.eve-wiki/source-sync.json`;
   the migration provider imports and removes the legacy JSON ledger.
 - Memory Wiki ChatGPT import-run records now store one SQLite plugin-state row
-  per vault/run id instead of writing `.openclaw-wiki/import-runs/*.json`.
+  per vault/run id instead of writing `.eve-wiki/import-runs/*.json`.
   Rollback snapshots remain explicit vault files until import-run snapshot
   archival is moved into blob storage.
 - Memory Wiki compiled digests now store SQLite plugin blob rows instead of
-  writing `.openclaw-wiki/cache/agent-digest.json` and
-  `.openclaw-wiki/cache/claims.jsonl`. The migration provider imports old cache
+  writing `.eve-wiki/cache/agent-digest.json` and
+  `.eve-wiki/cache/claims.jsonl`. The migration provider imports old cache
   files and removes the cache directory when it becomes empty.
 - ClawHub skill install tracking now stores one SQLite plugin-state row per
   workspace/skill instead of writing or reading `.clawhub/lock.json` and
@@ -1330,7 +1330,7 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
   Each lease is stored as its own row, preserving startup stale-process reaping
   without a runtime JSON rewrite path.
 - ACPX wrapper scripts and the isolated Codex home are generated in the
-  OpenClaw temp root. They are recreated as needed and are not backup or
+  EVE temp root. They are recreated as needed and are not backup or
   migration inputs.
 - Subagent run registry persistence uses typed shared `subagent_runs` rows. The
   old `subagents/runs.json` path is now only a doctor migration input, and
@@ -1340,10 +1340,10 @@ sessionId})`; create, branch, continue, list, and fork flows live in their
 - Backup stages the state directory before archiving, copies non-database files,
   snapshots `*.sqlite` databases with `VACUUM INTO`, omits live WAL/SHM
   sidecars, records snapshot metadata in the archive manifest, and records
-  completed backup runs in SQLite with the archive manifest. `openclaw backup
+  completed backup runs in SQLite with the archive manifest. `eve backup
 create` validates the written archive by default; `--no-verify` is the
   explicit fast path.
-- `openclaw backup restore` validates the archive before extraction, reuses the
+- `eve backup restore` validates the archive before extraction, reuses the
   verifier's normalized manifest, and restores verified manifest assets to their
   recorded source paths. It requires `--yes` for writes and supports `--dry-run`
   for a restore plan.
@@ -1359,8 +1359,8 @@ create` validates the written archive by default; `--no-verify` is the
   JSONL files.
 - Sandbox registry runtime names now describe SQLite registry kinds directly
   instead of carrying legacy JSON registry terminology through the active store.
-- `openclaw reset --scope config+creds+sessions` removes per-agent
-  `openclaw-agent.sqlite` databases plus WAL/SHM sidecars, not only legacy
+- `eve reset --scope config+creds+sessions` removes per-agent
+  `eve-agent.sqlite` databases plus WAL/SHM sidecars, not only legacy
   `sessions/` directories.
 - Gateway aggregate session helpers now use entry-oriented names:
   `loadCombinedSessionEntriesForGateway` returns `{ databasePath, entries }`.
@@ -1387,21 +1387,21 @@ create` validates the written archive by default; `--no-verify` is the
   has a real agent-record owner.
 - Generated model catalog config is stored in typed global SQLite
   `agent_model_catalogs` rows keyed by agent directory. Runtime callers use
-  `ensureOpenClawModelCatalog`; there is no `models.json` compatibility API in
+  `ensureEVEModelCatalog`; there is no `models.json` compatibility API in
   runtime code. The implementation writes SQLite and the embedded PI registry is
   hydrated from that stored payload without creating a `models.json` file.
 - QMD session transcript markdown export and `memory.qmd.sessions` config were
   removed. There is no QMD transcript collection, no `qmd/sessions*` runtime
   path, and no file-backed session memory bridge.
 - Memory-core runtime imports SQLite transcript indexing helpers from
-  `openclaw/plugin-sdk/memory-core-host-engine-session-transcripts`, not the
+  `eve-agent/plugin-sdk/memory-core-host-engine-session-transcripts`, not the
   QMD SDK subpath. The QMD subpath keeps a compatibility re-export only for
   external callers until a major SDK cleanup can remove it.
 - QMD's own `index.sqlite` is now a temp runtime materialization backed by the
   main SQLite `plugin_blob_entries` table. Runtime no longer creates a durable
-  `~/.openclaw/agents/<agentId>/qmd` sidecar.
+  `~/.eve/agents/<agentId>/qmd` sidecar.
 - The optional `memory-lancedb` plugin no longer creates
-  `~/.openclaw/memory/lancedb` as an implicit OpenClaw-managed store. It is an
+  `~/.eve/memory/lancedb` as an implicit EVE-managed store. It is an
   external LanceDB backend and stays disabled until the operator configures an
   explicit `dbPath`.
 - `check:database-first-legacy-stores` fails new runtime source that pairs
@@ -1513,7 +1513,7 @@ SQLite tooling.
 
 `agent_databases` is the canonical registry for this branch. Do not add an
 `agents` table until a real agent-record owner exists; agent config remains in
-`openclaw.json`.
+`eve.json`.
 
 ## Doctor Migration Shape
 
@@ -1521,12 +1521,12 @@ Doctor should call one explicit migration step that is reportable and safe to
 rerun:
 
 ```bash
-openclaw doctor --fix
+eve doctor --fix
 ```
 
-`openclaw doctor --fix` invokes the state migration implementation after
+`eve doctor --fix` invokes the state migration implementation after
 ordinary config preflight and creates a verified backup before import. Runtime
-startup and `openclaw migrate` must not import legacy OpenClaw state files.
+startup and `eve migrate` must not import legacy EVE state files.
 
 Migration properties:
 
@@ -1680,7 +1680,7 @@ Move these into agent databases:
 
 Keep these file-backed for now:
 
-- `openclaw.json`
+- `eve.json`
 - provider or CLI credential files
 - plugin/package manifests
 - user workspaces and Git repositories when disk mode is selected
@@ -1695,7 +1695,7 @@ Make the durable-state boundary explicit before moving more rows:
 - Add a `migration_runs` table to the global database.
   Done for legacy-state migration execution reports.
 - Add a single doctor-owned state migration service for file-to-database import.
-  Done: `openclaw doctor --fix` uses the legacy-state migration implementation.
+  Done: `eve doctor --fix` uses the legacy-state migration implementation.
 - Make `plan` read-only and make `apply` create a backup, import, verify, and
   then delete or quarantine old files.
   Done: doctor creates a verified pre-migration backup, passes the backup path
@@ -1707,7 +1707,7 @@ Make the durable-state boundary explicit before moving more rows:
 
 ### Phase 1: Finish The Global Control Plane
 
-Keep shared coordination state in `state/openclaw.sqlite`:
+Keep shared coordination state in `state/eve.sqlite`:
 
 - Agents and agent database registry
 - Task and Task Flow ledgers
@@ -1739,8 +1739,8 @@ setup, filesystem pruning, and compatibility writers from those subsystems.
 Create one database per agent and register it from the global DB:
 
 ```text
-~/.openclaw/state/openclaw.sqlite
-~/.openclaw/agents/<agentId>/agent/openclaw-agent.sqlite
+~/.eve/state/eve.sqlite
+~/.eve/agents/<agentId>/agent/eve-agent.sqlite
 ```
 
 The global `agent_databases` row stores the path, schema version, last-seen
@@ -1816,7 +1816,7 @@ Backups remain one archive file:
   workspace exports.
 - Omit raw live `*.sqlite-wal` and `*.sqlite-shm` files.
 - Verify by opening every DB snapshot and running `PRAGMA integrity_check`.
-  `openclaw backup create` does this archive verification by default;
+  `eve backup create` does this archive verification by default;
   `--no-verify` skips only the post-write archive pass, not the snapshot
   creation integrity check.
 - Restore copies snapshots back to their target paths. This branch resets the
@@ -1860,7 +1860,7 @@ SQLite-native:
    selected workspaces, and a manifest.
 5. Verify the archive by opening every included SQLite snapshot and running
    `PRAGMA integrity_check`.
-   `openclaw backup create` does this by default; `--no-verify` is only for
+   `eve backup create` does this by default; `--no-verify` is only for
    intentionally skipping the post-write archive pass.
 
 Do not rely on raw live `*.sqlite`, `*.sqlite-wal`, and `*.sqlite-shm` copies as
@@ -1930,7 +1930,7 @@ verified extracted payload.
   Done: `getSessionEntry`, `upsertSessionEntry`, `deleteSessionEntry`,
   `patchSessionEntry`, and `listSessionEntries` are SQLite-first APIs that do
   not require a session store path. Status summary, local agent status, health,
-  and the `openclaw sessions` listing command now read per-agent rows directly
+  and the `eve sessions` listing command now read per-agent rows directly
   and display per-agent SQLite database paths instead of `sessions.json` paths.
 - Replace whole-store delete/insert with `upsertSessionEntry`,
   `deleteSessionEntry`, `listSessionEntries`, and SQL cleanup queries.
@@ -1980,7 +1980,7 @@ verified extracted payload.
      backup creation and default archive verification integrity checks.
    - Record backup run metadata in SQLite. Done via the shared `backup_runs`
      table with archive path, status, and manifest JSON.
-   - Add restore from verified archive snapshots. Done: `openclaw backup
+   - Add restore from verified archive snapshots. Done: `eve backup
 restore` validates before extraction, uses the verifier's normalized
      manifest, supports `--dry-run`, and requires `--yes` before replacing
      recorded source paths.
@@ -2049,7 +2049,7 @@ restore` validates before extraction, uses the verifier's normalized
   fixtures or parsers; legacy SSO token parsing lives only in the plugin
   migration module. Telegram tests no longer seed fake `/tmp/*.json` store
   paths; they reset the SQLite-backed message cache directly. The generic
-  OpenClaw test-state helper no longer exposes a legacy `auth-profiles.json`
+  EVE test-state helper no longer exposes a legacy `auth-profiles.json`
   writer; doctor auth migration tests own that fixture locally.
   Runtime tests for TUI last-session pointers, exec approvals, active-memory
   toggles, Matrix dedupe/startup verification, Memory Wiki source sync,
@@ -2199,7 +2199,7 @@ Add a repo check that fails new runtime writes to legacy state paths:
 - sandbox registry shard JSON files
 - native hook relay `/tmp` bridge JSON files
 - `plugin-state/state.sqlite`
-- ad-hoc `openclaw-state.sqlite` runtime sidecars
+- ad-hoc `eve-state.sqlite` runtime sidecars
 - `tasks/runs.sqlite`
 - `tasks/flows/registry.sqlite`
 - `bindings/current-conversations.json`
@@ -2219,16 +2219,16 @@ Add a repo check that fails new runtime writes to legacy state paths:
 - `audit/crestodian.jsonl`
 - `crestodian/rescue-pending/*.json`
 - `plugins/phone-control/armed.json`
-- Memory Wiki `.openclaw-wiki/log.jsonl`
-- Memory Wiki `.openclaw-wiki/state.json`
-- Memory Wiki `.openclaw-wiki/locks/`
-- Memory Wiki `.openclaw-wiki/source-sync.json`
-- Memory Wiki `.openclaw-wiki/import-runs/*.json`
-- Memory Wiki `.openclaw-wiki/cache/agent-digest.json`
-- Memory Wiki `.openclaw-wiki/cache/claims.jsonl`
+- Memory Wiki `.eve-wiki/log.jsonl`
+- Memory Wiki `.eve-wiki/state.json`
+- Memory Wiki `.eve-wiki/locks/`
+- Memory Wiki `.eve-wiki/source-sync.json`
+- Memory Wiki `.eve-wiki/import-runs/*.json`
+- Memory Wiki `.eve-wiki/cache/agent-digest.json`
+- Memory Wiki `.eve-wiki/cache/claims.jsonl`
 - ClawHub `.clawhub/lock.json`
 - ClawHub `.clawhub/origin.json`
-- Browser profile decoration `.openclaw-profile-decorated`
+- Browser profile decoration `.eve-profile-decorated`
 - `SessionManager.open(...)` file-backed session openers
 - `SessionManager.listAll(...)` and `TranscriptSessionManager.listAll(...)`
   transcript listing facades

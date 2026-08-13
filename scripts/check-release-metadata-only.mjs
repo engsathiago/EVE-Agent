@@ -10,7 +10,7 @@ const VERSION_ONLY_TEXT_PATHS = new Set([
   "apps/android/version.json",
   "apps/ios/Config/Version.xcconfig",
   "apps/ios/version.json",
-  "apps/macos/Sources/OpenClaw/Resources/Info.plist",
+  "apps/macos/Sources/EVE/Resources/Info.plist",
 ]);
 
 function normalizePath(input) {
@@ -126,8 +126,8 @@ function stableJson(value) {
 
 function normalizeVersionText(raw) {
   return raw
-    .replace(/\b20\d{2}\.\d{1,2}\.\d{1,2}(?:-beta\.\d+|-\d+)?\b/gu, "<OPENCLAW_VERSION>")
-    .replace(/\b20\d{6}(?:\d{2})?\b/gu, "<OPENCLAW_BUILD>");
+    .replace(/\b20\d{2}\.\d{1,2}\.\d{1,2}(?:-beta\.\d+|-\d+)?\b/gu, "<EVE_VERSION>")
+    .replace(/\b20\d{6}(?:\d{2})?\b/gu, "<EVE_BUILD>");
 }
 
 function fail(message) {

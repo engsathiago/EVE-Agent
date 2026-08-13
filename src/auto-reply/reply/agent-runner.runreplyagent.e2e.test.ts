@@ -153,7 +153,7 @@ beforeEach(() => {
   vi.mocked(enqueueFollowupRun).mockReset().mockReturnValue(true);
   vi.mocked(refreshQueuedFollowupSession).mockReset();
   vi.mocked(scheduleFollowupDrain).mockReset();
-  vi.stubEnv("OPENCLAW_TEST_FAST", "1");
+  vi.stubEnv("EVE_TEST_FAST", "1");
 });
 
 function createMinimalRun(params?: {
@@ -209,7 +209,7 @@ function createMinimalRun(params?: {
       },
       timeoutMs: 1_000,
       blockReplyBreak: "message_end",
-      skipProviderRuntimeHints: process.env.OPENCLAW_TEST_FAST === "1",
+      skipProviderRuntimeHints: process.env.EVE_TEST_FAST === "1",
       ...params?.runOverrides,
     },
   } as unknown as FollowupRun;
@@ -514,7 +514,7 @@ describe("runReplyAgent heartbeat followup guard", () => {
 
 describe("runReplyAgent pending final delivery capture", () => {
   async function createSessionStoreFile(entry: SessionEntry) {
-    const dir = await mkdtemp(join(tmpdir(), "openclaw-agent-runner-pending-"));
+    const dir = await mkdtemp(join(tmpdir(), "eve-agent-runner-pending-"));
     const storePath = join(dir, "sessions.json");
     await saveSessionStore(storePath, { main: entry }, { skipMaintenance: true });
     return storePath;
@@ -752,7 +752,7 @@ describe("runReplyAgent typing (heartbeat)", () => {
   });
 
   it("does not persist heartbeat ack text as pending final delivery", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "openclaw-heartbeat-pending-"));
+    const dir = await mkdtemp(join(tmpdir(), "eve-heartbeat-pending-"));
     const storePath = join(dir, "sessions.json");
     await saveSessionStore(
       storePath,
@@ -1234,7 +1234,7 @@ describe("runReplyAgent typing (heartbeat)", () => {
   });
 
   it("does not report an exhausted fallback candidate as a successful winner", async () => {
-    const root = await mkdtemp(join(tmpdir(), "openclaw-exhausted-trace-"));
+    const root = await mkdtemp(join(tmpdir(), "eve-exhausted-trace-"));
     const storePath = join(root, "sessions.json");
     const sessionFile = join(root, "session.jsonl");
     const runId = "run-exhausted-trace";
@@ -1320,7 +1320,7 @@ describe("runReplyAgent typing (heartbeat)", () => {
       responseUsage: "tokens",
     };
     const sessionStore = { main: sessionEntry };
-    const storeRoot = await mkdtemp(join(tmpdir(), "openclaw-internal-fallback-"));
+    const storeRoot = await mkdtemp(join(tmpdir(), "eve-internal-fallback-"));
     const storePath = join(storeRoot, "sessions.json");
     await saveSessionStore(storePath, sessionStore, { skipMaintenance: true });
     try {
@@ -2431,7 +2431,7 @@ describe("runReplyAgent typing (heartbeat)", () => {
       fallbackNoticeReason: "selected model unavailable",
     };
     const sessionStore = { main: sessionEntry };
-    const dir = await mkdtemp(join(tmpdir(), "openclaw-agent-runner-cli-alias-"));
+    const dir = await mkdtemp(join(tmpdir(), "eve-agent-runner-cli-alias-"));
     const storePath = join(dir, "sessions.json");
     await saveSessionStore(storePath, { main: sessionEntry }, { skipMaintenance: true });
 

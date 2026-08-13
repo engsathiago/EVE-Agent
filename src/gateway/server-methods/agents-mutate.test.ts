@@ -79,16 +79,16 @@ vi.mock("../../config/config.js", async () => {
     }) => {
       const draft = structuredClone(mocks.loadConfigReturn);
       const result = await params.mutate(draft, {
-        snapshot: { path: "/tmp/openclaw/config.json" },
+        snapshot: { path: "/tmp/eve/config.json" },
         previousHash: "test-hash",
         attempt: 0,
       });
       await mocks.writeConfigFile(draft);
       return {
-        path: "/tmp/openclaw/config.json",
+        path: "/tmp/eve/config.json",
         previousHash: "test-hash",
         persistedHash: "persisted-hash",
-        snapshot: { path: "/tmp/openclaw/config.json" },
+        snapshot: { path: "/tmp/eve/config.json" },
         nextConfig: draft,
         result,
         attempts: 1,

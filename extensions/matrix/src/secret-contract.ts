@@ -1,5 +1,5 @@
 // Matrix plugin module implements secret contract behavior.
-import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "openclaw/plugin-sdk/account-id";
+import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "eve-agent/plugin-sdk/account-id";
 import {
   collectSecretInputAssignment,
   getChannelSurface,
@@ -8,15 +8,15 @@ import {
   normalizeSecretStringValue,
   type ResolverContext,
   type SecretDefaults,
-} from "openclaw/plugin-sdk/channel-secret-basic-runtime";
+} from "eve-agent/plugin-sdk/channel-secret-basic-runtime";
 import { getMatrixScopedEnvVarNames } from "./env-vars.js";
 
-export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
+export const secretTargetRegistryEntries: import("eve-agent/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
   [
     {
       id: "channels.matrix.accounts.*.accessToken",
       targetType: "channels.matrix.accounts.*.accessToken",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.matrix.accounts.*.accessToken",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -27,7 +27,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.matrix.accounts.*.password",
       targetType: "channels.matrix.accounts.*.password",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.matrix.accounts.*.password",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -38,7 +38,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.matrix.accessToken",
       targetType: "channels.matrix.accessToken",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.matrix.accessToken",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -49,7 +49,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.matrix.password",
       targetType: "channels.matrix.password",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.matrix.password",
       secretShape: "secret_input",
       expectedResolvedValue: "string",

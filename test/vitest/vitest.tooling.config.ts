@@ -7,7 +7,7 @@ import { boundaryTestFiles } from "./vitest.unit-paths.mjs";
 export function loadIncludePatternsFromEnv(
   env: Record<string, string | undefined> = process.env,
 ): string[] | null {
-  return loadPatternListFromEnv("OPENCLAW_VITEST_INCLUDE_FILE", env);
+  return loadPatternListFromEnv("EVE_VITEST_INCLUDE_FILE", env);
 }
 
 export function createToolingVitestConfig(env?: Record<string, string | undefined>) {
@@ -18,7 +18,7 @@ export function createToolingVitestConfig(env?: Record<string, string | undefine
       exclude: [
         ...boundaryTestFiles,
         ...toolingDockerTestFiles,
-        "test/scripts/openclaw-e2e-instance.test.ts",
+        "test/scripts/eve-e2e-instance.test.ts",
       ],
       fileParallelism: false,
       name: "tooling",

@@ -80,7 +80,7 @@ async function prepareRoutedCommand(params: {
 
 /** Try a lightweight route-first command before falling back to the full CLI program. */
 export async function tryRouteCli(argv: string[]): Promise<boolean> {
-  if (isTruthyEnvValue(process.env.OPENCLAW_DISABLE_ROUTE_FIRST)) {
+  if (isTruthyEnvValue(process.env.EVE_DISABLE_ROUTE_FIRST)) {
     return false;
   }
   const invocation = resolveCliArgvInvocation(argv);
@@ -104,7 +104,7 @@ export async function tryRouteCli(argv: string[]): Promise<boolean> {
     return false;
   }
   if (logLevel) {
-    process.env.OPENCLAW_LOG_LEVEL = logLevel;
+    process.env.EVE_LOG_LEVEL = logLevel;
   }
   await prepareRoutedCommand({
     argv,

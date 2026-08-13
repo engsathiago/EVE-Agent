@@ -1,9 +1,9 @@
 import AVFAudio
 import Foundation
 import Observation
-import OpenClawChatUI
-import OpenClawKit
-import OpenClawProtocol
+import EVEChatUI
+import EVEKit
+import EVEProtocol
 import OSLog
 import Speech
 
@@ -36,7 +36,7 @@ final class TalkModeManager: NSObject {
     private static let defaultRealtimeModelIdFallback = "gpt-realtime-2"
     private static let defaultTalkProvider = "elevenlabs"
     private static let defaultSilenceTimeoutMs = TalkDefaults.silenceTimeoutMs
-    private static let redactedConfigSentinel = "__OPENCLAW_REDACTED__"
+    private static let redactedConfigSentinel = "__EVE_REDACTED__"
     private static let realtimePrefetchExpiryLeewaySeconds: TimeInterval = 30
     var isEnabled: Bool = false
     var isListening: Bool = false
@@ -89,7 +89,7 @@ final class TalkModeManager: NSObject {
     private var resumeContinuousAfterPTT: Bool = false
     private var activePTTCaptureId: String?
     private var pttAutoStopEnabled: Bool = false
-    private var pttCompletion: CheckedContinuation<OpenClawTalkPTTStopPayload, Never>?
+    private var pttCompletion: CheckedContinuation<EVETalkPTTStopPayload, Never>?
     private var pttTimeoutTask: Task<Void, Never>?
 
     private let allowSimulatorCapture: Bool
@@ -170,7 +170,7 @@ final class TalkModeManager: NSObject {
     private var incrementalSpeechPrefetch: IncrementalSpeechPrefetchState?
     private var incrementalSpeechPrefetchMonitorTask: Task<Void, Never>?
 
-    private let logger = Logger(subsystem: "ai.openclawfoundation.app", category: "TalkMode")
+    private let logger = Logger(subsystem: "ai.evefoundation.app", category: "TalkMode")
 
     private static func nowSeconds() -> TimeInterval {
         ProcessInfo.processInfo.systemUptime
@@ -443,7 +443,7 @@ final class TalkModeManager: NSObject {
         self.pttTimeoutTask = nil
         self.pttAutoStopEnabled = false
         if pendingPTT {
-            let payload = OpenClawTalkPTTStopPayload(
+            let payload = EVETalkPTTStopPayload(
                 captureId: pendingCaptureId,
                 transcript: nil,
                 status: "cancelled")
@@ -505,7 +505,7 @@ final class TalkModeManager: NSObject {
         await self.start()
     }
 
-    func beginPushToTalk() async throws -> OpenClawTalkPTTStartPayload {
+    func beginPushToTalk() async throws -> EVETalkPTTStartPayload {
         guard self.gatewayConnected else {
             self.statusText = "Offline"
             throw NSError(domain: "TalkMode", code: 7, userInfo: [
@@ -513,7 +513,7 @@ final class TalkModeManager: NSObject {
             ])
         }
         if self.isPushToTalkActive, let captureId = activePTTCaptureId {
-            return OpenClawTalkPTTStartPayload(captureId: captureId)
+            return EVETalkPTTStartPayload(captureId: captureId)
         }
 
         self.stopSpeaking(storeInterruption: false)
@@ -570,13 +570,13 @@ final class TalkModeManager: NSObject {
             throw error
         }
 
-        return OpenClawTalkPTTStartPayload(captureId: captureId)
+        return EVETalkPTTStartPayload(captureId: captureId)
     }
 
-    func endPushToTalk() async -> OpenClawTalkPTTStopPayload {
+    func endPushToTalk() async -> EVETalkPTTStopPayload {
         let captureId = self.activePTTCaptureId ?? UUID().uuidString
         guard self.isPushToTalkActive else {
-            let payload = OpenClawTalkPTTStopPayload(
+            let payload = EVETalkPTTStopPayload(
                 captureId: captureId,
                 transcript: nil,
                 status: "idle")
@@ -604,7 +604,7 @@ final class TalkModeManager: NSObject {
             }
             self.resumeContinuousAfterPTT = false
             self.activePTTCaptureId = nil
-            let payload = OpenClawTalkPTTStopPayload(
+            let payload = EVETalkPTTStopPayload(
                 captureId: captureId,
                 transcript: nil,
                 status: "empty")
@@ -619,7 +619,7 @@ final class TalkModeManager: NSObject {
             }
             self.resumeContinuousAfterPTT = false
             self.activePTTCaptureId = nil
-            let payload = OpenClawTalkPTTStopPayload(
+            let payload = EVETalkPTTStopPayload(
                 captureId: captureId,
                 transcript: transcript,
                 status: "offline")
@@ -633,7 +633,7 @@ final class TalkModeManager: NSObject {
         }
         self.resumeContinuousAfterPTT = false
         self.activePTTCaptureId = nil
-        let payload = OpenClawTalkPTTStopPayload(
+        let payload = EVETalkPTTStopPayload(
             captureId: captureId,
             transcript: transcript,
             status: "queued")
@@ -641,14 +641,14 @@ final class TalkModeManager: NSObject {
         return payload
     }
 
-    func runPushToTalkOnce(maxDurationSeconds: TimeInterval = 12) async throws -> OpenClawTalkPTTStopPayload {
+    func runPushToTalkOnce(maxDurationSeconds: TimeInterval = 12) async throws -> EVETalkPTTStopPayload {
         if self.pttCompletion != nil {
             _ = await self.cancelPushToTalk()
         }
 
         if self.isPushToTalkActive {
             let captureId = self.activePTTCaptureId ?? UUID().uuidString
-            return OpenClawTalkPTTStopPayload(
+            return EVETalkPTTStopPayload(
                 captureId: captureId,
                 transcript: nil,
                 status: "busy")
@@ -664,10 +664,10 @@ final class TalkModeManager: NSObject {
         }
     }
 
-    func cancelPushToTalk() async -> OpenClawTalkPTTStopPayload {
+    func cancelPushToTalk() async -> EVETalkPTTStopPayload {
         let captureId = self.activePTTCaptureId ?? UUID().uuidString
         guard self.isPushToTalkActive else {
-            let payload = OpenClawTalkPTTStopPayload(
+            let payload = EVETalkPTTStopPayload(
                 captureId: captureId,
                 transcript: nil,
                 status: "idle")
@@ -694,7 +694,7 @@ final class TalkModeManager: NSObject {
         self.activePTTCaptureId = nil
         self.statusText = "Ready"
 
-        let payload = OpenClawTalkPTTStopPayload(
+        let payload = EVETalkPTTStopPayload(
             captureId: captureId,
             transcript: nil,
             status: "cancelled")
@@ -973,7 +973,7 @@ final class TalkModeManager: NSObject {
         _ = await self.endPushToTalk()
     }
 
-    private func finishPTTOnce(_ payload: OpenClawTalkPTTStopPayload) {
+    private func finishPTTOnce(_ payload: EVETalkPTTStopPayload) {
         guard let continuation = pttCompletion else { return }
         self.pttCompletion = nil
         continuation.resume(returning: payload)
@@ -1381,12 +1381,12 @@ final class TalkModeManager: NSObject {
                     if evt.event == "chat" {
                         guard let chatEvent = try? GatewayPayloadDecoding.decode(
                             payload,
-                            as: OpenClawChatEventPayload.self)
+                            as: EVEChatEventPayload.self)
                         else {
                             continue
                         }
                         guard chatEvent.runId == runId else { continue }
-                        if let text = OpenClawChatEventText.assistantText(from: chatEvent) {
+                        if let text = EVEChatEventText.assistantText(from: chatEvent) {
                             latestAssistantText = text
                         }
                         switch chatEvent.state {
@@ -1402,7 +1402,7 @@ final class TalkModeManager: NSObject {
                     } else if evt.event == "agent" {
                         guard let agentEvent = try? GatewayPayloadDecoding.decode(
                             payload,
-                            as: OpenClawAgentEventPayload.self)
+                            as: EVEAgentEventPayload.self)
                         else {
                             continue
                         }
@@ -1980,7 +1980,7 @@ final class TalkModeManager: NSObject {
             guard evt.event == "agent", let payload = evt.payload else { continue }
             guard let agentEvent = try? GatewayPayloadDecoding.decode(
                 payload,
-                as: OpenClawAgentEventPayload.self)
+                as: EVEAgentEventPayload.self)
             else {
                 continue
             }

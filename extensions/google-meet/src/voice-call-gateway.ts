@@ -1,11 +1,11 @@
 // Google Meet plugin module implements voice call gateway behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   GatewayClient,
   startGatewayClientWhenEventLoopReady,
-} from "openclaw/plugin-sdk/gateway-runtime";
-import type { RuntimeLogger } from "openclaw/plugin-sdk/plugin-runtime";
-import { sleep } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/gateway-runtime";
+import type { RuntimeLogger } from "eve-agent/plugin-sdk/plugin-runtime";
+import { sleep } from "eve-agent/plugin-sdk/runtime-env";
 import type { GoogleMeetConfig } from "./config.js";
 
 type VoiceCallGatewayClient = InstanceType<typeof GatewayClient>;

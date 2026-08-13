@@ -1,5 +1,5 @@
 // Mattermost plugin module implements draft stream behavior.
-import { createFinalizableDraftLifecycle } from "openclaw/plugin-sdk/channel-outbound";
+import { createFinalizableDraftLifecycle } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   createMattermostPost,
   deleteMattermostPost,

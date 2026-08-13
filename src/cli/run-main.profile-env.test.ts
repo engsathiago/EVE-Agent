@@ -14,8 +14,8 @@ const dotenvState = vi.hoisted(() => {
   return {
     state,
     loadDotEnv: vi.fn(() => {
-      state.profileAtDotenvLoad = process.env.OPENCLAW_PROFILE;
-      state.containerAtDotenvLoad = process.env.OPENCLAW_CONTAINER;
+      state.profileAtDotenvLoad = process.env.EVE_PROFILE;
+      state.containerAtDotenvLoad = process.env.EVE_CONTAINER;
     }),
   };
 });
@@ -53,7 +53,7 @@ vi.mock("../infra/runtime-guard.js", () => ({
 }));
 
 vi.mock("../infra/path-env.js", () => ({
-  ensureOpenClawCliOnPath: vi.fn(),
+  ensureEVECliOnPath: vi.fn(),
 }));
 
 vi.mock("./route.js", () => ({
@@ -77,25 +77,25 @@ import { runCli } from "./run-main.js";
 
 describe("runCli profile env bootstrap", () => {
   const envSnapshot = captureEnv([
-    "OPENCLAW_PROFILE",
-    "OPENCLAW_STATE_DIR",
-    "OPENCLAW_CONFIG_PATH",
-    "OPENCLAW_CONTAINER",
-    "OPENCLAW_GATEWAY_PORT",
-    "OPENCLAW_GATEWAY_URL",
-    "OPENCLAW_GATEWAY_TOKEN",
-    "OPENCLAW_GATEWAY_PASSWORD",
+    "EVE_PROFILE",
+    "EVE_STATE_DIR",
+    "EVE_CONFIG_PATH",
+    "EVE_CONTAINER",
+    "EVE_GATEWAY_PORT",
+    "EVE_GATEWAY_URL",
+    "EVE_GATEWAY_TOKEN",
+    "EVE_GATEWAY_PASSWORD",
   ]);
 
   beforeEach(() => {
-    deleteTestEnvValue("OPENCLAW_PROFILE");
-    deleteTestEnvValue("OPENCLAW_STATE_DIR");
-    deleteTestEnvValue("OPENCLAW_CONFIG_PATH");
-    deleteTestEnvValue("OPENCLAW_CONTAINER");
-    deleteTestEnvValue("OPENCLAW_GATEWAY_PORT");
-    deleteTestEnvValue("OPENCLAW_GATEWAY_URL");
-    deleteTestEnvValue("OPENCLAW_GATEWAY_TOKEN");
-    deleteTestEnvValue("OPENCLAW_GATEWAY_PASSWORD");
+    deleteTestEnvValue("EVE_PROFILE");
+    deleteTestEnvValue("EVE_STATE_DIR");
+    deleteTestEnvValue("EVE_CONFIG_PATH");
+    deleteTestEnvValue("EVE_CONTAINER");
+    deleteTestEnvValue("EVE_GATEWAY_PORT");
+    deleteTestEnvValue("EVE_GATEWAY_URL");
+    deleteTestEnvValue("EVE_GATEWAY_TOKEN");
+    deleteTestEnvValue("EVE_GATEWAY_PASSWORD");
     dotenvState.state.profileAtDotenvLoad = undefined;
     dotenvState.state.containerAtDotenvLoad = undefined;
     dotenvState.loadDotEnv.mockClear();
@@ -109,88 +109,88 @@ describe("runCli profile env bootstrap", () => {
 
   it("applies --profile before dotenv loading", async () => {
     fileState.hasCliDotEnv = true;
-    await runCli(["node", "openclaw", "--profile", "rawdog", "status"]);
+    await runCli(["node", "eve", "--profile", "rawdog", "status"]);
 
     expect(dotenvState.loadDotEnv).toHaveBeenCalledOnce();
     expect(dotenvState.state.profileAtDotenvLoad).toBe("rawdog");
-    expect(process.env.OPENCLAW_PROFILE).toBe("rawdog");
+    expect(process.env.EVE_PROFILE).toBe("rawdog");
   });
 
   it("rejects --container combined with --profile", async () => {
     await expect(
-      runCli(["node", "openclaw", "--container", "demo", "--profile", "rawdog", "status"]),
+      runCli(["node", "eve", "--container", "demo", "--profile", "rawdog", "status"]),
     ).rejects.toThrow("--container cannot be combined with --profile/--dev");
 
     expect(dotenvState.loadDotEnv).not.toHaveBeenCalled();
-    expect(process.env.OPENCLAW_PROFILE).toBe("rawdog");
+    expect(process.env.EVE_PROFILE).toBe("rawdog");
   });
 
   it("rejects --container combined with interleaved --profile", async () => {
     await expect(
-      runCli(["node", "openclaw", "status", "--container", "demo", "--profile", "rawdog"]),
+      runCli(["node", "eve", "status", "--container", "demo", "--profile", "rawdog"]),
     ).rejects.toThrow("--container cannot be combined with --profile/--dev");
   });
 
   it("rejects --container combined with interleaved --dev", async () => {
     await expect(
-      runCli(["node", "openclaw", "status", "--container", "demo", "--dev"]),
+      runCli(["node", "eve", "status", "--container", "demo", "--dev"]),
     ).rejects.toThrow("--container cannot be combined with --profile/--dev");
   });
 
   it("does not let dotenv change container target resolution", async () => {
     fileState.hasCliDotEnv = true;
     dotenvState.loadDotEnv.mockImplementationOnce(() => {
-      process.env.OPENCLAW_CONTAINER = "demo";
-      dotenvState.state.profileAtDotenvLoad = process.env.OPENCLAW_PROFILE;
-      dotenvState.state.containerAtDotenvLoad = process.env.OPENCLAW_CONTAINER;
+      process.env.EVE_CONTAINER = "demo";
+      dotenvState.state.profileAtDotenvLoad = process.env.EVE_PROFILE;
+      dotenvState.state.containerAtDotenvLoad = process.env.EVE_CONTAINER;
     });
 
-    await runCli(["node", "openclaw", "status"]);
+    await runCli(["node", "eve", "status"]);
 
     expect(dotenvState.loadDotEnv).toHaveBeenCalledOnce();
-    expect(process.env.OPENCLAW_CONTAINER).toBe("demo");
+    expect(process.env.EVE_CONTAINER).toBe("demo");
     expect(dotenvState.state.containerAtDotenvLoad).toBe("demo");
-    expect(maybeRunCliInContainerMock).toHaveBeenCalledWith(["node", "openclaw", "status"]);
+    expect(maybeRunCliInContainerMock).toHaveBeenCalledWith(["node", "eve", "status"]);
     expect(maybeRunCliInContainerMock).toHaveReturnedWith({
       handled: false,
-      argv: ["node", "openclaw", "status"],
+      argv: ["node", "eve", "status"],
     });
   });
 
-  it("allows container mode when OPENCLAW_PROFILE is already set in env", async () => {
-    setTestEnvValue("OPENCLAW_PROFILE", "work");
+  it("allows container mode when EVE_PROFILE is already set in env", async () => {
+    setTestEnvValue("EVE_PROFILE", "work");
 
     await expect(
-      runCli(["node", "openclaw", "--container", "demo", "status"]),
+      runCli(["node", "eve", "--container", "demo", "status"]),
     ).resolves.toBeUndefined();
   });
 
   it.each([
-    ["OPENCLAW_GATEWAY_PORT", "19001"],
-    ["OPENCLAW_GATEWAY_URL", "ws://127.0.0.1:18789"],
-    ["OPENCLAW_GATEWAY_TOKEN", "demo-token"],
-    ["OPENCLAW_GATEWAY_PASSWORD", "demo-password"],
+    ["EVE_GATEWAY_PORT", "19001"],
+    ["EVE_GATEWAY_URL", "ws://127.0.0.1:18789"],
+    ["EVE_GATEWAY_TOKEN", "demo-token"],
+    ["EVE_GATEWAY_PASSWORD", "demo-password"],
   ])("allows container mode when %s is set in env", async (key, value) => {
     setTestEnvValue(key, value);
 
     await expect(
-      runCli(["node", "openclaw", "--container", "demo", "status"]),
+      runCli(["node", "eve", "--container", "demo", "status"]),
     ).resolves.toBeUndefined();
   });
 
-  it("allows container mode when only OPENCLAW_STATE_DIR is set in env", async () => {
-    setTestEnvValue("OPENCLAW_STATE_DIR", "/tmp/openclaw-host-state");
+  it("allows container mode when only EVE_STATE_DIR is set in env", async () => {
+    setTestEnvValue("EVE_STATE_DIR", "/tmp/eve-host-state");
 
     await expect(
-      runCli(["node", "openclaw", "--container", "demo", "status"]),
+      runCli(["node", "eve", "--container", "demo", "status"]),
     ).resolves.toBeUndefined();
   });
 
-  it("allows container mode when only OPENCLAW_CONFIG_PATH is set in env", async () => {
-    setTestEnvValue("OPENCLAW_CONFIG_PATH", "/tmp/openclaw-host-state/openclaw.json");
+  it("allows container mode when only EVE_CONFIG_PATH is set in env", async () => {
+    setTestEnvValue("EVE_CONFIG_PATH", "/tmp/eve-host-state/eve.json");
 
     await expect(
-      runCli(["node", "openclaw", "--container", "demo", "status"]),
+      runCli(["node", "eve", "--container", "demo", "status"]),
     ).resolves.toBeUndefined();
   });
 });

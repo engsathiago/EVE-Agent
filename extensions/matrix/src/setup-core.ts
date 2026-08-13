@@ -1,5 +1,5 @@
 // Matrix plugin module implements setup core behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   DEFAULT_ACCOUNT_ID,
   type DmPolicy,
@@ -7,7 +7,7 @@ import {
   prepareScopedSetupConfig,
   type ChannelSetupAdapter,
   type ChannelSetupWizardAdapter,
-} from "openclaw/plugin-sdk/setup";
+} from "eve-agent/plugin-sdk/setup";
 import { resolveDefaultMatrixAccountId, resolveMatrixAccountConfig } from "./matrix/accounts.js";
 import { resolveMatrixConfigFieldPath, updateMatrixAccountConfig } from "./matrix/config-update.js";
 import { applyMatrixSetupAccountConfig, validateMatrixSetupInput } from "./setup-config.js";
@@ -94,7 +94,7 @@ export function createMatrixSetupWizardProxy(
           accountId: resolveMatrixSetupWizardAccountId(cfg as CoreConfig, accountId),
         }).dm?.policy ?? "pairing",
       setPolicy: (cfg, policy, accountId) =>
-        setMatrixDmPolicy(cfg as CoreConfig, policy, accountId) as OpenClawConfig,
+        setMatrixDmPolicy(cfg as CoreConfig, policy, accountId) as EVEConfig,
       promptAllowFrom: async (params) => {
         const promptAllowFrom = (await loadWizard()).dmPolicy?.promptAllowFrom;
         return promptAllowFrom ? await promptAllowFrom(params) : params.cfg;

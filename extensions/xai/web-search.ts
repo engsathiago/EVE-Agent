@@ -2,7 +2,7 @@
 import type {
   WebSearchProviderPlugin,
   WebSearchProviderSetupContext,
-} from "openclaw/plugin-sdk/provider-web-search-config-contract";
+} from "eve-agent/plugin-sdk/provider-web-search-config-contract";
 import { buildXaiWebSearchProviderBase } from "./web-search-provider-shared.js";
 
 type XaiWebSearchProviderRuntime = typeof import("./src/web-search-provider.runtime.js");

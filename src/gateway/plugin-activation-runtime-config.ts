@@ -1,6 +1,6 @@
 // Plugin/channel activation config merge helpers.
 // Carries activation enablement into runtime config without copying stale state.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isRecord } from "../utils.js";
 
 // Activation config carries only operator-controlled enable/allow surfaces into
@@ -11,9 +11,9 @@ function hasOwnValue(record: Record<string, unknown>, key: string): boolean {
 }
 
 function mergeChannelActivationSections(params: {
-  runtimeConfig: OpenClawConfig;
-  activationConfig: OpenClawConfig;
-}): OpenClawConfig {
+  runtimeConfig: EVEConfig;
+  activationConfig: EVEConfig;
+}): EVEConfig {
   const activationChannels = params.activationConfig.channels;
   if (!isRecord(activationChannels)) {
     return params.runtimeConfig;
@@ -42,14 +42,14 @@ function mergeChannelActivationSections(params: {
   }
   return {
     ...params.runtimeConfig,
-    channels: nextChannels as OpenClawConfig["channels"],
+    channels: nextChannels as EVEConfig["channels"],
   };
 }
 
 function mergePluginActivationSections(params: {
-  runtimeConfig: OpenClawConfig;
-  activationConfig: OpenClawConfig;
-}): OpenClawConfig {
+  runtimeConfig: EVEConfig;
+  activationConfig: EVEConfig;
+}): EVEConfig {
   const activationPlugins = params.activationConfig.plugins;
   if (!isRecord(activationPlugins)) {
     return params.runtimeConfig;
@@ -95,15 +95,15 @@ function mergePluginActivationSections(params: {
   }
   return {
     ...params.runtimeConfig,
-    plugins: nextPlugins as OpenClawConfig["plugins"],
+    plugins: nextPlugins as EVEConfig["plugins"],
   };
 }
 
 /** Merges plugin/channel activation enablement into the runtime config shape. */
 export function mergeActivationSectionsIntoRuntimeConfig(params: {
-  runtimeConfig: OpenClawConfig;
-  activationConfig: OpenClawConfig;
-}): OpenClawConfig {
+  runtimeConfig: EVEConfig;
+  activationConfig: EVEConfig;
+}): EVEConfig {
   return mergePluginActivationSections({
     ...params,
     runtimeConfig: mergeChannelActivationSections(params),

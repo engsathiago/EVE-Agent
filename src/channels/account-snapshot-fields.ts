@@ -2,10 +2,10 @@
  * Status-safe channel account projection helpers for CLI, status APIs, and plugin SDK callers.
  * This file is the redaction boundary between runtime account objects and public snapshots.
  */
-import { stripUrlUserInfo } from "@openclaw/net-policy/url-userinfo";
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { stripUrlUserInfo } from "@eve/net-policy/url-userinfo";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { isRecord } from "../utils.js";
 import { asBoolean } from "../utils/boolean.js";
 import type { ChannelAccountSnapshot } from "./plugins/types.core.js";

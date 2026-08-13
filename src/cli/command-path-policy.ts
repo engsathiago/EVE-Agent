@@ -42,7 +42,7 @@ function isCommandPathPrefix(commandPath: string[], pattern: readonly string[]):
 }
 
 export function resolveCliCatalogCommandPath(argv: string[]): string[] {
-  // Gateway `run openclaw ...` argv needs catalog routing against the embedded command path.
+  // Gateway `run eve ...` argv needs catalog routing against the embedded command path.
   const tokens =
     resolveGatewayCatalogCommandPath(argv) ?? getCommandPathWithRootOptions(argv, argv.length);
   if (tokens.length === 0) {

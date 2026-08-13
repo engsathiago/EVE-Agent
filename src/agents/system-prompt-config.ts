@@ -4,7 +4,7 @@
  * This module gathers agent/config knobs before rendering the canonical system
  * prompt so callers do not duplicate owner, TTS, alias, memory, or FS policy.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { buildTtsSystemPromptHint } from "../tts/tts.js";
 import { resolveAgentConfig } from "./agent-scope.js";
 import { buildModelAliasLines } from "./model-alias-lines.js";
@@ -27,13 +27,13 @@ type ResolvedAgentSystemPromptConfig = Pick<
 >;
 
 type ConfiguredAgentSystemPromptParams = AgentSystemPromptRenderParams & {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
 };
 
 /** Resolves all config-derived system prompt fields for an agent. */
 export function resolveAgentSystemPromptConfig(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
 }): ResolvedAgentSystemPromptConfig {
   const { config, agentId } = params;

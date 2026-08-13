@@ -1,5 +1,5 @@
 // Slack plugin module implements dispatch behavior.
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveHumanDelayConfig } from "eve-agent/plugin-sdk/agent-runtime";
 import {
   createStatusReactionController,
   DEFAULT_TIMING,
@@ -7,22 +7,22 @@ import {
   logTypingFailure,
   removeAckReactionAfterReply,
   type StatusReactionAdapter,
-} from "openclaw/plugin-sdk/channel-feedback";
+} from "eve-agent/plugin-sdk/channel-feedback";
 import {
   dispatchChannelInboundReply,
   type InboundReplyRecordOptions,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   type ChannelBotLoopProtectionFacts,
   hasVisibleInboundReplyDispatch,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 import {
   createChannelMessageReplyPipeline,
   defineFinalizableLivePreviewAdapter,
   deliverWithFinalizableLivePreviewAdapter,
   resolveChannelMessageSourceReplyDeliveryMode,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { resolveAgentOutboundIdentity } from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { resolveAgentOutboundIdentity } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLine,
   buildChannelProgressDraftLineForEntry,
@@ -39,20 +39,20 @@ import {
   resolveChannelStreamingPreviewToolProgress,
   resolveChannelStreamingSuppressDefaultToolProgressMessages,
   type ChannelProgressDraftLine,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { mergePairLoopGuardConfig } from "openclaw/plugin-sdk/pair-loop-guard-runtime";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { mergePairLoopGuardConfig } from "eve-agent/plugin-sdk/pair-loop-guard-runtime";
 import {
   buildTtsSupplementMediaPayload,
   getReplyPayloadTtsSupplement,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { danger, logVerbose, shouldLogVerbose, sleep } from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyDispatchKind, ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
+import { resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
+import { danger, logVerbose, shouldLogVerbose, sleep } from "eve-agent/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { stripReasoningTagsFromText } from "eve-agent/plugin-sdk/text-chunking";
 import { reactSlackMessage, removeSlackReaction } from "../../actions.js";
 import { createSlackDraftStream } from "../../draft-stream.js";
 import { formatSlackError } from "../../errors.js";

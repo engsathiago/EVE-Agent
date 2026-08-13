@@ -6,7 +6,7 @@ import {
   __testing as replyRunRegistryTesting,
   createReplyOperation,
 } from "../auto-reply/reply/reply-run-registry.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { markCronJobActive, resetCronActiveJobs } from "../cron/active-jobs.js";
 import { getActivePluginRegistry, setActivePluginRegistry } from "../plugins/runtime.js";
 import type { CommandLaneSnapshot } from "../process/command-queue.js";
@@ -52,7 +52,7 @@ beforeEach(() => {
   replyRunRegistryTesting.resetReplyRunRegistry();
 });
 
-function createHeartbeatTelegramConfig(): OpenClawConfig {
+function createHeartbeatTelegramConfig(): EVEConfig {
   return {
     agents: {
       defaults: {
@@ -67,10 +67,10 @@ function createHeartbeatTelegramConfig(): OpenClawConfig {
         allowFrom: ["123"],
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
-async function seedHeartbeatTelegramSession(storePath: string, cfg: OpenClawConfig) {
+async function seedHeartbeatTelegramSession(storePath: string, cfg: EVEConfig) {
   return seedMainSessionStore(storePath, cfg, {
     lastChannel: "telegram",
     lastProvider: "telegram",

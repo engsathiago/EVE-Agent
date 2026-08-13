@@ -1,9 +1,9 @@
 /** Public cron service operations for lifecycle, CRUD, listing, and manual runs. */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { enqueueCommandInLane } from "../../process/command-queue.js";
 import { CommandLane } from "../../process/lanes.js";
 import { DEFAULT_AGENT_ID } from "../../routing/session-key.js";
-import { resolveOpenClawStateSqlitePath } from "../../state/openclaw-state-db.paths.js";
+import { resolveEVEStateSqlitePath } from "../../state/eve-state-db.paths.js";
 import {
   completeTaskRunByRunId,
   createRunningTaskRun,
@@ -316,7 +316,7 @@ export async function status(state: CronServiceState) {
       enabled: state.deps.cronEnabled,
       storePath: state.deps.storePath,
       storage: "sqlite" as const,
-      sqlitePath: resolveOpenClawStateSqlitePath(),
+      sqlitePath: resolveEVEStateSqlitePath(),
       jobs: state.store?.jobs.length ?? 0,
       nextWakeAtMs: state.deps.cronEnabled ? (nextWakeAtMs(state) ?? null) : null,
     };

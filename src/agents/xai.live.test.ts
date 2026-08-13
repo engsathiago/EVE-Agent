@@ -1,6 +1,6 @@
 // xAI live tests verify Grok completions, tool payload wrapping, and Grok web
 // search against the real provider when live credentials are enabled.
-import { completeSimple, type Model, streamSimple } from "openclaw/plugin-sdk/llm";
+import { completeSimple, type Model, streamSimple } from "eve-agent/plugin-sdk/llm";
 import { Type } from "typebox";
 import { describe, expect, it } from "vitest";
 import {
@@ -197,7 +197,7 @@ describeLive("xai live", () => {
 
       const webSearchTool = requireLiveValue(tool, "grok web search tool");
       const result = await webSearchTool.execute("web-search:grok-live", {
-        query: "OpenClaw GitHub",
+        query: "EVE GitHub",
         count: 3,
       });
 

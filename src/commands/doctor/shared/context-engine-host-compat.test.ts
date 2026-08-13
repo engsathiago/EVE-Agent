@@ -1,6 +1,6 @@
 // Context engine host compatibility tests cover doctor warnings for host/context mismatches.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { registerContextEngine } from "../../../context-engine/registry.js";
 import type { ContextEngine, ContextEngineHostCapability } from "../../../context-engine/types.js";
 import {
@@ -46,7 +46,7 @@ function registerEngine(requiredCapabilities: ContextEngineHostCapability[]): st
   return id;
 }
 
-function configWithEngine(engineId: string, cfg: OpenClawConfig = {}): OpenClawConfig {
+function configWithEngine(engineId: string, cfg: EVEConfig = {}): EVEConfig {
   return {
     ...cfg,
     plugins: {
@@ -60,14 +60,14 @@ function configWithEngine(engineId: string, cfg: OpenClawConfig = {}): OpenClawC
 }
 
 describe("doctor context-engine host compatibility", () => {
-  it("collects native Codex and OpenClaw as compatible agent-run hosts", () => {
+  it("collects native Codex and EVE as compatible agent-run hosts", () => {
     const hosts = collectConfiguredContextEngineAgentRunHosts({
       cfg: {
         agents: {
           defaults: {
             models: {
               "openai/gpt-5.5": { agentRuntime: { id: "codex" } },
-              "anthropic/claude-sonnet-4-6": { agentRuntime: { id: "openclaw" } },
+              "anthropic/claude-sonnet-4-6": { agentRuntime: { id: "eve" } },
             },
           },
         },
@@ -76,7 +76,7 @@ describe("doctor context-engine host compatibility", () => {
 
     expect(hosts.map((host) => host.host.id).toSorted()).toEqual([
       "codex-app-server",
-      "openclaw-embedded",
+      "eve-embedded",
     ]);
   });
 
@@ -93,7 +93,7 @@ describe("doctor context-engine host compatibility", () => {
           },
         },
       }),
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "eve doctor --fix",
     });
 
     expect(warnings).toEqual([]);
@@ -112,7 +112,7 @@ describe("doctor context-engine host compatibility", () => {
           },
         },
       }),
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "eve doctor --fix",
     });
 
     expect(result.config.plugins?.slots?.contextEngine).toBe("legacy");
@@ -134,7 +134,7 @@ describe("doctor context-engine host compatibility", () => {
     });
     const result = await maybeRepairContextEngineHostCompatibility({
       cfg,
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "eve doctor --fix",
     });
 
     expect(result.config).toBe(cfg);
@@ -155,7 +155,7 @@ describe("doctor context-engine host compatibility", () => {
     });
     const result = await maybeRepairContextEngineHostCompatibility({
       cfg,
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "eve doctor --fix",
     });
 
     expect(result.config).toBe(cfg);

@@ -6,14 +6,14 @@ import {
   resolveApprovalReactionTarget,
   type ApprovalReactionDecisionBinding,
   type ApprovalReactionTargetRecord,
-} from "openclaw/plugin-sdk/approval-reaction-runtime";
-import type { ExecApprovalReplyDecision } from "openclaw/plugin-sdk/approval-reply-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/approval-reaction-runtime";
+import type { ExecApprovalReplyDecision } from "eve-agent/plugin-sdk/approval-reply-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   asDateTimestampMs,
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import { getIMessageApprovalApprovers, imessageApprovalAuth } from "./approval-auth.js";
 import { resolveIMessageReactionContext } from "./monitor/reaction-context.js";
 import type { IMessagePayload } from "./monitor/types.js";
@@ -508,7 +508,7 @@ function readApprovalReactionEvent(
 }
 
 export async function handleIMessageApprovalReaction(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   message: IMessagePayload;
   bodyText: string;
@@ -606,7 +606,7 @@ export async function handleIMessageApprovalReaction(params: {
       return { handled: true, stopPolling: true, stopPollingReason: "not-found" };
     }
     // Surface non-NotFound errors at warn level so a gateway 5xx / network
-    // outage / auth failure is visible without OPENCLAW_LOG_LEVEL=debug.
+    // outage / auth failure is visible without EVE_LOG_LEVEL=debug.
     try {
       getOptionalIMessageRuntime()
         ?.logging.getChildLogger({ plugin: "imessage", feature: "approval-reactions" })
@@ -626,7 +626,7 @@ export async function handleIMessageApprovalReaction(params: {
 }
 
 export async function maybeResolveIMessageApprovalReaction(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   message: IMessagePayload;
   bodyText: string;

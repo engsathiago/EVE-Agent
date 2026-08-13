@@ -1,13 +1,13 @@
 /** Collects channel contract secret assignments during runtime preparation. */
 import { getBootstrapChannelSecrets } from "../channels/plugins/bootstrap-registry.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginOrigin } from "../plugins/plugin-origin.types.js";
 import { loadChannelSecretContractApi } from "./channel-contract-api.js";
 import type { ResolverContext, SecretDefaults } from "./runtime-shared.js";
 
 /** Collects SecretRef assignments declared by active channel/plugin channel contracts. */
 export function collectChannelConfigAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   /** Defaults from the source config, used before assignment writes mutate config. */
   defaults: SecretDefaults | undefined;
   context: ResolverContext;

@@ -1,7 +1,7 @@
 /**
  * Queues embedded-agent session compaction onto the correct command lane.
  */
-import { OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
+import { EVE_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
 import { ensureContextEnginesInitialized } from "../../context-engine/init.js";
 import {
   resolveContextEngine,
@@ -297,7 +297,7 @@ export async function compactEmbeddedAgentSession(
     contextEnginePluginId: resolveContextEngineOwnerPluginId(contextEngine),
   });
   const contextEngineRuntimeSettings = buildContextEngineRuntimeSettings({
-    contextEngineHost: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+    contextEngineHost: EVE_EMBEDDED_CONTEXT_ENGINE_HOST,
     provider: ceProvider,
     requestedModel: params.model,
     resolvedModel: ceModelId,
@@ -634,7 +634,7 @@ function shouldAttemptNativeHarnessCompaction(params: {
   selectedHarnessRuntime?: string | null;
 }): boolean {
   const selectedRuntime = normalizeOptionalAgentRuntimeId(params.selectedHarnessRuntime);
-  if (!selectedRuntime || selectedRuntime === "auto" || selectedRuntime === "openclaw") {
+  if (!selectedRuntime || selectedRuntime === "auto" || selectedRuntime === "eve") {
     return false;
   }
   return isOpenAIProvider(params.provider) ? params.contextProvider !== undefined : true;

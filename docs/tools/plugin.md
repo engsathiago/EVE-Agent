@@ -1,5 +1,5 @@
 ---
-summary: "Install, configure, and manage OpenClaw plugins"
+summary: "Install, configure, and manage EVE plugins"
 read_when:
   - Installing or configuring plugins
   - Understanding plugin discovery and load rules
@@ -9,7 +9,7 @@ sidebarTitle: "Getting Started"
 doc-schema-version: 1
 ---
 
-Plugins extend OpenClaw with channels, model providers, agent harnesses, tools,
+Plugins extend EVE with channels, model providers, agent harnesses, tools,
 skills, speech, realtime transcription, voice, media understanding, generation,
 web fetch, web search, and other runtime capabilities.
 
@@ -23,7 +23,7 @@ inventory of bundled, official external, and source-only plugins, see
 
 Before installing a plugin, make sure you have:
 
-- an OpenClaw checkout or installation with the `openclaw` CLI available
+- an EVE checkout or installation with the `eve` CLI available
 - network access to the selected source, such as ClawHub, npm, or a git host
 - any plugin-specific credentials, config keys, or operating-system tools named
   by that plugin's setup docs
@@ -36,13 +36,13 @@ Before installing a plugin, make sure you have:
     Search [ClawHub](/clawhub) for public plugin packages:
 
     ```bash
-    openclaw plugins search "calendar"
+    eve plugins search "calendar"
     ```
 
     ClawHub is the primary discovery surface for community plugins. During the
     launch cutover, ordinary bare package specs still install from npm unless
-    they match an official plugin id. Raw `@openclaw/*` package specs that match
-    bundled plugins use the bundled copy from the current OpenClaw build. Use an
+    they match an official plugin id. Raw `@eve/*` package specs that match
+    bundled plugins use the bundled copy from the current EVE build. Use an
     explicit prefix when you need one source.
 
   </Step>
@@ -50,17 +50,17 @@ Before installing a plugin, make sure you have:
   <Step title="Install the plugin">
     ```bash
     # From ClawHub.
-    openclaw plugins install clawhub:<package>
+    eve plugins install clawhub:<package>
 
     # From npm.
-    openclaw plugins install npm:<package>
+    eve plugins install npm:<package>
 
     # From git.
-    openclaw plugins install git:github.com/<owner>/<repo>@<ref>
+    eve plugins install git:github.com/<owner>/<repo>@<ref>
 
     # From a local development checkout.
-    openclaw plugins install ./my-plugin
-    openclaw plugins install --link ./my-plugin
+    eve plugins install ./my-plugin
+    eve plugins install --link ./my-plugin
     ```
 
     Treat plugin installs like running code. Prefer pinned versions when you
@@ -73,12 +73,12 @@ Before installing a plugin, make sure you have:
     Enable the plugin when it is not already enabled:
 
     ```bash
-    openclaw plugins enable <plugin-id>
+    eve plugins enable <plugin-id>
     ```
 
     If your config uses a restrictive `plugins.allow` list, the installed plugin
     id must be present there before the plugin can load.
-    `openclaw plugins install` adds the installed id to an existing
+    `eve plugins install` adds the installed id to an existing
     `plugins.allow` list and removes the same id from `plugins.deny` so the
     explicit install can load after restart.
 
@@ -87,12 +87,12 @@ Before installing a plugin, make sure you have:
   <Step title="Let the Gateway reload">
     Installing, updating, or uninstalling plugin code requires a Gateway
     restart. When a managed Gateway is already running with config reload
-    enabled, OpenClaw detects the changed plugin install record and restarts the
+    enabled, EVE detects the changed plugin install record and restarts the
     Gateway automatically. If the Gateway is not managed or reload is disabled,
     restart it yourself:
 
     ```bash
-    openclaw gateway restart
+    eve gateway restart
     ```
 
     Enable and disable operations update config and refresh the cold registry.
@@ -103,7 +103,7 @@ Before installing a plugin, make sure you have:
 
   <Step title="Verify runtime registration">
     ```bash
-    openclaw plugins inspect <plugin-id> --runtime --json
+    eve plugins inspect <plugin-id> --runtime --json
     ```
 
     Use `--runtime` when you need to prove registered tools, hooks, services,
@@ -119,27 +119,27 @@ Before installing a plugin, make sure you have:
 
 | Source      | Use when                                                                       | Example                                                        |
 | ----------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| ClawHub     | You want OpenClaw-native discovery, scans, version metadata, and install hints | `openclaw plugins install clawhub:<package>`                   |
-| npm         | You need direct npm registry or dist-tag workflows                             | `openclaw plugins install npm:<package>`                       |
-| git         | You need a branch, tag, or commit from a repository                            | `openclaw plugins install git:github.com/<owner>/<repo>@<ref>` |
-| local path  | You are developing or testing a plugin on the same machine                     | `openclaw plugins install --link ./my-plugin`                  |
-| marketplace | You are installing a Claude-compatible marketplace plugin                      | `openclaw plugins install <plugin> --marketplace <source>`     |
+| ClawHub     | You want EVE-native discovery, scans, version metadata, and install hints | `eve plugins install clawhub:<package>`                   |
+| npm         | You need direct npm registry or dist-tag workflows                             | `eve plugins install npm:<package>`                       |
+| git         | You need a branch, tag, or commit from a repository                            | `eve plugins install git:github.com/<owner>/<repo>@<ref>` |
+| local path  | You are developing or testing a plugin on the same machine                     | `eve plugins install --link ./my-plugin`                  |
+| marketplace | You are installing a Claude-compatible marketplace plugin                      | `eve plugins install <plugin> --marketplace <source>`     |
 
 Bare package specs have special compatibility behavior. If the bare name matches
-a bundled plugin id, OpenClaw uses that bundled source. If it matches an
-official external plugin id, OpenClaw uses the official package catalog. Other
+a bundled plugin id, EVE uses that bundled source. If it matches an
+official external plugin id, EVE uses the official package catalog. Other
 ordinary bare package specs install through npm during the launch cutover. Raw
-`@openclaw/*` package specs that match bundled plugins also resolve to the
-bundled copy before npm fallback. Use `npm:@openclaw/<plugin>@<version>` when
+`@eve/*` package specs that match bundled plugins also resolve to the
+bundled copy before npm fallback. Use `npm:@eve/<plugin>@<version>` when
 you deliberately want the external npm package instead of the image-owned
 bundled copy. Use `clawhub:`, `npm:`, `git:`, or `npm-pack:` when you need
-deterministic source selection. See [`openclaw plugins`](/cli/plugins#install)
+deterministic source selection. See [`eve plugins`](/cli/plugins#install)
 for the full command contract.
 
 For npm installs, unpinned package specs and `@latest` choose the newest stable
-package that advertises compatibility with this OpenClaw build. If npm's
-current latest release declares a newer `openclaw.compat.pluginApi` or
-`openclaw.install.minHostVersion`, OpenClaw scans older stable package versions
+package that advertises compatibility with this EVE build. If npm's
+current latest release declares a newer `eve.compat.pluginApi` or
+`eve.install.minHostVersion`, EVE scans older stable package versions
 and installs the newest one that fits. Exact versions and explicit channel tags
 such as `@beta` stay pinned to the selected package and fail when incompatible.
 
@@ -149,10 +149,10 @@ Configure `security.installPolicy` to run a trusted local policy command before
 plugin install or update proceeds. The policy receives metadata plus the staged
 source path and can allow or block the install. It covers CLI and Gateway-backed
 plugin install/update paths. Plugin `before_install` hooks run later only in
-OpenClaw processes where plugin hooks are loaded, so use `security.installPolicy`
+EVE processes where plugin hooks are loaded, so use `security.installPolicy`
 for operator-owned install decisions. The deprecated
 `--dangerously-force-unsafe-install` flag is accepted for compatibility but does
-not bypass install policy or OpenClaw's built-in plugin dependency denylist.
+not bypass install policy or EVE's built-in plugin dependency denylist.
 
 See [Skills config](/tools/skills-config#operator-install-policy-securityinstallpolicy)
 for the shared `security.installPolicy` exec schema used by both skills and
@@ -207,20 +207,20 @@ Key policy rules:
   `codex` plugin owns Codex app-server runtime for canonical `openai/*` agent
   refs, explicit `agentRuntime.id: "codex"`, and legacy `codex/*` refs.
 
-Run `openclaw doctor` or `openclaw doctor --fix` when config validation reports
+Run `eve doctor` or `eve doctor --fix` when config validation reports
 stale plugin ids, allowlist/tool mismatches, or legacy bundled plugin paths.
 
 ## Understand plugin formats
 
-OpenClaw recognizes two plugin formats:
+EVE recognizes two plugin formats:
 
 | Format                 | How it loads                                                                 | Use when                                                               |
 | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Native OpenClaw plugin | `openclaw.plugin.json` plus a runtime module loaded in process               | You are installing or building OpenClaw-specific runtime capabilities  |
-| Compatible bundle      | Codex, Claude, or Cursor plugin layout mapped into OpenClaw plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata |
+| Native EVE plugin | `eve.plugin.json` plus a runtime module loaded in process               | You are installing or building EVE-specific runtime capabilities  |
+| Compatible bundle      | Codex, Claude, or Cursor plugin layout mapped into EVE plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata |
 
-Both formats appear in `openclaw plugins list`, `openclaw plugins inspect`,
-`openclaw plugins enable`, and `openclaw plugins disable`. See
+Both formats appear in `eve plugins list`, `eve plugins inspect`,
+`eve plugins enable`, and `eve plugins disable`. See
 [Plugin bundles](/plugins/bundles) for the bundle compatibility boundary and
 [Building plugins](/plugins/building-plugins) for native plugin authoring.
 
@@ -244,84 +244,84 @@ Quick rule:
 - If the handler just reacts to `command:new`, `command:reset`, `message:sent`,
   or similar coarse events, `api.registerHook(...)` is fine.
 
-Plugin-managed internal hooks show up in `openclaw hooks list` with
-`plugin:<id>`. You cannot enable or disable them through `openclaw hooks`;
+Plugin-managed internal hooks show up in `eve hooks list` with
+`plugin:<id>`. You cannot enable or disable them through `eve hooks`;
 enable or disable the plugin instead.
 
 ## Verify the active Gateway
 
-`openclaw plugins list` and plain `openclaw plugins inspect` read cold config,
+`eve plugins list` and plain `eve plugins inspect` read cold config,
 manifest, and registry state. They do not prove that an already-running Gateway
 has imported the same plugin code.
 
 When a plugin appears installed but live chat traffic does not use it:
 
 ```bash
-openclaw gateway status --deep --require-rpc
-openclaw plugins inspect <plugin-id> --runtime --json
-openclaw gateway restart
+eve gateway status --deep --require-rpc
+eve plugins inspect <plugin-id> --runtime --json
+eve gateway restart
 ```
 
 Managed Gateways restart automatically after plugin install, update, and
 uninstall changes that alter plugin source. On VPS or container installs, make
-sure any manual restart targets the actual `openclaw gateway run` child that
+sure any manual restart targets the actual `eve gateway run` child that
 serves your channels, not only a wrapper or supervisor.
 
 ## Troubleshooting
 
 | Symptom                                                        | Check                                                                                                                                      | Fix                                                                                                     |
 | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Plugin appears in `plugins list` but runtime hooks do not run  | Use `openclaw plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                               |
-| Duplicate channel or tool ownership diagnostics appear         | Run `openclaw plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement      |
+| Plugin appears in `plugins list` but runtime hooks do not run  | Use `eve plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                               |
+| Duplicate channel or tool ownership diagnostics appear         | Run `eve plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement      |
 | Config says a plugin is missing                                | Check [Plugin inventory](/plugins/plugin-inventory) for whether it is bundled, official external, or source-only                           | Install the external package, enable the bundled plugin, or remove stale config                         |
-| Config is invalid during install                               | Read the validation message and run `openclaw doctor --fix` when it points to stale plugin state                                           | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload     |
-| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                             | Fix filesystem ownership/permissions, then run `openclaw plugins registry --refresh`                    |
-| `OPENCLAW_NIX_MODE=1` blocks lifecycle commands                | Confirm the install is managed by Nix                                                                                                      | Change plugin selection in the Nix source instead of using plugin mutator commands                      |
-| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                                 | Run `openclaw plugins update <id>`, reinstall the source, or install local plugin dependencies yourself |
+| Config is invalid during install                               | Read the validation message and run `eve doctor --fix` when it points to stale plugin state                                           | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload     |
+| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                             | Fix filesystem ownership/permissions, then run `eve plugins registry --refresh`                    |
+| `EVE_NIX_MODE=1` blocks lifecycle commands                | Confirm the install is managed by Nix                                                                                                      | Change plugin selection in the Nix source instead of using plugin mutator commands                      |
+| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                                 | Run `eve plugins update <id>`, reinstall the source, or install local plugin dependencies yourself |
 
 When stale plugin config still names a no-longer-discoverable channel plugin,
 Gateway startup skips that plugin-backed channel instead of blocking every
-other channel. Run `openclaw doctor --fix` to remove stale plugin and channel
+other channel. Run `eve doctor --fix` to remove stale plugin and channel
 entries. Unknown channel keys without stale-plugin evidence still fail
 validation so typos stay visible.
 
 For intentional channel replacement, the preferred plugin should declare
 `channelConfigs.<channel-id>.preferOver` with the legacy or lower-priority
-plugin id. If both plugins are explicitly enabled, OpenClaw keeps that request
+plugin id. If both plugins are explicitly enabled, EVE keeps that request
 and reports duplicate channel or tool diagnostics instead of silently choosing
 one owner.
 
 If an installed package reports that it `requires compiled runtime output for
 TypeScript entry ...`, the package was published without the JavaScript files
-OpenClaw needs at runtime. Update or reinstall after the publisher ships
+EVE needs at runtime. Update or reinstall after the publisher ships
 compiled JavaScript, or disable/uninstall the plugin until then.
 
 ### Blocked plugin path ownership
 
 If plugin diagnostics say
 `blocked plugin candidate: suspicious ownership (... uid=1000, expected uid=0 or root)`
-and config validation follows with `plugin present but blocked`, OpenClaw found
+and config validation follows with `plugin present but blocked`, EVE found
 plugin files owned by a different Unix user than the process that is loading
 them. Keep the plugin config in place; fix the filesystem ownership or run
-OpenClaw as the same user that owns the state directory.
+EVE as the same user that owns the state directory.
 
 For Docker installs, the official image runs as `node` (uid `1000`), so the
-host bind-mounted OpenClaw config and workspace directories should normally be
+host bind-mounted EVE config and workspace directories should normally be
 owned by uid `1000`:
 
 ```bash
-sudo chown -R 1000:1000 /path/to/openclaw-config /path/to/openclaw-workspace
+sudo chown -R 1000:1000 /path/to/eve-config /path/to/eve-workspace
 ```
 
-If you intentionally run OpenClaw as root, repair the managed plugin root to
+If you intentionally run EVE as root, repair the managed plugin root to
 root ownership instead:
 
 ```bash
-sudo chown -R root:root /path/to/openclaw-config/npm
+sudo chown -R root:root /path/to/eve-config/npm
 ```
 
-After fixing ownership, rerun `openclaw doctor --fix` or
-`openclaw plugins registry --refresh` so the persisted plugin registry matches
+After fixing ownership, rerun `eve doctor --fix` or
+`eve plugins registry --refresh` so the persisted plugin registry matches
 the repaired files.
 
 ### Slow plugin tool setup
@@ -330,8 +330,8 @@ If agent turns appear to stall while preparing tools, enable trace logging and
 check for plugin tool factory timing lines:
 
 ```bash
-openclaw config set logging.level trace
-openclaw logs --follow
+eve config set logging.level trace
+eve logs --follow
 ```
 
 Look for:
@@ -345,7 +345,7 @@ including plugin id, declared tool names, result shape, and whether the tool is
 optional. Slow lines are promoted to warnings when a single factory takes at
 least 1s or total plugin tool factory prep takes at least 5s.
 
-OpenClaw caches successful plugin tool factory results for repeated resolutions
+EVE caches successful plugin tool factory results for repeated resolutions
 with the same effective request context. The cache key includes the effective
 runtime config, workspace, agent/session ids, sandbox policy, browser settings,
 delivery context, requester identity, and ownership state, so factories that
@@ -356,7 +356,7 @@ definitions.
 If one plugin dominates the timing, inspect its runtime registrations:
 
 ```bash
-openclaw plugins inspect <plugin-id> --runtime --json
+eve plugins inspect <plugin-id> --runtime --json
 ```
 
 Then update, reinstall, or disable that plugin. Plugin authors should move
@@ -370,7 +370,7 @@ reload behavior, and legacy cleanup, see
 ## Related
 
 - [Manage plugins](/plugins/manage-plugins) - command examples for list, install, update, uninstall, and publish
-- [`openclaw plugins`](/cli/plugins) - full CLI reference
+- [`eve plugins`](/cli/plugins) - full CLI reference
 - [Plugin inventory](/plugins/plugin-inventory) - generated bundled and external plugin list
 - [Plugin reference](/plugins/reference) - generated per-plugin reference pages
 - [Community plugins](/plugins/community) - ClawHub discovery and docs PR policy

@@ -1,5 +1,5 @@
 // Memory Wiki helper module supports config compat behavior.
-import type { OpenClawConfig } from "../api.js";
+import type { EVEConfig } from "../api.js";
 
 type LegacyConfigRule = {
   path: Array<string | number>;
@@ -21,13 +21,13 @@ export const legacyConfigRules: LegacyConfigRule[] = [
   {
     path: ["plugins", "entries", "memory-wiki", "config", "bridge"],
     message:
-      'plugins.entries.memory-wiki.config.bridge.readMemoryCore is legacy; use plugins.entries.memory-wiki.config.bridge.readMemoryArtifacts. Run "openclaw doctor --fix".',
+      'plugins.entries.memory-wiki.config.bridge.readMemoryCore is legacy; use plugins.entries.memory-wiki.config.bridge.readMemoryArtifacts. Run "eve doctor --fix".',
     match: hasLegacyBridgeArtifactToggle,
   },
 ];
 
-export function migrateMemoryWikiLegacyConfig(config: OpenClawConfig): {
-  config: OpenClawConfig;
+export function migrateMemoryWikiLegacyConfig(config: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } | null {
   const rawEntry = asRecord(config.plugins?.entries?.["memory-wiki"]);
@@ -68,8 +68,8 @@ export function migrateMemoryWikiLegacyConfig(config: OpenClawConfig): {
   };
 }
 
-export function normalizeCompatibilityConfig({ cfg }: { cfg: OpenClawConfig }): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfig({ cfg }: { cfg: EVEConfig }): {
+  config: EVEConfig;
   changes: string[];
 } {
   return migrateMemoryWikiLegacyConfig(cfg) ?? { config: cfg, changes: [] };

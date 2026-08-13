@@ -1,6 +1,6 @@
 // Video provider registry stores video generation provider factories by id.
 import { normalizeProviderId } from "../agents/model-selection.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import * as capabilityProviderRuntime from "../plugins/capability-provider-runtime.js";
 import type { VideoGenerationProviderPlugin } from "../plugins/types.js";
@@ -23,7 +23,7 @@ function isSafeVideoGenerationProviderId(id: string | undefined): id is string {
 }
 
 function resolvePluginVideoGenerationProviders(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): VideoGenerationProviderPlugin[] {
   return capabilityProviderRuntime.resolvePluginCapabilityProviders({
     key: "videoGenerationProviders",
@@ -31,7 +31,7 @@ function resolvePluginVideoGenerationProviders(
   });
 }
 
-function buildProviderMaps(cfg?: OpenClawConfig): {
+function buildProviderMaps(cfg?: EVEConfig): {
   canonical: Map<string, VideoGenerationProviderPlugin>;
   aliases: Map<string, VideoGenerationProviderPlugin>;
 } {
@@ -65,14 +65,14 @@ function buildProviderMaps(cfg?: OpenClawConfig): {
 }
 
 export function listVideoGenerationProviders(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): VideoGenerationProviderPlugin[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
 
 export function getVideoGenerationProvider(
   providerId: string | undefined,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): VideoGenerationProviderPlugin | undefined {
   const normalized = normalizeVideoGenerationProviderId(providerId);
   if (!normalized) {

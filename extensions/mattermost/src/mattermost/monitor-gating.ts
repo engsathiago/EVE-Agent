@@ -1,5 +1,5 @@
 // Mattermost plugin module implements monitor gating behavior.
-import type { ChatType, OpenClawConfig } from "./runtime-api.js";
+import type { ChatType, EVEConfig } from "./runtime-api.js";
 
 export function mapMattermostChannelTypeToChatType(channelType?: string | null): ChatType {
   const normalized = channelType?.trim().toUpperCase();
@@ -27,7 +27,7 @@ export function resolveMattermostTrustedChatKind(params: {
 }
 
 export type MattermostRequireMentionResolverInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: "mattermost";
   accountId: string;
   groupId: string;
@@ -36,7 +36,7 @@ export type MattermostRequireMentionResolverInput = {
 
 export type MattermostMentionGateInput = {
   kind: ChatType;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   channelId: string;
   threadRootId?: string;

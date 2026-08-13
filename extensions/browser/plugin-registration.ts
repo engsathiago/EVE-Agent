@@ -4,20 +4,20 @@
  */
 import type {
   AnyAgentTool,
-  OpenClawPluginApi,
-  OpenClawPluginNodeHostCommand,
-  OpenClawPluginSecurityAuditCollector,
-  OpenClawPluginService,
-  OpenClawPluginToolContext,
-  OpenClawPluginToolFactory,
-} from "openclaw/plugin-sdk/plugin-entry";
+  EVEPluginApi,
+  EVEPluginNodeHostCommand,
+  EVEPluginSecurityAuditCollector,
+  EVEPluginService,
+  EVEPluginToolContext,
+  EVEPluginToolFactory,
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   BROWSER_REQUEST_GATEWAY_METHOD,
   BROWSER_REQUEST_GATEWAY_SCOPE,
 } from "./src/browser-gateway-contract.js";
 import { BrowserToolSchema } from "./src/browser-tool.schema.js";
 
-const EAGER_BROWSER_CONTROL_SERVICE_ENV = "OPENCLAW_EAGER_BROWSER_CONTROL_SERVER";
+const EAGER_BROWSER_CONTROL_SERVICE_ENV = "EVE_EAGER_BROWSER_CONTROL_SERVER";
 
 let browserRegistrationRuntimeModulePromise: Promise<
   typeof import("./register.runtime.js")
@@ -50,7 +50,7 @@ function deriveChatTypeFromSessionKey(
 
 const BROWSER_CLI_DESCRIPTOR = {
   name: "browser",
-  description: "Manage OpenClaw's dedicated browser (Chrome/Chromium)",
+  description: "Manage EVE's dedicated browser (Chrome/Chromium)",
   hasSubcommands: true,
 };
 
@@ -77,8 +77,8 @@ function createLazyBrowserTool(opts?: {
     label: "Browser",
     name: "browser",
     description: [
-      "Control the browser via OpenClaw's browser control server (status/start/stop/profiles/tabs/open/snapshot/screenshot/actions).",
-      "Browser choice: omit profile by default for the isolated OpenClaw-managed browser (`openclaw`).",
+      "Control the browser via EVE's browser control server (status/start/stop/profiles/tabs/open/snapshot/screenshot/actions).",
+      "Browser choice: omit profile by default for the isolated EVE-managed browser (`eve`).",
       'For the logged-in user browser, use profile="user". A supported Chromium-based browser (v144+) must be running on the selected host or browser node. Use only when existing logins/cookies matter and the user is present.',
       'For profile="user" or other existing-session profiles, omit timeoutMs on act:type, evaluate, hover, scrollIntoView, drag, select, and fill; that driver rejects per-call timeout overrides for those actions.',
       'When a node-hosted browser proxy is available, the tool may auto-route to it. Pin a node with node=<id|name> or target="node".',
@@ -98,7 +98,7 @@ function createLazyBrowserTool(opts?: {
   };
 }
 
-function createBrowserToolOptions(ctx: OpenClawPluginToolContext): {
+function createBrowserToolOptions(ctx: EVEPluginToolContext): {
   sandboxBridgeUrl?: string;
   allowHostControl?: boolean;
   agentSessionKey?: string;
@@ -148,7 +148,7 @@ function createBrowserToolOptions(ctx: OpenClawPluginToolContext): {
 export const browserPluginReload = { restartPrefixes: ["browser"] };
 
 /** Node-host command descriptors exposed by the Browser plugin. */
-export const browserPluginNodeHostCommands: OpenClawPluginNodeHostCommand[] = [
+export const browserPluginNodeHostCommands: EVEPluginNodeHostCommand[] = [
   {
     command: "browser.proxy",
     cap: "browser",
@@ -160,15 +160,15 @@ export const browserPluginNodeHostCommands: OpenClawPluginNodeHostCommand[] = [
 ];
 
 /** Security audit collectors contributed by the Browser plugin. */
-export const browserSecurityAuditCollectors: OpenClawPluginSecurityAuditCollector[] = [
+export const browserSecurityAuditCollectors: EVEPluginSecurityAuditCollector[] = [
   async (ctx) => {
     const { collectBrowserSecurityAuditFindings } = await loadBrowserRegistrationRuntimeModule();
     return collectBrowserSecurityAuditFindings(ctx);
   },
 ];
 
-function createLazyBrowserPluginService(): OpenClawPluginService {
-  let service: OpenClawPluginService | null = null;
+function createLazyBrowserPluginService(): EVEPluginService {
+  let service: EVEPluginService | null = null;
   const loadService = async () => {
     if (!service) {
       const { createBrowserPluginService } = await loadBrowserRegistrationRuntimeModule();
@@ -197,9 +197,9 @@ function createLazyBrowserPluginService(): OpenClawPluginService {
 }
 
 /** Register Browser tool factories, CLI, gateway methods, services, and audits. */
-export function registerBrowserPlugin(api: OpenClawPluginApi) {
-  api.registerTool(((ctx: OpenClawPluginToolContext) =>
-    createLazyBrowserTool(createBrowserToolOptions(ctx))) as OpenClawPluginToolFactory);
+export function registerBrowserPlugin(api: EVEPluginApi) {
+  api.registerTool(((ctx: EVEPluginToolContext) =>
+    createLazyBrowserTool(createBrowserToolOptions(ctx))) as EVEPluginToolFactory);
   api.registerCli(
     async ({ program }) => {
       const { registerBrowserCli } = await import("./src/cli/browser-cli.js");

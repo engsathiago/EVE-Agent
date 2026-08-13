@@ -4,7 +4,7 @@ import chokidar from "chokidar";
 import type { ConfigWriteNotification } from "../config/io.js";
 import { formatConfigIssueLines } from "../config/issue-format.js";
 import { resolveConfigWriteFollowUp } from "../config/runtime-snapshot.js";
-import type { ConfigFileSnapshot, OpenClawConfig } from "../config/types.openclaw.js";
+import type { ConfigFileSnapshot, EVEConfig } from "../config/types.eve.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import {
   loadInstalledPluginIndexInstallRecords,
@@ -102,7 +102,7 @@ type GatewayConfigReloader = {
 
 type PluginInstallRecords = Record<string, PluginInstallRecord>;
 
-function asPluginInstallConfig(records: PluginInstallRecords): OpenClawConfig {
+function asPluginInstallConfig(records: PluginInstallRecords): EVEConfig {
   return {
     plugins: {
       installs: records,
@@ -111,12 +111,12 @@ function asPluginInstallConfig(records: PluginInstallRecords): OpenClawConfig {
 }
 
 export function startGatewayConfigReloader(opts: {
-  initialConfig: OpenClawConfig;
-  initialCompareConfig?: OpenClawConfig;
+  initialConfig: EVEConfig;
+  initialCompareConfig?: EVEConfig;
   initialInternalWriteHash?: string | null;
   readSnapshot: () => Promise<ConfigFileSnapshot>;
-  onHotReload: (plan: GatewayReloadPlan, nextConfig: OpenClawConfig) => Promise<void>;
-  onRestart: (plan: GatewayReloadPlan, nextConfig: OpenClawConfig) => void | Promise<void>;
+  onHotReload: (plan: GatewayReloadPlan, nextConfig: EVEConfig) => Promise<void>;
+  onRestart: (plan: GatewayReloadPlan, nextConfig: EVEConfig) => void | Promise<void>;
   promoteSnapshot?: (snapshot: ConfigFileSnapshot, reason: string) => Promise<boolean>;
   initialPluginInstallRecords?: PluginInstallRecords;
   readPluginInstallRecords?: () => Promise<PluginInstallRecords>;
@@ -138,8 +138,8 @@ export function startGatewayConfigReloader(opts: {
   let restartQueued = false;
   let missingConfigRetries = 0;
   let pendingInProcessConfig: {
-    config: OpenClawConfig;
-    compareConfig: OpenClawConfig;
+    config: EVEConfig;
+    compareConfig: EVEConfig;
     persistedHash: string;
     afterWrite?: ConfigWriteNotification["afterWrite"];
   } | null = null;
@@ -165,7 +165,7 @@ export function startGatewayConfigReloader(opts: {
   const schedule = () => {
     scheduleAfter(settings.debounceMs);
   };
-  const queueRestart = (plan: GatewayReloadPlan, nextConfig: OpenClawConfig) => {
+  const queueRestart = (plan: GatewayReloadPlan, nextConfig: EVEConfig) => {
     if (restartQueued) {
       return;
     }
@@ -209,8 +209,8 @@ export function startGatewayConfigReloader(opts: {
   };
 
   const applySnapshot = async (
-    nextConfig: OpenClawConfig,
-    nextCompareConfig: OpenClawConfig,
+    nextConfig: EVEConfig,
+    nextCompareConfig: EVEConfig,
     afterWrite?: ConfigWriteNotification["afterWrite"],
   ) => {
     const configChangedPaths = diffConfigPaths(currentCompareConfig, nextCompareConfig);

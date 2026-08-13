@@ -1,7 +1,7 @@
 /** Runs queued follow-up agent turns and routes their delivery payloads. */
 import crypto from "node:crypto";
-import { readStringValue } from "@openclaw/normalization-core/string-coerce";
-import { hasOutboundReplyContent } from "openclaw/plugin-sdk/reply-payload";
+import { readStringValue } from "@eve/normalization-core/string-coerce";
+import { hasOutboundReplyContent } from "eve-agent/plugin-sdk/reply-payload";
 import {
   clearAutoFallbackPrimaryProbeSelection,
   entryMatchesAutoFallbackPrimaryProbe,
@@ -480,7 +480,7 @@ export function createFollowupRunner(params: {
     ) {
       await sendDispatcherPayload({
         text:
-          "Follow-up completed, but OpenClaw could not deliver it to the originating " +
+          "Follow-up completed, but EVE could not deliver it to the originating " +
           "channel. The reply content was not forwarded to this channel to avoid " +
           "cross-channel misdelivery.",
         isError: true,

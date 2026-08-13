@@ -1,8 +1,8 @@
 // Covers startup delivery recovery, backoff, permanent failures, unknown-send
 // reconciliation, commit hooks, and retry budget deferral.
-import { MAX_DATE_TIMESTAMP_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_DATE_TIMESTAMP_MS } from "@eve/normalization-core/number-coercion";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { openOpenClawStateDatabase } from "../../state/openclaw-state-db.js";
+import { openEVEStateDatabase } from "../../state/eve-state-db.js";
 import { attachOutboundDeliveryCommitHook } from "./delivery-commit-hooks.js";
 import {
   enqueueDelivery,
@@ -38,8 +38,8 @@ function expectMockMessageContaining(mock: { mock: { calls: unknown[][] } }, exp
 }
 
 function readOutboundQueueStatus(tmpDir: string, id: string): string | undefined {
-  const { db } = openOpenClawStateDatabase({
-    env: { ...process.env, OPENCLAW_STATE_DIR: tmpDir },
+  const { db } = openEVEStateDatabase({
+    env: { ...process.env, EVE_STATE_DIR: tmpDir },
   });
   const row = db
     .prepare("SELECT status FROM delivery_queue_entries WHERE queue_name = 'outbound' AND id = ?")

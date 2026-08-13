@@ -1,7 +1,7 @@
 /** Provider plugin catalog loading for model-list output. */
 import { createHash } from "node:crypto";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { sortUniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
 import { loadAuthProfileStoreWithoutExternalProfiles } from "../../agents/auth-profiles/store.js";
 import {
   buildAgentModelCatalogCacheKey,
@@ -14,7 +14,7 @@ import {
   createProviderAuthResolver,
 } from "../../agents/models-config.providers.secrets.js";
 import type { ModelProviderConfig } from "../../config/types.models.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import type { Model } from "../../llm/types.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
@@ -65,7 +65,7 @@ function collectMatchingContributionOwners(
   index: PluginRegistrySnapshot,
   contribution: "providers" | "cliBackends",
   providerFilter: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options: { includeDisabled?: boolean } = {},
 ): string[] {
   if (contribution === "providers") {
@@ -90,7 +90,7 @@ function collectMatchingContributionOwners(
 }
 
 function resolveInstalledIndexPluginIdsForProviderFilter(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   providerFilter: string;
   registryIndex?: PluginRegistrySnapshot;
@@ -124,7 +124,7 @@ function resolveInstalledIndexPluginIdsForProviderFilter(params: {
 
 /** Resolves plugin ids that can provide catalog rows for a provider filter. */
 export async function resolveProviderCatalogPluginIdsForFilter(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   providerFilter: string;
   registryIndex?: PluginRegistrySnapshot;
@@ -165,7 +165,7 @@ export async function resolveProviderCatalogPluginIdsForFilter(params: {
 
 /** Returns true when a provider filter can be satisfied by a static bundled catalog. */
 export async function hasProviderStaticCatalogForFilter(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   providerFilter: string;
   registryIndex?: PluginRegistrySnapshot;
@@ -179,7 +179,7 @@ export async function hasProviderStaticCatalogForFilter(params: {
 }
 
 export async function hasProviderRuntimeCatalogForFilter(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   providerFilter: string;
   registryIndex?: PluginRegistrySnapshot;
@@ -195,7 +195,7 @@ export async function hasProviderRuntimeCatalogForFilter(params: {
 
 async function hasProviderCatalogForFilter(
   params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     env?: NodeJS.ProcessEnv;
     providerFilter: string;
     registryIndex?: PluginRegistrySnapshot;
@@ -265,7 +265,7 @@ function modelFromProviderCatalog(params: {
 
 async function runProviderCatalogForList(params: {
   provider: ProviderPlugin;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir: string;
   env: NodeJS.ProcessEnv;
   staticOnly?: boolean;
@@ -324,7 +324,7 @@ async function runProviderCatalogForList(params: {
 
 /** Loads model rows from provider static/runtime catalog hooks for model-list output. */
 export async function loadProviderCatalogModelsForList(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir: string;
   env?: NodeJS.ProcessEnv;
   providerFilter?: string;

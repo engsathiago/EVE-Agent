@@ -1,17 +1,17 @@
 // Feishu plugin module implements reply dispatcher behavior.
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import { logTypingFailure } from "openclaw/plugin-sdk/channel-feedback";
-import { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+import { formatReasoningMessage } from "eve-agent/plugin-sdk/agent-runtime";
+import { logTypingFailure } from "eve-agent/plugin-sdk/channel-feedback";
+import { createChannelMessageReplyPipeline } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   formatChannelProgressDraftLineForEntry,
   isChannelProgressDraftWorkToolName,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import {
   resolveSendableOutboundReplyParts,
   resolveTextChunksWithFallback,
   sendMediaWithLeadingCaption,
-} from "openclaw/plugin-sdk/reply-payload";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/reply-payload";
+import { stripReasoningTagsFromText } from "eve-agent/plugin-sdk/text-chunking";
 import { resolveFeishuRuntimeAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
 import { sendMediaFeishu, shouldSuppressFeishuTextForVoiceMedia } from "./media.js";

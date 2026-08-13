@@ -16,29 +16,29 @@ import {
 
 const command = process.argv[2];
 const allowBetaCompatDiagnostics =
-  process.env.OPENCLAW_CODEX_NPM_PLUGIN_ALLOW_BETA_COMPAT_DIAGNOSTICS === "1";
+  process.env.EVE_CODEX_NPM_PLUGIN_ALLOW_BETA_COMPAT_DIAGNOSTICS === "1";
 const MAX_TEXT_FILE_BYTES = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_ASSERT_MAX_TEXT_FILE_BYTES",
+  "EVE_CODEX_NPM_PLUGIN_ASSERT_MAX_TEXT_FILE_BYTES",
   1024 * 1024,
 );
 const MAX_ERROR_TAIL_BYTES = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_ASSERT_MAX_ERROR_TAIL_BYTES",
+  "EVE_CODEX_NPM_PLUGIN_ASSERT_MAX_ERROR_TAIL_BYTES",
   64 * 1024,
 );
 const MAX_TRANSCRIPT_FILES = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_FILES",
+  "EVE_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_FILES",
   64,
 );
 const MAX_TRANSCRIPT_WALK_ENTRIES = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_WALK_ENTRIES",
+  "EVE_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_WALK_ENTRIES",
   4096,
 );
 const MAX_TRANSCRIPT_SCAN_BYTES = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_SCAN_BYTES",
+  "EVE_CODEX_NPM_PLUGIN_ASSERT_MAX_TRANSCRIPT_SCAN_BYTES",
   2 * 1024 * 1024,
 );
 const AGENT_TURN_TIMEOUT_SECONDS = readPositiveIntEnv(
-  "OPENCLAW_CODEX_NPM_PLUGIN_AGENT_TIMEOUT_SECONDS",
+  "EVE_CODEX_NPM_PLUGIN_AGENT_TIMEOUT_SECONDS",
   420,
 );
 
@@ -163,9 +163,9 @@ function normalizePluginSpec(spec) {
 }
 
 function assertPlugin() {
-  const spec = process.argv[3] || "npm:@openclaw/codex";
-  const list = readJson("/tmp/openclaw-codex-plugins-list.json");
-  const inspect = readJson("/tmp/openclaw-codex-plugin-inspect.json");
+  const spec = process.argv[3] || "npm:@eve/codex";
+  const list = readJson("/tmp/eve-codex-plugins-list.json");
+  const inspect = readJson("/tmp/eve-codex-plugin-inspect.json");
   const plugin = (list.plugins || []).find((entry) => entry.id === "codex");
   if (!plugin) {
     throw new Error("codex plugin not found in plugins list --json output");
@@ -245,7 +245,7 @@ function codexInstallPath() {
 }
 
 function codexNpmProjectRoot() {
-  return npmProjectRootForInstalledPackage(codexInstallPath(), "@openclaw/codex");
+  return npmProjectRootForInstalledPackage(codexInstallPath(), "@eve/codex");
 }
 
 function findCodexPackageJson(packageName) {
@@ -258,19 +258,19 @@ function assertNpmDeps() {
   const installPath = codexInstallPath();
   const pluginPackageJson = path.join(installPath, "package.json");
   if (!fs.existsSync(pluginPackageJson)) {
-    throw new Error(`missing npm-installed @openclaw/codex package.json: ${pluginPackageJson}`);
+    throw new Error(`missing npm-installed @eve/codex package.json: ${pluginPackageJson}`);
   }
   assertPathInside(npmRoot, installPath, "codex plugin install path");
   assertPathInside(npmRoot, pluginPackageJson, "codex plugin package");
 
   const pluginPackage = readJson(pluginPackageJson);
-  if (pluginPackage.name !== "@openclaw/codex") {
+  if (pluginPackage.name !== "@eve/codex") {
     throw new Error(`unexpected codex package name: ${pluginPackage.name}`);
   }
 
   const openAiCodexPackageJson = findCodexPackageJson("@openai/codex");
   if (!openAiCodexPackageJson) {
-    throw new Error("missing @openai/codex dependency under .openclaw/npm");
+    throw new Error("missing @openai/codex dependency under .eve/npm");
   }
   assertPathInside(npmRoot, openAiCodexPackageJson, "@openai/codex dependency");
 
@@ -317,7 +317,7 @@ function printCodexBin() {
 
 function assertPreflight() {
   const marker = process.argv[3];
-  const output = readTextFileBounded("/tmp/openclaw-codex-preflight.log", "Codex preflight log");
+  const output = readTextFileBounded("/tmp/eve-codex-preflight.log", "Codex preflight log");
   if (!output.includes(marker)) {
     throw new Error(`Codex CLI preflight did not contain ${marker}:\n${output}`);
   }
@@ -385,13 +385,13 @@ function assertAgentTurn() {
   const marker = process.argv[3];
   const sessionId = process.argv[4];
   const modelRef = process.argv[5];
-  const stdout = readTextFileBounded("/tmp/openclaw-codex-agent.json", "OpenClaw agent JSON");
-  const stderr = readTextFileTail("/tmp/openclaw-codex-agent.err", "OpenClaw agent stderr");
+  const stdout = readTextFileBounded("/tmp/eve-codex-agent.json", "EVE agent JSON");
+  const stderr = readTextFileTail("/tmp/eve-codex-agent.err", "EVE agent stderr");
   const response = JSON.parse(stdout);
   const text = extractAgentReplyTexts(JSON.stringify(response)).join("\n");
   if (!text.includes(marker)) {
     throw new Error(
-      `OpenClaw agent reply did not contain ${marker}:\nstdout=${stdout}\nstderr=${stderr}`,
+      `EVE agent reply did not contain ${marker}:\nstdout=${stdout}\nstderr=${stderr}`,
     );
   }
   const expectedProvider = modelRef.split("/")[0] || "codex";
@@ -416,7 +416,7 @@ function assertAgentTurn() {
     throw new Error(`unexpected session model override: ${entry.modelOverride}`);
   }
   if (typeof entry.sessionFile !== "string" || !fs.existsSync(entry.sessionFile)) {
-    throw new Error(`missing OpenClaw session file: ${entry.sessionFile}`);
+    throw new Error(`missing EVE session file: ${entry.sessionFile}`);
   }
 
   const bindingPath = `${entry.sessionFile}.codex-app-server.json`;
@@ -458,7 +458,7 @@ function assertUninstalled() {
       `codex install record still exists after uninstall: ${JSON.stringify(records.codex)}`,
     );
   }
-  const list = readJson("/tmp/openclaw-codex-plugins-list-after-uninstall.json");
+  const list = readJson("/tmp/eve-codex-plugins-list-after-uninstall.json");
   const plugin = (list.plugins || []).find((entry) => entry.id === "codex");
   if (plugin?.status === "loaded" || plugin?.enabled === true) {
     throw new Error(`codex plugin still loaded/enabled after uninstall: ${JSON.stringify(plugin)}`);
@@ -476,18 +476,18 @@ function assertAgentError() {
   const status = Number(process.argv[3]);
   if (!Number.isInteger(status) || status === 0) {
     throw new Error(
-      `expected OpenClaw agent to fail after Codex uninstall, got status ${process.argv[3]}`,
+      `expected EVE agent to fail after Codex uninstall, got status ${process.argv[3]}`,
     );
   }
-  const stdout = fs.existsSync("/tmp/openclaw-codex-agent-after-uninstall.json")
+  const stdout = fs.existsSync("/tmp/eve-codex-agent-after-uninstall.json")
     ? readTextFileTail(
-        "/tmp/openclaw-codex-agent-after-uninstall.json",
+        "/tmp/eve-codex-agent-after-uninstall.json",
         "post-uninstall agent stdout",
       )
     : "";
-  const stderr = fs.existsSync("/tmp/openclaw-codex-agent-after-uninstall.err")
+  const stderr = fs.existsSync("/tmp/eve-codex-agent-after-uninstall.err")
     ? readTextFileTail(
-        "/tmp/openclaw-codex-agent-after-uninstall.err",
+        "/tmp/eve-codex-agent-after-uninstall.err",
         "post-uninstall agent stderr",
       )
     : "";

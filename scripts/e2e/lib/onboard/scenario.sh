@@ -2,37 +2,37 @@
 set -euo pipefail
 trap "" PIPE
 export TERM=xterm-256color
-source scripts/lib/openclaw-e2e-instance.sh
-OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY="${OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY:-0}"
-if [ "$OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
-  openclaw_e2e_eval_test_state_from_b64 "${OPENCLAW_TEST_STATE_FUNCTION_B64:?missing OPENCLAW_TEST_STATE_FUNCTION_B64}"
+source scripts/lib/eve-e2e-instance.sh
+EVE_ONBOARD_SCENARIO_SOURCE_ONLY="${EVE_ONBOARD_SCENARIO_SOURCE_ONLY:-0}"
+if [ "$EVE_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
+  eve_e2e_eval_test_state_from_b64 "${EVE_TEST_STATE_FUNCTION_B64:?missing EVE_TEST_STATE_FUNCTION_B64}"
 fi
 ONBOARD_FLAGS="${ONBOARD_FLAGS:---flow quickstart --auth-choice skip --skip-channels --skip-skills --skip-daemon --skip-ui}"
-if [ -z "${OPENCLAW_ENTRY:-}" ] && [ "$OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
-  OPENCLAW_ENTRY="$(openclaw_e2e_resolve_entrypoint)"
+if [ -z "${EVE_ENTRY:-}" ] && [ "$EVE_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
+  EVE_ENTRY="$(eve_e2e_resolve_entrypoint)"
 fi
-export OPENCLAW_ENTRY
-ONBOARD_TMP_ROOT="${OPENCLAW_ONBOARD_E2E_TMPDIR:-${TMPDIR:-/tmp}}"
+export EVE_ENTRY
+ONBOARD_TMP_ROOT="${EVE_ONBOARD_E2E_TMPDIR:-${TMPDIR:-/tmp}}"
 ONBOARD_TMP_ROOT="${ONBOARD_TMP_ROOT%/}"
 [ -n "$ONBOARD_TMP_ROOT" ] || ONBOARD_TMP_ROOT="/tmp"
 mkdir -p "$ONBOARD_TMP_ROOT"
-ONBOARD_TMP_DIR="$(mktemp -d "$ONBOARD_TMP_ROOT/openclaw-onboard.XXXXXX")"
-OPENCLAW_E2E_LOG_DIR="$ONBOARD_TMP_DIR/logs"
+ONBOARD_TMP_DIR="$(mktemp -d "$ONBOARD_TMP_ROOT/eve-onboard.XXXXXX")"
+EVE_E2E_LOG_DIR="$ONBOARD_TMP_DIR/logs"
 GATEWAY_LOG_PATH="$ONBOARD_TMP_DIR/gateway-e2e.log"
-export OPENCLAW_E2E_LOG_DIR
+export EVE_E2E_LOG_DIR
 export GATEWAY_LOG_PATH
-mkdir -p "$OPENCLAW_E2E_LOG_DIR"
+mkdir -p "$EVE_E2E_LOG_DIR"
 cleanup_onboard_artifacts() {
-  openclaw_e2e_stop_process "${GATEWAY_PID:-}"
+  eve_e2e_stop_process "${GATEWAY_PID:-}"
   rm -rf "$ONBOARD_TMP_DIR"
 }
-if [ "$OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
+if [ "$EVE_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
   trap cleanup_onboard_artifacts EXIT
 fi
 
 # Provide a minimal trash shim to avoid noisy "missing trash" logs in containers.
-if [ "$OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
-  openclaw_e2e_install_trash_shim
+if [ "$EVE_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
+  eve_e2e_install_trash_shim
 fi
 
 send() {
@@ -73,16 +73,16 @@ wait_for_log() {
 }
 
 start_gateway() {
-  GATEWAY_PID="$(openclaw_e2e_start_gateway "$OPENCLAW_ENTRY" 18789 "$GATEWAY_LOG_PATH")"
+  GATEWAY_PID="$(eve_e2e_start_gateway "$EVE_ENTRY" 18789 "$GATEWAY_LOG_PATH")"
 }
 
 wait_for_gateway() {
   local wait_attempts
-  wait_attempts="$(openclaw_e2e_read_positive_int_env OPENCLAW_ONBOARD_GATEWAY_WAIT_ATTEMPTS 20)" || return $?
-  local wait_interval_s="${OPENCLAW_ONBOARD_GATEWAY_WAIT_INTERVAL_S:-1}"
+  wait_attempts="$(eve_e2e_read_positive_int_env EVE_ONBOARD_GATEWAY_WAIT_ATTEMPTS 20)" || return $?
+  local wait_interval_s="${EVE_ONBOARD_GATEWAY_WAIT_INTERVAL_S:-1}"
   local saw_listening_log="false"
   for _ in $(seq 1 "$wait_attempts"); do
-    if openclaw_e2e_probe_tcp 127.0.0.1 18789 500 >/dev/null 2>&1; then
+    if eve_e2e_probe_tcp 127.0.0.1 18789 500 >/dev/null 2>&1; then
       return 0
     fi
     if [ -f "$GATEWAY_LOG_PATH" ] && grep -E -q "listening on ws://[^ ]+:18789" "$GATEWAY_LOG_PATH"; then
@@ -99,12 +99,12 @@ wait_for_gateway() {
 }
 
 stop_gateway() {
-  openclaw_e2e_stop_process "$1"
+  eve_e2e_stop_process "$1"
 }
 
 cleanup_wizard_case() {
   exec 3>&- 2>/dev/null || true
-  openclaw_e2e_stop_process "${wizard_pid:-}"
+  eve_e2e_stop_process "${wizard_pid:-}"
   stop_gateway "${gw_pid:-}"
   rm -rf "${input_fifo_dir:-}"
 }
@@ -123,7 +123,7 @@ run_wizard_cmd() {
   local wizard_status=0
 
   echo "== Wizard case: $case_name =="
-  set_isolated_openclaw_env "$state_ref"
+  set_isolated_eve_env "$state_ref"
 
   input_fifo_dir="$(mktemp -d "$ONBOARD_TMP_DIR/${case_name}.fifo.XXXXXX")"
   input_fifo="$input_fifo_dir/stdin.fifo"
@@ -131,11 +131,11 @@ run_wizard_cmd() {
     rm -rf "$input_fifo_dir"
     return 1
   fi
-  local log_path="$OPENCLAW_E2E_LOG_DIR/${case_name}.log"
+  local log_path="$EVE_E2E_LOG_DIR/${case_name}.log"
   WIZARD_LOG_PATH="$log_path"
   export WIZARD_LOG_PATH
   # Run under script to keep an interactive TTY for clack prompts.
-  openclaw_e2e_run_script_with_pty "$command" "$log_path" <"$input_fifo" >/dev/null 2>&1 &
+  eve_e2e_run_script_with_pty "$command" "$log_path" <"$input_fifo" >/dev/null 2>&1 &
   wizard_pid=$!
   if ! exec 3>"$input_fifo"; then
     cleanup_wizard_case
@@ -184,19 +184,19 @@ run_wizard() {
   local validate_fn="${4:-}"
 
   # Default onboarding command wrapper.
-  run_wizard_cmd "$case_name" "$state_ref" "node \"$OPENCLAW_ENTRY\" onboard $ONBOARD_FLAGS" "$send_fn" true "$validate_fn"
+  run_wizard_cmd "$case_name" "$state_ref" "node \"$EVE_ENTRY\" onboard $ONBOARD_FLAGS" "$send_fn" true "$validate_fn"
 }
 
 assert_onboard_config() {
   local scenario="$1"
   shift
-  openclaw_e2e_assert_file "$OPENCLAW_CONFIG_PATH"
-  node scripts/e2e/lib/onboard/assert-config.mjs "$scenario" "$OPENCLAW_CONFIG_PATH" "$@"
+  eve_e2e_assert_file "$EVE_CONFIG_PATH"
+  node scripts/e2e/lib/onboard/assert-config.mjs "$scenario" "$EVE_CONFIG_PATH" "$@"
 }
 
-set_isolated_openclaw_env() {
+set_isolated_eve_env() {
   local state_ref="$1"
-  openclaw_test_state_create "$state_ref" empty
+  eve_test_state_create "$state_ref" empty
 }
 
 select_skip_hooks() {
@@ -247,8 +247,8 @@ send_skills_flow() {
 }
 
 run_case_local_basic() {
-  set_isolated_openclaw_env local-basic
-  openclaw_e2e_run_logged local-basic node "$OPENCLAW_ENTRY" onboard \
+  set_isolated_eve_env local-basic
+  eve_e2e_run_logged local-basic node "$EVE_ENTRY" onboard \
     --non-interactive \
     --accept-risk \
     --flow quickstart \
@@ -259,15 +259,15 @@ run_case_local_basic() {
     --skip-ui \
     --skip-health
 
-  validate_local_basic_log "$OPENCLAW_E2E_LAST_LOG_PATH"
+  validate_local_basic_log "$EVE_E2E_LAST_LOG_PATH"
 
   # Assert config + workspace scaffolding.
-  workspace_dir="$OPENCLAW_STATE_DIR/workspace"
-  sessions_dir="$OPENCLAW_STATE_DIR/agents/main/sessions"
+  workspace_dir="$EVE_STATE_DIR/workspace"
+  sessions_dir="$EVE_STATE_DIR/agents/main/sessions"
 
-  openclaw_e2e_assert_dir "$sessions_dir"
+  eve_e2e_assert_dir "$sessions_dir"
   for file in AGENTS.md BOOTSTRAP.md IDENTITY.md SOUL.md TOOLS.md USER.md; do
-    openclaw_e2e_assert_file "$workspace_dir/$file"
+    eve_e2e_assert_file "$workspace_dir/$file"
   done
 
   assert_onboard_config local-basic "$workspace_dir"
@@ -275,9 +275,9 @@ run_case_local_basic() {
 }
 
 run_case_remote_non_interactive() {
-  set_isolated_openclaw_env remote-non-interactive
+  set_isolated_eve_env remote-non-interactive
   # Smoke test non-interactive remote config write.
-  openclaw_e2e_run_logged remote-non-interactive node "$OPENCLAW_ENTRY" onboard --non-interactive --accept-risk \
+  eve_e2e_run_logged remote-non-interactive node "$EVE_ENTRY" onboard --non-interactive --accept-risk \
     --mode remote \
     --remote-url ws://gateway.local:18789 \
     --remote-token remote-token \
@@ -288,10 +288,10 @@ run_case_remote_non_interactive() {
 }
 
 run_case_reset() {
-  set_isolated_openclaw_env reset-config
-  node scripts/e2e/lib/onboard/write-config.mjs reset "$OPENCLAW_CONFIG_PATH"
+  set_isolated_eve_env reset-config
+  node scripts/e2e/lib/onboard/write-config.mjs reset "$EVE_CONFIG_PATH"
 
-  openclaw_e2e_run_logged reset-config node "$OPENCLAW_ENTRY" onboard \
+  eve_e2e_run_logged reset-config node "$EVE_ENTRY" onboard \
     --non-interactive \
     --accept-risk \
     --flow quickstart \
@@ -308,28 +308,28 @@ run_case_reset() {
 
 run_case_channels() {
   # Channels-only configure flow.
-  run_wizard_cmd channels channels "node \"$OPENCLAW_ENTRY\" configure --section channels" send_channels_flow
+  run_wizard_cmd channels channels "node \"$EVE_ENTRY\" configure --section channels" send_channels_flow
 
   assert_onboard_config channels
 }
 
 run_case_skills() {
   local home_dir
-  set_isolated_openclaw_env skills
+  set_isolated_eve_env skills
   home_dir="$HOME"
-  node scripts/e2e/lib/onboard/write-config.mjs skills "$OPENCLAW_CONFIG_PATH"
+  node scripts/e2e/lib/onboard/write-config.mjs skills "$EVE_CONFIG_PATH"
 
-  run_wizard_cmd skills "$home_dir" "node \"$OPENCLAW_ENTRY\" configure --section skills" send_skills_flow
+  run_wizard_cmd skills "$home_dir" "node \"$EVE_ENTRY\" configure --section skills" send_skills_flow
 
   assert_onboard_config skills
 }
 
 validate_local_basic_log() {
   local log_path="$1"
-  openclaw_e2e_assert_log_not_contains "$log_path" "systemctl --user unavailable"
+  eve_e2e_assert_log_not_contains "$log_path" "systemctl --user unavailable"
 }
 
-if [ "$OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
+if [ "$EVE_ONBOARD_SCENARIO_SOURCE_ONLY" != "1" ]; then
   run_case_local_basic
   run_case_remote_non_interactive
   run_case_reset

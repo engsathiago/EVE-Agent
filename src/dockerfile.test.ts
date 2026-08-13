@@ -2,7 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BUNDLED_PLUGIN_ROOT_DIR } from "openclaw/plugin-sdk/test-fixtures";
+import { BUNDLED_PLUGIN_ROOT_DIR } from "eve-agent/plugin-sdk/test-fixtures";
 import { describe, expect, it } from "vitest";
 import YAML from "yaml";
 
@@ -31,28 +31,28 @@ describe("Dockerfile", () => {
   it("uses full bookworm for build stages and slim bookworm for runtime", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     expect(dockerfile).toContain(
-      'ARG OPENCLAW_NODE_BOOKWORM_IMAGE="docker.io/library/node:24-bookworm@sha256:8530f76a96d88820d288761f022e318970dda93d01536919fbc16076b7983e63"',
+      'ARG EVE_NODE_BOOKWORM_IMAGE="docker.io/library/node:24-bookworm@sha256:8530f76a96d88820d288761f022e318970dda93d01536919fbc16076b7983e63"',
     );
     expect(dockerfile).toContain(
-      'ARG OPENCLAW_NODE_BOOKWORM_SLIM_IMAGE="docker.io/library/node:24-bookworm-slim@sha256:242549cd46785b480c832479a730f4f2a20865d61ea2e404fdb2a5c3d3b73ecf"',
+      'ARG EVE_NODE_BOOKWORM_SLIM_IMAGE="docker.io/library/node:24-bookworm-slim@sha256:242549cd46785b480c832479a730f4f2a20865d61ea2e404fdb2a5c3d3b73ecf"',
     );
     expect(dockerfile).toContain(
-      'ARG OPENCLAW_BUN_IMAGE="docker.io/oven/bun:1.3.13@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea6262ae30e"',
+      'ARG EVE_BUN_IMAGE="docker.io/oven/bun:1.3.13@sha256:87416c977a612a204eb54ab9f3927023c2a3c971f4f345a01da08ea6262ae30e"',
     );
-    expect(dockerfile).toContain("FROM ${OPENCLAW_NODE_BOOKWORM_IMAGE} AS workspace-deps");
-    expect(dockerfile).toContain("FROM ${OPENCLAW_NODE_BOOKWORM_IMAGE} AS build");
-    expect(dockerfile).toContain("FROM ${OPENCLAW_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime");
+    expect(dockerfile).toContain("FROM ${EVE_NODE_BOOKWORM_IMAGE} AS workspace-deps");
+    expect(dockerfile).toContain("FROM ${EVE_NODE_BOOKWORM_IMAGE} AS build");
+    expect(dockerfile).toContain("FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime");
     expect(dockerfile).toContain("FROM base-runtime");
     expect(dockerfile).toContain("current multi-arch manifest list entries");
     expect(dockerfile).not.toContain("current amd64 entry");
-    expect(dockerfile).not.toContain("OPENCLAW_VARIANT");
+    expect(dockerfile).not.toContain("EVE_VARIANT");
   });
 
   it("installs CA certificates in the slim runtime stage", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     const collapsed = collapseDockerContinuations(dockerfile);
     const runtimeIndex = collapsed.indexOf(
-      "FROM ${OPENCLAW_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
+      "FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
     );
     const caInstallIndex = collapsed.indexOf(
       "ca-certificates curl git hostname lsof openssl procps python3",
@@ -68,7 +68,7 @@ describe("Dockerfile", () => {
   it("installs python3 and tini in the slim runtime stage", async () => {
     const dockerfile = collapseDockerContinuations(await readFile(dockerfilePath, "utf8"));
     const runtimeIndex = dockerfile.indexOf(
-      "FROM ${OPENCLAW_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
+      "FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
     );
     const pythonInstallIndex = dockerfile.indexOf(
       "ca-certificates curl git hostname lsof openssl procps python3",
@@ -86,7 +86,7 @@ describe("Dockerfile", () => {
   it("installs optional browser dependencies after pnpm install", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     const installIndex = dockerfile.indexOf("pnpm install --frozen-lockfile");
-    const browserArgIndex = dockerfile.indexOf("ARG OPENCLAW_INSTALL_BROWSER");
+    const browserArgIndex = dockerfile.indexOf("ARG EVE_INSTALL_BROWSER");
 
     expect(installIndex).toBeGreaterThan(-1);
     expect(browserArgIndex).toBeGreaterThan(-1);
@@ -143,7 +143,7 @@ describe("Dockerfile", () => {
       "COPY --from=workspace-deps /out/packages/ ./packages/",
     );
     const extensionManifestIndex = dockerfile.indexOf(
-      "COPY --from=workspace-deps /out/${OPENCLAW_BUNDLED_PLUGIN_DIR}/ ./${OPENCLAW_BUNDLED_PLUGIN_DIR}/",
+      "COPY --from=workspace-deps /out/${EVE_BUNDLED_PLUGIN_DIR}/ ./${EVE_BUNDLED_PLUGIN_DIR}/",
     );
 
     expect(postinstallIndex).toBeGreaterThan(-1);
@@ -153,7 +153,7 @@ describe("Dockerfile", () => {
     expect(extensionManifestIndex).toBeGreaterThan(-1);
     expect(dockerfile).toContain("for manifest in /tmp/packages/*/package.json");
     expect(dockerfile).toContain(
-      `if [ -f "/tmp/\${OPENCLAW_BUNDLED_PLUGIN_DIR}/$ext/package.json" ]; then`,
+      `if [ -f "/tmp/\${EVE_BUNDLED_PLUGIN_DIR}/$ext/package.json" ]; then`,
     );
     expect(postinstallIndex).toBeLessThan(installIndex);
     expect(prepareIndex).toBeLessThan(installIndex);
@@ -196,11 +196,11 @@ describe("Dockerfile", () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     const collapsed = collapseDockerContinuations(dockerfile);
     const qaLabBuildBlock =
-      /RUN if printf '%s\\n' "\$OPENCLAW_EXTENSIONS" \| tr ',' ' ' \| tr ' ' '\\n' \| grep -qx 'qa-lab'; then\s+pnpm_config_verify_deps_before_run=false pnpm qa:lab:build &&\s+mkdir -p dist\/extensions\/qa-lab\/web &&\s+rm -rf dist\/extensions\/qa-lab\/web\/dist &&\s+cp -R extensions\/qa-lab\/web\/dist dist\/extensions\/qa-lab\/web\/dist;\s+fi/u;
+      /RUN if printf '%s\\n' "\$EVE_EXTENSIONS" \| tr ',' ' ' \| tr ' ' '\\n' \| grep -qx 'qa-lab'; then\s+pnpm_config_verify_deps_before_run=false pnpm qa:lab:build &&\s+mkdir -p dist\/extensions\/qa-lab\/web &&\s+rm -rf dist\/extensions\/qa-lab\/web\/dist &&\s+cp -R extensions\/qa-lab\/web\/dist dist\/extensions\/qa-lab\/web\/dist;\s+fi/u;
     const qaLabExtensionCheckIndex = collapsed.indexOf("grep -qx 'qa-lab'");
     const qaLabBuildBlockMatch = qaLabBuildBlock.exec(collapsed);
     const privateQaExportIndex = collapsed.indexOf(
-      "export OPENCLAW_BUILD_PRIVATE_QA=1 OPENCLAW_ENABLE_PRIVATE_QA_CLI=1",
+      "export EVE_BUILD_PRIVATE_QA=1 EVE_ENABLE_PRIVATE_QA_CLI=1",
     );
     const buildDockerIndex = collapsed.indexOf(
       "NODE_OPTIONS=--max-old-space-size=8192 pnpm_config_verify_deps_before_run=false pnpm build:docker",
@@ -235,28 +235,28 @@ describe("Dockerfile", () => {
   it("prunes runtime dependencies and omitted plugin packages after the build stage", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     expect(dockerfile).toContain("FROM build AS runtime-assets");
-    expect(dockerfile).toContain("ARG OPENCLAW_EXTENSIONS");
-    expect(dockerfile).toContain("ARG OPENCLAW_BUNDLED_PLUGIN_DIR");
+    expect(dockerfile).toContain("ARG EVE_EXTENSIONS");
+    expect(dockerfile).toContain("ARG EVE_BUNDLED_PLUGIN_DIR");
     expect(dockerfile).toContain(
       "Opt-in plugin dependencies at build time (space- or comma-separated directory names).",
     );
     expect(dockerfile).toContain(
-      'Example: docker build --build-arg OPENCLAW_EXTENSIONS="diagnostics-otel,matrix" .',
+      'Example: docker build --build-arg EVE_EXTENSIONS="diagnostics-otel,matrix" .',
     );
     expect(dockerfile).toContain(
-      "RUN --mount=type=cache,id=openclaw-pnpm-store,target=/root/.local/share/pnpm/store,sharing=locked \\",
+      "RUN --mount=type=cache,id=eve-pnpm-store,target=/root/.local/share/pnpm/store,sharing=locked \\",
     );
     expect(dockerfile).toContain("COPY --from=workspace-deps /out/packages/ ./packages/");
     expect(dockerfile).toContain(
-      "COPY --from=workspace-deps /out/${OPENCLAW_BUNDLED_PLUGIN_DIR}/ ./${OPENCLAW_BUNDLED_PLUGIN_DIR}/",
+      "COPY --from=workspace-deps /out/${EVE_BUNDLED_PLUGIN_DIR}/ ./${EVE_BUNDLED_PLUGIN_DIR}/",
     );
     expect(dockerfile).toContain(
-      'OPENCLAW_EXTENSIONS="$OPENCLAW_EXTENSIONS" OPENCLAW_BUNDLED_PLUGIN_DIR="$OPENCLAW_BUNDLED_PLUGIN_DIR" node scripts/prune-docker-plugin-dist.mjs',
+      'EVE_EXTENSIONS="$EVE_EXTENSIONS" EVE_BUNDLED_PLUGIN_DIR="$EVE_BUNDLED_PLUGIN_DIR" node scripts/prune-docker-plugin-dist.mjs',
     );
     expect(dockerfile).toContain("CI=true pnpm prune --prod \\");
     expect(dockerfile.indexOf("CI=true pnpm prune --prod \\")).toBeLessThan(
       dockerfile.indexOf(
-        'OPENCLAW_EXTENSIONS="$OPENCLAW_EXTENSIONS" OPENCLAW_BUNDLED_PLUGIN_DIR="$OPENCLAW_BUNDLED_PLUGIN_DIR" node scripts/prune-docker-plugin-dist.mjs',
+        'EVE_EXTENSIONS="$EVE_EXTENSIONS" EVE_BUNDLED_PLUGIN_DIR="$EVE_BUNDLED_PLUGIN_DIR" node scripts/prune-docker-plugin-dist.mjs',
       ),
     );
     expect(dockerfile).toContain("--config.offline=true");
@@ -320,10 +320,10 @@ describe("Dockerfile", () => {
 
   it("keeps the Codex plugin in official Docker release images", async () => {
     const workflow = await readFile(dockerReleaseWorkflowPath, "utf8");
-    const releaseKeepList = "OPENCLAW_EXTENSIONS=diagnostics-otel,codex";
+    const releaseKeepList = "EVE_EXTENSIONS=diagnostics-otel,codex";
 
     expect(workflow.match(new RegExp(releaseKeepList, "g"))).toHaveLength(4);
-    expect(workflow).not.toContain("OPENCLAW_EXTENSIONS=diagnostics-otel\n");
+    expect(workflow).not.toContain("EVE_EXTENSIONS=diagnostics-otel\n");
   });
 
   it("publishes official Docker browser images with baked Chromium", async () => {
@@ -331,7 +331,7 @@ describe("Dockerfile", () => {
 
     expect(workflow).toContain("Build and push amd64 browser image");
     expect(workflow).toContain("Build and push arm64 browser image");
-    expect(workflow).toContain("OPENCLAW_INSTALL_BROWSER=1");
+    expect(workflow).toContain("EVE_INSTALL_BROWSER=1");
     expect(workflow).toContain('${IMAGE}:${version}-browser"');
     expect(workflow).toContain('${IMAGE}:latest-browser"');
     expect(workflow).toContain('${IMAGE}:main-browser"');
@@ -340,7 +340,7 @@ describe("Dockerfile", () => {
     expect(workflow).toContain("Smoke test amd64 browser image");
     expect(workflow).toContain("Smoke test arm64 browser image");
     expect(workflow).toContain("chrome-headless-shell");
-    expect(workflow).toContain("grep -q '^ARG OPENCLAW_INSTALL_BROWSER' Dockerfile");
+    expect(workflow).toContain("grep -q '^ARG EVE_INSTALL_BROWSER' Dockerfile");
     expect(workflow).toContain("if: steps.tags.outputs.browser != ''");
     expect(workflow).toContain('git show "${SOURCE_REF}:Dockerfile"');
     expect(workflow).toContain('if [[ -n "${BROWSER_TAGS}" ]]; then');
@@ -353,7 +353,7 @@ describe("Dockerfile", () => {
     expect(workflow).toContain("Smoke test arm64 runtime workspace templates");
     expect(workflow).toContain("test -f /app/src/agents/templates/HEARTBEAT.md");
     expect(workflow).toContain('grep -F "Missing workspace template:"');
-    expect(workflow).toContain('test -f "${temp_root}/home/.openclaw/workspace/HEARTBEAT.md"');
+    expect(workflow).toContain('test -f "${temp_root}/home/.eve/workspace/HEARTBEAT.md"');
   });
 
   it("keeps only the runtime-assets prune proof in full release validation", async () => {
@@ -364,26 +364,26 @@ describe("Dockerfile", () => {
     expect(workflow).not.toContain("Build and smoke test final Docker runtime image");
     expect(workflow).not.toContain("test -f /app/src/agents/templates/HEARTBEAT.md");
     expect(workflow).not.toContain('grep -F "Missing workspace template:"');
-    expect(workflow).not.toContain('test -f "${temp_root}/home/.openclaw/workspace/HEARTBEAT.md"');
+    expect(workflow).not.toContain('test -f "${temp_root}/home/.eve/workspace/HEARTBEAT.md"');
     expect(workflow).not.toContain("scripts/docker/runtime-workspace-template-smoke.sh");
   });
 
   it("does not override bundled plugin discovery in runtime images", async () => {
     const dockerfile = collapseDockerContinuations(await readFile(dockerfilePath, "utf8"));
-    expect(dockerfile).toContain(`ARG OPENCLAW_BUNDLED_PLUGIN_DIR=${BUNDLED_PLUGIN_ROOT_DIR}`);
-    expect(dockerfile).not.toMatch(/^\s*ENV\b[^\n]*\bOPENCLAW_BUNDLED_PLUGINS_DIR\b/m);
+    expect(dockerfile).toContain(`ARG EVE_BUNDLED_PLUGIN_DIR=${BUNDLED_PLUGIN_ROOT_DIR}`);
+    expect(dockerfile).not.toMatch(/^\s*ENV\b[^\n]*\bEVE_BUNDLED_PLUGINS_DIR\b/m);
   });
 
   it("normalizes plugin and agent paths permissions in image layers", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     expect(dockerfile).toContain(
-      "RUN for dir in /app/${OPENCLAW_BUNDLED_PLUGIN_DIR} /app/.agent /app/.agents; do \\",
+      "RUN for dir in /app/${EVE_BUNDLED_PLUGIN_DIR} /app/.agent /app/.agents; do \\",
     );
     expect(dockerfile).toContain('find "$dir" -type d -exec chmod 755 {} +');
     expect(dockerfile).toContain('find "$dir" -type f -exec chmod 644 {} +');
   });
 
-  it("Docker GPG fingerprint awk uses correct quoting for OPENCLAW_SANDBOX=1 build", async () => {
+  it("Docker GPG fingerprint awk uses correct quoting for EVE_SANDBOX=1 build", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     expect(dockerfile).toContain('== "fpr" {');
     expect(dockerfile).not.toContain('\\"fpr\\"');
@@ -430,7 +430,7 @@ describe("Dockerfile", () => {
 
     expect(runtimeStageIndex).toBeGreaterThan(-1);
     // Regression: /home/node/.config parent must be created with node ownership
-    // before the leaf .config/openclaw dir (issue #85968).
+    // before the leaf .config/eve dir (issue #85968).
     expect(parentConfigDirIndex).toBeGreaterThan(-1);
     expect(stateDirIndex).toBeGreaterThan(-1);
     expect(userIndex).toBeGreaterThan(-1);
@@ -438,21 +438,21 @@ describe("Dockerfile", () => {
     expect(parentConfigDirIndex).toBeLessThan(stateDirIndex);
     expect(stateDirIndex).toBeGreaterThan(runtimeStageIndex);
     expect(stateDirIndex).toBeLessThan(userIndex);
-    expect(dockerfile).not.toContain("mkdir -p /home/node/.openclaw");
-    expect(dockerfile).toContain("/home/node/.openclaw/workspace");
-    expect(dockerfile).toContain("/home/node/.config/openclaw");
+    expect(dockerfile).not.toContain("mkdir -p /home/node/.eve");
+    expect(dockerfile).toContain("/home/node/.eve/workspace");
+    expect(dockerfile).toContain("/home/node/.config/eve");
     expect(dockerfile).toContain(
-      "stat -c '%U:%G %a' /home/node/.openclaw | grep -qx 'node:node 700'",
+      "stat -c '%U:%G %a' /home/node/.eve | grep -qx 'node:node 700'",
     );
     expect(dockerfile).toContain(
-      "stat -c '%U:%G %a' /home/node/.openclaw/workspace | grep -qx 'node:node 700'",
+      "stat -c '%U:%G %a' /home/node/.eve/workspace | grep -qx 'node:node 700'",
     );
     // Regression: assert parent /home/node/.config is also node-owned (issue #85968).
     expect(dockerfile).toContain(
       "stat -c '%U:%G %a' /home/node/.config | grep -qx 'node:node 755'",
     );
     expect(dockerfile).toContain(
-      "stat -c '%U:%G %a' /home/node/.config/openclaw | grep -qx 'node:node 700'",
+      "stat -c '%U:%G %a' /home/node/.config/eve | grep -qx 'node:node 700'",
     );
   });
 });

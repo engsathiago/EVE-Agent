@@ -7,7 +7,7 @@ import {
   resolveClaudeModelIdentity,
   supportsClaudeAdaptiveThinking,
   supportsClaudeNativeXhighEffort,
-} from "@openclaw/llm-core";
+} from "@eve/llm-core";
 import type { ProviderThinkingProfile } from "./provider-thinking.types.js";
 
 const BASE_CLAUDE_THINKING_LEVELS = [

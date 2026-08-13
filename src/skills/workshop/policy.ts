@@ -1,6 +1,6 @@
 // Workshop policy helpers validate generated skill drafts against workspace policy.
-import { asNullableRecord } from "@openclaw/normalization-core/record-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { asNullableRecord } from "@eve/normalization-core/record-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { PluginHookBeforeToolCallResult } from "../../plugins/hook-before-tool-call-result.js";
 import { resolveSkillWorkshopConfig } from "./config.js";
 
@@ -47,7 +47,7 @@ function lifecycleApprovalText(action: SkillWorkshopLifecycleAction): {
 export function resolveSkillWorkshopToolApproval(params: {
   toolName: string;
   toolParams: unknown;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): PluginHookBeforeToolCallResult | undefined {
   if (params.toolName !== "skill_workshop") {
     return undefined;

@@ -2,8 +2,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
-import { configureSqliteConnectionPragmas } from "openclaw/plugin-sdk/plugin-state-runtime";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
+import { configureSqliteConnectionPragmas } from "eve-agent/plugin-sdk/plugin-state-runtime";
+import { resolveStateDir } from "eve-agent/plugin-sdk/state-paths";
 import type {
   PersistedWorkboardAttachment,
   PersistedWorkboardBoard,

@@ -1,9 +1,9 @@
 // Telegram plugin module implements reasoning lane coordinator behavior.
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { findCodeRegions, isInsideCode } from "openclaw/plugin-sdk/text-chunking";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
+import { formatReasoningMessage } from "eve-agent/plugin-sdk/agent-runtime";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { findCodeRegions, isInsideCode } from "eve-agent/plugin-sdk/text-chunking";
+import { stripReasoningTagsFromText } from "eve-agent/plugin-sdk/text-chunking";
 
 const REASONING_MESSAGE_RE = /^Thinking\.{0,3}\s*_/u;
 const LEGACY_REASONING_MESSAGE_PREFIX = "Reasoning:\n";

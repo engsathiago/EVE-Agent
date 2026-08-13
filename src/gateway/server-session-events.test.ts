@@ -13,7 +13,7 @@ vi.mock("./chat-display-projection.js", () => ({
   projectChatDisplayMessage: (message: unknown) => message,
 }));
 vi.mock("./session-utils.js", () => ({
-  attachOpenClawTranscriptMeta: (message: unknown) => message,
+  attachEVETranscriptMeta: (message: unknown) => message,
   loadGatewaySessionRow: () => sessionRow,
   loadSessionEntry: () => ({ entry: undefined, storePath: "" }),
   readSessionMessageCountAsync: vi.fn(),

@@ -1,5 +1,5 @@
 ---
-summary: "Adds DeepSeek model provider support to OpenClaw."
+summary: "Adds DeepSeek model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the deepseek plugin
 title: "DeepSeek plugin"
@@ -7,12 +7,12 @@ title: "DeepSeek plugin"
 
 # DeepSeek plugin
 
-Adds DeepSeek model provider support to OpenClaw.
+Adds DeepSeek model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/deepseek-provider`
-- Install route: npm; ClawHub: `clawhub:@openclaw/deepseek-provider`
+- Package: `@eve/deepseek-provider`
+- Install route: npm; ClawHub: `clawhub:@eve/deepseek-provider`
 
 ## Surface
 

@@ -6,7 +6,7 @@ Verified against Telegram Bot API 10.0, May 8 2026.
 
 ## Streaming
 
-- Do not reintroduce `sendMessageDraft` for answer streaming. Telegram drafts are ephemeral 30-second previews in private chats; final delivery still requires a separate `sendMessage`. OpenClaw uses `sendMessage` plus `editMessageText`, then finalizes in place so the user sees one persistent answer.
+- Do not reintroduce `sendMessageDraft` for answer streaming. Telegram drafts are ephemeral 30-second previews in private chats; final delivery still requires a separate `sendMessage`. EVE uses `sendMessage` plus `editMessageText`, then finalizes in place so the user sees one persistent answer.
 - Streaming owns one visible preview message. Edit it forward. Do not send an extra final bubble unless the final edit genuinely failed.
 - Keep the first-preview debounce. If a provider sends token-sized deltas, coalesce them into cumulative preview text instead of removing the debounce.
 - Respect Telegram limits in the Telegram layer. Text over 4096 chars chains into continuation messages. Polls keep the current Bot API 12-option cap.
@@ -20,7 +20,7 @@ Verified against Telegram Bot API 10.0, May 8 2026.
 
 ## Context And Authorization
 
-- Reply context comes from OpenClaw-observed messages. Bot API updates expose `reply_to_message`, but there is no arbitrary `getMessage(chat, id)` hydration path later.
+- Reply context comes from EVE-observed messages. Bot API updates expose `reply_to_message`, but there is no arbitrary `getMessage(chat, id)` hydration path later.
 - Current local chat context must outrank stale reply ancestry in the prompt. Old replied-to messages should not look like the active conversation.
 - Pairing is DM-only. Group and topic authorization need explicit config allowlists.
 - Telegram allowlists use numeric sender IDs. Usernames are optional, mutable, and not a reliable arbitrary-user lookup key in the Bot API.

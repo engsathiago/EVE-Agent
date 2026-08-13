@@ -6,7 +6,7 @@ import {
   finalizeDebugProxyCapture,
   getDebugProxyCaptureStore,
   initializeDebugProxyCapture,
-} from "openclaw/plugin-sdk/proxy-capture";
+} from "eve-agent/plugin-sdk/proxy-capture";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { installDebugProxyTestResetHooks } from "../test-support/debug-proxy-env-test-helpers.js";
 import { createStreamingErrorResponse } from "../test-support/streaming-error-response.js";
@@ -19,7 +19,7 @@ import {
   resolveOpenAITtsInstructions,
 } from "./tts.js";
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", () => ({
   fetchWithSsrFGuard: async ({
     url,
     init,
@@ -147,8 +147,8 @@ describe("openai tts", () => {
   });
 
   describe("openaiTTS diagnostics", () => {
-    it("adds OpenClaw attribution headers to native OpenAI speech requests", async () => {
-      vi.stubEnv("OPENCLAW_VERSION", "2026.3.22");
+    it("adds EVE attribution headers to native OpenAI speech requests", async () => {
+      vi.stubEnv("EVE_VERSION", "2026.3.22");
       const fetchMock = vi.fn(
         async (_url: string | URL, _init?: RequestInit) =>
           new Response(Buffer.from("audio-bytes"), { status: 200 }),
@@ -169,9 +169,9 @@ describe("openai tts", () => {
       const init = firstFetchInit(fetchMock);
       const headers = init?.headers as Record<string, string> | undefined;
       expect(url).toBe("https://api.openai.com/v1/audio/speech");
-      expect(headers?.originator).toBe("openclaw");
+      expect(headers?.originator).toBe("eve");
       expect(headers?.version).toBe("2026.3.22");
-      expect(headers?.["User-Agent"]).toBe("openclaw/2026.3.22");
+      expect(headers?.["User-Agent"]).toBe("eve/2026.3.22");
     });
 
     it("sends instructions to custom OpenAI-compatible endpoints", async () => {
@@ -377,9 +377,9 @@ describe("openai tts", () => {
     it("records TTS exchanges in debug proxy capture mode", async () => {
       const tempDir = mkdtempSync(path.join(os.tmpdir(), "openai-tts-capture-"));
       proxyReset.captureProxyEnv();
-      process.env.OPENCLAW_DEBUG_PROXY_ENABLED = "1";
-      process.env.OPENCLAW_STATE_DIR = tempDir;
-      process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = "tts-session";
+      process.env.EVE_DEBUG_PROXY_ENABLED = "1";
+      process.env.EVE_STATE_DIR = tempDir;
+      process.env.EVE_DEBUG_PROXY_SESSION_ID = "tts-session";
 
       globalThis.fetch = vi
         .fn()
@@ -392,8 +392,8 @@ describe("openai tts", () => {
         id: "tts-session",
         startedAt: Date.now(),
         mode: "test",
-        sourceScope: "openclaw",
-        sourceProcess: "openclaw",
+        sourceScope: "eve",
+        sourceProcess: "eve",
       });
 
       await openaiTTS({
@@ -420,9 +420,9 @@ describe("openai tts", () => {
     it("does not double-capture TTS exchanges when the global fetch patch is installed", async () => {
       const tempDir = mkdtempSync(path.join(os.tmpdir(), "openai-tts-patched-capture-"));
       proxyReset.captureProxyEnv();
-      process.env.OPENCLAW_DEBUG_PROXY_ENABLED = "1";
-      process.env.OPENCLAW_STATE_DIR = tempDir;
-      process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = "tts-patched-session";
+      process.env.EVE_DEBUG_PROXY_ENABLED = "1";
+      process.env.EVE_STATE_DIR = tempDir;
+      process.env.EVE_DEBUG_PROXY_SESSION_ID = "tts-patched-session";
 
       globalThis.fetch = vi
         .fn()

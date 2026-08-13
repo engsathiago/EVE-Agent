@@ -18,7 +18,7 @@ async function createFixtureRoot(): Promise<{
   inboundMediaDir: string;
   uploadsDir: string;
 }> {
-  const baseDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-browser-paths-"));
+  const baseDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-browser-paths-"));
   const uploadsDir = path.join(baseDir, "uploads");
   const inboundMediaDir = path.join(baseDir, "media", "inbound");
   await fs.mkdir(uploadsDir, { recursive: true });

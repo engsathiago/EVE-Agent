@@ -477,12 +477,12 @@ export function registerGatewayCli(program: Command) {
         "after",
         () =>
           `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-            ["openclaw gateway run", "Run the gateway in the foreground."],
-            ["openclaw gateway status", "Show service status plus connectivity/capability."],
-            ["openclaw gateway discover", "Find local and wide-area gateway beacons."],
-            ["openclaw gateway stability", "Show recent stability diagnostics."],
-            ["openclaw gateway call health", "Call a gateway RPC method directly."],
-          ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/gateway", "docs.openclaw.ai/cli/gateway")}\n`,
+            ["eve gateway run", "Run the gateway in the foreground."],
+            ["eve gateway status", "Show service status plus connectivity/capability."],
+            ["eve gateway discover", "Find local and wide-area gateway beacons."],
+            ["eve gateway stability", "Show recent stability diagnostics."],
+            ["eve gateway call health", "Call a gateway RPC method directly."],
+          ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/gateway", "docs.eve.ai/cli/gateway")}\n`,
       ),
   );
 

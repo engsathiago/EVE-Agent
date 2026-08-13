@@ -10,7 +10,7 @@ const DEFAULT_LIMIT = 500;
 const DEFAULT_MAX_BYTES = 250_000;
 const MAX_LIMIT = 5000;
 const MAX_BYTES = 1_000_000;
-const ROLLING_LOG_RE = /^openclaw-\d{4}-\d{2}-\d{2}\.log$/;
+const ROLLING_LOG_RE = /^eve-\d{4}-\d{2}-\d{2}\.log$/;
 
 /** Payload returned to log-tail callers with cursor and truncation metadata. */
 export type LogTailPayload = {

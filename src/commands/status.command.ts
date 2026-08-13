@@ -1,4 +1,4 @@
-// Main `openclaw status` command orchestrator.
+// Main `eve status` command orchestrator.
 // It routes all/json/deep modes, collects scan/runtime state, and delegates formatting to report builders.
 
 import {
@@ -91,7 +91,7 @@ export function resolvePairingRecoveryContext(params: {
   };
 }
 
-/** Runs `openclaw status`, including JSON/all routing and optional deep probes. */
+/** Runs `eve status`, including JSON/all routing and optional deep probes. */
 export async function statusCommand(
   opts: {
     json?: boolean;

@@ -1,5 +1,5 @@
 // Codex tests cover media understanding provider plugin behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildCodexMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import type { CodexAppServerClient } from "./src/app-server/client.js";
@@ -45,7 +45,7 @@ function threadStartResult() {
       updatedAt: 1,
       status: { type: "idle" },
       path: null,
-      cwd: "/tmp/openclaw-agent",
+      cwd: "/tmp/eve-agent",
       cliVersion: "0.125.0",
       source: "unknown",
       agentNickname: null,
@@ -57,7 +57,7 @@ function threadStartResult() {
     model: "gpt-5.4",
     modelProvider: "openai",
     serviceTier: null,
-    cwd: "/tmp/openclaw-agent",
+    cwd: "/tmp/eve-agent",
     instructionSources: [],
     approvalPolicy: "on-request",
     approvalsReviewer: "user",
@@ -215,7 +215,7 @@ describe("codex media understanding provider", () => {
       prompt: "Describe briefly.",
       timeoutMs: 30_000,
       cfg,
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(result).toEqual({ text: "A red square.", model: "gpt-5.4" });
@@ -227,19 +227,19 @@ describe("codex media understanding provider", () => {
     expect(clientFactory).toHaveBeenCalledWith(
       expect.any(Object),
       undefined,
-      "/tmp/openclaw-agent",
+      "/tmp/eve-agent",
       cfg,
       { timeoutMs: 30_000 },
     );
     expect(requests[1]?.params).toEqual({
       model: "gpt-5.4",
       modelProvider: "openai",
-      cwd: "/tmp/openclaw-agent",
+      cwd: "/tmp/eve-agent",
       approvalPolicy: "on-request",
       sandbox: "read-only",
-      serviceName: "OpenClaw",
+      serviceName: "EVE",
       developerInstructions:
-        "You are OpenClaw's bounded image-understanding worker. Describe only the provided image content. Do not call tools, edit files, or ask follow-up questions.",
+        "You are EVE's bounded image-understanding worker. Describe only the provided image content. Do not call tools, edit files, or ask follow-up questions.",
       config: {
         "features.apps": false,
         "features.code_mode": false,
@@ -262,7 +262,7 @@ describe("codex media understanding provider", () => {
         { type: "text", text: "Describe briefly.", text_elements: [] },
         { type: "image", url: "data:image/png;base64,aW1hZ2UtYnl0ZXM=" },
       ],
-      cwd: "/tmp/openclaw-agent",
+      cwd: "/tmp/eve-agent",
       approvalPolicy: "on-request",
       model: "gpt-5.4",
       effort: "low",
@@ -314,7 +314,7 @@ describe("codex media understanding provider", () => {
       model: "gpt-5.4",
       timeoutMs: 30_000,
       cfg: {},
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(clientFactory).toHaveBeenCalledWith(
@@ -323,12 +323,12 @@ describe("codex media understanding provider", () => {
         url: "ws://127.0.0.1:4501",
       }),
       undefined,
-      "/tmp/openclaw-agent",
+      "/tmp/eve-agent",
       {},
       { timeoutMs: 30_000 },
     );
-    expect(requests[1]?.params).toEqual(expect.objectContaining({ cwd: "/tmp/openclaw-agent" }));
-    expect(requests[2]?.params).toEqual(expect.objectContaining({ cwd: "/tmp/openclaw-agent" }));
+    expect(requests[1]?.params).toEqual(expect.objectContaining({ cwd: "/tmp/eve-agent" }));
+    expect(requests[2]?.params).toEqual(expect.objectContaining({ cwd: "/tmp/eve-agent" }));
   });
 
   it("passes the scoped auth store into isolated app-server startup", async () => {
@@ -357,7 +357,7 @@ describe("codex media understanding provider", () => {
       timeoutMs: 30_000,
       cfg: {},
       authStore,
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(sharedClientMocks.createIsolatedCodexAppServerClient).toHaveBeenCalledWith(
@@ -381,7 +381,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: MAX_TIMER_TIMEOUT_MS + 1,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       });
 
       expect(result?.text).toBe("A red square.");
@@ -410,7 +410,7 @@ describe("codex media understanding provider", () => {
       prompt: "Describe briefly.",
       timeoutMs: 30_000,
       cfg: {},
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(approvalResponses).toEqual([{ permissions: {}, scope: "turn" }]);
@@ -429,7 +429,7 @@ describe("codex media understanding provider", () => {
       prompt: "Describe briefly.",
       timeoutMs: 30_000,
       cfg: {},
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(result).toEqual({ text: "A blue circle.", model: "gpt-5.4" });
@@ -450,7 +450,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: 30_000,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       }),
     ).rejects.toThrow("Codex app-server model does not support images: gpt-5.4");
     expect(requests.map((entry) => entry.method)).toEqual(["model/list"]);
@@ -471,7 +471,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: 30_000,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       }),
     ).rejects.toThrow("vision unavailable");
   });
@@ -508,7 +508,7 @@ describe("codex media understanding provider", () => {
       model: "gpt-5.4",
       timeoutMs: 30_000,
       cfg: {},
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
     });
 
     expect(result).toEqual({
@@ -526,12 +526,12 @@ describe("codex media understanding provider", () => {
     expect(requests[1]?.params).toEqual({
       model: "gpt-5.4",
       modelProvider: "openai",
-      cwd: "/tmp/openclaw-agent",
+      cwd: "/tmp/eve-agent",
       approvalPolicy: "on-request",
       sandbox: "read-only",
-      serviceName: "OpenClaw",
+      serviceName: "EVE",
       developerInstructions:
-        "You are OpenClaw's bounded structured-extraction worker. Return only the requested extraction. Do not call tools, edit files, ask follow-up questions, or include secrets.",
+        "You are EVE's bounded structured-extraction worker. Return only the requested extraction. Do not call tools, edit files, ask follow-up questions, or include secrets.",
       config: {
         "features.apps": false,
         "features.code_mode": false,
@@ -561,7 +561,7 @@ describe("codex media understanding provider", () => {
     expect(turnParams?.threadId).toBe("thread-1");
     expect(turnParams?.approvalPolicy).toBe("on-request");
     expect(turnParams?.model).toBe("gpt-5.4");
-    expect(turnParams?.cwd).toBe("/tmp/openclaw-agent");
+    expect(turnParams?.cwd).toBe("/tmp/eve-agent");
     expect(turnParams?.effort).toBe("low");
     expect(turnParams?.input).toHaveLength(3);
     expect(turnParams?.input?.[0]?.type).toBe("text");
@@ -595,7 +595,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: 30_000,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       }),
     ).rejects.toThrow("Codex structured extraction requires at least one image input.");
     expect(requests).toEqual([]);
@@ -623,7 +623,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: 30_000,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       }),
     ).rejects.toThrow("Codex structured extraction returned invalid JSON.");
   });
@@ -659,7 +659,7 @@ describe("codex media understanding provider", () => {
         model: "gpt-5.4",
         timeoutMs: 30_000,
         cfg: {},
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
       }),
     ).rejects.toThrow("Codex structured extraction JSON did not match schema");
   });

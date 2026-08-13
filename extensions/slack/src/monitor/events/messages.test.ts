@@ -11,8 +11,8 @@ const { messageQueueMock, messageAllowMock, inboundInfoSpy } = vi.hoisted(() => 
   inboundInfoSpy: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/runtime-env")>();
+vi.mock("eve-agent/plugin-sdk/runtime-env", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/runtime-env")>();
   const makeLogger = () => {
     const logger = {
       subsystem: "test",
@@ -31,13 +31,13 @@ vi.mock("openclaw/plugin-sdk/runtime-env", async (importOriginal) => {
   return { ...actual, createSubsystemLogger: () => makeLogger() };
 });
 
-vi.mock("openclaw/plugin-sdk/system-event-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/system-event-runtime", () => ({
   enqueueSystemEvent: (...args: unknown[]) => messageQueueMock(...args),
 }));
-vi.mock("openclaw/plugin-sdk/system-event-runtime.js", () => ({
+vi.mock("eve-agent/plugin-sdk/system-event-runtime.js", () => ({
   enqueueSystemEvent: (...args: unknown[]) => messageQueueMock(...args),
 }));
-vi.mock("openclaw/plugin-sdk/conversation-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/conversation-runtime", () => ({
   readChannelAllowFromStore: (...args: unknown[]) => messageAllowMock(...args),
 }));
 

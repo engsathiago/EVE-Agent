@@ -6,7 +6,7 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   buildConfiguredAcpSessionKey,
   normalizeBindingConfig,
@@ -21,7 +21,7 @@ import {
   resolveAgentWorkspaceDir,
   resolveDefaultAgentId,
 } from "../../agents/agent-scope.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type {
   ConfiguredBindingRuleConfig,
   ConfiguredBindingTargetFactory,
@@ -29,7 +29,7 @@ import type {
 import type { ConfiguredBindingConsumer } from "./configured-binding-consumers.js";
 import type { ChannelConfiguredBindingConversationRef } from "./types.adapters.js";
 
-function resolveAgentRuntimeAcpDefaults(params: { cfg: OpenClawConfig; ownerAgentId: string }): {
+function resolveAgentRuntimeAcpDefaults(params: { cfg: EVEConfig; ownerAgentId: string }): {
   acpAgentId?: string;
   mode?: string;
   cwd?: string;
@@ -52,7 +52,7 @@ function resolveAgentRuntimeAcpDefaults(params: { cfg: OpenClawConfig; ownerAgen
 }
 
 function resolveConfiguredBindingWorkspaceCwd(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
 }): string | undefined {
   // Only bind cwd when the agent has an explicit workspace contract; otherwise let ACP choose
@@ -98,7 +98,7 @@ function buildConfiguredAcpSpec(params: {
 }
 
 function buildAcpTargetFactory(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   binding: ConfiguredBindingRuleConfig;
   channel: string;
   agentId: string;

@@ -1,9 +1,9 @@
 /** Migration provider context and report-directory helpers. */
 import path from "node:path";
-import { timestampMsToIsoFileStamp } from "@openclaw/normalization-core/number-coercion";
+import { timestampMsToIsoFileStamp } from "@eve/normalization-core/number-coercion";
 import { getRuntimeConfig } from "../../config/config.js";
 import { resolveStateDir } from "../../config/paths.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { MigrationProviderContext } from "../../plugins/types.js";
 import type { RuntimeEnv } from "../../runtime.js";
 
@@ -12,7 +12,7 @@ export function createMigrationLogger(runtime: RuntimeEnv, opts: { json?: boolea
   const info = opts.json ? runtime.error : runtime.log;
   return {
     debug: (message: string) => {
-      if (process.env.OPENCLAW_VERBOSE === "1") {
+      if (process.env.EVE_VERBOSE === "1") {
         info(message);
       }
     },
@@ -39,7 +39,7 @@ export function buildMigrationContext(params: {
   overwrite?: boolean;
   providerOptions?: Record<string, unknown>;
   backupPath?: string;
-  configOverride?: OpenClawConfig;
+  configOverride?: EVEConfig;
   runtime: RuntimeEnv;
   reportDir?: string;
   json?: boolean;

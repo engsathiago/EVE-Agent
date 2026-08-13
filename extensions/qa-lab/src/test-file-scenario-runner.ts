@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { resolvePositiveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { resolvePositiveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 import { assertQaSuiteArtifactWritten } from "./artifact-assertion.js";
 import { isRepoRootRelativeRef, toRepoRelativePath } from "./cli-paths.js";
 import {

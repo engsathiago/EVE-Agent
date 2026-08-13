@@ -32,7 +32,7 @@ const knownDeprecatedSurfaceMarkers = [
   {
     code: "legacy-extension-api-import",
     file: "src/extensionAPI.ts",
-    marker: "openclaw/extension-api is deprecated",
+    marker: "eve-agent/extension-api is deprecated",
   },
   {
     code: "memory-split-registration",
@@ -117,7 +117,7 @@ const knownDeprecatedSurfaceMarkers = [
   {
     code: "plugin-sdk-test-utils-alias",
     file: "src/plugin-sdk/test-utils.ts",
-    marker: "focused `openclaw/plugin-sdk/*` test subpaths",
+    marker: "focused `eve-agent/plugin-sdk/*` test subpaths",
   },
   {
     code: "plugin-install-config-ledger",
@@ -157,7 +157,7 @@ const knownDeprecatedSurfaceMarkers = [
   {
     code: "legacy-root-sdk-import",
     file: "src/plugin-sdk/compat.ts",
-    marker: "@deprecated Use `openclaw/plugin-sdk/channel-outbound`.",
+    marker: "@deprecated Use `eve-agent/plugin-sdk/channel-outbound`.",
   },
   {
     code: "legacy-deactivate-hook-alias",
@@ -212,7 +212,7 @@ const knownDeprecatedSurfaceMarkers = [
   {
     code: "channel-messaging-targets-subpath",
     file: "src/plugin-sdk/messaging-targets.ts",
-    marker: "openclaw/plugin-sdk/channel-targets",
+    marker: "eve-agent/plugin-sdk/channel-targets",
   },
   {
     code: "whatsapp-web-inbound-flat-message-aliases",

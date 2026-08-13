@@ -7,7 +7,7 @@ import {
   type MessagingTarget,
   type MessagingTargetKind,
   type MessagingTargetParseOptions,
-} from "openclaw/plugin-sdk/channel-targets";
+} from "eve-agent/plugin-sdk/channel-targets";
 
 export type SlackTargetKind = MessagingTargetKind;
 

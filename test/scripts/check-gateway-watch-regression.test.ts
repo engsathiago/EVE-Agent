@@ -170,7 +170,7 @@ describe("check-gateway-watch-regression", () => {
   });
 
   it("refreshes runtime postbuild stamps after build stamps", () => {
-    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-watch-stamps-"));
+    const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-watch-stamps-"));
     try {
       fs.mkdirSync(path.join(rootDir, ".git"), { recursive: true });
       writeBuildAndRuntimePostBuildStamps({ cwd: rootDir });
@@ -222,7 +222,7 @@ describe("check-gateway-watch-regression", () => {
   });
 
   it("removes the isolated watch home after spawn failures", async () => {
-    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gateway-watch-output-"));
+    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-watch-output-"));
     const child = new EventEmitter() as EventEmitter & {
       stderr: EventEmitter;
       stdout: EventEmitter;
@@ -268,7 +268,7 @@ describe("check-gateway-watch-regression", () => {
       expect(result.spawnError).toBe("spawn failed");
       expect(fs.existsSync(isolatedHomeDir)).toBe(false);
       expect(fs.existsSync(path.join(outputDir, "watch.home.txt"))).toBe(true);
-      expect(spawn.mock.calls[0]?.[2]?.env?.OPENCLAW_RUNTIME_POSTBUILD_STATIC_ASSETS).toBe("0");
+      expect(spawn.mock.calls[0]?.[2]?.env?.EVE_RUNTIME_POSTBUILD_STATIC_ASSETS).toBe("0");
       expect(waitForGatewayReady).not.toHaveBeenCalled();
       expect(stopChild).not.toHaveBeenCalled();
     } finally {

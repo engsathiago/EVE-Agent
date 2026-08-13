@@ -1,7 +1,7 @@
 // Memory Wiki plugin module implements log behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { appendRegularFile } from "openclaw/plugin-sdk/security-runtime";
+import { appendRegularFile } from "eve-agent/plugin-sdk/security-runtime";
 
 type MemoryWikiLogEntry = {
   type: "init" | "ingest" | "okf-import" | "compile" | "lint";
@@ -13,7 +13,7 @@ export async function appendMemoryWikiLog(
   vaultRoot: string,
   entry: MemoryWikiLogEntry,
 ): Promise<void> {
-  const logPath = path.join(vaultRoot, ".openclaw-wiki", "log.jsonl");
+  const logPath = path.join(vaultRoot, ".eve-wiki", "log.jsonl");
   await fs.mkdir(path.dirname(logPath), { recursive: true });
   await appendRegularFile({
     filePath: logPath,

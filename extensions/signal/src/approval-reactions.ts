@@ -1,5 +1,5 @@
 // Signal plugin module implements approval reactions behavior.
-import { matchesApprovalRequestFilters } from "openclaw/plugin-sdk/approval-client-runtime";
+import { matchesApprovalRequestFilters } from "eve-agent/plugin-sdk/approval-client-runtime";
 import {
   buildApprovalReactionHint,
   createApprovalReactionTargetStore,
@@ -7,15 +7,15 @@ import {
   resolveApprovalReactionTarget,
   type ApprovalReactionDecisionBinding,
   type ApprovalReactionTargetRecord,
-} from "openclaw/plugin-sdk/approval-reaction-runtime";
-import type { ExecApprovalReplyDecision } from "openclaw/plugin-sdk/approval-reply-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeAccountId } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/approval-reaction-runtime";
+import type { ExecApprovalReplyDecision } from "eve-agent/plugin-sdk/approval-reply-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/routing";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { normalizeE164 } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { getSignalApprovalApprovers, signalApprovalAuth } from "./approval-auth.js";
 import { looksLikeUuid } from "./identity.js";
 import { normalizeSignalMessagingTarget } from "./normalize.js";
@@ -35,7 +35,7 @@ type SignalApprovalReactionResolution = {
 };
 
 type ApprovalKind = "exec" | "plugin";
-type ApprovalForwardingConfig = NonNullable<NonNullable<OpenClawConfig["approvals"]>["exec"]>;
+type ApprovalForwardingConfig = NonNullable<NonNullable<EVEConfig["approvals"]>["exec"]>;
 type ApprovalForwardingMode = NonNullable<ApprovalForwardingConfig["mode"]>;
 
 type SignalApprovalReactionRoute =
@@ -80,7 +80,7 @@ function resolveApprovalKindFromId(approvalId: string): ApprovalKind {
 }
 
 function resolveApprovalForwardingConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   approvalKind: ApprovalKind;
 }): ApprovalForwardingConfig | undefined {
   return params.approvalKind === "plugin"
@@ -152,7 +152,7 @@ function hasMatchingSignalApprovalReactionTarget(params: {
 }
 
 function isSignalApprovalReactionRouteStillEnabled(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: Pick<SignalApprovalReactionTarget, "approvalKind" | "route">;
 }): boolean {
   const config = resolveApprovalForwardingConfig({
@@ -366,7 +366,7 @@ export function extractSignalApprovalPromptBinding(text: string): {
 }
 
 function buildTargetRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   to: string;
   approvalId: string;
@@ -402,7 +402,7 @@ function buildTargetRoute(params: {
 }
 
 export function shouldAppendSignalApprovalReactionHintForOutboundMessage(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   to: string;
   text: string;
@@ -434,7 +434,7 @@ export function shouldAppendSignalApprovalReactionHintForOutboundMessage(params:
 }
 
 export function appendSignalApprovalReactionHintForOutboundMessage(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   to: string;
   text: string;
@@ -460,7 +460,7 @@ export function appendSignalApprovalReactionHintForOutboundMessage(params: {
 }
 
 export function hasSignalApprovalReactionApprovers(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): boolean {
   return getSignalApprovalApprovers(params).length > 0;
@@ -531,7 +531,7 @@ export function registerSignalApprovalReactionTarget(params: {
 }
 
 export function registerSignalApprovalReactionTargetForOutboundMessage(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   to: string;
   messageId: string;
@@ -642,7 +642,7 @@ export async function resolveSignalApprovalReactionTargetWithPersistence(params:
 }
 
 export async function maybeResolveSignalApprovalReaction(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   conversationKey: string;
   messageId: string;

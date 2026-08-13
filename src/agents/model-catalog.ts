@@ -3,14 +3,14 @@
  */
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { resolveClaudeFable5ModelIdentity } from "@openclaw/llm-core";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { resolveClaudeFable5ModelIdentity } from "@eve/llm-core";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { getRuntimeConfig } from "../config/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { planManifestModelCatalogRows } from "../model-catalog/manifest-planner.js";
 import { getCurrentPluginMetadataSnapshot } from "../plugins/current-plugin-metadata-snapshot.js";
@@ -43,7 +43,7 @@ import {
 } from "./model-selection-shared.js";
 import {
   buildModelsJsonSourceFingerprint,
-  prepareOpenClawModelsJsonSource,
+  prepareEVEModelsJsonSource,
 } from "./models-config.js";
 import {
   filterGeneratedPluginModelCatalogProviders,
@@ -87,11 +87,11 @@ type ManifestModelCatalogCacheEntry = {
   snapshot: PluginMetadataSnapshot;
   rows: ModelCatalogEntry[];
 };
-let manifestModelCatalogCache = new WeakMap<OpenClawConfig, ManifestModelCatalogCacheEntry>();
+let manifestModelCatalogCache = new WeakMap<EVEConfig, ManifestModelCatalogCacheEntry>();
 
 function buildLoadModelCatalogStateCacheKey(params: {
   agentDir: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   metadataSnapshot?: PluginMetadataSnapshot;
   sourceFingerprint: string;
   workspaceDir?: string;
@@ -117,7 +117,7 @@ const providerApiKeyResolverLoader = createLazyImportLoader(
 );
 
 function shouldLogModelCatalogTiming(): boolean {
-  return process.env.OPENCLAW_DEBUG_INGRESS_TIMING === "1";
+  return process.env.EVE_DEBUG_INGRESS_TIMING === "1";
 }
 
 function loadModelSuppression() {
@@ -226,7 +226,7 @@ function mergeCatalogEntries(models: ModelCatalogEntry[], entries: ModelCatalogE
 }
 
 export function loadManifestModelCatalog(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   fallbackToMetadataScan?: boolean;
@@ -411,7 +411,7 @@ async function loadReadOnlyPersistedProviderRows(
 }
 
 async function loadReadOnlyPersistedModelCatalog(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   metadataSnapshot?: PluginMetadataSnapshot;
 }): Promise<ModelCatalogEntry[]> {
   const cfg = params?.config ?? getRuntimeConfig();
@@ -493,7 +493,7 @@ async function loadReadOnlyPersistedModelCatalog(params?: {
   return sortModelCatalogEntries(models);
 }
 
-function hasConfiguredProviderRowsNeedingManifestLookup(cfg: OpenClawConfig): boolean {
+function hasConfiguredProviderRowsNeedingManifestLookup(cfg: EVEConfig): boolean {
   const providers = cfg.models?.providers;
   if (!providers || typeof providers !== "object") {
     return false;
@@ -505,7 +505,7 @@ function hasConfiguredProviderRowsNeedingManifestLookup(cfg: OpenClawConfig): bo
 }
 
 function loadReadOnlyStaticModelCatalog(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   metadataSnapshot?: PluginMetadataSnapshot;
 }): ModelCatalogEntry[] {
   const cfg = params?.config ?? getRuntimeConfig();
@@ -546,7 +546,7 @@ function loadReadOnlyStaticModelCatalog(params?: {
 }
 
 export async function loadModelCatalog(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   useCache?: boolean;
   cacheOnly?: boolean;
   readOnly?: boolean;
@@ -629,7 +629,7 @@ export async function loadModelCatalog(params?: {
         }
       }
       if (!readOnly) {
-        const preparedSource = await prepareOpenClawModelsJsonSource(cfg, agentDir, {
+        const preparedSource = await prepareEVEModelsJsonSource(cfg, agentDir, {
           pluginMetadataSnapshot: params?.metadataSnapshot,
           workspaceDir,
         });

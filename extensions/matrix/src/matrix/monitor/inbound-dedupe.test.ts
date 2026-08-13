@@ -2,11 +2,11 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PluginRuntime } from "../../runtime-api.js";
 import { setMatrixRuntime } from "../../runtime.js";
@@ -35,7 +35,7 @@ describe("Matrix inbound event dedupe", () => {
   });
 
   function createStoragePath(): string {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-inbound-dedupe-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-inbound-dedupe-"));
     tempDirs.push(dir);
     return path.join(dir, "inbound-dedupe.json");
   }

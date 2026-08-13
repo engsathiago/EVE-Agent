@@ -1,17 +1,17 @@
 {
-  "name": "@openclaw/google-plugin",
+  "name": "@eve/google-plugin",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Google plugin",
+  "description": "EVE Google plugin",
   "type": "module",
   "dependencies": {
     "@google/genai": "2.7.0",
     "google-auth-library": "10.6.2"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

@@ -1,6 +1,6 @@
 // Voice Call plugin module implements outbound behavior.
 import crypto from "node:crypto";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   resolveVoiceCallEffectiveConfig,
   resolveVoiceCallSessionKey,

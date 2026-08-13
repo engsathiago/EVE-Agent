@@ -5,9 +5,9 @@ const recordChannelActivityMock = vi.hoisted(() => vi.fn());
 const loadConfigMock = vi.hoisted(() => vi.fn(() => ({ channels: { discord: {} } })));
 let dateNowSpy: ReturnType<typeof vi.spyOn>;
 
-vi.mock("openclaw/plugin-sdk/plugin-config-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/plugin-config-runtime")>(
-    "openclaw/plugin-sdk/plugin-config-runtime",
+vi.mock("eve-agent/plugin-sdk/plugin-config-runtime", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/plugin-config-runtime")>(
+    "eve-agent/plugin-sdk/plugin-config-runtime",
   );
   return {
     ...actual,
@@ -15,10 +15,10 @@ vi.mock("openclaw/plugin-sdk/plugin-config-runtime", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/channel-activity-runtime", async () => {
+vi.mock("eve-agent/plugin-sdk/channel-activity-runtime", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/channel-activity-runtime")
-  >("openclaw/plugin-sdk/channel-activity-runtime");
+    typeof import("eve-agent/plugin-sdk/channel-activity-runtime")
+  >("eve-agent/plugin-sdk/channel-activity-runtime");
   return {
     ...actual,
     recordChannelActivity: (...args: unknown[]) => recordChannelActivityMock(...args),

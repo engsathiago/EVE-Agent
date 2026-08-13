@@ -5,13 +5,13 @@ import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import {
   resolveSessionTranscriptsDirForAgent,
-  type OpenClawConfig,
+  type EVEConfig,
   type ResolvedMemorySearchConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
 import type {
   MemorySource,
   MemorySyncProgressUpdate,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryManagerSyncOps } from "./manager-sync-ops.js";
 
@@ -34,9 +34,9 @@ type SyncParams = {
 type SourceStateRow = { path: string; hash: string; mtime: number; size: number };
 
 class SessionStartupCatchupHarness extends MemoryManagerSyncOps {
-  protected readonly cfg = {} as OpenClawConfig;
+  protected readonly cfg = {} as EVEConfig;
   protected readonly agentId = "main";
-  protected readonly workspaceDir = "/tmp/openclaw-test-workspace";
+  protected readonly workspaceDir = "/tmp/eve-test-workspace";
   protected readonly settings = {
     sync: {
       sessions: {
@@ -129,8 +129,8 @@ describe("session startup catch-up", () => {
   let stateDir = "";
 
   beforeEach(async () => {
-    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-startup-"));
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-startup-"));
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
   });
 
   afterEach(async () => {

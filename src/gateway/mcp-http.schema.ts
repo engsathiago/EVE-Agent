@@ -1,7 +1,7 @@
 // MCP loopback tool schema projection.
 // Converts gateway-scoped tools into MCP tools/list-compatible schemas.
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { uniqueValues } from "@openclaw/normalization-core/string-normalization";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { uniqueValues } from "@eve/normalization-core/string-normalization";
 import { logWarn } from "../logger.js";
 import { resolveGatewayScopedTools } from "./tool-resolution.js";
 

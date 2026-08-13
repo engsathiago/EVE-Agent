@@ -15,7 +15,7 @@ import type { TaskRecord } from "../../tasks/task-registry.types.js";
 import { tasksHandlers } from "./tasks.js";
 import type { RespondFn } from "./types.js";
 
-const ORIGINAL_STATE_DIR = process.env.OPENCLAW_STATE_DIR;
+const ORIGINAL_STATE_DIR = process.env.EVE_STATE_DIR;
 type TaskResponsePayload = {
   tasks?: Array<Record<string, unknown>>;
   task?: Record<string, unknown>;
@@ -34,17 +34,17 @@ function createTaskRecord(params: Parameters<typeof createTaskRecordOrNull>[0]):
 }
 
 beforeEach(async () => {
-  stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gateway-tasks-"));
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gateway-tasks-"));
+  process.env.EVE_STATE_DIR = stateDir;
   resetTaskRegistryForTests();
 });
 
 afterEach(async () => {
   resetTaskRegistryForTests();
   if (ORIGINAL_STATE_DIR === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.EVE_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = ORIGINAL_STATE_DIR;
+    process.env.EVE_STATE_DIR = ORIGINAL_STATE_DIR;
   }
   await fs.rm(stateDir, { recursive: true, force: true });
 });
@@ -187,7 +187,7 @@ describe("tasks gateway handlers", () => {
       scopeKind: "session",
       runId: "run-sanitized",
       label:
-        "Compile artifact\nOpenClaw runtime context (internal): Keep internal details private.",
+        "Compile artifact\nEVE runtime context (internal): Keep internal details private.",
       task: "Compile artifact",
       status: "running",
       deliveryStatus: "pending",
@@ -195,15 +195,15 @@ describe("tasks gateway handlers", () => {
     recordTaskProgressByRunId({
       runId: "run-sanitized",
       progressSummary:
-        "Bundling output\nOpenClaw runtime context (internal): Keep internal details private.",
+        "Bundling output\nEVE runtime context (internal): Keep internal details private.",
     });
     markTaskTerminalById({
       taskId: task.taskId,
       status: "failed",
       endedAt: Date.now(),
       terminalSummary:
-        "Failed after build\nOpenClaw runtime context (internal): Keep internal details private.",
-      error: "Tool failed\nOpenClaw runtime context (internal): Keep internal details private.",
+        "Failed after build\nEVE runtime context (internal): Keep internal details private.",
+      error: "Tool failed\nEVE runtime context (internal): Keep internal details private.",
     });
 
     const { calls, payload } = await getTaskPayload(task.taskId);
@@ -211,7 +211,7 @@ describe("tasks gateway handlers", () => {
     expect(payload?.task?.title).toBe("Compile artifact");
     expect(payload?.task?.terminalSummary).toBe("Failed after build");
     expect(payload?.task?.error).toBe("Tool failed");
-    expect(JSON.stringify(calls[0]?.[1])).not.toContain("OpenClaw runtime context");
+    expect(JSON.stringify(calls[0]?.[1])).not.toContain("EVE runtime context");
   });
 
   it("cancels running task records and returns the updated task", async () => {

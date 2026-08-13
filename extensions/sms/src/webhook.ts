@@ -1,7 +1,7 @@
 // Sms plugin module implements webhook behavior.
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createFixedWindowRateLimiter } from "openclaw/plugin-sdk/webhook-ingress";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { createFixedWindowRateLimiter } from "eve-agent/plugin-sdk/webhook-ingress";
 import { dispatchSmsInboundEvent, type SmsChannelRuntime } from "./inbound.js";
 import {
   buildTwilioInboundMessage,
@@ -28,7 +28,7 @@ type SmsWebhookLog = {
 };
 
 export type SmsWebhookHandlerParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: ResolvedSmsAccount;
   channelRuntime: SmsChannelRuntime;
   log?: SmsWebhookLog;

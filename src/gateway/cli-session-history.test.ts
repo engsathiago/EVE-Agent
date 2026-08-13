@@ -36,7 +36,7 @@ function readRecord(value: unknown): Record<string, unknown> {
 }
 
 function expectCliSessionMarker(message: unknown, sessionId: string): void {
-  expectFields(readRecord(message)["__openclaw"], { cliSessionId: sessionId });
+  expectFields(readRecord(message)["__eve"], { cliSessionId: sessionId });
 }
 
 function augmentBoundClaudeHistory(params: {
@@ -47,7 +47,7 @@ function augmentBoundClaudeHistory(params: {
 }) {
   return augmentChatHistoryWithCliSessionImports({
     entry: {
-      sessionId: "openclaw-session",
+      sessionId: "eve-session",
       updatedAt: Date.now(),
       cliSessionBindings: {
         "claude-cli": {
@@ -77,7 +77,7 @@ function createClaudeHistoryLines(sessionId: string) {
       message: {
         role: "user",
         content:
-          'Sender (untrusted metadata):\n```json\n{"label":"openclaw-control-ui"}\n```\n\n[Thu 2026-03-26 16:29 GMT] hi',
+          'Sender (untrusted metadata):\n```json\n{"label":"eve-control-ui"}\n```\n\n[Thu 2026-03-26 16:29 GMT] hi',
       },
     }),
     JSON.stringify({
@@ -142,7 +142,7 @@ function createClaudeHistoryLines(sessionId: string) {
 async function withClaudeProjectsDir<T>(
   run: (params: { homeDir: string; sessionId: string; filePath: string }) => Promise<T>,
 ): Promise<T> {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-claude-history-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-claude-history-"));
   const homeDir = path.join(root, "home");
   const sessionId = "5b8b202c-f6bb-4046-9475-d2f15fd07530";
   const projectsDir = path.join(homeDir, ".claude", "projects", "demo-workspace");
@@ -166,7 +166,7 @@ describe("cli session history", () => {
         role: "user",
       });
       expect(String(messages[0]?.content)).toContain("[Thu 2026-03-26 16:29 GMT] hi");
-      expectFields(messages[0]?.["__openclaw"], {
+      expectFields(messages[0]?.["__eve"], {
         importedFrom: "claude-cli",
         externalId: "user-1",
         cliSessionId: sessionId,
@@ -182,7 +182,7 @@ describe("cli session history", () => {
         output: 7,
         cacheRead: 22,
       });
-      expectFields(messages[1]?.["__openclaw"], {
+      expectFields(messages[1]?.["__eve"], {
         importedFrom: "claude-cli",
         externalId: "assistant-1",
         cliSessionId: sessionId,
@@ -240,9 +240,9 @@ describe("cli session history", () => {
       {
         role: "user",
         content:
-          'Sender (untrusted metadata):\n```json\n{"label":"openclaw-control-ui"}\n```\n\n[Thu 2026-03-26 16:29 GMT] hi',
+          'Sender (untrusted metadata):\n```json\n{"label":"eve-control-ui"}\n```\n\n[Thu 2026-03-26 16:29 GMT] hi',
         timestamp: Date.parse("2026-03-26T16:29:54.800Z"),
-        __openclaw: {
+        __eve: {
           importedFrom: "claude-cli",
           externalId: "user-1",
           cliSessionId: "session-1",
@@ -252,7 +252,7 @@ describe("cli session history", () => {
         role: "assistant",
         content: [{ type: "text", text: "hello from Claude" }],
         timestamp: Date.parse("2026-03-26T16:29:55.500Z"),
-        __openclaw: {
+        __eve: {
           importedFrom: "claude-cli",
           externalId: "assistant-1",
           cliSessionId: "session-1",
@@ -262,7 +262,7 @@ describe("cli session history", () => {
         role: "user",
         content: "[Thu 2026-03-26 16:31 GMT] follow-up",
         timestamp: Date.parse("2026-03-26T16:31:00.000Z"),
-        __openclaw: {
+        __eve: {
           importedFrom: "claude-cli",
           externalId: "user-2",
           cliSessionId: "session-1",
@@ -275,7 +275,7 @@ describe("cli session history", () => {
     expectFields(merged[2], {
       role: "user",
     });
-    expectFields(readRecord(merged[2])["__openclaw"], {
+    expectFields(readRecord(merged[2])["__eve"], {
       importedFrom: "claude-cli",
       externalId: "user-2",
     });
@@ -286,7 +286,7 @@ describe("cli session history", () => {
       {
         role: "user",
         content: "hello from first session",
-        __openclaw: {
+        __eve: {
           importedFrom: "claude-cli",
           externalId: "same-id",
           cliSessionId: "session-1",
@@ -297,7 +297,7 @@ describe("cli session history", () => {
       {
         role: "user",
         content: "hello from second session",
-        __openclaw: {
+        __eve: {
           importedFrom: "claude-cli",
           externalId: "same-id",
           cliSessionId: "session-2",
@@ -361,7 +361,7 @@ describe("cli session history", () => {
         const record = readRecord(message);
         return (
           record.role === "user" &&
-          (record["__openclaw"] as { cliSessionId?: unknown } | undefined)?.cliSessionId ===
+          (record["__eve"] as { cliSessionId?: unknown } | undefined)?.cliSessionId ===
             sessionId
         );
       });
@@ -395,7 +395,7 @@ describe("cli session history", () => {
     await withClaudeProjectsDir(async ({ homeDir, sessionId }) => {
       const messages = augmentChatHistoryWithCliSessionImports({
         entry: {
-          sessionId: "openclaw-session",
+          sessionId: "eve-session",
           updatedAt: Date.now(),
           cliSessionIds: {
             "claude-cli": sessionId,
@@ -417,7 +417,7 @@ describe("cli session history", () => {
     await withClaudeProjectsDir(async ({ homeDir, sessionId }) => {
       const messages = augmentChatHistoryWithCliSessionImports({
         entry: {
-          sessionId: "openclaw-session",
+          sessionId: "eve-session",
           updatedAt: Date.now(),
           claudeCliSessionId: sessionId,
         },
@@ -441,7 +441,7 @@ describe("readClaudeCliFallbackSeed", () => {
   const SESSION_ID = "fallback-seed-session";
 
   beforeEach(async () => {
-    tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-fallback-seed-"));
+    tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-fallback-seed-"));
     homeDir = path.join(tmpRoot, "home");
     projectsDir = path.join(homeDir, ".claude", "projects", "demo-workspace");
     await fs.mkdir(projectsDir, { recursive: true });

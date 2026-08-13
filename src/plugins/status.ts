@@ -2,8 +2,8 @@
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { resolveDefaultAgentWorkspaceDir } from "../agents/workspace.js";
 import { getRuntimeConfig } from "../config/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
-import { normalizeOpenClawVersionBase } from "../config/version.js";
+import type { EVEConfig } from "../config/types.eve.js";
+import { normalizeEVEVersionBase } from "../config/version.js";
 import { listImportedBundledPluginFacadeIds } from "../plugin-sdk/facade-runtime.js";
 import { resolveCompatibilityHostVersion } from "../version.js";
 import { inspectBundleLspRuntimeSupport } from "./bundle-lsp.js";
@@ -17,7 +17,7 @@ import {
   type PluginCapabilityEntry,
   type PluginInspectShape,
 } from "./inspect-shape.js";
-import { loadOpenClawPlugins } from "./loader.js";
+import { loadEVEPlugins } from "./loader.js";
 import type { PluginDiagnostic } from "./manifest-types.js";
 import { tracePluginLifecyclePhase } from "./plugin-lifecycle-trace.js";
 import { loadPluginMetadataSnapshot } from "./plugin-metadata-snapshot.js";
@@ -154,21 +154,21 @@ function resolveReportedPluginVersion(
     return plugin.version;
   }
   return (
-    normalizeOpenClawVersionBase(resolveCompatibilityHostVersion(env)) ??
-    normalizeOpenClawVersionBase(plugin.version) ??
+    normalizeEVEVersionBase(resolveCompatibilityHostVersion(env)) ??
+    normalizeEVEVersionBase(plugin.version) ??
     plugin.version
   );
 }
 
 type PluginReportParams = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   effectiveOnly?: boolean;
   onlyPluginIds?: readonly string[];
   workspaceDir?: string;
   /** Use an explicit env when plugin roots should resolve independently from process.env. */
   env?: NodeJS.ProcessEnv;
   logger?: PluginLogger;
-  resolvedConfig?: OpenClawConfig;
+  resolvedConfig?: EVEConfig;
 };
 
 function buildPluginReport(
@@ -231,7 +231,7 @@ function buildPluginReport(
     ? tracePluginLifecyclePhase(
         "runtime plugin registry load",
         () =>
-          loadOpenClawPlugins(
+          loadEVEPlugins(
             buildPluginRuntimeLoadOptions(context, {
               config: runtimeCompatConfig,
               activationSourceConfig: rawConfig,
@@ -301,12 +301,12 @@ export function buildPluginDiagnosticsReport(params?: PluginReportParams): Plugi
 
 export function buildPluginInspectReport(params: {
   id: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   logger?: PluginLogger;
   report?: PluginStatusReport;
-  resolvedConfig?: OpenClawConfig;
+  resolvedConfig?: EVEConfig;
 }): PluginInspectReport | null {
   const rawConfig = params.config ?? getRuntimeConfig();
   const config =
@@ -445,7 +445,7 @@ export function buildPluginInspectReport(params: {
 }
 
 export function buildAllPluginInspectReports(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   logger?: PluginLogger;
@@ -483,7 +483,7 @@ export function buildAllPluginInspectReports(params?: {
 }
 
 export function buildPluginCompatibilityWarnings(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   logger?: PluginLogger;
@@ -493,7 +493,7 @@ export function buildPluginCompatibilityWarnings(params?: {
 }
 
 export function buildPluginCompatibilityNotices(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   logger?: PluginLogger;
@@ -503,7 +503,7 @@ export function buildPluginCompatibilityNotices(params?: {
 }
 
 export function buildPluginCompatibilitySnapshotNotices(params?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): PluginCompatibilityNotice[] {

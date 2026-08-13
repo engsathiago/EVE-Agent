@@ -11,7 +11,7 @@ import {
 import { createSuiteLogPathTracker } from "./log-test-helpers.js";
 
 const DEFAULT_MAX_FILE_BYTES = 100 * 1024 * 1024;
-const logPathTracker = createSuiteLogPathTracker("openclaw-log-cap-");
+const logPathTracker = createSuiteLogPathTracker("eve-log-cap-");
 
 function rotatedLogPath(file: string, index: number): string {
   const ext = path.extname(file);
@@ -81,8 +81,8 @@ describe("log file size cap", () => {
 
   it("keeps cached default rolling loggers on the current-day file", () => {
     const logDir = path.dirname(logPath);
-    const firstDay = path.join(logDir, "openclaw-2026-01-01.log");
-    const secondDay = path.join(logDir, "openclaw-2026-01-02.log");
+    const firstDay = path.join(logDir, "eve-2026-01-01.log");
+    const secondDay = path.join(logDir, "eve-2026-01-02.log");
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-01T08:00:00Z"));
     setLoggerOverride({ level: "info", file: firstDay });

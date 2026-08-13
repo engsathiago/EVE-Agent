@@ -7,12 +7,12 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import {
-  installOpenClawPluginSdkNativeResolver,
-  resetOpenClawPluginSdkNativeResolverForTest,
+  installEVEPluginSdkNativeResolver,
+  resetEVEPluginSdkNativeResolverForTest,
 } from "./plugin-sdk-native-resolver.js";
 
 afterEach(() => {
-  resetOpenClawPluginSdkNativeResolverForTest();
+  resetEVEPluginSdkNativeResolverForTest();
 });
 
 type NativeEsmLazyImportProbe = {
@@ -27,12 +27,12 @@ function writeJsonFile(targetPath: string, value: unknown): void {
   fs.writeFileSync(targetPath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
-function writeFakeOpenClawPackage(root: string): { distRoot: string; loaderModulePath: string } {
+function writeFakeEVEPackage(root: string): { distRoot: string; loaderModulePath: string } {
   writeJsonFile(path.join(root, "package.json"), {
-    name: "openclaw",
+    name: "eve",
     type: "module",
     bin: {
-      openclaw: "./openclaw.mjs",
+      eve: "./eve.mjs",
     },
     exports: {
       "./cli-entry": "./dist/cli-entry.js",
@@ -43,7 +43,7 @@ function writeFakeOpenClawPackage(root: string): { distRoot: string; loaderModul
       "./plugin-sdk/source-only": "./dist/plugin-sdk/source-only.js",
     },
   });
-  fs.writeFileSync(path.join(root, "openclaw.mjs"), "#!/usr/bin/env node\n", "utf8");
+  fs.writeFileSync(path.join(root, "eve.mjs"), "#!/usr/bin/env node\n", "utf8");
   const distRoot = path.join(root, "dist");
   const pluginSdkDir = path.join(distRoot, "plugin-sdk");
   fs.mkdirSync(pluginSdkDir, { recursive: true });
@@ -110,141 +110,141 @@ function addFakePluginSdkDistExport(root: string, subpath: string): string {
   return distPath;
 }
 
-describe("installOpenClawPluginSdkNativeResolver", () => {
+describe("installEVEPluginSdkNativeResolver", () => {
   it("resolves installed plugin SDK imports to the dev source root", () => {
-    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-stable-"));
-    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-dev-source-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(stableRoot);
-    writeFakeOpenClawPackage(devRoot);
+    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-stable-"));
+    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-dev-source-"));
+    const { loaderModulePath } = writeFakeEVEPackage(stableRoot);
+    writeFakeEVEPackage(devRoot);
     fs.mkdirSync(path.join(devRoot, "src"), { recursive: true });
     fs.mkdirSync(path.join(devRoot, "extensions"), { recursive: true });
     const externalPluginEntry = writeExternalPluginEntry(path.join(stableRoot, "external-plugin"));
-    const previousDevSourceRoot = process.env.OPENCLAW_DEV_SOURCE_ROOT;
-    process.env.OPENCLAW_DEV_SOURCE_ROOT = devRoot;
+    const previousDevSourceRoot = process.env.EVE_DEV_SOURCE_ROOT;
+    process.env.EVE_DEV_SOURCE_ROOT = devRoot;
 
     try {
-      const installedAliases = installOpenClawPluginSdkNativeResolver({
+      const installedAliases = installEVEPluginSdkNativeResolver({
         modulePath: loaderModulePath,
         pluginModulePath: externalPluginEntry,
       });
 
-      expect(installedAliases).toContain("openclaw/plugin-sdk/agent-runtime");
+      expect(installedAliases).toContain("eve-agent/plugin-sdk/agent-runtime");
       const requireFromPlugin = createRequire(externalPluginEntry);
-      expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/agent-runtime"))).toBe(
+      expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/agent-runtime"))).toBe(
         fs.realpathSync(path.join(devRoot, "dist", "plugin-sdk", "agent-runtime.js")),
       );
     } finally {
       if (previousDevSourceRoot === undefined) {
-        delete process.env.OPENCLAW_DEV_SOURCE_ROOT;
+        delete process.env.EVE_DEV_SOURCE_ROOT;
       } else {
-        process.env.OPENCLAW_DEV_SOURCE_ROOT = previousDevSourceRoot;
+        process.env.EVE_DEV_SOURCE_ROOT = previousDevSourceRoot;
       }
     }
   });
 
   it("resolves installed plugin SDK imports to an explicit dev source root", () => {
-    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-stable-"));
-    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-dev-source-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(stableRoot);
-    writeFakeOpenClawPackage(devRoot);
+    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-stable-"));
+    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-dev-source-"));
+    const { loaderModulePath } = writeFakeEVEPackage(stableRoot);
+    writeFakeEVEPackage(devRoot);
     fs.mkdirSync(path.join(devRoot, "src"), { recursive: true });
     fs.mkdirSync(path.join(devRoot, "extensions"), { recursive: true });
     const externalPluginEntry = writeExternalPluginEntry(path.join(stableRoot, "external-plugin"));
 
-    const installedAliases = installOpenClawPluginSdkNativeResolver({
+    const installedAliases = installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       devSourceRoot: devRoot,
     });
 
-    expect(installedAliases).toContain("openclaw/plugin-sdk/agent-runtime");
+    expect(installedAliases).toContain("eve-agent/plugin-sdk/agent-runtime");
     const requireFromPlugin = createRequire(externalPluginEntry);
-    expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/agent-runtime"))).toBe(
+    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/agent-runtime"))).toBe(
       fs.realpathSync(path.join(devRoot, "dist", "plugin-sdk", "agent-runtime.js")),
     );
   });
 
   it("updates native SDK aliases when the same plugin parent switches dev source roots", () => {
-    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-stable-"));
-    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-dev-source-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(stableRoot);
-    writeFakeOpenClawPackage(devRoot);
+    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-stable-"));
+    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-dev-source-"));
+    const { loaderModulePath } = writeFakeEVEPackage(stableRoot);
+    writeFakeEVEPackage(devRoot);
     fs.mkdirSync(path.join(devRoot, "src"), { recursive: true });
     fs.mkdirSync(path.join(devRoot, "extensions"), { recursive: true });
     const externalPluginEntry = writeExternalPluginEntry(path.join(stableRoot, "external-plugin"));
     const requireFromPlugin = createRequire(externalPluginEntry);
 
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
     });
-    expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/agent-runtime"))).toBe(
+    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/agent-runtime"))).toBe(
       fs.realpathSync(path.join(stableRoot, "dist", "plugin-sdk", "agent-runtime.js")),
     );
 
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       devSourceRoot: devRoot,
     });
 
-    expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/agent-runtime"))).toBe(
+    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/agent-runtime"))).toBe(
       fs.realpathSync(path.join(devRoot, "dist", "plugin-sdk", "agent-runtime.js")),
     );
   });
 
   it("removes stale native SDK aliases when a later dev root omits a subpath", () => {
-    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-stable-"));
-    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-dev-source-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(stableRoot);
-    writeFakeOpenClawPackage(devRoot);
+    const stableRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-stable-"));
+    const devRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-dev-source-"));
+    const { loaderModulePath } = writeFakeEVEPackage(stableRoot);
+    writeFakeEVEPackage(devRoot);
     const stableExtraPath = addFakePluginSdkDistExport(stableRoot, "stable-extra");
     fs.mkdirSync(path.join(devRoot, "src"), { recursive: true });
     fs.mkdirSync(path.join(devRoot, "extensions"), { recursive: true });
     const externalPluginEntry = writeExternalPluginEntry(path.join(stableRoot, "external-plugin"));
     const requireFromPlugin = createRequire(externalPluginEntry);
 
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
     });
-    expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/stable-extra"))).toBe(
+    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/stable-extra"))).toBe(
       fs.realpathSync(stableExtraPath),
     );
 
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       devSourceRoot: devRoot,
     });
 
-    expect(() => requireFromPlugin.resolve("openclaw/plugin-sdk/stable-extra")).toThrow();
+    expect(() => requireFromPlugin.resolve("eve-agent/plugin-sdk/stable-extra")).toThrow();
   });
 
   it("keeps native aliases on JS dist artifacts when source files exist", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-source-resolver-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(root);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-source-resolver-"));
+    const { loaderModulePath } = writeFakeEVEPackage(root);
     const sourceChannelOutboundPath = path.join(root, "src", "plugin-sdk", "channel-outbound.ts");
     fs.mkdirSync(path.dirname(sourceChannelOutboundPath), { recursive: true });
     fs.writeFileSync(sourceChannelOutboundPath, "export const sourceOnly = true;\n", "utf8");
     const externalPluginEntry = writeExternalPluginEntry(path.join(root, "external-plugin"));
 
-    const installedAliases = installOpenClawPluginSdkNativeResolver({
+    const installedAliases = installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       pluginSdkResolution: "src",
     });
 
-    expect(installedAliases).toContain("openclaw/plugin-sdk/channel-outbound");
+    expect(installedAliases).toContain("eve-agent/plugin-sdk/channel-outbound");
     const requireFromPlugin = createRequire(externalPluginEntry);
-    expect(fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/channel-outbound"))).toBe(
+    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/channel-outbound"))).toBe(
       fs.realpathSync(path.join(root, "dist", "plugin-sdk", "channel-outbound.js")),
     );
   });
 
-  it("lets built external plugins resolve OpenClaw SDK subpaths with createRequire", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-resolver-"));
-    const { distRoot, loaderModulePath } = writeFakeOpenClawPackage(root);
+  it("lets built external plugins resolve EVE SDK subpaths with createRequire", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-resolver-"));
+    const { distRoot, loaderModulePath } = writeFakeEVEPackage(root);
     const externalPluginEntry = writeExternalPluginEntry(path.join(root, "external-plugin"));
 
     const distMode = fs.statSync(distRoot).mode;
@@ -253,24 +253,24 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
     }
 
     try {
-      const installedAliases = installOpenClawPluginSdkNativeResolver({
+      const installedAliases = installEVEPluginSdkNativeResolver({
         modulePath: loaderModulePath,
         pluginModulePath: externalPluginEntry,
         pluginSdkResolution: "dist",
       });
 
-      expect(installedAliases).toContain("openclaw/plugin-sdk/channel-outbound");
+      expect(installedAliases).toContain("eve-agent/plugin-sdk/channel-outbound");
       expect(fs.existsSync(path.join(distRoot, "extensions"))).toBe(false);
       const requireFromPlugin = createRequire(externalPluginEntry);
       expect(
-        fs.realpathSync(requireFromPlugin.resolve("openclaw/plugin-sdk/channel-outbound")),
+        fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/channel-outbound")),
       ).toBe(fs.realpathSync(path.join(root, "dist", "plugin-sdk", "channel-outbound.js")));
-      const sdk = requireFromPlugin("openclaw/plugin-sdk/channel-outbound") as {
+      const sdk = requireFromPlugin("eve-agent/plugin-sdk/channel-outbound") as {
         defineChannelMessageAdapter?: () => string;
       };
 
       expect(sdk.defineChannelMessageAdapter?.()).toBe("adapter");
-      expect(() => requireFromPlugin.resolve("openclaw/not-plugin-sdk/channel-message")).toThrow();
+      expect(() => requireFromPlugin.resolve("eve/not-plugin-sdk/channel-message")).toThrow();
     } finally {
       if (process.platform !== "win32") {
         fs.chmodSync(distRoot, distMode);
@@ -279,7 +279,7 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
   });
 
   beforeAll(() => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-esm-resolver-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-esm-resolver-"));
     const probePath = path.join(root, "probe.mjs");
     const resolverModuleUrl = pathToFileURL(
       path.join(process.cwd(), "src", "plugins", "plugin-sdk-native-resolver.ts"),
@@ -290,22 +290,22 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
         'import fs from "node:fs";',
         'import path from "node:path";',
         'import { pathToFileURL } from "node:url";',
-        `import { installOpenClawPluginSdkNativeResolver, resetOpenClawPluginSdkNativeResolverForTest } from ${JSON.stringify(resolverModuleUrl)};`,
+        `import { installEVEPluginSdkNativeResolver, resetEVEPluginSdkNativeResolverForTest } from ${JSON.stringify(resolverModuleUrl)};`,
         `const root = ${JSON.stringify(root)};`,
         "const writeJson = (targetPath, value) => {",
         "  fs.mkdirSync(path.dirname(targetPath), { recursive: true });",
         '  fs.writeFileSync(targetPath, `${JSON.stringify(value, null, 2)}\\n`, "utf8");',
         "};",
         'writeJson(path.join(root, "package.json"), {',
-        '  name: "openclaw",',
+        '  name: "eve",',
         '  type: "module",',
-        '  bin: { openclaw: "./openclaw.mjs" },',
+        '  bin: { eve: "./eve.mjs" },',
         "  exports: {",
         '    "./plugin-sdk": "./dist/plugin-sdk/root-alias.cjs",',
         '    "./plugin-sdk/channel-outbound": "./dist/plugin-sdk/channel-outbound.js",',
         "  },",
         "});",
-        'fs.writeFileSync(path.join(root, "openclaw.mjs"), "#!/usr/bin/env node\\n", "utf8");',
+        'fs.writeFileSync(path.join(root, "eve.mjs"), "#!/usr/bin/env node\\n", "utf8");',
         'fs.mkdirSync(path.join(root, "dist", "plugin-sdk"), { recursive: true });',
         'fs.writeFileSync(path.join(root, "dist", "plugin-sdk", "root-alias.cjs"), "module.exports = {};\\n", "utf8");',
         'fs.writeFileSync(path.join(root, "dist", "plugin-sdk", "channel-outbound.js"), "export const defineChannelMessageAdapter = () => \\"adapter\\";\\n", "utf8");',
@@ -319,22 +319,22 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
         "fs.mkdirSync(path.dirname(entryPath), { recursive: true });",
         "fs.writeFileSync(",
         "  entryPath,",
-        '  "import { defineChannelMessageAdapter } from \\"openclaw/plugin-sdk/channel-outbound\\"; export const eager = defineChannelMessageAdapter(); export const loadLazy = () => import(\\"./lazy.js\\");\\n",',
+        '  "import { defineChannelMessageAdapter } from \\"eve-agent/plugin-sdk/channel-outbound\\"; export const eager = defineChannelMessageAdapter(); export const loadLazy = () => import(\\"./lazy.js\\");\\n",',
         '  "utf8",',
         ");",
         "fs.writeFileSync(",
         "  lazyPath,",
-        '  "import { defineChannelMessageAdapter } from \\"openclaw/plugin-sdk/channel-outbound\\"; export const lazy = defineChannelMessageAdapter();\\n",',
+        '  "import { defineChannelMessageAdapter } from \\"eve-agent/plugin-sdk/channel-outbound\\"; export const lazy = defineChannelMessageAdapter();\\n",',
         '  "utf8",',
         ");",
-        "installOpenClawPluginSdkNativeResolver({",
+        "installEVEPluginSdkNativeResolver({",
         "  modulePath: loaderModulePath,",
         "  pluginModulePath: entryPath,",
         '  pluginSdkResolution: "dist",',
         "});",
         "const module = await import(pathToFileURL(entryPath).href);",
         "const lazy = await module.loadLazy();",
-        "resetOpenClawPluginSdkNativeResolverForTest();",
+        "resetEVEPluginSdkNativeResolverForTest();",
         "console.log(`${module.eager}:${lazy.lazy}`);",
         "",
       ].join("\n"),
@@ -360,15 +360,15 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
   });
 
   it("does not resolve SDK aliases for parents outside registered plugin roots", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-guard-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(root);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-guard-"));
+    const { loaderModulePath } = writeFakeEVEPackage(root);
     const externalPluginEntry = writeExternalPluginEntry(path.join(root, "external-plugin"));
-    const unrelatedRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-outside-"));
+    const unrelatedRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-outside-"));
     const unrelatedEntry = path.join(unrelatedRoot, "runtime-api.js");
     fs.mkdirSync(path.dirname(unrelatedEntry), { recursive: true });
     fs.writeFileSync(unrelatedEntry, "export default {};\n", "utf8");
 
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       pluginSdkResolution: "dist",
@@ -376,13 +376,13 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
 
     const requireFromPlugin = createRequire(externalPluginEntry);
     const requireFromOutside = createRequire(unrelatedEntry);
-    expect(requireFromPlugin.resolve("openclaw/plugin-sdk/channel-outbound")).toBeTruthy();
-    expect(() => requireFromOutside.resolve("openclaw/plugin-sdk/channel-outbound")).toThrow();
+    expect(requireFromPlugin.resolve("eve-agent/plugin-sdk/channel-outbound")).toBeTruthy();
+    expect(() => requireFromOutside.resolve("eve-agent/plugin-sdk/channel-outbound")).toThrow();
   });
 
-  it("resolves internal core packages only for OpenClaw-owned source parents", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-core-internal-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(root);
+  it("resolves internal core packages only for EVE-owned source parents", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-core-internal-"));
+    const { loaderModulePath } = writeFakeEVEPackage(root);
     const normalizationSource = writeNormalizationCoreSource(root);
     const mediaCoreSource = writeInternalCorePackageSource(root, "media-core", "mime.ts");
     const acpCoreSource = writeInternalCorePackageSource(
@@ -396,59 +396,59 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
     fs.mkdirSync(path.dirname(coreSourceParent), { recursive: true });
     fs.writeFileSync(coreSourceParent, "export default {};\n", "utf8");
 
-    const installedAliases = installOpenClawPluginSdkNativeResolver({
+    const installedAliases = installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       pluginSdkResolution: "dist",
     });
 
-    expect(installedAliases).toContain("@openclaw/normalization-core/string-coerce");
-    expect(installedAliases).toContain("@openclaw/media-core/mime");
-    expect(installedAliases).toContain("@openclaw/acp-core/runtime/types");
-    expect(installedAliases).toContain("@openclaw/llm-core");
+    expect(installedAliases).toContain("@eve/normalization-core/string-coerce");
+    expect(installedAliases).toContain("@eve/media-core/mime");
+    expect(installedAliases).toContain("@eve/acp-core/runtime/types");
+    expect(installedAliases).toContain("@eve/llm-core");
     const requireFromCoreSource = createRequire(coreSourceParent);
     const requireFromPlugin = createRequire(externalPluginEntry);
     expect(
-      fs.realpathSync(requireFromCoreSource.resolve("@openclaw/normalization-core/string-coerce")),
+      fs.realpathSync(requireFromCoreSource.resolve("@eve/normalization-core/string-coerce")),
     ).toBe(fs.realpathSync(normalizationSource));
-    expect(fs.realpathSync(requireFromCoreSource.resolve("@openclaw/media-core/mime"))).toBe(
+    expect(fs.realpathSync(requireFromCoreSource.resolve("@eve/media-core/mime"))).toBe(
       fs.realpathSync(mediaCoreSource),
     );
-    expect(fs.realpathSync(requireFromCoreSource.resolve("@openclaw/acp-core/runtime/types"))).toBe(
+    expect(fs.realpathSync(requireFromCoreSource.resolve("@eve/acp-core/runtime/types"))).toBe(
       fs.realpathSync(acpCoreSource),
     );
-    expect(fs.realpathSync(requireFromCoreSource.resolve("@openclaw/llm-core"))).toBe(
+    expect(fs.realpathSync(requireFromCoreSource.resolve("@eve/llm-core"))).toBe(
       fs.realpathSync(llmCoreSource),
     );
-    expect(() => requireFromPlugin.resolve("@openclaw/normalization-core/string-coerce")).toThrow();
-    expect(() => requireFromPlugin.resolve("@openclaw/media-core/mime")).toThrow();
-    expect(() => requireFromPlugin.resolve("@openclaw/acp-core/runtime/types")).toThrow();
-    expect(() => requireFromPlugin.resolve("@openclaw/llm-core")).toThrow();
+    expect(() => requireFromPlugin.resolve("@eve/normalization-core/string-coerce")).toThrow();
+    expect(() => requireFromPlugin.resolve("@eve/media-core/mime")).toThrow();
+    expect(() => requireFromPlugin.resolve("@eve/acp-core/runtime/types")).toThrow();
+    expect(() => requireFromPlugin.resolve("@eve/llm-core")).toThrow();
   });
 
   it("does not register source-only SDK subpaths for native resolution", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-source-only-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(root);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-source-only-"));
+    const { loaderModulePath } = writeFakeEVEPackage(root);
     const sourceOnlyPath = path.join(root, "src", "plugin-sdk", "source-only.ts");
     fs.mkdirSync(path.dirname(sourceOnlyPath), { recursive: true });
     fs.writeFileSync(sourceOnlyPath, "export const sourceOnly = true;\n", "utf8");
     const externalPluginEntry = writeExternalPluginEntry(path.join(root, "external-plugin"));
 
-    const installedAliases = installOpenClawPluginSdkNativeResolver({
+    const installedAliases = installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: externalPluginEntry,
       pluginSdkResolution: "src",
     });
 
-    expect(installedAliases).toContain("openclaw/plugin-sdk/channel-outbound");
-    expect(installedAliases).not.toContain("openclaw/plugin-sdk/source-only");
+    expect(installedAliases).toContain("eve-agent/plugin-sdk/channel-outbound");
+    expect(installedAliases).not.toContain("eve-agent/plugin-sdk/source-only");
     const requireFromPlugin = createRequire(externalPluginEntry);
-    expect(() => requireFromPlugin.resolve("openclaw/plugin-sdk/source-only")).toThrow();
+    expect(() => requireFromPlugin.resolve("eve-agent/plugin-sdk/source-only")).toThrow();
   });
 
   it("scopes private SSRF SDK aliases to bundled local IPC native parents", () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sdk-native-ssrf-"));
-    const { loaderModulePath } = writeFakeOpenClawPackage(root);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sdk-native-ssrf-"));
+    const { loaderModulePath } = writeFakeEVEPackage(root);
     const internalPath = path.join(root, "dist", "plugin-sdk", "ssrf-runtime-internal.js");
     fs.writeFileSync(internalPath, "export const ssrfInternal = true;\n", "utf8");
     const ollamaEntry = path.join(root, "dist", "extensions", "ollama", "index.js");
@@ -473,58 +473,58 @@ describe("installOpenClawPluginSdkNativeResolver", () => {
     fs.writeFileSync(runtimeBrowserEntry, "export default {};\n", "utf8");
     fs.writeFileSync(otherEntry, "export default {};\n", "utf8");
 
-    const installedAliases = installOpenClawPluginSdkNativeResolver({
+    const installedAliases = installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: ollamaEntry,
       pluginSdkResolution: "dist",
     });
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: runtimeOllamaEntry,
       pluginSdkResolution: "dist",
     });
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: browserEntry,
       pluginSdkResolution: "dist",
     });
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: runtimeBrowserEntry,
       pluginSdkResolution: "dist",
     });
-    installOpenClawPluginSdkNativeResolver({
+    installEVEPluginSdkNativeResolver({
       modulePath: loaderModulePath,
       pluginModulePath: otherEntry,
       pluginSdkResolution: "dist",
     });
 
-    expect(installedAliases).toContain("openclaw/plugin-sdk/ssrf-runtime-internal");
+    expect(installedAliases).toContain("eve-agent/plugin-sdk/ssrf-runtime-internal");
     const requireFromOllama = createRequire(ollamaEntry);
     expect(
-      fs.realpathSync(requireFromOllama.resolve("openclaw/plugin-sdk/ssrf-runtime-internal")),
+      fs.realpathSync(requireFromOllama.resolve("eve-agent/plugin-sdk/ssrf-runtime-internal")),
     ).toBe(fs.realpathSync(internalPath));
 
     const requireFromRuntimeOllama = createRequire(runtimeOllamaEntry);
     expect(
       fs.realpathSync(
-        requireFromRuntimeOllama.resolve("openclaw/plugin-sdk/ssrf-runtime-internal"),
+        requireFromRuntimeOllama.resolve("eve-agent/plugin-sdk/ssrf-runtime-internal"),
       ),
     ).toBe(fs.realpathSync(internalPath));
 
     const requireFromBrowser = createRequire(browserEntry);
     expect(
-      fs.realpathSync(requireFromBrowser.resolve("openclaw/plugin-sdk/ssrf-runtime-internal")),
+      fs.realpathSync(requireFromBrowser.resolve("eve-agent/plugin-sdk/ssrf-runtime-internal")),
     ).toBe(fs.realpathSync(internalPath));
 
     const requireFromRuntimeBrowser = createRequire(runtimeBrowserEntry);
     expect(
       fs.realpathSync(
-        requireFromRuntimeBrowser.resolve("openclaw/plugin-sdk/ssrf-runtime-internal"),
+        requireFromRuntimeBrowser.resolve("eve-agent/plugin-sdk/ssrf-runtime-internal"),
       ),
     ).toBe(fs.realpathSync(internalPath));
 
     const requireFromOther = createRequire(otherEntry);
-    expect(() => requireFromOther.resolve("openclaw/plugin-sdk/ssrf-runtime-internal")).toThrow();
+    expect(() => requireFromOther.resolve("eve-agent/plugin-sdk/ssrf-runtime-internal")).toThrow();
   });
 });

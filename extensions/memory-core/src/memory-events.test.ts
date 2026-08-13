@@ -4,7 +4,7 @@ import path from "node:path";
 import {
   readMemoryHostEventRecords,
   readMemoryHostEvents,
-} from "openclaw/plugin-sdk/memory-host-events";
+} from "eve-agent/plugin-sdk/memory-host-events";
 import { describe, expect, it } from "vitest";
 import { writeDailyDreamingPhaseBlock } from "./dreaming-markdown.js";
 import {

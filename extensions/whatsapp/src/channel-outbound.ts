@@ -3,8 +3,8 @@ import {
   createMessageReceiptFromOutboundResults,
   defineChannelMessageAdapter,
   type ChannelMessageSendResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { chunkText } from "openclaw/plugin-sdk/reply-chunking";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { chunkText } from "eve-agent/plugin-sdk/reply-chunking";
 import { createWhatsAppOutboundBase } from "./outbound-base.js";
 import { normalizeWhatsAppPayloadTextPreservingIndentation } from "./outbound-media-contract.js";
 import { resolveWhatsAppOutboundTarget } from "./resolve-outbound-target.js";

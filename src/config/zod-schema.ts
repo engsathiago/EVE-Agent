@@ -1,8 +1,8 @@
-// Assembles the canonical Zod schema for OpenClaw config parsing.
+// Assembles the canonical Zod schema for EVE config parsing.
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeStringifiedOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { z } from "zod";
 import { parseByteSize } from "../cli/parse-bytes.js";
 import { parseDurationMs } from "../cli/parse-duration.js";
@@ -73,7 +73,7 @@ const GatewayRemoteConfigSchema = z.object(GatewayRemoteSchemaShape).strict().op
 
 const TailscaleServiceNameSchema = z.string().regex(/^svc:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/, {
   message:
-    'Tailscale serviceName must use the "svc:<dns-label>" format, for example "svc:openclaw"',
+    'Tailscale serviceName must use the "svc:<dns-label>" format, for example "svc:eve"',
 });
 
 const LegacyCanvasHostSchema = z
@@ -477,7 +477,7 @@ const CommitmentsSchema = z
   .strict()
   .optional();
 
-export const OpenClawSchema = z
+export const EVESchema = z
   .object({
     $schema: z.string().optional(),
     meta: z
@@ -667,7 +667,7 @@ export const OpenClawSchema = z
                 mcpCommand: z.string().optional(),
                 mcpArgs: z.array(z.string()).optional(),
                 driver: z
-                  .union([z.literal("openclaw"), z.literal("clawd"), z.literal("existing-session")])
+                  .union([z.literal("eve"), z.literal("clawd"), z.literal("existing-session")])
                   .optional(),
                 headless: z.boolean().optional(),
                 executablePath: z.string().optional(),

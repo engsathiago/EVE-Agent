@@ -1,12 +1,12 @@
 // Migrate Hermes provider module implements model/runtime integration.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { MigrationProviderContext } from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import type { MigrationProviderContext } from "eve-agent/plugin-sdk/plugin-entry";
+import type { EVEConfig } from "eve-agent/plugin-sdk/provider-auth";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 
 const tempRoots = new Set<string>();
-const TEMP_ROOT_PREFIX = "openclaw-migrate-hermes-";
+const TEMP_ROOT_PREFIX = "eve-migrate-hermes-";
 
 function noop() {}
 
@@ -18,7 +18,7 @@ const logger: MigrationProviderContext["logger"] = {
 };
 
 export async function makeTempRoot() {
-  const root = await fs.mkdtemp(path.join(resolvePreferredOpenClawTmpDir(), TEMP_ROOT_PREFIX));
+  const root = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), TEMP_ROOT_PREFIX));
   tempRoots.add(root);
   return root;
 }
@@ -34,11 +34,11 @@ export async function writeFile(filePath: string, content: string) {
 }
 
 export function makeConfigRuntime(
-  config: OpenClawConfig,
-  onWrite?: (next: OpenClawConfig) => void,
+  config: EVEConfig,
+  onWrite?: (next: EVEConfig) => void,
 ): NonNullable<MigrationProviderContext["runtime"]> {
-  const commitConfig = (next: OpenClawConfig) => {
-    (Object.keys(config) as Array<keyof OpenClawConfig>).forEach((key) => delete config[key]);
+  const commitConfig = (next: EVEConfig) => {
+    (Object.keys(config) as Array<keyof EVEConfig>).forEach((key) => delete config[key]);
     Object.assign(config, next);
     onWrite?.(next);
   };
@@ -51,7 +51,7 @@ export function makeConfigRuntime(
         mutate,
       }: {
         afterWrite?: unknown;
-        mutate: (draft: OpenClawConfig, context: unknown) => Promise<unknown> | void;
+        mutate: (draft: EVEConfig, context: unknown) => Promise<unknown> | void;
       }) => {
         const next = structuredClone(config);
         const result = await mutate(next, {
@@ -72,7 +72,7 @@ export function makeConfigRuntime(
         nextConfig,
       }: {
         afterWrite?: unknown;
-        nextConfig: OpenClawConfig;
+        nextConfig: EVEConfig;
       }) => {
         commitConfig(nextConfig);
         return { afterWrite, followUp: { mode: "auto", requiresRestart: false }, nextConfig };
@@ -85,10 +85,10 @@ export function makeContext(params: {
   source: string;
   stateDir: string;
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   includeSecrets?: boolean;
   overwrite?: boolean;
-  model?: NonNullable<NonNullable<OpenClawConfig["agents"]>["defaults"]>["model"];
+  model?: NonNullable<NonNullable<EVEConfig["agents"]>["defaults"]>["model"];
   reportDir?: string;
   runtime?: MigrationProviderContext["runtime"];
 }): MigrationProviderContext {
@@ -101,7 +101,7 @@ export function makeContext(params: {
           ...(params.model !== undefined ? { model: params.model } : {}),
         },
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
   return {
     config,
     stateDir: params.stateDir,

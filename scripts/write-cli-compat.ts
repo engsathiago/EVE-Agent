@@ -1,4 +1,4 @@
-// Write Cli Compat script supports OpenClaw repository automation.
+// Write Cli Compat script supports EVE repository automation.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -167,7 +167,7 @@ if (resolved?.accessors) {
 }
 
 const missingExportError = (name: string) =>
-  `Legacy daemon CLI export "${name}" is unavailable in this build. Please upgrade OpenClaw.`;
+  `Legacy daemon CLI export "${name}" is unavailable in this build. Please upgrade EVE.`;
 const buildExportLine = (name: (typeof LEGACY_DAEMON_CLI_EXPORTS)[number]) => {
   const accessor = accessors[name];
   if (accessor) {

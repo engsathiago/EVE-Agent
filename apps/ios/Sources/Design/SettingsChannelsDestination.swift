@@ -1,5 +1,5 @@
-import OpenClawKit
-import OpenClawProtocol
+import EVEKit
+import EVEProtocol
 import SwiftUI
 
 struct SettingsChannelsDestination: View {
@@ -46,7 +46,7 @@ struct SettingsChannelsDestination: View {
                 ProValuePill(value: self.summaryValue, color: self.summaryColor)
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var channelsCard: some View {
@@ -68,7 +68,7 @@ struct SettingsChannelsDestination: View {
                         title: "Channel status unavailable",
                         detail: errorText,
                         value: "error",
-                        color: OpenClawBrand.warn)
+                        color: EVEBrand.warn)
                 } else if !self.canRead {
                     ProStatusRow(
                         icon: "wifi.slash",
@@ -82,7 +82,7 @@ struct SettingsChannelsDestination: View {
                         title: "Loading channels",
                         detail: "Fetching installed channels, accounts, and routing status from the gateway.",
                         value: "loading",
-                        color: OpenClawBrand.accent)
+                        color: EVEBrand.accent)
                 } else if self.channelEntries.isEmpty {
                     ProStatusRow(
                         icon: "tray",
@@ -112,7 +112,7 @@ struct SettingsChannelsDestination: View {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var refreshID: String {
@@ -160,8 +160,8 @@ struct SettingsChannelsDestination: View {
 
     private var summaryColor: Color {
         guard self.canRead else { return .secondary }
-        if self.errorText != nil { return OpenClawBrand.warn }
-        return self.channelEntries.contains(where: { $0.running || $0.connected }) ? OpenClawBrand.ok : OpenClawBrand
+        if self.errorText != nil { return EVEBrand.warn }
+        return self.channelEntries.contains(where: { $0.running || $0.connected }) ? EVEBrand.ok : EVEBrand
             .accent
     }
 
@@ -354,7 +354,7 @@ private struct SettingsChannelRow: View {
                     if let lastError = self.entry.lastError {
                         Text(lastError)
                             .font(.caption2.weight(.medium))
-                            .foregroundStyle(OpenClawBrand.warn)
+                            .foregroundStyle(EVEBrand.warn)
                             .lineLimit(2)
                     }
                 }
@@ -447,9 +447,9 @@ private struct SettingsChannelEntry: Identifiable {
     let accounts: [SettingsChannelAccount]
 
     var color: Color {
-        if self.connected || self.running { return OpenClawBrand.ok }
-        if self.lastError != nil { return OpenClawBrand.warn }
-        return self.configured ? OpenClawBrand.accent : .secondary
+        if self.connected || self.running { return EVEBrand.ok }
+        if self.lastError != nil { return EVEBrand.warn }
+        return self.configured ? EVEBrand.accent : .secondary
     }
 
     var statusValue: String {
@@ -517,9 +517,9 @@ private struct SettingsChannelAccount: Identifiable {
     }
 
     var color: Color {
-        if self.connected || self.running { return OpenClawBrand.ok }
-        if self.lastError != nil { return OpenClawBrand.warn }
-        return self.configured ? OpenClawBrand.accent : .secondary
+        if self.connected || self.running { return EVEBrand.ok }
+        if self.lastError != nil { return EVEBrand.warn }
+        return self.configured ? EVEBrand.accent : .secondary
     }
 }
 
@@ -554,7 +554,7 @@ private enum SettingsChannelError: Error {
 private struct SettingsChannelsStatesPreview: View {
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     self.stateSection("Connected") {
@@ -580,7 +580,7 @@ private struct SettingsChannelsStatesPreview: View {
                             title: "Loading channel status",
                             detail: "Checking installed channel clients and account state.",
                             value: "loading",
-                            color: OpenClawBrand.accent)
+                            color: EVEBrand.accent)
                     }
 
                     self.stateSection("Empty") {
@@ -604,7 +604,7 @@ private struct SettingsChannelsStatesPreview: View {
                             title: "Channel status unavailable",
                             detail: "Gateway returned an unexpected channel status response.",
                             value: "error",
-                            color: OpenClawBrand.warn)
+                            color: EVEBrand.warn)
                     }
 
                     self.stateSection("Offline") {
@@ -616,7 +616,7 @@ private struct SettingsChannelsStatesPreview: View {
                             color: .secondary)
                     }
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -653,7 +653,7 @@ private struct SettingsChannelsStatesPreview: View {
         accounts: [
             SettingsChannelAccount(
                 id: "main",
-                name: "OpenClaw Ops",
+                name: "EVE Ops",
                 configured: true,
                 enabled: true,
                 running: true,

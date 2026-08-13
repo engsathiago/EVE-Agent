@@ -5,11 +5,11 @@ import { existsSync } from "node:fs";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   normalizeStringEntries,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import {
   GATEWAY_CLIENT_CAPS,
   GATEWAY_CLIENT_MODES,
@@ -73,7 +73,7 @@ import {
   updateSessionStore,
 } from "../../config/sessions.js";
 import { resolveMaintenanceConfigFromInput } from "../../config/sessions/store-maintenance.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   assertAgentRunLifecycleGenerationCurrent,
   claimAgentRunContext,
@@ -175,7 +175,7 @@ import type {
 const RESET_COMMAND_RE = /^\/(new|reset)(?:\s+([\s\S]*))?$/i;
 
 type AgentSendSessionLifecycleTransition = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   sessionId: string;
   storePath: string;
@@ -324,7 +324,7 @@ function buildBareSessionResetResponse(params: {
 }
 
 async function deliverBareSessionResetResult(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: GatewayRequestHandlerOptions["context"];
   reason: "new" | "reset";
   sessionId?: string;
@@ -393,7 +393,7 @@ async function deliverBareSessionResetResult(params: {
 }
 
 async function resolveBareSessionResetResult(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: GatewayRequestHandlerOptions["context"];
   reason: "new" | "reset";
   sessionId?: string;
@@ -481,11 +481,11 @@ async function resolveBareSessionResetResult(params: {
 }
 
 function loadBareSessionResetDeliverySession(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   agentId?: string;
 }): {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   entry?: SessionEntry;
   agentId: string;
 } {
@@ -677,7 +677,7 @@ function resolveGatewayAgentTaskTrackingMode(params: {
 }
 
 async function registerPluginSubagentRunFromGateway(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   runId: string;
   childSessionKey: string;
   task: string;
@@ -1684,7 +1684,7 @@ export const agentHandlers: GatewayRequestHandlers = {
       let resolvedSessionId = requestedSessionId;
       let sessionEntry: SessionEntry | undefined;
       let bestEffortDeliver = requestedBestEffortDeliver ?? false;
-      let cfgForAgent: OpenClawConfig | undefined;
+      let cfgForAgent: EVEConfig | undefined;
       let resolvedSessionKey = requestedSessionKey;
       let resolvedSessionAgentId: string | undefined;
       let isNewSession = false;
@@ -1808,7 +1808,7 @@ export const agentHandlers: GatewayRequestHandlers = {
       // identical bytes on the wire. The transient gateway injectTimestamp call
       // is removed — stamping the live turn here would diverge from the bare
       // stored history and bust the prompt cache.
-      // See: https://github.com/openclaw/openclaw/issues/3658
+      // See: https://github.com/engsathiago/eve-agent/issues/3658
 
       if (requestedSessionKey) {
         const sessionLoadOptions = {

@@ -2,7 +2,7 @@
 import {
   hasConfiguredSecretInput,
   normalizeSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
+} from "eve-agent/plugin-sdk/secret-input";
 import type { DiscordCredentialStatus } from "./token.js";
 
 export type InspectedDiscordConfiguredToken = {

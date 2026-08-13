@@ -1,6 +1,6 @@
 // Qa Lab helper module supports run config behavior.
 import path from "node:path";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { defaultQaModelForMode as defaultStaticQaModelForMode } from "./model-selection.js";
 import { defaultQaRuntimeModelForMode } from "./model-selection.runtime.js";
 import {

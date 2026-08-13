@@ -7,13 +7,13 @@ import { VERSION } from "../version.js";
 import { createConfigIO } from "./io.js";
 import { normalizeExecSafeBinProfilesInConfig } from "./normalize-exec-safe-bin.js";
 import { withTempHome } from "./test-helpers.js";
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { EVEConfig } from "./types.eve.js";
 
 async function writeConfig(
   home: string,
-  dirname: ".openclaw",
+  dirname: ".eve",
   port: number,
-  filename = "openclaw.json",
+  filename = "eve.json",
 ) {
   const dir = path.join(home, dirname);
   await fs.mkdir(dir, { recursive: true });
@@ -49,46 +49,46 @@ describe("config io paths", () => {
           },
         },
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
     whatsappSharedAccessDefaults = migrated.config.channels?.whatsapp?.accounts?.default;
   });
 
-  it("uses ~/.openclaw/openclaw.json when config exists", async () => {
+  it("uses ~/.eve/eve.json when config exists", async () => {
     await withTempHome(async (home) => {
-      const configPath = await writeConfig(home, ".openclaw", 19001);
+      const configPath = await writeConfig(home, ".eve", 19001);
       const io = createIoForHome(home);
       expect(io.configPath).toBe(configPath);
     });
   });
 
-  it("defaults to ~/.openclaw/openclaw.json when config is missing", async () => {
+  it("defaults to ~/.eve/eve.json when config is missing", async () => {
     await withTempHome(async (home) => {
       const io = createIoForHome(home);
-      expect(io.configPath).toBe(path.join(home, ".openclaw", "openclaw.json"));
+      expect(io.configPath).toBe(path.join(home, ".eve", "eve.json"));
     });
   });
 
-  it("uses OPENCLAW_HOME for default config path", async () => {
+  it("uses EVE_HOME for default config path", async () => {
     await withTempHome(async (home) => {
       const io = createConfigIO({
-        env: { OPENCLAW_HOME: path.join(home, "svc-home") } as NodeJS.ProcessEnv,
+        env: { EVE_HOME: path.join(home, "svc-home") } as NodeJS.ProcessEnv,
         homedir: () => path.join(home, "ignored-home"),
       });
-      expect(io.configPath).toBe(path.join(home, "svc-home", ".openclaw", "openclaw.json"));
+      expect(io.configPath).toBe(path.join(home, "svc-home", ".eve", "eve.json"));
     });
   });
 
-  it("honors explicit OPENCLAW_CONFIG_PATH override", async () => {
+  it("honors explicit EVE_CONFIG_PATH override", async () => {
     await withTempHome(async (home) => {
-      const customPath = await writeConfig(home, ".openclaw", 20002, "custom.json");
-      const io = createIoForHome(home, { OPENCLAW_CONFIG_PATH: customPath } as NodeJS.ProcessEnv);
+      const customPath = await writeConfig(home, ".eve", 20002, "custom.json");
+      const io = createIoForHome(home, { EVE_CONFIG_PATH: customPath } as NodeJS.ProcessEnv);
       expect(io.configPath).toBe(customPath);
     });
   });
 
   it("logs validation warnings with real line breaks", async () => {
     await withTempHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".eve", "eve.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -127,9 +127,9 @@ describe("config io paths", () => {
     });
   });
 
-  it("explains what to check when config was written by a newer OpenClaw", async () => {
+  it("explains what to check when config was written by a newer EVE", async () => {
     await withTempHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".eve", "eve.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -157,9 +157,9 @@ describe("config io paths", () => {
 
       expect(logger.warn).toHaveBeenCalledWith(
         [
-          `Your OpenClaw config was written by version 9999.1.1, but this command is running ${VERSION}.`,
-          "Check: `openclaw --version`, `which openclaw`, and `openclaw gateway status --deep`.",
-          "If unexpected, update PATH so `openclaw` points to the version you want, or reinstall the Gateway service from that same OpenClaw install.",
+          `Your EVE config was written by version 9999.1.1, but this command is running ${VERSION}.`,
+          "Check: `eve --version`, `which eve`, and `eve gateway status --deep`.",
+          "If unexpected, update PATH so `eve` points to the version you want, or reinstall the Gateway service from that same EVE install.",
         ].join("\n"),
       );
     });
@@ -167,7 +167,7 @@ describe("config io paths", () => {
 
   it("does not warn about newer config during internal update handoff reads", async () => {
     await withTempHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".eve", "eve.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -187,7 +187,7 @@ describe("config io paths", () => {
 
       const io = createConfigIO({
         configPath,
-        env: { HOME: home, OPENCLAW_UPDATE_POST_CORE: "1" } as NodeJS.ProcessEnv,
+        env: { HOME: home, EVE_UPDATE_POST_CORE: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger,
       });

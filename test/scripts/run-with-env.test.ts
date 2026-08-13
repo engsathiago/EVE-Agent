@@ -56,7 +56,7 @@ describe("run-with-env", () => {
   it("parses leading env assignments before the command separator", () => {
     expect(
       parseRunWithEnvArgs([
-        "OPENCLAW_GATEWAY_PROJECT_SHARDS=1",
+        "EVE_GATEWAY_PROJECT_SHARDS=1",
         "EMPTY=",
         "--",
         "node",
@@ -65,7 +65,7 @@ describe("run-with-env", () => {
       ]),
     ).toEqual({
       env: {
-        OPENCLAW_GATEWAY_PROJECT_SHARDS: "1",
+        EVE_GATEWAY_PROJECT_SHARDS: "1",
         EMPTY: "",
       },
       command: "node",
@@ -74,7 +74,7 @@ describe("run-with-env", () => {
   });
 
   it("rejects missing command separators", () => {
-    expect(() => parseRunWithEnvArgs(["OPENCLAW_GATEWAY_PROJECT_SHARDS=1", "node"])).toThrow(
+    expect(() => parseRunWithEnvArgs(["EVE_GATEWAY_PROJECT_SHARDS=1", "node"])).toThrow(
       /Usage:/u,
     );
   });
@@ -92,7 +92,7 @@ describe("run-with-env", () => {
 
   it("keeps command help passthrough after the separator", () => {
     expect(
-      isRunWithEnvHelpRequest(["OPENCLAW_GATEWAY_PROJECT_SHARDS=1", "--", "node", "--help"]),
+      isRunWithEnvHelpRequest(["EVE_GATEWAY_PROJECT_SHARDS=1", "--", "node", "--help"]),
     ).toBe(false);
   });
 
@@ -127,10 +127,10 @@ describe("run-with-env", () => {
 
   it("rejects malformed force-kill grace configuration before spawning", () => {
     expect(resolveForceKillDelayMs({})).toBe(5_000);
-    expect(resolveForceKillDelayMs({ OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS: "250" })).toBe(250);
+    expect(resolveForceKillDelayMs({ EVE_RUN_WITH_ENV_FORCE_KILL_MS: "250" })).toBe(250);
     for (const value of ["0", "-1", "1e3", "100ms"]) {
-      expect(() => resolveForceKillDelayMs({ OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS: value })).toThrow(
-        "OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer",
+      expect(() => resolveForceKillDelayMs({ EVE_RUN_WITH_ENV_FORCE_KILL_MS: value })).toThrow(
+        "EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer",
       );
     }
 
@@ -138,7 +138,7 @@ describe("run-with-env", () => {
       process.execPath,
       [
         "scripts/run-with-env.mjs",
-        "OPENCLAW_RUN_WITH_ENV_SIGNAL_TEST=1",
+        "EVE_RUN_WITH_ENV_SIGNAL_TEST=1",
         "--",
         "node",
         "-e",
@@ -147,21 +147,21 @@ describe("run-with-env", () => {
       {
         cwd: process.cwd(),
         encoding: "utf8",
-        env: { ...process.env, OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS: "100ms" },
+        env: { ...process.env, EVE_RUN_WITH_ENV_FORCE_KILL_MS: "100ms" },
       },
     );
 
     expect(result.status).toBe(2);
     expect(result.stdout).toBe("");
     expect(result.stderr).toContain(
-      "OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer",
+      "EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer",
     );
   });
 
   it.runIf(process.platform !== "win32").each(["SIGTERM", "SIGHUP", "SIGINT"] as const)(
     "forwards parent %s to the wrapped command",
     async (signal) => {
-      const tempDir = mkdtempSync(path.join(tmpdir(), "openclaw-run-with-env-signals-"));
+      const tempDir = mkdtempSync(path.join(tmpdir(), "eve-run-with-env-signals-"));
       const readyFile = path.join(tempDir, "ready");
       const signaledFile = path.join(tempDir, "signaled");
       const handlerLines = ["SIGTERM", "SIGHUP", "SIGINT"].flatMap((handledSignal) => [
@@ -208,7 +208,7 @@ describe("run-with-env", () => {
   it.runIf(process.platform !== "win32")(
     "cleans up wrapped command descendants on wrapper shutdown",
     async () => {
-      const tempDir = mkdtempSync(path.join(tmpdir(), "openclaw-run-with-env-descendants-"));
+      const tempDir = mkdtempSync(path.join(tmpdir(), "eve-run-with-env-descendants-"));
       const readyFile = path.join(tempDir, "ready");
       const grandchildReadyFile = path.join(tempDir, "grandchild-ready");
       const grandchildPidFile = path.join(tempDir, "grandchild-pid");
@@ -242,7 +242,7 @@ describe("run-with-env", () => {
         ],
         {
           cwd: process.cwd(),
-          env: { ...process.env, OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS: "200" },
+          env: { ...process.env, EVE_RUN_WITH_ENV_FORCE_KILL_MS: "200" },
           stdio: "ignore",
         },
       );
@@ -279,7 +279,7 @@ describe("run-with-env", () => {
   it.runIf(process.platform !== "win32")(
     "lets wrapped command descendants finish during the shutdown grace period",
     async () => {
-      const tempDir = mkdtempSync(path.join(tmpdir(), "openclaw-run-with-env-grace-"));
+      const tempDir = mkdtempSync(path.join(tmpdir(), "eve-run-with-env-grace-"));
       const readyFile = path.join(tempDir, "ready");
       const gracefulFile = path.join(tempDir, "graceful");
       const grandchildReadyFile = path.join(tempDir, "grandchild-ready");
@@ -316,7 +316,7 @@ describe("run-with-env", () => {
         ],
         {
           cwd: process.cwd(),
-          env: { ...process.env, OPENCLAW_RUN_WITH_ENV_FORCE_KILL_MS: "1000" },
+          env: { ...process.env, EVE_RUN_WITH_ENV_FORCE_KILL_MS: "1000" },
           stdio: "ignore",
         },
       );
@@ -344,7 +344,7 @@ describe("run-with-env", () => {
       process.execPath,
       [
         "scripts/run-with-env.mjs",
-        "OPENCLAW_RUN_WITH_ENV_SIGNAL_TEST=1",
+        "EVE_RUN_WITH_ENV_SIGNAL_TEST=1",
         "--",
         "node",
         "-e",
@@ -362,7 +362,7 @@ describe("run-with-env", () => {
       process.execPath,
       [
         "scripts/run-with-env.mjs",
-        "OPENCLAW_RUN_WITH_ENV_SIGNAL_TEST=1",
+        "EVE_RUN_WITH_ENV_SIGNAL_TEST=1",
         "--",
         "node",
         "-e",

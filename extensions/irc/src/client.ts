@@ -1,8 +1,8 @@
 // Irc plugin module implements client behavior.
 import net from "node:net";
 import tls from "node:tls";
-import { withTimeout } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { withTimeout } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   parseIrcLine,
   parseIrcPrefix,
@@ -69,7 +69,7 @@ function toError(err: unknown): Error {
 function buildFallbackNick(nick: string): string {
   const normalized = nick.replace(/\s+/g, "");
   const safe = normalized.replace(/[^A-Za-z0-9_\-[\]\\`^{}|]/g, "");
-  const base = safe || "openclaw";
+  const base = safe || "eve";
   const suffix = "_";
   const maxNickLen = 30;
   if (base.length >= maxNickLen) {

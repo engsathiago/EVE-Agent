@@ -2,9 +2,9 @@
  * Watchdog and supervisor key helpers for CLI runner reliability.
  */
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type { CliBackendConfig } from "../../config/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { AGENT_LANE_SUBAGENT } from "../lanes.js";
 import {
   CLI_FRESH_WATCHDOG_DEFAULTS,
@@ -97,7 +97,7 @@ export function resolveCliNoOutputTimeoutMs(params: {
 }
 
 export function resolveCliRunTimeoutOverrideMs(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   lane?: string;
   timeoutMs: number;
   runTimeoutOverrideMs?: number;

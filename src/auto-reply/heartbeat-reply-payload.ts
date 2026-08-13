@@ -1,5 +1,5 @@
 // Heartbeat reply payload selector for multi-payload auto-reply results.
-import { hasOutboundReplyContent } from "openclaw/plugin-sdk/reply-payload";
+import { hasOutboundReplyContent } from "eve-agent/plugin-sdk/reply-payload";
 import type { ReplyPayload } from "./types.js";
 
 /** Pick the last outbound-capable reply payload for heartbeat delivery. */

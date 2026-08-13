@@ -4,19 +4,19 @@ import { constants, accessSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
-import { createActionGate } from "openclaw/plugin-sdk/channel-actions";
+import { createActionGate } from "eve-agent/plugin-sdk/channel-actions";
 import {
   createMessageReceiptFromOutboundResults,
   type MessageReceipt,
   type MessageReceiptPartKind,
   type MessageReceiptSourceResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { kindFromMime, resolveOutboundAttachmentFromUrl } from "openclaw/plugin-sdk/media-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-chunking";
-import { stripInlineDirectiveTagsForDelivery } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveMarkdownTableMode } from "eve-agent/plugin-sdk/markdown-table-runtime";
+import { kindFromMime, resolveOutboundAttachmentFromUrl } from "eve-agent/plugin-sdk/media-runtime";
+import { requireRuntimeConfig } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { convertMarkdownTables } from "eve-agent/plugin-sdk/text-chunking";
+import { stripInlineDirectiveTagsForDelivery } from "eve-agent/plugin-sdk/text-chunking";
 import { resolveIMessageAccount, type ResolvedIMessageAccount } from "./accounts.js";
 import {
   appendIMessageApprovalReactionHintForOutboundMessage,
@@ -61,7 +61,7 @@ type IMessageSendOpts = {
   timeoutMs?: number;
   chatId?: number;
   client?: IMessageRpcClient;
-  config: OpenClawConfig;
+  config: EVEConfig;
   account?: ResolvedIMessageAccount;
   resolveAttachmentImpl?: (
     mediaUrl: string,

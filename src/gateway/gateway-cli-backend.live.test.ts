@@ -8,7 +8,7 @@ import { resolveCliBackendConfig, resolveCliBackendLiveTest } from "../agents/cl
 import { isLiveTestEnabled } from "../agents/live-test-helpers.js";
 import { shouldSkipLiveProviderDrift } from "../agents/live-test-provider-drift.js";
 import { parseModelRef } from "../agents/model-selection.js";
-import { clearRuntimeConfigSnapshot, type OpenClawConfig } from "../config/config.js";
+import { clearRuntimeConfigSnapshot, type EVEConfig } from "../config/config.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import {
   applyCliBackendLiveEnv,
@@ -43,14 +43,14 @@ import { startGatewayServer } from "./server.js";
 import { extractPayloadText } from "./test-helpers.agent-results.js";
 
 const LIVE = isLiveTestEnabled();
-const CLI_LIVE = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND);
-const CLI_RESUME = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND_RESUME_PROBE);
-const CLI_DEBUG = isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND_DEBUG);
+const CLI_LIVE = isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND);
+const CLI_RESUME = isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND_RESUME_PROBE);
+const CLI_DEBUG = isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND_DEBUG);
 const CLI_CI_SAFE_CODEX_CONFIG = isTruthyEnvValue(
-  process.env.OPENCLAW_LIVE_CLI_BACKEND_USE_CI_SAFE_CODEX_CONFIG,
+  process.env.EVE_LIVE_CLI_BACKEND_USE_CI_SAFE_CODEX_CONFIG,
 );
 const CLI_MCP_SCHEMA_PROBE = isTruthyEnvValue(
-  process.env.OPENCLAW_LIVE_CLI_BACKEND_MCP_SCHEMA_PROBE,
+  process.env.EVE_LIVE_CLI_BACKEND_MCP_SCHEMA_PROBE,
 );
 const CLI_ALLOW_PROVIDER_SKIP = shouldAllowCliBackendLiveProviderSkip();
 const describeLive = LIVE && CLI_LIVE ? describe : describe.skip;
@@ -62,7 +62,7 @@ const DEFAULT_PROVIDER = "claude-cli";
 const DEFAULT_MODEL =
   resolveCliBackendLiveTest(DEFAULT_PROVIDER)?.defaultModelRef ?? "claude-cli/claude-sonnet-4-6";
 const CLI_BACKEND_REQUEST_TIMEOUT_MS = parsePositiveIntegerEnv(
-  "OPENCLAW_LIVE_CLI_BACKEND_REQUEST_TIMEOUT_MS",
+  "EVE_LIVE_CLI_BACKEND_REQUEST_TIMEOUT_MS",
   15 * 60_000,
 );
 const CLI_BACKEND_CODEX_TIMEOUT_RETRY_ATTEMPTS = 2;
@@ -120,7 +120,7 @@ function resolveCliBackendAgentAttemptTimeouts(): CliBackendAgentAttemptTimeouts
 
 function openAiProviderConfigForCodexCli(
   modelKey: string,
-): NonNullable<NonNullable<OpenClawConfig["models"]>["providers"]>["openai"] {
+): NonNullable<NonNullable<EVEConfig["models"]>["providers"]>["openai"] {
   const parsed = parseModelRef(modelKey, DEFAULT_PROVIDER);
   const modelId = parsed?.model?.trim() || "gpt-5.5";
   return {
@@ -236,7 +236,7 @@ async function createMcpSchemaProbePlugin(tempDir: string): Promise<string> {
   await fs.mkdir(pluginDir, { recursive: true });
   const pluginFile = path.join(pluginDir, "index.cjs");
   await fs.writeFile(
-    path.join(pluginDir, "openclaw.plugin.json"),
+    path.join(pluginDir, "eve.plugin.json"),
     `${JSON.stringify(
       {
         id: MCP_SCHEMA_PROBE_PLUGIN_ID,
@@ -275,8 +275,8 @@ describeLive("gateway live (cli backend)", () => {
     async () => {
       const preservedEnv = new Set(
         parseJsonStringArray(
-          "OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV",
-          process.env.OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV,
+          "EVE_LIVE_CLI_BACKEND_PRESERVE_ENV",
+          process.env.EVE_LIVE_CLI_BACKEND_PRESERVE_ENV,
         ) ?? [],
       );
       const previousEnv = snapshotCliBackendLiveEnv();
@@ -285,11 +285,11 @@ describeLive("gateway live (cli backend)", () => {
       applyCliBackendLiveEnv(preservedEnv);
 
       const token = `test-${randomUUID()}`;
-      process.env.OPENCLAW_GATEWAY_TOKEN = token;
+      process.env.EVE_GATEWAY_TOKEN = token;
       const port = await getFreeGatewayPort();
       logCliBackendLiveStep("env-ready", { port });
 
-      const rawModel = process.env.OPENCLAW_LIVE_CLI_BACKEND_MODEL ?? DEFAULT_MODEL;
+      const rawModel = process.env.EVE_LIVE_CLI_BACKEND_MODEL ?? DEFAULT_MODEL;
       const initialParsed = parseModelRef(rawModel, "claude-cli");
       const initialProviderId = initialParsed?.provider ?? "";
       const initialModelKey = initialParsed
@@ -325,10 +325,10 @@ describeLive("gateway live (cli backend)", () => {
       });
       const providerDefaults = backendResolved?.config;
 
-      const cliCommand = process.env.OPENCLAW_LIVE_CLI_BACKEND_COMMAND ?? providerDefaults?.command;
+      const cliCommand = process.env.EVE_LIVE_CLI_BACKEND_COMMAND ?? providerDefaults?.command;
       if (!cliCommand) {
         throw new Error(
-          `OPENCLAW_LIVE_CLI_BACKEND_COMMAND is required for provider "${providerId}".`,
+          `EVE_LIVE_CLI_BACKEND_COMMAND is required for provider "${providerId}".`,
         );
       }
 
@@ -340,8 +340,8 @@ describeLive("gateway live (cli backend)", () => {
 
       const cliClearEnv =
         parseJsonStringArray(
-          "OPENCLAW_LIVE_CLI_BACKEND_CLEAR_ENV",
-          process.env.OPENCLAW_LIVE_CLI_BACKEND_CLEAR_ENV,
+          "EVE_LIVE_CLI_BACKEND_CLEAR_ENV",
+          process.env.EVE_LIVE_CLI_BACKEND_CLEAR_ENV,
         ) ??
         providerDefaults?.clearEnv ??
         [];
@@ -352,27 +352,27 @@ describeLive("gateway live (cli backend)", () => {
           .filter((entry): entry is [string, string] => typeof entry[1] === "string"),
       );
       const cliImageArg =
-        process.env.OPENCLAW_LIVE_CLI_BACKEND_IMAGE_ARG?.trim() || providerDefaults?.imageArg;
+        process.env.EVE_LIVE_CLI_BACKEND_IMAGE_ARG?.trim() || providerDefaults?.imageArg;
       const cliImageMode =
-        parseImageMode(process.env.OPENCLAW_LIVE_CLI_BACKEND_IMAGE_MODE) ??
+        parseImageMode(process.env.EVE_LIVE_CLI_BACKEND_IMAGE_MODE) ??
         providerDefaults?.imageMode;
       if (cliImageMode && !cliImageArg) {
         throw new Error(
-          "OPENCLAW_LIVE_CLI_BACKEND_IMAGE_MODE requires OPENCLAW_LIVE_CLI_BACKEND_IMAGE_ARG.",
+          "EVE_LIVE_CLI_BACKEND_IMAGE_MODE requires EVE_LIVE_CLI_BACKEND_IMAGE_ARG.",
         );
       }
 
-      const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-live-cli-"));
+      const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-live-cli-"));
       const stateDir = path.join(tempDir, "state");
       await fs.mkdir(stateDir, { recursive: true });
       const schemaProbePluginPath = CLI_MCP_SCHEMA_PROBE
         ? await createMcpSchemaProbePlugin(tempDir)
         : undefined;
       const useMinimalToolsProfile = providerId === "codex-cli" && !schemaProbePluginPath;
-      process.env.OPENCLAW_STATE_DIR = stateDir;
+      process.env.EVE_STATE_DIR = stateDir;
       const bundleMcp = backendResolved?.bundleMcp === true;
       const bootstrapWorkspace = await createBootstrapWorkspace(tempDir);
-      const disableMcpConfig = process.env.OPENCLAW_LIVE_CLI_BACKEND_DISABLE_MCP_CONFIG !== "0";
+      const disableMcpConfig = process.env.EVE_LIVE_CLI_BACKEND_DISABLE_MCP_CONFIG !== "0";
       let cliArgs = baseCliArgs;
       if (
         bundleMcp &&
@@ -384,8 +384,8 @@ describeLive("gateway live (cli backend)", () => {
         cliArgs = withClaudeMcpConfigOverrides(baseCliArgs, mcpConfigPath);
       }
 
-      const cfg: OpenClawConfig = {};
-      const cfgWithCliBackends = cfg as OpenClawConfig & {
+      const cfg: EVEConfig = {};
+      const cfgWithCliBackends = cfg as EVEConfig & {
         agents?: {
           defaults?: {
             cliBackends?: Record<string, Record<string, unknown>>;
@@ -471,9 +471,9 @@ describeLive("gateway live (cli backend)", () => {
           },
         },
       };
-      const tempConfigPath = path.join(tempDir, "openclaw.json");
+      const tempConfigPath = path.join(tempDir, "eve.json");
       await fs.writeFile(tempConfigPath, `${JSON.stringify(nextCfg, null, 2)}\n`);
-      process.env.OPENCLAW_CONFIG_PATH = tempConfigPath;
+      process.env.EVE_CONFIG_PATH = tempConfigPath;
       const deviceIdentity = await ensurePairedTestGatewayClientIdentity();
       let server: Awaited<ReturnType<typeof startGatewayServer>> | undefined;
       let client: Awaited<ReturnType<typeof connectTestGatewayClient>> | undefined;

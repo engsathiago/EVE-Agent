@@ -79,7 +79,7 @@ function createExternalFeishuSchemaRegistry(): PluginManifestRegistry {
     diagnostics: [],
     plugins: [
       createPluginManifestRecord({
-        id: "openclaw-lark",
+        id: "eve-lark",
         origin: "global",
         channels: ["feishu"],
         channelConfigs: {
@@ -204,7 +204,7 @@ function createPluginManifestRecord(
     channels: [],
     cliBackends: [],
     hooks: [],
-    manifestPath: `/tmp/${overrides.id}/openclaw.plugin.json`,
+    manifestPath: `/tmp/${overrides.id}/eve.plugin.json`,
     origin: "bundled",
     providers: [],
     rootDir: `/tmp/${overrides.id}`,
@@ -248,7 +248,7 @@ vi.mock("../channels/plugins/legacy-config.js", () => ({
 }));
 
 vi.mock("./zod-schema.js", () => ({
-  OpenClawSchema: {
+  EVESchema: {
     safeParse: (raw: unknown) => ({ success: true, data: raw }),
   },
 }));
@@ -583,7 +583,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
           appId: "app-id",
           appSecret: "secret",
           replyMode: "thread",
-          footer: "OpenClaw",
+          footer: "EVE",
         },
       },
     });
@@ -610,7 +610,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
         expect.objectContaining({
           path: "channels.feishu",
           message:
-            'invalid config for plugin openclaw-lark: must not have additional properties: "unsupportedField"',
+            'invalid config for plugin eve-lark: must not have additional properties: "unsupportedField"',
         }),
       );
     }
@@ -637,7 +637,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
         expect.objectContaining({
           path: "channels.feishu",
           message:
-            'invalid config for plugin openclaw-lark: must not have additional properties: "unsupportedField"',
+            'invalid config for plugin eve-lark: must not have additional properties: "unsupportedField"',
         }),
       );
       expect(result.issues.map((issue) => issue.message)).not.toContain(
@@ -667,7 +667,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
         expect.objectContaining({
           path: "channels.feishu",
           message:
-            'invalid config for plugin openclaw-lark: must not have additional properties: "unsupportedField"',
+            'invalid config for plugin eve-lark: must not have additional properties: "unsupportedField"',
         }),
       );
       expect(result.issues.map((issue) => issue.message)).not.toContain(
@@ -677,7 +677,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
   });
 
   it("sanitizes the schema owner in validation diagnostics", () => {
-    const unsafeId = `openclaw${String.fromCharCode(10)}${String.fromCharCode(27)}[31m-lark`;
+    const unsafeId = `eve${String.fromCharCode(10)}${String.fromCharCode(27)}[31m-lark`;
     const registry = createExternalFeishuSchemaRegistry();
     registry.plugins[0] = {
       ...registry.plugins[0],
@@ -701,7 +701,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
         expect.objectContaining({
           path: "channels.feishu",
           message:
-            'invalid config for plugin openclaw-lark: must not have additional properties: "unsupportedField"',
+            'invalid config for plugin eve-lark: must not have additional properties: "unsupportedField"',
         }),
       );
     }
@@ -725,7 +725,7 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
         }),
       );
       expect(result.issues[0]?.message).not.toContain("Telegram groups");
-      expect(result.issues[0]?.message).not.toContain("openclaw doctor --fix");
+      expect(result.issues[0]?.message).not.toContain("eve doctor --fix");
     }
   });
 });

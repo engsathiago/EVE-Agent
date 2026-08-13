@@ -2,9 +2,9 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { normalizeChatType } from "../../channels/chat-type.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   buildAgentMainSessionKey,
   buildAgentPeerSessionKey,
@@ -55,7 +55,7 @@ function resolvePolicyDirectPeerId(ctx?: RuntimePolicyContext): string | undefin
 }
 
 function isMainSessionAlias(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId: string;
   sessionKey: string;
 }): boolean {
@@ -87,7 +87,7 @@ function isMainSessionAlias(params: {
 /** Resolves the session key used for runtime policy checks and direct-message scoping. */
 /** Resolves the session key used for sandbox/tool/runtime policy lookups. */
 export function resolveRuntimePolicySessionKey(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   ctx?: RuntimePolicyContext;
   sessionKey?: string | null;
 }): string | undefined {

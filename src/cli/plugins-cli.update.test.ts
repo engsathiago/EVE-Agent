@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { hashConfigIncludeRaw } from "../config/includes.js";
 import {
   loadConfig,
@@ -23,13 +23,13 @@ import {
   writePersistedInstalledPluginIndexInstallRecords,
 } from "./plugins-cli-test-helpers.js";
 
-const ORIGINAL_OPENCLAW_NIX_MODE = process.env.OPENCLAW_NIX_MODE;
+const ORIGINAL_EVE_NIX_MODE = process.env.EVE_NIX_MODE;
 
 function createTrackedPluginConfig(params: {
   pluginId: string;
   spec: string;
   resolvedName?: string;
-}): OpenClawConfig {
+}): EVEConfig {
   return {
     plugins: {
       installs: {
@@ -41,7 +41,7 @@ function createTrackedPluginConfig(params: {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function expectRestartNoticeLogged() {
@@ -62,17 +62,17 @@ function expectSingleCallParams(mockFn: ReturnType<typeof vi.fn>) {
 }
 
 function primeUpdateConfigSnapshot(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   configPath?: string;
-  loadedConfig?: OpenClawConfig;
+  loadedConfig?: EVEConfig;
   parsed?: Record<string, unknown>;
-  runtimeConfig?: OpenClawConfig;
-  sourceConfig?: OpenClawConfig;
+  runtimeConfig?: EVEConfig;
+  sourceConfig?: EVEConfig;
   valid?: boolean;
   includeFileHashesForWrite?: Record<string, string>;
   includeFileTargetsForWrite?: Record<string, string>;
 }): void {
-  const configPath = params.configPath ?? path.join(process.cwd(), "openclaw.json5");
+  const configPath = params.configPath ?? path.join(process.cwd(), "eve.json5");
   const parsed = params.parsed ?? (params.config as Record<string, unknown>);
   const sourceConfig = params.sourceConfig ?? params.config;
   const runtimeConfig = params.runtimeConfig ?? params.config;
@@ -103,10 +103,10 @@ function primeUpdateConfigSnapshot(params: {
   });
 }
 
-function primeBlockedUpdateConfig(section: "hooks" | "plugins", config: OpenClawConfig): void {
+function primeBlockedUpdateConfig(section: "hooks" | "plugins", config: EVEConfig): void {
   const externalPath = path.join(
     path.parse(process.cwd()).root,
-    "external-openclaw",
+    "external-eve",
     `${section}.json5`,
   );
   primeUpdateConfigSnapshot({
@@ -124,10 +124,10 @@ describe("plugins cli update", () => {
   });
 
   afterEach(() => {
-    if (ORIGINAL_OPENCLAW_NIX_MODE === undefined) {
-      delete process.env.OPENCLAW_NIX_MODE;
+    if (ORIGINAL_EVE_NIX_MODE === undefined) {
+      delete process.env.EVE_NIX_MODE;
     } else {
-      process.env.OPENCLAW_NIX_MODE = ORIGINAL_OPENCLAW_NIX_MODE;
+      process.env.EVE_NIX_MODE = ORIGINAL_EVE_NIX_MODE;
     }
   });
 
@@ -146,17 +146,17 @@ describe("plugins cli update", () => {
   });
 
   it("refuses plugin updates in Nix mode before package-manager work", async () => {
-    const previous = process.env.OPENCLAW_NIX_MODE;
-    process.env.OPENCLAW_NIX_MODE = "1";
+    const previous = process.env.EVE_NIX_MODE;
+    process.env.EVE_NIX_MODE = "1";
     try {
       await expect(runPluginsCommand(["plugins", "update", "--all"])).rejects.toThrow(
-        "OPENCLAW_NIX_MODE=1",
+        "EVE_NIX_MODE=1",
       );
     } finally {
       if (previous === undefined) {
-        delete process.env.OPENCLAW_NIX_MODE;
+        delete process.env.EVE_NIX_MODE;
       } else {
-        process.env.OPENCLAW_NIX_MODE = previous;
+        process.env.EVE_NIX_MODE = previous;
       }
     }
 
@@ -179,7 +179,7 @@ describe("plugins cli update", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const nextConfig = {
       hooks: {
         internal: {
@@ -192,7 +192,7 @@ describe("plugins cli update", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     primeUpdateConfigSnapshot({
       config: cfg,
@@ -254,7 +254,7 @@ describe("plugins cli update", () => {
           alpha: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const snapshotConfig = {
       hooks: {
         internal: {
@@ -262,7 +262,7 @@ describe("plugins cli update", () => {
             "new-hooks": {
               source: "npm",
               spec: "@acme/new-hooks@1.0.0",
-              installPath: "~/.openclaw/hooks/new-hooks",
+              installPath: "~/.eve/hooks/new-hooks",
             },
           },
         },
@@ -272,11 +272,11 @@ describe("plugins cli update", () => {
           alpha: { enabled: false },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const installRecords = {
       alpha: {
         source: "npm",
-        spec: "@openclaw/alpha@1.0.0",
+        spec: "@eve/alpha@1.0.0",
         installPath: "/tmp/alpha",
       },
     } as const;
@@ -291,7 +291,7 @@ describe("plugins cli update", () => {
               "new-hooks": {
                 source: "npm",
                 spec: "@acme/new-hooks@1.0.0",
-                installPath: "/home/test/.openclaw/hooks/new-hooks",
+                installPath: "/home/test/.eve/hooks/new-hooks",
               },
             },
           },
@@ -302,12 +302,12 @@ describe("plugins cli update", () => {
       },
     });
     setInstalledPluginIndexInstallRecords(installRecords);
-    updateNpmInstalledPlugins.mockImplementation(async (params: { config: OpenClawConfig }) => ({
+    updateNpmInstalledPlugins.mockImplementation(async (params: { config: EVEConfig }) => ({
       config: params.config,
       changed: false,
       outcomes: [],
     }));
-    updateNpmInstalledHookPacks.mockImplementation(async (params: { config: OpenClawConfig }) => ({
+    updateNpmInstalledHookPacks.mockImplementation(async (params: { config: EVEConfig }) => ({
       config: params.config,
       changed: false,
       outcomes: [],
@@ -325,7 +325,7 @@ describe("plugins cli update", () => {
             "new-hooks": {
               source: "npm",
               spec: "@acme/new-hooks@1.0.0",
-              installPath: "/home/test/.openclaw/hooks/new-hooks",
+              installPath: "/home/test/.eve/hooks/new-hooks",
             },
           },
         },
@@ -344,7 +344,7 @@ describe("plugins cli update", () => {
   it("uses resolved shipped install records instead of raw env placeholders", async () => {
     const cfg = createTrackedPluginConfig({
       pluginId: "alpha",
-      spec: "@openclaw/alpha@1.0.0",
+      spec: "@eve/alpha@1.0.0",
     });
     primeUpdateConfigSnapshot({
       config: cfg,
@@ -375,7 +375,7 @@ describe("plugins cli update", () => {
   it("rejects invalid config snapshots before updater side effects", async () => {
     const cfg = createTrackedPluginConfig({
       pluginId: "alpha",
-      spec: "@openclaw/alpha@1.0.0",
+      spec: "@eve/alpha@1.0.0",
     });
     primeUpdateConfigSnapshot({
       config: cfg,
@@ -407,7 +407,7 @@ describe("plugins cli update", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("hooks", cfg);
 
     await expect(runPluginsCommand(["plugins", "update", "--all"])).rejects.toThrow("__exit__:1");
@@ -421,23 +421,23 @@ describe("plugins cli update", () => {
   });
 
   it("allows index-only legacy id migration when an included plugins section has no references", async () => {
-    const cfg = { plugins: {} } as OpenClawConfig;
+    const cfg = { plugins: {} } as EVEConfig;
     const pluginRecords = createTrackedPluginConfig({
       pluginId: "voice-call",
-      spec: "@openclaw/voice-call@1.0.0",
+      spec: "@eve/voice-call@1.0.0",
     }).plugins?.installs;
     const nextConfig = {
       ...cfg,
       plugins: {
         ...cfg.plugins,
         installs: {
-          "@openclaw/voice-call": {
+          "@eve/voice-call": {
             source: "npm",
-            spec: "@openclaw/voice-call@1.1.0",
+            spec: "@eve/voice-call@1.1.0",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
     setInstalledPluginIndexInstallRecords(pluginRecords ?? {});
     updateNpmInstalledPlugins.mockResolvedValue({
@@ -445,9 +445,9 @@ describe("plugins cli update", () => {
       changed: true,
       outcomes: [
         {
-          pluginId: "@openclaw/voice-call",
+          pluginId: "@eve/voice-call",
           status: "updated",
-          message: "Updated @openclaw/voice-call.",
+          message: "Updated @eve/voice-call.",
         },
       ],
     });
@@ -471,7 +471,7 @@ describe("plugins cli update", () => {
           [pluginId]: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const pluginRecords = {
       [pluginId]: {
         source: "git",
@@ -485,7 +485,7 @@ describe("plugins cli update", () => {
         ...cfg.plugins,
         installs: pluginRecords,
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
     setInstalledPluginIndexInstallRecords(pluginRecords);
     updateNpmInstalledPlugins.mockResolvedValue({
@@ -509,12 +509,12 @@ describe("plugins cli update", () => {
           "voice-call": { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
     setInstalledPluginIndexInstallRecords({
       "voice-call": {
         source: "npm",
-        spec: "@openclaw/voice-call",
+        spec: "@eve/voice-call",
         installPath: "/tmp/voice-call",
       },
     });
@@ -536,8 +536,8 @@ describe("plugins cli update", () => {
       label: "ClawHub",
       record: {
         source: "clawhub",
-        spec: "clawhub:@openclaw/voice-call",
-        clawhubPackage: "@openclaw/voice-call",
+        spec: "clawhub:@eve/voice-call",
+        clawhubPackage: "@eve/voice-call",
         installPath: "/tmp/voice-call",
       },
     },
@@ -545,7 +545,7 @@ describe("plugins cli update", () => {
       label: "git",
       record: {
         source: "git",
-        spec: "https://github.com/openclaw/voice-call.git",
+        spec: "https://github.com/eve/voice-call.git",
         installPath: "/tmp/voice-call",
       },
     },
@@ -567,7 +567,7 @@ describe("plugins cli update", () => {
             "voice-call": { enabled: true },
           },
         },
-      } as OpenClawConfig;
+      } as EVEConfig;
       primeBlockedUpdateConfig("plugins", cfg);
       setInstalledPluginIndexInstallRecords({
         "voice-call": record,
@@ -588,14 +588,14 @@ describe("plugins cli update", () => {
   it("blocks possible legacy id migration when an included plugins section is unresolved", async () => {
     const externalPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "plugins.json5",
     );
-    const cfg = { plugins: {} } as OpenClawConfig;
+    const cfg = { plugins: {} } as EVEConfig;
     primeUpdateConfigSnapshot({
       config: cfg,
       parsed: { plugins: { $include: externalPath } },
-      sourceConfig: { plugins: { $include: externalPath } } as unknown as OpenClawConfig,
+      sourceConfig: { plugins: { $include: externalPath } } as unknown as EVEConfig,
       includeFileTargetsForWrite: {
         [externalPath]: externalPath,
       },
@@ -603,7 +603,7 @@ describe("plugins cli update", () => {
     setInstalledPluginIndexInstallRecords({
       "voice-call": {
         source: "npm",
-        spec: "@openclaw/voice-call",
+        spec: "@eve/voice-call",
         installPath: "/tmp/voice-call",
       },
     });
@@ -636,12 +636,12 @@ describe("plugins cli update", () => {
         installs: {
           legacy: {
             source: "npm",
-            spec: "@openclaw/legacy@1.0.0",
+            spec: "@eve/legacy@1.0.0",
             installPath: "/tmp/legacy",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
 
     await expect(runPluginsCommand(["plugins", "update", "demo-hooks"])).rejects.toThrow(
@@ -667,7 +667,7 @@ describe("plugins cli update", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
     setInstalledPluginIndexInstallRecords(cfg.plugins?.installs ?? {});
     updateNpmInstalledPlugins.mockResolvedValue({
@@ -690,7 +690,7 @@ describe("plugins cli update", () => {
           demo: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeBlockedUpdateConfig("plugins", cfg);
     setInstalledPluginIndexInstallRecords({
       demo: {
@@ -720,17 +720,17 @@ describe("plugins cli update", () => {
   });
 
   it("preserves an include-owned plugins section during legacy-record cleanup", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-update-"));
-    const configPath = path.join(tempRoot, "openclaw.json5");
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-update-"));
+    const configPath = path.join(tempRoot, "eve.json5");
     const pluginsPath = path.join(tempRoot, "plugins.json5");
     const cfg = createTrackedPluginConfig({
       pluginId: "alpha",
-      spec: "@openclaw/alpha@1.0.0",
+      spec: "@eve/alpha@1.0.0",
     });
     const pluginsRaw = `${JSON.stringify(cfg.plugins, null, 2)}\n`;
     const nextConfig = createTrackedPluginConfig({
       pluginId: "alpha",
-      spec: "@openclaw/alpha@1.1.0",
+      spec: "@eve/alpha@1.1.0",
     });
     fs.writeFileSync(pluginsPath, pluginsRaw);
     primeUpdateConfigSnapshot({
@@ -766,22 +766,22 @@ describe("plugins cli update", () => {
   });
 
   it("migrates included legacy install records while updating another indexed plugin", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-update-"));
-    const configPath = path.join(tempRoot, "openclaw.json5");
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-update-"));
+    const configPath = path.join(tempRoot, "eve.json5");
     const pluginsPath = path.join(tempRoot, "plugins.json5");
     const legacyRecord = {
       source: "npm",
-      spec: "@openclaw/legacy@1.0.0",
+      spec: "@eve/legacy@1.0.0",
       installPath: "/tmp/legacy",
     } as const;
     const indexedRecord = {
       source: "npm",
-      spec: "@openclaw/alpha@1.0.0",
+      spec: "@eve/alpha@1.0.0",
       installPath: "/tmp/alpha",
     } as const;
     const updatedIndexedRecord = {
       ...indexedRecord,
-      spec: "@openclaw/alpha@1.1.0",
+      spec: "@eve/alpha@1.1.0",
     } as const;
     const cfg = {
       plugins: {
@@ -789,7 +789,7 @@ describe("plugins cli update", () => {
           legacy: legacyRecord,
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const pluginsRaw = `${JSON.stringify(cfg.plugins, null, 2)}\n`;
     const nextInstallRecords = {
       alpha: updatedIndexedRecord,
@@ -815,7 +815,7 @@ describe("plugins cli update", () => {
         plugins: {
           installs: nextInstallRecords,
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       changed: true,
       outcomes: [{ pluginId: "alpha", status: "updated", message: "Updated alpha." }],
     });
@@ -843,8 +843,8 @@ describe("plugins cli update", () => {
   });
 
   it("blocks combined plugin and hook updates when either config section uses an include", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-update-"));
-    const configPath = path.join(tempRoot, "openclaw.json5");
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-update-"));
+    const configPath = path.join(tempRoot, "eve.json5");
     const pluginsPath = path.join(tempRoot, "plugins.json5");
     const pluginsRaw = "{}\n";
     fs.writeFileSync(pluginsPath, pluginsRaw);
@@ -864,12 +864,12 @@ describe("plugins cli update", () => {
         installs: {
           alpha: {
             source: "npm",
-            spec: "@openclaw/alpha@1.0.0",
+            spec: "@eve/alpha@1.0.0",
             installPath: "/tmp/alpha",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeUpdateConfigSnapshot({
       config: cfg,
       configPath,
@@ -904,7 +904,7 @@ describe("plugins cli update", () => {
       plugins: {
         installs: {},
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
 
     await expect(runPluginsCommand(["plugins", "update"])).rejects.toThrow("__exit__:1");
 
@@ -917,7 +917,7 @@ describe("plugins cli update", () => {
       plugins: {
         installs: {},
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
 
     await runPluginsCommand(["plugins", "update", "--all"]);
 
@@ -928,8 +928,8 @@ describe("plugins cli update", () => {
 
   it("passes dangerous force unsafe install to plugin updates", async () => {
     const config = createTrackedPluginConfig({
-      pluginId: "openclaw-codex-app-server",
-      spec: "openclaw-codex-app-server@beta",
+      pluginId: "eve-codex-app-server",
+      spec: "eve-codex-app-server@beta",
     });
     loadConfig.mockReturnValue(config);
     setInstalledPluginIndexInstallRecords(config.plugins?.installs ?? {});
@@ -942,13 +942,13 @@ describe("plugins cli update", () => {
     await runPluginsCommand([
       "plugins",
       "update",
-      "openclaw-codex-app-server",
+      "eve-codex-app-server",
       "--dangerously-force-unsafe-install",
     ]);
 
     const updateParams = expectSingleCallParams(updateNpmInstalledPlugins);
     expect(updateParams.config).toEqual(config);
-    expect(updateParams.pluginIds).toEqual(["openclaw-codex-app-server"]);
+    expect(updateParams.pluginIds).toEqual(["eve-codex-app-server"]);
     expect(updateParams.dangerouslyForceUnsafeInstall).toBe(true);
     expect(
       runtimeLogs.some((message) =>
@@ -962,8 +962,8 @@ describe("plugins cli update", () => {
   it("does not sync official catalog specs for manual plugin updates", async () => {
     const config = createTrackedPluginConfig({
       pluginId: "codex",
-      spec: "@openclaw/codex@2026.5.28",
-      resolvedName: "@openclaw/codex",
+      spec: "@eve/codex@2026.5.28",
+      resolvedName: "@eve/codex",
     });
     loadConfig.mockReturnValue(config);
     setInstalledPluginIndexInstallRecords(config.plugins?.installs ?? {});
@@ -986,31 +986,31 @@ describe("plugins cli update", () => {
         installs: {
           alpha: {
             source: "npm",
-            spec: "@openclaw/alpha@1.0.0",
+            spec: "@eve/alpha@1.0.0",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const nextConfig = {
       plugins: {
         installs: {
           alpha: {
             source: "npm",
-            spec: "@openclaw/alpha@1.1.0",
+            spec: "@eve/alpha@1.1.0",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const runtimeConfig = {
       ...cfg,
       messages: {
         ackReactionScope: "group-mentions",
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const nextRuntimeConfig = {
       ...nextConfig,
       messages: runtimeConfig.messages,
-    } as OpenClawConfig;
+    } as EVEConfig;
     primeUpdateConfigSnapshot({
       config: cfg,
       runtimeConfig,
@@ -1064,29 +1064,29 @@ describe("plugins cli update", () => {
         installs: {
           alpha: {
             source: "npm",
-            spec: "@openclaw/alpha@1.0.0",
+            spec: "@eve/alpha@1.0.0",
           },
           beta: {
             source: "npm",
-            spec: "@openclaw/beta@1.0.0",
+            spec: "@eve/beta@1.0.0",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const nextConfig = {
       plugins: {
         installs: {
           alpha: {
             source: "npm",
-            spec: "@openclaw/alpha@1.1.0",
+            spec: "@eve/alpha@1.1.0",
           },
           beta: {
             source: "npm",
-            spec: "@openclaw/beta@1.0.0",
+            spec: "@eve/beta@1.0.0",
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     loadConfig.mockReturnValue(cfg);
     setInstalledPluginIndexInstallRecords(cfg.plugins?.installs ?? {});
     updateNpmInstalledPlugins.mockResolvedValue({
@@ -1130,7 +1130,7 @@ describe("plugins cli update", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     loadConfig.mockReturnValue(cfg);
     updateNpmInstalledPlugins.mockResolvedValue({
       config: cfg,

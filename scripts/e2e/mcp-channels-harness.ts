@@ -1,6 +1,6 @@
 // Shared MCP-channel Docker E2E harness helpers.
 // The mounted test harness imports packaged dist modules so bridge assertions run
-// against the OpenClaw npm tarball installed in the functional image.
+// against the EVE npm tarball installed in the functional image.
 import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -179,7 +179,7 @@ async function connectGatewayOnce(params: {
       minProtocol: PROTOCOL_VERSION,
       maxProtocol: PROTOCOL_VERSION,
       client: {
-        id: "openclaw-tui",
+        id: "eve-tui",
         displayName: "docker-mcp-channels",
         version: "1.0.0",
         platform: process.platform,
@@ -234,7 +234,7 @@ export async function connectMcpClient(params: {
   const transport = new StdioClientTransport({
     command: "node",
     args: [
-      "/app/openclaw.mjs",
+      "/app/eve.mjs",
       "mcp",
       "serve",
       "--url",
@@ -247,13 +247,13 @@ export async function connectMcpClient(params: {
     cwd: "/app",
     env: {
       ...process.env,
-      OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: "1",
-      OPENCLAW_STATE_DIR: tempState.stateDir,
+      EVE_ALLOW_INSECURE_PRIVATE_WS: "1",
+      EVE_STATE_DIR: tempState.stateDir,
     },
     stderr: "pipe",
   });
   transport.stderr?.on("data", (chunk) => {
-    process.stderr.write(`[openclaw mcp] ${String(chunk)}`);
+    process.stderr.write(`[eve mcp] ${String(chunk)}`);
   });
   const rawMessages: unknown[] = [];
   Reflect.set(transport, "onmessage", (message: unknown) => {

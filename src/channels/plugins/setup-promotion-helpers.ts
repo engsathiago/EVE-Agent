@@ -3,7 +3,7 @@
  *
  * Moves legacy single-account channel config into account-scoped config records.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../../routing/session-key.js";
 import { getBundledChannelPlugin, hasBundledChannelPackageSetupFeature } from "./bundled.js";
 import { getLoadedChannelPlugin } from "./registry.js";

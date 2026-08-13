@@ -8,7 +8,7 @@ title: "Secrets management"
 sidebarTitle: "Secrets management"
 ---
 
-OpenClaw supports additive SecretRefs so supported credentials do not need to be stored as plaintext in configuration.
+EVE supports additive SecretRefs so supported credentials do not need to be stored as plaintext in configuration.
 
 <Note>
 Plaintext still works. SecretRefs are opt-in per credential.
@@ -16,10 +16,10 @@ Plaintext still works. SecretRefs are opt-in per credential.
 
 <Warning>
 Plaintext credentials remain agent-readable if they are stored in files the
-agent can inspect, including `openclaw.json`, `auth-profiles.json`, `.env`, or
+agent can inspect, including `eve.json`, `auth-profiles.json`, `.env`, or
 generated `agents/*/agent/models.json` files. SecretRefs reduce that local blast
 radius only after every supported credential has been migrated and
-`openclaw secrets audit --check` reports no plaintext secret residue.
+`eve secrets audit --check` reports no plaintext secret residue.
 </Warning>
 
 ## Goals and runtime model
@@ -47,9 +47,9 @@ For production deployments where agent-accessible files are in scope, treat
 SecretRef migration as complete only when all of these are true:
 
 - supported credentials use SecretRefs instead of plaintext values
-- legacy plaintext residue has been scrubbed from `openclaw.json`,
+- legacy plaintext residue has been scrubbed from `eve.json`,
   `auth-profiles.json`, `.env`, and generated `models.json` files
-- `openclaw secrets audit --check` is clean after the migration
+- `eve secrets audit --check` is clean after the migration
 - any remaining unsupported or rotating credentials are protected by operating
   system isolation, container isolation, or an external credential proxy
 
@@ -85,7 +85,7 @@ SecretRefs are validated only on effectively active surfaces.
       - In local mode without those remote surfaces:
         - `gateway.remote.token` is active when token auth can win and no env/auth token is configured.
         - `gateway.remote.password` is active only when password auth can win and no env/auth password is configured.
-    - `gateway.auth.token` SecretRef is inactive for startup auth resolution when `OPENCLAW_GATEWAY_TOKEN` is set, because env token input wins for that runtime.
+    - `gateway.auth.token` SecretRef is inactive for startup auth resolution when `EVE_GATEWAY_TOKEN` is set, because env token input wins for that runtime.
 
   </Accordion>
 </AccordionGroup>
@@ -101,7 +101,7 @@ These entries are logged with `SECRETS_GATEWAY_AUTH_SURFACE` and include the rea
 
 ## Onboarding reference preflight
 
-When onboarding runs in interactive mode and you choose SecretRef storage, OpenClaw runs preflight validation before saving:
+When onboarding runs in interactive mode and you choose SecretRef storage, EVE runs preflight validation before saving:
 
 - Env refs: validates env var name and confirms a non-empty value is visible during setup.
 - Provider refs (`file` or `exec`): validates provider selection, resolves `id`, and checks resolved value type.
@@ -173,12 +173,12 @@ Define providers under `secrets.providers`:
       default: { source: "env" },
       filemain: {
         source: "file",
-        path: "~/.openclaw/secrets.json",
+        path: "~/.eve/secrets.json",
         mode: "json", // or "singleValue"
       },
       vault: {
         source: "exec",
-        command: "/usr/local/bin/openclaw-vault-resolver",
+        command: "/usr/local/bin/eve-vault-resolver",
         args: ["--profile", "prod"],
         passEnv: ["PATH", "VAULT_ADDR"],
         jsonOnly: true,
@@ -222,12 +222,12 @@ Define providers under `secrets.providers`:
   <Accordion title="Exec provider">
     - Runs configured absolute binary path, no shell.
     - By default, `command` must point to a regular file (not a symlink).
-    - Set `allowSymlinkCommand: true` to allow symlink command paths (for example Homebrew shims). OpenClaw validates the resolved target path.
+    - Set `allowSymlinkCommand: true` to allow symlink command paths (for example Homebrew shims). EVE validates the resolved target path.
     - Pair `allowSymlinkCommand` with `trustedDirs` for package-manager paths (for example `["/opt/homebrew"]`).
     - Supports timeout, no-output timeout, output byte limits, env allowlist, and trusted dirs.
     - Windows fail-closed note: if ACL verification is unavailable for the command path, resolution fails. For trusted paths only, set `allowInsecurePath: true` on that provider to bypass path security checks.
     - Plugin-managed exec providers can use `pluginIntegration` instead of
-      copied `command`/`args`. OpenClaw resolves the current command details
+      copied `command`/`args`. EVE resolves the current command details
       from the installed plugin manifest during startup/reload. If the plugin is
       disabled, removed, untrusted, or no longer declares the integration,
       active SecretRefs using that provider fail closed.
@@ -270,7 +270,7 @@ Use a file SecretRef on a supported credential field instead:
     providers: {
       xai_key_file: {
         source: "file",
-        path: "~/.openclaw/secrets/xai-api-key.txt",
+        path: "~/.eve/secrets/xai-api-key.txt",
         mode: "singleValue",
       },
     },
@@ -305,7 +305,7 @@ the config fields that accept SecretRefs.
             command: "/opt/homebrew/bin/op",
             allowSymlinkCommand: true, // required for Homebrew symlinked binaries
             trustedDirs: ["/opt/homebrew"],
-            args: ["read", "op://Personal/OpenClaw QA API Key/password"],
+            args: ["read", "op://Personal/EVE QA API Key/password"],
             passEnv: ["HOME"],
             jsonOnly: false,
           },
@@ -326,7 +326,7 @@ the config fields that accept SecretRefs.
   <Accordion title="Bitwarden Secrets Manager (`bws`)">
     Use a resolver wrapper when you want SecretRef ids to map to Bitwarden
     Secrets Manager item keys. The repository includes
-    `scripts/secrets/openclaw-bws-resolver.mjs`; install or copy it to an absolute
+    `scripts/secrets/eve-bws-resolver.mjs`; install or copy it to an absolute
     trusted path on the host that runs the Gateway.
 
     Requirements:
@@ -344,7 +344,7 @@ the config fields that accept SecretRefs.
         providers: {
           bws: {
             source: "exec",
-            command: "/usr/local/bin/openclaw-bws-resolver.mjs",
+            command: "/usr/local/bin/eve-bws-resolver.mjs",
             passEnv: ["BWS_ACCESS_TOKEN", "BWS_SERVER_URL", "PATH", "BWS_BIN"],
             jsonOnly: true,
           },
@@ -358,7 +358,7 @@ the config fields that accept SecretRefs.
             apiKey: {
               source: "exec",
               provider: "bws",
-              id: "openclaw/providers/openai/apiKey",
+              id: "eve/providers/openai/apiKey",
             },
           },
         },
@@ -368,14 +368,14 @@ the config fields that accept SecretRefs.
 
     The resolver batches requested ids, runs `bws secret list`, and returns
     values for matching secret `key` fields. Use keys that satisfy the exec
-    SecretRef id contract, such as `openclaw/providers/openai/apiKey`; env-var
+    SecretRef id contract, such as `eve/providers/openai/apiKey`; env-var
     style keys with underscores are rejected before the resolver runs. If more
     than one visible Bitwarden secret has the same requested key, the resolver
     fails that id as ambiguous instead of choosing one. After updating config,
     verify the resolver path:
 
     ```bash
-    openclaw secrets audit --allow-exec
+    eve secrets audit --allow-exec
     ```
 
   </Accordion>
@@ -389,7 +389,7 @@ the config fields that accept SecretRefs.
             command: "/opt/homebrew/bin/vault",
             allowSymlinkCommand: true, // required for Homebrew symlinked binaries
             trustedDirs: ["/opt/homebrew"],
-            args: ["kv", "get", "-field=OPENAI_API_KEY", "secret/openclaw"],
+            args: ["kv", "get", "-field=OPENAI_API_KEY", "secret/eve"],
             passEnv: ["VAULT_ADDR", "VAULT_TOKEN"],
             jsonOnly: false,
           },
@@ -411,7 +411,7 @@ the config fields that accept SecretRefs.
     Use a small resolver wrapper when you want SecretRef ids to map directly to
     `pass` entries. Save this as an executable in an absolute path that passes
     your exec-provider path checks, for example
-    `/usr/local/bin/openclaw-pass-resolver`. The `#!/usr/bin/env node` shebang
+    `/usr/local/bin/eve-pass-resolver`. The `#!/usr/bin/env node` shebang
     resolves `node` from the resolver process `PATH`, so include `PATH` in
     `passEnv`. If `pass` is not on that `PATH`, set `PASS_BIN` in the parent
     environment and include it in `passEnv` too:
@@ -463,7 +463,7 @@ the config fields that accept SecretRefs.
         providers: {
           pass_store: {
             source: "exec",
-            command: "/usr/local/bin/openclaw-pass-resolver",
+            command: "/usr/local/bin/eve-pass-resolver",
             passEnv: ["PATH", "HOME", "GNUPGHOME", "GPG_TTY", "PASSWORD_STORE_DIR", "PASS_BIN"],
             jsonOnly: true,
           },
@@ -477,7 +477,7 @@ the config fields that accept SecretRefs.
             apiKey: {
               source: "exec",
               provider: "pass_store",
-              id: "openclaw/providers/openai/apiKey",
+              id: "eve/providers/openai/apiKey",
             },
           },
         },
@@ -490,8 +490,8 @@ the config fields that accept SecretRefs.
     updating config, verify both the static audit and the exec resolver path:
 
     ```bash
-    openclaw secrets audit --check
-    openclaw secrets audit --allow-exec
+    eve secrets audit --check
+    eve secrets audit --allow-exec
     ```
 
   </Accordion>
@@ -583,7 +583,7 @@ The core `ssh` sandbox backend also supports SecretRefs for SSH auth material:
 
 Runtime behavior:
 
-- OpenClaw resolves these refs during sandbox activation, not lazily during each SSH call.
+- EVE resolves these refs during sandbox activation, not lazily during each SSH call.
 - Resolved values are written to temp files with restrictive permissions and used in generated SSH config.
 - If the effective sandbox backend is not `ssh`, these refs stay inactive and do not block startup.
 
@@ -602,12 +602,12 @@ Runtime-minted or rotating credentials and OAuth refresh material are intentiona
 - Field without a ref: unchanged.
 - Field with a ref: required on active surfaces during activation.
 - If both plaintext and ref are present, ref takes precedence on supported precedence paths.
-- The redaction sentinel `__OPENCLAW_REDACTED__` is reserved for internal config redaction/restore and is rejected as literal submitted config data.
+- The redaction sentinel `__EVE_REDACTED__` is reserved for internal config redaction/restore and is rejected as literal submitted config data.
 
 Warning and audit signals:
 
 - `SECRETS_REF_OVERRIDES_PLAINTEXT` (runtime warning)
-- `REF_SHADOWED` (audit finding when `auth-profiles.json` credentials take precedence over `openclaw.json` refs)
+- `REF_SHADOWED` (audit finding when `auth-profiles.json` credentials take precedence over `eve.json` refs)
 
 Google Chat compatibility behavior:
 
@@ -634,7 +634,7 @@ Activation contract:
 
 ## Degraded and recovered signals
 
-When reload-time activation fails after a healthy state, OpenClaw enters degraded secrets state.
+When reload-time activation fails after a healthy state, EVE enters degraded secrets state.
 
 One-shot system event and log codes:
 
@@ -656,10 +656,10 @@ There are two broad behaviors:
 
 <Tabs>
   <Tab title="Strict command paths">
-    For example `openclaw memory` remote-memory paths and `openclaw qr --remote` when it needs remote shared-secret refs. They read from the active snapshot and fail fast when a required SecretRef is unavailable.
+    For example `eve memory` remote-memory paths and `eve qr --remote` when it needs remote shared-secret refs. They read from the active snapshot and fail fast when a required SecretRef is unavailable.
   </Tab>
   <Tab title="Read-only command paths">
-    For example `openclaw status`, `openclaw status --all`, `openclaw channels status`, `openclaw channels resolve`, `openclaw security audit`, and read-only doctor/config repair flows. They also prefer the active snapshot, but degrade instead of aborting when a targeted SecretRef is unavailable in that command path.
+    For example `eve status`, `eve status --all`, `eve channels status`, `eve channels resolve`, `eve security audit`, and read-only doctor/config repair flows. They also prefer the active snapshot, but degrade instead of aborting when a targeted SecretRef is unavailable in that command path.
 
     Read-only behavior:
 
@@ -673,7 +673,7 @@ There are two broad behaviors:
 
 Other notes:
 
-- Snapshot refresh after backend secret rotation is handled by `openclaw secrets reload`.
+- Snapshot refresh after backend secret rotation is handled by `eve secrets reload`.
 - Gateway RPC method used by these command paths: `secrets.resolve`.
 
 ## Audit and configure workflow
@@ -683,17 +683,17 @@ Default operator flow:
 <Steps>
   <Step title="Audit current state">
     ```bash
-    openclaw secrets audit --check
+    eve secrets audit --check
     ```
   </Step>
   <Step title="Configure and apply SecretRefs">
     ```bash
-    openclaw secrets configure --apply
+    eve secrets configure --apply
     ```
   </Step>
   <Step title="Re-audit">
     ```bash
-    openclaw secrets audit --check
+    eve secrets audit --check
     ```
   </Step>
 </Steps>
@@ -703,22 +703,22 @@ still reports plaintext values at rest, the agent-access risk is still present
 even when runtime APIs return redacted values.
 
 If you save a plan instead of applying during `configure`, apply that saved plan
-with `openclaw secrets apply --from <plan-path>` before the re-audit.
+with `eve secrets apply --from <plan-path>` before the re-audit.
 
 <AccordionGroup>
   <Accordion title="secrets audit">
     Findings include:
 
-    - plaintext values at rest (`openclaw.json`, `auth-profiles.json`, `.env`, and generated `agents/*/agent/models.json`)
+    - plaintext values at rest (`eve.json`, `auth-profiles.json`, `.env`, and generated `agents/*/agent/models.json`)
     - plaintext sensitive provider header residues in generated `models.json` entries
     - unresolved refs
-    - precedence shadowing (`auth-profiles.json` taking priority over `openclaw.json` refs)
+    - precedence shadowing (`auth-profiles.json` taking priority over `eve.json` refs)
     - legacy residues (`auth.json`, OAuth reminders)
 
     Exec note:
 
     - By default, audit skips exec SecretRef resolvability checks to avoid command side effects.
-    - Use `openclaw secrets audit --allow-exec` to execute exec providers during audit.
+    - Use `eve secrets audit --allow-exec` to execute exec providers during audit.
 
     Header residue note:
 
@@ -729,7 +729,7 @@ with `openclaw secrets apply --from <plan-path>` before the re-audit.
     Interactive helper that:
 
     - configures `secrets.providers` first (`env`/`file`/`exec`, add/edit/remove)
-    - lets you select supported secret-bearing fields in `openclaw.json` plus `auth-profiles.json` for one agent scope
+    - lets you select supported secret-bearing fields in `eve.json` plus `auth-profiles.json` for one agent scope
     - can create a new `auth-profiles.json` mapping directly in the target picker
     - captures SecretRef details (`source`, `provider`, `id`)
     - runs preflight resolution
@@ -742,9 +742,9 @@ with `openclaw secrets apply --from <plan-path>` before the re-audit.
 
     Helpful modes:
 
-    - `openclaw secrets configure --providers-only`
-    - `openclaw secrets configure --skip-provider-setup`
-    - `openclaw secrets configure --agent <id>`
+    - `eve secrets configure --providers-only`
+    - `eve secrets configure --skip-provider-setup`
+    - `eve secrets configure --agent <id>`
 
     `configure` apply defaults:
 
@@ -757,10 +757,10 @@ with `openclaw secrets apply --from <plan-path>` before the re-audit.
     Apply a saved plan:
 
     ```bash
-    openclaw secrets apply --from /tmp/openclaw-secrets-plan.json
-    openclaw secrets apply --from /tmp/openclaw-secrets-plan.json --allow-exec
-    openclaw secrets apply --from /tmp/openclaw-secrets-plan.json --dry-run
-    openclaw secrets apply --from /tmp/openclaw-secrets-plan.json --dry-run --allow-exec
+    eve secrets apply --from /tmp/eve-secrets-plan.json
+    eve secrets apply --from /tmp/eve-secrets-plan.json --allow-exec
+    eve secrets apply --from /tmp/eve-secrets-plan.json --dry-run
+    eve secrets apply --from /tmp/eve-secrets-plan.json --dry-run --allow-exec
     ```
 
     Exec note:
@@ -776,7 +776,7 @@ with `openclaw secrets apply --from <plan-path>` before the re-audit.
 ## One-way safety policy
 
 <Warning>
-OpenClaw intentionally does not write rollback backups containing historical plaintext secret values.
+EVE intentionally does not write rollback backups containing historical plaintext secret values.
 </Warning>
 
 Safety model:

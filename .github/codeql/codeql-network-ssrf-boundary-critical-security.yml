@@ -1,4 +1,4 @@
-name: openclaw-codeql-network-ssrf-boundary-critical-security
+name: eve-codeql-network-ssrf-boundary-critical-security
 
 disable-default-queries: true
 

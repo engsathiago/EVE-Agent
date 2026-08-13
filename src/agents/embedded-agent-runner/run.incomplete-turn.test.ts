@@ -1,6 +1,6 @@
 // Coverage for incomplete-turn safety, retry instructions, and liveness states.
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import {
   hasCommittedMessagingToolDeliveryEvidence,
   hasOutboundDeliveryEvidence,
@@ -3384,7 +3384,7 @@ describe("runEmbeddedAgent incomplete-turn safety", () => {
     const result = await runEmbeddedAgent({
       ...overflowBaseRunParams,
       prompt:
-        "made a bunch of improvements to the student's source code (openclaw) this weekend, along with a few other maintainers. hopefully he will be more proactive now",
+        "made a bunch of improvements to the student's source code (eve) this weekend, along with a few other maintainers. hopefully he will be more proactive now",
       provider: "openai",
       model: "gpt-5.4",
       runId: "run-visible-prose-no-classifier",
@@ -3392,7 +3392,7 @@ describe("runEmbeddedAgent incomplete-turn safety", () => {
         agents: {
           list: [{ id: "main" }],
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(mockedRunEmbeddedAttempt).toHaveBeenCalledTimes(1);

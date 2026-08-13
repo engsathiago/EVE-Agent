@@ -19,7 +19,7 @@ import {
 import { resolveStorePath } from "../config/sessions/paths.js";
 import { loadSessionStore } from "../config/sessions/store.js";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { clearPluginLoaderCache } from "../plugins/loader.js";
 import { resetPluginRuntimeStateForTest } from "../plugins/runtime.js";
@@ -28,19 +28,19 @@ import { restoreLiveEnv, snapshotLiveEnv, type LiveEnvSnapshot } from "./live-en
 import { startGatewayServer } from "./server.js";
 
 const LIVE = isLiveTestEnabled();
-const ACP_SPAWN_DEFAULTS_LIVE = isTruthyEnvValue(process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS);
+const ACP_SPAWN_DEFAULTS_LIVE = isTruthyEnvValue(process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS);
 const describeLive = LIVE && ACP_SPAWN_DEFAULTS_LIVE ? describe : describe.skip;
 const CONNECT_TIMEOUT_MS = resolvePositiveInteger(
-  process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS_CONNECT_TIMEOUT_MS,
+  process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS_CONNECT_TIMEOUT_MS,
   90_000,
 );
 const LIVE_TIMEOUT_MS = resolvePositiveInteger(
-  process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS_TIMEOUT_MS,
+  process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS_TIMEOUT_MS,
   240_000,
 );
 
 function snapshotAcpSpawnDefaultsLiveEnv(): LiveEnvSnapshot {
-  return snapshotLiveEnv(["CODEX_HOME", "OPENCLAW_GATEWAY_PORT"]);
+  return snapshotLiveEnv(["CODEX_HOME", "EVE_GATEWAY_PORT"]);
 }
 
 function resolvePositiveInteger(raw: string | undefined, fallback: number): number {
@@ -49,19 +49,19 @@ function resolvePositiveInteger(raw: string | undefined, fallback: number): numb
 }
 
 function resolveSubagentModel(): string {
-  return process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS_MODEL?.trim() || "openai/gpt-5.5";
+  return process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS_MODEL?.trim() || "openai/gpt-5.5";
 }
 
 function resolveThinking(): string {
-  return process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS_THINKING?.trim() || "high";
+  return process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS_THINKING?.trim() || "high";
 }
 
 function resolveHarnessModel(): string {
-  return process.env.OPENCLAW_LIVE_ACP_BIND_CODEX_MODEL?.trim() || "gpt-5.5";
+  return process.env.EVE_LIVE_ACP_BIND_CODEX_MODEL?.trim() || "gpt-5.5";
 }
 
 function resolveAcpAgentId(): string {
-  return process.env.OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS_AGENT?.trim() || "codex";
+  return process.env.EVE_LIVE_ACP_SPAWN_DEFAULTS_AGENT?.trim() || "codex";
 }
 
 function resolveAcpAgentCommand(): { command: string; args?: string[] } {
@@ -163,7 +163,7 @@ async function waitForAcpBackendReady(timeoutMs = CONNECT_TIMEOUT_MS): Promise<v
 }
 
 async function waitForSessionEntry(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   timeoutMs?: number;
 }): Promise<SessionEntry> {
@@ -187,7 +187,7 @@ function createConfig(params: {
   subagentModel?: string;
   thinking?: string;
   includePrimaryOnlyAcpAgent?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   const subagents = params.subagentModel
     ? {
         allowAgents: ["*"],
@@ -271,8 +271,8 @@ describeLive("gateway live (ACP spawn defaults)", () => {
     "applies existing subagent defaults to live ACP spawns without leaking primary agent model",
     async () => {
       const previousEnv = snapshotAcpSpawnDefaultsLiveEnv();
-      const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-live-acp-spawn-"));
-      const tempConfigPath = path.join(tempRoot, "openclaw.json");
+      const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-live-acp-spawn-"));
+      const tempConfigPath = path.join(tempRoot, "eve.json");
       const tempStateDir = path.join(tempRoot, "state");
       const port = await getFreeGatewayPort();
       const token = `test-${randomUUID()}`;
@@ -282,14 +282,14 @@ describeLive("gateway live (ACP spawn defaults)", () => {
       const sessionKeys: string[] = [];
       let server: Awaited<ReturnType<typeof startGatewayServer>> | undefined;
 
-      process.env.OPENCLAW_CONFIG_PATH = tempConfigPath;
-      process.env.OPENCLAW_STATE_DIR = tempStateDir;
-      process.env.OPENCLAW_SKIP_CHANNELS = "1";
-      process.env.OPENCLAW_SKIP_GMAIL_WATCHER = "1";
-      process.env.OPENCLAW_SKIP_CRON = "1";
-      process.env.OPENCLAW_SKIP_CANVAS_HOST = "1";
-      process.env.OPENCLAW_GATEWAY_TOKEN = token;
-      process.env.OPENCLAW_GATEWAY_PORT = String(port);
+      process.env.EVE_CONFIG_PATH = tempConfigPath;
+      process.env.EVE_STATE_DIR = tempStateDir;
+      process.env.EVE_SKIP_CHANNELS = "1";
+      process.env.EVE_SKIP_GMAIL_WATCHER = "1";
+      process.env.EVE_SKIP_CRON = "1";
+      process.env.EVE_SKIP_CANVAS_HOST = "1";
+      process.env.EVE_GATEWAY_TOKEN = token;
+      process.env.EVE_GATEWAY_PORT = String(port);
       await prepareCodexHomeForLiveSpawnDefaultsTest(tempRoot);
 
       const cfg = createConfig({

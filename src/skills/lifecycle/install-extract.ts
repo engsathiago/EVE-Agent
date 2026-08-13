@@ -1,7 +1,7 @@
 // Install extraction helpers validate and unpack skill archives into install roots.
 import { createHash } from "node:crypto";
 import fs from "node:fs";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import {
   createTarEntryPreflightChecker,
   extractArchive as extractArchiveSafe,

@@ -13,10 +13,10 @@ describe("buildAgentSystemPrompt memory guidance", () => {
     registerMemoryPromptSection(() => ["## Memory Recall", "Use memory carefully.", ""]);
 
     const promptWithMemory = buildAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
     });
     const promptWithoutMemory = buildAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       includeMemorySection: false,
     });
 

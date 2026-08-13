@@ -11,15 +11,15 @@ import {
 
 // Environment contract for debug proxy capture. These vars are passed to child
 // processes and provider transports so capture sessions share one store/proxy.
-export const OPENCLAW_DEBUG_PROXY_ENABLED = "OPENCLAW_DEBUG_PROXY_ENABLED";
-export const OPENCLAW_DEBUG_PROXY_URL = "OPENCLAW_DEBUG_PROXY_URL";
+export const EVE_DEBUG_PROXY_ENABLED = "EVE_DEBUG_PROXY_ENABLED";
+export const EVE_DEBUG_PROXY_URL = "EVE_DEBUG_PROXY_URL";
 /** @deprecated Capture storage now lives in the shared state database. */
-export const OPENCLAW_DEBUG_PROXY_DB_PATH = "OPENCLAW_DEBUG_PROXY_DB_PATH";
+export const EVE_DEBUG_PROXY_DB_PATH = "EVE_DEBUG_PROXY_DB_PATH";
 /** @deprecated Capture payloads now live in the shared state database. */
-export const OPENCLAW_DEBUG_PROXY_BLOB_DIR = "OPENCLAW_DEBUG_PROXY_BLOB_DIR";
-export const OPENCLAW_DEBUG_PROXY_CERT_DIR = "OPENCLAW_DEBUG_PROXY_CERT_DIR";
-export const OPENCLAW_DEBUG_PROXY_SESSION_ID = "OPENCLAW_DEBUG_PROXY_SESSION_ID";
-export const OPENCLAW_DEBUG_PROXY_REQUIRE = "OPENCLAW_DEBUG_PROXY_REQUIRE";
+export const EVE_DEBUG_PROXY_BLOB_DIR = "EVE_DEBUG_PROXY_BLOB_DIR";
+export const EVE_DEBUG_PROXY_CERT_DIR = "EVE_DEBUG_PROXY_CERT_DIR";
+export const EVE_DEBUG_PROXY_SESSION_ID = "EVE_DEBUG_PROXY_SESSION_ID";
+export const EVE_DEBUG_PROXY_REQUIRE = "EVE_DEBUG_PROXY_REQUIRE";
 
 export type DebugProxySettings = {
   enabled: boolean;
@@ -43,20 +43,20 @@ function isTruthy(value: string | undefined): boolean {
 export function resolveDebugProxySettings(
   env: NodeJS.ProcessEnv = process.env,
 ): DebugProxySettings {
-  const enabled = isTruthy(env[OPENCLAW_DEBUG_PROXY_ENABLED]);
-  const explicitSessionId = env[OPENCLAW_DEBUG_PROXY_SESSION_ID]?.trim() || undefined;
+  const enabled = isTruthy(env[EVE_DEBUG_PROXY_ENABLED]);
+  const explicitSessionId = env[EVE_DEBUG_PROXY_SESSION_ID]?.trim() || undefined;
   // Local implicit sessions stay stable within one process so repeated callers
   // write to the same capture session until an explicit id overrides it.
   const sessionId = explicitSessionId ?? (cachedImplicitSessionId ??= randomUUID());
   return {
     enabled,
-    required: isTruthy(env[OPENCLAW_DEBUG_PROXY_REQUIRE]),
-    proxyUrl: env[OPENCLAW_DEBUG_PROXY_URL]?.trim() || undefined,
-    dbPath: env[OPENCLAW_DEBUG_PROXY_DB_PATH]?.trim() || resolveDebugProxyDbPath(env),
-    blobDir: env[OPENCLAW_DEBUG_PROXY_BLOB_DIR]?.trim() || resolveDebugProxyBlobDir(env),
-    certDir: env[OPENCLAW_DEBUG_PROXY_CERT_DIR]?.trim() || resolveDebugProxyCertDir(env),
+    required: isTruthy(env[EVE_DEBUG_PROXY_REQUIRE]),
+    proxyUrl: env[EVE_DEBUG_PROXY_URL]?.trim() || undefined,
+    dbPath: env[EVE_DEBUG_PROXY_DB_PATH]?.trim() || resolveDebugProxyDbPath(env),
+    blobDir: env[EVE_DEBUG_PROXY_BLOB_DIR]?.trim() || resolveDebugProxyBlobDir(env),
+    certDir: env[EVE_DEBUG_PROXY_CERT_DIR]?.trim() || resolveDebugProxyCertDir(env),
     sessionId,
-    sourceProcess: "openclaw",
+    sourceProcess: "eve",
   };
 }
 
@@ -71,15 +71,15 @@ export function applyDebugProxyEnv(
   // Child process env forces proxy capture and standard proxy variables while
   // preserving unrelated environment values.
   const baseEnv = { ...env };
-  delete baseEnv.OPENCLAW_DEBUG_PROXY_DB_PATH;
-  delete baseEnv.OPENCLAW_DEBUG_PROXY_BLOB_DIR;
+  delete baseEnv.EVE_DEBUG_PROXY_DB_PATH;
+  delete baseEnv.EVE_DEBUG_PROXY_BLOB_DIR;
   return {
     ...baseEnv,
-    [OPENCLAW_DEBUG_PROXY_ENABLED]: "1",
-    [OPENCLAW_DEBUG_PROXY_REQUIRE]: "1",
-    [OPENCLAW_DEBUG_PROXY_URL]: params.proxyUrl,
-    [OPENCLAW_DEBUG_PROXY_CERT_DIR]: params.certDir ?? resolveDebugProxyCertDir(env),
-    [OPENCLAW_DEBUG_PROXY_SESSION_ID]: params.sessionId,
+    [EVE_DEBUG_PROXY_ENABLED]: "1",
+    [EVE_DEBUG_PROXY_REQUIRE]: "1",
+    [EVE_DEBUG_PROXY_URL]: params.proxyUrl,
+    [EVE_DEBUG_PROXY_CERT_DIR]: params.certDir ?? resolveDebugProxyCertDir(env),
+    [EVE_DEBUG_PROXY_SESSION_ID]: params.sessionId,
     HTTP_PROXY: params.proxyUrl,
     HTTPS_PROXY: params.proxyUrl,
     ALL_PROXY: params.proxyUrl,

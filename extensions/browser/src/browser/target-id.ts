@@ -1,7 +1,7 @@
 /**
  * Target id resolution helpers for Browser tab aliases and user-facing ids.
  */
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 /** Result for resolving a user-supplied tab id, label, or target prefix. */
 type TargetIdResolution =

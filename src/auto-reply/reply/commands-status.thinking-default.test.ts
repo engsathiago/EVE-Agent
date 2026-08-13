@@ -1,6 +1,6 @@
 // Tests status command defaults for thinking and reasoning display.
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 
 vi.mock("../../agents/fast-mode.js", () => ({
   resolveFastModeState: () => ({ enabled: false }),
@@ -38,7 +38,7 @@ vi.mock("./queue.js", async () => {
 
 const { buildStatusReply } = await import("./commands-status.js");
 
-async function buildKiraStatusReply(cfg: OpenClawConfig) {
+async function buildKiraStatusReply(cfg: EVEConfig) {
   return await buildStatusReply({
     cfg,
     command: {
@@ -69,7 +69,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
   });
 
   it("shows per-agent thinkingDefault in the status card", async () => {
@@ -90,7 +90,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const reply = await buildKiraStatusReply(cfg);
 
@@ -120,7 +120,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const reply = await buildKiraStatusReply(cfg);
 
@@ -147,7 +147,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const reply = await buildKiraStatusReply(cfg);
 
@@ -176,7 +176,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const reply = await buildKiraStatusReply(cfg);
 
@@ -206,7 +206,7 @@ describe("buildStatusReply", () => {
       channels: {
         whatsapp: { allowFrom: ["*"] },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const reply = await buildKiraStatusReply(cfg);
 

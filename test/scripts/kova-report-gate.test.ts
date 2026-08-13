@@ -32,7 +32,7 @@ function partialReport(overrides: Record<string, unknown> = {}) {
 }
 
 function writeReport(report: unknown): string {
-  const root = mkdtempSync(join(tmpdir(), "openclaw-kova-report-"));
+  const root = mkdtempSync(join(tmpdir(), "eve-kova-report-"));
   tempRoots.push(root);
   const reportPath = join(root, "report.json");
   writeFileSync(reportPath, `${JSON.stringify(report)}\n`);
@@ -201,7 +201,7 @@ describe("scripts/lib/kova-report-gate.mjs", () => {
   });
 
   it("runs the CLI guard from paths that need file URL escaping", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-kova report-"));
+    const root = mkdtempSync(join(tmpdir(), "eve-kova report-"));
     tempRoots.push(root);
     const scriptDir = join(root, "script dir");
     mkdirSync(scriptDir);

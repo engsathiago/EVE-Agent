@@ -19,10 +19,10 @@ describe("wizard i18n", () => {
     expect(resolveWizardLocale("de_DE.UTF-8")).toBe("en");
   });
 
-  it("uses OPENCLAW_LOCALE before process locale variables", () => {
+  it("uses EVE_LOCALE before process locale variables", () => {
     expect(
       resolveWizardLocaleFromEnv({
-        OPENCLAW_LOCALE: "zh-TW",
+        EVE_LOCALE: "zh-TW",
         LC_ALL: "zh-CN",
         LANG: "en-US",
       }),

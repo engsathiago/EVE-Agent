@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# OpenClaw CLI installer (non-interactive, no onboarding)
-# Usage: curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- [--json] [--prefix <path>] [--version <ver>] [--node-version <ver>] [--onboard]
+# EVE CLI installer (non-interactive, no onboarding)
+# Usage: curl -fsSL --proto '=https' --tlsv1.2 https://eve.ai/install-cli.sh | bash -s -- [--json] [--prefix <path>] [--version <ver>] [--node-version <ver>] [--onboard]
 
 ensure_home_env() {
   if [[ -n "${HOME:-}" && "${HOME}" != "/" && -d "${HOME}" ]]; then
@@ -29,40 +29,40 @@ ensure_home_env() {
 
 ensure_home_env
 
-resolve_openclaw_effective_home() {
-  local openclaw_home="${OPENCLAW_HOME:-}"
-  if [[ -z "$openclaw_home" ]]; then
+resolve_eve_effective_home() {
+  local eve_home="${EVE_HOME:-}"
+  if [[ -z "$eve_home" ]]; then
     echo "$HOME"
     return 0
   fi
 
-  case "$openclaw_home" in
+  case "$eve_home" in
     \~)
       echo "$HOME"
       ;;
     \~/*)
-      echo "${HOME}/${openclaw_home#~/}"
+      echo "${HOME}/${eve_home#~/}"
       ;;
     *)
-      echo "$openclaw_home"
+      echo "$eve_home"
       ;;
   esac
 }
 
-OPENCLAW_EFFECTIVE_HOME="$(resolve_openclaw_effective_home)"
-PREFIX="${OPENCLAW_PREFIX:-${HOME}/.openclaw}"
-OPENCLAW_VERSION="${OPENCLAW_VERSION:-latest}"
-NODE_VERSION="${OPENCLAW_NODE_VERSION:-22.22.0}"
+EVE_EFFECTIVE_HOME="$(resolve_eve_effective_home)"
+PREFIX="${EVE_PREFIX:-${HOME}/.eve}"
+EVE_VERSION="${EVE_VERSION:-latest}"
+NODE_VERSION="${EVE_NODE_VERSION:-22.22.0}"
 NODE_VERSION_REQUESTED=0
-if [[ -n "${OPENCLAW_NODE_VERSION:-}" ]]; then
+if [[ -n "${EVE_NODE_VERSION:-}" ]]; then
   NODE_VERSION_REQUESTED=1
 fi
 MIN_NODE_VERSION="22.19.0"
 APK_NODE_BIN_DIR="/usr/bin"
-NPM_LOGLEVEL="${OPENCLAW_NPM_LOGLEVEL:-error}"
-INSTALL_METHOD="${OPENCLAW_INSTALL_METHOD:-npm}"
-GIT_DIR="${OPENCLAW_GIT_DIR:-${OPENCLAW_EFFECTIVE_HOME}/openclaw}"
-GIT_UPDATE="${OPENCLAW_GIT_UPDATE:-1}"
+NPM_LOGLEVEL="${EVE_NPM_LOGLEVEL:-error}"
+INSTALL_METHOD="${EVE_INSTALL_METHOD:-npm}"
+GIT_DIR="${EVE_GIT_DIR:-${EVE_EFFECTIVE_HOME}/eve}"
+GIT_UPDATE="${EVE_GIT_UPDATE:-1}"
 JSON=0
 RUN_ONBOARD=0
 SET_NPM_PREFIX=0
@@ -72,25 +72,25 @@ print_usage() {
   cat <<EOF
 Usage: install-cli.sh [options]
   --json                              Emit NDJSON events (no human output)
-  --prefix <path>                     Install prefix (default: ~/.openclaw; use \$OPENCLAW_PREFIX to override)
+  --prefix <path>                     Install prefix (default: ~/.eve; use \$EVE_PREFIX to override)
   --install-method, --method npm|git  Install via npm (default) or from a git checkout
   --npm                               Shortcut for --install-method npm
   --git, --github                     Shortcut for --install-method git
-  --git-dir, --dir <path>             Checkout directory (default: ~/openclaw, or \$OPENCLAW_HOME/openclaw)
-  --version <ver>                     OpenClaw version (default: latest)
+  --git-dir, --dir <path>             Checkout directory (default: ~/eve, or \$EVE_HOME/eve)
+  --version <ver>                     EVE version (default: latest)
   --node-version <ver>                Node version (default: 22.22.0)
-  --onboard                           Run "openclaw onboard" after install
+  --onboard                           Run "eve onboard" after install
   --no-onboard                        Skip onboarding (default)
   --set-npm-prefix                    Force npm prefix to ~/.npm-global if current prefix is not writable (Linux)
 
 Environment variables:
-  OPENCLAW_NPM_LOGLEVEL=error|warn|notice  Default: error (hide npm deprecation noise)
-  OPENCLAW_INSTALL_METHOD=git|npm
-  OPENCLAW_HOME=...
-  OPENCLAW_PREFIX=...
-  OPENCLAW_VERSION=latest|next|<semver>
-  OPENCLAW_GIT_DIR=...
-  OPENCLAW_GIT_UPDATE=0|1
+  EVE_NPM_LOGLEVEL=error|warn|notice  Default: error (hide npm deprecation noise)
+  EVE_INSTALL_METHOD=git|npm
+  EVE_HOME=...
+  EVE_PREFIX=...
+  EVE_VERSION=latest|next|<semver>
+  EVE_GIT_DIR=...
+  EVE_GIT_UPDATE=0|1
 EOF
 }
 
@@ -127,7 +127,7 @@ download_file() {
 }
 
 cleanup_legacy_submodules() {
-  local repo_dir="${1:-${OPENCLAW_GIT_DIR:-${OPENCLAW_EFFECTIVE_HOME}/openclaw}}"
+  local repo_dir="${1:-${EVE_GIT_DIR:-${EVE_EFFECTIVE_HOME}/eve}}"
   local legacy_dir="${repo_dir}/Peekaboo"
   if [[ -d "$legacy_dir" ]]; then
     emit_json "{\"event\":\"step\",\"name\":\"legacy-submodule\",\"status\":\"start\",\"path\":\"${legacy_dir//\"/\\\"}\"}"
@@ -265,7 +265,7 @@ parse_args() {
         if [[ $# -lt 2 || "${2:-}" == --* ]]; then
           fail "Missing value for $1"
         fi
-        OPENCLAW_VERSION="$2"
+        EVE_VERSION="$2"
         shift 2
         ;;
       --node-version)
@@ -590,30 +590,30 @@ to_lowercase_ascii() {
   printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]'
 }
 
-is_openclaw_source_package_install_spec() {
+is_eve_source_package_install_spec() {
   local value="${1:-}"
   local normalized_value=""
   normalized_value="$(to_lowercase_ascii "$value")"
-  normalized_value="${normalized_value#openclaw@}"
+  normalized_value="${normalized_value#eve@}"
 
   [[ "$normalized_value" == "main" ]] && return 0
-  [[ "$normalized_value" =~ ^github:openclaw/openclaw($|[#/]) ]] && return 0
+  [[ "$normalized_value" =~ ^github:eve/eve($|[#/]) ]] && return 0
 
   normalized_value="${normalized_value#git+}"
-  [[ "$normalized_value" =~ ^https?://github\.com/openclaw/openclaw(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]openclaw/openclaw(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^git://github\.com/openclaw/openclaw(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^git@github\.com:openclaw/openclaw(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^https?://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]eve/eve(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^git://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^git@github\.com:eve/eve(\.git)?($|[?#]) ]] && return 0
   return 1
 }
 
-resolve_git_openclaw_ref() {
-  local requested="${OPENCLAW_VERSION:-latest}"
+resolve_git_eve_ref() {
+  local requested="${EVE_VERSION:-latest}"
   local resolved_version=""
 
   case "$requested" in
     ""|latest)
-      resolved_version="$("$(npm_bin)" view "openclaw" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+      resolved_version="$("$(npm_bin)" view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
       if [[ -n "$resolved_version" ]]; then
         echo "v${resolved_version}"
         return 0
@@ -622,7 +622,7 @@ resolve_git_openclaw_ref() {
       return 0
       ;;
     next|beta)
-      resolved_version="$("$(npm_bin)" view "openclaw" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+      resolved_version="$("$(npm_bin)" view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
       if [[ -n "$resolved_version" ]]; then
         echo "v${resolved_version}"
         return 0
@@ -649,7 +649,7 @@ resolve_git_openclaw_ref() {
   esac
 }
 
-checkout_git_openclaw_ref() {
+checkout_git_eve_ref() {
   local repo_dir="$1"
   local ref="$2"
 
@@ -950,10 +950,10 @@ npm_config_has_raw_key() {
   return 1
 }
 
-install_openclaw() {
-  local requested="${OPENCLAW_VERSION:-latest}"
-  if is_openclaw_source_package_install_spec "$requested"; then
-    fail "npm installs do not support OpenClaw GitHub source targets like '${requested}'. Use --install-method git --version main, latest, beta, an exact version, or a built .tgz package."
+install_eve() {
+  local requested="${EVE_VERSION:-latest}"
+  if is_eve_source_package_install_spec "$requested"; then
+    fail "npm installs do not support EVE GitHub source targets like '${requested}'. Use --install-method git --version main, latest, beta, an exact version, or a built .tgz package."
   fi
   local freshness_flag="--min-release-age=0"
   local min_release_age=""
@@ -973,32 +973,32 @@ install_openclaw() {
     --no-audit
     "$freshness_flag"
   )
-  emit_json "{\"event\":\"step\",\"name\":\"openclaw\",\"status\":\"start\",\"version\":\"${requested}\"}"
-  log "Installing OpenClaw (${requested})..."
+  emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"start\",\"version\":\"${requested}\"}"
+  log "Installing EVE (${requested})..."
   if [[ "$SET_NPM_PREFIX" -eq 1 ]]; then
     fix_npm_prefix_if_needed
   fi
 
   if [[ "${requested}" == "latest" ]]; then
-    if ! env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "openclaw@latest"; then
-      log "npm install openclaw@latest failed; retrying openclaw@next"
-      emit_json "{\"event\":\"step\",\"name\":\"openclaw\",\"status\":\"retry\",\"version\":\"next\"}"
-      env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "openclaw@next"
+    if ! env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@latest"; then
+      log "npm install eve@latest failed; retrying eve@next"
+      emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"retry\",\"version\":\"next\"}"
+      env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@next"
       requested="next"
     fi
   else
-    env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "openclaw@${requested}"
+    env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@${requested}"
   fi
 
   mkdir -p "${PREFIX}/bin"
-  rm -f "${PREFIX}/bin/openclaw"
-  cat > "${PREFIX}/bin/openclaw" <<EOF
+  rm -f "${PREFIX}/bin/eve"
+  cat > "${PREFIX}/bin/eve" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
-exec "${PREFIX}/tools/node/bin/node" "$(node_dir)/lib/node_modules/openclaw/dist/entry.js" "\$@"
+exec "${PREFIX}/tools/node/bin/node" "$(node_dir)/lib/node_modules/eve/dist/entry.js" "\$@"
 EOF
-  chmod +x "${PREFIX}/bin/openclaw"
-  emit_json "{\"event\":\"step\",\"name\":\"openclaw\",\"status\":\"ok\",\"version\":\"${requested}\"}"
+  chmod +x "${PREFIX}/bin/eve"
+  emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"ok\",\"version\":\"${requested}\"}"
 }
 
 ensure_pnpm_git_prepare_allowlist() {
@@ -1032,9 +1032,9 @@ ensure_pnpm_git_prepare_allowlist() {
   log "Updated pnpm allowlist for git-hosted build dependency: ${dep}"
 }
 
-install_openclaw_from_git() {
+install_eve_from_git() {
   local repo_dir="$1"
-  local repo_url="https://github.com/openclaw/openclaw.git"
+  local repo_url="https://github.com/engsathiago/eve-agent.git"
 
   if [[ -z "$repo_dir" ]]; then
     fail "Git install dir cannot be empty"
@@ -1045,11 +1045,11 @@ install_openclaw_from_git() {
   mkdir -p "$(dirname "$repo_dir")"
   repo_dir="$(cd "$(dirname "$repo_dir")" && pwd)/$(basename "$repo_dir")"
 
-  emit_json "{\"event\":\"step\",\"name\":\"openclaw\",\"status\":\"start\",\"method\":\"git\",\"repo\":\"${repo_url//\"/\\\"}\"}"
+  emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"start\",\"method\":\"git\",\"repo\":\"${repo_url//\"/\\\"}\"}"
   if [[ -d "$repo_dir/.git" ]]; then
-    log "Installing Openclaw from git checkout: ${repo_dir}"
+    log "Installing Eve from git checkout: ${repo_dir}"
   else
-    log "Installing Openclaw from GitHub (${repo_url})..."
+    log "Installing Eve from GitHub (${repo_url})..."
   fi
 
   ensure_git
@@ -1069,10 +1069,10 @@ install_openclaw_from_git() {
   fi
 
   local git_ref
-  git_ref="$(resolve_git_openclaw_ref)"
+  git_ref="$(resolve_git_eve_ref)"
   if [[ -z "$(git -C "$repo_dir" status --porcelain 2>/dev/null || true)" ]]; then
     log "Using git ref: ${git_ref}"
-    checkout_git_openclaw_ref "$repo_dir" "$git_ref"
+    checkout_git_eve_ref "$repo_dir" "$git_ref"
   else
     log "Repo is dirty; skipping git checkout/update"
   fi
@@ -1091,19 +1091,19 @@ install_openclaw_from_git() {
   run_pnpm -C "$repo_dir" build
 
   mkdir -p "${PREFIX}/bin"
-  cat > "${PREFIX}/bin/openclaw" <<EOF
+  cat > "${PREFIX}/bin/eve" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
 exec "${PREFIX}/tools/node/bin/node" "${repo_dir}/dist/entry.js" "\$@"
 EOF
-  chmod +x "${PREFIX}/bin/openclaw"
-  emit_json "{\"event\":\"step\",\"name\":\"openclaw\",\"status\":\"ok\",\"method\":\"git\"}"
+  chmod +x "${PREFIX}/bin/eve"
+  emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"ok\",\"method\":\"git\"}"
 }
 
-resolve_openclaw_version() {
+resolve_eve_version() {
   local version=""
-  if [[ -x "${PREFIX}/bin/openclaw" ]]; then
-    version="$("${PREFIX}/bin/openclaw" --version 2>/dev/null | head -n 1 | tr -d '\r')"
+  if [[ -x "${PREFIX}/bin/eve" ]]; then
+    version="$("${PREFIX}/bin/eve" --version 2>/dev/null | head -n 1 | tr -d '\r')"
   fi
   echo "$version"
 }
@@ -1134,7 +1134,7 @@ try {
 }
 
 refresh_gateway_service_if_loaded() {
-  local claw="${PREFIX}/bin/openclaw"
+  local claw="${PREFIX}/bin/eve"
   if [[ ! -x "$claw" ]]; then
     return 0
   fi
@@ -1166,7 +1166,7 @@ refresh_gateway_service_if_loaded() {
 main() {
   parse_args "$@"
 
-  if [[ "${OPENCLAW_NO_ONBOARD:-0}" == "1" ]]; then
+  if [[ "${EVE_NO_ONBOARD:-0}" == "1" ]]; then
     RUN_ONBOARD=0
   fi
 
@@ -1177,13 +1177,13 @@ main() {
 
   install_node
   if [[ "$INSTALL_METHOD" == "git" ]]; then
-    install_openclaw_from_git "$GIT_DIR"
+    install_eve_from_git "$GIT_DIR"
   elif [[ "$INSTALL_METHOD" == "npm" ]]; then
     ensure_git
     if [[ "$SET_NPM_PREFIX" -eq 1 ]]; then
       fix_npm_prefix_if_needed
     fi
-    install_openclaw
+    install_eve
   else
     fail "Unknown install method: ${INSTALL_METHOD} (use npm or git)"
   fi
@@ -1191,20 +1191,20 @@ main() {
   refresh_gateway_service_if_loaded
 
   local installed_version
-  installed_version="$(resolve_openclaw_version)"
+  installed_version="$(resolve_eve_version)"
   if [[ -n "$installed_version" ]]; then
     emit_json "{\"event\":\"done\",\"ok\":true,\"version\":\"${installed_version//\"/\\\"}\"}"
-    log "OpenClaw installed (${installed_version})."
+    log "EVE installed (${installed_version})."
   else
     emit_json "{\"event\":\"done\",\"ok\":true}"
-    log "OpenClaw installed."
+    log "EVE installed."
   fi
 
   if [[ "$RUN_ONBOARD" -eq 1 ]]; then
-    "${PREFIX}/bin/openclaw" onboard
+    "${PREFIX}/bin/eve" onboard
   fi
 }
 
-if [[ "${OPENCLAW_INSTALL_CLI_SH_NO_RUN:-0}" != "1" ]]; then
+if [[ "${EVE_INSTALL_CLI_SH_NO_RUN:-0}" != "1" ]]; then
   main "$@"
 fi

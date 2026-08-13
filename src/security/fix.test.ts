@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { ChannelPlugin } from "../channels/plugins/types.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   applySecurityFixConfigMutations,
   collectSecurityPermissionTargets,
@@ -33,8 +33,8 @@ describe("security fix", () => {
 
   const createFixEnv = (stateDir: string, configPath: string) => ({
     ...process.env,
-    OPENCLAW_STATE_DIR: stateDir,
-    OPENCLAW_CONFIG_PATH: configPath,
+    EVE_STATE_DIR: stateDir,
+    EVE_CONFIG_PATH: configPath,
   });
 
   const createWhatsAppConfigFixTestPlugin = (storeAllowFrom: string[]): ChannelPlugin => ({
@@ -140,7 +140,7 @@ describe("security fix", () => {
         channels: {
           whatsapp: params.whatsapp,
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       env: process.env,
       channelPlugins: [createWhatsAppConfigFixTestPlugin(params.allowFromStore)],
     });
@@ -151,7 +151,7 @@ describe("security fix", () => {
   };
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-fix-suite-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-security-fix-suite-"));
   });
 
   afterAll(async () => {
@@ -170,7 +170,7 @@ describe("security fix", () => {
         imessage: { groupPolicy: "open" },
       },
       logging: { redactSensitive: "off" },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     const fixed = await applySecurityFixConfigMutations({
       cfg,
       env: process.env,
@@ -227,7 +227,7 @@ describe("security fix", () => {
     const stateDir = await createStateDir("invalid-config");
     await fs.chmod(stateDir, 0o755);
 
-    const configPath = path.join(stateDir, "openclaw.json");
+    const configPath = path.join(stateDir, "eve.json");
     await fs.writeFile(configPath, "{ this is not json }\n", "utf-8");
     await fs.chmod(configPath, 0o644);
 
@@ -248,7 +248,7 @@ describe("security fix", () => {
     await fs.writeFile(includePath, "{ logging: { redactSensitive: 'off' } }\n", "utf-8");
     await fs.chmod(includePath, 0o644);
 
-    const configPath = path.join(stateDir, "openclaw.json");
+    const configPath = path.join(stateDir, "eve.json");
     await fs.writeFile(
       configPath,
       `{ "$include": "./includes/extra.json5", channels: { whatsapp: { groupPolicy: "open" } } }\n`,
@@ -268,7 +268,7 @@ describe("security fix", () => {
 
     const agentDir = path.join(stateDir, "agents", "main", "agent");
     await fs.mkdir(agentDir, { recursive: true });
-    const authDatabasePath = path.join(agentDir, "openclaw-agent.sqlite");
+    const authDatabasePath = path.join(agentDir, "eve-agent.sqlite");
     await fs.writeFile(authDatabasePath, "sqlite\n", "utf-8");
     await fs.writeFile(`${authDatabasePath}-wal`, "wal\n", "utf-8");
     await fs.writeFile(`${authDatabasePath}-shm`, "shm\n", "utf-8");
@@ -292,7 +292,7 @@ describe("security fix", () => {
       configPath,
       cfg: {
         channels: { whatsapp: { groupPolicy: "open" } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       includePaths: [includePath],
     });
 

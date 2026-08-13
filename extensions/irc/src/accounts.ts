@@ -1,17 +1,17 @@
 // Irc plugin module implements accounts behavior.
-import { createAccountListHelpers } from "openclaw/plugin-sdk/account-helpers";
-import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "openclaw/plugin-sdk/account-id";
-import { resolveMergedAccountConfig } from "openclaw/plugin-sdk/account-resolution";
+import { createAccountListHelpers } from "eve-agent/plugin-sdk/account-helpers";
+import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "eve-agent/plugin-sdk/account-id";
+import { resolveMergedAccountConfig } from "eve-agent/plugin-sdk/account-resolution";
 import {
   parseOptionalDelimitedEntries,
   tryReadSecretFileSync,
-} from "openclaw/plugin-sdk/channel-core";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+} from "eve-agent/plugin-sdk/channel-core";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { CoreConfig, IrcAccountConfig, IrcNickServConfig } from "./types.js";
 
 const TRUTHY_ENV = new Set(["true", "1", "yes", "on"]);
@@ -173,12 +173,12 @@ export function resolveIrcAccount(params: {
       merged.username?.trim() ||
       (accountId === DEFAULT_ACCOUNT_ID ? process.env.IRC_USERNAME?.trim() : "") ||
       nick ||
-      "openclaw"
+      "eve"
     ).trim();
     const realname = (
       merged.realname?.trim() ||
       (accountId === DEFAULT_ACCOUNT_ID ? process.env.IRC_REALNAME?.trim() : "") ||
-      "OpenClaw"
+      "EVE"
     ).trim();
 
     const passwordResolution = resolvePassword(accountId, merged);

@@ -354,13 +354,13 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
 
       expect(result.error).toBeUndefined();
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("openclaw model missing from Open WebUI model list");
+      expect(result.stderr).toContain("eve model missing from Open WebUI model list");
     } finally {
       server.close();
     }
   });
 
-  it("passes in models mode when Open WebUI exposes the OpenClaw model", async () => {
+  it("passes in models mode when Open WebUI exposes the EVE model", async () => {
     const server = createServer((request, response) => {
       if (request.url === "/api/v1/auths/signin") {
         response.writeHead(200, {
@@ -374,7 +374,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
         expect(request.headers.authorization).toBe("Bearer test-token");
         expect(request.headers.cookie).toContain("openwebui-session=test");
         response.writeHead(200, { "content-type": "application/json" });
-        response.end(JSON.stringify({ data: [{ id: "openclaw/default" }] }));
+        response.end(JSON.stringify({ data: [{ id: "eve/default" }] }));
         return;
       }
       response.writeHead(404).end();
@@ -386,7 +386,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
       expect(result.status).toBe(0);
       expect(JSON.parse(result.stdout)).toMatchObject({
         mode: "models",
-        model: "openclaw/default",
+        model: "eve/default",
         ok: true,
       });
     } finally {
@@ -407,7 +407,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
       }
       if (request.url === "/api/models") {
         response.writeHead(200, { "content-type": "application/json" });
-        response.end(JSON.stringify({ data: [{ id: "openclaw/default" }] }));
+        response.end(JSON.stringify({ data: [{ id: "eve/default" }] }));
         return;
       }
       if (request.url === "/api/chat/completions") {
@@ -417,7 +417,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
         response.writeHead(200, { "content-type": "application/json" });
         response.end(
           JSON.stringify({
-            choices: [{ message: { content: "OpenClaw replied with nonce-123" } }],
+            choices: [{ message: { content: "EVE replied with nonce-123" } }],
           }),
         );
         return;
@@ -430,14 +430,14 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
 
       expect(result.status).toBe(0);
       expect(JSON.parse(result.stdout)).toMatchObject({
-        model: "openclaw/default",
+        model: "eve/default",
         ok: true,
-        reply: "OpenClaw replied with nonce-123",
+        reply: "EVE replied with nonce-123",
       });
       expect(chatRequests).toEqual([
         {
           messages: [{ content: "reply with nonce-123", role: "user" }],
-          model: "openclaw/default",
+          model: "eve/default",
         },
       ]);
     } finally {
@@ -457,7 +457,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
       }
       if (request.url === "/api/models") {
         response.writeHead(200, { "content-type": "application/json" });
-        response.end(JSON.stringify({ data: [{ id: "openclaw/default" }] }));
+        response.end(JSON.stringify({ data: [{ id: "eve/default" }] }));
         return;
       }
       if (request.url === "/api/chat/completions") {

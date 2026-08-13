@@ -7,7 +7,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi, type Mock } 
 import { testing as agentStepTesting } from "../agents/tools/agent-step.js";
 import { runSessionsSendA2AFlow } from "../agents/tools/sessions-send-tool.a2a.js";
 import { resolveSessionTranscriptPath } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { emitAgentEvent } from "../infra/agent-events.js";
 import { createOutboundTestPlugin, createTestRegistry } from "../test-utils/channel-plugins.js";
 import { captureEnv } from "../test-utils/env.js";
@@ -21,7 +21,7 @@ import {
   writeSessionStore,
 } from "./test-helpers.js";
 
-const { createOpenClawTools } = await import("../agents/openclaw-tools.js");
+const { createEVETools } = await import("../agents/eve-tools.js");
 
 installGatewayTestHooks({ scope: "suite" });
 
@@ -30,7 +30,7 @@ let gatewayPort: number;
 const gatewayToken = "test-gateway-token-1234567890";
 let envSnapshot: ReturnType<typeof captureEnv>;
 
-type SessionSendTool = ReturnType<typeof createOpenClawTools>[number];
+type SessionSendTool = ReturnType<typeof createEVETools>[number];
 const SESSION_SEND_E2E_TIMEOUT_MS = 10_000;
 let cachedSessionsSendTool: SessionSendTool | null = null;
 
@@ -38,7 +38,7 @@ function getSessionsSendTool(): SessionSendTool {
   if (cachedSessionsSendTool) {
     return cachedSessionsSendTool;
   }
-  const tool = createOpenClawTools().find((candidate) => candidate.name === "sessions_send");
+  const tool = createEVETools().find((candidate) => candidate.name === "sessions_send");
   if (!tool) {
     throw new Error("missing sessions_send tool");
   }
@@ -113,7 +113,7 @@ async function emitLifecycleAssistantReply(params: {
 }
 
 beforeAll(async () => {
-  envSnapshot = captureEnv(["OPENCLAW_GATEWAY_PORT", "OPENCLAW_GATEWAY_TOKEN"]);
+  envSnapshot = captureEnv(["EVE_GATEWAY_PORT", "EVE_GATEWAY_TOKEN"]);
   gatewayPort = await getFreePort();
   const { approveDevicePairing, requestDevicePairing } = await import("../infra/device-pairing.js");
   const { loadOrCreateDeviceIdentity, publicKeyRawBase64UrlFromPem } =
@@ -122,7 +122,7 @@ beforeAll(async () => {
   const pending = await requestDevicePairing({
     deviceId: identity.deviceId,
     publicKey: publicKeyRawBase64UrlFromPem(identity.publicKeyPem),
-    clientId: "openclaw-cli",
+    clientId: "eve-cli",
     clientMode: "cli",
     role: "operator",
     scopes: ["operator.admin", "operator.read", "operator.write", "operator.approvals"],
@@ -132,15 +132,15 @@ beforeAll(async () => {
     callerScopes: pending.request.scopes ?? ["operator.admin"],
   });
   testState.gatewayAuth = { mode: "token", token: gatewayToken };
-  process.env.OPENCLAW_GATEWAY_PORT = String(gatewayPort);
-  process.env.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
+  process.env.EVE_GATEWAY_PORT = String(gatewayPort);
+  process.env.EVE_GATEWAY_TOKEN = gatewayToken;
   server = await startGatewayServer(gatewayPort);
 });
 
 beforeEach(() => {
   testState.gatewayAuth = { mode: "token", token: gatewayToken };
-  process.env.OPENCLAW_GATEWAY_PORT = String(gatewayPort);
-  process.env.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
+  process.env.EVE_GATEWAY_PORT = String(gatewayPort);
+  process.env.EVE_GATEWAY_TOKEN = gatewayToken;
 });
 
 afterAll(async () => {
@@ -189,7 +189,7 @@ describe("sessions_send gateway loopback", () => {
     "announces through gateway send using external deliveryContext over stale webchat session fields",
     { timeout: SESSION_SEND_E2E_TIMEOUT_MS },
     async () => {
-      const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-send-route-"));
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-sessions-send-route-"));
       const sendCalls: Array<{
         to?: string;
         text?: string;
@@ -300,9 +300,9 @@ describe("sessions_send label lookup", () => {
     { timeout: SESSION_SEND_E2E_TIMEOUT_MS },
     async () => {
       // This is an operator feature; enable broader session tool targeting for this test.
-      const configPath = process.env.OPENCLAW_CONFIG_PATH;
+      const configPath = process.env.EVE_CONFIG_PATH;
       if (!configPath) {
-        throw new Error("OPENCLAW_CONFIG_PATH missing in gateway test environment");
+        throw new Error("EVE_CONFIG_PATH missing in gateway test environment");
       }
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
@@ -328,7 +328,7 @@ describe("sessions_send label lookup", () => {
         timeoutMs: 5000,
       });
 
-      const tool = createOpenClawTools({
+      const tool = createEVETools({
         config: {
           tools: {
             sessions: {
@@ -360,12 +360,12 @@ describe("sessions_send agent targeting", () => {
     "starts configured agent main session by agentId before sending",
     { timeout: SESSION_SEND_E2E_TIMEOUT_MS },
     async () => {
-      const configPath = process.env.OPENCLAW_CONFIG_PATH;
+      const configPath = process.env.EVE_CONFIG_PATH;
       if (!configPath) {
-        throw new Error("OPENCLAW_CONFIG_PATH missing in gateway test environment");
+        throw new Error("EVE_CONFIG_PATH missing in gateway test environment");
       }
-      const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-send-agent-"));
-      const config: OpenClawConfig = {
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-sessions-send-agent-"));
+      const config: EVEConfig = {
         tools: {
           sessions: {
             visibility: "all",
@@ -403,7 +403,7 @@ describe("sessions_send agent targeting", () => {
         );
         spy.mockClear();
 
-        const tool = createOpenClawTools({
+        const tool = createEVETools({
           agentSessionKey: "agent:main:main",
           config,
         }).find((candidate) => candidate.name === "sessions_send");

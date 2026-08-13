@@ -1,13 +1,13 @@
 /**
  * Runs model and image fallback chains across provider/model candidates.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import {
   resolveAgentModelFallbackValues,
   resolveAgentModelPrimaryValue,
 } from "../config/model-input.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { emitFailoverEvent } from "../infra/diagnostic-events.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
@@ -87,7 +87,7 @@ import {
 const log = createSubsystemLogger("model-fallback");
 
 function hasExactConfiguredProviderModel(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   model: string;
 }): boolean {
@@ -105,7 +105,7 @@ function hasExactConfiguredProviderModel(params: {
   return false;
 }
 
-function hasConfiguredProvider(params: { cfg?: OpenClawConfig; provider: string }): boolean {
+function hasConfiguredProvider(params: { cfg?: EVEConfig; provider: string }): boolean {
   const normalizedProvider = normalizeProviderId(params.provider);
   if (!params.cfg || !normalizedProvider) {
     return false;
@@ -116,7 +116,7 @@ function hasConfiguredProvider(params: { cfg?: OpenClawConfig; provider: string 
 }
 
 function allowPluginModelNormalizationForRef(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   model: string;
 }): boolean {
@@ -171,7 +171,7 @@ export type ModelFallbackRunOptions = {
 };
 
 type ModelFallbackRuntimeContext = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   resolveAgentHarnessRuntimeOverride?: (provider: string, model: string) => string | undefined;
@@ -501,7 +501,7 @@ function sameModelCandidate(a: ModelCandidate, b: ModelCandidate): boolean {
   return a.provider === b.provider && a.model === b.model;
 }
 
-function isCliAgentRuntime(runtime: string | undefined, cfg: OpenClawConfig | undefined): boolean {
+function isCliAgentRuntime(runtime: string | undefined, cfg: EVEConfig | undefined): boolean {
   const normalized = normalizeOptionalString(runtime);
   if (!normalized) {
     return false;
@@ -539,11 +539,11 @@ async function resolveModelFallbackCandidateHarnessAuthPrecheck(
       ? "model"
       : harnessPolicy.runtimeSource;
   if (isCliAgentRuntime(agentRuntime, params.cfg)) {
-    // CLI runtimes own their transport/auth, so stale OpenClaw provider
+    // CLI runtimes own their transport/auth, so stale EVE provider
     // profile state must not block the candidate before the CLI starts.
     return { skipsProviderAuthCooldown: true };
   }
-  if (agentRuntime === "openclaw") {
+  if (agentRuntime === "eve") {
     return { skipsProviderAuthCooldown: false };
   }
   if (agentRuntime === "auto" || (agentRuntime === "codex" && agentRuntimeSource === "implicit")) {
@@ -557,7 +557,7 @@ async function resolveModelFallbackCandidateHarnessAuthPrecheck(
   if (!getRegisteredAgentHarness(agentRuntime)) {
     throw new MissingAgentHarnessError(agentRuntime);
   }
-  // Explicit non-Codex plugin harnesses own transport/auth; stale OpenClaw
+  // Explicit non-Codex plugin harnesses own transport/auth; stale EVE
   // provider cooldowns must not block the harness before it starts.
   return { skipsProviderAuthCooldown: agentRuntime !== "codex" };
 }
@@ -665,7 +665,7 @@ function throwFallbackFailureSummary(params: {
   formatAttempt: (attempt: FallbackAttempt) => string;
   soonestCooldownExpiry?: number | null;
   attribution?: FailoverAttribution;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
 }): never {
   if (params.attempts.length <= 1 && params.lastError) {
@@ -703,7 +703,7 @@ function resolveFallbackSoonestCooldownExpiry(params: {
   authRuntime: ModelFallbackAuthRuntime | null;
   authStore: AuthProfileStore | null;
   agentDir?: string;
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   candidates: ModelCandidate[];
 }): number | null {
   if (!params.authRuntime || !params.authStore) {
@@ -743,7 +743,7 @@ function resolveFallbackSoonestCooldownExpiry(params: {
 
 export function resolveImageFallbackCandidates(
   params: {
-    cfg: OpenClawConfig | undefined;
+    cfg: EVEConfig | undefined;
     defaultProvider: string;
     modelOverride?: string;
   } & ModelManifestNormalizationContext,
@@ -799,7 +799,7 @@ export function resolveImageFallbackCandidates(
   return candidates;
 }
 
-export function resolveImageFallbackDefaultProvider(cfg: OpenClawConfig | undefined): string {
+export function resolveImageFallbackDefaultProvider(cfg: EVEConfig | undefined): string {
   const configuredPrimary = resolveAgentModelPrimaryValue(cfg?.agents?.defaults?.imageModel);
   if (configuredPrimary?.trim()) {
     const aliasIndex = buildModelAliasIndex({
@@ -828,7 +828,7 @@ export const testing = {
 
 export function resolveModelCandidateChain(
   params: {
-    cfg: OpenClawConfig | undefined;
+    cfg: EVEConfig | undefined;
     provider: string;
     model: string;
     /** Optional explicit fallbacks list; when provided (even empty), replaces agents.defaults.model.fallbacks. */
@@ -865,7 +865,7 @@ function cloneModelCandidate(candidate: ModelCandidate): ModelCandidate {
 
 function resolveFallbackCandidateCacheKey(
   params: {
-    cfg: OpenClawConfig | undefined;
+    cfg: EVEConfig | undefined;
     provider: string;
     model: string;
     fallbacksOverride?: string[];
@@ -919,7 +919,7 @@ function resolveFallbackCandidateCacheKey(
   });
 }
 
-function resolveFallbackCandidateModelProviderCacheParts(cfg: OpenClawConfig | undefined): unknown {
+function resolveFallbackCandidateModelProviderCacheParts(cfg: EVEConfig | undefined): unknown {
   const providers = cfg?.models?.providers;
   if (!providers) {
     return undefined;
@@ -937,7 +937,7 @@ function resolveFallbackCandidateModelProviderCacheParts(cfg: OpenClawConfig | u
 
 function resolveFallbackCandidatesUncached(
   params: {
-    cfg: OpenClawConfig | undefined;
+    cfg: EVEConfig | undefined;
     provider: string;
     model: string;
     /** Optional explicit fallbacks list; when provided (even empty), replaces agents.defaults.model.fallbacks. */
@@ -1277,7 +1277,7 @@ function resolveCooldownDecision(params: {
 }
 
 type RunWithModelFallbackParams<T> = {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   model: string;
   runId?: string;
@@ -1883,7 +1883,7 @@ async function runWithModelFallbackInternal<T>(
 }
 
 export async function runWithImageModelFallback<T>(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   modelOverride?: string;
   run: (provider: string, model: string) => Promise<T>;
   onError?: ModelFallbackErrorHandler;

@@ -20,7 +20,7 @@ import {
 } from "./installed-plugin-index.js";
 import { recordPluginInstall } from "./installs.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
-import type { OpenClawPackageManifest } from "./manifest.js";
+import type { EVEPackageManifest } from "./manifest.js";
 import { cleanupTrackedTempDirs, makeTrackedTempDir } from "./test-helpers/fs-fixtures.js";
 
 vi.unmock("../version.js");
@@ -32,11 +32,11 @@ afterEach(() => {
 });
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-installed-plugin-index", tempDirs);
+  return makeTrackedTempDir("eve-installed-plugin-index", tempDirs);
 }
 
 function writePluginManifest(rootDir: string, manifest: Record<string, unknown>) {
-  fs.writeFileSync(path.join(rootDir, "openclaw.plugin.json"), JSON.stringify(manifest), "utf-8");
+  fs.writeFileSync(path.join(rootDir, "eve.plugin.json"), JSON.stringify(manifest), "utf-8");
 }
 
 function writePackageJson(rootDir: string, packageJson: Record<string, unknown>) {
@@ -90,8 +90,8 @@ function writeManifestlessClaudeBundle(rootDir: string, entries: readonly string
 
 function hermeticEnv(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return {
-    OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
-    OPENCLAW_VERSION: "2026.4.25",
+    EVE_BUNDLED_PLUGINS_DIR: undefined,
+    EVE_VERSION: "2026.4.25",
     VITEST: "true",
     ...overrides,
   };
@@ -104,7 +104,7 @@ function createPluginCandidate(params: {
   packageName?: string;
   packageVersion?: string;
   packageDir?: string;
-  packageManifest?: OpenClawPackageManifest;
+  packageManifest?: EVEPackageManifest;
   format?: PluginCandidate["format"];
   bundleFormat?: PluginCandidate["bundleFormat"];
 }): PluginCandidate {
@@ -345,7 +345,7 @@ describe("installed plugin index", () => {
   it("tolerates stale manifest records without normalized channels", () => {
     const rootDir = makeTempDir();
     writeRuntimeEntry(rootDir);
-    const manifestPath = path.join(rootDir, "openclaw.plugin.json");
+    const manifestPath = path.join(rootDir, "eve.plugin.json");
 
     const records = buildInstalledPluginIndexRecords({
       candidates: [createPluginCandidate({ rootDir })],
@@ -918,8 +918,8 @@ describe("installed plugin index", () => {
 
     const index = loadInstalledPluginIndex({
       env: hermeticEnv({
-        OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-        OPENCLAW_STATE_DIR: stateDir,
+        EVE_DISABLE_BUNDLED_PLUGINS: "1",
+        EVE_STATE_DIR: stateDir,
       }),
     });
 
@@ -1202,7 +1202,7 @@ describe("installed plugin index", () => {
           },
         },
       },
-      env: hermeticEnv({ OPENCLAW_VERSION: "2026.4.25" }),
+      env: hermeticEnv({ EVE_VERSION: "2026.4.25" }),
     });
 
     writePackageJson(fixture.rootDir, {
@@ -1228,7 +1228,7 @@ describe("installed plugin index", () => {
             resolvedVersion: "1.2.4",
           },
         },
-        env: hermeticEnv({ OPENCLAW_VERSION: "2026.4.26" }),
+        env: hermeticEnv({ EVE_VERSION: "2026.4.26" }),
       }),
       compatRegistryVersion: "different-compat-registry",
     };

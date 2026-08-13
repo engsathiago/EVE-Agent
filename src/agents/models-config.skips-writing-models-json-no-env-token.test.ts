@@ -97,7 +97,7 @@ installModelsConfigTestHooks();
 let clearConfigCache: typeof import("../config/config.js").clearConfigCache;
 let clearRuntimeConfigSnapshot: typeof import("../config/config.js").clearRuntimeConfigSnapshot;
 let clearRuntimeAuthProfileStoreSnapshots: typeof import("./auth-profiles/store.js").clearRuntimeAuthProfileStoreSnapshots;
-let ensureOpenClawModelsJson: typeof import("./models-config.js").ensureOpenClawModelsJson;
+let ensureEVEModelsJson: typeof import("./models-config.js").ensureEVEModelsJson;
 let resetModelsJsonReadyCacheForTest: typeof import("./models-config.js").resetModelsJsonReadyCacheForTest;
 
 type ParsedProviderConfig = {
@@ -150,7 +150,7 @@ async function runEnvProviderCase(params: {
   const envSnapshot = captureEnv([params.envVar]);
   setTestEnvValue(params.envVar, params.envValue);
   try {
-    await ensureOpenClawModelsJson({});
+    await ensureEVEModelsJson({});
 
     const provider = (await readGeneratedProviders(resolveDefaultAgentDir({})))[params.providerKey];
     expect(provider?.apiKey).toBe(params.expectedApiKeyRef);
@@ -164,7 +164,7 @@ describe("models-config", () => {
     vi.resetModules();
     ({ clearConfigCache, clearRuntimeConfigSnapshot } = await import("../config/config.js"));
     ({ clearRuntimeAuthProfileStoreSnapshots } = await import("./auth-profiles/store.js"));
-    ({ ensureOpenClawModelsJson, resetModelsJsonReadyCacheForTest } =
+    ({ ensureEVEModelsJson, resetModelsJsonReadyCacheForTest } =
       await import("./models-config.js"));
   });
 
@@ -189,9 +189,9 @@ describe("models-config", () => {
 
         const agentDir = path.join(home, "agent-empty");
         // ensureAuthProfileStore merges the main auth store into non-main dirs; point main at our temp dir.
-        setTestEnvValue("OPENCLAW_AGENT_DIR", agentDir);
+        setTestEnvValue("EVE_AGENT_DIR", agentDir);
 
-        const result = await ensureOpenClawModelsJson(
+        const result = await ensureEVEModelsJson(
           {
             models: { providers: {} },
           },
@@ -216,7 +216,7 @@ describe("models-config", () => {
 
   it("writes models.json for configured providers", async () => {
     await withTempHome(async () => {
-      await ensureOpenClawModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
+      await ensureEVEModelsJson(CUSTOM_PROXY_MODELS_CONFIG);
 
       const modelPath = path.join(resolveDefaultAgentDir({}), "models.json");
       const raw = await fs.readFile(modelPath, "utf8");
@@ -275,7 +275,7 @@ describe("models-config", () => {
         },
       } as unknown as Pick<PluginMetadataSnapshot, "index" | "manifestRegistry" | "owners">;
 
-      await ensureOpenClawModelsJson({ models: { providers: {} } }, agentDir, {
+      await ensureEVEModelsJson({ models: { providers: {} } }, agentDir, {
         pluginMetadataSnapshot,
       });
 

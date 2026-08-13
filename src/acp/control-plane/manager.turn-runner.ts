@@ -1,5 +1,5 @@
 /** Runs ACP turns, failover, timeout cleanup, and detached-task progress mirroring. */
-import type { AcpRuntime, AcpRuntimeHandle } from "@openclaw/acp-core/runtime/types";
+import type { AcpRuntime, AcpRuntimeHandle } from "@eve/acp-core/runtime/types";
 import { logVerbose } from "../../globals.js";
 import { AcpRuntimeError, formatAcpErrorChain, toAcpRuntimeError } from "../runtime/errors.js";
 import { clearAcpTurnActive, markAcpTurnActive } from "./active-turns.js";

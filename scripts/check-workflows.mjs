@@ -48,7 +48,7 @@ function runPreCommitFromTempVenv(hook, hookArgs) {
   if (!commandExists("python3", ["--version"])) {
     return false;
   }
-  const venvDir = mkdtempSync(join(tmpdir(), "openclaw-check-workflows-pre-commit-"));
+  const venvDir = mkdtempSync(join(tmpdir(), "eve-check-workflows-pre-commit-"));
   const python = join(venvDir, process.platform === "win32" ? "Scripts/python.exe" : "bin/python");
   let failure;
   try {

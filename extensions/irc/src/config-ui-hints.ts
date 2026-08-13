@@ -1,10 +1,10 @@
 // Irc helper module supports config ui hints behavior.
-import type { ChannelConfigUiHint } from "openclaw/plugin-sdk/core";
+import type { ChannelConfigUiHint } from "eve-agent/plugin-sdk/core";
 
 export const ircChannelConfigUiHints = {
   "": {
     label: "IRC",
-    help: "IRC channel provider configuration and compatibility settings for classic IRC transport workflows. Use this section when bridging legacy chat infrastructure into OpenClaw.",
+    help: "IRC channel provider configuration and compatibility settings for classic IRC transport workflows. Use this section when bridging legacy chat infrastructure into EVE.",
   },
   dmPolicy: {
     label: "IRC DM Policy",

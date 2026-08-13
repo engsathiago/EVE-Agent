@@ -5,7 +5,7 @@ import type {
   SelectListTheme,
   SettingsListTheme,
 } from "@earendil-works/pi-tui";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import chalk from "chalk";
 import type { SearchableSelectListTheme } from "../components/searchable-select-list.js";
 
@@ -46,7 +46,7 @@ function pickHigherContrastText(r: number, g: number, b: number): boolean {
 }
 
 function isLightBackground(): boolean {
-  const explicit = normalizeOptionalLowercaseString(process.env.OPENCLAW_THEME);
+  const explicit = normalizeOptionalLowercaseString(process.env.EVE_THEME);
   if (explicit === "light") {
     return true;
   }

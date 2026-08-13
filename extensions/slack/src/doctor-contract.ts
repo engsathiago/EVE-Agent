@@ -2,14 +2,14 @@
 import type {
   ChannelDoctorConfigMutation,
   ChannelDoctorLegacyConfigRule,
-} from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   asObjectRecord,
   hasLegacyAccountStreamingAliases,
   hasLegacyStreamingAliases,
   normalizeLegacyChannelAliases,
-} from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/runtime-doctor";
 import { resolveSlackNativeStreaming, resolveSlackStreamingMode } from "./streaming-compat.js";
 
 function hasLegacySlackStreamingAliases(value: unknown): boolean {
@@ -72,13 +72,13 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
   {
     path: ["channels", "slack"],
     message:
-      'channels.slack.channels.<id>.allow is legacy; use channels.slack.channels.<id>.enabled instead. Run "openclaw doctor --fix".',
+      'channels.slack.channels.<id>.allow is legacy; use channels.slack.channels.<id>.enabled instead. Run "eve doctor --fix".',
     match: hasLegacySlackChannelAllowAlias,
   },
   {
     path: ["channels", "slack", "accounts"],
     message:
-      'channels.slack.accounts.<id>.channels.<id>.allow is legacy; use channels.slack.accounts.<id>.channels.<id>.enabled instead. Run "openclaw doctor --fix".',
+      'channels.slack.accounts.<id>.channels.<id>.allow is legacy; use channels.slack.accounts.<id>.channels.<id>.enabled instead. Run "eve doctor --fix".',
     match: (value) => {
       const accounts = asObjectRecord(value);
       if (!accounts) {
@@ -92,7 +92,7 @@ export const legacyConfigRules: ChannelDoctorLegacyConfigRule[] = [
 export function normalizeCompatibilityConfig({
   cfg,
 }: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): ChannelDoctorConfigMutation {
   const rawEntry = asObjectRecord((cfg.channels as Record<string, unknown> | undefined)?.slack);
   if (!rawEntry) {
@@ -165,8 +165,8 @@ export function normalizeCompatibilityConfig({
       ...cfg,
       channels: {
         ...cfg.channels,
-        slack: updated as unknown as NonNullable<OpenClawConfig["channels"]>["slack"],
-      } as OpenClawConfig["channels"],
+        slack: updated as unknown as NonNullable<EVEConfig["channels"]>["slack"],
+      } as EVEConfig["channels"],
     },
     changes,
   };

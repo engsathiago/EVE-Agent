@@ -1,0 +1,4 @@
+interface:
+  display_name: "EVE Testing"
+  short_description: "Choose cheap, targeted EVE validation"
+  default_prompt: "Use $eve-testing to choose the cheapest safe test or CI verification path, inspect failures, and rerun only the relevant EVE lane."

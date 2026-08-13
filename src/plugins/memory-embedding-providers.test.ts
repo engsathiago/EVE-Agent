@@ -12,7 +12,7 @@ import {
   type MemoryEmbeddingProviderAdapter,
 } from "./memory-embedding-providers.js";
 
-const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("openclaw.memoryEmbeddingProviders");
+const MEMORY_EMBEDDING_PROVIDERS_KEY = Symbol.for("eve.memoryEmbeddingProviders");
 const INITIAL_REGISTERED_MEMORY_EMBEDDING_PROVIDERS = listRegisteredMemoryEmbeddingProviders();
 
 function createAdapter(id: string): MemoryEmbeddingProviderAdapter {

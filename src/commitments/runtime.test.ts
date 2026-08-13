@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { captureEnv, setTestEnvValue } from "../test-utils/env.js";
 import {
   configureCommitmentExtractionRuntime,
@@ -34,11 +34,11 @@ function requireFirstEmbeddedAgentRequest(): {
 } {
   const [call] = runEmbeddedAgentMock.mock.calls;
   if (!call) {
-    throw new Error("expected embedded OpenClaw agent extraction request");
+    throw new Error("expected embedded EVE agent extraction request");
   }
   const [request] = call;
   if (!request || typeof request !== "object" || Array.isArray(request)) {
-    throw new Error("expected embedded OpenClaw agent extraction request");
+    throw new Error("expected embedded EVE agent extraction request");
   }
   return request as { provider?: string; model?: string; disableTools?: boolean };
 }
@@ -60,11 +60,11 @@ describe("commitment extraction runtime", () => {
     tmpDirs.length = 0;
   });
 
-  async function createConfig(): Promise<OpenClawConfig> {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-commitment-runtime-"));
+  async function createConfig(): Promise<EVEConfig> {
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-commitment-runtime-"));
     tmpDirs.push(tmpDir);
-    stateDirEnvSnapshot ??= captureEnv(["OPENCLAW_STATE_DIR"]);
-    setTestEnvValue("OPENCLAW_STATE_DIR", tmpDir);
+    stateDirEnvSnapshot ??= captureEnv(["EVE_STATE_DIR"]);
+    setTestEnvValue("EVE_STATE_DIR", tmpDir);
     return {
       commitments: {
         enabled: true,
@@ -89,7 +89,7 @@ describe("commitment extraction runtime", () => {
   });
 
   it("keeps hidden extraction opt-in by default", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       commitments: {},
     };
     configureCommitmentExtractionRuntime({

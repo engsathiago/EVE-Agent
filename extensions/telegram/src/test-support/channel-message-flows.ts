@@ -2,9 +2,9 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import type { Bot } from "grammy";
 import type { Message } from "grammy/types";
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import { formatChannelProgressDraftText } from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { formatReasoningMessage } from "eve-agent/plugin-sdk/agent-runtime";
+import { formatChannelProgressDraftText } from "eve-agent/plugin-sdk/channel-outbound";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type { TelegramThreadSpec } from "../bot/helpers.js";
 import { createTelegramDraftStream, type TelegramDraftStream } from "../draft-stream.js";
 import {
@@ -24,7 +24,7 @@ type SupportedFlow = "thinking-final" | "working-final";
 
 type TelegramSendFinalParams = {
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: string;
   text: string;
   threadId?: number;
@@ -38,7 +38,7 @@ type TelegramFlowResult = {
 type TelegramFlowDeps = {
   createDraftStream?: (params: {
     accountId?: string;
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     target: string;
     threadId?: number;
   }) => TelegramDraftStream;
@@ -48,7 +48,7 @@ type TelegramFlowDeps = {
 
 export type TelegramThinkingFinalFlowOptions = {
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   delayMs?: number;
   finalText?: string;
   target: string;
@@ -135,7 +135,7 @@ function richMessageText(richMessage: TelegramInputRichMessage): {
     : { text: richMessage.markdown, textMode: "markdown" };
 }
 
-function createTelegramFlowApi(params: { accountId?: string; cfg: OpenClawConfig }): Bot["api"] {
+function createTelegramFlowApi(params: { accountId?: string; cfg: EVEConfig }): Bot["api"] {
   const api = {
     raw: {
       sendRichMessage: async (sendParams: TelegramSendRichMessageParams) => {
@@ -212,7 +212,7 @@ export function resolveTelegramFlowThreadSpec(threadId?: number): TelegramThread
 
 function createDefaultTelegramDraftStream(params: {
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: string;
   threadId?: number;
 }): TelegramDraftStream {

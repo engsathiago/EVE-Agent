@@ -3,8 +3,8 @@
  *
  * Downscales and recompresses oversized base64 image blocks before provider replay.
  */
-import { canonicalizeBase64 } from "@openclaw/media-core/base64";
-import { resolveIntegerOption } from "@openclaw/normalization-core/number-coercion";
+import { canonicalizeBase64 } from "@eve/media-core/base64";
+import { resolveIntegerOption } from "@eve/normalization-core/number-coercion";
 import type { ImageContent } from "../llm/types.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import {

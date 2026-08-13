@@ -1,5 +1,5 @@
 // TTS core coordinates text preparation, provider selection, and speech output.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { requireApiKey } from "../agents/model-auth.js";
 import {
   buildModelAliasIndex,
@@ -8,7 +8,7 @@ import {
   type ModelRef,
 } from "../agents/model-selection.js";
 import { prepareSimpleCompletionModel } from "../agents/simple-completion-runtime.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { completeSimple } from "../llm/stream.js";
 import type { TextContent } from "../llm/types.js";
 import { resolveTimerTimeoutMs } from "../shared/number-coercion.js";
@@ -48,7 +48,7 @@ type SummaryModelSelection = {
 };
 
 function resolveSummaryModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   config: ResolvedTtsConfig,
 ): SummaryModelSelection {
   const defaultRef = resolveDefaultModelForAgent({ cfg });
@@ -78,7 +78,7 @@ export async function summarizeText(
   params: {
     text: string;
     targetLength: number;
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     config: ResolvedTtsConfig;
     timeoutMs: number;
   },

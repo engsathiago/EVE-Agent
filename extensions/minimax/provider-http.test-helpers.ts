@@ -3,7 +3,7 @@ import type {
   fetchProviderDownloadResponse,
   fetchProviderOperationResponse,
   resolveProviderHttpRequestConfig,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 import { afterEach, vi, type Mock } from "vitest";
 
 type ResolveProviderHttpRequestConfigParams = Parameters<
@@ -88,11 +88,11 @@ minimaxProviderHttpMocks.fetchProviderDownloadResponseMock.mockImplementation(
   },
 );
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-auth-runtime", () => ({
   resolveApiKeyForProvider: minimaxProviderHttpMocks.resolveApiKeyForProviderMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-http", () => ({
   assertOkOrThrowHttpError: minimaxProviderHttpMocks.assertOkOrThrowHttpErrorMock,
   createProviderOperationDeadline: ({
     label,

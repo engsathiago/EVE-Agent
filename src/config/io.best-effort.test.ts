@@ -8,18 +8,18 @@ import {
   readConfigFileSnapshot,
   readSourceConfigBestEffort,
 } from "./config.js";
-import { withTempHome, writeOpenClawConfig } from "./test-helpers.js";
+import { withTempHome, writeEVEConfig } from "./test-helpers.js";
 
 describe("readBestEffortConfig", () => {
   it("can read snapshots without updating config observation state", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         gateway: { mode: "local" },
       });
 
       await readConfigFileSnapshot({ observe: false });
 
-      const healthPath = `${home}/.openclaw/logs/config-health.json`;
+      const healthPath = `${home}/.eve/logs/config-health.json`;
       await expect(fs.stat(healthPath)).rejects.toMatchObject({ code: "ENOENT" });
 
       await readConfigFileSnapshot();
@@ -30,9 +30,9 @@ describe("readBestEffortConfig", () => {
 
   it("can read snapshots without applying config env vars to the process", async () => {
     await withTempHome(async (home) => {
-      const key = "OPENCLAW_ISOLATED_CONFIG_READ_TEST";
+      const key = "EVE_ISOLATED_CONFIG_READ_TEST";
       await withEnvAsync({ [key]: undefined }, async () => {
-        await writeOpenClawConfig(home, {
+        await writeEVEConfig(home, {
           env: { vars: { [key]: "from-config" } },
           gateway: { mode: "local" },
         });
@@ -46,9 +46,9 @@ describe("readBestEffortConfig", () => {
 
   it("resolves config env above exact lower-precedence values in isolated snapshots", async () => {
     await withTempHome(async (home) => {
-      const key = "OPENCLAW_GATEWAY_TOKEN";
+      const key = "EVE_GATEWAY_TOKEN";
       await withEnvAsync({ [key]: "shell-token" }, async () => {
-        await writeOpenClawConfig(home, {
+        await writeEVEConfig(home, {
           env: { vars: { [key]: "config-token" } },
           gateway: { auth: { mode: "token", token: `\${${key}}` }, mode: "local" },
         });
@@ -68,7 +68,7 @@ describe("readBestEffortConfig", () => {
   it("resolves config env above normalized lower-precedence aliases in isolated snapshots", async () => {
     await withTempHome(async (home) => {
       await withEnvAsync({ ZAI_API_KEY: "shell-token", Z_AI_API_KEY: undefined }, async () => {
-        await writeOpenClawConfig(home, {
+        await writeEVEConfig(home, {
           env: { vars: { Z_AI_API_KEY: "config-token" } },
           gateway: { auth: { mode: "token", token: "${ZAI_API_KEY}" }, mode: "local" },
         });
@@ -89,7 +89,7 @@ describe("readBestEffortConfig", () => {
   it("resolves config aliases from a higher-precedence canonical value in isolated snapshots", async () => {
     await withTempHome(async (home) => {
       await withEnvAsync({ ZAI_API_KEY: "invocation-token", Z_AI_API_KEY: undefined }, async () => {
-        await writeOpenClawConfig(home, {
+        await writeEVEConfig(home, {
           env: { vars: { Z_AI_API_KEY: "config-token" } },
           gateway: { auth: { mode: "token", token: "${Z_AI_API_KEY}" }, mode: "local" },
         });
@@ -108,9 +108,9 @@ describe("readBestEffortConfig", () => {
 
   it("can read best-effort config without applying env vars or recording observation", async () => {
     await withTempHome(async (home) => {
-      const key = "OPENCLAW_ISOLATED_BEST_EFFORT_CONFIG_TEST";
+      const key = "EVE_ISOLATED_BEST_EFFORT_CONFIG_TEST";
       await withEnvAsync({ [key]: undefined }, async () => {
-        await writeOpenClawConfig(home, {
+        await writeEVEConfig(home, {
           env: { vars: { [key]: "from-config" } },
           gateway: { mode: "local" },
         });
@@ -119,7 +119,7 @@ describe("readBestEffortConfig", () => {
 
         expect(config.gateway?.mode).toBe("local");
         expect(process.env[key]).toBeUndefined();
-        await expect(fs.stat(`${home}/.openclaw/logs/config-health.json`)).rejects.toMatchObject({
+        await expect(fs.stat(`${home}/.eve/logs/config-health.json`)).rejects.toMatchObject({
           code: "ENOENT",
         });
       });
@@ -128,9 +128,9 @@ describe("readBestEffortConfig", () => {
 
   it("preserves Windows case-insensitive env lookup in isolated reads", async () => {
     await withTempHome(async (home) => {
-      const mixedCaseKey = "OpenClaw_Config_Path";
-      const customConfigPath = `${home}/custom-openclaw.json`;
-      await withEnvAsync({ OPENCLAW_CONFIG_PATH: undefined }, async () => {
+      const mixedCaseKey = "EVE_Config_Path";
+      const customConfigPath = `${home}/custom-eve.json`;
+      await withEnvAsync({ EVE_CONFIG_PATH: undefined }, async () => {
         await withEnvAsync({ [mixedCaseKey]: customConfigPath }, async () => {
           const platformSpy = vi.spyOn(process, "platform", "get").mockReturnValue("win32");
           try {
@@ -154,7 +154,7 @@ describe("readBestEffortConfig", () => {
 
   it("does not restore suspicious direct edits from .bak during ordinary reads", async () => {
     await withTempHome(async (home) => {
-      const configPath = await writeOpenClawConfig(home, {
+      const configPath = await writeEVEConfig(home, {
         meta: { lastTouchedAt: "2026-04-22T00:00:00.000Z" },
         update: { channel: "beta" },
         gateway: { mode: "local" },
@@ -167,14 +167,14 @@ describe("readBestEffortConfig", () => {
 
       expect(snapshot.sourceConfig).toEqual({ update: { channel: "beta" } });
       expect(await fs.readFile(configPath, "utf-8")).toBe(directEditRaw);
-      const entries = await fs.readdir(`${home}/.openclaw`);
-      expect(entries.some((entry) => entry.startsWith("openclaw.json.clobbered."))).toBe(false);
+      const entries = await fs.readdir(`${home}/.eve`);
+      expect(entries.some((entry) => entry.startsWith("eve.json.clobbered."))).toBe(false);
     });
   });
 
   it("reuses valid snapshots while preserving load-time defaults", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         auth: {
           profiles: {
             "anthropic:api": { provider: "anthropic", mode: "api_key" },
@@ -204,7 +204,7 @@ describe("readBestEffortConfig", () => {
 
   it("returns source and materialized config from one snapshot", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         auth: {
           profiles: {
             "anthropic:api": { provider: "anthropic", mode: "api_key" },
@@ -229,7 +229,7 @@ describe("readBestEffortConfig", () => {
 describe("readSourceConfigBestEffort", () => {
   it("preserves the authored source config without load-time defaults", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         auth: {
           profiles: {
             "anthropic:api": { provider: "anthropic", mode: "api_key" },

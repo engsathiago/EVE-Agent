@@ -49,7 +49,7 @@ declare module "qrcode" {
     options?: QrCodeRenderOptions,
   ): Promise<void>;
 
-  /** Default qrcode export with the functions OpenClaw uses. */
+  /** Default qrcode export with the functions EVE uses. */
   const qrcode: {
     create: typeof create;
     toString: typeof toString;

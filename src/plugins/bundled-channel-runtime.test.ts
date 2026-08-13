@@ -12,7 +12,7 @@ import {
 const tempRoots: string[] = [];
 
 function createTempRoot(): string {
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-empty-bundled-root-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-empty-bundled-root-"));
   tempRoots.push(tempRoot);
   return tempRoot;
 }

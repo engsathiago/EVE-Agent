@@ -1,14 +1,14 @@
 {
-  "signingRepo": "git@github.com:openclaw/apps-signing.git",
+  "signingRepo": "git@github.com:eve/apps-signing.git",
   "signingBranch": "main",
-  "assetPath": "android/openclaw",
+  "assetPath": "android/eve",
   "uploadKeystoreEncryptedFile": "upload-keystore.jks.enc",
   "gradlePropertiesEncryptedFile": "gradle.properties.enc",
   "materializedRoot": "apps/android/build/release-signing",
   "gradlePropertyNames": [
-    "OPENCLAW_ANDROID_STORE_FILE",
-    "OPENCLAW_ANDROID_STORE_PASSWORD",
-    "OPENCLAW_ANDROID_KEY_ALIAS",
-    "OPENCLAW_ANDROID_KEY_PASSWORD"
+    "EVE_ANDROID_STORE_FILE",
+    "EVE_ANDROID_STORE_PASSWORD",
+    "EVE_ANDROID_KEY_ALIAS",
+    "EVE_ANDROID_KEY_PASSWORD"
   ]
 }

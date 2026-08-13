@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { applyMergePatch } from "../config/merge-patch.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { readRootJsonObjectSync } from "../infra/json-files.js";
 import { isRecord } from "../utils.js";
 import {
@@ -149,7 +149,7 @@ export function inspectBundleLspRuntimeSupport(params: {
 /** Loads and merges enabled bundle LSP config across plugin manifests. */
 export function loadEnabledBundleLspConfig(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): { config: BundleLspConfig; diagnostics: Array<{ pluginId: string; message: string }> } {
   return loadEnabledBundleConfig({
     workspaceDir: params.workspaceDir,

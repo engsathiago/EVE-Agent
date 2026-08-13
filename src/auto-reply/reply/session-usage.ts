@@ -16,7 +16,7 @@ import {
   type SessionEntry,
 } from "../../config/sessions.js";
 import { updateSessionEntry } from "../../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { estimateUsageCost, resolveModelCostConfig } from "../../utils/usage-format.js";
 
@@ -77,7 +77,7 @@ function resolveNonNegativeTokenCount(value: number | undefined): number | undef
 }
 
 function estimateSessionRunCostUsd(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   usage?: NormalizedUsage;
   providerUsed?: string;
   modelUsed?: string;
@@ -97,7 +97,7 @@ function estimateSessionRunCostUsd(params: {
 export async function persistSessionUsageUpdate(params: {
   storePath?: string;
   sessionKey?: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   usage?: NormalizedUsage;
   /**
    * Usage from the last individual API call (not accumulated). When provided,

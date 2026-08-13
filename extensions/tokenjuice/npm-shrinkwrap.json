@@ -1,20 +1,20 @@
 {
-  "name": "@openclaw/tokenjuice",
+  "name": "@eve/tokenjuice",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/tokenjuice",
+      "name": "@eve/tokenjuice",
       "version": "2026.6.8",
       "dependencies": {
         "tokenjuice": "0.8.1"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

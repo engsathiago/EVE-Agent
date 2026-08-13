@@ -882,7 +882,7 @@ function handleClaudeLiveControlRequest(
         : {
             behavior: "deny",
             decisionClassification: "user_reject",
-            message: `OpenClaw exec policy denied Claude native tool use (security=${turn.execPermission.security}, ask=${turn.execPermission.ask}).`,
+            message: `EVE exec policy denied Claude native tool use (security=${turn.execPermission.security}, ask=${turn.execPermission.ask}).`,
           },
     },
   });
@@ -1072,7 +1072,7 @@ async function createClaudeLiveSession(params: {
     argv: params.argv,
     cwd: params.context.cwd ?? params.context.workspaceDir,
     env: params.mcpCaptureKey
-      ? { ...params.env, OPENCLAW_MCP_CLI_CAPTURE_KEY: params.mcpCaptureKey }
+      ? { ...params.env, EVE_MCP_CLI_CAPTURE_KEY: params.mcpCaptureKey }
       : params.env,
     stdinMode: "pipe-open",
     captureOutput: false,

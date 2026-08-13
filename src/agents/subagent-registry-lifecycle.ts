@@ -3,7 +3,7 @@
  *
  * Completes/fails task runs, clears delivery state, emits lifecycle events, and cleans attached resources.
  */
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { isSilentReplyText, SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import type { cleanupBrowserSessionsForLifecycleEnd } from "../browser-lifecycle-cleanup.js";
 import type { callGateway as defaultCallGateway } from "../gateway/call.js";
@@ -276,7 +276,7 @@ export function createSubagentRegistryLifecycleController(params: {
         const text = extractTextFromChatContent(record.content, { joinWith: "" });
         return (
           record.role === "assistant" &&
-          record.provider === "openclaw" &&
+          record.provider === "eve" &&
           record.model === "delivery-mirror" &&
           text === expectedText
         );

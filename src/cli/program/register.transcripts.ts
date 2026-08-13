@@ -1,4 +1,4 @@
-// `openclaw transcripts`: local state inspector for stored transcript metadata and summaries.
+// `eve transcripts`: local state inspector for stored transcript metadata and summaries.
 import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";

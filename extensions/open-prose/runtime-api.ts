@@ -1,3 +1,3 @@
 // Open Prose API module exposes the plugin public contract.
-export { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-export type { OpenClawPluginApi } from "openclaw/plugin-sdk/core";
+export { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+export type { EVEPluginApi } from "eve-agent/plugin-sdk/core";

@@ -1,12 +1,12 @@
-# OpenClaw Perplexity Plugin
+# EVE Perplexity Plugin
 
-Official OpenClaw plugin for Perplexity.
+Official EVE plugin for Perplexity.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/perplexity-plugin
-openclaw gateway restart
+eve plugins install @eve/perplexity-plugin
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/tools/perplexity-search> for setup and configuration.
+See <https://docs.eve.ai/tools/perplexity-search> for setup and configuration.

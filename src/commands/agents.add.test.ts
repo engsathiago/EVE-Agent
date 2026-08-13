@@ -7,8 +7,8 @@ import { AUTH_STORE_VERSION } from "../agents/auth-profiles/constants.js";
 import { loadPersistedAuthProfileStore } from "../agents/auth-profiles/persisted.js";
 import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import { closeOpenClawAgentDatabasesForTest } from "../state/openclaw-agent-db.js";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEAgentDatabasesForTest } from "../state/eve-agent-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { baseConfigSnapshot, createTestRuntime } from "./test-runtime-config-helpers.js";
 
@@ -50,7 +50,7 @@ const transformConfigWithPendingPluginInstallsMock = vi.hoisted(() =>
       });
       await writeConfigFileMock(transformed.nextConfig);
       return {
-        path: snapshot.path ?? "/tmp/openclaw.json",
+        path: snapshot.path ?? "/tmp/eve.json",
         previousHash: snapshot.hash ?? null,
         persistedHash: "persisted-hash",
         snapshot,
@@ -138,10 +138,10 @@ describe("agents add command", () => {
   ): Promise<void> {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
     try {
-      await withEnvAsync({ OPENCLAW_STATE_DIR: root }, async () => await run(root));
+      await withEnvAsync({ EVE_STATE_DIR: root }, async () => await run(root));
     } finally {
-      closeOpenClawAgentDatabasesForTest();
-      closeOpenClawStateDatabaseForTest();
+      closeEVEAgentDatabasesForTest();
+      closeEVEStateDatabaseForTest();
       await fs.rm(root, { recursive: true, force: true });
     }
   }
@@ -153,7 +153,7 @@ describe("agents add command", () => {
 
     expect(runtime.error).toHaveBeenCalledOnce();
     expect(runtime.error).toHaveBeenCalledWith(
-      `Non-interactive agent creation requires --workspace. Re-run ${formatCliCommand("openclaw agents add <id> --workspace <path>")} or omit flags to use the wizard.`,
+      `Non-interactive agent creation requires --workspace. Re-run ${formatCliCommand("eve agents add <id> --workspace <path>")} or omit flags to use the wizard.`,
     );
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(writeConfigFileMock).not.toHaveBeenCalled();
@@ -168,7 +168,7 @@ describe("agents add command", () => {
 
     expect(runtime.error).toHaveBeenCalledOnce();
     expect(runtime.error).toHaveBeenCalledWith(
-      `Non-interactive agent creation requires --workspace. Re-run ${formatCliCommand("openclaw agents add <id> --workspace <path>")} or omit flags to use the wizard.`,
+      `Non-interactive agent creation requires --workspace. Re-run ${formatCliCommand("eve agents add <id> --workspace <path>")} or omit flags to use the wizard.`,
     );
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(writeConfigFileMock).not.toHaveBeenCalled();
@@ -198,7 +198,7 @@ describe("agents add command", () => {
     });
     wizardMocks.createClackPrompter.mockReturnValue({
       intro: vi.fn(),
-      text: vi.fn().mockResolvedValueOnce("Jon").mockResolvedValueOnce("/tmp/openclaw-jon"),
+      text: vi.fn().mockResolvedValueOnce("Jon").mockResolvedValueOnce("/tmp/eve-jon"),
       confirm: vi.fn().mockResolvedValue(false),
       note: vi.fn(),
       outro: vi.fn(),
@@ -218,7 +218,7 @@ describe("agents add command", () => {
   });
 
   it("copies only portable auth profiles when seeding a new agent store", async () => {
-    await withAgentsAddStateRoot("openclaw-agents-add-auth-copy-", async (root) => {
+    await withAgentsAddStateRoot("eve-agents-add-auth-copy-", async (root) => {
       const sourceAgentDir = path.join(root, "main", "agent");
       const destAgentDir = path.join(root, "work", "agent");
       await fs.mkdir(sourceAgentDir, { recursive: true });
@@ -263,7 +263,7 @@ describe("agents add command", () => {
   });
 
   it("copies portable Codex OAuth profiles inline", async () => {
-    await withAgentsAddStateRoot("openclaw-agents-add-oauth-copy-", async (root) => {
+    await withAgentsAddStateRoot("eve-agents-add-oauth-copy-", async (root) => {
       const sourceAgentDir = path.join(root, "main", "agent");
       const destAgentDir = path.join(root, "work", "agent");
       const expires = Date.now() + 60_000;
@@ -305,12 +305,12 @@ describe("agents add command", () => {
   });
 
   it("skips unresolved OAuth profiles when seeding a new agent store", async () => {
-    await withAgentsAddStateRoot("openclaw-agents-add-oauth-ref-skip-", async (root) => {
+    await withAgentsAddStateRoot("eve-agents-add-oauth-ref-skip-", async (root) => {
       const sourceAgentDir = path.join(root, "main", "agent");
       const destAgentDir = path.join(root, "work", "agent");
       const profileId = "openai:oauth";
       const ref = {
-        source: "openclaw-credentials" as const,
+        source: "eve-credentials" as const,
         provider: "openai" as const,
         id: "0123456789abcdef0123456789abcdef",
       };

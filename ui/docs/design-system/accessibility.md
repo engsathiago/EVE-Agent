@@ -1,6 +1,6 @@
 # Accessibility
 
-OpenClaw targets **WCAG 2.1 AA**. This checklist applies to every UI component — use it when building new components and during PR review.
+EVE targets **WCAG 2.1 AA**. This checklist applies to every UI component — use it when building new components and during PR review.
 
 ---
 

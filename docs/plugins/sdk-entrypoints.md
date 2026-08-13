@@ -16,7 +16,7 @@ JavaScript when available:
 
 ```json
 {
-  "openclaw": {
+  "eve": {
     "extensions": ["./src/index.ts"],
     "runtimeExtensions": ["./dist/index.js"],
     "setupEntry": "./src/setup-entry.ts",
@@ -27,11 +27,11 @@ JavaScript when available:
 
 `extensions` and `setupEntry` remain valid source entries for workspace and git
 checkout development. `runtimeExtensions` and `runtimeSetupEntry` are preferred
-when OpenClaw loads an installed package and let npm packages avoid runtime
+when EVE loads an installed package and let npm packages avoid runtime
 TypeScript compilation. Explicit runtime entries are required: `runtimeSetupEntry`
 requires `setupEntry`, and missing `runtimeExtensions` or `runtimeSetupEntry`
 artifacts fail install/discovery instead of silently falling back to source. If
-an installed package only declares a TypeScript source entry, OpenClaw will use a
+an installed package only declares a TypeScript source entry, EVE will use a
 matching built `dist/*.js` peer when one exists, then fall back to the TypeScript
 source.
 
@@ -47,17 +47,17 @@ and inferred built JavaScript peers do not make an escaping `extensions` or
 
 ## `defineToolPlugin`
 
-**Import:** `openclaw/plugin-sdk/tool-plugin`
+**Import:** `eve-agent/plugin-sdk/tool-plugin`
 
 For simple plugins that only add agent tools. `defineToolPlugin` keeps the
 authoring source small, infers config and tool parameter types from TypeBox
-schemas, wraps plain return values in the OpenClaw tool-result format, and
-exposes static metadata that `openclaw plugins build` writes into the plugin
+schemas, wraps plain return values in the EVE tool-result format, and
+exposes static metadata that `eve plugins build` writes into the plugin
 manifest.
 
 ```typescript
 import { Type } from "typebox";
-import { defineToolPlugin } from "openclaw/plugin-sdk/tool-plugin";
+import { defineToolPlugin } from "eve-agent/plugin-sdk/tool-plugin";
 
 export default defineToolPlugin({
   id: "stock-quotes",
@@ -80,25 +80,25 @@ export default defineToolPlugin({
 });
 ```
 
-- `configSchema` is optional. When omitted, OpenClaw uses a strict empty object
+- `configSchema` is optional. When omitted, EVE uses a strict empty object
   schema and the generated manifest still includes `configSchema`.
 - `execute` returns a plain string or JSON-serializable value. The helper wraps
   it as a text tool result with `details`.
-- Tool names are static. `openclaw plugins build` derives `contracts.tools`
+- Tool names are static. `eve plugins build` derives `contracts.tools`
   from the declared tools, so authors do not duplicate names by hand.
 - Runtime loading stays strict. Installed plugins still need
-  `openclaw.plugin.json` and `package.json` `openclaw.extensions`; OpenClaw does
+  `eve.plugin.json` and `package.json` `eve.extensions`; EVE does
   not execute plugin code to infer missing manifest data.
 
 ## `definePluginEntry`
 
-**Import:** `openclaw/plugin-sdk/plugin-entry`
+**Import:** `eve-agent/plugin-sdk/plugin-entry`
 
 For provider plugins, advanced tool plugins, hook plugins, and anything that is
 **not** a messaging channel.
 
 ```typescript
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 
 export default definePluginEntry({
   id: "my-plugin",
@@ -121,25 +121,25 @@ export default definePluginEntry({
 | `name`         | `string`                                                         | Yes      | -                   |
 | `description`  | `string`                                                         | Yes      | -                   |
 | `kind`         | `string`                                                         | No       | -                   |
-| `configSchema` | `OpenClawPluginConfigSchema \| () => OpenClawPluginConfigSchema` | No       | Empty object schema |
-| `register`     | `(api: OpenClawPluginApi) => void`                               | Yes      | -                   |
+| `configSchema` | `EVEPluginConfigSchema \| () => EVEPluginConfigSchema` | No       | Empty object schema |
+| `register`     | `(api: EVEPluginApi) => void`                               | Yes      | -                   |
 
-- `id` must match your `openclaw.plugin.json` manifest.
+- `id` must match your `eve.plugin.json` manifest.
 - `kind` is for exclusive slots: `"memory"` or `"context-engine"`.
 - `configSchema` can be a function for lazy evaluation.
-- OpenClaw resolves and memoizes that schema on first access, so expensive schema
+- EVE resolves and memoizes that schema on first access, so expensive schema
   builders only run once.
 
 ## `defineChannelPluginEntry`
 
-**Import:** `openclaw/plugin-sdk/channel-core`
+**Import:** `eve-agent/plugin-sdk/channel-core`
 
 Wraps `definePluginEntry` with channel-specific wiring. Automatically calls
 `api.registerChannel({ plugin })`, exposes an optional root-help CLI metadata
 seam, and gates `registerFull` on registration mode.
 
 ```typescript
-import { defineChannelPluginEntry } from "openclaw/plugin-sdk/channel-core";
+import { defineChannelPluginEntry } from "eve-agent/plugin-sdk/channel-core";
 
 export default defineChannelPluginEntry({
   id: "my-channel",
@@ -162,10 +162,10 @@ export default defineChannelPluginEntry({
 | `name`                | `string`                                                         | Yes      | -                   |
 | `description`         | `string`                                                         | Yes      | -                   |
 | `plugin`              | `ChannelPlugin`                                                  | Yes      | -                   |
-| `configSchema`        | `OpenClawPluginConfigSchema \| () => OpenClawPluginConfigSchema` | No       | Empty object schema |
+| `configSchema`        | `EVEPluginConfigSchema \| () => EVEPluginConfigSchema` | No       | Empty object schema |
 | `setRuntime`          | `(runtime: PluginRuntime) => void`                               | No       | -                   |
-| `registerCliMetadata` | `(api: OpenClawPluginApi) => void`                               | No       | -                   |
-| `registerFull`        | `(api: OpenClawPluginApi) => void`                               | No       | -                   |
+| `registerCliMetadata` | `(api: EVEPluginApi) => void`                               | No       | -                   |
+| `registerFull`        | `(api: EVEPluginApi) => void`                               | No       | -                   |
 
 - `setRuntime` is called during registration so you can store the runtime reference
   (typically via `createPluginRuntimeStore`). It is skipped during CLI metadata
@@ -176,20 +176,20 @@ export default defineChannelPluginEntry({
   Use it as the canonical place for channel-owned CLI descriptors so root help
   stays non-activating, discovery snapshots include static command metadata, and
   normal CLI command registration remains compatible with full plugin loads.
-- Discovery registration is non-activating, not import-free. OpenClaw may
+- Discovery registration is non-activating, not import-free. EVE may
   evaluate the trusted plugin entry and channel plugin module to build the
   snapshot, so keep top-level imports side-effect-free and put sockets,
   clients, workers, and services behind `"full"`-only paths.
 - `registerFull` only runs when `api.registrationMode === "full"`. It is skipped
   during setup-only loading.
-- Like `definePluginEntry`, `configSchema` can be a lazy factory and OpenClaw
+- Like `definePluginEntry`, `configSchema` can be a lazy factory and EVE
   memoizes the resolved schema on first access.
 - For plugin-owned root CLI commands, prefer `api.registerCli(..., { descriptors: [...] })`
   when you want the command to stay lazy-loaded without disappearing from the
   root CLI parse tree. For paired-node feature commands, prefer
-  `api.registerNodeCliFeature(...)` so the command lands under `openclaw nodes`.
+  `api.registerNodeCliFeature(...)` so the command lands under `eve nodes`.
   For other nested plugin commands, add `parentPath` and register commands on
-  the `program` object passed to the registrar; OpenClaw resolves it to the
+  the `program` object passed to the registrar; EVE resolves it to the
   parent command before calling the plugin. For channel plugins, prefer
   registering those descriptors from `registerCliMetadata(...)` and keep
   `registerFull(...)` focused on runtime-only work.
@@ -200,41 +200,41 @@ export default defineChannelPluginEntry({
 
 ## `defineSetupPluginEntry`
 
-**Import:** `openclaw/plugin-sdk/channel-core`
+**Import:** `eve-agent/plugin-sdk/channel-core`
 
 For the lightweight `setup-entry.ts` file. Returns just `{ plugin }` with no
 runtime or CLI wiring.
 
 ```typescript
-import { defineSetupPluginEntry } from "openclaw/plugin-sdk/channel-core";
+import { defineSetupPluginEntry } from "eve-agent/plugin-sdk/channel-core";
 
 export default defineSetupPluginEntry(myChannelPlugin);
 ```
 
-OpenClaw loads this instead of the full entry when a channel is disabled,
+EVE loads this instead of the full entry when a channel is disabled,
 unconfigured, or when deferred loading is enabled. See
 [Setup and Config](/plugins/sdk-setup#setup-entry) for when this matters.
 
 In practice, pair `defineSetupPluginEntry(...)` with the narrow setup helper
 families:
 
-- `openclaw/plugin-sdk/setup-runtime` for runtime-safe setup helpers such as
+- `eve-agent/plugin-sdk/setup-runtime` for runtime-safe setup helpers such as
   `createSetupTranslator`, import-safe setup patch adapters, lookup-note output,
   `promptResolvedAllowFrom`, `splitSetupEntries`, and delegated setup proxies
-- `openclaw/plugin-sdk/channel-setup` for optional-install setup surfaces
-- `openclaw/plugin-sdk/setup-tools` for setup/install CLI/archive/docs helpers
+- `eve-agent/plugin-sdk/channel-setup` for optional-install setup surfaces
+- `eve-agent/plugin-sdk/setup-tools` for setup/install CLI/archive/docs helpers
 
 Keep heavy SDKs, CLI registration, and long-lived runtime services in the full
 entry.
 
 Bundled workspace channels that split setup and runtime surfaces can use
 `defineBundledChannelSetupEntry(...)` from
-`openclaw/plugin-sdk/channel-entry-contract` instead. That contract lets the
+`eve-agent/plugin-sdk/channel-entry-contract` instead. That contract lets the
 setup entry keep setup-safe plugin/secrets exports while still exposing a
 runtime setter:
 
 ```typescript
-import { defineBundledChannelSetupEntry } from "openclaw/plugin-sdk/channel-entry-contract";
+import { defineBundledChannelSetupEntry } from "eve-agent/plugin-sdk/channel-entry-contract";
 
 export default defineBundledChannelSetupEntry({
   importMetaUrl: import.meta.url,
@@ -298,7 +298,7 @@ register(api) {
 ```
 
 Discovery mode builds a non-activating registry snapshot. It may still evaluate
-the plugin entry and the channel plugin object so OpenClaw can register channel
+the plugin entry and the channel plugin object so EVE can register channel
 capabilities and static CLI descriptors. Treat module evaluation in discovery as
 trusted but lightweight: no network clients, subprocesses, listeners, database
 connections, background workers, credential reads, or other live runtime side
@@ -313,18 +313,18 @@ provider/client SDK bootstraps still belong in `"full"`.
 For CLI registrars specifically:
 
 - use `descriptors` when the registrar owns one or more root commands and you
-  want OpenClaw to lazy-load the real CLI module on first invocation
+  want EVE to lazy-load the real CLI module on first invocation
 - make sure those descriptors cover every top-level command root exposed by the
   registrar
 - keep descriptor command names to letters, numbers, hyphen, and underscore,
-  starting with a letter or number; OpenClaw rejects descriptor names outside
+  starting with a letter or number; EVE rejects descriptor names outside
   that shape and strips terminal control sequences from descriptions before
   rendering help
 - use `commands` alone only for eager compatibility paths
 
 ## Plugin shapes
 
-OpenClaw classifies loaded plugins by their registration behavior:
+EVE classifies loaded plugins by their registration behavior:
 
 | Shape                 | Description                                        |
 | --------------------- | -------------------------------------------------- |
@@ -333,7 +333,7 @@ OpenClaw classifies loaded plugins by their registration behavior:
 | **hook-only**         | Only hooks, no capabilities                        |
 | **non-capability**    | Tools/commands/services but no capabilities        |
 
-Use `openclaw plugins inspect <id>` to see a plugin's shape.
+Use `eve plugins inspect <id>` to see a plugin's shape.
 
 ## Related
 

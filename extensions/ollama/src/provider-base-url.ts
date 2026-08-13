@@ -1,5 +1,5 @@
 // Ollama provider module implements model/runtime integration.
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
 
 export function readProviderBaseUrl(provider: ModelProviderConfig | undefined): string | undefined {
   if (!provider) {

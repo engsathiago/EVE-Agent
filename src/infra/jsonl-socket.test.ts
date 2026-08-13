@@ -1,7 +1,7 @@
 // Covers JSONL socket request framing and response handling.
 import net from "node:net";
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import { describe, expect, it } from "vitest";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 import { requestJsonlSocket, testApi } from "./jsonl-socket.js";
@@ -33,7 +33,7 @@ describe.runIf(process.platform !== "win32")("requestJsonlSocket", () => {
   });
 
   it("ignores malformed and non-accepted lines until one is accepted", async () => {
-    await withTempDir({ prefix: "openclaw-jsonl-socket-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-jsonl-socket-" }, async (dir) => {
       const socketPath = path.join(dir, "socket.sock");
       const server = net.createServer((socket) => {
         socket.on("data", () => {
@@ -63,7 +63,7 @@ describe.runIf(process.platform !== "win32")("requestJsonlSocket", () => {
   });
 
   it("half-closes the write side after sending the request line", async () => {
-    await withTempDir({ prefix: "openclaw-jsonl-socket-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-jsonl-socket-" }, async (dir) => {
       const socketPath = path.join(dir, "socket.sock");
       let receivedBuffer: string | null = null;
       const server = net.createServer((socket) => {
@@ -98,7 +98,7 @@ describe.runIf(process.platform !== "win32")("requestJsonlSocket", () => {
   });
 
   it("returns null on timeout and on socket errors", async () => {
-    await withTempDir({ prefix: "openclaw-jsonl-socket-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-jsonl-socket-" }, async (dir) => {
       const socketPath = path.join(dir, "socket.sock");
       const server = net.createServer(() => {
         // Intentionally never reply.
@@ -133,7 +133,7 @@ describe.runIf(process.platform !== "win32")("requestJsonlSocket", () => {
   });
 
   it("returns null when the socket closes without an accepted response", async () => {
-    await withTempDir({ prefix: "openclaw-jsonl-socket-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-jsonl-socket-" }, async (dir) => {
       const socketPath = path.join(dir, "socket.sock");
       const server = net.createServer((socket) => {
         socket.on("data", () => {

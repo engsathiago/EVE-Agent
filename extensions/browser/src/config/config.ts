@@ -9,5 +9,5 @@ export {
   replaceConfigFile,
   type BrowserConfig,
   type BrowserProfileConfig,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "../sdk-config.js";

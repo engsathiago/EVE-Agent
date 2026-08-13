@@ -1,15 +1,15 @@
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
-        <title>OpenClaw</title>
+        <title>EVE</title>
         <item>
             <title>2026.6.8</title>
             <pubDate>Tue, 16 Jun 2026 17:17:20 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/openclaw/openclaw/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
             <sparkle:version>2606000890</sparkle:version>
             <sparkle:shortVersionString>2026.6.8</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.8</h2>
+            <description><![CDATA[<h2>EVE 2026.6.8</h2>
 <h3>Highlights</h3>
 <ul>
 <li>Telegram and WhatsApp channel delivery are richer and less brittle: Telegram can send structured rich text with tables, lists, expandable blockquotes, preserved intentional line breaks, prompt-preserving CLI backend delivery, retired native draft migration, and safer rich-media boundaries, while WhatsApp now honors configured ACP bindings. (#92679, #93164, #84082, #89421, #92513) Thanks @obviyus, @jzakirov, @spacegeologist, and @TurboTheTurtle.</li>
@@ -37,21 +37,21 @@
 <li>Memory, state, diagnostics, and config: split header-too-large embedding batches, keep QMD memory search enabled in transient mode, avoid SQLite WAL on NFS volumes, preserve recovery scheduling outside stuck-session warning backoff, preserve full-reindex rollback/cache recovery, treat raw Memory Wiki source pages as source evidence, and keep shell environment fallbacks contained in config write tests. (#92650, #92618, #92639, #91247, #92752, #92881, #59137, #92876, #69700) Thanks @mushuiyu886, @TurboTheTurtle, @849261680, @gnanam1990, @TSHOGX, and @arlen8411.</li>
 <li>UI/mobile/TUI: preserve dashboard session parent lineage, WebChat backscroll, reset soft command args, sidebar session picker interactivity, collapsed workspace files, resolved <code>/model</code> confirmation refs, stale foreground iOS Gateway reconnects, and paused setup-parent stdin after inherited-stdio child exit. (#90658, #92622, #91353, #92705, #92779, #92773, #92552, #93159) Thanks @luoyanglang, @TurboTheTurtle, @zhouhe-xydt, @NianJiuZst, @shakkernerd, @NarahariRaghava, @Solvely-Colin, and @fuller-stack-dev.</li>
 <li>Plugins and updates: repair missing required platform packages during managed plugin installs and updates, including omitted Codex platform binaries.</li>
-<li>Dependencies: update Hono to 4.12.25 so published OpenClaw and ACPX packages use the patched runtime.</li>
+<li>Dependencies: update Hono to 4.12.25 so published EVE and ACPX packages use the patched runtime.</li>
 <li>Release and test reliability: extend slow Gateway/full-suite watchdogs, split local full-suite shards when throttled, stabilize plugin auth marker fixtures, avoid brittle provider-ref error text, fold Telegram RTT sampling into live QA evidence, simplify QA scorecard mappings around canonical coverage IDs, keep QA Lab bootstrap selection assertions aligned with flow-only scenarios, skip QA coverage artifact consumers when runtime parity producer status is not green, keep Feishu lifecycle release checks pointed at the active fixture config, isolate trajectory-export live seed turns from Codex-native shell approvals, preserve release-check child refs while pinning expected SHAs, widen live OpenAI TTS budgets for slower provider responses, and avoid false downgrade prompts for unresolved latest-tag updates. (#92652, #92550, #92558, #92911) Thanks @RomneyDa and @Andy312432.</li>
 </ul>
-<p><a href="https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md">View full changelog</a></p>
+<p><a href="https://github.com/engsathiago/eve-agent/blob/main/CHANGELOG.md">View full changelog</a></p>
 ]]></description>
-            <enclosure url="https://github.com/openclaw/openclaw/releases/download/v2026.6.8/OpenClaw-2026.6.8.zip" length="55815364" type="application/octet-stream" sparkle:edSignature="hLJ14xg6+DMFrXViIW3Njs++OPIGO+RWH9h+mPCSzXPAkKyYUGvtOLu1qEKvvfC8rs5FGgW/w4zDLfD2azqiBA=="/>
+            <enclosure url="https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8/EVE-2026.6.8.zip" length="55815364" type="application/octet-stream" sparkle:edSignature="hLJ14xg6+DMFrXViIW3Njs++OPIGO+RWH9h+mPCSzXPAkKyYUGvtOLu1qEKvvfC8rs5FGgW/w4zDLfD2azqiBA=="/>
         </item>
         <item>
             <title>2026.6.5</title>
             <pubDate>Tue, 09 Jun 2026 19:06:49 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/openclaw/openclaw/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
             <sparkle:version>2606000590</sparkle:version>
             <sparkle:shortVersionString>2026.6.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.5</h2>
+            <description><![CDATA[<h2>EVE 2026.6.5</h2>
 <h3>Highlights</h3>
 <ul>
 <li>QQBot now strips model reasoning/thinking scaffolding before native delivery, preventing raw <code><thinking></code> content from leaking into channel replies. (#89913, #90132) Thanks @openperf.</li>
@@ -77,7 +77,7 @@
 <li>Docs/tooling: add Parallel search docs, refresh weather-skill guidance toward <code>web_fetch</code>, clarify legacy <code>openai-codex</code> auth, document release/test helper scripts, and tighten changed-test routing docs for CI/debugging work. (#90028, #90250) Thanks @fuller-stack-dev.</li>
 <li>Release/process: switch release trains to <code>YYYY.M.PATCH</code> monthly patch numbering, keep pre-transition tags compatible, and pin the June 2026 floor at <code>2026.6.5</code>.</li>
 <li>Release/process: defer the session-metadata SQLite migration from the <code>2026.6.5</code> beta train so this release keeps the existing JSON-backed session metadata path while the migration risk is worked on <code>main</code>.</li>
-<li>Release metadata: align OpenClaw, publishable plugin manifests, generated shrinkwraps, app version metadata, iOS release notes, Matrix plugin changelog, and generated release baselines with the <code>2026.6.5</code> release train.</li>
+<li>Release metadata: align EVE, publishable plugin manifests, generated shrinkwraps, app version metadata, iOS release notes, Matrix plugin changelog, and generated release baselines with the <code>2026.6.5</code> release train.</li>
 <li>Platform maintenance: refresh Android, Swift/macOS, Docker, CodeQL, Buildx, Docker build/push, and Codex Action dependencies for this release train. (#74980, #81757, #86481, #86483, #90601)</li>
 </ul>
 <h3>Fixes</h3>
@@ -120,18 +120,18 @@
 <li>Tests/state isolation: provider, media, auth, cron, task, session, sandbox, Gateway, and Codex timeout fixtures now scope more home/state/env data per test, reducing cross-test leakage and making release validation failures less noisy. (#90027, #89974)</li>
 <li>Sessions: the beta SQLite downgrade rescue now skips extra pre-reads for active non-empty JSON session stores, preserving cache race detection while still restoring missing or empty beta session files.</li>
 </ul>
-<p><a href="https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md">View full changelog</a></p>
+<p><a href="https://github.com/engsathiago/eve-agent/blob/main/CHANGELOG.md">View full changelog</a></p>
 ]]></description>
-            <enclosure url="https://github.com/openclaw/openclaw/releases/download/v2026.6.5/OpenClaw-2026.6.5.zip" length="55725877" type="application/octet-stream" sparkle:edSignature="EKr7gCfpEVStis9HSADJk1CWYbmH2MHMqSgNfZvLbBFCBWmk3pjBJS6K2qkxkq5lIbTj4H+Lo7Iri6ip/xTGDA=="/>
+            <enclosure url="https://github.com/engsathiago/eve-agent/releases/download/v2026.6.5/EVE-2026.6.5.zip" length="55725877" type="application/octet-stream" sparkle:edSignature="EKr7gCfpEVStis9HSADJk1CWYbmH2MHMqSgNfZvLbBFCBWmk3pjBJS6K2qkxkq5lIbTj4H+Lo7Iri6ip/xTGDA=="/>
         </item>
         <item>
             <title>2026.6.1</title>
             <pubDate>Wed, 03 Jun 2026 21:26:22 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/openclaw/openclaw/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
             <sparkle:version>2026060190</sparkle:version>
             <sparkle:shortVersionString>2026.6.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.1</h2>
+            <description><![CDATA[<h2>EVE 2026.6.1</h2>
 <h3>Highlights</h3>
 <ul>
 <li>Agents and CLI-backed runtimes recover more cleanly from interrupted tool calls, stale session bindings, compaction handoffs, and media delivery retries. (#88129, #88136, #88141, #88162, #88182)</li>
@@ -154,8 +154,8 @@
 <li>Skills: let pending proposals be revised in place with versioned, dated proposal frontmatter before approval. Thanks @shakkernerd.</li>
 <li>Skills: add Skill Workshop with pending proposals, CLI/Gateway review actions, rollback metadata, and the <code>skill_workshop</code> agent tool. Thanks @shakkernerd.</li>
 <li>Skill Workshop: add the Control UI navigation, styled dashboard, proposal today view, revision dialog, file preview modal, searchable preview files, reusable session handoff, and localized strings.</li>
-<li>Plugins: externalize Tokenjuice as the official <code>@openclaw/tokenjuice</code> plugin with npm and ClawHub publish metadata.</li>
-<li>Plugins: externalize the GitHub Copilot agent runtime as the official <code>@openclaw/copilot</code> plugin with npm and ClawHub publish metadata.</li>
+<li>Plugins: externalize Tokenjuice as the official <code>@eve/tokenjuice</code> plugin with npm and ClawHub publish metadata.</li>
+<li>Plugins: externalize the GitHub Copilot agent runtime as the official <code>@eve/copilot</code> plugin with npm and ClawHub publish metadata.</li>
 <li>iOS: add hosted push relay defaults, realtime Talk playback, and a guarded WebSocket ping path for more reliable mobile sessions. (#88096, #88105, #88231)</li>
 <li>iOS: support native iPad display layouts.</li>
 <li>Workboard: add orchestration primitives and agent coordination tools for multi-agent planning and run tracking. (#87469)</li>
@@ -197,12 +197,12 @@
 <li>Agents/auth: write auth profiles atomically, dispatch auth failures by type, add force re-login recovery, preserve workspaces during state-only uninstall, and compact before oversized turns so recovery paths avoid partial state. (#89181) Thanks @RomneyDa.</li>
 <li>Skills: skip disabled skill env overrides from stale persisted snapshots so disabled skill <code>apiKey</code> SecretRefs cannot abort embedded or channel turns. (#79072, #79173) Thanks @zeus1959.</li>
 <li>Skill Workshop: render the Control UI tab from filtered navigation state and keep filtered fallback routing stable.</li>
-<li>CLI: avoid live catalog validation during <code>openclaw agents add</code>, so adding a secondary agent no longer depends on provider catalog availability. (#76284, #88314) Thanks @zhangguiping-xydt.</li>
+<li>CLI: avoid live catalog validation during <code>eve agents add</code>, so adding a secondary agent no longer depends on provider catalog availability. (#76284, #88314) Thanks @zhangguiping-xydt.</li>
 <li>CLI: keep <code>plugins list --json</code> on the snapshot-only path so plugin sweeps avoid loading the full runtime status graph.</li>
 <li>CLI/desktop: bridge WSL clipboard operations through the shell, recognize manual-update launchd jobs, and keep machine-readable startup output parseable during progress setup. (#88764, #88689) Thanks @alexzhu0.</li>
 <li>Plugins: make PixVerse external-plugin ClawHub metadata explicit and keep it out of bundled dist builds.</li>
 <li>Plugins: clarify plugin loader failure guidance so missing or incompatible plugin packages point operators at the right repair path.</li>
-<li>Plugins: preserve npm plugin roots after blocked installs, skip plugin-local <code>openclaw</code> peer symlinks during rollback snapshots, relink those peers after restore, isolate cached tool runtime siblings, and isolate web-provider factory failures so one bad plugin does not poison sibling runtime paths. (#77237, #88807)</li>
+<li>Plugins: preserve npm plugin roots after blocked installs, skip plugin-local <code>eve</code> peer symlinks during rollback snapshots, relink those peers after restore, isolate cached tool runtime siblings, and isolate web-provider factory failures so one bad plugin does not poison sibling runtime paths. (#77237, #88807)</li>
 <li>Cron: keep SQLite cron migrations compatible with legacy run-log tables, archived job stores, diagnostic cron names, and legacy one-shot delete-after-run behavior. (#88285)</li>
 <li>Cron: keep update delivery validation scoped, harden restart state, and retire MCP runtimes on isolated cron cleanup.</li>
 <li>Memory: serialize QMD update/embed writes per store, reduce Linux watcher fan-out, retry transient FileProvider-backed reads, preserve phase signals on read errors, harden envelope metadata sanitization, reattach Linux native watchers when directories are recreated, and rewrite generated transcript paths on rollover so memory/search state survives concurrent gateway and CLI activity. (#66339, #85931, #89185, #89188, #85351) Thanks @openperf, @amittell, @RomneyDa, and @NianJiuZst.</li>
@@ -247,9 +247,9 @@
 <li>Performance: skip declaration bundling for runtime-only CLI startup and gateway watch build profiles.</li>
 <li>Performance: reuse prepared provider handles, strict tool schemas, gateway runtime metadata, session maintenance config, plugin metadata, bundled skill allowlists, package-local plugin artifacts, single-entry store writes, and validated/serialized session prompt blobs.</li>
 </ul>
-<p><a href="https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md">View full changelog</a></p>
+<p><a href="https://github.com/engsathiago/eve-agent/blob/main/CHANGELOG.md">View full changelog</a></p>
 ]]></description>
-            <enclosure url="https://github.com/openclaw/openclaw/releases/download/v2026.6.1/OpenClaw-2026.6.1.zip" length="55062100" type="application/octet-stream" sparkle:edSignature="PVp8E2HBCvikB/0LCr36lFEyHPAzoFA2ScT6LW27FlzvP+m4r1AEuVN2UrtgWlpkGSsn4Eav0kPJe32u4ObNBw=="/>
+            <enclosure url="https://github.com/engsathiago/eve-agent/releases/download/v2026.6.1/EVE-2026.6.1.zip" length="55062100" type="application/octet-stream" sparkle:edSignature="PVp8E2HBCvikB/0LCr36lFEyHPAzoFA2ScT6LW27FlzvP+m4r1AEuVN2UrtgWlpkGSsn4Eav0kPJe32u4ObNBw=="/>
         </item>
     </channel>
 </rss>

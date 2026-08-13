@@ -6,9 +6,9 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../../config/types.js";
+} from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../../config/types.js";
 import type { DirectoryConfigParams } from "./directory-types.js";
 import type { ChannelDirectoryEntry } from "./types.public.js";
 
@@ -142,7 +142,7 @@ export function listInspectedDirectoryEntriesFromSources<InspectedAccount>(
   params: DirectoryConfigParams & {
     kind: "user" | "group";
     inspectAccount: (
-      cfg: OpenClawConfig,
+      cfg: EVEConfig,
       accountId?: string | null,
     ) => InspectedAccount | null | undefined;
     resolveSources: (account: InspectedAccount) => Iterable<unknown>[];
@@ -170,7 +170,7 @@ export function listInspectedDirectoryEntriesFromSources<InspectedAccount>(
 export function createInspectedDirectoryEntriesLister<InspectedAccount>(params: {
   kind: "user" | "group";
   inspectAccount: (
-    cfg: OpenClawConfig,
+    cfg: EVEConfig,
     accountId?: string | null,
   ) => InspectedAccount | null | undefined;
   resolveSources: (account: InspectedAccount) => Iterable<unknown>[];
@@ -189,7 +189,7 @@ export function createInspectedDirectoryEntriesLister<InspectedAccount>(params: 
 export function listResolvedDirectoryEntriesFromSources<ResolvedAccount>(
   params: DirectoryConfigParams & {
     kind: "user" | "group";
-    resolveAccount: (cfg: OpenClawConfig, accountId?: string | null) => ResolvedAccount;
+    resolveAccount: (cfg: EVEConfig, accountId?: string | null) => ResolvedAccount;
     resolveSources: (account: ResolvedAccount) => Iterable<unknown>[];
     normalizeId: (entry: string) => string | null | undefined;
   },
@@ -209,7 +209,7 @@ export function listResolvedDirectoryEntriesFromSources<ResolvedAccount>(
  */
 export function createResolvedDirectoryEntriesLister<ResolvedAccount>(params: {
   kind: "user" | "group";
-  resolveAccount: (cfg: OpenClawConfig, accountId?: string | null) => ResolvedAccount;
+  resolveAccount: (cfg: EVEConfig, accountId?: string | null) => ResolvedAccount;
   resolveSources: (account: ResolvedAccount) => Iterable<unknown>[];
   normalizeId: (entry: string) => string | null | undefined;
 }) {
@@ -309,7 +309,7 @@ export function listDirectoryGroupEntriesFromMapKeysAndAllowFrom(params: {
  */
 export function listResolvedDirectoryUserEntriesFromAllowFrom<ResolvedAccount>(
   params: DirectoryConfigParams & {
-    resolveAccount: (cfg: OpenClawConfig, accountId?: string | null) => ResolvedAccount;
+    resolveAccount: (cfg: EVEConfig, accountId?: string | null) => ResolvedAccount;
     resolveAllowFrom: (account: ResolvedAccount) => readonly unknown[] | undefined;
     normalizeId?: (entry: string) => string | null | undefined;
   },
@@ -328,7 +328,7 @@ export function listResolvedDirectoryUserEntriesFromAllowFrom<ResolvedAccount>(
  */
 export function listResolvedDirectoryGroupEntriesFromMapKeys<ResolvedAccount>(
   params: DirectoryConfigParams & {
-    resolveAccount: (cfg: OpenClawConfig, accountId?: string | null) => ResolvedAccount;
+    resolveAccount: (cfg: EVEConfig, accountId?: string | null) => ResolvedAccount;
     resolveGroups: (account: ResolvedAccount) => Record<string, unknown> | undefined;
     normalizeId?: (entry: string) => string | null | undefined;
   },

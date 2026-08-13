@@ -36,8 +36,8 @@
 
 import * as crypto from "node:crypto";
 import type { FileHandle } from "node:fs/promises";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import type { MediaSource, OpenedLocalFile } from "../messaging/media-source.js";
 import { openLocalFile } from "../messaging/media-source.js";
 import {

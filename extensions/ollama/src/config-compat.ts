@@ -1,5 +1,5 @@
 // Ollama helper module supports config compat behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { OLLAMA_CLOUD_BASE_URL, OLLAMA_CLOUD_PROVIDER_ID } from "./defaults.js";
 
 type LegacyConfigRule = {
@@ -43,13 +43,13 @@ export const legacyConfigRules: LegacyConfigRule[] = [
   {
     path: ["models", "providers", OLLAMA_CLOUD_PROVIDER_ID],
     message:
-      'models.providers.ollama-cloud.baseUrl="https://ai.ollama.com" is retired; use "https://ollama.com". Run "openclaw doctor --fix".',
+      'models.providers.ollama-cloud.baseUrl="https://ai.ollama.com" is retired; use "https://ollama.com". Run "eve doctor --fix".',
     match: (value) => findRetiredOllamaCloudBaseUrl(value) !== null,
   },
 ];
 
-export function migrateOllamaCloudRetiredBaseUrl(config: OpenClawConfig): {
-  config: OpenClawConfig;
+export function migrateOllamaCloudRetiredBaseUrl(config: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } | null {
   const provider = config.models?.providers?.[OLLAMA_CLOUD_PROVIDER_ID];
@@ -60,7 +60,7 @@ export function migrateOllamaCloudRetiredBaseUrl(config: OpenClawConfig): {
 
   const nextConfig = structuredClone(config);
   const nextModels = asRecord(nextConfig.models) ?? {};
-  nextConfig.models = nextModels as OpenClawConfig["models"];
+  nextConfig.models = nextModels as EVEConfig["models"];
   const nextProviders = asRecord(nextModels.providers) ?? {};
   nextModels.providers = nextProviders;
   const nextProvider = asRecord(nextProviders[OLLAMA_CLOUD_PROVIDER_ID]) ?? {};
@@ -95,8 +95,8 @@ export function migrateOllamaCloudRetiredBaseUrl(config: OpenClawConfig): {
   };
 }
 
-export function normalizeCompatibilityConfig({ cfg }: { cfg: OpenClawConfig }): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfig({ cfg }: { cfg: EVEConfig }): {
+  config: EVEConfig;
   changes: string[];
 } {
   return migrateOllamaCloudRetiredBaseUrl(cfg) ?? { config: cfg, changes: [] };

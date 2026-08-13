@@ -1,4 +1,4 @@
-// Implements `openclaw dashboard` URL resolution, readiness check, clipboard, and browser launch.
+// Implements `eve dashboard` URL resolution, readiness check, clipboard, and browser launch.
 import { readConfigFileSnapshot, resolveGatewayPort } from "../config/config.js";
 import { resolveGatewayAuthToken } from "../gateway/auth-token-resolution.js";
 import { copyToClipboard } from "../infra/clipboard.js";
@@ -90,7 +90,7 @@ export async function dashboardCommand(
   if (resolvedToken.unresolvedRefReason) {
     runtime.log(`Token auto-auth unavailable: ${resolvedToken.unresolvedRefReason}`);
     runtime.log(
-      "Set OPENCLAW_GATEWAY_TOKEN in this shell or resolve your secret provider, then rerun `openclaw dashboard`.",
+      "Set EVE_GATEWAY_TOKEN in this shell or resolve your secret provider, then rerun `eve dashboard`.",
     );
   }
 
@@ -121,14 +121,14 @@ export async function dashboardCommand(
   const suppressNoOpenHint = options.noOpen === true && fallbackToManualAuth;
 
   if (opened) {
-    runtime.log("Opened in your browser. Keep that tab to control OpenClaw.");
+    runtime.log("Opened in your browser. Keep that tab to control EVE.");
   } else if (hint && !suppressNoOpenHint) {
     runtime.log(hint);
   }
 
   if (fallbackToManualAuth) {
     runtime.log(
-      "Token auto-auth not delivered. Append your gateway token (from OPENCLAW_GATEWAY_TOKEN or gateway.auth.token) as a URL fragment with key `token` to authenticate.",
+      "Token auto-auth not delivered. Append your gateway token (from EVE_GATEWAY_TOKEN or gateway.auth.token) as a URL fragment with key `token` to authenticate.",
     );
   }
 }

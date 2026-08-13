@@ -1,10 +1,10 @@
 // Runtime boundary for provider discovery through plugin entrypoints.
 import path from "node:path";
-import type { NormalizedModelCatalogRow } from "@openclaw/model-catalog-core/model-catalog-types";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import type { NormalizedModelCatalogRow } from "@eve/model-catalog-core/model-catalog-types";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { sortUniqueStrings } from "../../packages/normalization-core/src/string-normalization.js";
 import type { ModelDefinitionConfig, ModelProviderConfig } from "../config/types.models.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { planManifestModelCatalogRows } from "../model-catalog/manifest-planner.js";
 import { loadManifestMetadataSnapshot } from "./manifest-contract-eligibility.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
@@ -267,7 +267,7 @@ function resolveRuntimeManifestCatalogPluginIds(
 }
 
 function resolveProviderDiscoveryEntryPlugins(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   onlyPluginIds?: string[];
@@ -423,7 +423,7 @@ function withoutFullLoadedPluginEntries(
 }
 
 export function resolvePluginDiscoveryProvidersRuntime(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   bundledProviderVitestCompat?: boolean;

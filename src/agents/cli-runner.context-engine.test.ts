@@ -1,5 +1,5 @@
 /** Tests CLI runner integration with context-engine lifecycle hooks. */
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ContextEngine } from "../context-engine/types.js";
 import type { PreparedCliRunContext } from "./cli-runner/types.js";
@@ -77,11 +77,11 @@ function buildPreparedContext(contextEngine: ContextEngine): PreparedCliRunConte
 
   return {
     params: {
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionKey: "agent:main:main",
       agentId: "main",
       sessionFile: "session.jsonl",
-      workspaceDir: "/tmp/openclaw-cli-context-engine-test",
+      workspaceDir: "/tmp/eve-cli-context-engine-test",
       prompt: "visible ask",
       transcriptPrompt: "transcript visible ask",
       provider: "claude-cli",
@@ -91,7 +91,7 @@ function buildPreparedContext(contextEngine: ContextEngine): PreparedCliRunConte
       runId: "run-1",
     },
     started: Date.now(),
-    workspaceDir: "/tmp/openclaw-cli-context-engine-test",
+    workspaceDir: "/tmp/eve-cli-context-engine-test",
     backendResolved: {
       id: "claude-cli",
       config: backend,
@@ -180,7 +180,7 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
 
     expect(result.meta.agentMeta?.sessionId).toBe("external-cli-session-1");
     expect(loadCliSessionContextEngineMessagesMock).toHaveBeenCalledWith({
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionFile: "session.jsonl",
       sessionKey: "agent:main:main",
       agentId: "main",
@@ -190,12 +190,12 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
     expect(bootstrap).toHaveBeenCalledTimes(1);
     const bootstrapParams = bootstrap.mock.calls[0]?.[0];
     expect(bootstrapParams).toMatchObject({
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionKey: "agent:main:main",
       sessionFile: "session.jsonl",
       runtimeSettings: {
         schemaVersion: 1,
-        runtime: { host: "openclaw", mode: "normal" },
+        runtime: { host: "eve", mode: "normal" },
         model: {
           provider: "claude-cli",
           requested: null,
@@ -214,7 +214,7 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
     expect(afterTurn).toHaveBeenCalledTimes(1);
     const afterTurnParams = afterTurn.mock.calls[0]?.[0];
     expect(afterTurnParams).toMatchObject({
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionKey: "agent:main:main",
       sessionFile: "session.jsonl",
       prePromptMessageCount: 2,
@@ -237,7 +237,7 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
     });
     expect(maintain).toHaveBeenCalledTimes(2);
     expect(maintain.mock.calls[1]?.[0]).toMatchObject({
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionKey: "agent:main:main",
       sessionFile: "session.jsonl",
       runtimeContext: {
@@ -347,7 +347,7 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
     expect(ingestBatch).toHaveBeenCalledTimes(1);
     const ingestBatchParams = ingestBatch.mock.calls[0]?.[0];
     expect(ingestBatchParams).toMatchObject({
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
       sessionKey: "agent:main:main",
     });
     expect(ingestBatchParams?.messages).toHaveLength(2);
@@ -480,7 +480,7 @@ describe("runPreparedCliAgent context engine lifecycle", () => {
       reason: "empty_response",
       provider: "claude-cli",
       model: "sonnet-4.6",
-      sessionId: "openclaw-session-1",
+      sessionId: "eve-session-1",
     });
 
     expect(bootstrap).toHaveBeenCalledTimes(1);

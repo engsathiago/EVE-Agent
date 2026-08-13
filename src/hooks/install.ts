@@ -1,7 +1,7 @@
 // Hook install service installs hook packages from archives and local sources.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
+import { normalizeTrimmedStringList } from "@eve/normalization-core/string-normalization";
 import { MANIFEST_KEY } from "../compat/legacy-names.js";
 import { resolveSafeInstallDir, unscopedPackageName } from "../infra/install-safe-path.js";
 import type { NpmIntegrityDrift, NpmSpecResolution } from "../infra/install-source-utils.js";
@@ -223,14 +223,14 @@ export function resolveHookInstallDir(hookId: string, hooksDir?: string): string
   return targetDirResult.path;
 }
 
-async function ensureOpenClawHooks(manifest: HookPackageManifest) {
+async function ensureEVEHooks(manifest: HookPackageManifest) {
   const hooks = manifest[MANIFEST_KEY]?.hooks;
   if (!Array.isArray(hooks)) {
-    throw new Error("package.json missing openclaw.hooks");
+    throw new Error("package.json missing eve.hooks");
   }
   const list = normalizeTrimmedStringList(hooks);
   if (list.length === 0) {
-    throw new Error("package.json openclaw.hooks is empty");
+    throw new Error("package.json eve.hooks is empty");
   }
   return list;
 }
@@ -392,7 +392,7 @@ async function installHookPackageFromDir(
 
   let hookEntries: string[];
   try {
-    hookEntries = await ensureOpenClawHooks(manifest);
+    hookEntries = await ensureEVEHooks(manifest);
   } catch (err) {
     return { ok: false, error: String(err) };
   }
@@ -425,7 +425,7 @@ async function installHookPackageFromDir(
     if (!runtime.isPathInside(params.packageDir, hookDir)) {
       return {
         ok: false,
-        error: `openclaw.hooks entry escapes package directory: ${entry}`,
+        error: `eve.hooks entry escapes package directory: ${entry}`,
       };
     }
     await validateHookDir(hookDir);
@@ -436,7 +436,7 @@ async function installHookPackageFromDir(
     ) {
       return {
         ok: false,
-        error: `openclaw.hooks entry resolves outside package directory: ${entry}`,
+        error: `eve.hooks entry resolves outside package directory: ${entry}`,
       };
     }
     const hookName = await resolveHookNameFromDir(hookDir);
@@ -658,7 +658,7 @@ export async function installHooksFromArchive(
 
   return await runtime.withExtractedArchiveRoot({
     archivePath,
-    tempDirPrefix: "openclaw-hook-",
+    tempDirPrefix: "eve-hook-",
     timeoutMs,
     logger,
     onExtracted: async (rootDir) =>
@@ -699,7 +699,7 @@ export async function installHooksFromNpmSpec(
 
   logger.info?.(`Downloading ${spec.trim()}…`);
   return await runtime.installFromValidatedNpmSpecArchive({
-    tempDirPrefix: "openclaw-hook-pack-",
+    tempDirPrefix: "eve-hook-pack-",
     spec,
     timeoutMs,
     expectedIntegrity: params.expectedIntegrity,

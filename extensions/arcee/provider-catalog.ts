@@ -2,7 +2,7 @@
  * Arcee provider catalog builders. Direct Arcee uses native ids; OpenRouter
  * catalogs normalize ids to the `arcee/*` namespace.
  */
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
 import { buildArceeModelDefinition, ARCEE_BASE_URL, ARCEE_MODEL_CATALOG } from "./models.js";
 
 /** Canonical OpenRouter API base URL for Arcee-routed models. */

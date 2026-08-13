@@ -24,7 +24,7 @@ function makeUnregisteredGroupMsg(
       timestamp: 1700000000,
     },
     payload: {
-      body: "@openclaw hello",
+      body: "@eve hello",
     },
     platform: {
       chatJid: conversationId,
@@ -72,7 +72,7 @@ function makeParams(
     },
     messages: {
       groupChat: {
-        mentionPatterns: ["\\bopenclaw\\b"],
+        mentionPatterns: ["\\beve\\b"],
       },
     },
   } as never,
@@ -87,7 +87,7 @@ function makeParams(
     groupHistoryKey: `whatsapp:group:${admission.conversation.id}`,
     agentId: "main",
     sessionKey: `agent:main:whatsapp:group:${admission.conversation.id}`,
-    baseMentionConfig: { mentionRegexes: [/\bopenclaw\b/i] } satisfies MentionConfig,
+    baseMentionConfig: { mentionRegexes: [/\beve\b/i] } satisfies MentionConfig,
     groupHistories: new Map<string, GroupHistoryEntry[]>(),
     groupHistoryLimit: 20,
     groupMemberNames: new Map<string, Map<string, string>>(),
@@ -158,7 +158,7 @@ describe("applyGroupGating allowlist drop warning", () => {
       },
       messages: {
         groupChat: {
-          mentionPatterns: ["\\bopenclaw\\b"],
+          mentionPatterns: ["\\beve\\b"],
         },
       },
     } as ApplyGroupGatingParams["cfg"];

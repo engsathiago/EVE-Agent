@@ -2,11 +2,11 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { setDiscordRuntime, type DiscordRuntime } from "../runtime.js";
 import {
@@ -18,9 +18,9 @@ import {
 const tempDirs: string[] = [];
 
 async function createStateEnv(): Promise<NodeJS.ProcessEnv> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-model-picker-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-model-picker-"));
   tempDirs.push(dir);
-  const env = { ...process.env, OPENCLAW_STATE_DIR: dir };
+  const env = { ...process.env, EVE_STATE_DIR: dir };
   setDiscordRuntime({
     state: {
       openKeyedStore: (options: OpenKeyedStoreOptions) =>
@@ -135,7 +135,7 @@ describe("discord model picker preferences", () => {
     const key = buildDiscordModelPickerPreferenceKey(scope);
     expect(key).toBeTruthy();
     const legacyPath = path.join(
-      env.OPENCLAW_STATE_DIR as string,
+      env.EVE_STATE_DIR as string,
       "discord",
       "model-picker-preferences.json",
     );

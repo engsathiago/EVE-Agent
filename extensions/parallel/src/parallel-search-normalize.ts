@@ -6,8 +6,8 @@ import {
   buildSearchCacheKey,
   resolveSiteName,
   wrapWebContent,
-} from "openclaw/plugin-sdk/provider-web-search";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-web-search";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 // Internal-only bounds (the model-facing tool schema declares its own copies).
 const PARALLEL_MAX_SEARCH_COUNT = 40;
@@ -108,7 +108,7 @@ export function invalidSearchQueriesPayload() {
     error: "invalid_search_queries",
     message:
       "search_queries must be a non-empty array of keyword strings (max 5, max 200 chars each). See https://docs.parallel.ai/search/best-practices.",
-    docs: "https://docs.openclaw.ai/tools/parallel-search",
+    docs: "https://docs.eve.ai/tools/parallel-search",
   };
 }
 

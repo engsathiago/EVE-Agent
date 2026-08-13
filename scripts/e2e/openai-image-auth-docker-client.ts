@@ -1,4 +1,4 @@
-// Openai Image Auth Docker Client script supports OpenClaw repository automation.
+// Openai Image Auth Docker Client script supports EVE repository automation.
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import path from "node:path";
@@ -7,7 +7,7 @@ import { isRequestBodyTooLargeError, readBody } from "./lib/mock-openai-http.mjs
 
 const DIRECT_IMAGE_BYTES = Buffer.from("docker-direct-image");
 const CODEX_IMAGE_BYTES = Buffer.from("docker-codex-image");
-const DIRECT_TOKEN = "sk-openclaw-image-auth-e2e";
+const DIRECT_TOKEN = "sk-eve-image-auth-e2e";
 const CODEX_TOKEN = "docker-codex-oauth-token";
 
 export type RequestRecord = {

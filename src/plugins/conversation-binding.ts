@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { ReplyPayload } from "../auto-reply/reply-payload.js";
 import {
   createConversationBindingRecord,
@@ -30,13 +30,13 @@ import { getActivePluginRegistry } from "./runtime.js";
 
 const log = createSubsystemLogger("plugins/binding");
 
-const APPROVALS_PATH = "~/.openclaw/plugin-binding-approvals.json";
+const APPROVALS_PATH = "~/.eve/plugin-binding-approvals.json";
 const PLUGIN_BINDING_CUSTOM_ID_PREFIX = "pluginbind";
 const PLUGIN_BINDING_OWNER = "plugin";
 const PLUGIN_BINDING_SESSION_PREFIX = "plugin-binding";
 const LEGACY_CODEX_PLUGIN_SESSION_PREFIXES = [
-  "openclaw-app-server:thread:",
-  "openclaw-codex-app-server:thread:",
+  "eve-app-server:thread:",
+  "eve-codex-app-server:thread:",
 ] as const;
 
 // Runtime plugin conversation bindings are approval-driven and distinct from
@@ -114,7 +114,7 @@ type PluginBindingResolveResult =
       status: "expired";
     };
 
-const PLUGIN_BINDING_PENDING_REQUESTS_KEY = Symbol.for("openclaw.pluginBindingPendingRequests");
+const PLUGIN_BINDING_PENDING_REQUESTS_KEY = Symbol.for("eve.pluginBindingPendingRequests");
 
 const pendingRequests = resolveGlobalMap<string, PendingPluginBindingRequest>(
   PLUGIN_BINDING_PENDING_REQUESTS_KEY,
@@ -143,7 +143,7 @@ type PluginConversationBindingState = {
   isLegacyForeignBinding: boolean;
 };
 
-const pluginBindingGlobalStateKey = Symbol.for("openclaw.plugins.binding.global-state");
+const pluginBindingGlobalStateKey = Symbol.for("eve.plugins.binding.global-state");
 const pluginBindingGlobalState = resolveGlobalSingleton<PluginBindingGlobalState>(
   pluginBindingGlobalStateKey,
   () => ({
@@ -660,7 +660,7 @@ function buildDetachHintSuffix(detachHint?: string): string {
 }
 
 export function buildPluginBindingUnavailableText(binding: PluginConversationBinding): string {
-  return `The bound plugin ${resolvePluginBindingDisplayName(binding)} is not currently loaded. Routing this message to OpenClaw instead. If this started after an update, run "openclaw doctor --fix"; otherwise reinstall or enable the plugin.${buildDetachHintSuffix(binding.detachHint)}`;
+  return `The bound plugin ${resolvePluginBindingDisplayName(binding)} is not currently loaded. Routing this message to EVE instead. If this started after an update, run "eve doctor --fix"; otherwise reinstall or enable the plugin.${buildDetachHintSuffix(binding.detachHint)}`;
 }
 
 export function buildPluginBindingDeclinedText(binding: PluginConversationBinding): string {

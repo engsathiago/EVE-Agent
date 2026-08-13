@@ -1,13 +1,13 @@
-# @openclaw/diagnostics-prometheus
+# @eve/diagnostics-prometheus
 
-Official Prometheus diagnostics exporter for OpenClaw.
+Official Prometheus diagnostics exporter for EVE.
 
-This plugin exposes OpenClaw Gateway runtime metrics in Prometheus text format for Prometheus, Grafana, VictoriaMetrics, and compatible scrapers.
+This plugin exposes EVE Gateway runtime metrics in Prometheus text format for Prometheus, Grafana, VictoriaMetrics, and compatible scrapers.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/diagnostics-prometheus
+eve plugins install @eve/diagnostics-prometheus
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -18,10 +18,10 @@ Enable the plugin and set the scrape endpoint options in `plugins.entries.diagno
 
 The full config surface, metric names, and scrape examples live in the docs:
 
-- https://docs.openclaw.ai/gateway/prometheus
+- https://docs.eve.ai/gateway/prometheus
 
 ## Package
 
 - Plugin id: `diagnostics-prometheus`
-- Package: `@openclaw/diagnostics-prometheus`
-- Minimum OpenClaw host: `2026.4.25`
+- Package: `@eve/diagnostics-prometheus`
+- Minimum EVE host: `2026.4.25`

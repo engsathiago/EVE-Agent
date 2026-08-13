@@ -202,7 +202,7 @@ function resolveAgentCoreShardName(file) {
   }
   if (
     name.startsWith("agent-tools") ||
-    name.startsWith("openclaw-tools") ||
+    name.startsWith("eve-tools") ||
     name.startsWith("bash-tools") ||
     name.startsWith("tool") ||
     name.startsWith("apply-patch") ||
@@ -501,7 +501,7 @@ function resolveInfraShardName(file) {
     name.startsWith("json") ||
     name.startsWith("path") ||
     name.startsWith("shell") ||
-    name.startsWith("tmp-openclaw-dir")
+    name.startsWith("tmp-eve-dir")
   ) {
     return "core-runtime-infra-files-commands";
   }
@@ -544,7 +544,7 @@ function resolveInfraShardName(file) {
     name.startsWith("google-api") ||
     name.startsWith("home-dir") ||
     name.startsWith("host-env") ||
-    name.startsWith("openclaw-exec-env") ||
+    name.startsWith("eve-exec-env") ||
     name.startsWith("secret") ||
     name.startsWith("secure-random")
   ) {
@@ -556,7 +556,7 @@ function resolveInfraShardName(file) {
     name.startsWith("clawhub") ||
     name.startsWith("detect-package-manager") ||
     name.startsWith("git-") ||
-    name.startsWith("openclaw-root") ||
+    name.startsWith("eve-root") ||
     name.startsWith("tsdown") ||
     name.startsWith("vitest")
   ) {

@@ -1,6 +1,6 @@
 // Stores voice wake trigger configuration.
 import path from "node:path";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveStateDir } from "../config/paths.js";
 import { createAsyncLock, tryReadJson, writeJson } from "./json-files.js";
 
@@ -10,7 +10,7 @@ type VoiceWakeConfig = {
   updatedAtMs: number;
 };
 
-const DEFAULT_TRIGGERS = ["openclaw", "claude", "computer"];
+const DEFAULT_TRIGGERS = ["eve", "claude", "computer"];
 
 function resolvePath(baseDir?: string) {
   const root = baseDir ?? resolveStateDir();

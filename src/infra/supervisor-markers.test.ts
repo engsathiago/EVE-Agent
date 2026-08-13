@@ -1,4 +1,4 @@
-// Covers supervisor marker files used to identify managed OpenClaw processes.
+// Covers supervisor marker files used to identify managed EVE processes.
 import { describe, expect, it } from "vitest";
 import { detectRespawnSupervisor, SUPERVISOR_HINT_ENV_VARS } from "./supervisor-markers.js";
 
@@ -7,36 +7,36 @@ describe("SUPERVISOR_HINT_ENV_VARS", () => {
     const envVars = new Set(SUPERVISOR_HINT_ENV_VARS);
     expect(envVars.has("LAUNCH_JOB_LABEL")).toBe(true);
     expect(envVars.has("INVOCATION_ID")).toBe(true);
-    expect(envVars.has("OPENCLAW_WINDOWS_TASK_NAME")).toBe(true);
-    expect(envVars.has("OPENCLAW_SERVICE_MARKER")).toBe(true);
-    expect(envVars.has("OPENCLAW_SERVICE_KIND")).toBe(true);
+    expect(envVars.has("EVE_WINDOWS_TASK_NAME")).toBe(true);
+    expect(envVars.has("EVE_SERVICE_MARKER")).toBe(true);
+    expect(envVars.has("EVE_SERVICE_KIND")).toBe(true);
   });
 });
 
 describe("detectRespawnSupervisor", () => {
-  it("detects launchd from OpenClaw's explicit marker or current gateway launchd job", () => {
+  it("detects launchd from EVE's explicit marker or current gateway launchd job", () => {
     expect(
-      detectRespawnSupervisor({ OPENCLAW_LAUNCHD_LABEL: " ai.openclaw.gateway " }, "darwin"),
+      detectRespawnSupervisor({ EVE_LAUNCHD_LABEL: " ai.eve.gateway " }, "darwin"),
     ).toBe("launchd");
-    expect(detectRespawnSupervisor({ OPENCLAW_LAUNCHD_LABEL: "   " }, "darwin")).toBeNull();
-    expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.openclaw.gateway" }, "darwin")).toBe(
+    expect(detectRespawnSupervisor({ EVE_LAUNCHD_LABEL: "   " }, "darwin")).toBeNull();
+    expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, "darwin")).toBe(
       "launchd",
     );
     expect(
       detectRespawnSupervisor(
-        { LAUNCH_JOB_NAME: "ai.openclaw.work", OPENCLAW_PROFILE: "work" },
+        { LAUNCH_JOB_NAME: "ai.eve.work", EVE_PROFILE: "work" },
         "darwin",
       ),
     ).toBe("launchd");
-    expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.openclaw.mac" }, "darwin")).toBeNull();
-    expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.openclaw.mac" }, "darwin")).toBeNull();
+    expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.mac" }, "darwin")).toBeNull();
+    expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.eve.mac" }, "darwin")).toBeNull();
     expect(
       detectRespawnSupervisor(
-        { XPC_SERVICE_NAME: "ai.openclaw.mac", OPENCLAW_PROFILE: "mac" },
+        { XPC_SERVICE_NAME: "ai.eve.mac", EVE_PROFILE: "mac" },
         "darwin",
       ),
     ).toBeNull();
-    expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.openclaw.gateway" }, "darwin")).toBe(
+    expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.eve.gateway" }, "darwin")).toBe(
       "launchd",
     );
   });
@@ -46,48 +46,48 @@ describe("detectRespawnSupervisor", () => {
     expect(detectRespawnSupervisor({ JOURNAL_STREAM: "" }, "linux")).toBeNull();
   });
 
-  it("detects Linux OpenClaw gateway service markers only for opt-in callers", () => {
+  it("detects Linux EVE gateway service markers only for opt-in callers", () => {
     const gatewayServiceEnv = {
-      OPENCLAW_SERVICE_MARKER: " openclaw ",
-      OPENCLAW_SERVICE_KIND: " gateway ",
+      EVE_SERVICE_MARKER: " eve ",
+      EVE_SERVICE_KIND: " gateway ",
     };
     expect(detectRespawnSupervisor(gatewayServiceEnv, "linux")).toBeNull();
     expect(
       detectRespawnSupervisor(gatewayServiceEnv, "linux", {
-        includeLinuxOpenClawGatewayServiceMarker: true,
+        includeLinuxEVEGatewayServiceMarker: true,
       }),
     ).toBe("systemd");
     expect(
       detectRespawnSupervisor(
         {
-          OPENCLAW_SERVICE_MARKER: "openclaw",
-          OPENCLAW_SERVICE_KIND: "worker",
+          EVE_SERVICE_MARKER: "eve",
+          EVE_SERVICE_KIND: "worker",
         },
         "linux",
-        { includeLinuxOpenClawGatewayServiceMarker: true },
+        { includeLinuxEVEGatewayServiceMarker: true },
       ),
     ).toBeNull();
     expect(
       detectRespawnSupervisor(
         {
-          OPENCLAW_SERVICE_MARKER: "other",
-          OPENCLAW_SERVICE_KIND: "gateway",
+          EVE_SERVICE_MARKER: "other",
+          EVE_SERVICE_KIND: "gateway",
         },
         "linux",
-        { includeLinuxOpenClawGatewayServiceMarker: true },
+        { includeLinuxEVEGatewayServiceMarker: true },
       ),
     ).toBeNull();
   });
 
   it("detects scheduled-task supervision on Windows from either hint family", () => {
     expect(
-      detectRespawnSupervisor({ OPENCLAW_WINDOWS_TASK_NAME: "OpenClaw Gateway" }, "win32"),
+      detectRespawnSupervisor({ EVE_WINDOWS_TASK_NAME: "EVE Gateway" }, "win32"),
     ).toBe("schtasks");
     expect(
       detectRespawnSupervisor(
         {
-          OPENCLAW_SERVICE_MARKER: "openclaw",
-          OPENCLAW_SERVICE_KIND: "gateway",
+          EVE_SERVICE_MARKER: "eve",
+          EVE_SERVICE_KIND: "gateway",
         },
         "win32",
       ),
@@ -95,8 +95,8 @@ describe("detectRespawnSupervisor", () => {
     expect(
       detectRespawnSupervisor(
         {
-          OPENCLAW_SERVICE_MARKER: "openclaw",
-          OPENCLAW_SERVICE_KIND: "worker",
+          EVE_SERVICE_MARKER: "eve",
+          EVE_SERVICE_KIND: "worker",
         },
         "win32",
       ),
@@ -107,14 +107,14 @@ describe("detectRespawnSupervisor", () => {
     expect(
       detectRespawnSupervisor(
         {
-          OPENCLAW_SERVICE_MARKER: "openclaw",
-          OPENCLAW_SERVICE_KIND: "gateway",
+          EVE_SERVICE_MARKER: "eve",
+          EVE_SERVICE_KIND: "gateway",
         },
         "linux",
       ),
     ).toBeNull();
     expect(
-      detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.openclaw.gateway" }, "freebsd"),
+      detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, "freebsd"),
     ).toBeNull();
   });
 });

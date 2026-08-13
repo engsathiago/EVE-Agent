@@ -11,7 +11,7 @@ export function normalizeContextTokenBudget(value: unknown): number | undefined 
 }
 
 export function mapThinkingLevel(level?: ThinkLevel): ThinkingLevel {
-  // agent runtime supports elevated levels; OpenClaw enables them for specific models.
+  // agent runtime supports elevated levels; EVE enables them for specific models.
   if (!level) {
     return "off";
   }

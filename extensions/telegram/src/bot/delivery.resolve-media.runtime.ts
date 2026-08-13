@@ -1,6 +1,6 @@
 // Telegram plugin module implements delivery.resolve media behavior.
-import { logVerbose, retryAsync, warn } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import { logVerbose, retryAsync, warn } from "eve-agent/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { resolveTelegramApiBase, shouldRetryTelegramTransportFallback } from "../fetch.js";
 import {
   readRemoteMediaBuffer,

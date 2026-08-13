@@ -12,14 +12,14 @@ const mocks = vi.hoisted(() => ({
   resolveNodeIdFromList: vi.fn(() => "node-1"),
 }));
 
-vi.mock("openclaw/plugin-sdk/agent-harness-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/agent-harness-runtime", () => ({
   callGatewayTool: mocks.callGatewayTool,
   listNodes: mocks.listNodes,
   resolveNodeIdFromList: mocks.resolveNodeIdFromList,
 }));
 
-vi.mock("openclaw/plugin-sdk/channel-actions", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("openclaw/plugin-sdk/channel-actions")>()),
+vi.mock("eve-agent/plugin-sdk/channel-actions", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("eve-agent/plugin-sdk/channel-actions")>()),
   imageResultFromFile: mocks.imageResultFromFile,
 }));
 
@@ -45,7 +45,7 @@ describe("Canvas tool", () => {
   it.skipIf(process.platform === "win32")(
     "rejects jsonlPath symlinks that resolve outside the workspace",
     async () => {
-      tempRoot = await mkdtemp(path.join(os.tmpdir(), "openclaw-canvas-tool-"));
+      tempRoot = await mkdtemp(path.join(os.tmpdir(), "eve-canvas-tool-"));
       const workspaceDir = path.join(tempRoot, "workspace");
       await mkdir(workspaceDir);
       const outsidePath = path.join(tempRoot, "outside.jsonl");
@@ -93,7 +93,7 @@ describe("Canvas tool", () => {
         }
       | undefined;
     expect(imageResultParams?.label).toBe("canvas:snapshot");
-    expect(imageResultParams?.path).toMatch(/openclaw-canvas-snapshot-.*\.png$/);
+    expect(imageResultParams?.path).toMatch(/eve-canvas-snapshot-.*\.png$/);
     expect(imageResultParams?.details).toEqual({ format: "png" });
     expect(imageResultParams?.imageSanitization).toEqual({ maxDimensionPx: 1600 });
   });

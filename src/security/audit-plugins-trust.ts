@@ -1,12 +1,12 @@
 // Audits installed plugins for trust, provenance, and filesystem risks.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import { listReadOnlyChannelPluginsForConfig } from "../channels/plugins/read-only.js";
 import type { ChannelPlugin } from "../channels/plugins/types.plugin.js";
 import { inspectReadOnlyChannelAccount } from "../channels/read-only-account-inspect.js";
 import { resolveNativeSkillsEnabled } from "../config/commands.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import type { AgentToolsConfig } from "../config/types.tools.js";
 import { readInstalledPackageVersion } from "../infra/package-update-utils.js";
 import { normalizePluginsConfig } from "../plugins/config-state.js";
@@ -49,11 +49,11 @@ async function loadPluginTrustPolicyDeps(): Promise<PluginTrustPolicyDeps> {
 }
 
 function readChannelCommandSetting(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   channelId: string,
   key: "native" | "nativeSkills",
 ): unknown {
-  const channelCfg = cfg.channels?.[channelId as keyof NonNullable<OpenClawConfig["channels"]>];
+  const channelCfg = cfg.channels?.[channelId as keyof NonNullable<EVEConfig["channels"]>];
   if (!channelCfg || typeof channelCfg !== "object" || Array.isArray(channelCfg)) {
     return undefined;
   }
@@ -65,7 +65,7 @@ function readChannelCommandSetting(
 }
 
 async function isChannelPluginConfigured(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   plugin: ChannelPlugin,
 ): Promise<boolean> {
   const accountIds = plugin.config.listAccountIds(cfg);
@@ -152,7 +152,7 @@ async function listInstalledPluginDirs(params: {
 }
 
 function resolveToolPolicies(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   deps: PluginTrustPolicyDeps;
   agentTools?: AgentToolsConfig;
   sandboxMode?: "off" | "non-main" | "all";
@@ -182,7 +182,7 @@ function normalizePluginIdSet(entries: string[]): Set<string> {
 }
 
 function resolveEnabledExtensionPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   pluginDirs: string[];
 }): string[] {
   const normalized = normalizePluginsConfig(params.cfg.plugins);
@@ -278,7 +278,7 @@ function isPinnedRegistrySpec(spec: string): boolean {
 
 /** Collect supply-chain and reachable-tool findings for installed plugins and hook packs. */
 export async function collectPluginsTrustFindings(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   stateDir: string;
 }): Promise<SecurityAuditFinding[]> {
   const findings: SecurityAuditFinding[] = [];
@@ -406,7 +406,7 @@ export async function collectPluginsTrustFindings(params: {
           sandboxMode,
           agentId: context.agentId,
         });
-        const broadPolicy = deps.isToolAllowedByPolicies("__openclaw_plugin_probe__", policies);
+        const broadPolicy = deps.isToolAllowedByPolicies("__eve_plugin_probe__", policies);
         const explicitPluginAllow =
           !restrictiveProfile &&
           (hasExplicitPluginAllow({
@@ -507,7 +507,7 @@ export async function collectPluginsTrustFindings(params: {
         title: "Plugin index records drift from installed package versions",
         detail: `Detected plugin install metadata drift:\n${pluginVersionDrift.map((entry) => `- ${entry}`).join("\n")}`,
         remediation:
-          "Run `openclaw plugins update --all` (or reinstall affected plugins) to refresh install metadata.",
+          "Run `eve plugins update --all` (or reinstall affected plugins) to refresh install metadata.",
       });
     }
   }
@@ -569,7 +569,7 @@ export async function collectPluginsTrustFindings(params: {
         title: "Hook install records drift from installed package versions",
         detail: `Detected hook install metadata drift:\n${hookVersionDrift.map((entry) => `- ${entry}`).join("\n")}`,
         remediation:
-          "Run `openclaw hooks update --all` (or reinstall affected hooks) to refresh install metadata.",
+          "Run `eve hooks update --all` (or reinstall affected hooks) to refresh install metadata.",
       });
     }
   }

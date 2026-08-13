@@ -2,4 +2,4 @@
 export {
   buildChannelConfigSchema,
   WhatsAppConfigSchema,
-} from "openclaw/plugin-sdk/bundled-channel-config-schema";
+} from "eve-agent/plugin-sdk/bundled-channel-config-schema";

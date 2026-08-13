@@ -1,11 +1,11 @@
 /**
  * Monitors Codex native subagent threads and mirrors their lifecycle/completion
- * into OpenClaw task runtime records for parent sessions.
+ * into EVE task runtime records for parent sessions.
  */
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { embeddedAgentLog, formatErrorMessage } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog, formatErrorMessage } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   createAgentHarnessTaskRuntime,
   deliverAgentHarnessTaskCompletion,
@@ -13,8 +13,8 @@ import {
   type AgentHarnessTaskRuntimeScope,
   type AgentHarnessTaskRuntime,
   type AgentHarnessTaskRecord,
-} from "openclaw/plugin-sdk/agent-harness-task-runtime";
-import { asFiniteNumber, normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-task-runtime";
+import { asFiniteNumber, normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { CodexAppServerClient } from "./client.js";
 import {
   extractCodexNativeSubagentCompletions,

@@ -7,9 +7,9 @@
 
 import * as fs from "node:fs";
 import path from "node:path";
-import { mimeTypeFromFilePath } from "openclaw/plugin-sdk/media-mime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { mimeTypeFromFilePath } from "eve-agent/plugin-sdk/media-mime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   normalizeOptionalString,
   asOptionalObjectRecord as asRecord,

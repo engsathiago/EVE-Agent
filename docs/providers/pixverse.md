@@ -1,18 +1,18 @@
 ---
-summary: "PixVerse video generation setup in OpenClaw"
+summary: "PixVerse video generation setup in EVE"
 title: "PixVerse"
 read_when:
-  - You want to use PixVerse video generation in OpenClaw
+  - You want to use PixVerse video generation in EVE
   - You need the PixVerse API key/env setup
   - You want to make PixVerse the default video provider
 ---
 
-OpenClaw provides `pixverse` as an official external plugin for hosted PixVerse video generation. The plugin registers the `pixverse` provider against the `videoGenerationProviders` contract.
+EVE provides `pixverse` as an official external plugin for hosted PixVerse video generation. The plugin registers the `pixverse` provider against the `videoGenerationProviders` contract.
 
 | Property           | Value                                                                |
 | ------------------ | -------------------------------------------------------------------- |
 | Provider id        | `pixverse`                                                           |
-| Plugin package     | `@openclaw/pixverse-provider`                                        |
+| Plugin package     | `@eve/pixverse-provider`                                        |
 | Auth env var       | `PIXVERSE_API_KEY`                                                   |
 | Onboarding flag    | `--auth-choice pixverse-api-key`                                     |
 | Direct CLI flag    | `--pixverse-api-key <key>`                                           |
@@ -25,13 +25,13 @@ OpenClaw provides `pixverse` as an official external plugin for hosted PixVerse 
 <Steps>
   <Step title="Install the plugin">
     ```bash
-    openclaw plugins install clawhub:@openclaw/pixverse-provider
-    openclaw gateway restart
+    eve plugins install clawhub:@eve/pixverse-provider
+    eve gateway restart
     ```
   </Step>
   <Step title="Set the API key">
     ```bash
-    openclaw onboard --auth-choice pixverse-api-key
+    eve onboard --auth-choice pixverse-api-key
     ```
 
     The wizard asks whether to use the International endpoint
@@ -42,7 +42,7 @@ OpenClaw provides `pixverse` as an official external plugin for hosted PixVerse 
   </Step>
   <Step title="Set PixVerse as the default video provider">
     ```bash
-    openclaw config set agents.defaults.videoGenerationModel.primary "pixverse/v6"
+    eve config set agents.defaults.videoGenerationModel.primary "pixverse/v6"
     ```
   </Step>
   <Step title="Generate a video">
@@ -52,7 +52,7 @@ OpenClaw provides `pixverse` as an official external plugin for hosted PixVerse 
 
 ## Supported modes and models
 
-The provider exposes PixVerse generation models through OpenClaw's shared video tool.
+The provider exposes PixVerse generation models through EVE's shared video tool.
 
 | Mode           | Models               | Reference input         |
 | -------------- | -------------------- | ----------------------- |
@@ -69,7 +69,7 @@ Local image references are uploaded to PixVerse before the image-to-video reques
 | Generated audio | `audio: true`                                                               |
 
 <Note>
-PixVerse image template generation is not exposed through `image_generate` yet. That API is template-id driven, while OpenClaw's shared image-generation contract does not currently have a PixVerse-specific typed option bag.
+PixVerse image template generation is not exposed through `image_generate` yet. That API is template-id driven, while EVE's shared image-generation contract does not currently have a PixVerse-specific typed option bag.
 </Note>
 
 ## Provider options
@@ -103,9 +103,9 @@ The video provider accepts these optional provider-specific keys:
 
 <AccordionGroup>
   <Accordion title="API region">
-    OpenClaw defaults to the international PixVerse API. Set `models.providers.pixverse.region`
+    EVE defaults to the international PixVerse API. Set `models.providers.pixverse.region`
     manually when your key belongs to a specific PixVerse platform region, or use
-    `openclaw onboard --auth-choice pixverse-api-key` to choose one in the setup wizard:
+    `eve onboard --auth-choice pixverse-api-key` to choose one in the setup wizard:
 
     | Region value    | PixVerse API base URL                         |
     | --------------- | --------------------------------------------- |
@@ -147,7 +147,7 @@ The video provider accepts these optional provider-specific keys:
   </Accordion>
 
   <Accordion title="Task polling">
-    PixVerse returns a `video_id` from the generation request. OpenClaw polls
+    PixVerse returns a `video_id` from the generation request. EVE polls
     `/openapi/v2/video/result/{video_id}` until the task succeeds, fails,
     or times out.
   </Accordion>

@@ -11,9 +11,9 @@
  * branches fall through to a bare ACK (backward-compatible).
  */
 
-import { isImplicitSameChatApprovalAuthorization } from "openclaw/plugin-sdk/approval-auth-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isImplicitSameChatApprovalAuthorization } from "eve-agent/plugin-sdk/approval-auth-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { authorizeQQBotApprovalAction } from "../../exec-approvals.js";
 import { resolveQQBotEffectivePolicies } from "../access/resolve-policy.js";
 import { getPlatformAdapter } from "../adapter/index.js";
@@ -32,7 +32,7 @@ import { InteractionType } from "./constants.js";
 import type { GatewayAccount, GatewayPluginRuntime, EngineLogger } from "./types.js";
 
 type QQBotCommandAuthorizationResolver = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   isGroup: boolean;
   senderId: string;
@@ -82,7 +82,7 @@ function buildClawCfgSnapshot(
   return {
     channel_type: "qqbot",
     channel_ver: getPluginVersion(),
-    claw_type: "openclaw",
+    claw_type: "eve",
     claw_ver: getFrameworkVersion(),
     require_mention: requireMentionMode,
     group_policy: policies.groupPolicy,
@@ -171,7 +171,7 @@ export function createInteractionHandler(
   runtime: GatewayPluginRuntime,
   log?: EngineLogger,
   options?: {
-    getActiveCfg?: () => OpenClawConfig;
+    getActiveCfg?: () => EVEConfig;
     resolveCommandAuthorized?: QQBotCommandAuthorizationResolver;
   },
 ): (event: InteractionEvent) => void {
@@ -223,7 +223,7 @@ async function handleApprovalButtonInteraction(params: {
   account: GatewayAccount;
   creds: { appId: string; clientSecret: string };
   event: InteractionEvent;
-  getActiveCfg?: () => OpenClawConfig | Record<string, unknown>;
+  getActiveCfg?: () => EVEConfig | Record<string, unknown>;
   log?: EngineLogger;
   parsed: { approvalId: string; decision: "allow-once" | "allow-always" | "deny" };
   resolveCommandAuthorized?: QQBotCommandAuthorizationResolver;
@@ -236,9 +236,9 @@ async function handleApprovalButtonInteraction(params: {
     return;
   }
 
-  let cfg: OpenClawConfig;
+  let cfg: EVEConfig;
   try {
-    cfg = params.getActiveCfg() as OpenClawConfig;
+    cfg = params.getActiveCfg() as EVEConfig;
   } catch (err) {
     await acknowledgeApprovalInteraction(params.creds, params.event, params.log, {
       content: "Approval is unavailable.",
@@ -306,7 +306,7 @@ async function acknowledgeApprovalInteraction(
 }
 
 async function authorizeApprovalButtonActor(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: GatewayAccount;
   event: InteractionEvent;
   approvalKind: "exec" | "plugin";
@@ -358,7 +358,7 @@ async function authorizeApprovalButtonActor(params: {
 }
 
 async function isImplicitApprovalButtonActorAuthorized(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: GatewayAccount;
   event: InteractionEvent;
   senderId: string;
@@ -381,7 +381,7 @@ async function isImplicitApprovalButtonActorAuthorized(params: {
 }
 
 function resolveApprovalButtonAccountConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId: string,
 ): QQBotAccountConfigView {
   const qqbot = readRecord(readRecord(cfg.channels)?.qqbot);

@@ -2,7 +2,7 @@
 import {
   normalizeOptionalLowercaseString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   patchCodexNativeWebSearchPayload,
   resolveCodexNativeSearchActivation,
@@ -26,7 +26,7 @@ import { resolveProviderRequestPolicyConfig } from "../../../agents/provider-req
 import type { StreamFn } from "../../../agents/runtime/index.js";
 import type { SandboxToolPolicy } from "../../../agents/sandbox.js";
 import type { ThinkLevel } from "../../../auto-reply/thinking.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { createSubsystemLogger } from "../../../logging/subsystem.js";
 import { streamSimple } from "../../stream.js";
 import type { SimpleStreamOptions } from "../../types.js";
@@ -36,8 +36,8 @@ import { streamWithPayloadPatch } from "./stream-payload-utils.js";
 const log = createSubsystemLogger("llm/providers/stream-wrappers");
 
 type OpenAIServiceTier = "auto" | "default" | "flex" | "priority";
-type OpenClawSimpleStreamOptions = SimpleStreamOptions & {
-  openclawCodeModeToolSurface?: boolean;
+type EVESimpleStreamOptions = SimpleStreamOptions & {
+  eveCodeModeToolSurface?: boolean;
 };
 type OpenAIResponsesReplayOptions = Parameters<StreamFn>[2] & {
   replayResponsesItemIds?: boolean;
@@ -107,7 +107,7 @@ function shouldApplyOpenAIServiceTier(model: {
   return resolveOpenAIResponsesPayloadPolicy(model, { storeMode: "disable" }).allowsServiceTier;
 }
 
-function isCodeModeEnabled(config?: OpenClawConfig): boolean {
+function isCodeModeEnabled(config?: EVEConfig): boolean {
   const tools = config?.tools;
   if (!tools || typeof tools !== "object") {
     return false;
@@ -643,7 +643,7 @@ export function createOpenAITextVerbosityWrapper(
 export function createCodexNativeWebSearchWrapper(
   baseStreamFn: StreamFn | undefined,
   params: {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     agentDir?: string;
     agentId?: string;
     sessionKey?: string;
@@ -675,9 +675,9 @@ export function createCodexNativeWebSearchWrapper(
         }/${model.id ?? "unknown"}`,
       );
       const originalOnPayload = options?.onPayload;
-      const codeModeOptions: OpenClawSimpleStreamOptions = {
+      const codeModeOptions: EVESimpleStreamOptions = {
         ...options,
-        openclawCodeModeToolSurface: true,
+        eveCodeModeToolSurface: true,
         onPayload: (payload) => {
           filterCodeModePayloadTools(payload);
           const nextPayload = originalOnPayload?.(payload, model);

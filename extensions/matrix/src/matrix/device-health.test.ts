@@ -1,30 +1,30 @@
 // Matrix tests cover device health plugin behavior.
 import { describe, expect, it } from "vitest";
-import { isOpenClawManagedMatrixDevice, summarizeMatrixDeviceHealth } from "./device-health.js";
+import { isEVEManagedMatrixDevice, summarizeMatrixDeviceHealth } from "./device-health.js";
 
 describe("matrix device health", () => {
-  it("detects OpenClaw-managed device names", () => {
-    expect(isOpenClawManagedMatrixDevice("OpenClaw Gateway")).toBe(true);
-    expect(isOpenClawManagedMatrixDevice("OpenClaw Debug")).toBe(true);
-    expect(isOpenClawManagedMatrixDevice("Element iPhone")).toBe(false);
-    expect(isOpenClawManagedMatrixDevice(null)).toBe(false);
+  it("detects EVE-managed device names", () => {
+    expect(isEVEManagedMatrixDevice("EVE Gateway")).toBe(true);
+    expect(isEVEManagedMatrixDevice("EVE Debug")).toBe(true);
+    expect(isEVEManagedMatrixDevice("Element iPhone")).toBe(false);
+    expect(isEVEManagedMatrixDevice(null)).toBe(false);
   });
 
-  it("summarizes stale OpenClaw-managed devices separately from the current device", () => {
+  it("summarizes stale EVE-managed devices separately from the current device", () => {
     const summary = summarizeMatrixDeviceHealth([
       {
         deviceId: "du314Zpw3A",
-        displayName: "OpenClaw Gateway",
+        displayName: "EVE Gateway",
         current: true,
       },
       {
         deviceId: "BritdXC6iL",
-        displayName: "OpenClaw Gateway",
+        displayName: "EVE Gateway",
         current: false,
       },
       {
         deviceId: "G6NJU9cTgs",
-        displayName: "OpenClaw Debug",
+        displayName: "EVE Debug",
         current: false,
       },
       {
@@ -36,22 +36,22 @@ describe("matrix device health", () => {
 
     expect(summary).toEqual({
       currentDeviceId: "du314Zpw3A",
-      currentOpenClawDevices: [
+      currentEVEDevices: [
         {
           deviceId: "du314Zpw3A",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           current: true,
         },
       ],
-      staleOpenClawDevices: [
+      staleEVEDevices: [
         {
           deviceId: "BritdXC6iL",
-          displayName: "OpenClaw Gateway",
+          displayName: "EVE Gateway",
           current: false,
         },
         {
           deviceId: "G6NJU9cTgs",
-          displayName: "OpenClaw Debug",
+          displayName: "EVE Debug",
           current: false,
         },
       ],

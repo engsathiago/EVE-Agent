@@ -1,10 +1,10 @@
 // Normalizes provider auth choice metadata from plugin setup surfaces.
-import { isRecord as isPlainRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord as isPlainRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { normalizeConfiguredProviderCatalogModelId } from "../agents/model-ref-shared.js";
 import { normalizeProviderId } from "../agents/model-selection.js";
 import {
@@ -14,7 +14,7 @@ import {
 import { normalizeProviderConfigForConfigDefaults } from "../config/provider-policy.js";
 import type { AgentModelConfig } from "../config/types.agents-shared.js";
 import type { ModelProviderConfig } from "../config/types.models.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { ProviderAuthMethod, ProviderPlugin } from "./types.js";
 
 export function resolveProviderMatch(
@@ -167,7 +167,7 @@ function normalizeProviderCatalogModelIdsForWrite(
   return mutated ? { ...providerConfig, models: nextModels } : providerConfig;
 }
 
-function normalizeModelProviderConfigsForWrite(cfg: OpenClawConfig): OpenClawConfig {
+function normalizeModelProviderConfigsForWrite(cfg: EVEConfig): EVEConfig {
   const providers = cfg.models?.providers;
   if (!providers) {
     return cfg;
@@ -235,7 +235,7 @@ function normalizeAgentListForWrite(value: unknown): unknown {
   return mutated ? next : value;
 }
 
-function normalizeConfigModelRefsForWrite(cfg: OpenClawConfig): OpenClawConfig {
+function normalizeConfigModelRefsForWrite(cfg: EVEConfig): EVEConfig {
   const providerNormalized = normalizeModelProviderConfigsForWrite(cfg);
   const defaults = providerNormalized.agents?.defaults;
   const agentsList = providerNormalized.agents?.list;
@@ -271,10 +271,10 @@ function normalizeConfigModelRefsForWrite(cfg: OpenClawConfig): OpenClawConfig {
 }
 
 export function applyProviderAuthConfigPatch(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   patch: unknown,
   options?: { replaceDefaultModels?: boolean },
-): OpenClawConfig {
+): EVEConfig {
   const merged = normalizeConfigModelRefsForWrite(
     deleteUndefinedPatchLeaves(mergeConfigPatch(cfg, patch), patch),
   );
@@ -296,7 +296,7 @@ export function applyProviderAuthConfigPatch(
         ...merged.agents?.defaults,
         // Opt-in replacement for migrations that rename/remove model keys.
         models: sanitizeConfigPatchValue(patchModels) as NonNullable<
-          NonNullable<OpenClawConfig["agents"]>["defaults"]
+          NonNullable<EVEConfig["agents"]>["defaults"]
         >["models"],
       },
     },
@@ -308,10 +308,10 @@ export function applyProviderAuthConfigPatch(
  * `--set-default`, so `applyConfig` patches cannot replace the primary without an explicit opt-in.
  */
 export function restorePriorAgentsDefaultsModelUnlessOptIn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   priorAgentsDefaultsModel?: AgentModelConfig;
   setDefault?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   if (params.setDefault || params.priorAgentsDefaultsModel === undefined) {
     return params.cfg;
   }
@@ -328,10 +328,10 @@ export function restorePriorAgentsDefaultsModelUnlessOptIn(params: {
 }
 
 export function applyDefaultModel(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   model: string,
   opts?: { preserveExistingPrimary?: boolean },
-): OpenClawConfig {
+): EVEConfig {
   const normalizedModel = normalizeAgentModelRefForConfig(model);
   const models = {
     ...normalizeAgentModelMapForConfig(cfg.agents?.defaults?.models ?? {}),

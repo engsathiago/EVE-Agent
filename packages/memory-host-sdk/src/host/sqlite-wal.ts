@@ -6,9 +6,9 @@ export {
   DEFAULT_SQLITE_WAL_TRUNCATE_INTERVAL_MS,
   configureSqliteConnectionPragmas,
   configureSqliteWalMaintenance,
-} from "./openclaw-runtime-io.js";
+} from "./eve-runtime-io.js";
 export type {
   SqliteConnectionPragmaOptions,
   SqliteWalMaintenance,
   SqliteWalMaintenanceOptions,
-} from "./openclaw-runtime-io.js";
+} from "./eve-runtime-io.js";

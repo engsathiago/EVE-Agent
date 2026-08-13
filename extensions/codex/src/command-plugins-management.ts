@@ -1,5 +1,5 @@
 // Codex plugin module implements command plugins management behavior.
-import type { PluginCommandContext, PluginCommandResult } from "openclaw/plugin-sdk/plugin-entry";
+import type { PluginCommandContext, PluginCommandResult } from "eve-agent/plugin-sdk/plugin-entry";
 import { formatCodexDisplayText } from "./command-formatters.js";
 import {
   buildCodexCommandPickerPresentation,
@@ -7,7 +7,7 @@ import {
 } from "./command-presentation.js";
 
 /**
- * Lightweight read/write surface over the Openclaw config file. Plugged in by
+ * Lightweight read/write surface over the Eve config file. Plugged in by
  * the command registration site so this module stays decoupled from the
  * concrete `mutateConfigFile` import in tests.
  */
@@ -31,7 +31,7 @@ export type CodexPluginsConfigBlock = {
   plugins?: Record<string, CodexPluginConfigEntry>;
 };
 
-// Plugin lifecycle changes (enable/disable) write to openclaw.json
+// Plugin lifecycle changes (enable/disable) write to eve.json
 // synchronously. The Codex app-server picks up the new policy when the next
 // thread starts; in-flight conversations keep the old policy until /new or
 // /reset. A full gateway restart is NOT needed.
@@ -99,7 +99,7 @@ export async function handleCodexPluginsSubcommand(
       block.plugins[target] = { ...block.plugins[target], enabled: wantEnabled };
     });
     return {
-      text: `${formatCodexDisplayText(target)}: ${wantEnabled ? "enabled" : "disabled"} in openclaw.json. ${POLICY_REFRESH_HINT}`,
+      text: `${formatCodexDisplayText(target)}: ${wantEnabled ? "enabled" : "disabled"} in eve.json. ${POLICY_REFRESH_HINT}`,
     };
   }
 
@@ -206,7 +206,7 @@ function canMutateCodexPlugins(ctx: PluginCommandContext): boolean {
 
 export function buildPluginsHelp(): string {
   return [
-    "Codex sub-plugin management (writes only to ~/.openclaw/openclaw.json, never to ~/.codex/config.toml):",
+    "Codex sub-plugin management (writes only to ~/.eve/eve.json, never to ~/.codex/config.toml):",
     "- /codex plugins                  (alias for list)",
     "- /codex plugins list             show all configured Codex sub-plugins",
     "- /codex plugins enable <name>    enable a configured sub-plugin",
@@ -234,7 +234,7 @@ export function formatPluginList(
   const keyW = Math.max(...rows.map((r) => r.displayKey.length));
   const pluginW = Math.max(...rows.map((r) => r.pluginName.length));
   return [
-    "Codex sub-plugins in Openclaw config (~/.openclaw/openclaw.json):",
+    "Codex sub-plugins in Eve config (~/.eve/eve.json):",
     "",
     ...rows.map(
       (r) =>

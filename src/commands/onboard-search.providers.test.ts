@@ -1,11 +1,11 @@
 // Onboard search provider tests cover provider discovery, credential reuse, and search setup choices.
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import type { PluginWebSearchProviderEntry } from "../plugins/types.js";
 
 const mocks = vi.hoisted(() => ({
   resolvePluginWebSearchProviders: vi.fn<
-    (params?: { config?: OpenClawConfig }) => PluginWebSearchProviderEntry[]
+    (params?: { config?: EVEConfig }) => PluginWebSearchProviderEntry[]
   >(() => []),
   resolveWebSearchInstallCatalogEntries: vi.fn(() => []),
 }));
@@ -110,7 +110,7 @@ describe("onboard-search provider resolution", () => {
       params?.config ? [customEntry] : [],
     );
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         web: {
           search: {
@@ -150,7 +150,7 @@ describe("onboard-search provider resolution", () => {
       params?.config ? [customEntry] : [],
     );
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       plugins: {
         installs: {
           "custom-plugin": {
@@ -197,7 +197,7 @@ describe("onboard-search provider resolution", () => {
   it("does not treat hard-disabled bundled providers as selectable credentials", () => {
     mocks.resolvePluginWebSearchProviders.mockReturnValue([]);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       tools: {
         web: {
           search: {
@@ -246,7 +246,7 @@ describe("onboard-search provider resolution", () => {
       progress: vi.fn(() => ({ update: vi.fn(), stop: vi.fn() })),
     };
 
-    const result = await mod.setupSearch({} as OpenClawConfig, {} as never, prompter as never);
+    const result = await mod.setupSearch({} as EVEConfig, {} as never, prompter as never);
 
     expect(prompter.select).toHaveBeenCalledWith(
       expect.objectContaining({ initialValue: "__skip__" }),

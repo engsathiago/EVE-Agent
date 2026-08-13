@@ -1,6 +1,6 @@
 // Tests follow-up reply delivery and route preservation.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { getReplyPayloadMetadata, setReplyPayloadMetadata } from "../reply-payload.js";
 import { resolveFollowupDeliveryPayloads } from "./followup-delivery.js";
 
@@ -8,7 +8,7 @@ vi.mock("../../channels/plugins/index.js", () => ({
   getChannelPlugin: () => undefined,
 }));
 
-const baseConfig = {} as OpenClawConfig;
+const baseConfig = {} as EVEConfig;
 
 describe("resolveFollowupDeliveryPayloads", () => {
   it("drops heartbeat ack payloads without media", () => {
@@ -56,7 +56,7 @@ describe("resolveFollowupDeliveryPayloads", () => {
             replyToMode: "all",
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       payloads: [{ text: "queued reply" }],
       originatingChannel: "slack",
       originatingChatType: "channel",

@@ -1,12 +1,12 @@
-# OpenClaw Inworld Plugin
+# EVE Inworld Plugin
 
-Official OpenClaw plugin for Inworld.
+Official EVE plugin for Inworld.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/inworld-speech
-openclaw gateway restart
+eve plugins install @eve/inworld-speech
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/inworld> for setup and configuration.
+See <https://docs.eve.ai/providers/inworld> for setup and configuration.

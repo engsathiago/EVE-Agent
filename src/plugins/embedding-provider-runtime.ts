@@ -1,5 +1,5 @@
 /** Runtime resolver for plugin-contributed embedding providers. */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveConfiguredGenericEmbeddingProviderId } from "./embedding-provider-config.js";
 import {
   getRuntimeEmbeddingProviderAdapter,
@@ -20,7 +20,7 @@ export function listRegisteredEmbeddingProviderAdapters(): EmbeddingProviderAdap
 }
 
 /** Lists embedding providers from registered adapters and plugin capabilities. */
-export function listEmbeddingProviders(cfg?: OpenClawConfig): EmbeddingProviderAdapter[] {
+export function listEmbeddingProviders(cfg?: EVEConfig): EmbeddingProviderAdapter[] {
   return listRuntimeEmbeddingProviderAdapters({
     key: "embeddingProviders",
     cfg,
@@ -30,12 +30,12 @@ export function listEmbeddingProviders(cfg?: OpenClawConfig): EmbeddingProviderA
 
 export function resolveConfiguredEmbeddingProviderId(
   providerId: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): string | undefined {
   return resolveConfiguredGenericEmbeddingProviderId(providerId, cfg);
 }
 
-function resolveEmbeddingProviderLookupIds(id: string, cfg?: OpenClawConfig): string[] {
+function resolveEmbeddingProviderLookupIds(id: string, cfg?: EVEConfig): string[] {
   return resolveRuntimeEmbeddingProviderLookupIds({
     id,
     cfg,
@@ -46,7 +46,7 @@ function resolveEmbeddingProviderLookupIds(id: string, cfg?: OpenClawConfig): st
 /** Resolves one embedding provider adapter by id, including configured API aliases. */
 export function getEmbeddingProvider(
   id: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): EmbeddingProviderAdapter | undefined {
   return getRuntimeEmbeddingProviderAdapter({
     key: "embeddingProviders",

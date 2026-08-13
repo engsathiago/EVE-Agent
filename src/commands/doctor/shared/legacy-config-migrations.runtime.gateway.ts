@@ -1,5 +1,5 @@
 // Legacy gateway runtime config migrations for bind modes, WebChat, and Control UI origins.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import {
   buildDefaultControlUiAllowedOrigins,
   hasConfiguredControlUiAllowedOrigins,
@@ -17,14 +17,14 @@ import { DEFAULT_GATEWAY_PORT } from "../../../config/paths.js";
 const GATEWAY_BIND_RULE: LegacyConfigRule = {
   path: ["gateway", "bind"],
   message:
-    'gateway.bind host aliases (for example 0.0.0.0/localhost) are legacy; use bind modes (lan/loopback/custom/tailnet/auto) instead. Run "openclaw doctor --fix".',
+    'gateway.bind host aliases (for example 0.0.0.0/localhost) are legacy; use bind modes (lan/loopback/custom/tailnet/auto) instead. Run "eve doctor --fix".',
   match: (value) => isLegacyGatewayBindHostAlias(value),
   requireSourceLiteral: true,
 };
 
 const GATEWAY_WEBCHAT_RULE: LegacyConfigRule = {
   path: ["gateway", "webchat"],
-  message: 'gateway.webchat is retired. Run "openclaw doctor --fix".',
+  message: 'gateway.webchat is retired. Run "eve doctor --fix".',
 };
 
 function isLegacyGatewayBindHostAlias(value: unknown): boolean {

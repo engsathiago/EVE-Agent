@@ -1,4 +1,4 @@
-// Slack plugin entrypoint registers its OpenClaw integration.
+// Slack plugin entrypoint registers its EVE integration.
 export {
   listEnabledSlackAccounts,
   listSlackAccountIds,

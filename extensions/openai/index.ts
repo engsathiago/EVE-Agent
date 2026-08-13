@@ -1,7 +1,7 @@
-// Openai plugin entrypoint registers its OpenClaw integration.
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { buildProviderToolCompatFamilyHooks } from "openclaw/plugin-sdk/provider-tools";
+// Openai plugin entrypoint registers its EVE integration.
+import { resolvePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { buildProviderToolCompatFamilyHooks } from "eve-agent/plugin-sdk/provider-tools";
 import { buildOpenAIImageGenerationProvider } from "./image-generation-provider.js";
 import { openaiMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import { openAiMemoryEmbeddingProviderAdapter } from "./memory-embedding-adapter.js";

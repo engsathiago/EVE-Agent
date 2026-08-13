@@ -1,7 +1,7 @@
 // Feishu plugin module implements chat behavior.
 import type * as Lark from "@larksuiteoapi/node-sdk";
-import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { OpenClawPluginApi } from "../runtime-api.js";
+import { readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import type { EVEPluginApi } from "../runtime-api.js";
 import { listEnabledFeishuAccounts } from "./accounts.js";
 import { FeishuChatSchema, type FeishuChatParams } from "./chat-schema.js";
 import { createFeishuClient } from "./client.js";
@@ -130,7 +130,7 @@ export async function getFeishuMemberInfo(
   };
 }
 
-export function registerFeishuChatTools(api: OpenClawPluginApi) {
+export function registerFeishuChatTools(api: EVEPluginApi) {
   if (!api.config) {
     return;
   }

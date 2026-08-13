@@ -4,7 +4,7 @@
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import type { CodexAppServerModel } from "./src/app-server/models.js";
 
 /** Provider id used by Codex model refs. */
@@ -39,7 +39,7 @@ export const FALLBACK_CODEX_MODELS = [
 ] satisfies CodexAppServerModel[];
 
 /**
- * Converts a Codex app-server model record into OpenClaw provider model config.
+ * Converts a Codex app-server model record into EVE provider model config.
  */
 export function buildCodexModelDefinition(model: {
   id: string;

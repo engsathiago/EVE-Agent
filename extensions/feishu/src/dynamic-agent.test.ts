@@ -3,13 +3,13 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig, PluginRuntime } from "../runtime-api.js";
+import type { EVEConfig, PluginRuntime } from "../runtime-api.js";
 import { maybeCreateDynamicAgent } from "./dynamic-agent.js";
 
 let tempRoot: string;
 
 beforeEach(async () => {
-  tempRoot = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-feishu-agent-"));
+  tempRoot = await fs.promises.mkdtemp(path.join(os.tmpdir(), "eve-feishu-agent-"));
 });
 
 afterEach(async () => {
@@ -17,15 +17,15 @@ afterEach(async () => {
 });
 
 function createRuntime(
-  currentCfg?: OpenClawConfig,
-  persistedCfg?: OpenClawConfig,
-  mutationCfg?: OpenClawConfig,
+  currentCfg?: EVEConfig,
+  persistedCfg?: EVEConfig,
+  mutationCfg?: EVEConfig,
 ) {
-  let runtimeCfg = structuredClone(currentCfg ?? ({} as OpenClawConfig));
+  let runtimeCfg = structuredClone(currentCfg ?? ({} as EVEConfig));
   const commitConfig = vi.fn();
   const mutateConfigFile = vi.fn(
     async (params: {
-      mutate: (draft: OpenClawConfig, context: { snapshot: never; previousHash: null }) => unknown;
+      mutate: (draft: EVEConfig, context: { snapshot: never; previousHash: null }) => unknown;
     }) => {
       const draft = structuredClone(mutationCfg ?? runtimeCfg);
       const result = await params.mutate(draft, { snapshot: {} as never, previousHash: null });
@@ -77,7 +77,7 @@ describe("maybeCreateDynamicAgent", () => {
       },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(cfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -100,7 +100,7 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(cfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -146,7 +146,7 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(cfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -169,10 +169,10 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, commitConfig, mutateConfigFile } = createRuntime(cfg);
     const canCreateForConfig = vi
-      .fn<(cfg: OpenClawConfig) => Promise<boolean>>()
+      .fn<(cfg: EVEConfig) => Promise<boolean>>()
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false);
 
@@ -200,7 +200,7 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const mutationCfg = {
       ...cfg,
       bindings: [
@@ -209,7 +209,7 @@ describe("maybeCreateDynamicAgent", () => {
           match: { channel: "feishu", accountId: "default" },
         },
       ],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, commitConfig, mutateConfigFile } = createRuntime(cfg, undefined, mutationCfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -232,7 +232,7 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime } = createRuntime(cfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -264,7 +264,7 @@ describe("maybeCreateDynamicAgent", () => {
       channels: { feishu: { dynamicAgentCreation: createDynamicConfig() } },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime } = createRuntime(cfg);
 
     const first = await maybeCreateDynamicAgent({
@@ -313,7 +313,7 @@ describe("maybeCreateDynamicAgent", () => {
         ],
       },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(cfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -328,7 +328,7 @@ describe("maybeCreateDynamicAgent", () => {
         },
         agents: cfg.agents,
         bindings: [],
-      } as OpenClawConfig,
+      } as EVEConfig,
       runtime,
       accountId: "default",
       senderOpenId: "ou_sender",
@@ -361,11 +361,11 @@ describe("maybeCreateDynamicAgent", () => {
           },
         },
       ],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(currentCfg);
 
     const result = await maybeCreateDynamicAgent({
-      cfg: { agents: { list: [] }, bindings: [] } as OpenClawConfig,
+      cfg: { agents: { list: [] }, bindings: [] } as EVEConfig,
       runtime,
       accountId: "default",
       senderOpenId: "ou_sender",
@@ -409,7 +409,7 @@ describe("maybeCreateDynamicAgent", () => {
       },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const persistedCfg = {
       channels: {
         feishu: {
@@ -419,7 +419,7 @@ describe("maybeCreateDynamicAgent", () => {
       },
       agents: { list: [] },
       bindings: [],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime } = createRuntime(currentCfg, persistedCfg);
 
     const result = await maybeCreateDynamicAgent({
@@ -456,14 +456,14 @@ describe("maybeCreateDynamicAgent", () => {
           },
         },
       ],
-    } as OpenClawConfig;
+    } as EVEConfig;
     const { runtime, mutateConfigFile } = createRuntime(currentCfg);
 
     const result = await maybeCreateDynamicAgent({
       cfg: {
         agents: { list: [] },
         bindings: [],
-      } as OpenClawConfig,
+      } as EVEConfig,
       runtime,
       accountId: "default",
       senderOpenId: "ou_sender",

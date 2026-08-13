@@ -8,8 +8,8 @@ struct ExecApprovalNotificationPrompt: Equatable {
 enum ExecApprovalNotificationBridge {
     static let requestedKind = "exec.approval.requested"
     static let resolvedKind = "exec.approval.resolved"
-    static let categoryIdentifier = "openclaw.exec-approval"
-    static let reviewActionIdentifier = "openclaw.exec-approval.review"
+    static let categoryIdentifier = "eve.exec-approval"
+    static let reviewActionIdentifier = "eve.exec-approval.review"
 
     private static let localRequestPrefix = "exec.approval."
 
@@ -85,7 +85,7 @@ enum ExecApprovalNotificationBridge {
     }
 
     static func approvalID(from userInfo: [AnyHashable: Any]) -> String? {
-        let raw = self.openClawPayload(userInfo: userInfo)?["approvalId"] as? String
+        let raw = self.evePayload(userInfo: userInfo)?["approvalId"] as? String
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? nil : trimmed
     }
@@ -95,16 +95,16 @@ enum ExecApprovalNotificationBridge {
     }
 
     static func payloadKind(userInfo: [AnyHashable: Any]) -> String {
-        let raw = self.openClawPayload(userInfo: userInfo)?["kind"] as? String
+        let raw = self.evePayload(userInfo: userInfo)?["kind"] as? String
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? "unknown" : trimmed
     }
 
-    private static func openClawPayload(userInfo: [AnyHashable: Any]) -> [String: Any]? {
-        if let payload = userInfo["openclaw"] as? [String: Any] {
+    private static func evePayload(userInfo: [AnyHashable: Any]) -> [String: Any]? {
+        if let payload = userInfo["eve"] as? [String: Any] {
             return payload
         }
-        if let payload = userInfo["openclaw"] as? [AnyHashable: Any] {
+        if let payload = userInfo["eve"] as? [AnyHashable: Any] {
             return payload.reduce(into: [String: Any]()) { partialResult, pair in
                 guard let key = pair.key as? String else { return }
                 partialResult[key] = pair.value

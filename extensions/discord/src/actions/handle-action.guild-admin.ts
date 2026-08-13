@@ -1,13 +1,13 @@
 // Discord plugin module implements handle action.guild admin behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
 import {
   readNonNegativeIntegerParam,
   readPositiveIntegerParam,
   readStringArrayParam,
   readStringParam,
-} from "openclaw/plugin-sdk/agent-runtime";
-import type { ChannelMessageActionContext } from "openclaw/plugin-sdk/channel-contract";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/agent-runtime";
+import type { ChannelMessageActionContext } from "eve-agent/plugin-sdk/channel-contract";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { handleDiscordAction } from "../../action-runtime-api.js";
 import { isTrustedRequesterGuildAdminAction } from "../trusted-requester-actions.js";
 import {

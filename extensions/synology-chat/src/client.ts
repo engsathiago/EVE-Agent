@@ -5,14 +5,14 @@
 
 import * as http from "node:http";
 import * as https from "node:https";
-import { safeParseJsonWithSchema, safeParseWithSchema } from "openclaw/plugin-sdk/extension-shared";
-import { parseStrictNonNegativeInteger } from "openclaw/plugin-sdk/number-runtime";
-import { sleep } from "openclaw/plugin-sdk/runtime-env";
+import { safeParseJsonWithSchema, safeParseWithSchema } from "eve-agent/plugin-sdk/extension-shared";
+import { parseStrictNonNegativeInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { sleep } from "eve-agent/plugin-sdk/runtime-env";
 import {
   formatErrorMessage,
   resolvePinnedHostnameWithPolicy,
-} from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { z } from "zod";
 
 const MIN_SEND_INTERVAL_MS = 500;

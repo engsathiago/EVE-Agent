@@ -1,10 +1,10 @@
-/** Model registry access helpers for `openclaw models list`. */
+/** Model registry access helpers for `eve models list`. */
 import { loadAgentModelRegistry } from "../../agents/model-registry-loader.js";
 import {
   shouldSuppressBuiltInModel,
   shouldSuppressBuiltInModelFromManifest,
 } from "../../agents/model-suppression.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ModelRegistry } from "../../llm/model-registry.js";
 import type { Model } from "../../llm/types.js";
 import {
@@ -54,7 +54,7 @@ function validateAvailableModels(availableModels: unknown): Model[] {
 
 function loadAvailableModels(
   registry: ModelRegistry,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   opts?: { runtimeSuppression?: boolean },
 ): Model[] {
   let availableModels: unknown;
@@ -86,7 +86,7 @@ function loadAvailableModels(
 
 /** Loads registry models and optional availability keys with suppression applied. */
 export async function loadModelRegistry(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   opts?: {
     providerFilter?: string;
     normalizeModels?: boolean;

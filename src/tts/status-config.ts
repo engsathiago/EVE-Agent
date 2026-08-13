@@ -1,11 +1,11 @@
 // TTS status config helpers resolve status output paths for speech generation.
 import path from "node:path";
-import { isRecord as isObjectRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord as isObjectRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.js";
 import type { TtsAutoMode, TtsConfig, TtsProvider } from "../config/types.tts.js";
 import { tryReadJsonSync } from "../infra/json-files.js";
 import { resolveConfigDir, resolveUserPath } from "../utils.js";
@@ -81,7 +81,7 @@ function resolveTtsPrefsPathValue(prefsPath: string | undefined): string {
   if (configuredPath) {
     return resolveUserPath(configuredPath);
   }
-  const envPath = normalizeOptionalString(process.env.OPENCLAW_TTS_PREFS);
+  const envPath = normalizeOptionalString(process.env.EVE_TTS_PREFS);
   if (envPath) {
     return resolveUserPath(envPath);
   }
@@ -216,7 +216,7 @@ function resolveStatusProviderDetails(raw: TtsConfig, provider: TtsProvider) {
 }
 
 export function resolveStatusTtsSnapshot(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionAuto?: string;
   agentId?: string;
   channelId?: string;

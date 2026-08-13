@@ -1,9 +1,9 @@
 // Doctor migration from legacy DM allowFrom fallback to explicit groupAllowFrom lists.
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import { resolveChannelDmAllowFrom } from "../../../channels/plugins/dm-access.js";
 import { normalizeAnyChannelId } from "../../../channels/registry.js";
 import { GENERATED_BUNDLED_CHANNEL_CONFIG_METADATA } from "../../../config/bundled-channel-config-metadata.generated.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { getDoctorChannelCapabilities } from "../channel-capabilities.js";
 import { asObjectRecord } from "./object.js";
 
@@ -143,8 +143,8 @@ function migrateRecord(params: {
 }
 
 /** Copy legacy allowFrom entries into groupAllowFrom where channel metadata permits fallback. */
-export function maybeRepairGroupAllowFromFallback(cfg: OpenClawConfig): {
-  config: OpenClawConfig;
+export function maybeRepairGroupAllowFromFallback(cfg: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } {
   const channels = asObjectRecord(cfg.channels);

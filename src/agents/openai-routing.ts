@@ -3,8 +3,8 @@
  *
  * Custom OpenAI-compatible base URLs intentionally bypass Codex-runtime defaults.
  */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import type { EVEConfig } from "../config/types.eve.js";
 
 /** Canonical provider id for OpenAI-hosted model routes. */
 export const OPENAI_PROVIDER_ID = "openai";
@@ -31,7 +31,7 @@ function isOfficialOpenAIBaseUrl(baseUrl: unknown): boolean {
   }
 }
 
-function resolveOpenAIProviderConfig(config: OpenClawConfig | undefined) {
+function resolveOpenAIProviderConfig(config: EVEConfig | undefined) {
   const providers = config?.models?.providers;
   if (!providers) {
     return undefined;
@@ -48,7 +48,7 @@ function resolveOpenAIProviderConfig(config: OpenClawConfig | undefined) {
   return undefined;
 }
 
-function openAIProviderUsesCustomBaseUrl(config: OpenClawConfig | undefined): boolean {
+function openAIProviderUsesCustomBaseUrl(config: EVEConfig | undefined): boolean {
   return !isOfficialOpenAIBaseUrl(resolveOpenAIProviderConfig(config)?.baseUrl);
 }
 
@@ -61,7 +61,7 @@ export function isOpenAIProvider(provider: string | undefined): boolean {
 /** Returns whether OpenAI should use the Codex runtime default for this config. */
 export function openAIProviderUsesCodexRuntimeByDefault(params: {
   provider?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): boolean {
   return isOpenAIProvider(params.provider) && !openAIProviderUsesCustomBaseUrl(params.config);
 }
@@ -81,7 +81,7 @@ export function parseModelRefProvider(value: unknown): string | undefined {
 /** Returns true when selected model config should ensure the Codex plugin exists. */
 export function modelSelectionShouldEnsureCodexPlugin(params: {
   model?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): boolean {
   const provider = parseModelRefProvider(params.model);
   return provider === OPENAI_PROVIDER_ID && !openAIProviderUsesCustomBaseUrl(params.config);
@@ -92,7 +92,7 @@ export function listOpenAIAuthProfileProvidersForAgentRuntime(params: {
   provider: string;
   harnessRuntime?: string;
   agentHarnessId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): string[] {
   if (!isOpenAIProvider(params.provider)) {
     return [params.provider];
@@ -107,7 +107,7 @@ export function resolveOpenAIRuntimeProvider(params: {
   agentHarnessId?: string;
   authProfileProvider?: string;
   authProfileId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): string {
   return isOpenAIProvider(params.provider) ? OPENAI_PROVIDER_ID : params.provider;
@@ -120,7 +120,7 @@ export function resolveSelectedOpenAIRuntimeProvider(params: {
   agentHarnessId?: string;
   authProfileProvider?: string;
   authProfileId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): string {
   return isOpenAIProvider(params.provider) ? OPENAI_PROVIDER_ID : params.provider;
@@ -130,7 +130,7 @@ export function resolveSelectedOpenAIRuntimeProvider(params: {
 export function resolveContextConfigProviderForRuntime(params: {
   provider: string;
   runtimeId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): string {
   return isOpenAIProvider(params.provider) ? OPENAI_PROVIDER_ID : params.provider;
 }

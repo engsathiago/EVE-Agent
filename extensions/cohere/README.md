@@ -1,13 +1,13 @@
-# OpenClaw Cohere Provider
+# EVE Cohere Provider
 
-Official OpenClaw provider plugin for Cohere's OpenAI-compatible Compatibility
+Official EVE provider plugin for Cohere's OpenAI-compatible Compatibility
 API.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/cohere-provider
-openclaw gateway restart
+eve plugins install @eve/cohere-provider
+eve gateway restart
 ```
 
 Configure a Cohere API key, then select `cohere/command-a-03-2025`.

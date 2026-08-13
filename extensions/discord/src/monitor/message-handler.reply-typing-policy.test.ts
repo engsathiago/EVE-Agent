@@ -1,5 +1,5 @@
 // Discord tests cover message handler.reply typing policy plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it, vi } from "vitest";
 import type { DiscordMessagePreflightContext } from "./message-handler.preflight.js";
 import { resolveDiscordAcceptedTypingPrestart } from "./message-handler.reply-typing-policy.js";
@@ -8,7 +8,7 @@ import { createDiscordPreflightContext } from "./message-handler.test-helpers.js
 function createPolicyContext(
   overrides: Partial<DiscordMessagePreflightContext> = {},
 ): DiscordMessagePreflightContext {
-  const cfg: OpenClawConfig = {
+  const cfg: EVEConfig = {
     channels: {
       discord: {
         enabled: true,

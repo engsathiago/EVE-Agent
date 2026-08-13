@@ -2,7 +2,7 @@
 import {
   normalizeTrimmedStringList,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { QA_BASE_RUNTIME_PLUGIN_IDS } from "../qa-gateway-config.js";
 import type { QaProviderMode } from "./index.js";
 import { getQaProvider } from "./index.js";

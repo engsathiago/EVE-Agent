@@ -1,7 +1,7 @@
 ---
-summary: "Use StepFun models with OpenClaw"
+summary: "Use StepFun models with EVE"
 read_when:
-  - You want StepFun models in OpenClaw
+  - You want StepFun models in EVE
   - You need StepFun setup guidance
 title: "StepFun"
 ---
@@ -20,8 +20,8 @@ Standard and Step Plan are **separate providers** with different endpoints and m
 Install the official plugin, then restart Gateway:
 
 ```bash
-openclaw plugins install @openclaw/stepfun-provider
-openclaw gateway restart
+eve plugins install @eve/stepfun-provider
+eve gateway restart
 ```
 
 ## Region and endpoint overview
@@ -65,24 +65,24 @@ Choose your provider surface and follow the setup steps.
       </Step>
       <Step title="Run onboarding">
         ```bash
-        openclaw onboard --auth-choice stepfun-standard-api-key-intl
+        eve onboard --auth-choice stepfun-standard-api-key-intl
         ```
 
         Or for the China endpoint:
 
         ```bash
-        openclaw onboard --auth-choice stepfun-standard-api-key-cn
+        eve onboard --auth-choice stepfun-standard-api-key-cn
         ```
       </Step>
       <Step title="Non-interactive alternative">
         ```bash
-        openclaw onboard --auth-choice stepfun-standard-api-key-intl \
+        eve onboard --auth-choice stepfun-standard-api-key-intl \
           --stepfun-api-key "$STEPFUN_API_KEY"
         ```
       </Step>
       <Step title="Verify models are available">
         ```bash
-        openclaw models list --provider stepfun
+        eve models list --provider stepfun
         ```
       </Step>
     </Steps>
@@ -105,24 +105,24 @@ Choose your provider surface and follow the setup steps.
       </Step>
       <Step title="Run onboarding">
         ```bash
-        openclaw onboard --auth-choice stepfun-plan-api-key-intl
+        eve onboard --auth-choice stepfun-plan-api-key-intl
         ```
 
         Or for the China endpoint:
 
         ```bash
-        openclaw onboard --auth-choice stepfun-plan-api-key-cn
+        eve onboard --auth-choice stepfun-plan-api-key-cn
         ```
       </Step>
       <Step title="Non-interactive alternative">
         ```bash
-        openclaw onboard --auth-choice stepfun-plan-api-key-intl \
+        eve onboard --auth-choice stepfun-plan-api-key-intl \
           --stepfun-api-key "$STEPFUN_API_KEY"
         ```
       </Step>
       <Step title="Verify models are available">
         ```bash
-        openclaw models list --provider stepfun-plan
+        eve models list --provider stepfun-plan
         ```
       </Step>
     </Steps>
@@ -211,7 +211,7 @@ Choose your provider surface and follow the setup steps.
     - The provider is an official external package; install it before setup.
     - `step-3.5-flash-2603` is currently exposed only on `stepfun-plan`.
     - A single auth flow writes region-matched profiles for both `stepfun` and `stepfun-plan`, so both surfaces can be discovered together.
-    - Use `openclaw models list` and `openclaw models set <provider/model>` to inspect or switch models.
+    - Use `eve models list` and `eve models set <provider/model>` to inspect or switch models.
 
   </Accordion>
 </AccordionGroup>

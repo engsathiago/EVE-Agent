@@ -80,7 +80,7 @@ jobs:
           RELEASE_MAIN_REF="refs/remotes/origin/${PUBLIC_RELEASE_BRANCH}"
           export RELEASE_SHA RELEASE_TAG RELEASE_MAIN_REF
           git fetch --no-tags origin "+refs/heads/${PUBLIC_RELEASE_BRANCH}:refs/remotes/origin/${PUBLIC_RELEASE_BRANCH}"
-          pnpm release:openclaw:npm:check
+          pnpm release:eve:npm:check
 
       - name: Summarize next step
         env:
@@ -93,8 +93,8 @@ jobs:
             echo "It does not sign, notarize, or upload macOS assets."
             echo
             echo "Next step:"
-            echo "- Run \`openclaw/releases/.github/workflows/openclaw-macos-validate.yml\` with tag \`${RELEASE_TAG}\` and wait for the macOS validation lane to pass."
-            echo "- Run \`openclaw/releases/.github/workflows/openclaw-macos-publish.yml\` with tag \`${RELEASE_TAG}\` and \`preflight_only=true\` for the full macOS preflight."
+            echo "- Run \`eve/releases/.github/workflows/eve-macos-validate.yml\` with tag \`${RELEASE_TAG}\` and wait for the macOS validation lane to pass."
+            echo "- Run \`eve/releases/.github/workflows/eve-macos-publish.yml\` with tag \`${RELEASE_TAG}\` and \`preflight_only=true\` for the full macOS preflight."
             echo "- For the real publish path, run the same macOS publish workflow from \`main\` with the successful preflight \`preflight_run_id\` so it promotes the prepared artifacts instead of rebuilding them."
             echo "- For stable releases, the publish workflow also publishes the signed \`appcast.xml\` to public \`main\`, or opens an appcast PR if direct push is blocked."
           } >> "$GITHUB_STEP_SUMMARY"

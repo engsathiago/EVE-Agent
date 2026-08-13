@@ -1,5 +1,5 @@
 /**
- * Strips OpenClaw-injected inbound metadata blocks from a user-role message
+ * Strips EVE-injected inbound metadata blocks from a user-role message
  * text before it is displayed in any UI surface (TUI, webchat, macOS app) or
  * replayed as historical context to the model.
  *
@@ -214,7 +214,7 @@ export function stripInboundMetadata(text: string): string {
   for (let i = 0; i < strippedLeadingPrefixLines.length; i++) {
     const line = strippedLeadingPrefixLines[i];
 
-    // Channel untrusted context is appended by OpenClaw as a terminal metadata suffix.
+    // Channel untrusted context is appended by EVE as a terminal metadata suffix.
     // When this structured header appears, drop it and everything that follows.
     if (!inMetaBlock && shouldStripTrailingUntrustedContext(strippedLeadingPrefixLines, i)) {
       break;

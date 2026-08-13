@@ -3,15 +3,15 @@ import { createHash } from "node:crypto";
 import {
   loadAuthProfileStoreWithoutExternalProfiles,
   resolveAuthStorePathForDisplay,
-} from "openclaw/plugin-sdk/agent-runtime";
+} from "eve-agent/plugin-sdk/agent-runtime";
 import {
   createMigrationItem,
   createMigrationManualItem,
   markMigrationItemConflict,
   markMigrationItemError,
   markMigrationItemSkipped,
-} from "openclaw/plugin-sdk/migration";
-import type { MigrationItem, MigrationProviderContext } from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/migration";
+import type { MigrationItem, MigrationProviderContext } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   buildOpenAICodexCredentialExtra,
   buildOauthProviderAuthResult,
@@ -21,9 +21,9 @@ import {
   updateAuthProfileStoreWithLock,
   type AuthProfileStore,
   type OAuthCredential,
-  type OpenClawConfig,
+  type EVEConfig,
   type ProviderAuthResult,
-} from "openclaw/plugin-sdk/provider-auth";
+} from "eve-agent/plugin-sdk/provider-auth";
 import {
   applyAuthProfileConfigWithConflictCheck,
   hasAuthProfileConfigConflict,
@@ -47,7 +47,7 @@ const OPENAI_DEFAULT_MODEL = "openai/gpt-5.5";
 const HERMES_AUTH_DISPLAY_NAME = "Hermes import";
 
 type AgentDefaultModelConfigs = NonNullable<
-  NonNullable<NonNullable<OpenClawConfig["agents"]>["defaults"]>["models"]
+  NonNullable<NonNullable<EVEConfig["agents"]>["defaults"]>["models"]
 >;
 type AgentDefaultModelConfigEntry = AgentDefaultModelConfigs[string];
 
@@ -203,9 +203,9 @@ function mergeModelConfigEntry(
 }
 
 function applyOAuthModelConfigsToConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   result: ProviderAuthResult,
-): OpenClawConfig {
+): EVEConfig {
   const patchModels = readProviderAuthModelConfigs(result);
   const existingModels = cfg.agents?.defaults?.models ?? {};
   const models: AgentDefaultModelConfigs = result.replaceDefaultModels
@@ -363,9 +363,9 @@ export async function buildAuthItems(params: {
         id: "manual:legacy-hermes-auth-json",
         source: params.source.authPath ?? "auth.json",
         message:
-          "Hermes auth.json contains legacy OAuth credentials. OpenClaw no longer imports those into live auth during Hermes migration.",
+          "Hermes auth.json contains legacy OAuth credentials. EVE no longer imports those into live auth during Hermes migration.",
         recommendation:
-          "Run openclaw models auth login --provider openai after migration, or run openclaw doctor --fix for existing OpenClaw legacy auth state.",
+          "Run eve models auth login --provider openai after migration, or run eve doctor --fix for existing EVE legacy auth state.",
       }),
     );
   }

@@ -116,7 +116,7 @@ const CONFIG_SET_RE =
 const CONFIG_SET_REF_RE =
   /^(?:config\s+set-ref|set\s+secretref|set\s+secret\s+ref)\s+(?<path>[A-Za-z0-9_.[\]-]+)\s+(?:(?<source>env|file|exec)\s+)?(?<id>\S+)(?:\s+provider\s+(?<provider>[A-Za-z0-9_-]+))?$/i;
 const SETUP_RE =
-  /^(?:setup(?!\s+agent\b)|set\s+me\s+up|set\s+up\s+openclaw|onboard|onboard\s+me|bootstrap|first\s+run)(?:\b|$)/i;
+  /^(?:setup(?!\s+agent\b)|set\s+me\s+up|set\s+up\s+eve|onboard|onboard\s+me|bootstrap|first\s+run)(?:\b|$)/i;
 const PLUGIN_LIST_RE = /^(?:plugins?|clawhub)\s+list$|^list\s+plugins?$/i;
 const PLUGIN_SEARCH_RE =
   /^(?:(?:plugins?|clawhub)\s+search|search\s+plugins?(?:\s+for)?)\s+(?<query>.+)$/i;
@@ -382,7 +382,7 @@ function formatSetupPlanDescription(
 ): string {
   const workspace = shortenHomePath(resolveUserPath(operation.workspace ?? process.cwd()));
   const model = operation.model ? ` and default model ${operation.model}` : "";
-  return `bootstrap OpenClaw setup for workspace ${workspace}${model}`;
+  return `bootstrap EVE setup for workspace ${workspace}${model}`;
 }
 
 function chooseSetupModel(

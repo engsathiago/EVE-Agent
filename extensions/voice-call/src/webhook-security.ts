@@ -1,16 +1,16 @@
 // Voice Call plugin module implements webhook security behavior.
 import crypto from "node:crypto";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { isLoopbackHost } from "openclaw/plugin-sdk/gateway-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { isLoopbackHost } from "eve-agent/plugin-sdk/gateway-runtime";
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { safeEqualSecret } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { safeEqualSecret } from "eve-agent/plugin-sdk/security-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeStringEntries,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { getHeader } from "./http-headers.js";
 import type { WebhookContext } from "./types.js";
 

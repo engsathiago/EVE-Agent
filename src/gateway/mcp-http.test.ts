@@ -686,16 +686,16 @@ describe("mcp loopback server", () => {
       token: runtime?.nonOwnerToken,
       headers: jsonHeaders({
         "x-session-key": "agent:main:telegram:group:chat123",
-        "x-openclaw-session-id": "session-123",
-        "x-openclaw-account-id": "work",
-        "x-openclaw-message-channel": "telegram",
-        "x-openclaw-current-channel-id": "telegram:chat123",
-        "x-openclaw-current-thread-ts": "42",
-        "x-openclaw-current-message-id": "reply-message-1",
-        "x-openclaw-current-inbound-audio": "true",
-        "x-openclaw-inbound-event-kind": "room_event",
-        "x-openclaw-source-reply-delivery-mode": "message_tool_only",
-        "x-openclaw-require-explicit-message-target": "true",
+        "x-eve-session-id": "session-123",
+        "x-eve-account-id": "work",
+        "x-eve-message-channel": "telegram",
+        "x-eve-current-channel-id": "telegram:chat123",
+        "x-eve-current-thread-ts": "42",
+        "x-eve-current-message-id": "reply-message-1",
+        "x-eve-current-inbound-audio": "true",
+        "x-eve-inbound-event-kind": "room_event",
+        "x-eve-source-reply-delivery-mode": "message_tool_only",
+        "x-eve-require-explicit-message-target": "true",
       }),
       body: mcpToolsListBody(),
     });
@@ -768,8 +768,8 @@ describe("mcp loopback server", () => {
         args: { message },
         headers: {
           "x-session-key": "agent:main:main",
-          "x-openclaw-session-id": "session-reused",
-          "x-openclaw-cli-capture-key": captureKey,
+          "x-eve-session-id": "session-reused",
+          "x-eve-cli-capture-key": captureKey,
         },
       });
     };
@@ -795,14 +795,14 @@ describe("mcp loopback server", () => {
         token: runtime?.ownerToken,
         headers: {
           "x-session-key": "agent:main:telegram:group:chat123",
-          "x-openclaw-message-channel": "telegram",
-          "x-openclaw-inbound-event-kind": inboundEventKind,
+          "x-eve-message-channel": "telegram",
+          "x-eve-inbound-event-kind": inboundEventKind,
           ...(sourceReplyDeliveryMode
-            ? { "x-openclaw-source-reply-delivery-mode": sourceReplyDeliveryMode }
+            ? { "x-eve-source-reply-delivery-mode": sourceReplyDeliveryMode }
             : {}),
-          ...(currentInboundAudio ? { "x-openclaw-current-inbound-audio": "true" } : {}),
+          ...(currentInboundAudio ? { "x-eve-current-inbound-audio": "true" } : {}),
           ...(requireExplicitMessageTarget
-            ? { "x-openclaw-require-explicit-message-target": "true" }
+            ? { "x-eve-require-explicit-message-target": "true" }
             : {}),
         },
       });
@@ -936,7 +936,7 @@ describe("mcp loopback server", () => {
         token,
         headers: {
           "x-session-key": "agent:main:matrix:dm:test",
-          "x-openclaw-message-channel": "matrix",
+          "x-eve-message-channel": "matrix",
         },
       });
 
@@ -955,8 +955,8 @@ describe("mcp loopback server", () => {
       token: runtime?.nonOwnerToken,
       headers: {
         "x-session-key": "agent:main:matrix:dm:test",
-        "x-openclaw-message-channel": "matrix",
-        "x-openclaw-sender-is-owner": "true",
+        "x-eve-message-channel": "matrix",
+        "x-eve-sender-is-owner": "true",
       },
     });
 
@@ -1035,7 +1035,7 @@ describe("mcp loopback server", () => {
           token: runtime.ownerToken,
           name: "message",
           args: { action: "send", target: "chat123", message: "sent" },
-          headers: { "x-openclaw-cli-capture-key": captureKey },
+          headers: { "x-eve-cli-capture-key": captureKey },
         })
       ).status,
     ).toBe(200);
@@ -1050,7 +1050,7 @@ describe("mcp loopback server", () => {
           token: runtime.ownerToken,
           name: "message",
           args: { action: "send", target: "blocked", message: "not sent" },
-          headers: { "x-openclaw-cli-capture-key": captureKey },
+          headers: { "x-eve-cli-capture-key": captureKey },
         })
       ).status,
     ).toBe(200);
@@ -1099,7 +1099,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "react", target: "original-target" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-eve-cli-capture-key": captureKey },
     });
 
     expect(updatedCalls).toHaveBeenCalledWith({
@@ -1227,7 +1227,7 @@ describe("mcp loopback server", () => {
               authorization: `Bearer ${runtime.ownerToken}`,
               "content-type": "application/json",
               "transfer-encoding": "chunked",
-              "x-openclaw-cli-capture-key": captureKey,
+              "x-eve-cli-capture-key": captureKey,
             },
           },
           (res) => {
@@ -1304,7 +1304,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "send", target: "chat123", message: "sent" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-eve-cli-capture-key": captureKey },
     });
 
     expect(response.status).toBe(200);
@@ -1332,7 +1332,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "send", target: "chat123", message: "sent partly" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-eve-cli-capture-key": captureKey },
     });
 
     const payload = await readMcpPayload(response);
@@ -1610,8 +1610,8 @@ describe("mcp loopback server", () => {
   });
 
   it("times out stalled request bodies and closes uploads after flushing 408", async () => {
-    const previousTimeout = process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS;
-    process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS = "20";
+    const previousTimeout = process.env.EVE_MCP_LOOPBACK_BODY_TIMEOUT_MS;
+    process.env.EVE_MCP_LOOPBACK_BODY_TIMEOUT_MS = "20";
     try {
       server = await startMcpLoopbackServer(0);
       const runtime = getActiveMcpLoopbackRuntime();
@@ -1631,9 +1631,9 @@ describe("mcp loopback server", () => {
       });
     } finally {
       if (previousTimeout === undefined) {
-        delete process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS;
+        delete process.env.EVE_MCP_LOOPBACK_BODY_TIMEOUT_MS;
       } else {
-        process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS = previousTimeout;
+        process.env.EVE_MCP_LOOPBACK_BODY_TIMEOUT_MS = previousTimeout;
       }
     }
   });
@@ -1690,38 +1690,38 @@ describe("createMcpLoopbackServerConfig", () => {
     const config = createMcpLoopbackServerConfig(23119) as {
       mcpServers?: Record<string, { url?: string; headers?: Record<string, string> }>;
     };
-    expect(config.mcpServers?.openclaw?.url).toBe("http://127.0.0.1:23119/mcp");
-    expect(config.mcpServers?.openclaw?.headers?.Authorization).toBe(
-      "Bearer ${OPENCLAW_MCP_TOKEN}",
+    expect(config.mcpServers?.eve?.url).toBe("http://127.0.0.1:23119/mcp");
+    expect(config.mcpServers?.eve?.headers?.Authorization).toBe(
+      "Bearer ${EVE_MCP_TOKEN}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-session-id"]).toBe(
-      "${OPENCLAW_MCP_SESSION_ID}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-session-id"]).toBe(
+      "${EVE_MCP_SESSION_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-message-channel"]).toBe(
-      "${OPENCLAW_MCP_MESSAGE_CHANNEL}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-message-channel"]).toBe(
+      "${EVE_MCP_MESSAGE_CHANNEL}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-channel-id"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_CHANNEL_ID}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-current-channel-id"]).toBe(
+      "${EVE_MCP_CURRENT_CHANNEL_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-thread-ts"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_THREAD_TS}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-current-thread-ts"]).toBe(
+      "${EVE_MCP_CURRENT_THREAD_TS}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-message-id"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_MESSAGE_ID}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-current-message-id"]).toBe(
+      "${EVE_MCP_CURRENT_MESSAGE_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-inbound-audio"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_INBOUND_AUDIO}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-current-inbound-audio"]).toBe(
+      "${EVE_MCP_CURRENT_INBOUND_AUDIO}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-source-reply-delivery-mode"]).toBe(
-      "${OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE}",
+    expect(config.mcpServers?.eve?.headers?.["x-eve-source-reply-delivery-mode"]).toBe(
+      "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
     );
     expect(
-      config.mcpServers?.openclaw?.headers?.["x-openclaw-require-explicit-message-target"],
-    ).toBe("${OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}");
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-cli-capture-key"]).toBe(
-      "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+      config.mcpServers?.eve?.headers?.["x-eve-require-explicit-message-target"],
+    ).toBe("${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}");
+    expect(config.mcpServers?.eve?.headers?.["x-eve-cli-capture-key"]).toBe(
+      "${EVE_MCP_CLI_CAPTURE_KEY}",
     );
-    expect(config.mcpServers?.openclaw?.headers).not.toHaveProperty("x-openclaw-sender-is-owner");
+    expect(config.mcpServers?.eve?.headers).not.toHaveProperty("x-eve-sender-is-owner");
   });
 
   it("opens an auth-gated SSE stream on GET (Streamable HTTP notification channel)", async () => {

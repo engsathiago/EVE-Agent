@@ -1,9 +1,9 @@
 // Line plugin module implements group policy behavior.
-import { resolveChannelGroupRequireMention } from "openclaw/plugin-sdk/channel-policy";
-import { resolveExactLineGroupConfigKey, type OpenClawConfig } from "./channel-api.js";
+import { resolveChannelGroupRequireMention } from "eve-agent/plugin-sdk/channel-policy";
+import { resolveExactLineGroupConfigKey, type EVEConfig } from "./channel-api.js";
 
 type LineGroupContext = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   groupId?: string | null;
 };

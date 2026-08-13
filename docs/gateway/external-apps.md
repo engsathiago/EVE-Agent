@@ -3,25 +3,25 @@ summary: "Current integration path for external apps, scripts, dashboards, CI jo
 title: "Gateway integrations for external apps"
 sidebarTitle: "External apps"
 read_when:
-  - You are building an external app, script, dashboard, CI job, or IDE extension that talks to OpenClaw
+  - You are building an external app, script, dashboard, CI job, or IDE extension that talks to EVE
   - You are choosing between Gateway RPC and the Plugin SDK
   - You are integrating with Gateway agent runs, sessions, events, approvals, models, or tools
 ---
 
-External apps should talk to OpenClaw through the Gateway protocol today. Use
+External apps should talk to EVE through the Gateway protocol today. Use
 Gateway WebSocket and RPC methods when a script, dashboard, CI job, IDE
 extension, or another process wants to start agent runs, stream events, wait for
 results, cancel work, or inspect Gateway resources.
 
 <Warning>
-  There is no public npm client package yet. Do not add OpenClaw client package
+  There is no public npm client package yet. Do not add EVE client package
   names as application dependencies until release notes announce a published
   package and this page includes install instructions.
 </Warning>
 
 <Note>
-  This page is for code outside the OpenClaw process. Plugin code that runs
-  inside OpenClaw should use documented `openclaw/plugin-sdk/*` subpaths instead.
+  This page is for code outside the EVE process. Plugin code that runs
+  inside EVE should use documented `eve-agent/plugin-sdk/*` subpaths instead.
 </Note>
 
 ## What is available today
@@ -30,8 +30,8 @@ results, cancel work, or inspect Gateway resources.
 | --------------------------------------- | ------ | --------------------------------------------------------------------------------------------- |
 | [Gateway protocol](/gateway/protocol)   | Ready  | WebSocket transport, connect handshake, auth scopes, protocol versioning, and events.         |
 | [Gateway RPC reference](/reference/rpc) | Ready  | Current Gateway methods for agents, sessions, tasks, models, tools, artifacts, and approvals. |
-| [`openclaw agent`](/cli/agent)          | Ready  | One-shot script integration when shelling out to the CLI is enough.                           |
-| [`openclaw message`](/cli/message)      | Ready  | Sending messages or channel actions from scripts.                                             |
+| [`eve agent`](/cli/agent)          | Ready  | One-shot script integration when shelling out to the CLI is enough.                           |
+| [`eve message`](/cli/message)      | Ready  | Sending messages or channel actions from scripts.                                             |
 
 The source tree contains internal package work for a future client library, but
 that is not a public install surface. Treat it as preview implementation detail
@@ -42,8 +42,8 @@ until the packages are published and versioned.
 1. Run or discover a Gateway.
 2. Connect over the [Gateway protocol](/gateway/protocol).
 3. Call documented RPC methods from [Gateway RPC reference](/reference/rpc).
-4. Pin the OpenClaw version you test against.
-5. Recheck the RPC reference when upgrading OpenClaw.
+4. Pin the EVE version you test against.
+5. Recheck the RPC reference when upgrading EVE.
 
 For agent runs, start with the `agent` RPC and pair it with `agent.wait` when
 you need a terminal result. For durable conversation state, use the `sessions.*`
@@ -52,7 +52,7 @@ event families your app understands.
 
 ## App code vs plugin code
 
-Use Gateway RPC when code lives outside OpenClaw:
+Use Gateway RPC when code lives outside EVE:
 
 - Node scripts that start or observe agent runs
 - CI jobs that call a Gateway
@@ -61,7 +61,7 @@ Use Gateway RPC when code lives outside OpenClaw:
 - external bridges that do not need to become channel plugins
 - integration tests with fake or real Gateway transports
 
-Use the Plugin SDK when code runs inside OpenClaw:
+Use the Plugin SDK when code runs inside EVE:
 
 - provider plugins
 - channel plugins
@@ -69,8 +69,8 @@ Use the Plugin SDK when code runs inside OpenClaw:
 - agent harness plugins
 - trusted runtime helpers
 
-External apps should not import `openclaw/plugin-sdk/*`; those subpaths are for
-plugins loaded by OpenClaw.
+External apps should not import `eve-agent/plugin-sdk/*`; those subpaths are for
+plugins loaded by EVE.
 
 ## Related
 

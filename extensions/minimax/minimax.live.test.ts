@@ -1,10 +1,10 @@
-import { resolveFfmpegBin } from "openclaw/plugin-sdk/media-runtime";
+import { resolveFfmpegBin } from "eve-agent/plugin-sdk/media-runtime";
 // Minimax tests cover minimax plugin behavior.
 import {
   registerProviderPlugin,
   requireRegisteredProvider,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import { isLiveTestEnabled } from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { isLiveTestEnabled } from "eve-agent/plugin-sdk/test-env";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 import { buildMinimaxSpeechProvider } from "./speech-provider.js";
@@ -58,7 +58,7 @@ describeLive("minimax plugin live", () => {
       searchConfig: { apiKey: MINIMAX_SEARCH_KEY, cacheTtlMinutes: 0 },
     } as never);
 
-    const result = await tool?.execute({ query: "OpenClaw GitHub", count: 1 });
+    const result = await tool?.execute({ query: "EVE GitHub", count: 1 });
 
     expect(result?.provider).toBe("minimax");
     expect(result?.count).toBeGreaterThan(0);
@@ -72,7 +72,7 @@ describeTtsLive("minimax tts live", () => {
     const provider = requireRegisteredProvider(speechProviders, "minimax");
 
     const audioFile = await provider.synthesize({
-      text: "OpenClaw MiniMax text to speech integration test OK.",
+      text: "EVE MiniMax text to speech integration test OK.",
       cfg: { plugins: { enabled: true } } as never,
       providerConfig: { apiKey: MINIMAX_API_KEY },
       target: "audio-file",
@@ -92,7 +92,7 @@ describeTtsLive("minimax tts live", () => {
     const provider = buildMinimaxSpeechProvider();
 
     const voiceNote = await provider.synthesize({
-      text: "OpenClaw MiniMax voice note test OK.",
+      text: "EVE MiniMax voice note test OK.",
       cfg: { plugins: { enabled: true } } as never,
       providerConfig: { apiKey: MINIMAX_API_KEY },
       target: "voice-note",
@@ -114,7 +114,7 @@ describeTokenPlanTtsLive("minimax token plan tts live", () => {
       const provider = buildMinimaxSpeechProvider();
 
       const audioFile = await provider.synthesize({
-        text: "OpenClaw MiniMax Token Plan text to speech integration test OK.",
+        text: "EVE MiniMax Token Plan text to speech integration test OK.",
         cfg: { plugins: { enabled: true } } as never,
         providerConfig: {},
         target: "audio-file",

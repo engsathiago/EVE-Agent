@@ -1,16 +1,16 @@
 // Whatsapp plugin module implements reaction level behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   resolveReactionLevel,
   type ResolvedReactionLevel,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "eve-agent/plugin-sdk/status-helpers";
 import { resolveMergedWhatsAppAccountConfig } from "./account-config.js";
 
 type ResolvedWhatsAppReactionLevel = ResolvedReactionLevel;
 
 /** Resolve the effective reaction level and its implications for WhatsApp. */
 export function resolveWhatsAppReactionLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
 }): ResolvedWhatsAppReactionLevel {
   const account = resolveMergedWhatsAppAccountConfig({

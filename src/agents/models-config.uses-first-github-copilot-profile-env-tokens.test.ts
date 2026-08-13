@@ -1,8 +1,8 @@
 // Verifies GitHub Copilot profile token fallback and implicit provider planning.
 import { describe, expect, it, vi } from "vitest";
 import {
-  planOpenClawModelsJson,
-  planOpenClawModelsJsonWithDeps,
+  planEVEModelsJson,
+  planEVEModelsJsonWithDeps,
   type ResolveImplicitProvidersForModelsJson,
 } from "./models-config.plan.js";
 import type { ProviderConfig } from "./models-config.providers.secrets.js";
@@ -70,7 +70,7 @@ describe("models-config", () => {
   });
 
   it("does not override explicit github-copilot provider config", async () => {
-    const plan = await planOpenClawModelsJson({
+    const plan = await planEVEModelsJson({
       cfg: {
         models: {
           providers: {
@@ -82,7 +82,7 @@ describe("models-config", () => {
           },
         },
       },
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
       env: {} as NodeJS.ProcessEnv,
       existingRaw: "",
       existingParsed: null,
@@ -108,7 +108,7 @@ describe("models-config", () => {
       },
     );
 
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: {
           models: {
@@ -121,7 +121,7 @@ describe("models-config", () => {
             },
           },
         },
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
         env: { VLLM_API_KEY: "test-vllm-key" } as NodeJS.ProcessEnv,
         existingRaw: "",
         existingParsed: null,
@@ -169,7 +169,7 @@ describe("models-config", () => {
       2,
     )}\n`;
 
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: {
           models: {
@@ -185,7 +185,7 @@ describe("models-config", () => {
             },
           },
         },
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
         env: {} as NodeJS.ProcessEnv,
         existingRaw: existingContents,
         existingParsed: JSON.parse(existingContents),
@@ -255,10 +255,10 @@ function createCopilotImplicitResolver(
 }
 
 async function planCopilotWithImplicitProvider(params: { provider: ProviderConfig }) {
-  return await planOpenClawModelsJsonWithDeps(
+  return await planEVEModelsJsonWithDeps(
     {
       cfg: { models: { providers: {} } },
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/eve-agent",
       env: {} as NodeJS.ProcessEnv,
       existingRaw: "",
       existingParsed: null,

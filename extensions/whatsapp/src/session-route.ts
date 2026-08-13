@@ -2,7 +2,7 @@
 import {
   buildChannelOutboundSessionRoute,
   type ChannelOutboundSessionRouteParams,
-} from "openclaw/plugin-sdk/core";
+} from "eve-agent/plugin-sdk/core";
 import {
   isWhatsAppGroupJid,
   isWhatsAppNewsletterJid,

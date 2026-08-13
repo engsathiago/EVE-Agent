@@ -45,9 +45,9 @@ vi.mock("../../daemon/restart-logs.js", () => ({
     stderrPath: "/tmp/gateway.err.log",
   }),
   resolveGatewaySupervisorLogPaths: () => ({
-    logDir: "/Users/test/Library/Logs/openclaw",
-    stdoutPath: "/Users/test/Library/Logs/openclaw/gateway.log",
-    stderrPath: "/Users/test/Library/Logs/openclaw/gateway.err.log",
+    logDir: "/Users/test/Library/Logs/eve",
+    stdoutPath: "/Users/test/Library/Logs/eve/gateway.log",
+    stderrPath: "/Users/test/Library/Logs/eve/gateway.err.log",
   }),
   resolveGatewayRestartLogPath: () => "/tmp/gateway-restart.log",
 }));
@@ -109,7 +109,7 @@ describe("printDaemonStatus", () => {
           notLoadedText: "not loaded",
           runtime: { status: "running", pid: 8000 },
         },
-        logFile: "/tmp/openclaw.log",
+        logFile: "/tmp/eve.log",
         gateway: {
           bindMode: "loopback",
           bindHost: "127.0.0.1",
@@ -138,7 +138,7 @@ describe("printDaemonStatus", () => {
     );
 
     expectMockLineContains(runtime.error, "Gateway runtime PID does not own the listening port");
-    expectMockLineContains(runtime.error, formatCliCommand("openclaw gateway restart"));
+    expectMockLineContains(runtime.error, formatCliCommand("eve gateway restart"));
   });
 
   it("prints established gateway client guidance gathered by deep status", () => {
@@ -165,7 +165,7 @@ describe("printDaemonStatus", () => {
               pid: 4242,
               ppid: 1,
               command: "node",
-              commandLine: "/tmp/newer-openclaw/bin/openclaw logs --follow",
+              commandLine: "/tmp/newer-eve/bin/eve logs --follow",
               address: "TCP 127.0.0.1:50123->127.0.0.1:18789 (ESTABLISHED)",
               direction: "client",
             },
@@ -178,7 +178,7 @@ describe("printDaemonStatus", () => {
 
     expectMockLineContains(runtime.log, "Established clients: 1");
     expectMockLineContains(runtime.log, "pid=4242");
-    expectMockLineContains(runtime.log, "newer-openclaw");
+    expectMockLineContains(runtime.log, "newer-eve");
     expectMockLineContains(runtime.log, "client");
     expectMockLineContains(runtime.log, "protocol mismatch after rollback");
   });
@@ -238,11 +238,11 @@ describe("printDaemonStatus", () => {
           runtime: { status: "running", pid: 8000 },
           staleUpdateLaunchdJobs: [
             {
-              label: "ai.openclaw.update.2026.5.12",
+              label: "ai.eve.update.2026.5.12",
               lastExitStatus: 127,
             },
             {
-              label: "ai.openclaw.manual-update.1717168800",
+              label: "ai.eve.manual-update.1717168800",
               lastExitStatus: 0,
             },
           ],
@@ -259,11 +259,11 @@ describe("printDaemonStatus", () => {
       { json: false },
     );
 
-    expectMockLineContains(runtime.error, "Stale OpenClaw updater launchd job(s) detected.");
-    expectMockLineContains(runtime.error, "ai.openclaw.update.2026.5.12");
-    expectMockLineContains(runtime.error, "ai.openclaw.manual-update.1717168800");
+    expectMockLineContains(runtime.error, "Stale EVE updater launchd job(s) detected.");
+    expectMockLineContains(runtime.error, "ai.eve.update.2026.5.12");
+    expectMockLineContains(runtime.error, "ai.eve.manual-update.1717168800");
     expectMockLineContains(runtime.error, "launchctl remove <label>");
-    expectMockLineContains(runtime.error, formatCliCommand("openclaw gateway restart"));
+    expectMockLineContains(runtime.error, formatCliCommand("eve gateway restart"));
   });
 
   it("prints macOS launchd stdout and suppressed stderr when gateway is not listening", () => {
@@ -302,7 +302,7 @@ describe("printDaemonStatus", () => {
     }
 
     expectMockLineContains(runtime.error, "Gateway port 18789 is not listening");
-    expectMockLineContains(runtime.error, "/Users/test/Library/Logs/openclaw/gateway.log");
+    expectMockLineContains(runtime.error, "/Users/test/Library/Logs/eve/gateway.log");
     expectMockLineContains(runtime.error, "Errors: suppressed");
   });
 
@@ -368,7 +368,7 @@ describe("printDaemonStatus", () => {
       {
         cli: {
           version: "2026.4.23",
-          entrypoint: "/usr/local/bin/openclaw",
+          entrypoint: "/usr/local/bin/eve",
         },
         service: {
           label: "LaunchAgent",
@@ -396,12 +396,12 @@ describe("printDaemonStatus", () => {
       { json: false },
     );
 
-    expectMockLineContains(runtime.log, "CLI version: 2026.4.23 (/usr/local/bin/openclaw)");
+    expectMockLineContains(runtime.log, "CLI version: 2026.4.23 (/usr/local/bin/eve)");
     expectMockLineContains(runtime.log, "Gateway version: 2026.5.6");
-    expectMockLineContains(runtime.error, "this OpenClaw command is version 2026.4.23");
+    expectMockLineContains(runtime.error, "this EVE command is version 2026.4.23");
     expectMockLineContains(
       runtime.error,
-      "if this mismatch is unexpected, update PATH so `openclaw` points to the version you want",
+      "if this mismatch is unexpected, update PATH so `eve` points to the version you want",
     );
   });
 
@@ -410,7 +410,7 @@ describe("printDaemonStatus", () => {
       {
         cli: {
           version: "2026.4.23",
-          entrypoint: "/usr/local/bin/openclaw",
+          entrypoint: "/usr/local/bin/eve",
         },
         service: {
           label: "LaunchAgent",
@@ -440,7 +440,7 @@ describe("printDaemonStatus", () => {
     );
 
     expectMockLineContains(runtime.log, "Gateway version: 2026.5.7");
-    expectMockLineContains(runtime.error, "this OpenClaw command is version 2026.4.23");
+    expectMockLineContains(runtime.error, "this EVE command is version 2026.4.23");
   });
 
   it("prints restart handoff diagnostics when deep status gathered one", () => {
@@ -486,12 +486,12 @@ describe("printDaemonStatus", () => {
         },
         config: {
           cli: {
-            path: "/tmp/openclaw-cli/openclaw.json",
+            path: "/tmp/eve-cli/eve.json",
             exists: true,
             valid: true,
           },
           daemon: {
-            path: "/tmp/openclaw-daemon/openclaw.json",
+            path: "/tmp/eve-daemon/eve.json",
             exists: true,
             valid: true,
             controlUi: { basePath: "/ui" },
@@ -538,7 +538,7 @@ describe("printDaemonStatus", () => {
         },
         config: {
           cli: {
-            path: "/tmp/openclaw-cli/openclaw.json",
+            path: "/tmp/eve-cli/eve.json",
             exists: true,
             valid: true,
             warnings: [
@@ -581,13 +581,13 @@ describe("printDaemonStatus", () => {
           listeners: [],
           hints: [],
         },
-        extraServices: [{ label: "ai.openclaw.gateway.rescue", scope: "user", detail: "loaded" }],
+        extraServices: [{ label: "ai.eve.gateway.rescue", scope: "user", detail: "loaded" }],
       },
       { json: false },
     );
 
     expectMockLineContains(runtime.log, "Other gateway-like services detected");
-    expectMockLineContains(runtime.log, "ai.openclaw.gateway.rescue");
+    expectMockLineContains(runtime.log, "ai.eve.gateway.rescue");
     expect(runtime.error).not.toHaveBeenCalled();
   });
 
@@ -618,7 +618,7 @@ describe("printDaemonStatus", () => {
     );
 
     expectMockLineContains(runtime.log, "Plugin version drift: 1 active official plugin");
-    expectMockLineContains(runtime.log, "openclaw gateway status --deep");
+    expectMockLineContains(runtime.log, "eve gateway status --deep");
     expect(runtime.log.mock.calls.map(([line]) => line).join("\n")).not.toContain("whatsapp:");
   });
 
@@ -649,8 +649,8 @@ describe("printDaemonStatus", () => {
     );
 
     expectMockLineContains(runtime.log, "- whatsapp: 2026.5.3 (clawhub)");
-    expectMockLineContains(runtime.log, "openclaw plugins update <plugin-id>");
-    expectMockLineContains(runtime.log, "openclaw gateway restart");
+    expectMockLineContains(runtime.log, "eve plugins update <plugin-id>");
+    expectMockLineContains(runtime.log, "eve gateway restart");
   });
 
   it("does not print systemd user-service hints when a gateway responds", () => {

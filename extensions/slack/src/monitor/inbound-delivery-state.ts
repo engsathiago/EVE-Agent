@@ -1,5 +1,5 @@
 // Slack plugin module implements inbound delivery state behavior.
-import { resolveGlobalDedupeCache } from "openclaw/plugin-sdk/dedupe-runtime";
+import { resolveGlobalDedupeCache } from "eve-agent/plugin-sdk/dedupe-runtime";
 import { getOptionalSlackRuntime } from "../runtime.js";
 import type { SlackMessageEvent } from "../types.js";
 
@@ -7,7 +7,7 @@ const TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_ENTRIES = 20_000;
 const PERSISTENT_MAX_ENTRIES = 20_000;
 const PERSISTENT_NAMESPACE = "slack.inbound-deliveries";
-const SLACK_INBOUND_DELIVERIES_KEY = Symbol.for("openclaw.slackInboundDeliveries");
+const SLACK_INBOUND_DELIVERIES_KEY = Symbol.for("eve.slackInboundDeliveries");
 
 type SlackInboundDeliveryRecord = {
   deliveredAt: number;

@@ -3,13 +3,13 @@
  *
  * Prompts account ids, credentials, allowlists, and account-scoped setup config updates.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   normalizeStringEntries,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import type { DmPolicy, GroupPolicy } from "../../config/types.base.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SecretInput } from "../../config/types.secrets.js";
 import { resolveSecretInputModeForEnvSelection } from "../../plugins/provider-auth-mode.js";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../../routing/session-key.js";
@@ -188,7 +188,7 @@ export function createStandardChannelSetupStatus(params: {
   includeStatusLine?: boolean;
   resolveConfigured: ChannelSetupWizardStatus["resolveConfigured"];
   resolveExtraStatusLines?: (params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId?: string;
     configured: boolean;
   }) => string[] | Promise<string[]>;
@@ -231,12 +231,12 @@ export function resolveSetupAccountId(params: {
 }
 
 export async function resolveAccountIdForConfigure(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: WizardPrompter;
   label: string;
   accountOverride?: string;
   shouldPromptAccountIds: boolean;
-  listAccountIds: (cfg: OpenClawConfig) => string[];
+  listAccountIds: (cfg: EVEConfig) => string[];
   defaultAccountId: string;
 }): Promise<string> {
   const override = params.accountOverride?.trim();
@@ -255,11 +255,11 @@ export async function resolveAccountIdForConfigure(params: {
 }
 
 export function setAccountAllowFromForChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId: string;
   allowFrom: string[];
-}): OpenClawConfig {
+}): EVEConfig {
   const { cfg, channel, accountId, allowFrom } = params;
   return patchConfigForScopedAccount({
     cfg,
@@ -271,12 +271,12 @@ export function setAccountAllowFromForChannel(params: {
 }
 
 export function patchTopLevelChannelConfigSection(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   enabled?: boolean;
   clearFields?: string[];
   patch: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   const channelConfig = {
     ...(params.cfg.channels?.[params.channel] as Record<string, unknown> | undefined),
   };
@@ -297,13 +297,13 @@ export function patchTopLevelChannelConfigSection(params: {
 }
 
 export function patchNestedChannelConfigSection(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   section: string;
   enabled?: boolean;
   clearFields?: string[];
   patch: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   const channelConfig = {
     ...(params.cfg.channels?.[params.channel] as Record<string, unknown> | undefined),
   };
@@ -330,11 +330,11 @@ export function patchNestedChannelConfigSection(params: {
 }
 
 export function setTopLevelChannelAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   allowFrom: string[];
   enabled?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   return patchTopLevelChannelConfigSection({
     cfg: params.cfg,
     channel: params.channel,
@@ -344,12 +344,12 @@ export function setTopLevelChannelAllowFrom(params: {
 }
 
 export function setNestedChannelAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   section: string;
   allowFrom: string[];
   enabled?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   return patchNestedChannelConfigSection({
     cfg: params.cfg,
     channel: params.channel,
@@ -360,11 +360,11 @@ export function setNestedChannelAllowFrom(params: {
 }
 
 export function setTopLevelChannelDmPolicyWithAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   dmPolicy: DmPolicy;
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
-}): OpenClawConfig {
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
+}): EVEConfig {
   const channelConfig =
     (params.cfg.channels?.[params.channel] as Record<string, unknown> | undefined) ?? {};
   const existingAllowFrom =
@@ -384,13 +384,13 @@ export function setTopLevelChannelDmPolicyWithAllowFrom(params: {
 }
 
 export function setNestedChannelDmPolicyWithAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   section: string;
   dmPolicy: DmPolicy;
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
   enabled?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   const channelConfig =
     (params.cfg.channels?.[params.channel] as Record<string, unknown> | undefined) ?? {};
   const sectionConfig =
@@ -414,11 +414,11 @@ export function setNestedChannelDmPolicyWithAllowFrom(params: {
 }
 
 export function setTopLevelChannelGroupPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   groupPolicy: GroupPolicy;
   enabled?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   return patchTopLevelChannelConfigSection({
     cfg: params.cfg,
     channel: params.channel,
@@ -432,9 +432,9 @@ export function createTopLevelChannelDmPolicy(params: {
   channel: string;
   policyKey: string;
   allowFromKey: string;
-  getCurrent: (cfg: OpenClawConfig) => DmPolicy;
+  getCurrent: (cfg: EVEConfig) => DmPolicy;
   promptAllowFrom?: ChannelSetupDmPolicy["promptAllowFrom"];
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
 }): ChannelSetupDmPolicy {
   const setPolicy = createTopLevelChannelDmPolicySetter({
     channel: params.channel,
@@ -457,9 +457,9 @@ export function createNestedChannelDmPolicy(params: {
   section: string;
   policyKey: string;
   allowFromKey: string;
-  getCurrent: (cfg: OpenClawConfig) => DmPolicy;
+  getCurrent: (cfg: EVEConfig) => DmPolicy;
   promptAllowFrom?: ChannelSetupDmPolicy["promptAllowFrom"];
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
   enabled?: boolean;
 }): ChannelSetupDmPolicy {
   const setPolicy = createNestedChannelDmPolicySetter({
@@ -481,8 +481,8 @@ export function createNestedChannelDmPolicy(params: {
 
 export function createTopLevelChannelDmPolicySetter(params: {
   channel: string;
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
-}): (cfg: OpenClawConfig, dmPolicy: DmPolicy) => OpenClawConfig {
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
+}): (cfg: EVEConfig, dmPolicy: DmPolicy) => EVEConfig {
   return (cfg, dmPolicy) =>
     setTopLevelChannelDmPolicyWithAllowFrom({
       cfg,
@@ -495,9 +495,9 @@ export function createTopLevelChannelDmPolicySetter(params: {
 export function createNestedChannelDmPolicySetter(params: {
   channel: string;
   section: string;
-  getAllowFrom?: (cfg: OpenClawConfig) => Array<string | number> | undefined;
+  getAllowFrom?: (cfg: EVEConfig) => Array<string | number> | undefined;
   enabled?: boolean;
-}): (cfg: OpenClawConfig, dmPolicy: DmPolicy) => OpenClawConfig {
+}): (cfg: EVEConfig, dmPolicy: DmPolicy) => EVEConfig {
   return (cfg, dmPolicy) =>
     setNestedChannelDmPolicyWithAllowFrom({
       cfg,
@@ -512,7 +512,7 @@ export function createNestedChannelDmPolicySetter(params: {
 export function createTopLevelChannelAllowFromSetter(params: {
   channel: string;
   enabled?: boolean;
-}): (cfg: OpenClawConfig, allowFrom: string[]) => OpenClawConfig {
+}): (cfg: EVEConfig, allowFrom: string[]) => EVEConfig {
   return (cfg, allowFrom) =>
     setTopLevelChannelAllowFrom({
       cfg,
@@ -526,7 +526,7 @@ export function createNestedChannelAllowFromSetter(params: {
   channel: string;
   section: string;
   enabled?: boolean;
-}): (cfg: OpenClawConfig, allowFrom: string[]) => OpenClawConfig {
+}): (cfg: EVEConfig, allowFrom: string[]) => EVEConfig {
   return (cfg, allowFrom) =>
     setNestedChannelAllowFrom({
       cfg,
@@ -540,7 +540,7 @@ export function createNestedChannelAllowFromSetter(params: {
 export function createTopLevelChannelGroupPolicySetter(params: {
   channel: string;
   enabled?: boolean;
-}): (cfg: OpenClawConfig, groupPolicy: "open" | "allowlist" | "disabled") => OpenClawConfig {
+}): (cfg: EVEConfig, groupPolicy: "open" | "allowlist" | "disabled") => EVEConfig {
   return (cfg, groupPolicy) =>
     setTopLevelChannelGroupPolicy({
       cfg,
@@ -551,10 +551,10 @@ export function createTopLevelChannelGroupPolicySetter(params: {
 }
 
 export function setChannelDmPolicyWithAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   dmPolicy: DmPolicy;
-}): OpenClawConfig {
+}): EVEConfig {
   const { cfg, channel, dmPolicy } = params;
   const channelConfig = asRecord(cfg.channels?.[channel]);
   const allowFrom =
@@ -575,10 +575,10 @@ export function setChannelDmPolicyWithAllowFrom(params: {
 }
 
 export function setCompatChannelDmPolicyWithAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   dmPolicy: DmPolicy;
-}): OpenClawConfig {
+}): EVEConfig {
   const channelConfig = (params.cfg.channels?.[params.channel] as
     | {
         allowFrom?: Array<string | number>;
@@ -604,10 +604,10 @@ export function setCompatChannelDmPolicyWithAllowFrom(params: {
 }
 
 export function setCompatChannelAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   allowFrom: string[];
-}): OpenClawConfig {
+}): EVEConfig {
   return patchCompatDmChannelConfig({
     cfg: params.cfg,
     channel: params.channel,
@@ -616,11 +616,11 @@ export function setCompatChannelAllowFrom(params: {
 }
 
 export function setAccountGroupPolicyForChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId: string;
   groupPolicy: GroupPolicy;
-}): OpenClawConfig {
+}): EVEConfig {
   return patchChannelConfigForAccount({
     cfg: params.cfg,
     channel: params.channel,
@@ -630,11 +630,11 @@ export function setAccountGroupPolicyForChannel(params: {
 }
 
 export function setAccountDmAllowFromForChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId: string;
   allowFrom: string[];
-}): OpenClawConfig {
+}): EVEConfig {
   return patchChannelConfigForAccount({
     cfg: params.cfg,
     channel: params.channel,
@@ -789,10 +789,10 @@ export function createAccountScopedGroupAccessSection<TResolved>(params: {
   >;
   fallbackResolved: (entries: string[]) => TResolved;
   applyAllowlist: (params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId: string;
     resolved: TResolved;
-  }) => OpenClawConfig;
+  }) => EVEConfig;
 }): NonNullable<ChannelSetupWizard["groupAccess"]> {
   return {
     label: params.label,
@@ -842,10 +842,10 @@ type AccountScopedChannel = string;
 type CompatDmChannel = string;
 
 export function patchCompatDmChannelConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   patch: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   const { cfg, channel, patch } = params;
   const channelConfig = (cfg.channels?.[channel] as Record<string, unknown> | undefined) ?? {};
   const dmConfig = (channelConfig.dm as Record<string, unknown> | undefined) ?? {};
@@ -866,10 +866,10 @@ export function patchCompatDmChannelConfig(params: {
 }
 
 export function setSetupChannelEnabled(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   channel: string,
   enabled: boolean,
-): OpenClawConfig {
+): EVEConfig {
   const channelConfig = (cfg.channels?.[channel] as Record<string, unknown> | undefined) ?? {};
   return {
     ...cfg,
@@ -884,12 +884,12 @@ export function setSetupChannelEnabled(
 }
 
 function patchConfigForScopedAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: AccountScopedChannel;
   accountId: string;
   patch: Record<string, unknown>;
   ensureEnabled: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   const { cfg, channel, accountId, patch, ensureEnabled } = params;
   const channelConfig = cfg.channels?.[channel] as
     | { accounts?: Record<string, unknown> }
@@ -915,11 +915,11 @@ function patchConfigForScopedAccount(params: {
 }
 
 export function patchChannelConfigForAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: AccountScopedChannel;
   accountId: string;
   patch: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   return patchConfigForScopedAccount({
     ...params,
     ensureEnabled: true,
@@ -927,7 +927,7 @@ export function patchChannelConfigForAccount(params: {
 }
 
 export function applySingleTokenPromptResult(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId: string;
   tokenPatchKey: string;
@@ -935,7 +935,7 @@ export function applySingleTokenPromptResult(params: {
     useEnv: boolean;
     token: SecretInput | null;
   };
-}): OpenClawConfig {
+}): EVEConfig {
   let next = params.cfg;
   if (params.tokenResult.useEnv) {
     next = patchChannelConfigForAccount({
@@ -1020,7 +1020,7 @@ export type SingleChannelSecretInputPromptResult =
   | { action: "set"; value: SecretInput; resolvedValue: string };
 
 export async function runSingleChannelSecretStep(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: Pick<WizardPrompter, "confirm" | "text" | "select" | "note">;
   providerHint: string;
   credentialLabel: string;
@@ -1034,14 +1034,14 @@ export async function runSingleChannelSecretStep(params: {
   inputPrompt: string;
   preferredEnvVar?: string;
   onMissingConfigured?: () => Promise<void>;
-  applyUseEnv?: (cfg: OpenClawConfig) => OpenClawConfig | Promise<OpenClawConfig>;
+  applyUseEnv?: (cfg: EVEConfig) => EVEConfig | Promise<EVEConfig>;
   applySet?: (
-    cfg: OpenClawConfig,
+    cfg: EVEConfig,
     value: SecretInput,
     resolvedValue: string,
-  ) => OpenClawConfig | Promise<OpenClawConfig>;
+  ) => EVEConfig | Promise<EVEConfig>;
 }): Promise<{
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   action: SingleChannelSecretInputPromptResult["action"];
   resolvedValue?: string;
 }> {
@@ -1096,7 +1096,7 @@ export async function runSingleChannelSecretStep(params: {
 }
 
 export async function promptSingleChannelSecretInput(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: Pick<WizardPrompter, "confirm" | "text" | "select" | "note">;
   providerHint: string;
   credentialLabel: string;
@@ -1115,7 +1115,7 @@ export async function promptSingleChannelSecretInput(params: {
     copy: {
       modeMessage: `How do you want to provide this ${params.credentialLabel}?`,
       plaintextLabel: `Enter ${params.credentialLabel}`,
-      plaintextHint: "Stores the credential directly in OpenClaw config",
+      plaintextHint: "Stores the credential directly in EVE config",
       refLabel: "Use external secret provider",
       refHint: "Stores a reference to env or configured external secret providers",
     },
@@ -1158,9 +1158,9 @@ export async function promptSingleChannelSecretInput(params: {
     preferredEnvVar: params.preferredEnvVar,
     copy: {
       sourceMessage: `Where is this ${params.credentialLabel} stored?`,
-      envVarPlaceholder: params.preferredEnvVar ?? "OPENCLAW_SECRET",
+      envVarPlaceholder: params.preferredEnvVar ?? "EVE_SECRET",
       envVarFormatError:
-        'Use an env var name like "OPENCLAW_SECRET" (uppercase letters, numbers, underscores).',
+        'Use an env var name like "EVE_SECRET" (uppercase letters, numbers, underscores).',
       noProvidersMessage:
         "No file/exec secret providers are configured yet. Add one under secrets.providers, or select Environment variable.",
     },
@@ -1174,7 +1174,7 @@ export async function promptSingleChannelSecretInput(params: {
 
 type ParsedAllowFromResult = { entries: string[]; error?: string };
 
-export async function promptParsedAllowFromForAccount<TConfig extends OpenClawConfig>(params: {
+export async function promptParsedAllowFromForAccount<TConfig extends EVEConfig>(params: {
   cfg: TConfig;
   accountId?: string;
   defaultAccountId: string;
@@ -1228,7 +1228,7 @@ export async function promptParsedAllowFromForAccount<TConfig extends OpenClawCo
   });
 }
 
-export function createPromptParsedAllowFromForAccount<TConfig extends OpenClawConfig>(params: {
+export function createPromptParsedAllowFromForAccount<TConfig extends EVEConfig>(params: {
   defaultAccountId: string | ((cfg: TConfig) => string);
   noteTitle?: string;
   noteLines?: string[];
@@ -1264,7 +1264,7 @@ export function createPromptParsedAllowFromForAccount<TConfig extends OpenClawCo
 }
 
 export async function promptParsedAllowFromForScopedChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId?: string;
   defaultAccountId: string;
@@ -1275,10 +1275,10 @@ export async function promptParsedAllowFromForScopedChannel(params: {
   placeholder: string;
   parseEntries: (raw: string) => ParsedAllowFromResult;
   getExistingAllowFrom: (params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId: string;
   }) => Array<string | number>;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   return await promptParsedAllowFromForAccount({
     cfg: params.cfg,
     accountId: params.accountId,
@@ -1302,14 +1302,14 @@ export async function promptParsedAllowFromForScopedChannel(params: {
 
 export function createTopLevelChannelParsedAllowFromPrompt(params: {
   channel: string;
-  defaultAccountId: string | ((cfg: OpenClawConfig) => string);
+  defaultAccountId: string | ((cfg: EVEConfig) => string);
   enabled?: boolean;
   noteTitle?: string;
   noteLines?: string[];
   message: string;
   placeholder: string;
   parseEntries: (raw: string) => ParsedAllowFromResult;
-  getExistingAllowFrom?: (cfg: OpenClawConfig) => Array<string | number>;
+  getExistingAllowFrom?: (cfg: EVEConfig) => Array<string | number>;
   mergeEntries?: (params: { existing: Array<string | number>; parsed: string[] }) => string[];
 }): NonNullable<ChannelSetupDmPolicy["promptAllowFrom"]> {
   const setAllowFrom = createTopLevelChannelAllowFromSetter({
@@ -1322,13 +1322,13 @@ export function createTopLevelChannelParsedAllowFromPrompt(params: {
     message: params.message,
     placeholder: params.placeholder,
     parseEntries: params.parseEntries,
-    getExistingAllowFrom: ({ cfg }: { cfg: OpenClawConfig }) =>
+    getExistingAllowFrom: ({ cfg }: { cfg: EVEConfig }) =>
       params.getExistingAllowFrom?.(cfg) ??
       (cfg.channels?.[params.channel] as { allowFrom?: Array<string | number> } | undefined)
         ?.allowFrom ??
       [],
     ...(params.mergeEntries ? { mergeEntries: params.mergeEntries } : {}),
-    applyAllowFrom: ({ cfg, allowFrom }: { cfg: OpenClawConfig; allowFrom: string[] }) =>
+    applyAllowFrom: ({ cfg, allowFrom }: { cfg: EVEConfig; allowFrom: string[] }) =>
       setAllowFrom(cfg, allowFrom),
   };
 
@@ -1349,14 +1349,14 @@ export function createTopLevelChannelParsedAllowFromPrompt(params: {
 export function createNestedChannelParsedAllowFromPrompt(params: {
   channel: string;
   section: string;
-  defaultAccountId: string | ((cfg: OpenClawConfig) => string);
+  defaultAccountId: string | ((cfg: EVEConfig) => string);
   enabled?: boolean;
   noteTitle?: string;
   noteLines?: string[];
   message: string;
   placeholder: string;
   parseEntries: (raw: string) => ParsedAllowFromResult;
-  getExistingAllowFrom?: (cfg: OpenClawConfig) => Array<string | number>;
+  getExistingAllowFrom?: (cfg: EVEConfig) => Array<string | number>;
   mergeEntries?: (params: { existing: Array<string | number>; parsed: string[] }) => string[];
 }): NonNullable<ChannelSetupDmPolicy["promptAllowFrom"]> {
   const setAllowFrom = createNestedChannelAllowFromSetter({
@@ -1371,7 +1371,7 @@ export function createNestedChannelParsedAllowFromPrompt(params: {
     message: params.message,
     placeholder: params.placeholder,
     parseEntries: params.parseEntries,
-    getExistingAllowFrom: ({ cfg }: { cfg: OpenClawConfig }) =>
+    getExistingAllowFrom: ({ cfg }: { cfg: EVEConfig }) =>
       params.getExistingAllowFrom?.(cfg) ??
       (
         (cfg.channels?.[params.channel] as Record<string, unknown> | undefined)?.[
@@ -1380,7 +1380,7 @@ export function createNestedChannelParsedAllowFromPrompt(params: {
       )?.allowFrom ??
       [],
     ...(params.mergeEntries ? { mergeEntries: params.mergeEntries } : {}),
-    applyAllowFrom: ({ cfg, allowFrom }: { cfg: OpenClawConfig; allowFrom: string[] }) =>
+    applyAllowFrom: ({ cfg, allowFrom }: { cfg: EVEConfig; allowFrom: string[] }) =>
       setAllowFrom(cfg, allowFrom),
   };
 
@@ -1546,7 +1546,7 @@ export async function promptResolvedAllowFrom(params: {
 }
 
 export async function promptLegacyChannelAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: CompatDmChannel;
   prompter: WizardPrompter;
   existing: Array<string | number>;
@@ -1558,7 +1558,7 @@ export async function promptLegacyChannelAllowFrom(params: {
   parseId: (value: string) => string | null;
   invalidWithoutTokenNote: string;
   resolveEntries: (params: { token: string; entries: string[] }) => Promise<AllowFromResolution[]>;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   await params.prompter.note(params.noteLines.join("\n"), params.noteTitle);
   const unique = await promptResolvedAllowFrom({
     prompter: params.prompter,
@@ -1580,13 +1580,13 @@ export async function promptLegacyChannelAllowFrom(params: {
 }
 
 export async function promptLegacyChannelAllowFromForAccount<TAccount>(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: CompatDmChannel;
   prompter: WizardPrompter;
   accountId?: string;
   defaultAccountId: string;
-  resolveAccount: (cfg: OpenClawConfig, accountId: string) => TAccount;
-  resolveExisting: (account: TAccount, cfg: OpenClawConfig) => Array<string | number>;
+  resolveAccount: (cfg: EVEConfig, accountId: string) => TAccount;
+  resolveExisting: (account: TAccount, cfg: EVEConfig) => Array<string | number>;
   resolveToken: (account: TAccount) => string | null | undefined;
   noteTitle: string;
   noteLines: string[];
@@ -1595,7 +1595,7 @@ export async function promptLegacyChannelAllowFromForAccount<TAccount>(params: {
   parseId: (value: string) => string | null;
   invalidWithoutTokenNote: string;
   resolveEntries: (params: { token: string; entries: string[] }) => Promise<AllowFromResolution[]>;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   const accountId = resolveSetupAccountId({
     accountId: params.accountId,
     defaultAccountId: params.defaultAccountId,

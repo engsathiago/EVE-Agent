@@ -1,7 +1,7 @@
 // Whatsapp type declarations define plugin contracts.
 import type { AnyMessageContent, MiscMessageGenerationOptions } from "baileys";
-import type { NormalizedLocation } from "openclaw/plugin-sdk/channel-inbound";
-import type { PollInput } from "openclaw/plugin-sdk/poll-runtime";
+import type { NormalizedLocation } from "eve-agent/plugin-sdk/channel-inbound";
+import type { PollInput } from "eve-agent/plugin-sdk/poll-runtime";
 import type { WhatsAppIdentity, WhatsAppReplyContext, WhatsAppSelfIdentity } from "../identity.js";
 import type { DeprecatedWebInboundAdmissionTopLevelFields } from "./admission-types.js";
 import type { WhatsAppInboundAdmission } from "./admission.js";

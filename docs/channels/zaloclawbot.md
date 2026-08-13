@@ -1,33 +1,33 @@
 ---
-summary: "Zalo ClawBot channel setup through the external openclaw-zaloclawbot plugin"
+summary: "Zalo ClawBot channel setup through the external eve-zaloclawbot plugin"
 read_when:
   - You want a personal Zalo assistant bot with QR-code login
-  - You are installing or troubleshooting the openclaw-zaloclawbot channel plugin
+  - You are installing or troubleshooting the eve-zaloclawbot channel plugin
 title: "Zalo ClawBot"
 ---
 
-OpenClaw connects to Zalo ClawBot through the catalog-listed external
-`@zalo-platforms/openclaw-zaloclawbot` plugin. Login uses a Zalo Mini App QR
+EVE connects to Zalo ClawBot through the catalog-listed external
+`@zalo-platforms/eve-zaloclawbot` plugin. Login uses a Zalo Mini App QR
 code.
 
 ## Compatibility
 
-| Plugin Version | OpenClaw Version | npm dist-tag | Status        |
+| Plugin Version | EVE Version | npm dist-tag | Status        |
 | -------------- | ---------------- | ------------ | ------------- |
 | 0.1.x          | >=2026.4.10      | `latest`     | Active / Beta |
 
 ## Prerequisites
 
 - Node.js **>= 22**
-- [OpenClaw](https://docs.openclaw.ai/install) must be installed (`openclaw` CLI available).
+- [EVE](https://docs.eve.ai/install) must be installed (`eve` CLI available).
 - A Zalo account on a mobile device to scan the login QR code.
 
 ## Install with onboard (recommended)
 
-Run the OpenClaw onboarding wizard and pick **Zalo ClawBot** from the channel menu:
+Run the EVE onboarding wizard and pick **Zalo ClawBot** from the channel menu:
 
 ```bash
-openclaw onboard
+eve onboard
 ```
 
 The wizard installs the plugin from the official catalog (integrity-verified), renders the login QR right in the terminal, and finishes the channel once you scan it with the Zalo app. No extra commands are needed.
@@ -39,21 +39,21 @@ To add the channel to an already-onboarded gateway, follow these steps:
 ### 1. Install the plugin
 
 ```bash
-openclaw plugins install "@zalo-platforms/openclaw-zaloclawbot@0.1.4"
+eve plugins install "@zalo-platforms/eve-zaloclawbot@0.1.4"
 ```
 
-Use the exact pinned version shown above (it matches the official catalog entry), so OpenClaw verifies the package against the catalog integrity hash during install.
+Use the exact pinned version shown above (it matches the official catalog entry), so EVE verifies the package against the catalog integrity hash during install.
 
 ### 2. Enable the plugin in config
 
 ```bash
-openclaw config set plugins.entries.openclaw-zaloclawbot.enabled true
+eve config set plugins.entries.eve-zaloclawbot.enabled true
 ```
 
 ### 3. Generate QR code and log in
 
 ```bash
-openclaw channels login --channel openclaw-zaloclawbot
+eve channels login --channel eve-zaloclawbot
 ```
 
 Scan the terminal-rendered QR code using the Zalo mobile app, accept the Terms of Use inside the Zalo Mini App, and authorize the session.
@@ -61,7 +61,7 @@ Scan the terminal-rendered QR code using the Zalo mobile app, accept the Terms o
 ### 4. Restart the gateway
 
 ```bash
-openclaw gateway restart
+eve gateway restart
 ```
 
 ---
@@ -83,13 +83,13 @@ The Zalo ClawBot plugin communicates with Zalo APIs via a persistent long-pollin
 - Webhooks are disabled by default for local desktop/terminal gateway runs.
 - Messages are processed client-side and mapped directly to your local agent runtime.
 
-The external plugin manages bot credentials under the OpenClaw state directory.
+The external plugin manages bot credentials under the EVE state directory.
 Treat that directory as sensitive and include it in the same access-control and
-backup policy as the rest of your OpenClaw state.
+backup policy as the rest of your EVE state.
 
 ---
 
 ## Troubleshooting
 
 - **QR Login Timeout:** The login token (`zbsk`) expires after 5 minutes for security reasons. If the QR code expires before you scan it, simply rerun the login command to generate a new one.
-- **Gateway Fails to Load:** Ensure your OpenClaw host version is `2026.4.10` or higher. Older versions do not support the external npm-plugin installation ledger.
+- **Gateway Fails to Load:** Ensure your EVE host version is `2026.4.10` or higher. Older versions do not support the external npm-plugin installation ledger.

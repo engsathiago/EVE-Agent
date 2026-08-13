@@ -3,7 +3,7 @@
  * Prevents unbounded memory growth under high load or abuse.
  */
 
-import { resolveIntegerOption } from "openclaw/plugin-sdk/number-runtime";
+import { resolveIntegerOption } from "eve-agent/plugin-sdk/number-runtime";
 
 interface SeenTrackerOptions {
   /** Maximum number of entries to track (default: 100,000) */

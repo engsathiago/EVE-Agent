@@ -1,5 +1,5 @@
 // Qqbot plugin module implements slash command test support behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type { CommandsPort } from "../adapter/commands.port.js";
 import { initCommands } from "./slash-commands-impl.js";
 
@@ -13,8 +13,8 @@ export type WrittenQQBotConfig = {
 };
 
 export function installCommandRuntime(
-  currentConfig: OpenClawConfig,
-  writes: OpenClawConfig[],
+  currentConfig: EVEConfig,
+  writes: EVEConfig[],
 ): void {
   const replaceConfigFile: ReplaceConfigFile = async (params) => {
     writes.push(params.nextConfig);
@@ -34,7 +34,7 @@ export function installCommandRuntime(
 }
 
 export function getWrittenQQBotConfig(
-  write: OpenClawConfig | undefined,
+  write: EVEConfig | undefined,
 ): WrittenQQBotConfig | undefined {
   return write?.channels?.qqbot as WrittenQQBotConfig | undefined;
 }

@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { ensureAuthProfileStore } from "../agents/auth-profiles/store.js";
 import { resolveApiKeyForProvider as resolveModelApiKeyForProvider } from "../agents/model-auth.js";
 import { normalizeProviderId } from "../agents/model-selection.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveTimerTimeoutMs } from "../shared/number-coercion.js";
 
 export { resolveEnvApiKey } from "../agents/model-auth-env.js";
@@ -44,7 +44,7 @@ export type ProviderAuthProfileMetadata = {
 
 export function resolveProviderAuthProfileMetadata(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   profileId?: string;
   agentDir?: string;
 }): ProviderAuthProfileMetadata {
@@ -242,7 +242,7 @@ export async function waitForLocalOAuthCallback(params: {
         res.end(
           "<!doctype html><html><head><meta charset='utf-8'/></head>" +
             `<body><h2>${escapedSuccessTitle}</h2>` +
-            "<p>You can close this window and return to OpenClaw.</p></body></html>",
+            "<p>You can close this window and return to EVE.</p></body></html>",
         );
 
         finish(undefined, { code, state });

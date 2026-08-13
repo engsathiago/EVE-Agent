@@ -40,7 +40,7 @@ async function runFallbackStoreCase(): Promise<FallbackStoreCaseResult> {
   );
 
   vi.doMock("../agents/agent-scope-config.js", () => ({
-    resolveDefaultAgentDir: () => "/tmp/openclaw-agent",
+    resolveDefaultAgentDir: () => "/tmp/eve-agent",
   }));
   vi.doMock("../agents/auth-profiles/oauth.js", () => ({
     resolveApiKeyForProfile,
@@ -90,7 +90,7 @@ describe("provider auth profile helpers", () => {
     expect(fallbackStoreCase.resolvedKey).toBe("fallback-key");
     expect(fallbackStoreCase.resolveApiKeyCalls).toContainEqual([
       expect.objectContaining({
-        agentDir: "/tmp/openclaw-agent",
+        agentDir: "/tmp/eve-agent",
         profileId: "openai:default",
         store: expect.objectContaining({
           profiles: expect.objectContaining({
@@ -145,7 +145,7 @@ describe("provider auth profile helpers", () => {
     );
 
     vi.doMock("../agents/agent-scope-config.js", () => ({
-      resolveDefaultAgentDir: () => "/tmp/openclaw-agent",
+      resolveDefaultAgentDir: () => "/tmp/eve-agent",
     }));
     vi.doMock("../agents/auth-profiles/oauth.js", () => ({
       resolveApiKeyForProfile,
@@ -210,7 +210,7 @@ describe("provider auth profile helpers", () => {
     );
 
     vi.doMock("../agents/agent-scope-config.js", () => ({
-      resolveDefaultAgentDir: () => "/tmp/openclaw-agent",
+      resolveDefaultAgentDir: () => "/tmp/eve-agent",
     }));
     vi.doMock("../agents/auth-profiles/external-cli-discovery.js", () => ({
       externalCliDiscoveryForProviderAuth: vi.fn(() => externalCli),
@@ -247,10 +247,10 @@ describe("provider auth profile helpers", () => {
         includeExternalCliAuth: true,
       }),
     ).toBe(true);
-    expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(1, "/tmp/openclaw-agent");
+    expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(1, "/tmp/eve-agent");
     expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(
       2,
-      "/tmp/openclaw-agent",
+      "/tmp/eve-agent",
       { externalCli },
     );
   });

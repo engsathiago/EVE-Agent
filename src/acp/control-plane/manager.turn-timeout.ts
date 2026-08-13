@@ -1,8 +1,8 @@
 /** Timeout and cleanup helpers for long-running ACP turns. */
-import type { AcpRuntimeSessionMode } from "@openclaw/acp-core/runtime/types";
-import { clampTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
+import type { AcpRuntimeSessionMode } from "@eve/acp-core/runtime/types";
+import { clampTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
 import { resolveAgentTimeoutMs } from "../../agents/timeout.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { AcpRuntimeError } from "../runtime/errors.js";
 import type { ActiveTurnState, SessionAcpMeta } from "./manager.types.js";
@@ -13,7 +13,7 @@ const ACP_TURN_TIMEOUT_REASON = "turn-timeout";
 
 /** Resolves the effective ACP turn timeout from session runtime options or agent defaults. */
 export function resolveTurnTimeoutMs(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   meta: SessionAcpMeta;
 }): number {
   const runtimeTimeoutSeconds = resolveRuntimeOptionsFromMeta(params.meta).timeoutSeconds;

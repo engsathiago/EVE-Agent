@@ -1,5 +1,5 @@
 /** Heartbeat prompt defaults, token stripping, task parsing, and due-time helpers. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { parseDurationMs } from "../cli/parse-duration.js";
 import { escapeRegExp } from "../shared/regexp.js";
 import { HEARTBEAT_TOKEN } from "./tokens.js";
@@ -20,7 +20,7 @@ export const HEARTBEAT_PROMPT = `${HEARTBEAT_CONTEXT_PROMPT} If nothing needs at
 export const HEARTBEAT_RESPONSE_TOOL_INSTRUCTIONS =
   "Use heartbeat_respond to report the wake outcome. Set notify=false when nothing needs the user's attention. Set notify=true with notificationText only when the user should be interrupted.";
 export const HEARTBEAT_RESPONSE_TOOL_PROMPT = `${HEARTBEAT_CONTEXT_PROMPT} ${HEARTBEAT_RESPONSE_TOOL_INSTRUCTIONS}`;
-export const HEARTBEAT_TRANSCRIPT_PROMPT = "[OpenClaw heartbeat poll]";
+export const HEARTBEAT_TRANSCRIPT_PROMPT = "[EVE heartbeat poll]";
 export const DEFAULT_HEARTBEAT_EVERY = "30m";
 export const DEFAULT_HEARTBEAT_ACK_MAX_CHARS = 300;
 

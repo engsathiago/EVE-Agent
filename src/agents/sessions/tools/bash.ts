@@ -6,7 +6,7 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { Container, Text, truncateToWidth } from "@earendil-works/pi-tui";
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
+import { resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
 import { Type } from "typebox";
 import { keyHint } from "../../modes/interactive/components/keybinding-hints.js";
 import { truncateToVisualLines } from "../../modes/interactive/components/visual-truncate.js";
@@ -44,9 +44,9 @@ export function resolveBashTimeoutMs(timeoutSeconds: unknown): number | undefine
 }
 
 /**
- * Create bash operations using OpenClaw runtime's built-in local shell execution backend.
+ * Create bash operations using EVE runtime's built-in local shell execution backend.
  *
- * This is useful for extensions that intercept user_bash and still want OpenClaw runtime's
+ * This is useful for extensions that intercept user_bash and still want EVE runtime's
  * standard local shell behavior while wrapping or rewriting commands.
  */
 export function createLocalBashOperations(options?: { shellPath?: string }): BashOperations {
@@ -302,7 +302,7 @@ export function createBashToolDefinition(
       void ctx;
       const resolvedCommand = commandPrefix ? `${commandPrefix}\n${command}` : command;
       const spawnContext = resolveSpawnContext(resolvedCommand, cwd, spawnHook);
-      const output = new OutputAccumulator({ tempFilePrefix: "openclaw-bash" });
+      const output = new OutputAccumulator({ tempFilePrefix: "eve-bash" });
       let updateTimer: NodeJS.Timeout | undefined;
       let updateDirty = false;
       let lastUpdateAt = 0;

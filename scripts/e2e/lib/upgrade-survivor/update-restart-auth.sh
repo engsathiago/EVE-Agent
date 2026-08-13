@@ -7,9 +7,9 @@ install_update_restart_systemctl_shim() {
 #!/usr/bin/env bash
 set -euo pipefail
 
-log_file="${OPENCLAW_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_LOG:-/tmp/openclaw-systemctl-shim.log}"
-pid_file="${OPENCLAW_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_PID_FILE:-/tmp/openclaw-systemctl-shim.pid}"
-daemon_log="${OPENCLAW_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_DAEMON_LOG:-/tmp/openclaw-systemctl-shim-gateway.log}"
+log_file="${EVE_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_LOG:-/tmp/eve-systemctl-shim.log}"
+pid_file="${EVE_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_PID_FILE:-/tmp/eve-systemctl-shim.pid}"
+daemon_log="${EVE_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_DAEMON_LOG:-/tmp/eve-systemctl-shim-gateway.log}"
 printf '%s\n' "$*" >>"$log_file"
 
 filtered=()
@@ -53,7 +53,7 @@ stop_gateway() {
 }
 
 unit_path() {
-  printf '%s/.config/systemd/user/openclaw-gateway.service\n' "${HOME:?missing HOME}"
+  printf '%s/.config/systemd/user/eve-gateway.service\n' "${HOME:?missing HOME}"
 }
 
 load_unit_environment() {
@@ -145,9 +145,9 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const stateDir = process.env.OPENCLAW_STATE_DIR;
+const stateDir = process.env.EVE_STATE_DIR;
 if (!stateDir) {
-  throw new Error("missing OPENCLAW_STATE_DIR");
+  throw new Error("missing EVE_STATE_DIR");
 }
 
 const base64UrlEncode = (buf) =>
@@ -202,7 +202,7 @@ writeJson(path.join(stateDir, "devices", "paired.json"), {
     publicKey: publicKeyRaw,
     displayName: "upgrade survivor restart probe",
     platform: process.platform,
-    clientId: "openclaw-cli",
+    clientId: "eve-cli",
     clientMode: "probe",
     role: "operator",
     roles: ["operator"],
@@ -225,8 +225,8 @@ NODE
 }
 
 write_update_restart_service_auth_env() {
-  mkdir -p "$OPENCLAW_STATE_DIR"
-  local dotenv_path="$OPENCLAW_STATE_DIR/.env"
+  mkdir -p "$EVE_STATE_DIR"
+  local dotenv_path="$EVE_STATE_DIR/.env"
   local tmp_path="$dotenv_path.tmp.$$"
   if [ -f "$dotenv_path" ]; then
     grep -v '^GATEWAY_AUTH_TOKEN_REF=' "$dotenv_path" >"$tmp_path" || true
@@ -235,13 +235,13 @@ write_update_restart_service_auth_env() {
   fi
   printf 'GATEWAY_AUTH_TOKEN_REF=%s\n' "$GATEWAY_AUTH_TOKEN_REF" >>"$tmp_path"
   mv "$tmp_path" "$dotenv_path"
-  printf 'GATEWAY_AUTH_TOKEN_REF=%s\n' "$GATEWAY_AUTH_TOKEN_REF" >"$OPENCLAW_STATE_DIR/gateway.systemd.env"
+  printf 'GATEWAY_AUTH_TOKEN_REF=%s\n' "$GATEWAY_AUTH_TOKEN_REF" >"$EVE_STATE_DIR/gateway.systemd.env"
 }
 
 prepare_update_restart_probe_current_install() {
   local port="$1"
   local log_file="$2"
-  local command_timeout="${OPENCLAW_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"
+  local command_timeout="${EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"
   local start_epoch
   local ready_epoch
 
@@ -249,17 +249,17 @@ prepare_update_restart_probe_current_install() {
   install_update_restart_systemctl_shim
   seed_update_restart_probe_device_auth
   start_epoch="$(node -e "process.stdout.write(String(Date.now()))")"
-  env -u OPENCLAW_GATEWAY_TOKEN -u OPENCLAW_GATEWAY_PASSWORD openclaw gateway --port "$port" --bind loopback --allow-unconfigured >"$log_file" 2>&1 &
+  env -u EVE_GATEWAY_TOKEN -u EVE_GATEWAY_PASSWORD eve gateway --port "$port" --bind loopback --allow-unconfigured >"$log_file" 2>&1 &
   gateway_pid="$!"
-  printf '%s\n' "$gateway_pid" >"$OPENCLAW_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_PID_FILE"
-  openclaw_e2e_wait_gateway_ready "$gateway_pid" "$log_file" 360 "$port"
+  printf '%s\n' "$gateway_pid" >"$EVE_UPGRADE_SURVIVOR_SYSTEMCTL_SHIM_PID_FILE"
+  eve_e2e_wait_gateway_ready "$gateway_pid" "$log_file" 360 "$port"
   ready_epoch="$(node -e "process.stdout.write(String(Date.now()))")"
   start_seconds=$(((ready_epoch - start_epoch + 999) / 1000))
   write_update_restart_service_auth_env
-  if ! openclaw_e2e_maybe_timeout "$command_timeout" env -u OPENCLAW_GATEWAY_TOKEN -u OPENCLAW_GATEWAY_PASSWORD openclaw gateway install --force --json >"$OPENCLAW_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_JSON" 2>"$OPENCLAW_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_ERR"; then
+  if ! eve_e2e_maybe_timeout "$command_timeout" env -u EVE_GATEWAY_TOKEN -u EVE_GATEWAY_PASSWORD eve gateway install --force --json >"$EVE_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_JSON" 2>"$EVE_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_ERR"; then
     echo "gateway service install failed" >&2
-    cat "$OPENCLAW_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_ERR" >&2 || true
-    cat "$OPENCLAW_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_JSON" >&2 || true
+    cat "$EVE_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_ERR" >&2 || true
+    cat "$EVE_UPGRADE_SURVIVOR_BASELINE_SERVICE_INSTALL_JSON" >&2 || true
     return 1
   fi
 }

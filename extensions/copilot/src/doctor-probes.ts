@@ -2,7 +2,7 @@
  * Runtime doctor probes for the copilot extension.
  *
  * Imperative side-effecting checks used to diagnose a copilot
- * deployment from within `openclaw doctor` (or any equivalent
+ * deployment from within `eve doctor` (or any equivalent
  * harness-side health check). Kept out of doctor-contract-api.ts
  * because that contract is declarative and auto-loaded by the
  * plugin registry, whereas these probes spawn subprocesses or
@@ -205,7 +205,7 @@ export async function probeCopilotHomeWritable(
  * Validates that at least one of {useLoggedInUser, gitHubToken,
  * profileId+profileVersion} is set. This is intentionally a
  * shape-only probe: actually performing an SDK auth handshake
- * would require a pool and is out of scope for `openclaw doctor`.
+ * would require a pool and is out of scope for `eve doctor`.
  */
 export function probeCopilotAuthShape(input: {
   useLoggedInUser?: boolean;

@@ -1,13 +1,13 @@
 // Gateway session-history projection state.
 // Tracks transcript sequence windows for paginated chat-history SSE updates.
-import { asPositiveSafeInteger } from "@openclaw/normalization-core/number-coercion";
+import { asPositiveSafeInteger } from "@eve/normalization-core/number-coercion";
 import {
   DEFAULT_CHAT_HISTORY_TEXT_MAX_CHARS,
   projectChatDisplayMessages,
 } from "./chat-display-projection.js";
 import { resolveTranscriptPathForComparison } from "./session-transcript-path.js";
 import {
-  attachOpenClawTranscriptMeta,
+  attachEVETranscriptMeta,
   readRecentSessionMessagesWithStatsAsync,
   readSessionMessagesWithSourceAsync,
 } from "./session-transcript-readers.js";
@@ -20,7 +20,7 @@ type SessionHistoryTranscriptMeta = {
 };
 
 type SessionHistoryMessage = Record<string, unknown> & {
-  __openclaw?: SessionHistoryTranscriptMeta;
+  __eve?: SessionHistoryTranscriptMeta;
 };
 
 type PaginatedSessionHistory = {
@@ -102,11 +102,11 @@ function buildPaginatedSessionHistory(params: {
 }
 
 function resolveMessageSeq(message: SessionHistoryMessage | undefined): number | undefined {
-  return asPositiveSafeInteger(message?.["__openclaw"]?.seq);
+  return asPositiveSafeInteger(message?.["__eve"]?.seq);
 }
 
 function isMessageToolMirrorMessage(message: SessionHistoryMessage): boolean {
-  return message.openclawMessageToolMirror !== undefined;
+  return message.eveMessageToolMirror !== undefined;
 }
 
 function paginateSessionMessages(
@@ -258,7 +258,7 @@ export class SessionHistorySseState {
     } else {
       this.rawTranscriptSeq += 1;
     }
-    const nextMessage = attachOpenClawTranscriptMeta(update.message, {
+    const nextMessage = attachEVETranscriptMeta(update.message, {
       ...(typeof update.messageId === "string" ? { id: update.messageId } : {}),
       seq: this.rawTranscriptSeq,
     });
@@ -284,7 +284,7 @@ export class SessionHistorySseState {
         const emittedMessage: SessionHistoryMessage =
           isMessageToolMirrorMessage(projectedMessage) ||
           resolveMessageSeq(projectedMessage) === undefined
-            ? (attachOpenClawTranscriptMeta(projectedMessage, {
+            ? (attachEVETranscriptMeta(projectedMessage, {
                 seq: this.rawTranscriptSeq,
               }) as SessionHistoryMessage)
             : projectedMessage;

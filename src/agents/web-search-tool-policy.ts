@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   isToolAllowedByPolicies,
   resolveEffectiveToolPolicy,
@@ -15,7 +15,7 @@ import {
 import { mergeAlsoAllowPolicy, resolveToolProfilePolicy } from "./tool-policy.js";
 
 export type WebSearchToolPolicyParams = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   modelProvider?: string;
   modelId?: string;
   agentId?: string;

@@ -1,5 +1,5 @@
 // Defines allowed-value metadata for config validation and docs.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 
 const MAX_ALLOWED_VALUES_HINT = 12;
 const MAX_ALLOWED_VALUE_CHARS = 160;

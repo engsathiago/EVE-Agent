@@ -1,12 +1,12 @@
 // Covers model runtime policy precedence and private QA runtime overrides.
 import { afterEach, describe, expect, it } from "vitest";
 import type { ModelDefinitionConfig } from "../config/types.models.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
 import { resolveModelRuntimePolicy } from "./model-runtime-policy.js";
 
-const ORIGINAL_BUILD_PRIVATE_QA = process.env.OPENCLAW_BUILD_PRIVATE_QA;
-const ORIGINAL_QA_FORCE_RUNTIME = process.env.OPENCLAW_QA_FORCE_RUNTIME;
+const ORIGINAL_BUILD_PRIVATE_QA = process.env.EVE_BUILD_PRIVATE_QA;
+const ORIGINAL_QA_FORCE_RUNTIME = process.env.EVE_QA_FORCE_RUNTIME;
 
 const createModelConfig = (agentRuntimeId: string): ModelDefinitionConfig => ({
   id: "qwen-local",
@@ -25,7 +25,7 @@ const createModelConfig = (agentRuntimeId: string): ModelDefinitionConfig => ({
 });
 
 function restoreEnv(
-  name: "OPENCLAW_BUILD_PRIVATE_QA" | "OPENCLAW_QA_FORCE_RUNTIME",
+  name: "EVE_BUILD_PRIVATE_QA" | "EVE_QA_FORCE_RUNTIME",
   value: string | undefined,
 ): void {
   // Tests mutate private QA env gates; restore exact process state after each.
@@ -36,7 +36,7 @@ function restoreEnv(
   setTestEnvValue(name, value);
 }
 
-function makeProviderRuntimeConfig(runtime: string): OpenClawConfig {
+function makeProviderRuntimeConfig(runtime: string): EVEConfig {
   return {
     models: {
       providers: {
@@ -47,18 +47,18 @@ function makeProviderRuntimeConfig(runtime: string): OpenClawConfig {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 afterEach(() => {
-  restoreEnv("OPENCLAW_BUILD_PRIVATE_QA", ORIGINAL_BUILD_PRIVATE_QA);
-  restoreEnv("OPENCLAW_QA_FORCE_RUNTIME", ORIGINAL_QA_FORCE_RUNTIME);
+  restoreEnv("EVE_BUILD_PRIVATE_QA", ORIGINAL_BUILD_PRIVATE_QA);
+  restoreEnv("EVE_QA_FORCE_RUNTIME", ORIGINAL_QA_FORCE_RUNTIME);
 });
 
 describe("resolveModelRuntimePolicy", () => {
   it("ignores the QA force-runtime override when the private QA gate is unset", () => {
-    deleteTestEnvValue("OPENCLAW_BUILD_PRIVATE_QA");
-    setTestEnvValue("OPENCLAW_QA_FORCE_RUNTIME", "openclaw");
+    deleteTestEnvValue("EVE_BUILD_PRIVATE_QA");
+    setTestEnvValue("EVE_QA_FORCE_RUNTIME", "eve");
 
     expect(
       resolveModelRuntimePolicy({
@@ -75,8 +75,8 @@ describe("resolveModelRuntimePolicy", () => {
   it("respects the QA force-runtime override when the private QA gate is set", () => {
     // The force-runtime override is intentionally gated to private QA builds so
     // normal users cannot accidentally change model runtime selection via env.
-    setTestEnvValue("OPENCLAW_BUILD_PRIVATE_QA", "1");
-    setTestEnvValue("OPENCLAW_QA_FORCE_RUNTIME", "openclaw");
+    setTestEnvValue("EVE_BUILD_PRIVATE_QA", "1");
+    setTestEnvValue("EVE_QA_FORCE_RUNTIME", "eve");
 
     expect(
       resolveModelRuntimePolicy({
@@ -85,14 +85,14 @@ describe("resolveModelRuntimePolicy", () => {
         modelId: "gpt-5.5",
       }),
     ).toEqual({
-      policy: { id: "openclaw" },
+      policy: { id: "eve" },
       source: "model",
     });
   });
 
   it("ignores invalid QA force-runtime values even when the private QA gate is set", () => {
-    setTestEnvValue("OPENCLAW_BUILD_PRIVATE_QA", "1");
-    setTestEnvValue("OPENCLAW_QA_FORCE_RUNTIME", "bogus");
+    setTestEnvValue("EVE_BUILD_PRIVATE_QA", "1");
+    setTestEnvValue("EVE_QA_FORCE_RUNTIME", "bogus");
 
     expect(
       resolveModelRuntimePolicy({
@@ -111,11 +111,11 @@ describe("resolveModelRuntimePolicy", () => {
       agents: {
         defaults: {
           models: {
-            "vllm/*": { agentRuntime: { id: "openclaw" } },
+            "vllm/*": { agentRuntime: { id: "eve" } },
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -124,7 +124,7 @@ describe("resolveModelRuntimePolicy", () => {
         modelId: "qwen-local",
       }),
     ).toEqual({
-      policy: { id: "openclaw" },
+      policy: { id: "eve" },
       source: "model",
       matchedProvider: "vllm",
     });
@@ -135,11 +135,11 @@ describe("resolveModelRuntimePolicy", () => {
       agents: {
         defaults: {
           models: {
-            "vllm/*": { agentRuntime: { id: "openclaw" } },
+            "vllm/*": { agentRuntime: { id: "eve" } },
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -147,7 +147,7 @@ describe("resolveModelRuntimePolicy", () => {
         provider: "vllm",
       }),
     ).toEqual({
-      policy: { id: "openclaw" },
+      policy: { id: "eve" },
       source: "model",
       matchedProvider: "vllm",
     });
@@ -160,12 +160,12 @@ describe("resolveModelRuntimePolicy", () => {
       agents: {
         defaults: {
           models: {
-            "vllm/*": { agentRuntime: { id: "openclaw" } },
+            "vllm/*": { agentRuntime: { id: "eve" } },
             "vllm/qwen-local": { agentRuntime: { id: "codex" } },
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -185,7 +185,7 @@ describe("resolveModelRuntimePolicy", () => {
       agents: {
         defaults: {
           models: {
-            "vllm/*": { agentRuntime: { id: "openclaw" } },
+            "vllm/*": { agentRuntime: { id: "eve" } },
           },
         },
       },
@@ -197,7 +197,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -216,7 +216,7 @@ describe("resolveModelRuntimePolicy", () => {
       agents: {
         defaults: {
           models: {
-            "vllm/*": { agentRuntime: { id: "openclaw" } },
+            "vllm/*": { agentRuntime: { id: "eve" } },
           },
         },
       },
@@ -229,7 +229,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -238,7 +238,7 @@ describe("resolveModelRuntimePolicy", () => {
         modelId: "qwen-local",
       }),
     ).toEqual({
-      policy: { id: "openclaw" },
+      policy: { id: "eve" },
       source: "model",
       matchedProvider: "vllm",
     });
@@ -253,7 +253,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -277,7 +277,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -297,7 +297,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -329,7 +329,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({
@@ -356,7 +356,7 @@ describe("resolveModelRuntimePolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveModelRuntimePolicy({

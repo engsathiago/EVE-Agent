@@ -1,9 +1,9 @@
 /**
  * Transport-aware stream factory selection.
  *
- * Routes models that need OpenClaw-managed proxy/TLS/local-service semantics onto built-in transport implementations.
+ * Routes models that need EVE-managed proxy/TLS/local-service semantics onto built-in transport implementations.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { Api, Model } from "../llm/types.js";
 import { resolveProviderStreamFn } from "../plugins/provider-runtime.js";
 import { createAnthropicMessagesTransportStreamFn } from "./anthropic-transport-stream.js";
@@ -26,16 +26,16 @@ const SUPPORTED_TRANSPORT_APIS = new Set<Api>([
 ]);
 
 const SIMPLE_TRANSPORT_API_ALIAS: Record<string, Api> = {
-  "openai-responses": "openclaw-openai-responses-transport",
-  "openai-chatgpt-responses": "openclaw-openai-responses-transport",
-  "openai-completions": "openclaw-openai-completions-transport",
-  "azure-openai-responses": "openclaw-azure-openai-responses-transport",
-  "anthropic-messages": "openclaw-anthropic-messages-transport",
-  "google-generative-ai": "openclaw-google-generative-ai-transport",
+  "openai-responses": "eve-openai-responses-transport",
+  "openai-chatgpt-responses": "eve-openai-responses-transport",
+  "openai-completions": "eve-openai-completions-transport",
+  "azure-openai-responses": "eve-azure-openai-responses-transport",
+  "anthropic-messages": "eve-anthropic-messages-transport",
+  "google-generative-ai": "eve-google-generative-ai-transport",
 };
 
 type ProviderTransportStreamContext = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
@@ -99,12 +99,12 @@ function createSupportedTransportStreamFn(
   }
 }
 
-function hasOpenClawTransportRequirement(model: Model): boolean {
+function hasEVETransportRequirement(model: Model): boolean {
   const request = getModelProviderRequestTransport(model);
   return Boolean(request?.proxy || request?.tls || getModelProviderLocalService(model));
 }
 
-/** Returns whether OpenClaw has a managed transport implementation for this API. */
+/** Returns whether EVE has a managed transport implementation for this API. */
 export function isTransportAwareApiSupported(api: Api): boolean {
   return SUPPORTED_TRANSPORT_APIS.has(api);
 }
@@ -119,7 +119,7 @@ export function createTransportAwareStreamFnForModel(
   model: Model,
   ctx?: ProviderTransportStreamContext,
 ): StreamFn | undefined {
-  if (!hasOpenClawTransportRequirement(model)) {
+  if (!hasEVETransportRequirement(model)) {
     return undefined;
   }
   if (!isTransportAwareApiSupported(model.api)) {
@@ -130,12 +130,12 @@ export function createTransportAwareStreamFnForModel(
   return createSupportedTransportStreamFn(model, ctx);
 }
 
-/** Creates a managed OpenClaw transport stream for explicit fallback/runtime callers. */
-export function createOpenClawTransportStreamFnForModel(
+/** Creates a managed EVE transport stream for explicit fallback/runtime callers. */
+export function createEVETransportStreamFnForModel(
   model: Model,
   ctx?: ProviderTransportStreamContext,
 ): StreamFn | undefined {
-  // Explicit fallback callers use this when they need OpenClaw's HTTP
+  // Explicit fallback callers use this when they need EVE's HTTP
   // transport semantics regardless of the default embedded-runner strategy.
   // Native OpenAI HTTP still depends on this path for strict tool shaping,
   // attribution, cache-boundary stripping, and runtime credential injection.
@@ -150,7 +150,7 @@ export function createBoundaryAwareStreamFnForModel(
   ctx?: ProviderTransportStreamContext,
 ): StreamFn | undefined {
   // Default embedded-runner fallback. Keep OpenAI-family APIs here while native
-  // HTTP streams preserve the same OpenClaw request contract.
+  // HTTP streams preserve the same EVE request contract.
   if (!isTransportAwareApiSupported(model.api)) {
     return undefined;
   }

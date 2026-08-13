@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SkillStatusEntry } from "../skills/discovery/status.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import {
@@ -31,8 +31,8 @@ function createSkill(overrides: Partial<SkillStatusEntry> = {}): SkillStatusEntr
     description: "Missing tool",
     source: "workspace",
     bundled: false,
-    filePath: "/tmp/openclaw-test-workspace/skills/missing-tool/SKILL.md",
-    baseDir: "/tmp/openclaw-test-workspace/skills/missing-tool",
+    filePath: "/tmp/eve-test-workspace/skills/missing-tool/SKILL.md",
+    baseDir: "/tmp/eve-test-workspace/skills/missing-tool",
     skillKey: "missing-tool",
     always: false,
     disabled: false,
@@ -44,14 +44,14 @@ function createSkill(overrides: Partial<SkillStatusEntry> = {}): SkillStatusEntr
     userInvocable: true,
     commandVisible: false,
     requirements: {
-      bins: ["openclaw-test-missing-skill-bin"],
+      bins: ["eve-test-missing-skill-bin"],
       anyBins: [],
       env: [],
       config: [],
       os: [],
     },
     missing: {
-      bins: ["openclaw-test-missing-skill-bin"],
+      bins: ["eve-test-missing-skill-bin"],
       anyBins: [],
       env: [],
       config: [],
@@ -103,7 +103,7 @@ describe("CORE_HEALTH_CHECKS", () => {
     resetCoreHealthChecksForTest();
     mocks.loadModelCatalog.mockClear();
     mocks.loadModelCatalog.mockResolvedValue([]);
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       hooks: {
         gmail: {
           model: "openai/gpt-5.5",
@@ -147,10 +147,10 @@ describe("CORE_HEALTH_CHECKS", () => {
 
   it("converts unavailable skills into repair-capable health findings", async () => {
     const unavailableSkill = createSkill();
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
-          workspace: "/tmp/openclaw-test-workspace",
+          workspace: "/tmp/eve-test-workspace",
           skills: ["missing-tool"],
         },
       },
@@ -172,7 +172,7 @@ describe("CORE_HEALTH_CHECKS", () => {
       mode: "lint",
       runtime,
       cfg,
-      cwd: "/tmp/openclaw-test-workspace",
+      cwd: "/tmp/eve-test-workspace",
     });
     expect(findings).toContainEqual(
       expect.objectContaining({
@@ -187,7 +187,7 @@ describe("CORE_HEALTH_CHECKS", () => {
           mode: "fix",
           runtime,
           cfg,
-          cwd: "/tmp/openclaw-test-workspace",
+          cwd: "/tmp/eve-test-workspace",
         },
         { paths: ["skills.entries.other-tool.enabled"] },
       ),
@@ -198,7 +198,7 @@ describe("CORE_HEALTH_CHECKS", () => {
           mode: "fix",
           runtime,
           cfg,
-          cwd: "/tmp/openclaw-test-workspace",
+          cwd: "/tmp/eve-test-workspace",
         },
         { paths: ["skills.entries.missing-tool.enabled"] },
       ),
@@ -213,7 +213,7 @@ describe("CORE_HEALTH_CHECKS", () => {
         mode: "fix",
         runtime,
         cfg,
-        cwd: "/tmp/openclaw-test-workspace",
+        cwd: "/tmp/eve-test-workspace",
       },
       findings,
     );
@@ -294,7 +294,7 @@ describe("CORE_HEALTH_CHECKS", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
     });
 
     expect(findings).toStrictEqual([
@@ -305,14 +305,14 @@ describe("CORE_HEALTH_CHECKS", () => {
         target: "openai/gpt-5.5",
         requirement: "Codex plugin enabled for routes that use the Codex runtime.",
         fixHint:
-          "Run `openclaw doctor --fix`: it enables plugins.entries.codex, or set the affected OpenAI models to an OpenClaw runtime policy.",
+          "Run `eve doctor --fix`: it enables plugins.entries.codex, or set the affected OpenAI models to an EVE runtime policy.",
       }),
     ]);
     expect(findings[0]?.message).toContain("Codex plugin is disabled by config");
   });
 
   it("uses the read-only model catalog for hooks.gmail.model checks", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       hooks: {
         gmail: {
           model: "openai/gpt-5.5",
@@ -324,7 +324,7 @@ describe("CORE_HEALTH_CHECKS", () => {
 
   it("skips gateway auth warning when SecretRef-managed token resolves in lint checks", async () => {
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
-    await withEnvAsync({ OPENCLAW_TEST_GATEWAY_TOKEN: "resolved-test-token" }, async () => {
+    await withEnvAsync({ EVE_TEST_GATEWAY_TOKEN: "resolved-test-token" }, async () => {
       const findings = await check?.detect({
         mode: "lint",
         runtime: { log() {}, error() {}, exit() {} },
@@ -336,7 +336,7 @@ describe("CORE_HEALTH_CHECKS", () => {
               token: {
                 source: "env",
                 provider: "default",
-                id: "OPENCLAW_TEST_GATEWAY_TOKEN",
+                id: "EVE_TEST_GATEWAY_TOKEN",
               },
             },
           },
@@ -353,12 +353,12 @@ describe("CORE_HEALTH_CHECKS", () => {
     });
   });
 
-  it("reports unresolved SecretRefs even when OPENCLAW_GATEWAY_TOKEN is set", async () => {
+  it("reports unresolved SecretRefs even when EVE_GATEWAY_TOKEN is set", async () => {
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: "fallback-token",
-        OPENCLAW_MISSING_GATEWAY_REF_TOKEN: undefined,
+        EVE_GATEWAY_TOKEN: "fallback-token",
+        EVE_MISSING_GATEWAY_REF_TOKEN: undefined,
       },
       async () => {
         const findings = await check?.detect({
@@ -372,7 +372,7 @@ describe("CORE_HEALTH_CHECKS", () => {
                 token: {
                   source: "env",
                   provider: "default",
-                  id: "OPENCLAW_MISSING_GATEWAY_REF_TOKEN",
+                  id: "EVE_MISSING_GATEWAY_REF_TOKEN",
                 },
               },
             },
@@ -396,7 +396,7 @@ describe("CORE_HEALTH_CHECKS", () => {
   });
 
   it("does not execute or warn for valid exec SecretRefs during default gateway auth lint checks", async () => {
-    tmp = await fs.mkdtemp(join(tmpdir(), "openclaw-health-exec-ref-"));
+    tmp = await fs.mkdtemp(join(tmpdir(), "eve-health-exec-ref-"));
     const markerPath = join(tmp, "exec-ran");
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
 
@@ -435,7 +435,7 @@ describe("CORE_HEALTH_CHECKS", () => {
   });
 
   it("executes exec SecretRefs when gateway auth lint explicitly allows exec checks", async () => {
-    tmp = await fs.mkdtemp(join(tmpdir(), "openclaw-health-exec-ref-"));
+    tmp = await fs.mkdtemp(join(tmpdir(), "eve-health-exec-ref-"));
     const markerPath = join(tmp, "exec-ran");
     const resolverPath = join(tmp, "resolve-token.cjs");
     await fs.writeFile(
@@ -489,7 +489,7 @@ describe("CORE_HEALTH_CHECKS", () => {
   });
 
   it("reports exec SecretRef failures when gateway auth lint explicitly allows exec checks", async () => {
-    tmp = await fs.mkdtemp(join(tmpdir(), "openclaw-health-exec-ref-"));
+    tmp = await fs.mkdtemp(join(tmpdir(), "eve-health-exec-ref-"));
     const resolverPath = join(tmp, "fail-token.cjs");
     await fs.writeFile(
       resolverPath,
@@ -498,7 +498,7 @@ describe("CORE_HEALTH_CHECKS", () => {
     );
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
 
-    const findings = await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "fallback-token" }, async () => {
+    const findings = await withEnvAsync({ EVE_GATEWAY_TOKEN: "fallback-token" }, async () => {
       return await check?.detect({
         mode: "lint",
         runtime: { log() {}, error() {}, exit() {} },
@@ -537,7 +537,7 @@ describe("CORE_HEALTH_CHECKS", () => {
         severity: "warning",
         message: expect.stringContaining("Gateway token SecretRef could not be resolved:"),
         fixHint:
-          "Run `openclaw doctor --allow-exec` to verify exec SecretRefs during doctor, or `openclaw secrets audit --allow-exec` to audit all exec SecretRefs.",
+          "Run `eve doctor --allow-exec` to verify exec SecretRefs during doctor, or `eve secrets audit --allow-exec` to audit all exec SecretRefs.",
       }),
     );
   });
@@ -550,7 +550,7 @@ describe("CORE_HEALTH_CHECKS", () => {
             return [
               [
                 "- Tip: back up the workspace in a private git repo (GitHub or GitLab).",
-                "- Keep ~/.openclaw out of git; it contains credentials and session history.",
+                "- Keep ~/.eve out of git; it contains credentials and session history.",
               ].join("\n"),
               "Memory system not found in workspace.",
             ];
@@ -566,11 +566,11 @@ describe("CORE_HEALTH_CHECKS", () => {
       cfg: {
         agents: {
           defaults: {
-            workspace: "/tmp/openclaw-test-workspace",
+            workspace: "/tmp/eve-test-workspace",
           },
         },
       },
-      cwd: "/tmp/openclaw-test-workspace",
+      cwd: "/tmp/eve-test-workspace",
     });
 
     expect(findings).toContainEqual(

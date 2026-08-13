@@ -1,17 +1,17 @@
 // Memory Core plugin module implements manager behavior.
 import type { DatabaseSync } from "node:sqlite";
 import type { FSWatcher } from "chokidar";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { listRegisteredMemoryEmbeddingProviderAdapters } from "openclaw/plugin-sdk/memory-core-host-embedding-registry";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { listRegisteredMemoryEmbeddingProviderAdapters } from "eve-agent/plugin-sdk/memory-core-host-embedding-registry";
 import {
   createSubsystemLogger,
   resolveAgentDir,
   resolveAgentWorkspaceDir,
   resolveMemorySearchConfig,
-  type OpenClawConfig,
+  type EVEConfig,
   type ResolvedMemorySearchConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import { extractKeywords } from "openclaw/plugin-sdk/memory-core-host-engine-qmd";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
+import { extractKeywords } from "eve-agent/plugin-sdk/memory-core-host-engine-qmd";
 import {
   readMemoryFile,
   MEMORY_EMBEDDING_CACHE_TABLE,
@@ -24,9 +24,9 @@ import {
   type MemorySearchResult,
   type MemorySource,
   type MemorySyncProgressUpdate,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
-import { normalizeAgentId } from "openclaw/plugin-sdk/routing";
-import { uniqueValues } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
+import { normalizeAgentId } from "eve-agent/plugin-sdk/routing";
+import { uniqueValues } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   createEmbeddingProvider,
   resolveEmbeddingProviderAdapterTransport,
@@ -72,7 +72,7 @@ const SNIPPET_MAX_CHARS = 700;
 const VECTOR_TABLE = MEMORY_INDEX_VECTOR_TABLE;
 const FTS_TABLE = MEMORY_INDEX_FTS_TABLE;
 const EMBEDDING_CACHE_TABLE = MEMORY_EMBEDDING_CACHE_TABLE;
-const MEMORY_INDEX_MANAGER_CACHE_KEY = Symbol.for("openclaw.memoryIndexManagerCache");
+const MEMORY_INDEX_MANAGER_CACHE_KEY = Symbol.for("eve.memoryIndexManagerCache");
 export const EMBEDDING_PROBE_CACHE_TTL_MS = 30_000;
 const KEYWORD_FALLBACK_SEARCH_TERM_LIMIT = 6;
 const log = createSubsystemLogger("memory");
@@ -108,7 +108,7 @@ export async function closeAllMemoryIndexManagers(): Promise<void> {
 }
 
 export async function closeMemoryIndexManagersForAgent(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
 }): Promise<void> {
   const workspaceDir = resolveAgentWorkspaceDir(params.cfg, params.agentId);
@@ -138,7 +138,7 @@ function resolveEffectiveMemorySearchSettings(
 }
 
 function resolveConfiguredMemoryEmbeddingProvider(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
 }): string | undefined {
   const normalizedAgentId = normalizeAgentId(params.agentId);
@@ -149,7 +149,7 @@ function resolveConfiguredMemoryEmbeddingProvider(params: {
 }
 
 function resolveMemoryEmbeddingProviderRequirement(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   settings: ResolvedMemorySearchConfig;
 }): MemoryEmbeddingProviderRequirement {
@@ -229,7 +229,7 @@ async function closeMemoryIndexManagersForScope(params: {
 export class MemoryIndexManager extends MemoryManagerEmbeddingOps implements MemorySearchManager {
   private readonly cacheKey: string;
   private readonly purpose: MemoryIndexManagerPurpose;
-  protected readonly cfg: OpenClawConfig;
+  protected readonly cfg: EVEConfig;
   protected readonly agentId: string;
   protected readonly workspaceDir: string;
   protected readonly settings: ResolvedMemorySearchConfig;
@@ -302,7 +302,7 @@ export class MemoryIndexManager extends MemoryManagerEmbeddingOps implements Mem
   };
 
   private static async loadProviderResult(params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     agentId: string;
     settings: ResolvedMemorySearchConfig;
   }): Promise<EmbeddingProviderResult> {
@@ -314,7 +314,7 @@ export class MemoryIndexManager extends MemoryManagerEmbeddingOps implements Mem
   }
 
   static async get(params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     agentId: string;
     purpose?: MemoryIndexManagerPurpose;
   }): Promise<MemoryIndexManager | null> {
@@ -367,7 +367,7 @@ export class MemoryIndexManager extends MemoryManagerEmbeddingOps implements Mem
 
   private constructor(params: {
     cacheKey: string;
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     agentId: string;
     workspaceDir: string;
     settings: ResolvedMemorySearchConfig;

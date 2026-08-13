@@ -20,7 +20,7 @@ import {
  * Creates and cleans a temp root for live proof fixtures.
  */
 export async function withProofTempRoot(callback) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-proof-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-proof-"));
   try {
     return await callback(root);
   } finally {

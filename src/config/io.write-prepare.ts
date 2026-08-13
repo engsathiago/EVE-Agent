@@ -1,12 +1,12 @@
 // Prepares config writes by diffing current state and preserving metadata.
 import { isDeepStrictEqual } from "node:util";
-import { normalizeConfiguredProviderCatalogModelId } from "@openclaw/model-catalog-core/provider-model-id-normalization";
+import { normalizeConfiguredProviderCatalogModelId } from "@eve/model-catalog-core/provider-model-id-normalization";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import { parseConfigPathArrayIndex } from "../shared/path-array-index.js";
 import { isRecord } from "../utils.js";
 import { applyMergePatch } from "./merge-patch.js";
 import { normalizeAgentModelMapForConfig, normalizeAgentModelRefForConfig } from "./model-input.js";
-import type { OpenClawConfig } from "./types.js";
+import type { EVEConfig } from "./types.js";
 
 const OPEN_DM_POLICY_ALLOW_FROM_RE =
   /^(?<policyPath>[a-z0-9_.-]+)\s*=\s*"open"\s+requires\s+(?<allowPath>[a-z0-9_.-]+)(?:\s+\(or\s+[a-z0-9_.-]+\))?\s+to include "\*"$/i;
@@ -978,10 +978,10 @@ export function formatConfigValidationFailure(pathLabel: string, issueMessage: s
     `Configuration mismatch: ${policyPath} is "open", but ${allowPath} does not include "*".`,
     "",
     "Fix with:",
-    `  openclaw config set ${allowPath} '["*"]'`,
+    `  eve config set ${allowPath} '["*"]'`,
     "",
     "Or switch policy:",
-    `  openclaw config set ${policyPath} "pairing"`,
+    `  eve config set ${policyPath} "pairing"`,
   ].join("\n");
 }
 
@@ -1003,11 +1003,11 @@ function hasOwnObjectKey(value: Record<string, unknown>, key: string): boolean {
 
 const WRITE_PRUNED_OBJECT = Symbol("write-pruned-object");
 
-function coerceConfig(value: unknown): OpenClawConfig {
+function coerceConfig(value: unknown): EVEConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
   }
-  return value as OpenClawConfig;
+  return value as EVEConfig;
 }
 
 function unsetPathForWriteAt(
@@ -1077,9 +1077,9 @@ function unsetPathForWriteAt(
 }
 
 export function unsetPathForWrite(
-  root: OpenClawConfig,
+  root: EVEConfig,
   pathSegments: string[],
-): { changed: boolean; next: OpenClawConfig } {
+): { changed: boolean; next: EVEConfig } {
   if (pathSegments.length === 0) {
     return { changed: false, next: root };
   }
@@ -1097,9 +1097,9 @@ export function unsetPathForWrite(
 }
 
 export function applyUnsetPathsForWrite(
-  root: OpenClawConfig,
+  root: EVEConfig,
   unsetPaths: readonly string[][] | undefined,
-): OpenClawConfig {
+): EVEConfig {
   let next = root;
   for (const unsetPath of unsetPaths ?? []) {
     if (!Array.isArray(unsetPath) || unsetPath.length === 0) {

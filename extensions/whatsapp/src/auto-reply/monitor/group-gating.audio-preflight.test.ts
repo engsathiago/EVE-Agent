@@ -45,7 +45,7 @@ function makeParams(
       },
       messages: {
         groupChat: {
-          mentionPatterns: ["\\bopenclaw\\b"],
+          mentionPatterns: ["\\beve\\b"],
         },
       },
     } as never,
@@ -53,7 +53,7 @@ function makeParams(
     groupHistoryKey: "whatsapp:group:1203630",
     agentId: "main",
     sessionKey: "agent:main:whatsapp:group:1203630",
-    baseMentionConfig: { mentionRegexes: [/\bopenclaw\b/i] } satisfies MentionConfig,
+    baseMentionConfig: { mentionRegexes: [/\beve\b/i] } satisfies MentionConfig,
     groupHistories,
     groupHistoryLimit: 20,
     groupMemberNames: new Map<string, Map<string, string>>(),
@@ -86,7 +86,7 @@ describe("applyGroupGating audio preflight mention text", () => {
 
     const result = await applyGroupGating({
       ...makeParams(msg, groupHistories),
-      mentionText: "openclaw please summarize the thread",
+      mentionText: "eve please summarize the thread",
     });
 
     expect(result).toEqual({ shouldProcess: true });

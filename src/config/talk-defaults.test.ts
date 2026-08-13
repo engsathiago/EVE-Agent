@@ -40,10 +40,10 @@ describe("talk silence timeout defaults", () => {
   });
 
   it("matches the Apple and Android runtime constants", () => {
-    const macDefaults = readRepoFile("apps/macos/Sources/OpenClaw/TalkDefaults.swift");
+    const macDefaults = readRepoFile("apps/macos/Sources/EVE/TalkDefaults.swift");
     const iosDefaults = readRepoFile("apps/ios/Sources/Voice/TalkDefaults.swift");
     const androidDefaults = readRepoFile(
-      "apps/android/app/src/main/java/ai/openclaw/app/voice/TalkDefaults.kt",
+      "apps/android/app/src/main/java/ai/eve/app/voice/TalkDefaults.kt",
     );
 
     expect(macDefaults).toContain(

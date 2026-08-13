@@ -1,5 +1,5 @@
 // Discord plugin module implements thread bindings.persona behavior.
-import { SYSTEM_MARK } from "openclaw/plugin-sdk/text-chunking";
+import { SYSTEM_MARK } from "eve-agent/plugin-sdk/text-chunking";
 import type { ThreadBindingRecord } from "./thread-bindings.types.js";
 
 const THREAD_BINDING_PERSONA_MAX_CHARS = 80;

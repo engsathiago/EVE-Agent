@@ -1,10 +1,10 @@
 // Matches approval requests against channel account and session bindings.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveStorePath } from "../config/sessions/paths.js";
 import { loadSessionStore } from "../config/sessions/store-load.js";
 import { resolveMaintenanceConfigFromInput } from "../config/sessions/store-maintenance.js";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeOptionalAccountId } from "../routing/account-id.js";
 import { parseAgentSessionKey } from "../routing/session-key.js";
 import { normalizeMessageChannel } from "../utils/message-channel.js";
@@ -29,7 +29,7 @@ function normalizeOptionalChannel(value?: string | null): string | undefined {
 
 /** Loads the persisted session entry referenced by an approval request, if still present. */
 export function resolvePersistedApprovalRequestSessionEntry(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ApprovalRequestLike;
 }): PersistedApprovalRequestSessionEntry | null {
   const sessionKey = normalizeOptionalString(params.request.request.sessionKey);
@@ -50,7 +50,7 @@ export function resolvePersistedApprovalRequestSessionEntry(params: {
 }
 
 function resolvePersistedApprovalRequestSessionBinding(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ApprovalRequestLike;
 }): ApprovalRequestSessionBinding | null {
   const persisted = resolvePersistedApprovalRequestSessionEntry(params);
@@ -65,7 +65,7 @@ function resolvePersistedApprovalRequestSessionBinding(params: {
 
 /** Resolves the account id an approval request belongs to for an optional channel filter. */
 export function resolveApprovalRequestAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ApprovalRequestLike;
   channel?: string | null;
 }): string | null {
@@ -93,7 +93,7 @@ export function resolveApprovalRequestAccountId(params: {
 
 /** Resolves an approval request account only when the request can be routed to a channel. */
 export function resolveApprovalRequestChannelAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ApprovalRequestLike;
   channel: string;
 }): string | null {
@@ -114,7 +114,7 @@ export function resolveApprovalRequestChannelAccountId(params: {
 
 /** Checks whether a channel/account pair is eligible to handle an approval request. */
 export function doesApprovalRequestMatchChannelAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ApprovalRequestLike;
   channel: string;
   accountId?: string | null;

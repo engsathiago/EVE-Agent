@@ -7,8 +7,8 @@ import {
   markMigrationItemError,
   MIGRATION_REASON_MISSING_SOURCE_OR_TARGET,
   MIGRATION_REASON_TARGET_EXISTS,
-} from "openclaw/plugin-sdk/migration";
-import type { MigrationItem } from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/migration";
+import type { MigrationItem } from "eve-agent/plugin-sdk/plugin-entry";
 import { exists, readText, sanitizeName } from "./helpers.js";
 import type { ClaudeSource } from "./source.js";
 import type { PlannedTargets } from "./targets.js";

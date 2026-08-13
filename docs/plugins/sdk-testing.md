@@ -1,5 +1,5 @@
 ---
-summary: "Testing utilities and patterns for OpenClaw plugins"
+summary: "Testing utilities and patterns for EVE plugins"
 title: "Plugin testing"
 sidebarTitle: "Testing"
 read_when:
@@ -8,7 +8,7 @@ read_when:
   - You want to understand contract tests for bundled plugins
 ---
 
-Reference for test utilities, patterns, and lint enforcement for OpenClaw
+Reference for test utilities, patterns, and lint enforcement for EVE
 plugins.
 
 <Tip>
@@ -19,37 +19,37 @@ plugins.
 
 ## Test utilities
 
-These test-helper subpaths are repo-local source entrypoints for OpenClaw's own
+These test-helper subpaths are repo-local source entrypoints for EVE's own
 bundled plugin tests. They are not package exports for third-party plugins, and
 they may import Vitest or other repo-only test dependencies.
 
-**Plugin API mock import:** `openclaw/plugin-sdk/plugin-test-api`
+**Plugin API mock import:** `eve-agent/plugin-sdk/plugin-test-api`
 
-**Agent runtime contract import:** `openclaw/plugin-sdk/agent-runtime-test-contracts`
+**Agent runtime contract import:** `eve-agent/plugin-sdk/agent-runtime-test-contracts`
 
-**Channel contract import:** `openclaw/plugin-sdk/channel-contract-testing`
+**Channel contract import:** `eve-agent/plugin-sdk/channel-contract-testing`
 
-**Channel test helper import:** `openclaw/plugin-sdk/channel-test-helpers`
+**Channel test helper import:** `eve-agent/plugin-sdk/channel-test-helpers`
 
-**Channel target test import:** `openclaw/plugin-sdk/channel-target-testing`
+**Channel target test import:** `eve-agent/plugin-sdk/channel-target-testing`
 
-**Plugin contract import:** `openclaw/plugin-sdk/plugin-test-contracts`
+**Plugin contract import:** `eve-agent/plugin-sdk/plugin-test-contracts`
 
-**Plugin runtime test import:** `openclaw/plugin-sdk/plugin-test-runtime`
+**Plugin runtime test import:** `eve-agent/plugin-sdk/plugin-test-runtime`
 
-**Provider contract import:** `openclaw/plugin-sdk/provider-test-contracts`
+**Provider contract import:** `eve-agent/plugin-sdk/provider-test-contracts`
 
-**Provider HTTP mock import:** `openclaw/plugin-sdk/provider-http-test-mocks`
+**Provider HTTP mock import:** `eve-agent/plugin-sdk/provider-http-test-mocks`
 
-**Environment/network test import:** `openclaw/plugin-sdk/test-env`
+**Environment/network test import:** `eve-agent/plugin-sdk/test-env`
 
-**Generic fixture import:** `openclaw/plugin-sdk/test-fixtures`
+**Generic fixture import:** `eve-agent/plugin-sdk/test-fixtures`
 
-**Node builtin mock import:** `openclaw/plugin-sdk/test-node-mocks`
+**Node builtin mock import:** `eve-agent/plugin-sdk/test-node-mocks`
 
-Inside the OpenClaw repo, prefer the focused subpaths below for new bundled
+Inside the EVE repo, prefer the focused subpaths below for new bundled
 plugin tests. The broad
-`openclaw/plugin-sdk/testing` barrel is legacy compatibility only.
+`eve-agent/plugin-sdk/testing` barrel is legacy compatibility only.
 Repo guardrails reject new real imports from `plugin-sdk/testing` and
 `plugin-sdk/test-utils`; those names remain only as deprecated compatibility
 surfaces for compatibility-record tests.
@@ -58,23 +58,23 @@ surfaces for compatibility-record tests.
 import {
   shouldAckReaction,
   removeAckReactionAfterReply,
-} from "openclaw/plugin-sdk/channel-feedback";
-import { installCommonResolveTargetErrorCases } from "openclaw/plugin-sdk/channel-target-testing";
-import { AUTH_PROFILE_RUNTIME_CONTRACT } from "openclaw/plugin-sdk/agent-runtime-test-contracts";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
-import { expectChannelInboundContextContract } from "openclaw/plugin-sdk/channel-contract-testing";
-import { createStartAccountContext } from "openclaw/plugin-sdk/channel-test-helpers";
-import { describePluginRegistrationContract } from "openclaw/plugin-sdk/plugin-test-contracts";
-import { registerSingleProviderPlugin } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { describeOpenAIProviderRuntimeContract } from "openclaw/plugin-sdk/provider-test-contracts";
-import { getProviderHttpMocks } from "openclaw/plugin-sdk/provider-http-test-mocks";
-import { withEnv, withFetchPreconnect, withServer } from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/channel-feedback";
+import { installCommonResolveTargetErrorCases } from "eve-agent/plugin-sdk/channel-target-testing";
+import { AUTH_PROFILE_RUNTIME_CONTRACT } from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
+import { expectChannelInboundContextContract } from "eve-agent/plugin-sdk/channel-contract-testing";
+import { createStartAccountContext } from "eve-agent/plugin-sdk/channel-test-helpers";
+import { describePluginRegistrationContract } from "eve-agent/plugin-sdk/plugin-test-contracts";
+import { registerSingleProviderPlugin } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { describeOpenAIProviderRuntimeContract } from "eve-agent/plugin-sdk/provider-test-contracts";
+import { getProviderHttpMocks } from "eve-agent/plugin-sdk/provider-http-test-mocks";
+import { withEnv, withFetchPreconnect, withServer } from "eve-agent/plugin-sdk/test-env";
 import {
   bundledPluginRoot,
   createCliRuntimeCapture,
   typedCases,
-} from "openclaw/plugin-sdk/test-fixtures";
-import { mockNodeBuiltinModule } from "openclaw/plugin-sdk/test-node-mocks";
+} from "eve-agent/plugin-sdk/test-fixtures";
+import { mockNodeBuiltinModule } from "eve-agent/plugin-sdk/test-node-mocks";
 ```
 
 ### Available exports
@@ -148,7 +148,7 @@ import { mockNodeBuiltinModule } from "openclaw/plugin-sdk/test-node-mocks";
 
 Bundled-plugin contract suites also use SDK testing subpaths for test-only
 registry, manifest, public-artifact, and runtime fixture helpers. Core-only
-suites that depend on bundled OpenClaw inventory stay under `src/plugins/contracts`.
+suites that depend on bundled EVE inventory stay under `src/plugins/contracts`.
 Keep new extension tests on a documented focused SDK subpath such as
 `plugin-sdk/plugin-test-api`, `plugin-sdk/channel-contract-testing`,
 `plugin-sdk/agent-runtime-test-contracts`, `plugin-sdk/channel-test-helpers`,
@@ -166,9 +166,9 @@ Focused testing subpaths also re-export types useful in test files:
 import type {
   ChannelAccountSnapshot,
   ChannelGatewayContext,
-} from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { MockFn, PluginRuntime, RuntimeEnv } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { MockFn, PluginRuntime, RuntimeEnv } from "eve-agent/plugin-sdk/plugin-test-runtime";
 ```
 
 ## Testing target resolution
@@ -178,7 +178,7 @@ channel target resolution:
 
 ```typescript
 import { describe } from "vitest";
-import { installCommonResolveTargetErrorCases } from "openclaw/plugin-sdk/channel-target-testing";
+import { installCommonResolveTargetErrorCases } from "eve-agent/plugin-sdk/channel-target-testing";
 
 describe("my-channel target resolution", () => {
   installCommonResolveTargetErrorCases({
@@ -201,7 +201,7 @@ describe("my-channel target resolution", () => {
 ### Testing registration contracts
 
 Unit tests that pass a hand-written `api` mock to `register(api)` do not exercise
-OpenClaw's loader acceptance gates. Add at least one loader-backed smoke test
+EVE's loader acceptance gates. Add at least one loader-backed smoke test
 for each registration surface your plugin depends on, especially hooks and
 exclusive capabilities such as memory.
 
@@ -213,7 +213,7 @@ entry to declare `kind: "memory"`.
 
 ### Testing runtime config access
 
-Prefer the shared plugin runtime mock from `openclaw/plugin-sdk/channel-test-helpers`
+Prefer the shared plugin runtime mock from `eve-agent/plugin-sdk/channel-test-helpers`
 when testing bundled channel plugins. Its deprecated `runtime.config.loadConfig()` and
 `runtime.config.writeConfigFile(...)` mocks throw by default so tests catch new
 usage of compatibility APIs. Override those mocks only when the test is
@@ -288,8 +288,8 @@ describe("my-provider plugin", () => {
 For code that uses `createPluginRuntimeStore`, mock the runtime in tests:
 
 ```typescript
-import { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
-import type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
+import { createPluginRuntimeStore } from "eve-agent/plugin-sdk/runtime-store";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/runtime-store";
 
 const store = createPluginRuntimeStore<PluginRuntime>({
   pluginId: "test-plugin",
@@ -364,7 +364,7 @@ pnpm test -- src/plugins/contracts/runtime-seams.contract.test.ts
 
 Three rules are enforced by `pnpm check` for in-repo plugins:
 
-1. **No monolithic root imports** -- `openclaw/plugin-sdk` root barrel is rejected
+1. **No monolithic root imports** -- `eve-agent/plugin-sdk` root barrel is rejected
 2. **No direct `src/` imports** -- plugins cannot import `../../src/` directly
 3. **No self-imports** -- plugins cannot import their own `plugin-sdk/<name>` subpath
 
@@ -373,7 +373,7 @@ patterns is recommended.
 
 ## Test configuration
 
-OpenClaw uses Vitest with V8 coverage thresholds. For plugin tests:
+EVE uses Vitest with V8 coverage thresholds. For plugin tests:
 
 ```bash
 # Run all tests
@@ -392,7 +392,7 @@ pnpm test:coverage
 If local runs cause memory pressure:
 
 ```bash
-OPENCLAW_VITEST_MAX_WORKERS=1 pnpm test
+EVE_VITEST_MAX_WORKERS=1 pnpm test
 ```
 
 ## Related

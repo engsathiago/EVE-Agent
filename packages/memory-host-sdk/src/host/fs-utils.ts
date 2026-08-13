@@ -13,7 +13,7 @@ export {
 export { walkDirectory, type WalkDirectoryEntry } from "@openclaw/fs-safe/walk";
 
 const hasPythonModeOverride =
-  process.env.FS_SAFE_PYTHON_MODE != null || process.env.OPENCLAW_FS_SAFE_PYTHON_MODE != null;
+  process.env.FS_SAFE_PYTHON_MODE != null || process.env.EVE_FS_SAFE_PYTHON_MODE != null;
 
 if (!hasPythonModeOverride) {
   configureFsSafePython({ mode: "off" });

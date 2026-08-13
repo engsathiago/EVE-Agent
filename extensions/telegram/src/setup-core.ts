@@ -1,15 +1,15 @@
 // Telegram plugin module implements setup core behavior.
-import type { ChannelSetupAdapter } from "openclaw/plugin-sdk/setup-runtime";
+import type { ChannelSetupAdapter } from "eve-agent/plugin-sdk/setup-runtime";
 import {
   createEnvPatchedAccountSetupAdapter,
   patchChannelConfigForAccount,
   promptResolvedAllowFrom,
   splitSetupEntries,
   createSetupTranslator,
-  type OpenClawConfig,
+  type EVEConfig,
   type WizardPrompter,
-} from "openclaw/plugin-sdk/setup-runtime";
-import { formatCliCommand, formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+} from "eve-agent/plugin-sdk/setup-runtime";
+import { formatCliCommand, formatDocsLink } from "eve-agent/plugin-sdk/setup-tools";
 import { resolveDefaultTelegramAccountId, resolveTelegramAccount } from "./accounts.js";
 import { isNumericTelegramSenderUserId } from "./allow-from.js";
 
@@ -24,19 +24,19 @@ export function getTelegramTokenHelpLines(): string[] {
     t("wizard.telegram.tokenHelpCopyToken"),
     t("wizard.telegram.tokenEnvTip"),
     t("wizard.channels.docs", { link: formatDocsLink("/telegram") }),
-    t("wizard.telegram.website", { url: "https://openclaw.ai" }),
+    t("wizard.telegram.website", { url: "https://eve.ai" }),
   ];
 }
 
 export function getTelegramUserIdHelpLines(): string[] {
   return [
     t("wizard.telegram.userIdHelpLogs", {
-      command: formatCliCommand("openclaw logs --follow"),
+      command: formatCliCommand("eve logs --follow"),
     }),
     t("wizard.telegram.userIdHelpGetUpdates"),
     t("wizard.telegram.userIdHelpThirdParty"),
     t("wizard.channels.docs", { link: formatDocsLink("/telegram") }),
-    t("wizard.telegram.website", { url: "https://openclaw.ai" }),
+    t("wizard.telegram.website", { url: "https://eve.ai" }),
   ];
 }
 
@@ -53,7 +53,7 @@ export function parseTelegramAllowFromId(raw: string): string | null {
 }
 
 export async function promptTelegramAllowFromForAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: WizardPrompter;
   accountId?: string;
 }) {

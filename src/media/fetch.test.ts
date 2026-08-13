@@ -218,7 +218,7 @@ describe("readRemoteMediaBuffer", () => {
   const botFileUrl = `https://files.example.test/file/bot${botToken}/photos/1.jpg`;
 
   beforeAll(async () => {
-    tempHome = await createTempHomeEnv("openclaw-test-home-");
+    tempHome = await createTempHomeEnv("eve-test-home-");
     const fetchModule = await import("./fetch.js");
     readRemoteMediaBuffer = fetchModule.readRemoteMediaBuffer;
     saveRemoteMedia = fetchModule.saveRemoteMedia;

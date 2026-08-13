@@ -1,6 +1,6 @@
 // Inspects gateway port listeners and connection state.
 import os from "node:os";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { isErrno } from "./errors.js";
 import { parseStrictPositiveInteger } from "./parse-finite-number.js";

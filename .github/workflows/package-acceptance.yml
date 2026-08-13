@@ -27,7 +27,7 @@ on:
       package_spec:
         description: Published package spec when source=npm
         required: false
-        default: openclaw@beta
+        default: eve@beta
         type: string
       package_url:
         description: HTTPS .tgz URL when source=url or source=trusted-url
@@ -71,9 +71,9 @@ on:
         default: ""
         type: string
       published_upgrade_survivor_baseline:
-        description: Published OpenClaw package baseline for the published-upgrade-survivor Docker lane
+        description: Published EVE package baseline for the published-upgrade-survivor Docker lane
         required: false
-        default: openclaw@latest
+        default: eve@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional baseline list for published-upgrade-survivor/update-migration; use last-stable-4, all-since-2026.4.23, release-history, or exact versions
@@ -128,7 +128,7 @@ on:
       package_spec:
         description: Published package spec when source=npm
         required: false
-        default: openclaw@beta
+        default: eve@beta
         type: string
       package_url:
         description: HTTPS .tgz URL when source=url or source=trusted-url
@@ -166,9 +166,9 @@ on:
         default: ""
         type: string
       published_upgrade_survivor_baseline:
-        description: Published OpenClaw package baseline for the published-upgrade-survivor Docker lane
+        description: Published EVE package baseline for the published-upgrade-survivor Docker lane
         required: false
-        default: openclaw@latest
+        default: eve@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional baseline list for published-upgrade-survivor/update-migration; use last-stable-4, all-since-2026.4.23, release-history, or exact versions
@@ -191,7 +191,7 @@ on:
         default: ""
         type: string
     secrets:
-      OPENCLAW_TRUSTED_PACKAGE_TOKEN:
+      EVE_TRUSTED_PACKAGE_TOKEN:
         required: false
       OPENAI_API_KEY:
         required: false
@@ -229,15 +229,15 @@ on:
         required: false
       OPENCODE_ZEN_API_KEY:
         required: false
-      OPENCLAW_LIVE_BROWSER_CDP_URL:
+      EVE_LIVE_BROWSER_CDP_URL:
         required: false
-      OPENCLAW_LIVE_SETUP_TOKEN:
+      EVE_LIVE_SETUP_TOKEN:
         required: false
-      OPENCLAW_LIVE_SETUP_TOKEN_MODEL:
+      EVE_LIVE_SETUP_TOKEN_MODEL:
         required: false
-      OPENCLAW_LIVE_SETUP_TOKEN_PROFILE:
+      EVE_LIVE_SETUP_TOKEN_PROFILE:
         required: false
-      OPENCLAW_LIVE_SETUP_TOKEN_VALUE:
+      EVE_LIVE_SETUP_TOKEN_VALUE:
         required: false
       GEMINI_API_KEY:
         required: false
@@ -269,25 +269,25 @@ on:
         required: false
       CLAUDE_CODE_OAUTH_TOKEN:
         required: false
-      OPENCLAW_CODEX_AUTH_JSON:
+      EVE_CODEX_AUTH_JSON:
         required: false
-      OPENCLAW_CODEX_CONFIG_TOML:
+      EVE_CODEX_CONFIG_TOML:
         required: false
-      OPENCLAW_CLAUDE_JSON:
+      EVE_CLAUDE_JSON:
         required: false
-      OPENCLAW_CLAUDE_CREDENTIALS_JSON:
+      EVE_CLAUDE_CREDENTIALS_JSON:
         required: false
-      OPENCLAW_CLAUDE_SETTINGS_JSON:
+      EVE_CLAUDE_SETTINGS_JSON:
         required: false
-      OPENCLAW_CLAUDE_SETTINGS_LOCAL_JSON:
+      EVE_CLAUDE_SETTINGS_LOCAL_JSON:
         required: false
-      OPENCLAW_GEMINI_SETTINGS_JSON:
+      EVE_GEMINI_SETTINGS_JSON:
         required: false
       FIREWORKS_API_KEY:
         required: false
-      OPENCLAW_QA_CONVEX_SITE_URL:
+      EVE_QA_CONVEX_SITE_URL:
         required: false
-      OPENCLAW_QA_CONVEX_SECRET_CI:
+      EVE_QA_CONVEX_SECRET_CI:
         required: false
 
 permissions:
@@ -369,7 +369,7 @@ jobs:
           PACKAGE_URL: ${{ inputs.package_url }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           TRUSTED_SOURCE_ID: ${{ inputs.trusted_source_id }}
-          OPENCLAW_TRUSTED_PACKAGE_TOKEN: ${{ secrets.OPENCLAW_TRUSTED_PACKAGE_TOKEN }}
+          EVE_TRUSTED_PACKAGE_TOKEN: ${{ secrets.EVE_TRUSTED_PACKAGE_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -378,7 +378,7 @@ jobs:
             artifact_dir=".artifacts/package-candidate-input"
           fi
 
-          node scripts/resolve-openclaw-package-candidate.mjs \
+          node scripts/resolve-eve-package-candidate.mjs \
             --source "$SOURCE" \
             --package-ref "$PACKAGE_REF" \
             --package-spec "$PACKAGE_SPEC" \
@@ -387,7 +387,7 @@ jobs:
             --trusted-source-id "$TRUSTED_SOURCE_ID" \
             --artifact-dir "${artifact_dir:-.}" \
             --output-dir .artifacts/docker-e2e-package \
-            --output-name openclaw-current.tgz \
+            --output-name eve-current.tgz \
             --metadata .artifacts/docker-e2e-package/package-candidate.json \
             --github-output "$GITHUB_OUTPUT"
 
@@ -469,11 +469,11 @@ jobs:
           releases_json=""
           npm_versions_json=""
           if [[ "$REQUESTED_BASELINES" == *"release-history"* || "$REQUESTED_BASELINES" == *"all-since-"* || "$REQUESTED_BASELINES" == *"last-stable-"* ]]; then
-            releases_json=".artifacts/package-candidate-input/openclaw-releases.json"
-            npm_versions_json=".artifacts/package-candidate-input/openclaw-npm-versions.json"
+            releases_json=".artifacts/package-candidate-input/eve-releases.json"
+            npm_versions_json=".artifacts/package-candidate-input/eve-npm-versions.json"
             mkdir -p "$(dirname "$releases_json")"
             gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName,publishedAt,isPrerelease > "$releases_json"
-            npm view openclaw versions --json > "$npm_versions_json"
+            npm view eve versions --json > "$npm_versions_json"
           fi
           args=(
             --requested "$REQUESTED_BASELINES"
@@ -496,7 +496,7 @@ jobs:
         with:
           name: ${{ env.PACKAGE_ARTIFACT_NAME }}
           path: |
-            .artifacts/docker-e2e-package/openclaw-current.tgz
+            .artifacts/docker-e2e-package/eve-current.tgz
             .artifacts/docker-e2e-package/package-candidate.json
           retention-days: 14
           if-no-files-found: error
@@ -554,11 +554,11 @@ jobs:
 
       - name: Enforce public package integrity
         env:
-          OPENCLAW_PACKAGE_TARBALL_CHECK_TIMINGS: "0"
+          EVE_PACKAGE_TARBALL_CHECK_TIMINGS: "0"
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/check-openclaw-package-tarball.mjs .artifacts/docker-e2e-package/openclaw-current.tgz
+          node scripts/check-eve-package-tarball.mjs .artifacts/docker-e2e-package/eve-current.tgz
 
   docker_acceptance:
     name: Docker product acceptance
@@ -568,7 +568,7 @@ jobs:
       contents: read
       packages: write
       pull-requests: read
-    uses: ./.github/workflows/openclaw-live-and-e2e-checks-reusable.yml
+    uses: ./.github/workflows/eve-live-and-e2e-checks-reusable.yml
     with:
       advisory: ${{ inputs.advisory }}
       ref: ${{ needs.resolve_package.outputs.package_source_sha || inputs.workflow_ref }}
@@ -601,11 +601,11 @@ jobs:
       MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
       OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}
-      OPENCLAW_LIVE_BROWSER_CDP_URL: ${{ secrets.OPENCLAW_LIVE_BROWSER_CDP_URL }}
-      OPENCLAW_LIVE_SETUP_TOKEN: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN }}
-      OPENCLAW_LIVE_SETUP_TOKEN_MODEL: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_MODEL }}
-      OPENCLAW_LIVE_SETUP_TOKEN_PROFILE: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_PROFILE }}
-      OPENCLAW_LIVE_SETUP_TOKEN_VALUE: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_VALUE }}
+      EVE_LIVE_BROWSER_CDP_URL: ${{ secrets.EVE_LIVE_BROWSER_CDP_URL }}
+      EVE_LIVE_SETUP_TOKEN: ${{ secrets.EVE_LIVE_SETUP_TOKEN }}
+      EVE_LIVE_SETUP_TOKEN_MODEL: ${{ secrets.EVE_LIVE_SETUP_TOKEN_MODEL }}
+      EVE_LIVE_SETUP_TOKEN_PROFILE: ${{ secrets.EVE_LIVE_SETUP_TOKEN_PROFILE }}
+      EVE_LIVE_SETUP_TOKEN_VALUE: ${{ secrets.EVE_LIVE_SETUP_TOKEN_VALUE }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -621,13 +621,13 @@ jobs:
       BYTEPLUS_ACCESS_KEY_ID: ${{ secrets.BYTEPLUS_ACCESS_KEY_ID }}
       BYTEPLUS_SECRET_ACCESS_KEY: ${{ secrets.BYTEPLUS_SECRET_ACCESS_KEY }}
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-      OPENCLAW_CODEX_AUTH_JSON: ${{ secrets.OPENCLAW_CODEX_AUTH_JSON }}
-      OPENCLAW_CODEX_CONFIG_TOML: ${{ secrets.OPENCLAW_CODEX_CONFIG_TOML }}
-      OPENCLAW_CLAUDE_JSON: ${{ secrets.OPENCLAW_CLAUDE_JSON }}
-      OPENCLAW_CLAUDE_CREDENTIALS_JSON: ${{ secrets.OPENCLAW_CLAUDE_CREDENTIALS_JSON }}
-      OPENCLAW_CLAUDE_SETTINGS_JSON: ${{ secrets.OPENCLAW_CLAUDE_SETTINGS_JSON }}
-      OPENCLAW_CLAUDE_SETTINGS_LOCAL_JSON: ${{ secrets.OPENCLAW_CLAUDE_SETTINGS_LOCAL_JSON }}
-      OPENCLAW_GEMINI_SETTINGS_JSON: ${{ secrets.OPENCLAW_GEMINI_SETTINGS_JSON }}
+      EVE_CODEX_AUTH_JSON: ${{ secrets.EVE_CODEX_AUTH_JSON }}
+      EVE_CODEX_CONFIG_TOML: ${{ secrets.EVE_CODEX_CONFIG_TOML }}
+      EVE_CLAUDE_JSON: ${{ secrets.EVE_CLAUDE_JSON }}
+      EVE_CLAUDE_CREDENTIALS_JSON: ${{ secrets.EVE_CLAUDE_CREDENTIALS_JSON }}
+      EVE_CLAUDE_SETTINGS_JSON: ${{ secrets.EVE_CLAUDE_SETTINGS_JSON }}
+      EVE_CLAUDE_SETTINGS_LOCAL_JSON: ${{ secrets.EVE_CLAUDE_SETTINGS_LOCAL_JSON }}
+      EVE_GEMINI_SETTINGS_JSON: ${{ secrets.EVE_GEMINI_SETTINGS_JSON }}
       FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
 
   package_telegram:
@@ -639,14 +639,14 @@ jobs:
       advisory: ${{ inputs.advisory }}
       package_spec: ${{ inputs.package_spec }}
       package_artifact_name: ${{ needs.resolve_package.outputs.package_artifact_name }}
-      package_label: openclaw@${{ needs.resolve_package.outputs.package_version }}
+      package_label: eve@${{ needs.resolve_package.outputs.package_version }}
       harness_ref: ${{ needs.resolve_package.outputs.package_source_sha || inputs.workflow_ref }}
       provider_mode: ${{ needs.resolve_package.outputs.telegram_mode }}
       scenario: ${{ inputs.telegram_scenarios }}
     secrets:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      OPENCLAW_QA_CONVEX_SITE_URL: ${{ secrets.OPENCLAW_QA_CONVEX_SITE_URL }}
-      OPENCLAW_QA_CONVEX_SECRET_CI: ${{ secrets.OPENCLAW_QA_CONVEX_SECRET_CI }}
+      EVE_QA_CONVEX_SITE_URL: ${{ secrets.EVE_QA_CONVEX_SITE_URL }}
+      EVE_QA_CONVEX_SECRET_CI: ${{ secrets.EVE_QA_CONVEX_SECRET_CI }}
 
   summary:
     name: Verify package acceptance

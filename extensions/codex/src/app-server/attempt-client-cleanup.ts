@@ -1,7 +1,7 @@
 /**
  * Best-effort cleanup helpers for Codex app-server startup attempts and turns.
  */
-import { embeddedAgentLog } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import type { CodexAppServerClient } from "./client.js";
 import {
   clearSharedCodexAppServerClientIfCurrent,

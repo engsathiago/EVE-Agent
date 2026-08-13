@@ -22,13 +22,13 @@ afterEach(() => {
 });
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-provider-discovery", tempDirs);
+  return makeTrackedTempDir("eve-provider-discovery", tempDirs);
 }
 
 function hermeticEnv(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return {
-    OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
-    OPENCLAW_VERSION: "2026.4.25",
+    EVE_BUNDLED_PLUGINS_DIR: undefined,
+    EVE_VERSION: "2026.4.25",
     VITEST: "true",
     ...overrides,
   };
@@ -45,7 +45,7 @@ function createProviderContributionCandidate(params: {
     "utf-8",
   );
   fs.writeFileSync(
-    path.join(rootDir, "openclaw.plugin.json"),
+    path.join(rootDir, "eve.plugin.json"),
     JSON.stringify({
       id: params.pluginId ?? "demo",
       configSchema: { type: "object" },

@@ -39,23 +39,23 @@ type ImageGenerationProviderPlugin = import("./types.js").ImageGenerationProvide
 type MediaUnderstandingProviderPlugin = import("./types.js").MediaUnderstandingProviderPlugin;
 type TranscriptSourceProvider = import("./types.js").TranscriptSourceProvider;
 type MusicGenerationProviderPlugin = import("./types.js").MusicGenerationProviderPlugin;
-type OpenClawPluginCliCommandDescriptor = import("./types.js").OpenClawPluginCliCommandDescriptor;
-type OpenClawPluginCliRegistrar = import("./types.js").OpenClawPluginCliRegistrar;
-type OpenClawPluginCommandDefinition = import("./types.js").OpenClawPluginCommandDefinition;
-type OpenClawPluginGatewayRuntimeScopeSurface =
-  import("./types.js").OpenClawPluginGatewayRuntimeScopeSurface;
-type OpenClawGatewayDiscoveryService = import("./types.js").OpenClawGatewayDiscoveryService;
-type OpenClawPluginHttpRouteAuth = import("./types.js").OpenClawPluginHttpRouteAuth;
-type OpenClawPluginHttpRouteHandler = import("./types.js").OpenClawPluginHttpRouteHandler;
-type OpenClawPluginHttpRouteUpgradeHandler =
-  import("./types.js").OpenClawPluginHttpRouteUpgradeHandler;
-type OpenClawPluginHttpRouteMatch = import("./types.js").OpenClawPluginHttpRouteMatch;
-type OpenClawPluginHostedMediaResolver = import("./types.js").OpenClawPluginHostedMediaResolver;
-type OpenClawPluginReloadRegistration = import("./types.js").OpenClawPluginReloadRegistration;
-type OpenClawPluginSecurityAuditCollector =
-  import("./types.js").OpenClawPluginSecurityAuditCollector;
-type OpenClawPluginService = import("./types.js").OpenClawPluginService;
-type OpenClawPluginToolFactory = import("./types.js").OpenClawPluginToolFactory;
+type EVEPluginCliCommandDescriptor = import("./types.js").EVEPluginCliCommandDescriptor;
+type EVEPluginCliRegistrar = import("./types.js").EVEPluginCliRegistrar;
+type EVEPluginCommandDefinition = import("./types.js").EVEPluginCommandDefinition;
+type EVEPluginGatewayRuntimeScopeSurface =
+  import("./types.js").EVEPluginGatewayRuntimeScopeSurface;
+type EVEGatewayDiscoveryService = import("./types.js").EVEGatewayDiscoveryService;
+type EVEPluginHttpRouteAuth = import("./types.js").EVEPluginHttpRouteAuth;
+type EVEPluginHttpRouteHandler = import("./types.js").EVEPluginHttpRouteHandler;
+type EVEPluginHttpRouteUpgradeHandler =
+  import("./types.js").EVEPluginHttpRouteUpgradeHandler;
+type EVEPluginHttpRouteMatch = import("./types.js").EVEPluginHttpRouteMatch;
+type EVEPluginHostedMediaResolver = import("./types.js").EVEPluginHostedMediaResolver;
+type EVEPluginReloadRegistration = import("./types.js").EVEPluginReloadRegistration;
+type EVEPluginSecurityAuditCollector =
+  import("./types.js").EVEPluginSecurityAuditCollector;
+type EVEPluginService = import("./types.js").EVEPluginService;
+type EVEPluginToolFactory = import("./types.js").EVEPluginToolFactory;
 type PluginConversationBindingResolvedEvent =
   import("./types.js").PluginConversationBindingResolvedEvent;
 type TypedPluginHookRegistration = import("./types.js").PluginHookRegistration;
@@ -76,7 +76,7 @@ type UnifiedModelCatalogProviderPlugin = import("./types.js").UnifiedModelCatalo
 export type PluginToolRegistration = {
   pluginId: string;
   pluginName?: string;
-  factory: OpenClawPluginToolFactory;
+  factory: EVEPluginToolFactory;
   names: string[];
   declaredNames?: string[];
   optional: boolean;
@@ -87,10 +87,10 @@ export type PluginToolRegistration = {
 export type PluginCliRegistration = {
   pluginId: string;
   pluginName?: string;
-  register: OpenClawPluginCliRegistrar;
+  register: EVEPluginCliRegistrar;
   parentPath: string[];
   commands: string[];
-  descriptors: OpenClawPluginCliCommandDescriptor[];
+  descriptors: EVEPluginCliCommandDescriptor[];
   source: string;
   rootDir?: string;
 };
@@ -99,11 +99,11 @@ export type PluginCliRegistration = {
 export type PluginHttpRouteRegistration = {
   pluginId?: string;
   path: string;
-  handler: OpenClawPluginHttpRouteHandler;
-  handleUpgrade?: OpenClawPluginHttpRouteUpgradeHandler;
-  auth: OpenClawPluginHttpRouteAuth;
-  match: OpenClawPluginHttpRouteMatch;
-  gatewayRuntimeScopeSurface?: OpenClawPluginGatewayRuntimeScopeSurface;
+  handler: EVEPluginHttpRouteHandler;
+  handleUpgrade?: EVEPluginHttpRouteUpgradeHandler;
+  auth: EVEPluginHttpRouteAuth;
+  match: EVEPluginHttpRouteMatch;
+  gatewayRuntimeScopeSurface?: EVEPluginGatewayRuntimeScopeSurface;
   gatewayMethodDispatchAllowed?: boolean;
   nodeCapability?: {
     surface: string;
@@ -115,7 +115,7 @@ export type PluginHttpRouteRegistration = {
 export type PluginHostedMediaResolverRegistration = {
   pluginId: string;
   pluginName?: string;
-  resolver: OpenClawPluginHostedMediaResolver;
+  resolver: EVEPluginHostedMediaResolver;
   source: string;
   rootDir?: string;
 };
@@ -239,7 +239,7 @@ export type PluginHookRegistration = {
 export type PluginServiceRegistration = {
   pluginId: string;
   pluginName?: string;
-  service: OpenClawPluginService;
+  service: EVEPluginService;
   source: string;
   origin: PluginOrigin;
   trustedOfficialInstall?: boolean;
@@ -249,7 +249,7 @@ export type PluginServiceRegistration = {
 export type PluginGatewayDiscoveryServiceRegistration = {
   pluginId: string;
   pluginName?: string;
-  service: OpenClawGatewayDiscoveryService;
+  service: EVEGatewayDiscoveryService;
   source: string;
   rootDir?: string;
 };
@@ -257,7 +257,7 @@ export type PluginGatewayDiscoveryServiceRegistration = {
 export type PluginReloadRegistration = {
   pluginId: string;
   pluginName?: string;
-  registration: OpenClawPluginReloadRegistration;
+  registration: EVEPluginReloadRegistration;
   source: string;
   rootDir?: string;
 };
@@ -265,7 +265,7 @@ export type PluginReloadRegistration = {
 export type PluginNodeHostCommandRegistration = {
   pluginId: string;
   pluginName?: string;
-  command: import("./types.js").OpenClawPluginNodeHostCommand;
+  command: import("./types.js").EVEPluginNodeHostCommand;
   source: string;
   rootDir?: string;
 };
@@ -273,7 +273,7 @@ export type PluginNodeHostCommandRegistration = {
 export type PluginNodeInvokePolicyRegistration = {
   pluginId: string;
   pluginName?: string;
-  policy: import("./types.js").OpenClawPluginNodeInvokePolicy;
+  policy: import("./types.js").EVEPluginNodeInvokePolicy;
   pluginConfig?: Record<string, unknown>;
   source: string;
   rootDir?: string;
@@ -282,7 +282,7 @@ export type PluginNodeInvokePolicyRegistration = {
 export type PluginSecurityAuditCollectorRegistration = {
   pluginId: string;
   pluginName?: string;
-  collector: OpenClawPluginSecurityAuditCollector;
+  collector: EVEPluginSecurityAuditCollector;
   source: string;
   rootDir?: string;
 };
@@ -290,7 +290,7 @@ export type PluginSecurityAuditCollectorRegistration = {
 export type PluginCommandRegistration = {
   pluginId: string;
   pluginName?: string;
-  command: OpenClawPluginCommandDefinition;
+  command: EVEPluginCommandDefinition;
   source: string;
   rootDir?: string;
 };
@@ -496,9 +496,9 @@ export type PluginRegistryParams = {
 };
 
 export type PluginRegistrationMode = import("./types.js").PluginRegistrationMode;
-export type OpenClawPluginNodeHostCommand = import("./types.js").OpenClawPluginNodeHostCommand;
-export type OpenClawPluginToolContext = import("./types.js").OpenClawPluginToolContext;
-export type OpenClawPluginHttpRouteParams = import("./types.js").OpenClawPluginHttpRouteParams;
-export type OpenClawPluginHookOptions = import("./types.js").OpenClawPluginHookOptions;
+export type EVEPluginNodeHostCommand = import("./types.js").EVEPluginNodeHostCommand;
+export type EVEPluginToolContext = import("./types.js").EVEPluginToolContext;
+export type EVEPluginHttpRouteParams = import("./types.js").EVEPluginHttpRouteParams;
+export type EVEPluginHookOptions = import("./types.js").EVEPluginHookOptions;
 export type PluginHookHandlerMap = import("./types.js").PluginHookHandlerMap;
-export type OpenClawPluginApi = import("./types.js").OpenClawPluginApi;
+export type EVEPluginApi = import("./types.js").EVEPluginApi;

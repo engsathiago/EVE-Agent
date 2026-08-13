@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/diffs",
+  "name": "@eve/diffs",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/diffs",
+      "name": "@eve/diffs",
       "version": "2026.6.8",
       "dependencies": {
         "@pierre/diffs": "1.2.4",

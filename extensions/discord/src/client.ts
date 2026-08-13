@@ -1,10 +1,10 @@
 // Discord plugin module implements client behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-import type { RetryConfig, RetryRunner } from "openclaw/plugin-sdk/retry-runtime";
-import { normalizeAccountId } from "openclaw/plugin-sdk/routing";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { requireRuntimeConfig } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import type { RetryConfig, RetryRunner } from "eve-agent/plugin-sdk/retry-runtime";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/routing";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   mergeDiscordAccountConfig,
   resolveDiscordAccount,
@@ -18,7 +18,7 @@ import type { DiscordRuntimeAccountContext } from "./send.types.js";
 import { normalizeDiscordToken } from "./token.js";
 
 export type DiscordClientOpts = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   token?: string;
   accountId?: string;
   rest?: RequestClient;
@@ -29,7 +29,7 @@ export type DiscordClientOpts = {
 };
 
 export function createDiscordRuntimeAccountContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
 }): DiscordRuntimeAccountContext {
   return {
@@ -76,7 +76,7 @@ function resolveToken(params: {
 function resolveRest(
   token: string,
   account: ResolvedDiscordAccount,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   rest?: RequestClient,
   proxyFetch?: typeof fetch,
   signal?: AbortSignal,
@@ -94,7 +94,7 @@ function resolveRest(
 }
 
 function resolveAccountWithoutToken(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
 }): ResolvedDiscordAccount {
   const accountId = normalizeAccountId(params.accountId);

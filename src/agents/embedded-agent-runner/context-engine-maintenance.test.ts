@@ -549,7 +549,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("defers turn maintenance to a hidden background task when enabled", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -692,7 +692,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("coalesces repeated requests into one active run plus one follow-up run for the same session", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -771,7 +771,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("queues a follow-up maintenance run when a new turn finishes during an active deferred run", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-rerun-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-rerun-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -873,7 +873,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("disposes owned deferred engines only after their maintenance run finishes", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-dispose-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-dispose-", async () => {
       resetCommandQueueStateForTest();
       resetTaskRegistryForTests({ persist: false });
       resetTaskFlowRegistryForTests({ persist: false });
@@ -987,7 +987,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("reports deferred maintenance schedule failure while gateway is draining", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-draining-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-draining-", async () => {
       resetCommandQueueStateForTest();
       resetTaskRegistryForTests({ persist: false });
       resetTaskFlowRegistryForTests({ persist: false });
@@ -1042,7 +1042,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("rejects coalesced deferred maintenance requests while gateway is draining", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-draining-coalesced-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-draining-coalesced-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1124,7 +1124,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("replaces legacy active maintenance tasks that are missing a runId", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1197,7 +1197,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("cancels the queued task when deferred scheduling is rejected", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       const scheduleError = new Error("gateway draining");
       const enqueueSpy = vi
@@ -1254,7 +1254,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("starts deferred maintenance while the foreground session lane stays busy", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1345,7 +1345,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("waits at the same-session read checkpoint before deferred maintenance rewrites", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1451,7 +1451,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("keeps fast deferred maintenance silent for the user", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1501,7 +1501,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("surfaces long-running deferred maintenance and completion via task updates", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();
@@ -1570,7 +1570,7 @@ describe("runContextEngineMaintenance", () => {
   });
 
   it("surfaces deferred maintenance failures even when they fail quickly", async () => {
-    await withStateDirEnv("openclaw-turn-maintenance-", async () => {
+    await withStateDirEnv("eve-turn-maintenance-", async () => {
       vi.useFakeTimers();
       try {
         resetCommandQueueStateForTest();

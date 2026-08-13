@@ -236,7 +236,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
   }
 
   test("two applications with identical command sets each reconcile their own application", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const commands = [new StaticCommand("ping")];
 
@@ -269,7 +269,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
   });
 
   test("re-deploying the same application still hits the persisted cache", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const commands = [new StaticCommand("ping")];
 
@@ -297,7 +297,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
   });
 
   test("persisted cache keys are namespaced by application id", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const commands = [new StaticCommand("ping")];
 
@@ -324,7 +324,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
   });
 
   test("successful deploy repairs a corrupt persisted cache file", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     await fs.writeFile(hashStorePath, "{not json", "utf8");
 
@@ -349,7 +349,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
     // the other deployer's entry. The current implementation re-reads the
     // on-disk hashes inside `persistHashes` and merges them with our
     // in-memory entries before the rename.
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const commands = [new StaticCommand("ping")];
 
@@ -418,7 +418,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
     // when two deployers run `persistHashes` in real parallel — both can read
     // the same snapshot before either writes. The in-process per-path mutex
     // around the read-merge-write cycle makes the operation atomic.
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const commands = [new StaticCommand("ping")];
 
@@ -460,7 +460,7 @@ describe("DiscordCommandDeployer cache scoping (multi-application)", () => {
   });
 
   test("parallel changed deploys preserve fresher sibling cache entries", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-discord-multi-app-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-discord-multi-app-"));
     const hashStorePath = path.join(dir, "command-deploy-cache.json");
     const oldCommands = [new StaticCommand("ping")];
     const newCommands = [new StaticCommand("status")];

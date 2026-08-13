@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { CallGatewayOptions } from "../gateway/call.js";
 import {
   testing,
@@ -137,7 +137,7 @@ let tempRoot = "";
 let tempStoreIndex = 0;
 
 beforeAll(() => {
-  tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-subagent-control-"));
+  tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-subagent-control-"));
 });
 
 afterAll(() => {
@@ -149,10 +149,10 @@ function nextSessionStorePath(label: string) {
   return path.join(tempRoot, `${tempStoreIndex}-${label}.json`);
 }
 
-function cfgWithSessionStore(storePath = nextSessionStorePath("sessions")): OpenClawConfig {
+function cfgWithSessionStore(storePath = nextSessionStorePath("sessions")): EVEConfig {
   return {
     session: { store: storePath },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function writeSessionStoreFixture(label: string, store: Record<string, unknown>) {
@@ -194,7 +194,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:subagent:leaf",
         callerSessionKey: "agent:main:subagent:leaf",
@@ -248,7 +248,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:main",
         callerSessionKey: "agent:main:main",
@@ -290,7 +290,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:main",
         callerSessionKey: "agent:main:main",
@@ -351,7 +351,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:main",
         callerSessionKey: "agent:main:main",
@@ -426,7 +426,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:main",
         callerSessionKey: "agent:main:main",
@@ -496,7 +496,7 @@ describe("sendControlledSubagentMessage", () => {
     const result = await sendControlledSubagentMessage({
       cfg: {
         channels: { whatsapp: { allowFrom: ["*"] } },
-      } as OpenClawConfig,
+      } as EVEConfig,
       controller: {
         controllerSessionKey: "agent:main:main",
         callerSessionKey: "agent:main:main",

@@ -3,10 +3,10 @@
  *
  * Reads bounded, redacted session transcript history after session visibility filtering.
  */
-import { readStringValue } from "@openclaw/normalization-core/string-coerce";
+import { readStringValue } from "@eve/normalization-core/string-coerce";
 import { Type } from "typebox";
 import { getRuntimeConfig } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { callGateway } from "../../gateway/call.js";
 import { capArrayByJsonBytes } from "../../gateway/session-transcript-readers.js";
 import { jsonUtf8Bytes } from "../../infra/json-utf8-bytes.js";
@@ -87,8 +87,8 @@ function sanitizeHistoryContentBlock(block: unknown): {
       delete entry.thinkingSignature;
       truncated = true;
     }
-    if ("openclawReasoningReplay" in entry) {
-      delete entry.openclawReasoningReplay;
+    if ("eveReasoningReplay" in entry) {
+      delete entry.eveReasoningReplay;
       truncated = true;
     }
   }
@@ -186,7 +186,7 @@ function enforceSessionsHistoryHardCap(params: {
 export function createSessionsHistoryTool(opts?: {
   agentSessionKey?: string;
   sandboxed?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   callGateway?: GatewayCaller;
 }): AnyAgentTool {
   return {

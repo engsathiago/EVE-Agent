@@ -1,5 +1,5 @@
 // Googlechat plugin module implements monitor types behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+import type { EVEConfig } from "eve-agent/plugin-sdk/core";
 import type { ResolvedGoogleChatAccount } from "./accounts.js";
 import type { GoogleChatAudienceType } from "./auth.js";
 import type { getGoogleChatRuntime } from "./runtime.js";
@@ -11,7 +11,7 @@ export type GoogleChatRuntimeEnv = {
 
 export type GoogleChatMonitorOptions = {
   account: ResolvedGoogleChatAccount;
-  config: OpenClawConfig;
+  config: EVEConfig;
   runtime: GoogleChatRuntimeEnv;
   abortSignal: AbortSignal;
   webhookPath?: string;
@@ -23,7 +23,7 @@ export type GoogleChatCoreRuntime = ReturnType<typeof getGoogleChatRuntime>;
 
 export type WebhookTarget = {
   account: ResolvedGoogleChatAccount;
-  config: OpenClawConfig;
+  config: EVEConfig;
   runtime: GoogleChatRuntimeEnv;
   core: GoogleChatCoreRuntime;
   path: string;

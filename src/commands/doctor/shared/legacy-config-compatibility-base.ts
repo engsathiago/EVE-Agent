@@ -1,5 +1,5 @@
 // Shared base compatibility normalizers reused by core and plugin setup migrations.
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import {
   normalizeLegacyBrowserConfig,
   normalizeLegacyCrossContextMessageConfig,
@@ -18,10 +18,10 @@ import { migrateLegacyXSearchConfig } from "./legacy-x-search-migrate.js";
 
 /** Run common compatibility migrations before caller-specific setup/channel passes. */
 export function normalizeBaseCompatibilityConfigValues(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   changes: string[],
-  afterBrowser?: (config: OpenClawConfig) => OpenClawConfig,
-): OpenClawConfig {
+  afterBrowser?: (config: EVEConfig) => EVEConfig,
+): EVEConfig {
   let next = seedMissingDefaultAccountsFromSingleAccountBase(cfg, changes);
   next = normalizeLegacyBrowserConfig(next, changes);
   next = afterBrowser ? afterBrowser(next) : next;

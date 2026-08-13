@@ -3,9 +3,9 @@ import { normalizeLowercaseStringOrEmpty } from "./string-utils.js";
 
 // Lightweight stderr debug logging for memory embedding internals.
 
-const debugEmbeddings = isTruthyEnvValue(process.env.OPENCLAW_DEBUG_MEMORY_EMBEDDINGS);
+const debugEmbeddings = isTruthyEnvValue(process.env.EVE_DEBUG_MEMORY_EMBEDDINGS);
 
-/** Write embedding debug metadata when OPENCLAW_DEBUG_MEMORY_EMBEDDINGS is enabled. */
+/** Write embedding debug metadata when EVE_DEBUG_MEMORY_EMBEDDINGS is enabled. */
 export function debugEmbeddingsLog(message: string, meta?: Record<string, unknown>): void {
   if (!debugEmbeddings) {
     return;

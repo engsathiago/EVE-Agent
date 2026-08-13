@@ -24,7 +24,7 @@ const hookMocks = vi.hoisted(() => ({
 }));
 
 let cfg: Record<string, unknown> = {};
-let lastCreateOpenClawToolsContext: Record<string, unknown> | undefined;
+let lastCreateEVEToolsContext: Record<string, unknown> | undefined;
 
 // Perf: keep this suite pure unit. Mock heavyweight config/session modules.
 vi.mock("../config/config.js", () => ({
@@ -75,7 +75,7 @@ vi.mock("../plugins/tools.js", () => ({
 
 // Perf: the real tool factory instantiates many tools per request; for these HTTP
 // routing/policy tests we only need a small set of tool names.
-vi.mock("../agents/openclaw-tools.js", () => {
+vi.mock("../agents/eve-tools.js", () => {
   const toolInputError = (message: string) => {
     const err = new Error(message);
     err.name = "ToolInputError";
@@ -105,10 +105,10 @@ vi.mock("../agents/openclaw-tools.js", () => {
       execute: async () => ({
         ok: true,
         route: {
-          agentTo: lastCreateOpenClawToolsContext?.agentTo,
-          agentThreadId: lastCreateOpenClawToolsContext?.agentThreadId,
+          agentTo: lastCreateEVEToolsContext?.agentTo,
+          agentThreadId: lastCreateEVEToolsContext?.agentThreadId,
         },
-        inheritedToolDenylist: lastCreateOpenClawToolsContext?.inheritedToolDenylist,
+        inheritedToolDenylist: lastCreateEVEToolsContext?.inheritedToolDenylist,
       }),
     },
     {
@@ -204,8 +204,8 @@ vi.mock("../agents/openclaw-tools.js", () => {
   ];
 
   return {
-    createOpenClawTools: (ctx: Record<string, unknown>) => {
-      lastCreateOpenClawToolsContext = ctx;
+    createEVETools: (ctx: Record<string, unknown>) => {
+      lastCreateEVEToolsContext = ctx;
       return ctx.disablePluginTools ? tools.filter((tool) => tool.name !== "browser") : tools;
     },
   };
@@ -272,11 +272,11 @@ afterAll(async () => {
 });
 
 beforeEach(() => {
-  delete process.env.OPENCLAW_GATEWAY_TOKEN;
-  delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+  delete process.env.EVE_GATEWAY_TOKEN;
+  delete process.env.EVE_GATEWAY_PASSWORD;
   pluginHttpHandlers = [];
   cfg = {};
-  lastCreateOpenClawToolsContext = undefined;
+  lastCreateEVEToolsContext = undefined;
   pluginToolMetaState.clear();
   pluginToolMetaState.set("plugin_doctor", { pluginId: "test-plugin", optional: true });
   hookMocks.resolveToolLoopDetectionConfig.mockClear();
@@ -291,8 +291,8 @@ beforeEach(() => {
   vi.mocked(authorizeHttpGatewayConnect).mockResolvedValue({ ok: true });
 });
 
-const gatewayAuthHeaders = () => ({ "x-openclaw-scopes": "operator.write" });
-const gatewayAdminHeaders = () => ({ "x-openclaw-scopes": "operator.admin" });
+const gatewayAuthHeaders = () => ({ "x-eve-scopes": "operator.write" });
+const gatewayAdminHeaders = () => ({ "x-eve-scopes": "operator.admin" });
 
 const allowAgentsListForMain = () => {
   cfg = {
@@ -456,8 +456,8 @@ describe("POST /tools/invoke", () => {
     const body = await res.json();
     expect(body.ok).toBe(true);
     expect(body).toHaveProperty("result");
-    expect(lastCreateOpenClawToolsContext?.allowMediaInvokeCommands).toBe(true);
-    expect(lastCreateOpenClawToolsContext?.disablePluginTools).toBe(true);
+    expect(lastCreateEVEToolsContext?.allowMediaInvokeCommands).toBe(true);
+    expect(lastCreateEVEToolsContext?.disablePluginTools).toBe(true);
     const hookArg = firstHookCallArg();
     expect(hookArg.toolName).toBe("agents_list");
     const hookCtx = hookArg.ctx;
@@ -475,7 +475,7 @@ describe("POST /tools/invoke", () => {
     const res = await invokeAgentsListAuthed({ sessionKey: "main" });
 
     expect(res.status).toBe(200);
-    expect(lastCreateOpenClawToolsContext?.allowGatewaySubagentBinding).toBe(true);
+    expect(lastCreateEVEToolsContext?.allowGatewaySubagentBinding).toBe(true);
   });
 
   it("keeps plugin tools enabled for non-core tool invokes", async () => {
@@ -488,7 +488,7 @@ describe("POST /tools/invoke", () => {
     });
 
     expect(res.status).toBe(200);
-    expect(lastCreateOpenClawToolsContext?.disablePluginTools).toBe(false);
+    expect(lastCreateEVEToolsContext?.disablePluginTools).toBe(false);
   });
 
   it("allows the requested plugin tool through Gateway profile filtering", async () => {
@@ -506,7 +506,7 @@ describe("POST /tools/invoke", () => {
     const body = await expectOkInvokeResponse(res);
     expect(body.result?.ok).toBe(true);
     expect(body.result?.permissionFlow).toBe(true);
-    expect(lastCreateOpenClawToolsContext?.pluginToolAllowlist).toContain("plugin_doctor");
+    expect(lastCreateEVEToolsContext?.pluginToolAllowlist).toContain("plugin_doctor");
   });
 
   it("uses tools.alsoAllow for optional plugin discovery without loading every plugin tool", async () => {
@@ -524,8 +524,8 @@ describe("POST /tools/invoke", () => {
     const body = await expectOkInvokeResponse(res);
     expect(body.result?.ok).toBe(true);
     expect(body.result?.permissionFlow).toBe(true);
-    expect(lastCreateOpenClawToolsContext?.pluginToolAllowlist).toContain("plugin_doctor");
-    expect(lastCreateOpenClawToolsContext?.pluginToolAllowlist).not.toContain("*");
+    expect(lastCreateEVEToolsContext?.pluginToolAllowlist).toContain("plugin_doctor");
+    expect(lastCreateEVEToolsContext?.pluginToolAllowlist).not.toContain("*");
   });
 
   it("blocks tool execution when before_tool_call rejects the invoke", async () => {
@@ -684,8 +684,8 @@ describe("POST /tools/invoke", () => {
       port: sharedPort,
       headers: {
         ...gatewayAuthHeaders(),
-        "x-openclaw-message-to": "channel:24514",
-        "x-openclaw-thread-id": "thread-24514",
+        "x-eve-message-to": "channel:24514",
+        "x-eve-thread-id": "thread-24514",
       },
       tool: "sessions_spawn",
       sessionKey: "main",
@@ -794,7 +794,7 @@ describe("POST /tools/invoke", () => {
       port: sharedPort,
       headers: {
         authorization: "Bearer secret",
-        "x-openclaw-scopes": "operator.write",
+        "x-eve-scopes": "operator.write",
       },
       tool: "nodes",
       sessionKey: "main",
@@ -802,7 +802,7 @@ describe("POST /tools/invoke", () => {
 
     const body = await expectOkInvokeResponse(res);
     expect(body.result).toEqual({ ok: true, result: "nodes" });
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(true);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(true);
   });
 
   it("treats gateway.tools.deny as higher priority than gateway.tools.allow", async () => {
@@ -916,7 +916,7 @@ describe("POST /tools/invoke", () => {
     const res = await invokeTool({
       port: sharedPort,
       headers: {
-        "x-openclaw-scopes": "",
+        "x-eve-scopes": "",
       },
       tool: "agents_list",
       sessionKey: "main",
@@ -951,7 +951,7 @@ describe("POST /tools/invoke", () => {
       port: sharedPort,
       headers: {
         authorization: "Bearer secret",
-        "x-openclaw-scopes": "operator.approvals",
+        "x-eve-scopes": "operator.approvals",
       },
       tool: "write_scoped_test",
       sessionKey: "main",
@@ -959,7 +959,7 @@ describe("POST /tools/invoke", () => {
 
     const writeScopedBody = await expectOkInvokeResponse(writeScopedRes);
     expect(writeScopedBody.result).toEqual({ ok: true, result: "write-scoped" });
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(true);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(true);
   });
 
   it("executes tools for write-scoped callers on the HTTP path", async () => {
@@ -980,13 +980,13 @@ describe("POST /tools/invoke", () => {
       port: sharedPort,
       headers: {
         ...gatewayAuthHeaders(),
-        "x-openclaw-sender-is-owner": "true",
+        "x-eve-sender-is-owner": "true",
       },
       tool: "session_status",
       sessionKey: "main",
     });
     expect(writeRes.status).toBe(200);
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(false);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(false);
 
     const adminRes = await invokeTool({
       port: sharedPort,
@@ -995,7 +995,7 @@ describe("POST /tools/invoke", () => {
       sessionKey: "main",
     });
     expect(adminRes.status).toBe(200);
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(true);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(true);
   });
 
   it("extends the HTTP deny list to high-risk execution and file tools", async () => {
@@ -1036,7 +1036,7 @@ describe("POST /tools/invoke", () => {
 
     const body = await expectOkInvokeResponse(res);
     expect(body.result).toEqual({ ok: true, result: "browser" });
-    expect(lastCreateOpenClawToolsContext?.disablePluginTools).toBe(false);
+    expect(lastCreateEVEToolsContext?.disablePluginTools).toBe(false);
   });
 });
 
@@ -1056,7 +1056,7 @@ describe("tools.invoke Gateway RPC", () => {
     expect(call?.[1]?.toolName).toBe("agents_list");
     expect(call?.[1]?.output).toEqual({ ok: true, result: [] });
     expect((call?.[1] as { source?: unknown } | undefined)?.source).toBe("core");
-    expect(lastCreateOpenClawToolsContext?.allowGatewaySubagentBinding).toBe(true);
+    expect(lastCreateEVEToolsContext?.allowGatewaySubagentBinding).toBe(true);
     const hookArg = firstHookCallArg();
     expect(hookArg.approvalMode).toBe("report");
     expect(hookArg.toolName).toBe("agents_list");
@@ -1089,7 +1089,7 @@ describe("tools.invoke Gateway RPC", () => {
       const error = call?.[1]?.error as { code?: string; message?: string } | undefined;
       expect(error?.code, tool).toBe("not_found");
     }
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(false);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(false);
   });
 
   it("keeps operator.admin RPC callers as owner for explicitly allowed owner-only tools", async () => {
@@ -1108,7 +1108,7 @@ describe("tools.invoke Gateway RPC", () => {
     expect(call?.[1]?.ok).toBe(true);
     expect(call?.[1]?.toolName).toBe("nodes");
     expect(call?.[1]?.output).toEqual({ ok: true, result: "nodes" });
-    expect(lastCreateOpenClawToolsContext?.senderIsOwner).toBe(true);
+    expect(lastCreateEVEToolsContext?.senderIsOwner).toBe(true);
   });
 
   it("returns typed approval-needed refusal when the policy hook blocks", async () => {

@@ -2,12 +2,12 @@
 import crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { mimeTypeFromFilePath } from "openclaw/plugin-sdk/media-mime";
+import { mimeTypeFromFilePath } from "eve-agent/plugin-sdk/media-mime";
 import {
   openLocalFileSafely,
   readRegularFile,
   statRegularFileSync,
-} from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/security-runtime";
 import { getPlatformAdapter } from "../adapter/index.js";
 import type { SsrfPolicyConfig } from "../adapter/types.js";
 import { MediaFileType } from "../types.js";

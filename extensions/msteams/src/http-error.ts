@@ -2,7 +2,7 @@
 import {
   createProviderHttpError,
   extractProviderErrorDetail,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 
 export async function createMSTeamsHttpError(
   response: Response,

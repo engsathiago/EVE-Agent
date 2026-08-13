@@ -3,7 +3,7 @@ import { execFile, execFileSync, spawn } from "node:child_process";
 import {
   normalizeOptionalString,
   normalizeStringifiedOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { AzAccessToken, AzAccount } from "./shared.js";
 import { COGNITIVE_SERVICES_RESOURCE } from "./shared.js";
 

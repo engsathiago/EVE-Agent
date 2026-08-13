@@ -18,7 +18,7 @@ import { writeManagedNpmPlugin } from "./test-helpers/managed-npm-plugin.js";
 const tempDirs: string[] = [];
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-plugin-status", tempDirs);
+  return makeTrackedTempDir("eve-plugin-status", tempDirs);
 }
 
 afterEach(() => {
@@ -74,8 +74,8 @@ describe("buildPluginRegistrySnapshotReport", () => {
         bundledPluginsDir: makeTempDir(),
         disablePersistedRegistry: false,
       }),
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-      OPENCLAW_STATE_DIR: stateDir,
+      EVE_DISABLE_BUNDLED_PLUGINS: "1",
+      EVE_STATE_DIR: stateDir,
     };
     const config = {
       plugins: {
@@ -86,7 +86,7 @@ describe("buildPluginRegistrySnapshotReport", () => {
     };
     const whatsappDir = writeManagedNpmPlugin({
       stateDir,
-      packageName: "@openclaw/whatsapp",
+      packageName: "@eve/whatsapp",
       pluginId: "whatsapp",
       version: "2026.5.2",
       name: "WhatsApp",
@@ -122,7 +122,7 @@ describe("buildPluginRegistrySnapshotReport", () => {
     const fixture = createColdPluginFixture({
       rootDir: makeTempDir(),
       pluginId: "indexed-demo",
-      packageName: "@example/openclaw-indexed-demo",
+      packageName: "@example/eve-indexed-demo",
       packageVersion: "9.8.7",
       manifest: {
         id: "indexed-demo",
@@ -131,7 +131,7 @@ describe("buildPluginRegistrySnapshotReport", () => {
         version: "1.2.3",
         providers: ["indexed-provider"],
         contracts: {
-          agentToolResultMiddleware: ["openclaw", "codex"],
+          agentToolResultMiddleware: ["eve", "codex"],
           speechProviders: ["indexed-speech-provider"],
           realtimeTranscriptionProviders: ["indexed-transcription-provider"],
           realtimeVoiceProviders: ["indexed-voice-provider"],
@@ -159,13 +159,13 @@ describe("buildPluginRegistrySnapshotReport", () => {
       name: "Indexed Demo",
       description: "Manifest-backed list metadata",
       version: "9.8.7",
-      format: "openclaw",
+      format: "eve",
       providerIds: ["indexed-provider"],
       speechProviderIds: ["indexed-speech-provider"],
       realtimeTranscriptionProviderIds: ["indexed-transcription-provider"],
       realtimeVoiceProviderIds: ["indexed-voice-provider"],
       contracts: {
-        agentToolResultMiddleware: ["openclaw", "codex"],
+        agentToolResultMiddleware: ["eve", "codex"],
         speechProviders: ["indexed-speech-provider"],
         realtimeTranscriptionProviders: ["indexed-transcription-provider"],
         realtimeVoiceProviders: ["indexed-voice-provider"],
@@ -246,7 +246,7 @@ describe("buildPluginRegistrySnapshotReport", () => {
     const fixture = createColdPluginFixture({
       rootDir: makeTempDir(),
       pluginId: "persisted-demo",
-      packageName: "@example/openclaw-persisted-demo",
+      packageName: "@example/eve-persisted-demo",
       packageVersion: "2.0.0",
       manifest: {
         id: "persisted-demo",

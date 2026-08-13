@@ -4,8 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import { gunzipSync } from "node:zlib";
-import { runOpenClawStateWriteTransaction } from "../state/openclaw-state-db.js";
-import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
+import { runEVEStateWriteTransaction } from "../state/eve-state-db.js";
+import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { requireNodeSqlite } from "./node-sqlite.js";
 
 const DEBUG_PROXY_SQLITE_SIDECAR_SUFFIXES = ["", "-shm", "-wal", "-journal"] as const;
@@ -97,8 +97,8 @@ function resolveLegacyDebugProxyCapturePaths(
 } {
   const rootDir = path.join(stateDir, "debug-proxy");
   return {
-    sourcePath: env.OPENCLAW_DEBUG_PROXY_DB_PATH?.trim() || path.join(rootDir, "capture.sqlite"),
-    blobDir: env.OPENCLAW_DEBUG_PROXY_BLOB_DIR?.trim() || path.join(rootDir, "blobs"),
+    sourcePath: env.EVE_DEBUG_PROXY_DB_PATH?.trim() || path.join(rootDir, "capture.sqlite"),
+    blobDir: env.EVE_DEBUG_PROXY_BLOB_DIR?.trim() || path.join(rootDir, "blobs"),
   };
 }
 
@@ -119,7 +119,7 @@ export function detectLegacyDebugProxyCaptureSidecar(
   const paths = resolveLegacyDebugProxyCapturePaths(stateDir, env);
   if (
     path.resolve(paths.sourcePath) ===
-    path.resolve(resolveOpenClawStateSqlitePath({ ...env, OPENCLAW_STATE_DIR: stateDir }))
+    path.resolve(resolveEVEStateSqlitePath({ ...env, EVE_STATE_DIR: stateDir }))
   ) {
     return { ...paths, hasLegacy: false };
   }
@@ -401,7 +401,7 @@ export function migrateLegacyDebugProxyCaptureSidecar(params: {
   }
 
   try {
-    runOpenClawStateWriteTransaction(
+    runEVEStateWriteTransaction(
       ({ db }) => {
         const selectBlob = db.prepare(
           `SELECT encoding, size_bytes AS sizeBytes, sha256, data
@@ -519,7 +519,7 @@ export function migrateLegacyDebugProxyCaptureSidecar(params: {
           }
         }
       },
-      { env: { ...process.env, OPENCLAW_STATE_DIR: params.stateDir } },
+      { env: { ...process.env, EVE_STATE_DIR: params.stateDir } },
     );
     changes.push(
       `Migrated ${legacy.sessions.length} debug proxy capture ${legacy.sessions.length === 1 ? "session" : "sessions"}, ${legacy.events.length} ${legacy.events.length === 1 ? "event" : "events"}, and ${legacy.blobs.length} ${legacy.blobs.length === 1 ? "blob" : "blobs"} → shared SQLite state`,

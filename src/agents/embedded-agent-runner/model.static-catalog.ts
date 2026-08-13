@@ -1,12 +1,12 @@
 /**
  * Resolves bundled static catalog rows for embedded-agent model selection.
  */
-import type { NormalizedModelCatalogRow } from "@openclaw/model-catalog-core/model-catalog-types";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import type { NormalizedModelCatalogRow } from "@eve/model-catalog-core/model-catalog-types";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import type { ModelProviderConfig } from "../../config/types.models.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { planManifestModelCatalogRows } from "../../model-catalog/manifest-planner.js";
-import { listOpenClawPluginManifestMetadata } from "../../plugins/manifest-metadata-scan.js";
+import { listEVEPluginManifestMetadata } from "../../plugins/manifest-metadata-scan.js";
 import { loadPluginManifestRegistry } from "../../plugins/manifest-registry.js";
 import type { PluginManifestRecord } from "../../plugins/manifest-registry.js";
 import { loadPluginManifest } from "../../plugins/manifest.js";
@@ -137,7 +137,7 @@ type StaticCatalogPlugin = Parameters<
 >[0]["registry"]["plugins"][number];
 
 function listBundledStaticCatalogPlugins(env: NodeJS.ProcessEnv): StaticCatalogPlugin[] {
-  return listOpenClawPluginManifestMetadata(env).flatMap((record): StaticCatalogPlugin[] => {
+  return listEVEPluginManifestMetadata(env).flatMap((record): StaticCatalogPlugin[] => {
     if (record.origin !== "bundled") {
       return [];
     }
@@ -183,7 +183,7 @@ function resolveManifestModelCatalogProviderAlias(params: {
 /** Resolves a provider alias from plugin model-catalog metadata when the alias is unambiguous. */
 export function canonicalizeManifestModelCatalogProviderAlias(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): string {
@@ -244,7 +244,7 @@ type BundledStaticCatalogScopedLookup = {
 };
 
 type BundledProviderStaticCatalogResolverParams = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 };
@@ -297,7 +297,7 @@ export function createBundledStaticCatalogModelResolver(params?: {
 /** Resolves one bundled static-catalog model row for provider/model lookup. */
 export function resolveBundledStaticCatalogModel(
   params: BundledStaticCatalogLookup & {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     workspaceDir?: string;
     env?: NodeJS.ProcessEnv;
     includeRuntimeDiscovery?: boolean;
@@ -313,7 +313,7 @@ export function resolveBundledStaticCatalogModel(
 
 function resolveBundledProviderStaticCatalogPluginIds(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
 }): string[] {
@@ -338,7 +338,7 @@ function resolveBundledProviderStaticCatalogPluginIds(params: {
 
 async function loadBundledProviderStaticCatalogModels(params: {
   pluginIds: string[];
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
 }): Promise<Map<string, ProviderRuntimeModel[]>> {
@@ -560,7 +560,7 @@ export function createBundledProviderStaticCatalogContextResolver(
 export async function resolveBundledProviderStaticCatalogModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): Promise<ProviderRuntimeModel | undefined> {

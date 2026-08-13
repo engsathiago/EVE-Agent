@@ -23,7 +23,7 @@ type VitestHostInfo = {
   totalMemoryBytes?: number;
 };
 
-export type OpenClawVitestPool = "forks" | "threads";
+export type EVEVitestPool = "forks" | "threads";
 
 export type LocalVitestScheduling = {
   maxWorkers: number;
@@ -47,7 +47,7 @@ function detectVitestHostInfo(): Required<VitestHostInfo> {
 export function resolveLocalVitestMaxWorkers(
   env: Record<string, string | undefined> = process.env,
   system: VitestHostInfo = detectVitestHostInfo(),
-  pool: OpenClawVitestPool = resolveDefaultVitestPool(env),
+  pool: EVEVitestPool = resolveDefaultVitestPool(env),
 ): number {
   return resolveLocalVitestMaxWorkersImpl(env, system, pool);
 }
@@ -55,14 +55,14 @@ export function resolveLocalVitestMaxWorkers(
 export function resolveLocalVitestScheduling(
   env: Record<string, string | undefined> = process.env,
   system: VitestHostInfo = detectVitestHostInfo(),
-  pool: OpenClawVitestPool = resolveDefaultVitestPool(env),
+  pool: EVEVitestPool = resolveDefaultVitestPool(env),
 ): LocalVitestScheduling {
   return resolveLocalVitestSchedulingImpl(env, system, pool) as LocalVitestScheduling;
 }
 
 export function resolveDefaultVitestPool(
   _env: Record<string, string | undefined> = process.env,
-): OpenClawVitestPool {
+): EVEVitestPool {
   return "threads";
 }
 
@@ -81,12 +81,12 @@ const localScheduling = resolveLocalVitestScheduling(
 );
 
 function hasWorkerOverride(env: Record<string, string | undefined>): boolean {
-  return Boolean((env.OPENCLAW_VITEST_MAX_WORKERS ?? env.OPENCLAW_TEST_WORKERS)?.trim());
+  return Boolean((env.EVE_VITEST_MAX_WORKERS ?? env.EVE_TEST_WORKERS)?.trim());
 }
 
 function sourcePackageAlias(packageId: string, subpath?: string) {
   return {
-    find: `@openclaw/${packageId}${subpath ? `/${subpath}` : ""}`,
+    find: `@eve/${packageId}${subpath ? `/${subpath}` : ""}`,
     replacement: path.join(
       repoRoot,
       "packages",
@@ -139,9 +139,9 @@ const workerConfig = resolveSharedVitestWorkerConfig({
   isWindows,
   localScheduling,
 });
-const dependencyModuleDirectories = ["/node_modules/", "/openclaw-pnpm-node-modules/"];
+const dependencyModuleDirectories = ["/node_modules/", "/eve-pnpm-node-modules/"];
 const dependencyExternalPatterns = [
-  /\/openclaw-pnpm-node-modules\/(?!.*\/?vite\w*\/dist\/client\/env\.mjs$).*\.(?:cjs\.js|mjs)$/u,
+  /\/eve-pnpm-node-modules\/(?!.*\/?vite\w*\/dist\/client\/env\.mjs$).*\.(?:cjs\.js|mjs)$/u,
 ];
 const sourcePluginSdkSubpaths = [
   ...new Set([...pluginSdkSubpaths, ...privateLocalOnlyPluginSdkSubpaths]),
@@ -183,43 +183,43 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "openclaw/extension-api",
+        find: "eve-agent/extension-api",
         replacement: path.join(repoRoot, "src", "extensionAPI.ts"),
       },
       {
-        find: "@openclaw/qa-channel/api.js",
+        find: "@eve/qa-channel/api.js",
         replacement: path.join(repoRoot, "extensions", "qa-channel", "api.ts"),
       },
       {
-        find: "@openclaw/discord/api.js",
+        find: "@eve/discord/api.js",
         replacement: path.join(repoRoot, "extensions", "discord", "api.ts"),
       },
       {
-        find: "@openclaw/slack/api.js",
+        find: "@eve/slack/api.js",
         replacement: path.join(repoRoot, "extensions", "slack", "api.ts"),
       },
       {
-        find: "@openclaw/whatsapp/api.js",
+        find: "@eve/whatsapp/api.js",
         replacement: path.join(repoRoot, "extensions", "whatsapp", "api.ts"),
       },
       {
-        find: "@openclaw/gateway-client/readiness",
+        find: "@eve/gateway-client/readiness",
         replacement: path.join(repoRoot, "packages", "gateway-client", "src", "readiness.ts"),
       },
       {
-        find: "@openclaw/gateway-client/timeouts",
+        find: "@eve/gateway-client/timeouts",
         replacement: path.join(repoRoot, "packages", "gateway-client", "src", "timeouts.ts"),
       },
       {
-        find: "@openclaw/gateway-client",
+        find: "@eve/gateway-client",
         replacement: path.join(repoRoot, "packages", "gateway-client", "src", "index.ts"),
       },
       {
-        find: "@openclaw/gateway-protocol/client-info",
+        find: "@eve/gateway-protocol/client-info",
         replacement: path.join(repoRoot, "packages", "gateway-protocol", "src", "client-info.ts"),
       },
       {
-        find: "@openclaw/gateway-protocol/connect-error-details",
+        find: "@eve/gateway-protocol/connect-error-details",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -229,11 +229,11 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/gateway-protocol/schema",
+        find: "@eve/gateway-protocol/schema",
         replacement: path.join(repoRoot, "packages", "gateway-protocol", "src", "schema.ts"),
       },
       {
-        find: "@openclaw/gateway-protocol/startup-unavailable",
+        find: "@eve/gateway-protocol/startup-unavailable",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -243,31 +243,31 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/gateway-protocol/version",
+        find: "@eve/gateway-protocol/version",
         replacement: path.join(repoRoot, "packages", "gateway-protocol", "src", "version.ts"),
       },
       {
-        find: "@openclaw/gateway-protocol",
+        find: "@eve/gateway-protocol",
         replacement: path.join(repoRoot, "packages", "gateway-protocol", "src", "index.ts"),
       },
       {
-        find: "@openclaw/llm-core/diagnostics",
+        find: "@eve/llm-core/diagnostics",
         replacement: path.join(repoRoot, "packages", "llm-core", "src", "utils", "diagnostics.ts"),
       },
       {
-        find: "@openclaw/llm-core/event-stream",
+        find: "@eve/llm-core/event-stream",
         replacement: path.join(repoRoot, "packages", "llm-core", "src", "utils", "event-stream.ts"),
       },
       {
-        find: "@openclaw/llm-core/validation",
+        find: "@eve/llm-core/validation",
         replacement: path.join(repoRoot, "packages", "llm-core", "src", "validation.ts"),
       },
       {
-        find: "@openclaw/llm-core",
+        find: "@eve/llm-core",
         replacement: path.join(repoRoot, "packages", "llm-core", "src", "index.ts"),
       },
       {
-        find: "@openclaw/model-catalog-core/configured-model-refs",
+        find: "@eve/model-catalog-core/configured-model-refs",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -277,7 +277,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core/model-catalog-refs",
+        find: "@eve/model-catalog-core/model-catalog-refs",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -287,7 +287,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core/model-catalog-normalize",
+        find: "@eve/model-catalog-core/model-catalog-normalize",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -297,7 +297,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core/model-catalog-types",
+        find: "@eve/model-catalog-core/model-catalog-types",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -307,11 +307,11 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core/provider-id",
+        find: "@eve/model-catalog-core/provider-id",
         replacement: path.join(repoRoot, "packages", "model-catalog-core", "src", "provider-id.ts"),
       },
       {
-        find: "@openclaw/model-catalog-core/provider-model-id-normalization",
+        find: "@eve/model-catalog-core/provider-model-id-normalization",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -321,7 +321,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core/provider-model-id-normalize",
+        find: "@eve/model-catalog-core/provider-model-id-normalize",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -331,19 +331,19 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/model-catalog-core",
+        find: "@eve/model-catalog-core",
         replacement: path.join(repoRoot, "packages", "model-catalog-core", "src", "index.ts"),
       },
       {
-        find: "@openclaw/net-policy/ip",
+        find: "@eve/net-policy/ip",
         replacement: path.join(repoRoot, "packages", "net-policy", "src", "ip.ts"),
       },
       {
-        find: "@openclaw/net-policy/ipv4",
+        find: "@eve/net-policy/ipv4",
         replacement: path.join(repoRoot, "packages", "net-policy", "src", "ipv4.ts"),
       },
       {
-        find: "@openclaw/net-policy/redact-sensitive-url",
+        find: "@eve/net-policy/redact-sensitive-url",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -353,15 +353,15 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/net-policy/url-userinfo",
+        find: "@eve/net-policy/url-userinfo",
         replacement: path.join(repoRoot, "packages", "net-policy", "src", "url-userinfo.ts"),
       },
       {
-        find: "@openclaw/net-policy",
+        find: "@eve/net-policy",
         replacement: path.join(repoRoot, "packages", "net-policy", "src", "index.ts"),
       },
       {
-        find: "@openclaw/normalization-core/number-coercion",
+        find: "@eve/normalization-core/number-coercion",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -371,7 +371,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/normalization-core/record-coerce",
+        find: "@eve/normalization-core/record-coerce",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -381,7 +381,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/normalization-core/string-coerce",
+        find: "@eve/normalization-core/string-coerce",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -391,7 +391,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/normalization-core/string-normalization",
+        find: "@eve/normalization-core/string-normalization",
         replacement: path.join(
           repoRoot,
           "packages",
@@ -401,7 +401,7 @@ export const sharedVitestConfig = {
         ),
       },
       {
-        find: "@openclaw/normalization-core",
+        find: "@eve/normalization-core",
         replacement: path.join(repoRoot, "packages", "normalization-core", "src", "index.ts"),
       },
       sourcePackageAlias("media-core", "base64"),
@@ -417,15 +417,15 @@ export const sharedVitestConfig = {
       sourcePackageAlias("media-core"),
       ...sourcePackageAliasesFromExports("acp-core", acpCorePackageJson.exports),
       ...sourcePluginSdkSubpaths.map((subpath) => ({
-        find: `openclaw/plugin-sdk/${subpath}`,
+        find: `eve-agent/plugin-sdk/${subpath}`,
         replacement: path.join(repoRoot, "src", "plugin-sdk", `${subpath}.ts`),
       })),
       ...pluginSdkSubpaths.map((subpath) => ({
-        find: `@openclaw/plugin-sdk/${subpath}`,
+        find: `@eve/plugin-sdk/${subpath}`,
         replacement: path.join(repoRoot, "packages", "plugin-sdk", "src", `${subpath}.ts`),
       })),
       {
-        find: "openclaw/plugin-sdk",
+        find: "eve-agent/plugin-sdk",
         replacement: path.join(repoRoot, "src", "plugin-sdk", "index.ts"),
       },
     ],
@@ -455,7 +455,7 @@ export const sharedVitestConfig = {
       "test/setup.ts",
       "test/setup.shared.ts",
       "test/setup.extensions.ts",
-      "test/setup-openclaw-runtime.ts",
+      "test/setup-eve-runtime.ts",
       "test/vitest/vitest.channel-paths.mjs",
       "test/vitest/vitest.agents-paths.mjs",
       "test/vitest/vitest.agents-core.config.ts",
@@ -583,7 +583,7 @@ export const sharedVitestConfig = {
       "apps/macos/.build/**",
       "**/node_modules/**",
       "**/vendor/**",
-      "dist/OpenClaw.app/**",
+      "dist/EVE.app/**",
       "**/._*",
       "**/*.live.test.ts",
       "**/*.e2e.test.ts",

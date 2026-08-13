@@ -76,7 +76,7 @@ describe("ci workflow guards", () => {
     );
     expect(validationStep.run).toContain("release_gate must run from the branch at target_ref");
     expect(readFileSync(".github/workflows/ci.yml", "utf8")).toContain(
-      "OPENCLAW_CI_RUN_ANDROID: ${{ github.event_name == 'workflow_dispatch' && (inputs.release_gate || inputs.include_android) && 'true' || steps.changed_scope.outputs.run_android || 'false' }}",
+      "EVE_CI_RUN_ANDROID: ${{ github.event_name == 'workflow_dispatch' && (inputs.release_gate || inputs.include_android) && 'true' || steps.changed_scope.outputs.run_android || 'false' }}",
     );
   });
 
@@ -384,9 +384,9 @@ describe("ci workflow guards", () => {
     const runStep = nodeTestJob.steps.find((step) => step.name === "Run Node test shard");
 
     expect(nodeTestJob["timeout-minutes"]).toBe(60);
-    expect(runStep.env.OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS).toBe("300000");
-    expect(runStep.env.OPENCLAW_VITEST_NO_OUTPUT_RETRY).toBe("1");
-    expect(runStep.env.OPENCLAW_TEST_PROJECTS_PARALLEL).toBe("2");
+    expect(runStep.env.EVE_VITEST_NO_OUTPUT_TIMEOUT_MS).toBe("300000");
+    expect(runStep.env.EVE_VITEST_NO_OUTPUT_RETRY).toBe("1");
+    expect(runStep.env.EVE_TEST_PROJECTS_PARALLEL).toBe("2");
   });
 
   it("uploads a CI timing summary after the run lanes finish", () => {
@@ -456,10 +456,10 @@ describe("ci workflow guards", () => {
   it("keeps push docs validation ClawHub-backed", () => {
     const workflow = readFileSync(".github/workflows/docs.yml", "utf8");
 
-    expect(workflow).toContain("repository: openclaw/clawhub");
+    expect(workflow).toContain("repository: eve/clawhub");
     expect(workflow).toContain("path: clawhub-source");
     expect(workflow).toContain(
-      "OPENCLAW_DOCS_SYNC_CLAWHUB_REPO: ${{ github.workspace }}/clawhub-source",
+      "EVE_DOCS_SYNC_CLAWHUB_REPO: ${{ github.workspace }}/clawhub-source",
     );
   });
 

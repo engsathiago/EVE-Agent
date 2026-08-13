@@ -6,13 +6,13 @@ import {
   resolveChannelStreamingBlockEnabled,
   resolveChannelStreamingPreviewToolProgress,
   resolveChannelStreamingSuppressDefaultToolProgressMessages,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   createChannelMessageReplyPipeline,
   logTypingFailure,
   resolveChannelMediaMaxBytes,
-  type OpenClawConfig,
+  type EVEConfig,
   type MSTeamsReplyStyle,
   type ReplyPayload,
   type RuntimeEnv,
@@ -42,7 +42,7 @@ import type { MSTeamsApp } from "./sdk.js";
 export { pickInformativeStatusText } from "./reply-stream-controller.js";
 
 export function createMSTeamsReplyDispatcher(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   sessionKey: string;
   accountId?: string;
@@ -554,7 +554,7 @@ export function createMSTeamsReplyDispatcher(params: {
           }
         : {}),
       ...progressCallbacks,
-      // When progress mode is active, suppress openclaw's default block-style
+      // When progress mode is active, suppress eve's default block-style
       // tool-progress messages so they don't duplicate alongside the
       // streaming card's progress lines.
       ...(shouldSuppressDefaultToolProgressMessages

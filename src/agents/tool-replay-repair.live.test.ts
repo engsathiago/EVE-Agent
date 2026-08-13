@@ -1,8 +1,8 @@
 // Live tool replay repair tests validate repaired historical transcripts across
 // selected real model providers.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
-import type { Context, Model } from "openclaw/plugin-sdk/llm";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
+import type { Context, Model } from "eve-agent/plugin-sdk/llm";
 import { Type } from "typebox";
 import { describe, expect, it } from "vitest";
 import { getRuntimeConfig } from "../config/config.js";
@@ -19,14 +19,14 @@ import {
   type CompleteSimpleContent,
 } from "./live-test-helpers.js";
 import { getApiKeyForModel, requireApiKey } from "./model-auth.js";
-import { ensureOpenClawModelsJson } from "./models-config.js";
+import { ensureEVEModelsJson } from "./models-config.js";
 import { transformTransportMessages } from "./transport-message-transform.js";
 
 const LIVE = isLiveTestEnabled();
 const REQUIRE_PROFILE_KEYS = isLiveProfileKeyModeEnabled();
 const DEFAULT_TARGET_MODEL_REFS = "openai/gpt-5.5,google/gemini-3-flash-preview";
 const TARGET_MODEL_REFS = parseTargetModelRefs(
-  process.env.OPENCLAW_LIVE_TOOL_REPLAY_REPAIR_MODELS ?? DEFAULT_TARGET_MODEL_REFS,
+  process.env.EVE_LIVE_TOOL_REPLAY_REPAIR_MODELS ?? DEFAULT_TARGET_MODEL_REFS,
 );
 const describeLive = LIVE ? describe : describe.skip;
 
@@ -75,7 +75,7 @@ function parseTargetModelRefs(raw: string | undefined): TargetModelRef[] {
     const modelId = rest.join("/").trim();
     if (!provider?.trim() || !modelId) {
       throw new Error(
-        `Invalid OPENCLAW_LIVE_TOOL_REPLAY_REPAIR_MODELS entry: ${JSON.stringify(ref)}`,
+        `Invalid EVE_LIVE_TOOL_REPLAY_REPAIR_MODELS entry: ${JSON.stringify(ref)}`,
       );
     }
     refs.push({ ref, provider: provider.trim(), modelId });
@@ -243,7 +243,7 @@ describeLive("tool replay repair live", () => {
       `accepts repaired displaced and missing tool results with ${target.ref}`,
       async () => {
         const cfg = getRuntimeConfig();
-        await ensureOpenClawModelsJson(cfg);
+        await ensureEVEModelsJson(cfg);
 
         const agentDir = resolveDefaultAgentDir(cfg);
         const authStorage = discoverAuthStorage(agentDir);
@@ -356,7 +356,7 @@ describeLive("tool replay repair live", () => {
       `accepts transport replay after dropping aborted assistant tool calls with ${target.ref}`,
       async () => {
         const cfg = getRuntimeConfig();
-        await ensureOpenClawModelsJson(cfg);
+        await ensureEVEModelsJson(cfg);
 
         const agentDir = resolveDefaultAgentDir(cfg);
         const authStorage = discoverAuthStorage(agentDir);

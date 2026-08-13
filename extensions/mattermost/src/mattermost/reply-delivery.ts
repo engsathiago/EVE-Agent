@@ -1,16 +1,16 @@
 // Mattermost plugin module implements reply delivery behavior.
-import type { OpenClawConfig, PluginRuntime } from "openclaw/plugin-sdk/core";
-import { getAgentScopedMediaLocalRoots } from "openclaw/plugin-sdk/media-runtime";
+import type { EVEConfig, PluginRuntime } from "eve-agent/plugin-sdk/core";
+import { getAgentScopedMediaLocalRoots } from "eve-agent/plugin-sdk/media-runtime";
 import {
   deliverTextOrMediaReply,
   isReasoningReplyPayload,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "eve-agent/plugin-sdk/reply-payload";
 import type {
   ReplyDispatchKind,
   ReplyFollowupAdmissionBarrierTimeoutPolicy,
   ReplyPayload,
-} from "openclaw/plugin-sdk/reply-runtime";
+} from "eve-agent/plugin-sdk/reply-runtime";
 import {
   resolveMattermostReplyDeliveryBarrierTimeoutMs,
   type CreateDmChannelRetryOptions,
@@ -22,7 +22,7 @@ type SendMattermostMessage = (
   to: string,
   text: string,
   opts: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     accountId?: string;
     mediaUrl?: string;
     mediaLocalRoots?: readonly string[];
@@ -90,7 +90,7 @@ export type MattermostReplyDeliveryOutcome = "reasoning_skipped" | "empty" | "te
 
 export async function deliverMattermostReplyPayload(params: {
   core: PluginRuntime;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   payload: ReplyPayload;
   to: string;
   accountId: string;

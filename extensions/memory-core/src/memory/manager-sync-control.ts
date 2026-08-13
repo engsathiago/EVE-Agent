@@ -1,8 +1,8 @@
 // Memory Core plugin module implements manager sync control behavior.
 import type { DatabaseSync } from "node:sqlite";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import type { MemorySyncProgressUpdate } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
+import type { MemorySyncProgressUpdate } from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 
 const log = createSubsystemLogger("memory");
 

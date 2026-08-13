@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/qqbot",
+  "name": "@eve/qqbot",
   "version": "2026.6.8",
   "private": false,
-  "description": "OpenClaw QQ Bot channel plugin for group and direct-message workflows.",
+  "description": "EVE QQ Bot channel plugin for group and direct-message workflows.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -16,19 +16,19 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
+    "@eve/plugin-sdk": "workspace:*",
     "@types/ws": "8.18.1",
-    "openclaw": "2026.5.28"
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
@@ -44,7 +44,7 @@
       "systemImage": "bubble.left.and.bubble.right"
     },
     "install": {
-      "npmSpec": "@openclaw/qqbot",
+      "npmSpec": "@eve/qqbot",
       "localPath": "extensions/qqbot",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
@@ -53,7 +53,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8"
+      "eveVersion": "2026.6.8"
     },
     "release": {
       "publishToClawHub": true,

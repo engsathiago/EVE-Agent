@@ -2,13 +2,13 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-id";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { loadJsonFile } from "openclaw/plugin-sdk/json-store";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/account-id";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { loadJsonFile } from "eve-agent/plugin-sdk/json-store";
 import type {
   PluginStateKeyedStore,
   PluginStateSyncKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   requiresExplicitMatrixDefaultAccount,
   resolveMatrixDefaultOrOnlyAccountId,
@@ -84,7 +84,7 @@ function resolveLegacyStoragePaths(env: NodeJS.ProcessEnv = process.env): {
 }
 
 function assertLegacyMigrationAccountSelection(params: { accountKey: string }): void {
-  const cfg = getMatrixRuntime().config.current() as OpenClawConfig;
+  const cfg = getMatrixRuntime().config.current() as EVEConfig;
   if (!cfg.channels?.matrix || typeof cfg.channels.matrix !== "object") {
     return;
   }
@@ -182,7 +182,7 @@ export async function writeMatrixStorageMetaStateToStore(params: {
 }
 
 function readStoredRootMetadata(rootDir: string): MatrixStorageMetadata {
-  if (fs.existsSync(path.join(rootDir, "state", "openclaw.sqlite"))) {
+  if (fs.existsSync(path.join(rootDir, "state", "eve.sqlite"))) {
     try {
       const stored = normalizeMatrixStorageMetadata(
         openStorageMetaStore(rootDir).lookup(STORAGE_META_STATE_KEY),

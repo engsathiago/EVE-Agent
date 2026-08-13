@@ -1,6 +1,6 @@
 /**
  * Tests provider-native tool collision policy.
- * Protects OpenClaw web_search routing when provider/model compatibility also
+ * Protects EVE web_search routing when provider/model compatibility also
  * advertises native search support.
  */
 import { describe, expect, it } from "vitest";
@@ -29,7 +29,7 @@ describe("applyModelProviderToolPolicy", () => {
     expect(toolNames(filtered)).toEqual(["read", "web_search", "exec"]);
   });
 
-  it("keeps web_search for OpenRouter xAI model ids so OpenClaw tool routing stays authoritative", () => {
+  it("keeps web_search for OpenRouter xAI model ids so EVE tool routing stays authoritative", () => {
     const filtered = testing.applyModelProviderToolPolicy(baseTools, {
       modelCompat: {
         toolSchemaProfile: XAI_TOOL_SCHEMA_PROFILE,

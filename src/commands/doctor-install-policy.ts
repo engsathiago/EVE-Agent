@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { note } from "../../packages/terminal-core/src/note.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
   probeInstallPolicy,
@@ -23,7 +23,7 @@ function formatTargets(validation: InstallPolicyStaticValidation): string {
 
 /** Builds doctor note lines for static install policy validation and optional deep probing. */
 export async function collectInstallPolicyHealthLines(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options: InstallPolicyHealthOptions = {},
 ): Promise<string[]> {
   const validation = await validateInstallPolicyStatic(cfg);
@@ -42,12 +42,12 @@ export async function collectInstallPolicyHealthLines(
 
   if (!options.deep) {
     lines.push(
-      `- Static checks passed. Run ${formatCliCommand("openclaw doctor --deep")} to execute a synthetic policy probe.`,
+      `- Static checks passed. Run ${formatCliCommand("eve doctor --deep")} to execute a synthetic policy probe.`,
     );
     return lines;
   }
 
-  const probeDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-install-policy-probe-"));
+  const probeDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-install-policy-probe-"));
   try {
     const result = await probeInstallPolicy({
       config: cfg,
@@ -79,7 +79,7 @@ export async function collectInstallPolicyHealthLines(
 
 /** Emits install policy health notes when policy validation finds configured coverage or errors. */
 export async function noteInstallPolicyHealth(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options: InstallPolicyHealthOptions = {},
 ): Promise<void> {
   const lines = await collectInstallPolicyHealthLines(cfg, options);

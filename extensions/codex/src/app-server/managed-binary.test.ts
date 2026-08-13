@@ -42,7 +42,7 @@ describe("managed Codex app-server binary", () => {
   });
 
   it("resolves the plugin-local bundled Codex binary", async () => {
-    const pluginRoot = path.join("/tmp", "openclaw", "extensions", "codex");
+    const pluginRoot = path.join("/tmp", "eve", "extensions", "codex");
     const paths = resolveManagedCodexAppServerPaths({ platform: "darwin", pluginRoot });
     const pathExists = vi.fn(async (filePath: string) => filePath === paths.commandPath);
 
@@ -61,7 +61,7 @@ describe("managed Codex app-server binary", () => {
   });
 
   it("resolves Windows Codex command shims", () => {
-    const pluginRoot = path.win32.join("C:\\", "OpenClaw", "dist", "extensions", "codex");
+    const pluginRoot = path.win32.join("C:\\", "EVE", "dist", "extensions", "codex");
     const paths = resolveManagedCodexAppServerPaths({ platform: "win32", pluginRoot });
 
     expect(paths.commandPath.endsWith(path.win32.join("node_modules", ".bin", "codex.cmd"))).toBe(
@@ -70,17 +70,17 @@ describe("managed Codex app-server binary", () => {
   });
 
   it("uses the package root when the resolver is bundled into a dist chunk", () => {
-    expect(testing.resolveDefaultCodexPluginRoot("/repo/openclaw/dist")).toBe("/repo/openclaw");
-    expect(testing.resolveDefaultCodexPluginRoot("/repo/openclaw/dist-runtime")).toBe(
-      "/repo/openclaw",
+    expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/dist")).toBe("/repo/eve");
+    expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/dist-runtime")).toBe(
+      "/repo/eve",
     );
     expect(
-      testing.resolveDefaultCodexPluginRoot("/repo/openclaw/extensions/codex/src/app-server"),
-    ).toBe("/repo/openclaw/extensions/codex");
+      testing.resolveDefaultCodexPluginRoot("/repo/eve/extensions/codex/src/app-server"),
+    ).toBe("/repo/eve/extensions/codex");
   });
 
   it("finds Codex in the package install root used by packaged plugins", async () => {
-    const installRoot = path.join("/tmp", "openclaw-plugin-package", "codex");
+    const installRoot = path.join("/tmp", "eve-plugin-package", "codex");
     const pluginRoot = path.join(installRoot, "dist", "extensions", "codex");
     const installedCommand = managedCommandPath(installRoot, "linux");
     const pathExists = vi.fn(async (filePath: string) => filePath === installedCommand);
@@ -99,8 +99,8 @@ describe("managed Codex app-server binary", () => {
   });
 
   it("finds Codex bins hoisted into an isolated npm project root", async () => {
-    const projectRoot = path.join("/tmp", "state", "npm", "projects", "openclaw-codex-hash");
-    const pluginRoot = path.join(projectRoot, "node_modules", "@openclaw", "codex");
+    const projectRoot = path.join("/tmp", "state", "npm", "projects", "eve-codex-hash");
+    const pluginRoot = path.join(projectRoot, "node_modules", "@eve", "codex");
     const installedCommand = managedCommandPath(projectRoot, "linux");
     const pathExists = vi.fn(async (filePath: string) => filePath === installedCommand);
 
@@ -122,12 +122,12 @@ describe("managed Codex app-server binary", () => {
       "C:\\",
       "Users",
       "test",
-      ".openclaw",
+      ".eve",
       "npm",
       "projects",
-      "openclaw-codex-hash",
+      "eve-codex-hash",
     );
-    const pluginRoot = path.win32.join(projectRoot, "node_modules", "@openclaw", "codex");
+    const pluginRoot = path.win32.join(projectRoot, "node_modules", "@eve", "codex");
     const installedCommand = managedCommandPath(projectRoot, "win32");
     const pathExists = vi.fn(async (filePath: string) => filePath === installedCommand);
 
@@ -145,7 +145,7 @@ describe("managed Codex app-server binary", () => {
   });
 
   it("falls back to the resolved Codex package bin when no command shim exists", async () => {
-    const installRoot = await mkdtemp(path.join(os.tmpdir(), "openclaw-codex-package-"));
+    const installRoot = await mkdtemp(path.join(os.tmpdir(), "eve-codex-package-"));
     const pluginRoot = path.join(installRoot, "dist", "extensions", "codex");
     const packageRoot = path.join(installRoot, "node_modules", "@openai", "codex");
     const packageBin = path.join(packageRoot, "bin", "codex.js");
@@ -181,7 +181,7 @@ describe("managed Codex app-server binary", () => {
     await expect(
       resolveManagedCodexAppServerStartOptions(startOptions("managed"), {
         platform: "darwin",
-        pluginRoot: path.join("/tmp", "openclaw", "extensions", "codex"),
+        pluginRoot: path.join("/tmp", "eve", "extensions", "codex"),
         pathExists: vi.fn(async () => false),
       }),
     ).rejects.toThrow("Managed Codex app-server binary was not found");

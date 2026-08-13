@@ -6,7 +6,7 @@
  */
 import { existsSync } from "node:fs";
 import path from "node:path";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { enablePluginInConfig } from "../plugins/enable.js";
 import { loadInstalledPluginIndexInstallRecords } from "../plugins/installed-plugin-index-records.js";
@@ -24,18 +24,18 @@ export type RuntimePluginInstallDescriptor = {
 
 /** Result returned after ensuring a runtime plugin for a selected model. */
 export type RuntimePluginInstallResult = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   required: boolean;
   installed: boolean;
   status?: "installed" | "skipped" | "failed" | "timed_out";
 };
 
 /** Predicate that decides whether a config/model pair needs the runtime plugin. */
-export type RuntimePluginSelection = (params: { cfg: OpenClawConfig; model?: string }) => boolean;
+export type RuntimePluginSelection = (params: { cfg: EVEConfig; model?: string }) => boolean;
 
 /** Parameters for installing or enabling a runtime plugin during setup. */
 export type RuntimePluginEnsureParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   model?: string;
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
@@ -44,7 +44,7 @@ export type RuntimePluginEnsureParams = {
 
 /** Parameters for doctor-style runtime plugin repair. */
 export type RuntimePluginRepairParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   model?: string;
   env?: NodeJS.ProcessEnv;
 };
@@ -70,7 +70,7 @@ function isInstalledRecordPresentOnDisk(
 
 /** Ensures the runtime plugin required by the selected model is installed and enabled. */
 export async function ensureRuntimePluginForModelSelection(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   model?: string;
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
@@ -141,7 +141,7 @@ export async function ensureRuntimePluginForModelSelection(params: {
 
 /** Repairs missing install records for runtime plugins required by model selection. */
 export async function repairRuntimePluginInstallForModelSelection(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   model?: string;
   env?: NodeJS.ProcessEnv;
   descriptor: RuntimePluginInstallDescriptor;

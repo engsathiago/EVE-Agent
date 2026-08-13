@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 function makeTempStateDir(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-daemon-diagnostics-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-daemon-diagnostics-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -24,7 +24,7 @@ describe("readLastGatewayErrorLine", () => {
   it("ignores stale launchd stderr when stderr is suppressed", async () => {
     const stateDir = makeTempStateDir();
     const homeDir = makeTempStateDir();
-    const env = { HOME: homeDir, OPENCLAW_STATE_DIR: stateDir };
+    const env = { HOME: homeDir, EVE_STATE_DIR: stateDir };
     const stateLogs = resolveGatewayLogPaths(env);
     const launchdLogs = resolveGatewaySupervisorLogPaths(env, { platform: "darwin" });
     fs.mkdirSync(stateLogs.logDir, { recursive: true });
@@ -40,7 +40,7 @@ describe("readLastGatewayErrorLine", () => {
   it("prefers the current stderr error over a stale stdout match on linux", async () => {
     const stateDir = makeTempStateDir();
     const homeDir = makeTempStateDir();
-    const env = { HOME: homeDir, OPENCLAW_STATE_DIR: stateDir };
+    const env = { HOME: homeDir, EVE_STATE_DIR: stateDir };
     const stateLogs = resolveGatewayLogPaths(env);
     fs.mkdirSync(stateLogs.logDir, { recursive: true });
     // stderr carries the real, current failure; stdout carries an older matching

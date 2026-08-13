@@ -1,5 +1,5 @@
 // Codex tests cover attempt results plugin behavior.
-import type { EmbeddedRunAttemptResult } from "openclaw/plugin-sdk/agent-harness-runtime";
+import type { EmbeddedRunAttemptResult } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { describe, expect, it } from "vitest";
 import {
   buildCodexAppServerPromptTimeoutOutcome,

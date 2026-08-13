@@ -5,8 +5,8 @@
 import {
   createWebSearchProviderContractFields,
   type WebSearchProviderPlugin,
-} from "openclaw/plugin-sdk/provider-web-search-config-contract";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-web-search-config-contract";
+import { isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 /** Canonical config path for the Brave Search API key. */
 export const BRAVE_CREDENTIAL_PATH = "plugins.entries.brave.config.webSearch.apiKey";
@@ -57,7 +57,7 @@ export function buildBraveWebSearchProviderBase(): Omit<WebSearchProviderPlugin,
     envVars: ["BRAVE_API_KEY"],
     placeholder: "BSA...",
     signupUrl: "https://brave.com/search/api/",
-    docsUrl: "https://docs.openclaw.ai/tools/brave-search",
+    docsUrl: "https://docs.eve.ai/tools/brave-search",
     autoDetectOrder: 10,
     credentialPath: BRAVE_CREDENTIAL_PATH,
     ...createWebSearchProviderContractFields({

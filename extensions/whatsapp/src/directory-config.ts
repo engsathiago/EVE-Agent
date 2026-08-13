@@ -3,7 +3,7 @@ import {
   listResolvedDirectoryGroupEntriesFromMapKeys,
   listResolvedDirectoryUserEntriesFromAllowFrom,
   type DirectoryConfigParams,
-} from "openclaw/plugin-sdk/directory-config-runtime";
+} from "eve-agent/plugin-sdk/directory-config-runtime";
 import { resolveMergedWhatsAppAccountConfig } from "./account-config.js";
 import type { WhatsAppAccountConfig } from "./account-types.js";
 import { isWhatsAppGroupJid, normalizeWhatsAppTarget } from "./normalize.js";

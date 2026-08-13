@@ -1,6 +1,6 @@
 // Outbound payload planning normalizes reply payloads into sendable text,
 // media, presentation, interactive, and mirror projections.
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
+import { resolveSendableOutboundReplyParts } from "eve-agent/plugin-sdk/reply-payload";
 import { parseReplyDirectives } from "../../auto-reply/reply/reply-directives.js";
 import {
   formatBtwTextForExternalDelivery,
@@ -8,7 +8,7 @@ import {
   shouldSuppressReasoningPayload,
 } from "../../auto-reply/reply/reply-payloads.js";
 import type { ReplyPayload } from "../../auto-reply/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   hasInteractiveReplyBlocks,
   hasMessagePresentationBlocks,
@@ -59,7 +59,7 @@ export type OutboundPayloadPlan = {
 };
 
 type OutboundPayloadPlanContext = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   sessionKey?: string;
   surface?: string;
   conversationType?: SilentReplyConversationType;

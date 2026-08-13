@@ -4,9 +4,9 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { EventFrame } from "../../packages/gateway-protocol/src/index.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { GatewayClient } from "../gateway/client.js";
 import { extractFirstTextBlock } from "../shared/chat-message-content.js";
 import { VERSION } from "../version.js";
@@ -26,7 +26,7 @@ import type {
 import { matchEventFilter, normalizeApprovalId, toConversation, toText } from "./channel-shared.js";
 
 /**
- * Runtime bridge between MCP tools and the OpenClaw Gateway channel APIs.
+ * Runtime bridge between MCP tools and the EVE Gateway channel APIs.
  *
  * The bridge owns readiness, event cursoring, pending approval state, and the
  * narrow request methods that channel MCP tools expose to external clients.
@@ -54,7 +54,7 @@ const PENDING_APPROVAL_DEFAULT_TTL_MS = 30 * 60 * 1_000;
 const PENDING_SWEEP_INTERVAL_MS = 5 * 60 * 1_000;
 
 /** Connects the MCP server surface to a Gateway client and queues channel events for polling. */
-export class OpenClawChannelBridge {
+export class EVEChannelBridge {
   private gateway: GatewayClient | null = null;
   private readonly verbose: boolean;
   private readonly claudeChannelMode: ClaudeChannelMode;
@@ -75,7 +75,7 @@ export class OpenClawChannelBridge {
   private readySettled = false;
 
   constructor(
-    private readonly cfg: OpenClawConfig,
+    private readonly cfg: EVEConfig,
     private readonly params: {
       gatewayUrl?: string;
       gatewayToken?: string;
@@ -137,7 +137,7 @@ export class OpenClawChannelBridge {
       password: bootstrap.auth.password,
       preauthHandshakeTimeoutMs: bootstrap.preauthHandshakeTimeoutMs,
       clientName: GATEWAY_CLIENT_NAMES.CLI,
-      clientDisplayName: "OpenClaw MCP",
+      clientDisplayName: "EVE MCP",
       clientVersion: VERSION,
       mode: GATEWAY_CLIENT_MODES.CLI,
       scopes: [READ_SCOPE, WRITE_SCOPE, APPROVALS_SCOPE],
@@ -357,7 +357,7 @@ export class OpenClawChannelBridge {
       inputPreview: params.inputPreview,
     });
     if (this.verbose) {
-      process.stderr.write(`openclaw mcp: pending Claude permission ${params.requestId}\n`);
+      process.stderr.write(`eve mcp: pending Claude permission ${params.requestId}\n`);
     }
   }
 
@@ -383,10 +383,10 @@ export class OpenClawChannelBridge {
       }
       // Always surface a single low-noise record so swallowed delivery failures
       // remain observable; the spammy error detail stays behind --verbose.
-      process.stderr.write(`openclaw mcp: notification ${notification.method} failed\n`);
+      process.stderr.write(`eve mcp: notification ${notification.method} failed\n`);
       if (this.verbose) {
         process.stderr.write(
-          `openclaw mcp: notification ${notification.method} error: ${String(error)}\n`,
+          `eve mcp: notification ${notification.method} error: ${String(error)}\n`,
         );
       }
     }

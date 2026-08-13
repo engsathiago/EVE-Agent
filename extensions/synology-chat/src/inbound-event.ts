@@ -1,5 +1,5 @@
 // Synology Chat plugin module implements inbound event behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { sendMessage } from "./client.js";
 import type { SynologyInboundMessage } from "./inbound-context.js";
 import { getSynologyRuntime } from "./runtime.js";
@@ -13,7 +13,7 @@ type SynologyChannelLog = {
 };
 
 function resolveSynologyChatInboundRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: ResolvedSynologyChatAccount;
   userId: string;
 }) {
@@ -63,7 +63,7 @@ export async function dispatchSynologyChatInboundEvent(params: {
   log?: SynologyChannelLog;
 }): Promise<null> {
   const rt = getSynologyRuntime();
-  const currentCfg = rt.config.current() as OpenClawConfig;
+  const currentCfg = rt.config.current() as EVEConfig;
 
   // The Chat API user_id (for sending) may differ from the webhook
   // user_id (used for sessions/pairing). Use chatUserId for API calls.

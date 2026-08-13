@@ -4,9 +4,9 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { formatCliCommand } from "../cli/command-format.js";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../test-utils/eve-test-state.js";
 import type { UpdateCheckResult } from "./update-check.js";
 
 const {
@@ -19,16 +19,16 @@ const {
   startManagedServiceUpdateHandoffMock: vi.fn(async () => ({
     status: "started" as const,
     pid: 12345,
-    command: "openclaw update --yes --channel beta --timeout 2700",
-    logPath: "/tmp/openclaw-handoff.log",
+    command: "eve update --yes --channel beta --timeout 2700",
+    logPath: "/tmp/eve-handoff.log",
   })),
 }));
 
-vi.mock("./openclaw-root.js", async () => {
-  const actual = await vi.importActual<typeof import("./openclaw-root.js")>("./openclaw-root.js");
+vi.mock("./eve-root.js", async () => {
+  const actual = await vi.importActual<typeof import("./eve-root.js")>("./eve-root.js");
   return {
     ...actual,
-    resolveOpenClawPackageRoot: vi.fn(),
+    resolveEVEPackageRoot: vi.fn(),
   };
 });
 
@@ -81,9 +81,9 @@ vi.mock("./update-managed-service-handoff.js", () => ({
 
 describe("update-startup", () => {
   let tempDir: string;
-  let testState: OpenClawTestState;
+  let testState: EVETestState;
 
-  let resolveOpenClawPackageRoot: (typeof import("./openclaw-root.js"))["resolveOpenClawPackageRoot"];
+  let resolveEVEPackageRoot: (typeof import("./eve-root.js"))["resolveEVEPackageRoot"];
   let checkUpdateStatus: (typeof import("./update-check.js"))["checkUpdateStatus"];
   let resolveNpmChannelTag: (typeof import("./update-check.js"))["resolveNpmChannelTag"];
   let runCommandWithTimeout: (typeof import("../process/exec.js"))["runCommandWithTimeout"];
@@ -104,17 +104,17 @@ describe("update-startup", () => {
   beforeEach(async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-17T10:00:00Z"));
-    testState = await createOpenClawTestState({
+    testState = await createEVETestState({
       layout: "state-only",
-      prefix: "openclaw-update-check-suite-",
+      prefix: "eve-update-check-suite-",
       env: {
-        OPENCLAW_NO_AUTO_UPDATE: undefined,
-        OPENCLAW_SERVICE_KIND: undefined,
-        OPENCLAW_SERVICE_MARKER: undefined,
-        OPENCLAW_GATEWAY_SERVICE_PID: undefined,
-        OPENCLAW_LAUNCHD_LABEL: undefined,
-        OPENCLAW_SYSTEMD_UNIT: undefined,
-        OPENCLAW_WINDOWS_TASK_NAME: undefined,
+        EVE_NO_AUTO_UPDATE: undefined,
+        EVE_SERVICE_KIND: undefined,
+        EVE_SERVICE_MARKER: undefined,
+        EVE_GATEWAY_SERVICE_PID: undefined,
+        EVE_LAUNCHD_LABEL: undefined,
+        EVE_SYSTEMD_UNIT: undefined,
+        EVE_WINDOWS_TASK_NAME: undefined,
         INVOCATION_ID: undefined,
         NODE_ENV: "test",
         VITEST: undefined,
@@ -124,7 +124,7 @@ describe("update-startup", () => {
 
     // Perf: load mocked modules once (after timers/env are set up).
     if (!loaded) {
-      ({ resolveOpenClawPackageRoot } = await import("./openclaw-root.js"));
+      ({ resolveEVEPackageRoot } = await import("./eve-root.js"));
       ({ checkUpdateStatus, resolveNpmChannelTag } = await import("./update-check.js"));
       ({ runCommandWithTimeout } = await import("../process/exec.js"));
       ({
@@ -135,7 +135,7 @@ describe("update-startup", () => {
       } = await import("./update-startup.js"));
       loaded = true;
     }
-    vi.mocked(resolveOpenClawPackageRoot).mockClear();
+    vi.mocked(resolveEVEPackageRoot).mockClear();
     vi.mocked(checkUpdateStatus).mockClear();
     vi.mocked(resolveNpmChannelTag).mockClear();
     vi.mocked(runCommandWithTimeout).mockClear();
@@ -146,8 +146,8 @@ describe("update-startup", () => {
     startManagedServiceUpdateHandoffMock.mockResolvedValue({
       status: "started",
       pid: 12345,
-      command: "openclaw update --yes --channel beta --timeout 2700",
-      logPath: "/tmp/openclaw-handoff.log",
+      command: "eve update --yes --channel beta --timeout 2700",
+      logPath: "/tmp/eve-handoff.log",
     });
     resetUpdateAvailableStateForTest();
   });
@@ -164,9 +164,9 @@ describe("update-startup", () => {
   }
 
   function mockPackageInstallStatus() {
-    vi.mocked(resolveOpenClawPackageRoot).mockResolvedValue("/opt/openclaw");
+    vi.mocked(resolveEVEPackageRoot).mockResolvedValue("/opt/eve");
     vi.mocked(checkUpdateStatus).mockResolvedValue({
-      root: "/opt/openclaw",
+      root: "/opt/eve",
       installKind: "package",
       packageManager: "npm",
     } satisfies UpdateCheckResult);
@@ -275,7 +275,7 @@ describe("update-startup", () => {
     const { log, parsed } = await runUpdateCheckAndReadState(channel);
 
     expect(log.info).toHaveBeenCalledWith(
-      `update available (latest): v2.0.0 (current v1.0.0). Run: ${formatCliCommand("openclaw update")}`,
+      `update available (latest): v2.0.0 (current v1.0.0). Run: ${formatCliCommand("eve update")}`,
     );
     expect(parsed.lastNotifiedVersion).toBe("2.0.0");
     expect(parsed.lastAvailableVersion).toBe("2.0.0");
@@ -452,7 +452,7 @@ describe("update-startup", () => {
     expect(runAutoUpdate).toHaveBeenCalledWith({
       channel: "stable",
       timeoutMs: 45 * 60 * 1000,
-      root: "/opt/openclaw",
+      root: "/opt/eve",
     });
   });
 
@@ -469,7 +469,7 @@ describe("update-startup", () => {
     expect(runAutoUpdate).toHaveBeenCalledWith({
       channel: "beta",
       timeoutMs: 45 * 60 * 1000,
-      root: "/opt/openclaw",
+      root: "/opt/eve",
     });
   });
 
@@ -485,9 +485,9 @@ describe("update-startup", () => {
     expect(runAutoUpdate).toHaveBeenCalledTimes(1);
   });
 
-  it("honors OPENCLAW_NO_AUTO_UPDATE for configured auto-updates", async () => {
+  it("honors EVE_NO_AUTO_UPDATE for configured auto-updates", async () => {
     mockPackageUpdateStatus("beta", "2.0.0-beta.1");
-    process.env.OPENCLAW_NO_AUTO_UPDATE = "1";
+    process.env.EVE_NO_AUTO_UPDATE = "1";
     const log = { info: vi.fn() };
     const runAutoUpdate = createAutoUpdateSuccessMock();
 
@@ -501,10 +501,10 @@ describe("update-startup", () => {
 
     expect(runAutoUpdate).not.toHaveBeenCalled();
     const disabledLogCall = log.info.mock.calls.find(
-      ([message]) => message === "auto-update disabled by OPENCLAW_NO_AUTO_UPDATE",
+      ([message]) => message === "auto-update disabled by EVE_NO_AUTO_UPDATE",
     );
     expect(disabledLogCall).toEqual([
-      "auto-update disabled by OPENCLAW_NO_AUTO_UPDATE",
+      "auto-update disabled by EVE_NO_AUTO_UPDATE",
       {
         version: "2.0.0-beta.1",
         tag: "beta",
@@ -525,7 +525,7 @@ describe("update-startup", () => {
     });
 
     const originalArgv = process.argv.slice();
-    process.argv = [process.execPath, "/opt/openclaw/dist/entry.js"];
+    process.argv = [process.execPath, "/opt/eve/dist/entry.js"];
     try {
       await runAutoUpdateCheckWithDefaults({
         cfg: createBetaAutoUpdateConfig(),
@@ -538,12 +538,12 @@ describe("update-startup", () => {
     expect(startManagedServiceUpdateHandoffMock).not.toHaveBeenCalled();
     expect(scheduleGatewaySigusr1RestartMock).not.toHaveBeenCalled();
     expect(detectRespawnSupervisorMock).toHaveBeenCalledWith(process.env, process.platform, {
-      includeLinuxOpenClawGatewayServiceMarker: true,
+      includeLinuxEVEGatewayServiceMarker: true,
     });
     const [argv, options] = requireFirstRunCommandCall();
     expect(argv).toEqual([
       process.execPath,
-      "/opt/openclaw/dist/entry.js",
+      "/opt/eve/dist/entry.js",
       "update",
       "--yes",
       "--channel",
@@ -555,7 +555,7 @@ describe("update-startup", () => {
       throw new Error("expected command options object");
     }
     expect(options.timeoutMs).toBe(45 * 60 * 1000);
-    expect(options.env).toEqual({ OPENCLAW_AUTO_UPDATE: "1" });
+    expect(options.env).toEqual({ EVE_AUTO_UPDATE: "1" });
   });
 
   it("hands supervised auto-updates to a detached service handoff before restarting", async () => {
@@ -574,7 +574,7 @@ describe("update-startup", () => {
     expect(runCommandWithTimeout).not.toHaveBeenCalled();
     expect(startManagedServiceUpdateHandoffMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        root: "/opt/openclaw",
+        root: "/opt/eve",
         timeoutMs: 45 * 60 * 1000,
         channel: "beta",
         restartDelayMs: 0,
@@ -606,8 +606,8 @@ describe("update-startup", () => {
       channel: "beta",
       version: "2.0.0-beta.1",
       tag: "beta",
-      command: "openclaw update --yes --channel beta --timeout 2700",
-      logPath: "/tmp/openclaw-handoff.log",
+      command: "eve update --yes --channel beta --timeout 2700",
+      logPath: "/tmp/eve-handoff.log",
     });
   });
 
@@ -622,11 +622,11 @@ describe("update-startup", () => {
 
     expect(runCommandWithTimeout).not.toHaveBeenCalled();
     expect(detectRespawnSupervisorMock).toHaveBeenCalledWith(process.env, process.platform, {
-      includeLinuxOpenClawGatewayServiceMarker: true,
+      includeLinuxEVEGatewayServiceMarker: true,
     });
     expect(startManagedServiceUpdateHandoffMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        root: "/opt/openclaw",
+        root: "/opt/eve",
         timeoutMs: 45 * 60 * 1000,
         channel: "beta",
         restartDelayMs: 2000,

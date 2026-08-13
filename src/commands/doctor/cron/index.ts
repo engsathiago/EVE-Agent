@@ -2,7 +2,7 @@
 import { normalizeOptionalString } from "../../../../packages/normalization-core/src/string-coerce.js";
 import { note } from "../../../../packages/terminal-core/src/note.js";
 import { formatCliCommand } from "../../../cli/command-format.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import {
   loadCronQuarantineFile,
   loadCronJobsStoreWithConfigJobs,
@@ -72,7 +72,7 @@ export type LegacyCronRepairResult = {
 };
 
 async function loadLegacyCronRepairState(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   onlyIfLegacyDetected?: boolean;
 }): Promise<LegacyCronRepairState | null> {
   const storePath = resolveCronJobsStorePath(params.cfg.cron?.store);
@@ -126,7 +126,7 @@ async function loadLegacyCronRepairState(params: {
 }
 
 async function applyLegacyCronStoreRepair(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   state: LegacyCronRepairState;
   normalized?: ReturnType<typeof normalizeStoredCronJobs>;
 }): Promise<LegacyCronRepairResult> {
@@ -214,7 +214,7 @@ async function applyLegacyCronStoreRepair(params: {
 }
 
 export async function repairLegacyCronStoreWithoutPrompt(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Promise<LegacyCronRepairResult> {
   const storePath = resolveCronJobsStorePath(normalizeOptionalString(params.cfg.cron?.store));
   let state: LegacyCronRepairState | null;
@@ -248,7 +248,7 @@ function noteLegacyCronRepairResult(result: LegacyCronRepairResult): void {
 
 /** Inspect cron storage and optionally repair legacy JSON/SQLite/payload shapes. */
 export async function maybeRepairLegacyCronStore(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   options: DoctorOptions;
   prompter: Pick<DoctorPrompter, "confirm">;
 }) {
@@ -262,7 +262,7 @@ export async function maybeRepairLegacyCronStore(params: {
       [
         `Unable to read cron job store at ${shortenHomePath(storePath)}.`,
         `- ${reason}`,
-        `Fix the file's permissions or contents and re-run ${formatCliCommand("openclaw doctor")}; later health checks will continue.`,
+        `Fix the file's permissions or contents and re-run ${formatCliCommand("eve doctor")}; later health checks will continue.`,
       ].join("\n"),
       "Cron",
     );
@@ -317,7 +317,7 @@ export async function maybeRepairLegacyCronStore(params: {
       [
         `Legacy cron storage detected at ${shortenHomePath(storePath)}.`,
         ...previewLines,
-        `Repair with ${formatCliCommand("openclaw doctor --fix")} to finish the migration.`,
+        `Repair with ${formatCliCommand("eve doctor --fix")} to finish the migration.`,
       ].join("\n"),
       "Cron",
     );
@@ -376,7 +376,7 @@ export async function maybeRepairLegacyCronStore(params: {
     [
       noteHeading,
       ...previewLines,
-      `Repair with ${formatCliCommand("openclaw doctor --fix")} to normalize the store before the next scheduler run.`,
+      `Repair with ${formatCliCommand("eve doctor --fix")} to normalize the store before the next scheduler run.`,
     ].join("\n"),
     "Cron",
   );

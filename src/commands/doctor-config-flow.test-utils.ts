@@ -1,5 +1,5 @@
 // Doctor config-flow test utilities share mock input symbols and config fixtures across repair suites.
-const DOCTOR_CONFIG_TEST_INPUT = Symbol.for("openclaw.doctorConfigFlow.testInput");
+const DOCTOR_CONFIG_TEST_INPUT = Symbol.for("eve.doctorConfigFlow.testInput");
 
 type DoctorConfigTestInput = {
   config: Record<string, unknown>;
@@ -143,7 +143,7 @@ export async function runDoctorConfigWithInput<T>(params: {
   setDoctorConfigInputForTest({
     config: structuredClone(params.config),
     exists: true,
-    path: "/virtual/.openclaw/openclaw.json",
+    path: "/virtual/.eve/eve.json",
     preflightMode: params.preflightMode ?? inferredPreflightMode,
   });
   try {

@@ -1,6 +1,6 @@
 // Telegram plugin module implements button types behavior.
-import { parseExecApprovalCommandText } from "openclaw/plugin-sdk/approval-reply-runtime";
-import { reduceInteractiveReply } from "openclaw/plugin-sdk/interactive-runtime";
+import { parseExecApprovalCommandText } from "eve-agent/plugin-sdk/approval-reply-runtime";
+import { reduceInteractiveReply } from "eve-agent/plugin-sdk/interactive-runtime";
 import {
   isMessagePresentationInteractiveBlock,
   normalizeMessagePresentation,
@@ -8,7 +8,7 @@ import {
   type InteractiveReply,
   type MessagePresentation,
   type MessagePresentationButton,
-} from "openclaw/plugin-sdk/interactive-runtime";
+} from "eve-agent/plugin-sdk/interactive-runtime";
 import { sanitizeTelegramCallbackData } from "./approval-callback-data.js";
 import {
   buildTelegramNativeCommandCallbackData,

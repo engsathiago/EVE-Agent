@@ -6,7 +6,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { readStringValue } from "@openclaw/normalization-core/string-coerce";
+import { readStringValue } from "@eve/normalization-core/string-coerce";
 import { resolveStateDir } from "../config/paths.js";
 import { loadJsonFile, saveJsonFile } from "../infra/json-file.js";
 import { normalizeDeliveryContext } from "../utils/delivery-context.shared.js";
@@ -72,12 +72,12 @@ function setCachedRegistryRead(
 }
 
 function resolveSubagentStateDir(env: NodeJS.ProcessEnv = process.env): string {
-  const explicit = env.OPENCLAW_STATE_DIR?.trim();
+  const explicit = env.EVE_STATE_DIR?.trim();
   if (explicit) {
     return resolveStateDir(env);
   }
   if (env.VITEST || env.NODE_ENV === "test") {
-    return path.join(os.tmpdir(), "openclaw-test-state", String(process.pid));
+    return path.join(os.tmpdir(), "eve-test-state", String(process.pid));
   }
   return resolveStateDir(env);
 }

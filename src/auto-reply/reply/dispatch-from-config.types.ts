@@ -1,5 +1,5 @@
 // Shared type contracts for dispatch-from-config runtime execution.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { GetReplyOptions, SourceReplyDeliveryMode } from "../get-reply-options.types.js";
 import type { FinalizedMsgContext } from "../templating.js";
 import type { FormatAbortReplyText, TryFastAbortFromMessage } from "./abort.runtime-types.js";
@@ -21,7 +21,7 @@ export type DispatchFromConfigResult = {
 
 export type DispatchFromConfigParams = {
   ctx: FinalizedMsgContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   dispatcher: ReplyDispatcher;
   replyOptions?: Omit<GetReplyOptions, "onBlockReply">;
   replyResolver?: GetReplyFromConfig;
@@ -29,7 +29,7 @@ export type DispatchFromConfigParams = {
   fastAbortResolver?: TryFastAbortFromMessage;
   formatAbortReplyTextResolver?: FormatAbortReplyText;
   /** Optional patch applied to the already loaded config before reply resolution. */
-  configOverride?: OpenClawConfig;
+  configOverride?: EVEConfig;
 };
 
 export type DispatchReplyFromConfig = (

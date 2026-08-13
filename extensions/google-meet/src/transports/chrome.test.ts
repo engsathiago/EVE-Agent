@@ -1,5 +1,5 @@
 // Google Meet tests cover chrome plugin behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, expect, it } from "vitest";
 import { testing } from "./chrome.js";
 

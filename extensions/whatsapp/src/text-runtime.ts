@@ -4,8 +4,8 @@ export {
   sanitizeAssistantVisibleText,
   sanitizeAssistantVisibleTextWithProfile,
   stripToolCallXmlTags,
-} from "openclaw/plugin-sdk/text-chunking";
-export { normalizeE164, resolveUserPath, sleep } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/text-chunking";
+export { normalizeE164, resolveUserPath, sleep } from "eve-agent/plugin-sdk/text-utility-runtime";
 export {
   assertWebChannel,
   isSelfChatMode,

@@ -1,7 +1,7 @@
 /**
  * Tests runtime store singleton behavior.
  */
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { describe, expect, test } from "vitest";
 import { createPluginRuntimeStore } from "./runtime-store.js";
 

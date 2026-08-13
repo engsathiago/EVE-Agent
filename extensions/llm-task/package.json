@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/llm-task",
+  "name": "@eve/llm-task",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw JSON-only LLM task plugin",
+  "description": "EVE JSON-only LLM task plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

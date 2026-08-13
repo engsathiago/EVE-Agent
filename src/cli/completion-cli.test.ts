@@ -9,7 +9,7 @@ import { getCompletionScript } from "./completion-cli.js";
 
 function createCompletionProgram(): Command {
   const program = new Command();
-  program.name("openclaw");
+  program.name("eve");
   program.description("CLI root");
   program.option("-v, --verbose", "Verbose output");
 
@@ -34,9 +34,9 @@ describe("completion-cli", () => {
   it("generates zsh functions for nested subcommands", () => {
     const script = getCompletionScript("zsh", createCompletionProgram());
 
-    expect(script).toContain("_openclaw_gateway()");
-    expect(script).toContain("(status) _openclaw_gateway_status ;;");
-    expect(script).toContain("(restart) _openclaw_gateway_restart ;;");
+    expect(script).toContain("_eve_gateway()");
+    expect(script).toContain("(status) _eve_gateway_status ;;");
+    expect(script).toContain("(restart) _eve_gateway_restart ;;");
     expect(script).toContain("--force[Force the action]");
   });
 
@@ -56,9 +56,9 @@ describe("completion-cli", () => {
       throw probe.error;
     }
 
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-zsh-completion-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-zsh-completion-"));
     try {
-      const scriptPath = path.join(tempDir, "openclaw.zsh");
+      const scriptPath = path.join(tempDir, "eve.zsh");
       await fs.writeFile(scriptPath, getCompletionScript("zsh", createCompletionProgram()), "utf8");
 
       const result = spawnSync(
@@ -67,13 +67,13 @@ describe("completion-cli", () => {
           "-fc",
           `
             source ${JSON.stringify(scriptPath)}
-            [[ -z "\${_comps[openclaw]-}" ]] || exit 10
-            [[ "\${precmd_functions[(r)_openclaw_register_completion]}" = "_openclaw_register_completion" ]] || exit 11
+            [[ -z "\${_comps[eve]-}" ]] || exit 10
+            [[ "\${precmd_functions[(r)_eve_register_completion]}" = "_eve_register_completion" ]] || exit 11
             autoload -Uz compinit
             compinit -C
-            _openclaw_register_completion
-            [[ -z "\${precmd_functions[(r)_openclaw_register_completion]}" ]] || exit 12
-            [[ "\${_comps[openclaw]-}" = "_openclaw_root_completion" ]]
+            _eve_register_completion
+            [[ -z "\${precmd_functions[(r)_eve_register_completion]}" ]] || exit 12
+            [[ "\${_comps[eve]-}" = "_eve_root_completion" ]]
           `,
         ],
         {
@@ -98,16 +98,16 @@ describe("completion-cli", () => {
 
     expect(script).toContain("if ($commandPath -eq 'gateway') {");
     expect(script).toContain("if ($commandPath -eq 'gateway status') {");
-    expect(script).not.toContain("if ($commandPath -eq 'openclaw gateway') {");
+    expect(script).not.toContain("if ($commandPath -eq 'eve gateway') {");
     expect(script).toContain("$completions = @('status','restart','--force','--token')");
     expect(script).not.toContain("'-t,'");
   });
 
   it("generates valid PowerShell root arrays when commands or options are empty", () => {
-    const commandsOnly = new Command().name("openclaw");
+    const commandsOnly = new Command().name("eve");
     commandsOnly.command("status");
-    const optionsOnly = new Command().name("openclaw").option("--json", "JSON output");
-    const empty = new Command().name("openclaw");
+    const optionsOnly = new Command().name("eve").option("--json", "JSON output");
+    const empty = new Command().name("eve");
 
     expect(getCompletionScript("powershell", commandsOnly)).toContain("$completions = @('status')");
     expect(getCompletionScript("powershell", optionsOnly)).toContain("$completions = @('--json')");
@@ -118,29 +118,29 @@ describe("completion-cli", () => {
     const script = getCompletionScript("fish", createCompletionProgram());
 
     expect(script).toContain(
-      'complete -c openclaw -n "__fish_use_subcommand" -a "gateway" -d \'Gateway commands\'',
+      'complete -c eve -n "__fish_use_subcommand" -a "gateway" -d \'Gateway commands\'',
     );
     expect(script).toContain(
-      'complete -c openclaw -n "__openclaw_command_path_matches gateway -- -t --token" -a "status" -d \'Show gateway status\'',
+      'complete -c eve -n "__eve_command_path_matches gateway -- -t --token" -a "status" -d \'Show gateway status\'',
     );
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches gateway -- -t --token\" -l force -d 'Force the action'",
+      "complete -c eve -n \"__eve_command_path_matches gateway -- -t --token\" -l force -d 'Force the action'",
     );
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches gateway status -- -t --token\" -l json -d 'JSON output'",
+      "complete -c eve -n \"__eve_command_path_matches gateway status -- -t --token\" -l json -d 'JSON output'",
     );
-    expect(script).toContain("__openclaw_command_path_matches gateway -- -t --token");
+    expect(script).toContain("__eve_command_path_matches gateway -- -t --token");
     expect(script).toContain("if contains -- $flag $value_options");
   });
 
   it("scopes fish value-taking option skips to the active command path", () => {
     const script = getCompletionScript("fish", createCompletionProgram());
 
-    expect(script).toContain("__openclaw_command_path_matches agent -- --verbose");
-    expect(script).toContain("__openclaw_command_path_matches sessions cleanup --");
-    expect(script).not.toContain("__openclaw_command_path_matches sessions cleanup -- --verbose");
+    expect(script).toContain("__eve_command_path_matches agent -- --verbose");
+    expect(script).toContain("__eve_command_path_matches sessions cleanup --");
+    expect(script).not.toContain("__eve_command_path_matches sessions cleanup -- --verbose");
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches sessions cleanup --\" -l dry-run -d 'Preview cleanup'",
+      "complete -c eve -n \"__eve_command_path_matches sessions cleanup --\" -l dry-run -d 'Preview cleanup'",
     );
   });
 

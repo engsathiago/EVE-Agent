@@ -4,7 +4,7 @@
  * while preserving the shared auth-profile store contracts.
  */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { withEVETestState } from "../test-utils/eve-test-state.js";
 import type { AuthProfileStore } from "./auth-profiles.js";
 import { CHUTES_TOKEN_ENDPOINT } from "./chutes-oauth.js";
 
@@ -48,10 +48,10 @@ describe("auth-profiles (chutes)", () => {
   });
 
   it("refreshes expired Chutes OAuth credentials", async () => {
-    await withOpenClawTestState(
+    await withEVETestState(
       {
         layout: "state-only",
-        prefix: "openclaw-chutes-",
+        prefix: "eve-chutes-",
         agentEnv: "main",
         env: {
           CHUTES_CLIENT_ID: undefined,

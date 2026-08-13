@@ -21,8 +21,8 @@ describe("live transport scenario helpers", () => {
       "utf8",
     );
 
-    expect(source).toContain("openclaw/plugin-sdk/qa-live-transport-scenarios");
-    expect(source).not.toContain("openclaw/plugin-sdk/qa-runtime");
+    expect(source).toContain("eve-agent/plugin-sdk/qa-live-transport-scenarios");
+    expect(source).not.toContain("eve-agent/plugin-sdk/qa-runtime");
   });
 
   it("keeps the repo-wide baseline contract ordered", () => {

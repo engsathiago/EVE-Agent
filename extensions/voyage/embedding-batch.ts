@@ -20,8 +20,8 @@ import {
   type ProviderBatchOutputLine,
   uploadBatchJsonlFile,
   withRemoteHttpResponse,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { VoyageEmbeddingClient } from "./embedding-provider.js";
 
 /**

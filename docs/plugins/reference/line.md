@@ -1,5 +1,5 @@
 ---
-summary: "OpenClaw LINE channel plugin for LINE Bot API chats."
+summary: "EVE LINE channel plugin for LINE Bot API chats."
 read_when:
   - You are installing, configuring, or auditing the line plugin
 title: "LINE plugin"
@@ -7,11 +7,11 @@ title: "LINE plugin"
 
 # LINE plugin
 
-OpenClaw LINE channel plugin for LINE Bot API chats.
+EVE LINE channel plugin for LINE Bot API chats.
 
 ## Distribution
 
-- Package: `@openclaw/line`
+- Package: `@eve/line`
 - Install route: npm; ClawHub
 
 ## Surface

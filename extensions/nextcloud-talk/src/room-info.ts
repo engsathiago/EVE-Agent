@@ -1,8 +1,8 @@
 // Nextcloud Talk plugin module implements room info behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
-import { ssrfPolicyFromPrivateNetworkOptIn } from "openclaw/plugin-sdk/ssrf-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { readProviderJsonResponse } from "eve-agent/plugin-sdk/provider-http";
+import { ssrfPolicyFromPrivateNetworkOptIn } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { fetchWithSsrFGuard, type RuntimeEnv } from "../runtime-api.js";
 import type { ResolvedNextcloudTalkAccount } from "./accounts.js";
 import { resolveNextcloudTalkApiCredentials } from "./api-credentials.js";

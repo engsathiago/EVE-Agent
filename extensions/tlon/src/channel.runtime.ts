@@ -1,9 +1,9 @@
 // Tlon plugin module implements channel behavior.
 import crypto from "node:crypto";
-import type { ChannelAccountSnapshot } from "openclaw/plugin-sdk/channel-contract";
-import type { ChannelOutboundAdapter } from "openclaw/plugin-sdk/channel-send-result";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/core";
+import type { ChannelAccountSnapshot } from "eve-agent/plugin-sdk/channel-contract";
+import type { ChannelOutboundAdapter } from "eve-agent/plugin-sdk/channel-send-result";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { ChannelPlugin } from "eve-agent/plugin-sdk/core";
 import { monitorTlonProvider } from "./monitor/index.js";
 import { tlonSetupWizard } from "./setup-surface.js";
 import {
@@ -92,7 +92,7 @@ async function createHttpPokeApi(params: {
 }
 
 function resolveOutboundContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   to: string;
 }) {

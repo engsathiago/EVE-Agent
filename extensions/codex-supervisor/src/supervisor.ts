@@ -113,7 +113,7 @@ function isLoadedThreadReadMiss(error: unknown): boolean {
   return message.includes("thread not found") || message.includes("thread not loaded");
 }
 
-/** High-level supervisor facade used by OpenClaw tools and MCP tools. */
+/** High-level supervisor facade used by EVE tools and MCP tools. */
 export class CodexSupervisor {
   private readonly connections = new Map<string, Promise<CodexJsonRpcConnection>>();
 

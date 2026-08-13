@@ -1,5 +1,5 @@
-// Copilot plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+// Copilot plugin entrypoint registers its EVE integration.
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 import { createCopilotAgentHarness, type CopilotSessionBinding } from "./harness.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -1,10 +1,10 @@
 // Agent delivery planning resolves final reply destinations from explicit
 // options, session history, turn source, bindings, and channel route hooks.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { ChannelOutboundTargetMode } from "../../channels/plugins/types.public.js";
 import type { ChannelId } from "../../channels/plugins/types.public.js";
 import type { SessionEntry } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { normalizeAccountId } from "../../utils/account-id.js";
 import {
   INTERNAL_MESSAGE_CHANNEL,
@@ -43,7 +43,7 @@ export function resolveAgentDeliveryPlan(params: {
    * overrides session-level `lastChannel` to prevent cross-channel reply
    * routing in shared sessions (dmScope="main").
    *
-   * @see https://github.com/openclaw/openclaw/issues/24152
+   * @see https://github.com/engsathiago/eve-agent/issues/24152
    */
   turnSourceChannel?: string;
   /** Turn-source `to` — paired with `turnSourceChannel`. */
@@ -137,7 +137,7 @@ export function resolveAgentDeliveryPlan(params: {
 
 export async function resolveAgentDeliveryPlanWithSessionRoute(
   params: Parameters<typeof resolveAgentDeliveryPlan>[0] & {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     agentId: string;
     currentSessionKey?: string;
   },
@@ -197,7 +197,7 @@ export async function resolveAgentDeliveryPlanWithSessionRoute(
 }
 
 export function resolveAgentOutboundTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   plan: AgentDeliveryPlan;
   targetMode?: ChannelOutboundTargetMode;
   validateExplicitTarget?: boolean;

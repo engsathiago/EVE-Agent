@@ -1,12 +1,12 @@
 // Covers provider/model gates for strict agentic execution-contract activation.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isStrictAgenticExecutionContractActive } from "./execution-contract.js";
 
 describe("isStrictAgenticExecutionContractActive", () => {
   const supportedProvider = "openai";
   const unsupportedProvider = "anthropic";
-  const emptyConfig: OpenClawConfig = {};
+  const emptyConfig: EVEConfig = {};
 
   describe("supported provider + model detection", () => {
     it("auto-activates on bare gpt-5 model ids", () => {
@@ -134,7 +134,7 @@ describe("isStrictAgenticExecutionContractActive", () => {
 
   describe("explicit override behavior", () => {
     it("honors explicit strict-agentic on the supported lane", () => {
-      const config: OpenClawConfig = {
+      const config: EVEConfig = {
         agents: {
           defaults: {
             embeddedAgent: {
@@ -153,7 +153,7 @@ describe("isStrictAgenticExecutionContractActive", () => {
     });
 
     it("honors explicit default opt-out even on the supported lane", () => {
-      const config: OpenClawConfig = {
+      const config: EVEConfig = {
         agents: {
           defaults: {
             embeddedAgent: {
@@ -172,7 +172,7 @@ describe("isStrictAgenticExecutionContractActive", () => {
     });
 
     it("collapses explicit strict-agentic to default on an unsupported lane", () => {
-      const config: OpenClawConfig = {
+      const config: EVEConfig = {
         agents: {
           defaults: {
             embeddedAgent: {

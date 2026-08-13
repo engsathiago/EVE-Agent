@@ -1,20 +1,20 @@
-import OpenClawChatUI
-import OpenClawProtocol
+import EVEChatUI
+import EVEProtocol
 import SwiftUI
 
 struct ChatProTab: View {
     @Environment(NodeAppModel.self) private var appModel
     @Environment(\.colorScheme) private var colorScheme
-    @State private var viewModel: OpenClawChatViewModel?
+    @State private var viewModel: EVEChatViewModel?
     @State private var viewModelTransportModeID = ""
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
     let headerTitle: String?
     let headerSubtitle: String?
     let showsAgentBadge: Bool
     let openSettings: (() -> Void)?
 
     init(
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil,
+        headerLeadingAction: EVESidebarHeaderAction? = nil,
         headerTitle: String? = nil,
         headerSubtitle: String? = nil,
         showsAgentBadge: Bool = true,
@@ -30,18 +30,18 @@ struct ChatProTab: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                OpenClawProBackground()
+                EVEProBackground()
                 VStack(spacing: 0) {
                     self.header
                     if let viewModel {
-                        OpenClawChatView(
+                        EVEChatView(
                             viewModel: viewModel,
                             drawsBackground: false,
                             showsSessionSwitcher: false,
                             userAccent: self.chatUserAccent,
                             assistantName: self.agentDisplayName,
                             assistantAvatarText: self.agentBadge,
-                            assistantAvatarTint: OpenClawBrand.accent,
+                            assistantAvatarTint: EVEBrand.accent,
                             showsAssistantAvatars: false,
                             composerChrome: .clean,
                             isComposerEnabled: self.gatewayConnected,
@@ -91,7 +91,7 @@ struct ChatProTab: View {
     }
 
     private var header: some View {
-        OpenClawAdaptiveHeaderRow(
+        EVEAdaptiveHeaderRow(
             title: self.headerDisplayTitle,
             subtitle: self.headerDisplaySubtitle,
             titleFont: .headline.weight(.semibold),
@@ -100,14 +100,14 @@ struct ChatProTab: View {
         {
             HStack(spacing: 11) {
                 if let headerLeadingAction {
-                    OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                    EVESidebarHeaderLeadingSlot(action: headerLeadingAction)
                 }
                 self.headerIdentityBadge
             }
         } accessory: {
             self.connectionPillButton
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
         .padding(.bottom, 4)
     }
 
@@ -125,15 +125,15 @@ struct ChatProTab: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    OpenClawBrand.accent,
-                                    OpenClawBrand.accentHot,
+                                    EVEBrand.accent,
+                                    EVEBrand.accentHot,
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing)))
                 .overlay(Circle().strokeBorder(.white.opacity(0.18), lineWidth: 1))
-                .shadow(color: OpenClawBrand.accent.opacity(0.18), radius: 10, y: 5)
+                .shadow(color: EVEBrand.accent.opacity(0.18), radius: 10, y: 5)
         } else {
-            ProIconBadge(systemName: "bubble.left", color: OpenClawBrand.accent)
+            ProIconBadge(systemName: "bubble.left", color: EVEBrand.accent)
         }
     }
 
@@ -142,7 +142,7 @@ struct ChatProTab: View {
         let transportModeID = self.appModel.chatTransportModeID
         guard let viewModel else {
             self.viewModelTransportModeID = transportModeID
-            self.viewModel = OpenClawChatViewModel(
+            self.viewModel = EVEChatViewModel(
                 sessionKey: sessionKey,
                 transport: self.appModel.makeChatTransport(),
                 onSessionChanged: { sessionKey in
@@ -155,7 +155,7 @@ struct ChatProTab: View {
         }
         if self.viewModelTransportModeID != transportModeID {
             self.viewModelTransportModeID = transportModeID
-            self.viewModel = OpenClawChatViewModel(
+            self.viewModel = EVEChatViewModel(
                 sessionKey: sessionKey,
                 transport: self.appModel.makeChatTransport(),
                 onSessionChanged: { sessionKey in
@@ -170,8 +170,8 @@ struct ChatProTab: View {
         viewModel.syncSession(to: sessionKey)
     }
 
-    private var talkControl: OpenClawChatTalkControl {
-        OpenClawChatTalkControl(
+    private var talkControl: EVEChatTalkControl {
+        EVEChatTalkControl(
             isEnabled: self.appModel.talkMode.isEnabled,
             isListening: self.appModel.talkMode.isListening,
             isSpeaking: self.appModel.talkMode.isSpeaking,
@@ -236,11 +236,11 @@ struct ChatProTab: View {
     private var gatewayPillColor: Color {
         switch self.gatewayDisplayState {
         case .connected:
-            self.gatewayConnected ? OpenClawBrand.ok : .secondary
+            self.gatewayConnected ? EVEBrand.ok : .secondary
         case .connecting:
-            OpenClawBrand.accent
+            EVEBrand.accent
         case .error:
-            OpenClawBrand.warn
+            EVEBrand.warn
         case .disconnected:
             .secondary
         }
@@ -277,7 +277,7 @@ struct ChatProTab: View {
     }
 
     private var chatUserAccent: Color {
-        self.colorScheme == .light ? Color(red: 0 / 255.0, green: 122 / 255.0, blue: 255 / 255.0) : OpenClawBrand.accent
+        self.colorScheme == .light ? Color(red: 0 / 255.0, green: 122 / 255.0, blue: 255 / 255.0) : EVEBrand.accent
     }
 
     private var activeAgent: AgentSummary? {

@@ -6,8 +6,8 @@ import {
   embeddedAgentLog,
   formatErrorMessage,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { markAuthProfileBlockedUntil } from "openclaw/plugin-sdk/agent-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { markAuthProfileBlockedUntil } from "eve-agent/plugin-sdk/agent-runtime";
 import { CODEX_CONTROL_METHODS } from "./capabilities.js";
 import type { CodexAppServerClient } from "./client.js";
 import {

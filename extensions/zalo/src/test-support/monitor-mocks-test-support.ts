@@ -1,12 +1,12 @@
 // Zalo plugin module implements monitor mocks test support behavior.
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
+import { createPluginRuntimeMock } from "eve-agent/plugin-sdk/channel-test-helpers";
 import {
   createEmptyPluginRegistry,
   createRuntimeEnv,
   setActivePluginRegistry,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
 import { vi, type Mock } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import type { ResolvedZaloAccount } from "../types.js";
 
 type MonitorModule = typeof import("../monitor.js");
@@ -149,7 +149,7 @@ export async function loadCachedLifecycleMonitorModule(cacheKey: string): Promis
 
 export async function startWebhookLifecycleMonitor(params: {
   account: ResolvedZaloAccount;
-  config: OpenClawConfig;
+  config: EVEConfig;
   token?: string;
   webhookUrl?: string;
   webhookSecret?: string;

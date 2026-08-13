@@ -8,9 +8,9 @@ import {
   normalizeStringEntries,
   uniqueStrings,
 } from "./string-utils.js";
-export { splitShellArgs } from "./openclaw-runtime-io.js";
+export { splitShellArgs } from "./eve-runtime-io.js";
 
-// Shared OpenClaw config helpers used by memory host, QMD, and agent context code.
+// Shared EVE config helpers used by memory host, QMD, and agent context code.
 
 /** Chat shape used by memory send-policy matching. */
 export type ChatType = "direct" | "group" | "channel";
@@ -141,8 +141,8 @@ type AgentConfig = {
   contextLimits?: AgentContextLimitsConfig;
 };
 
-/** Narrow OpenClaw config shape consumed by memory host utilities. */
-export type OpenClawConfig = {
+/** Narrow EVE config shape consumed by memory host utilities. */
+export type EVEConfig = {
   agents?: {
     defaults?: {
       workspace?: string;
@@ -173,7 +173,7 @@ const INVALID_CHARS_RE = /[^a-z0-9_-]+/g;
 const LEADING_DASH_RE = /^-+/;
 const TRAILING_DASH_RE = /-+$/;
 const LEGACY_STATE_DIRNAMES = [".clawdbot"] as const;
-const NEW_STATE_DIRNAME = ".openclaw";
+const NEW_STATE_DIRNAME = ".eve";
 const DURATION_MULTIPLIERS: Record<string, number> = {
   ms: 1,
   s: 1000,
@@ -219,7 +219,7 @@ function normalizeHomeValue(value: string | undefined): string | undefined {
   return trimmed;
 }
 
-/** Resolve the underlying OS home before applying OpenClaw-specific overrides. */
+/** Resolve the underlying OS home before applying EVE-specific overrides. */
 function resolveRawOsHomeDir(env: NodeJS.ProcessEnv, homedir: () => string): string | undefined {
   return (
     normalizeHomeValue(env.HOME) ??
@@ -228,19 +228,19 @@ function resolveRawOsHomeDir(env: NodeJS.ProcessEnv, homedir: () => string): str
   );
 }
 
-/** Resolve OPENCLAW_HOME or the OS home, falling back to cwd for hermetic tests. */
+/** Resolve EVE_HOME or the OS home, falling back to cwd for hermetic tests. */
 function resolveRequiredHomeDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,
 ): string {
-  const explicitHome = normalizeHomeValue(env.OPENCLAW_HOME);
+  const explicitHome = normalizeHomeValue(env.EVE_HOME);
   const rawHome = explicitHome
     ? explicitHome.replace(/^~(?=$|[\\/])/, resolveRawOsHomeDir(env, homedir) ?? "")
     : resolveRawOsHomeDir(env, homedir);
   return rawHome ? path.resolve(rawHome) : path.resolve(process.cwd());
 }
 
-/** Resolve absolute user paths, including "~" against the effective OpenClaw home. */
+/** Resolve absolute user paths, including "~" against the effective EVE home. */
 export function resolveUserPath(
   input: string,
   env: NodeJS.ProcessEnv = process.env,
@@ -266,16 +266,16 @@ export function resolveStateDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,
 ): string {
-  const override = env.OPENCLAW_STATE_DIR?.trim();
+  const override = env.EVE_STATE_DIR?.trim();
   if (override) {
     return resolveUserPath(override, env, homedir);
   }
   const effectiveHome = () => resolveRequiredHomeDir(env, homedir);
   const nextDir = path.join(effectiveHome(), NEW_STATE_DIRNAME);
-  if (env.OPENCLAW_TEST_FAST === "1" || fs.existsSync(nextDir)) {
+  if (env.EVE_TEST_FAST === "1" || fs.existsSync(nextDir)) {
     return nextDir;
   }
-  // Existing legacy state remains authoritative until an explicit migration creates .openclaw.
+  // Existing legacy state remains authoritative until an explicit migration creates .eve.
   const existingLegacy = legacyStateDirs(effectiveHome).find((dir) => {
     try {
       return fs.existsSync(dir);
@@ -286,25 +286,25 @@ export function resolveStateDir(
   return existingLegacy ?? nextDir;
 }
 
-/** Resolve the default agent workspace, partitioned by OPENCLAW_PROFILE when set. */
+/** Resolve the default agent workspace, partitioned by EVE_PROFILE when set. */
 function resolveDefaultAgentWorkspaceDir(env: NodeJS.ProcessEnv = process.env): string {
   const home = resolveRequiredHomeDir(env, os.homedir);
-  const profile = env.OPENCLAW_PROFILE?.trim();
+  const profile = env.EVE_PROFILE?.trim();
   if (profile && normalizeLowercaseStringOrEmpty(profile) !== "default") {
-    return path.join(home, ".openclaw", `workspace-${profile}`);
+    return path.join(home, ".eve", `workspace-${profile}`);
   }
-  return path.join(home, ".openclaw", "workspace");
+  return path.join(home, ".eve", "workspace");
 }
 
 /** Return configured agent entries after dropping nullish placeholders. */
-function listAgentEntries(cfg: OpenClawConfig): AgentConfig[] {
+function listAgentEntries(cfg: EVEConfig): AgentConfig[] {
   return Array.isArray(cfg.agents?.list)
     ? cfg.agents.list.filter((entry): entry is AgentConfig => Boolean(entry))
     : [];
 }
 
 /** Resolve the default agent id from explicit default marker or first agent entry. */
-function resolveDefaultAgentId(cfg: OpenClawConfig): string {
+function resolveDefaultAgentId(cfg: EVEConfig): string {
   const agents = listAgentEntries(cfg);
   if (agents.length === 0) {
     return DEFAULT_AGENT_ID;
@@ -314,7 +314,7 @@ function resolveDefaultAgentId(cfg: OpenClawConfig): string {
 }
 
 /** Find one agent config by canonical id. */
-function resolveAgentConfig(cfg: OpenClawConfig, agentId: string): AgentConfig | undefined {
+function resolveAgentConfig(cfg: EVEConfig, agentId: string): AgentConfig | undefined {
   const id = normalizeAgentId(agentId);
   return listAgentEntries(cfg).find((entry) => normalizeAgentId(entry.id) === id);
 }
@@ -326,7 +326,7 @@ function stripNullBytes(value: string): string {
 
 /** Resolve the workspace directory for an agent id and config defaults. */
 export function resolveAgentWorkspaceDir(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
@@ -349,7 +349,7 @@ export function resolveAgentWorkspaceDir(
 
 /** Resolve context limits for an agent with defaults fallback. */
 export function resolveAgentContextLimits(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   agentId?: string | null,
 ): AgentContextLimitsConfig | undefined {
   const defaults = cfg?.agents?.defaults?.contextLimits;
@@ -361,7 +361,7 @@ export function resolveAgentContextLimits(
 
 /** Resolve enabled memory search config plus deduplicated extra paths for an agent. */
 export function resolveMemorySearchConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string,
 ): { enabled: boolean; extraPaths: string[] } | null {
   const defaults = cfg.agents?.defaults?.memorySearch;

@@ -4,4 +4,4 @@ export {
   createOAuthLoginCancelledError,
   throwIfOAuthLoginAborted,
   withOAuthLoginAbort,
-} from "openclaw/plugin-sdk/provider-oauth-runtime";
+} from "eve-agent/plugin-sdk/provider-oauth-runtime";

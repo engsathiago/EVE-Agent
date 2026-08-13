@@ -5,11 +5,11 @@
  * file so that the plugin-level `index.ts` stays a pure declaration.
  */
 
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/core";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/core";
 import { registerChannelTool } from "./channel.js";
 import { registerRemindTool } from "./remind.js";
 
-export function registerQQBotTools(api: OpenClawPluginApi): void {
+export function registerQQBotTools(api: EVEPluginApi): void {
   registerChannelTool(api);
   registerRemindTool(api);
 }

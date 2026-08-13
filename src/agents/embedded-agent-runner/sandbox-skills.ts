@@ -9,7 +9,7 @@ import type { SkillEligibilityContext, SkillSnapshot } from "../../skills/types.
 import type { SkillEntry } from "../../skills/types.js";
 import type { SandboxContext } from "../sandbox/types.js";
 
-const MATERIALIZED_SKILLS_WORKSPACE_CONTAINER_PARTS = [".openclaw", "sandbox-skills"] as const;
+const MATERIALIZED_SKILLS_WORKSPACE_CONTAINER_PARTS = [".eve", "sandbox-skills"] as const;
 type SandboxSkillRuntimeContext = Pick<SandboxContext, "enabled"> &
   Partial<
     Pick<

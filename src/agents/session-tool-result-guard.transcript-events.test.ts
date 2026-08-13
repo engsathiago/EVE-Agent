@@ -1,6 +1,6 @@
 // Verifies guarded session managers emit transcript update events with stable sequence ids.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   onSessionTranscriptUpdate,
@@ -23,7 +23,7 @@ describe("guardSessionManager transcript updates", () => {
     listeners.push(onSessionTranscriptUpdate((update) => updates.push(update)));
 
     const sm = SessionManager.inMemory();
-    const sessionFile = "/tmp/openclaw-session-message-events.jsonl";
+    const sessionFile = "/tmp/eve-session-message-events.jsonl";
     Object.assign(sm, {
       getSessionFile: () => sessionFile,
     });
@@ -96,7 +96,7 @@ describe("guardSessionManager transcript updates", () => {
       timestamp: Date.now(),
     } as Parameters<typeof sm.appendMessage>[0]);
     const getBranchSpy = vi.spyOn(sm, "getBranch");
-    const sessionFile = "/tmp/openclaw-session-message-events.jsonl";
+    const sessionFile = "/tmp/eve-session-message-events.jsonl";
     Object.assign(sm, {
       getSessionFile: () => sessionFile,
     });
@@ -137,7 +137,7 @@ describe("guardSessionManager transcript updates", () => {
       timestamp: Date.now(),
     } as Parameters<typeof sm.appendMessage>[0]);
     const getBranchSpy = vi.spyOn(sm, "getBranch");
-    const sessionFile = "/tmp/openclaw-session-message-events.jsonl";
+    const sessionFile = "/tmp/eve-session-message-events.jsonl";
     Object.assign(sm, {
       getSessionFile: () => sessionFile,
     });

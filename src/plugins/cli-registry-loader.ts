@@ -1,12 +1,12 @@
 /** Loads plugin CLI registrations lazily for the command tree and plugin-owned subcommands. */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { collectUniqueCommandDescriptors } from "../cli/program/command-descriptor-utils.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveManifestActivationPluginIds } from "./activation-planner.js";
 import { createPluginCliGatewayNodesRuntime } from "./cli-gateway-nodes-runtime.js";
 import type { PluginLoadOptions } from "./loader.js";
-import { loadOpenClawPluginCliRegistry, loadOpenClawPlugins } from "./loader.js";
+import { loadEVEPluginCliRegistry, loadEVEPlugins } from "./loader.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import type { PluginRegistry } from "./registry.js";
 import {
@@ -16,8 +16,8 @@ import {
   type PluginRuntimeLoadContext,
 } from "./runtime/load-context.js";
 import type {
-  OpenClawPluginCliCommandDescriptor,
-  OpenClawPluginCliContext,
+  EVEPluginCliCommandDescriptor,
+  EVEPluginCliContext,
   PluginLogger,
 } from "./types.js";
 
@@ -25,7 +25,7 @@ export type PluginCliLoaderOptions = Pick<PluginLoadOptions, "pluginSdkResolutio
 
 /** Public CLI loader options passed from command bootstrap surfaces. */
 export type PluginCliPublicLoadParams = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   loaderOptions?: PluginCliLoaderOptions;
   logger?: PluginLogger;
@@ -41,9 +41,9 @@ export type PluginCliRegistryLoadResult = PluginCliLoadContext & {
 export type PluginCliCommandGroupEntry = {
   pluginId: string;
   parentPath: readonly string[];
-  placeholders: readonly OpenClawPluginCliCommandDescriptor[];
+  placeholders: readonly EVEPluginCliCommandDescriptor[];
   names: readonly string[];
-  register: (program: OpenClawPluginCliContext["program"]) => Promise<void>;
+  register: (program: EVEPluginCliContext["program"]) => Promise<void>;
 };
 
 /** Creates the default plugin CLI logger shared with runtime loading. */
@@ -132,7 +132,7 @@ async function resolvePrimaryCommandPluginIds(
 
 /** Builds the runtime load context used for CLI-only plugin registry loading. */
 export function resolvePluginCliLoadContext(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   logger: PluginLogger;
 }): PluginCliLoadContext {
@@ -150,7 +150,7 @@ export async function loadPluginCliMetadataRegistryWithContext(
 ): Promise<PluginCliRegistryLoadResult> {
   return {
     ...context,
-    registry: await loadOpenClawPluginCliRegistry(
+    registry: await loadEVEPluginCliRegistry(
       buildPluginCliLoaderParams(context, params, loaderOptions),
     ),
   };
@@ -179,7 +179,7 @@ export async function loadPluginCliCommandRegistryWithContext(params: {
   }
   return {
     ...params.context,
-    registry: loadOpenClawPlugins(
+    registry: loadEVEPlugins(
       buildPluginRuntimeLoadOptions(params.context, {
         ...params.loaderOptions,
         ...(onlyPluginIds && onlyPluginIds.length > 0 ? { onlyPluginIds } : {}),
@@ -196,7 +196,7 @@ export async function loadPluginCliCommandRegistryWithContext(params: {
 
 function buildPluginCliCommandGroupEntries(params: {
   registry: PluginRegistry;
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir: string | undefined;
   logger: PluginLogger;
 }): PluginCliCommandGroupEntry[] {
@@ -219,7 +219,7 @@ function buildPluginCliCommandGroupEntries(params: {
 
 export async function loadPluginCliDescriptors(
   params: PluginCliPublicLoadParams,
-): Promise<OpenClawPluginCliCommandDescriptor[]> {
+): Promise<EVEPluginCliCommandDescriptor[]> {
   try {
     const logger = resolvePluginCliLogger(params.logger);
     const context = resolvePluginCliLoadContext({
@@ -243,7 +243,7 @@ export async function loadPluginCliDescriptors(
 }
 
 export async function loadPluginCliRegistrationEntries(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   loaderOptions?: PluginCliLoaderOptions;
   logger?: PluginLogger;

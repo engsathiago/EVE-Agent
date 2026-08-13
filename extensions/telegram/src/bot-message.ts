@@ -1,13 +1,13 @@
 // Telegram plugin module implements bot message behavior.
-import type { ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
-import type { TelegramAccountConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ReplyToMode } from "eve-agent/plugin-sdk/config-contracts";
+import type { TelegramAccountConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   createSubsystemLogger,
   danger,
   logVerbose,
   shouldLogVerbose,
-} from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import type { TelegramBotDeps } from "./bot-deps.js";
 import {
   buildTelegramMessageContext,
@@ -121,7 +121,7 @@ export const createTelegramMessageProcessor = (deps: TelegramMessageProcessorDep
         ? options.receivedAtMs
         : undefined;
     const ingressDebugEnabled =
-      shouldLogVerbose() || process.env.OPENCLAW_DEBUG_TELEGRAM_INGRESS === "1";
+      shouldLogVerbose() || process.env.EVE_DEBUG_TELEGRAM_INGRESS === "1";
     const ingressContextStartMs = ingressReceivedAtMs ? Date.now() : undefined;
     const recordCurrentUpdateProcessingResult = (result: TelegramMessageProcessingResult) => {
       if (options?.spooledReplay === true) {

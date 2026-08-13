@@ -49,7 +49,7 @@ vi.mock("../runtime.js", () => ({
 
 vi.mock("../utils.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../utils.js")>()),
-  CONFIG_DIR: "/tmp/openclaw-config",
+  CONFIG_DIR: "/tmp/eve-config",
 }));
 
 vi.mock("../config/config.js", () => ({
@@ -79,7 +79,7 @@ describe("skills verify CLI", () => {
   let workspaceDir: string;
 
   beforeEach(async () => {
-    workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-cli-"));
+    workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-skill-verify-cli-"));
     mocks.runtimeStdout.length = 0;
     mocks.runtimeErrors.length = 0;
     mocks.resolveAgentWorkspaceDirMock.mockReset();
@@ -164,7 +164,7 @@ describe("skills verify CLI", () => {
       decision: "pass",
       reasons: [],
       skill: { slug: "agentreceipt" },
-      publisher: { handle: "openclaw" },
+      publisher: { handle: "eve" },
       version: { version: "1.2.3" },
       card: { available: true },
       artifact: {
@@ -195,16 +195,16 @@ describe("skills verify CLI", () => {
   });
 
   it("surfaces only server-verified source provenance in verify JSON", async () => {
-    const sourceUrl = "https://github.com/openclaw/skills/tree/main/agentreceipt";
+    const sourceUrl = "https://github.com/eve/skills/tree/main/agentreceipt";
     const verifiedSourceUrl =
-      "https://github.com/openclaw/skills/tree/0123456789abcdef0123456789abcdef01234567/agentreceipt";
+      "https://github.com/eve/skills/tree/0123456789abcdef0123456789abcdef01234567/agentreceipt";
     mocks.fetchClawHubSkillVerificationMock.mockResolvedValueOnce({
       schema: "clawhub.skill.verify.v1",
       ok: true,
       decision: "pass",
       reasons: [],
       skill: { slug: "agentreceipt" },
-      publisher: { handle: "openclaw" },
+      publisher: { handle: "eve" },
       version: { version: "1.0.0" },
       card: { available: true },
       artifact: { sourceFingerprint: "source-fp" },
@@ -212,7 +212,7 @@ describe("skills verify CLI", () => {
         source: "server-resolved-github-import",
         kind: "github",
         url: sourceUrl,
-        repo: "openclaw/skills",
+        repo: "eve/skills",
         ref: "main",
         commit: "0123456789abcdef0123456789abcdef01234567",
         path: "agentreceipt",
@@ -224,9 +224,9 @@ describe("skills verify CLI", () => {
     await runCommand(["skills", "verify", "agentreceipt"]);
 
     const payload = JSON.parse(mocks.runtimeStdout.at(-1) ?? "{}") as {
-      openclaw?: { verifiedSourceUrl?: string };
+      eve?: { verifiedSourceUrl?: string };
     };
-    expect(payload.openclaw?.verifiedSourceUrl).toBe(verifiedSourceUrl);
+    expect(payload.eve?.verifiedSourceUrl).toBe(verifiedSourceUrl);
     expect(mocks.defaultRuntime.exit).not.toHaveBeenCalled();
     expect(mocks.runtimeErrors).toStrictEqual([]);
   });
@@ -238,13 +238,13 @@ describe("skills verify CLI", () => {
       decision: "pass",
       reasons: [],
       skill: { slug: "agentreceipt" },
-      publisher: { handle: "openclaw" },
+      publisher: { handle: "eve" },
       version: { version: "1.0.0" },
       card: { available: true },
       artifact: { sourceFingerprint: "source-fp" },
       provenance: {
         source: "unavailable",
-        url: "https://github.com/openclaw/skills/tree/unverified/agentreceipt",
+        url: "https://github.com/eve/skills/tree/unverified/agentreceipt",
       },
       security: { status: "clean" },
       signature: { status: "unsigned" },
@@ -253,9 +253,9 @@ describe("skills verify CLI", () => {
     await runCommand(["skills", "verify", "agentreceipt"]);
 
     const payload = JSON.parse(mocks.runtimeStdout.at(-1) ?? "{}") as {
-      openclaw?: { verifiedSourceUrl?: string };
+      eve?: { verifiedSourceUrl?: string };
     };
-    expect(payload.openclaw?.verifiedSourceUrl).toBeUndefined();
+    expect(payload.eve?.verifiedSourceUrl).toBeUndefined();
     expect(mocks.defaultRuntime.exit).not.toHaveBeenCalled();
     expect(mocks.runtimeErrors).toStrictEqual([]);
   });

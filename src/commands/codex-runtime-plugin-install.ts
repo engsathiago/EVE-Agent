@@ -1,6 +1,6 @@
 // Codex runtime plugin auto-install/repair helpers for OpenAI model selections.
 import { modelSelectionShouldEnsureCodexPlugin } from "../agents/openai-routing.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   createRuntimePluginModelSelectionHelpers,
   type RuntimePluginInstallResult,
@@ -8,7 +8,7 @@ import {
 
 export const CODEX_RUNTIME_PLUGIN_ID = "codex";
 const CODEX_RUNTIME_PLUGIN_LABEL = "Codex";
-const CODEX_RUNTIME_PLUGIN_NPM_SPEC = "@openclaw/codex";
+const CODEX_RUNTIME_PLUGIN_NPM_SPEC = "@eve/codex";
 const CODEX_RUNTIME_PLUGIN_DESCRIPTOR = {
   pluginId: CODEX_RUNTIME_PLUGIN_ID,
   label: CODEX_RUNTIME_PLUGIN_LABEL,
@@ -20,7 +20,7 @@ export type CodexRuntimePluginInstallResult = RuntimePluginInstallResult;
 
 /** Return true when a selected model requires the Codex runtime plugin to be installed. */
 export function selectedModelShouldEnsureCodexRuntimePlugin(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   model?: string;
 }): boolean {
   return modelSelectionShouldEnsureCodexPlugin({

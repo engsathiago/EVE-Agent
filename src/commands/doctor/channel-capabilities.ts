@@ -2,7 +2,7 @@
 import { getBundledChannelPlugin } from "../../channels/plugins/bundled.js";
 import { getChannelPlugin } from "../../channels/plugins/index.js";
 import { normalizeAnyChannelId } from "../../channels/registry.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { findBundledPackageChannelMetadata } from "../../plugins/bundled-package-channel-metadata.js";
 import type { PluginPackageChannelDoctorCapabilities } from "../../plugins/manifest.js";
 import type { AllowFromMode } from "./shared/allow-from-mode.types.js";
@@ -84,7 +84,7 @@ function readResolvedAccountId(account: unknown): string | undefined {
 /** Resolve configured and runtime account ids through the channel plugin's own semantics. */
 export function resolveDoctorChannelAccountIds(
   channelName: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   configuredAccountIds: string[],
 ): DoctorChannelAccountIds | undefined {
   const channelId = normalizeAnyChannelId(channelName);

@@ -1,5 +1,5 @@
 // Openai tests cover realtime voice provider plugin behavior.
-import { REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ } from "openclaw/plugin-sdk/realtime-voice";
+import { REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ } from "eve-agent/plugin-sdk/realtime-voice";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildOpenAIRealtimeVoiceProvider } from "./realtime-voice-provider.js";
 
@@ -92,11 +92,11 @@ vi.mock("ws", () => ({
   default: FakeWebSocket,
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", () => ({
   fetchWithSsrFGuard: fetchWithSsrFGuardMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-auth", () => ({
   isProviderAuthProfileConfigured: isProviderAuthProfileConfiguredMock,
   resolveProviderAuthProfileApiKey: resolveProviderAuthProfileApiKeyMock,
 }));
@@ -271,8 +271,8 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(bridge.supportsToolResultContinuation).toBe(true);
   });
 
-  it("adds OpenClaw attribution headers to native realtime websocket requests", () => {
-    vi.stubEnv("OPENCLAW_VERSION", "2026.3.22");
+  it("adds EVE attribution headers to native realtime websocket requests", () => {
+    vi.stubEnv("EVE_VERSION", "2026.3.22");
     const provider = buildOpenAIRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: { apiKey: "sk-test" }, // pragma: allowlist secret
@@ -286,9 +286,9 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     const socket = FakeWebSocket.instances[0];
     const options = socket?.args[1] as { headers?: Record<string, string> } | undefined;
     expectRecordFields(options?.headers, "websocket headers", {
-      originator: "openclaw",
+      originator: "eve",
       version: "2026.3.22",
-      "User-Agent": "openclaw/2026.3.22",
+      "User-Agent": "eve/2026.3.22",
     });
     expect(options?.headers).not.toHaveProperty("OpenAI-Beta");
   });
@@ -396,8 +396,8 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(FakeWebSocket.instances).toHaveLength(0);
   });
 
-  it("returns browser-safe OpenClaw attribution headers for native WebRTC offers", async () => {
-    vi.stubEnv("OPENCLAW_VERSION", "2026.3.22");
+  it("returns browser-safe EVE attribution headers for native WebRTC offers", async () => {
+    vi.stubEnv("EVE_VERSION", "2026.3.22");
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
       response: createJsonResponse({
         client_secret: { value: "client-secret-123" },
@@ -423,9 +423,9 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expectRecordFields(requireFetchHeaders(), "fetch headers", {
       Authorization: "Bearer sk-test", // pragma: allowlist secret
       "Content-Type": "application/json",
-      originator: "openclaw",
+      originator: "eve",
       version: "2026.3.22",
-      "User-Agent": "openclaw/2026.3.22",
+      "User-Agent": "eve/2026.3.22",
     });
     const body = requireFetchJsonBody();
     const bodySession = requireRecord(body.session, "fetch session");
@@ -457,7 +457,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
   });
 
   it("resolves keychain OPENAI_API_KEY refs before creating browser sessions", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_BROWSER_TEST");
+    vi.stubEnv("OPENAI_API_KEY", "keychain:eve:OPENAI_REALTIME_BROWSER_TEST");
     execFileSyncMock.mockReturnValueOnce("sk-browser-env\n"); // pragma: allowlist secret
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
       response: createJsonResponse({
@@ -483,7 +483,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(securityArgs).toEqual([
       "find-generic-password",
       "-s",
-      "openclaw",
+      "eve",
       "-a",
       "OPENAI_REALTIME_BROWSER_TEST",
       "-w",
@@ -498,7 +498,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
   });
 
   it("resolves and caches keychain OPENAI_API_KEY refs before creating bridges", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_BRIDGE_TEST");
+    vi.stubEnv("OPENAI_API_KEY", "keychain:eve:OPENAI_REALTIME_BRIDGE_TEST");
     execFileSyncMock.mockReturnValue("sk-bridge-env\n"); // pragma: allowlist secret
     const provider = buildOpenAIRealtimeVoiceProvider();
 
@@ -528,7 +528,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
   });
 
   it("does not resolve keychain refs during configured checks", () => {
-    vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_CONFIGURED_TEST");
+    vi.stubEnv("OPENAI_API_KEY", "keychain:eve:OPENAI_REALTIME_CONFIGURED_TEST");
     const provider = buildOpenAIRealtimeVoiceProvider();
 
     expect(provider.isConfigured({ providerConfig: {} })).toBe(true);
@@ -649,7 +649,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
   });
 
   it("fails closed when keychain refs cannot be resolved", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_MISSING_TEST");
+    vi.stubEnv("OPENAI_API_KEY", "keychain:eve:OPENAI_REALTIME_MISSING_TEST");
     execFileSyncMock.mockImplementationOnce(() => {
       throw new Error("keychain unavailable");
     });
@@ -1480,7 +1480,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
           item: {
             id: "item_tool_1",
             type: "function_call",
-            name: "openclaw_agent_consult",
+            name: "eve_agent_consult",
             call_id: "call_1",
             arguments: JSON.stringify({ question: "delegate this" }),
           },
@@ -1491,13 +1491,13 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(onToolCall).toHaveBeenCalledWith({
       itemId: "item_tool_1",
       callId: "call_1",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "delegate this" },
     });
     expect(onEvent).toHaveBeenCalledWith({
       direction: "server",
       type: "conversation.item.done",
-      detail: "function_call name=openclaw_agent_consult",
+      detail: "function_call name=eve_agent_consult",
     });
   });
 
@@ -1527,7 +1527,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
         JSON.stringify({
           type: "response.function_call_arguments.delta",
           item_id: "item_tool_1",
-          name: "openclaw_agent_consult",
+          name: "eve_agent_consult",
           call_id: "call_1",
           delta: JSON.stringify({ question: "delegate this" }),
         }),
@@ -1539,7 +1539,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
         JSON.stringify({
           type: "response.function_call_arguments.done",
           item_id: "item_tool_1",
-          name: "openclaw_agent_consult",
+          name: "eve_agent_consult",
           call_id: "call_1",
         }),
       ),
@@ -1552,7 +1552,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
           item: {
             id: "item_tool_1",
             type: "function_call",
-            name: "openclaw_agent_consult",
+            name: "eve_agent_consult",
             call_id: "call_1",
             arguments: JSON.stringify({ question: "delegate this" }),
           },
@@ -1564,7 +1564,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(onToolCall).toHaveBeenCalledWith({
       itemId: "item_tool_1",
       callId: "call_1",
-      name: "openclaw_agent_consult",
+      name: "eve_agent_consult",
       args: { question: "delegate this" },
     });
   });

@@ -8,7 +8,7 @@ import path from "node:path";
 import { resolveAgentMaxConcurrent, resolveSubagentMaxConcurrent } from "../config/agent-limits.js";
 import { resolveCronMaxConcurrentRuns } from "../config/cron-limits.js";
 import { applySessionStoreEntryPatch } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { setCommandLaneConcurrency } from "../process/command-queue.js";
 import {
@@ -34,7 +34,7 @@ export type SessionSuspensionTarget =
   | { mode: "defer"; defer: (params: SessionSuspensionParams) => void }
   | { mode: "suspend" };
 export type SessionSuspensionParams = {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   agentDir?: string;
   sessionId: string;
   laneId?: string;
@@ -45,7 +45,7 @@ export type SessionSuspensionParams = {
   ttlMs?: number;
 };
 
-function resolveLaneResumeConcurrency(cfg: OpenClawConfig | undefined, laneId: string): number {
+function resolveLaneResumeConcurrency(cfg: EVEConfig | undefined, laneId: string): number {
   switch (laneId) {
     case "main":
       return resolveAgentMaxConcurrent(cfg);

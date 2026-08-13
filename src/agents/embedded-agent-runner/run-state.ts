@@ -54,7 +54,7 @@ export type AbandonedEmbeddedRun = {
   reason: "timeout";
 };
 
-const EMBEDDED_RUN_STATE_KEY = Symbol.for("openclaw.embeddedRunState");
+const EMBEDDED_RUN_STATE_KEY = Symbol.for("eve.embeddedRunState");
 
 const embeddedRunState = resolveGlobalSingleton(EMBEDDED_RUN_STATE_KEY, () => ({
   activeRuns: new Map<string, EmbeddedAgentQueueHandle>(),

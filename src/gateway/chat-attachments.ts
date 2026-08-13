@@ -1,10 +1,10 @@
 // Gateway chat attachment parser.
 // Normalizes image attachments, offloads large media, and reports unsupported payloads.
-import { estimateBase64DecodedBytes } from "@openclaw/media-core/base64";
-import { MAX_IMAGE_BYTES } from "@openclaw/media-core/constants";
-import { extensionForMime, mimeTypeFromFilePath } from "@openclaw/media-core/mime";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { estimateBase64DecodedBytes } from "@eve/media-core/base64";
+import { MAX_IMAGE_BYTES } from "@eve/media-core/constants";
+import { extensionForMime, mimeTypeFromFilePath } from "@eve/media-core/mime";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import type { PromptImageOrderEntry } from "../media/prompt-image-order.js";
 import { sniffMimeFromBase64 } from "../media/sniff-mime-from-base64.js";
@@ -61,7 +61,7 @@ const TEXT_ONLY_OFFLOAD_LIMIT = 10;
 export const DEFAULT_CHAT_ATTACHMENT_MAX_MB = 20;
 
 /** Resolve the maximum decoded attachment size accepted for chat image inputs. */
-export function resolveChatAttachmentMaxBytes(cfg: OpenClawConfig): number {
+export function resolveChatAttachmentMaxBytes(cfg: EVEConfig): number {
   const configured = cfg.agents?.defaults?.mediaMaxMb;
   const mb =
     typeof configured === "number" && Number.isFinite(configured) && configured > 0

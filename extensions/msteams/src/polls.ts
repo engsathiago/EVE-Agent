@@ -1,12 +1,12 @@
 // Msteams plugin module implements polls behavior.
 import crypto from "node:crypto";
-import { parseStrictNonNegativeInteger } from "openclaw/plugin-sdk/number-runtime";
+import { parseStrictNonNegativeInteger } from "eve-agent/plugin-sdk/number-runtime";
 import {
   isRecord,
   normalizeOptionalString,
   normalizeStringEntries,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { getMSTeamsRuntime } from "./runtime.js";
 import {
   resolveMSTeamsSqliteStateEnv,
@@ -124,15 +124,15 @@ export function extractMSTeamsPollVote(
     return null;
   }
   const pollId =
-    readNestedString(value, ["openclawPollId"]) ??
+    readNestedString(value, ["evePollId"]) ??
     readNestedString(value, ["pollId"]) ??
-    readNestedString(value, ["openclaw", "pollId"]) ??
-    readNestedString(value, ["openclaw", "poll", "id"]) ??
-    readNestedString(value, ["data", "openclawPollId"]) ??
+    readNestedString(value, ["eve", "pollId"]) ??
+    readNestedString(value, ["eve", "poll", "id"]) ??
+    readNestedString(value, ["data", "evePollId"]) ??
     readNestedString(value, ["data", "pollId"]) ??
-    readNestedString(value, ["data", "openclaw", "pollId"]) ??
+    readNestedString(value, ["data", "eve", "pollId"]) ??
     // Action.Execute (Universal Action Model) payload shape: value.action.data
-    readNestedString(value, ["action", "data", "openclawPollId"]) ??
+    readNestedString(value, ["action", "data", "evePollId"]) ??
     readNestedString(value, ["action", "data", "pollId"]);
   if (!pollId) {
     return null;
@@ -214,9 +214,9 @@ export function buildMSTeamsPollCard(params: {
       {
         type: "Action.Execute",
         title: "Vote",
-        verb: "openclaw.poll.vote",
+        verb: "eve.poll.vote",
         data: {
-          openclawPollId: pollId,
+          evePollId: pollId,
           pollId,
         },
       },

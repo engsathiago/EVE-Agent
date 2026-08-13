@@ -21,7 +21,7 @@ vi.mock("./bot-message-context.body.js", () => ({
 }));
 
 let buildTelegramMessageContextForTest: typeof import("./bot-message-context.test-harness.js").buildTelegramMessageContextForTest;
-let clearRuntimeConfigSnapshot: typeof import("openclaw/plugin-sdk/runtime-config-snapshot").clearRuntimeConfigSnapshot;
+let clearRuntimeConfigSnapshot: typeof import("eve-agent/plugin-sdk/runtime-config-snapshot").clearRuntimeConfigSnapshot;
 
 describe("buildTelegramMessageContext DM topic threadId in deliveryContext (#8891)", () => {
   async function buildCtx(params: {
@@ -79,7 +79,7 @@ describe("buildTelegramMessageContext DM topic threadId in deliveryContext (#889
   });
 
   it("builds Telegram payloads through the shared channel turn context", async () => {
-    const { buildChannelInboundEventContext } = await import("openclaw/plugin-sdk/channel-inbound");
+    const { buildChannelInboundEventContext } = await import("eve-agent/plugin-sdk/channel-inbound");
     const buildChannelInboundEventContextMock = vi.fn(buildChannelInboundEventContext);
 
     const ctx = await buildCtx({

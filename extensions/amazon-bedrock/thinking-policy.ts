@@ -5,11 +5,11 @@
 import type {
   ProviderRuntimeModel,
   ProviderThinkingProfile,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   resolveClaudeFable5ModelIdentity,
   resolveClaudeModelIdentity,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 
 const BASE_CLAUDE_THINKING_LEVELS = [
   { id: "off" },

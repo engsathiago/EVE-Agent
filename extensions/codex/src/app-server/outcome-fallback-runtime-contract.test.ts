@@ -2,14 +2,14 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import type { EmbeddedRunAttemptParams } from "openclaw/plugin-sdk/agent-harness";
-import { classifyEmbeddedAgentRunResultForModelFallback } from "openclaw/plugin-sdk/agent-harness-runtime";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
+import type { EmbeddedRunAttemptParams } from "eve-agent/plugin-sdk/agent-harness";
+import { classifyEmbeddedAgentRunResultForModelFallback } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   createContractRunResult,
   OUTCOME_FALLBACK_RUNTIME_CONTRACT,
-} from "openclaw/plugin-sdk/agent-runtime-test-contracts";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
+} from "eve-agent/plugin-sdk/agent-runtime-test-contracts";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createCodexDynamicToolBridge } from "./dynamic-tools.js";
 import {
@@ -24,10 +24,10 @@ const tempDirs = new Set<string>();
 
 type ProjectorNotification = Parameters<CodexAppServerEventProjector["handleNotification"]>[0];
 type ProjectedAttemptResult = ReturnType<CodexAppServerEventProjector["buildResult"]>;
-type MirrorTaggedMessage = { __openclaw?: { mirrorIdentity?: string } };
+type MirrorTaggedMessage = { __eve?: { mirrorIdentity?: string } };
 
 async function createParams(): Promise<EmbeddedRunAttemptParams> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-outcome-contract-"));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-codex-outcome-contract-"));
   tempDirs.add(tempDir);
   const sessionFile = path.join(tempDir, "session.jsonl");
   SessionManager.open(sessionFile);
@@ -92,7 +92,7 @@ function classifyProjectedAttemptResult(result: ProjectedAttemptResult) {
 }
 
 function readMirrorIdentity(message: unknown): string | undefined {
-  const meta = (message as MirrorTaggedMessage | undefined)?.["__openclaw"];
+  const meta = (message as MirrorTaggedMessage | undefined)?.["__eve"];
   return meta?.mirrorIdentity;
 }
 
@@ -105,7 +105,7 @@ afterEach(async () => {
 });
 
 describe("Outcome/fallback runtime contract - Codex app-server adapter", () => {
-  it("preserves an empty terminal turn for OpenClaw-owned fallback classification", async () => {
+  it("preserves an empty terminal turn for EVE-owned fallback classification", async () => {
     const projector = await createProjector();
     await projector.handleNotification(
       forCurrentTurn("turn/completed", {
@@ -145,7 +145,7 @@ describe("Outcome/fallback runtime contract - Codex app-server adapter", () => {
     expect(result.promptError).toBeNull();
   });
 
-  it("preserves reasoning-only terminal turns for OpenClaw-owned fallback classification", async () => {
+  it("preserves reasoning-only terminal turns for EVE-owned fallback classification", async () => {
     const projector = await createProjector();
     await projector.handleNotification(
       forCurrentTurn("item/reasoning/textDelta", {
@@ -205,7 +205,7 @@ describe("Outcome/fallback runtime contract - Codex app-server adapter", () => {
     expect(reasoningMessage.timestamp).toBeGreaterThan(0);
   });
 
-  it("preserves planning-only terminal turns for OpenClaw-owned fallback classification", async () => {
+  it("preserves planning-only terminal turns for EVE-owned fallback classification", async () => {
     const projector = await createProjector();
     await projector.handleNotification(
       forCurrentTurn("item/plan/delta", {

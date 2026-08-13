@@ -15,10 +15,10 @@ describe("skills-cli (e2e)", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeAll(() => {
-    envSnapshot = captureEnv(["OPENCLAW_BUNDLED_SKILLS_DIR"]);
-    tempWorkspaceDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-skills-test-"));
-    tempBundledDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-skills-test-"));
-    process.env.OPENCLAW_BUNDLED_SKILLS_DIR = tempBundledDir;
+    envSnapshot = captureEnv(["EVE_BUNDLED_SKILLS_DIR"]);
+    tempWorkspaceDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-skills-test-"));
+    tempBundledDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-skills-test-"));
+    process.env.EVE_BUNDLED_SKILLS_DIR = tempBundledDir;
   });
 
   afterAll(() => {
@@ -41,7 +41,7 @@ describe("skills-cli (e2e)", () => {
           description: "Capture UI screenshots",
           filePath,
           baseDir,
-          source: "openclaw-bundled",
+          source: "eve-bundled",
         }),
         frontmatter: {},
         metadata: { emoji: "📸" },
@@ -81,7 +81,7 @@ describe("skills-cli (e2e)", () => {
           modelVisible: true,
           userInvocable: true,
           commandVisible: true,
-          source: "openclaw-bundled",
+          source: "eve-bundled",
           bundled: true,
           missing: {
             bins: [],

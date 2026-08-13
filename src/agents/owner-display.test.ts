@@ -1,6 +1,6 @@
 // Verifies owner display hashing uses a dedicated secret and raw mode disables it.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { ensureOwnerDisplaySecret, resolveOwnerDisplaySetting } from "./owner-display.js";
 
 describe("resolveOwnerDisplaySetting", () => {
@@ -10,7 +10,7 @@ describe("resolveOwnerDisplaySetting", () => {
         ownerDisplay: "hash",
         ownerDisplaySecret: "  owner-secret  ",
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(resolveOwnerDisplaySetting(cfg)).toEqual({
       ownerDisplay: "hash",
@@ -28,7 +28,7 @@ describe("resolveOwnerDisplaySetting", () => {
         auth: { token: "gateway-auth-token" },
         remote: { token: "gateway-remote-token" },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(resolveOwnerDisplaySetting(cfg)).toEqual({
       ownerDisplay: "hash",
@@ -42,7 +42,7 @@ describe("resolveOwnerDisplaySetting", () => {
         ownerDisplay: "raw",
         ownerDisplaySecret: "owner-secret", // pragma: allowlist secret
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(resolveOwnerDisplaySetting(cfg)).toEqual({
       ownerDisplay: "raw",
@@ -57,7 +57,7 @@ describe("ensureOwnerDisplaySecret", () => {
       commands: {
         ownerDisplay: "hash",
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = ensureOwnerDisplaySecret(cfg, () => "generated-owner-secret");
     expect(result.generatedSecret).toBe("generated-owner-secret");
@@ -71,7 +71,7 @@ describe("ensureOwnerDisplaySecret", () => {
         ownerDisplay: "hash",
         ownerDisplaySecret: "existing-owner-secret", // pragma: allowlist secret
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = ensureOwnerDisplaySecret(cfg, () => "generated-owner-secret");
     expect(result.generatedSecret).toBeUndefined();

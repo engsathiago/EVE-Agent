@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { captureEnv, setTestEnvValue } from "../test-utils/env.js";
 import {
   buildCommitmentExtractionPrompt,
@@ -28,11 +28,11 @@ describe("commitment extraction", () => {
     tmpDirs.length = 0;
   });
 
-  async function createConfig(): Promise<OpenClawConfig> {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-commitments-"));
+  async function createConfig(): Promise<EVEConfig> {
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-commitments-"));
     tmpDirs.push(tmpDir);
-    stateDirEnvSnapshot ??= captureEnv(["OPENCLAW_STATE_DIR"]);
-    setTestEnvValue("OPENCLAW_STATE_DIR", tmpDir);
+    stateDirEnvSnapshot ??= captureEnv(["EVE_STATE_DIR"]);
+    setTestEnvValue("EVE_STATE_DIR", tmpDir);
     return {
       commitments: {
         enabled: true,
@@ -153,7 +153,7 @@ describe("commitment extraction", () => {
   });
 
   it("rejects disabled, low-confidence, and non-future candidates", () => {
-    const cfg: OpenClawConfig = { commitments: { enabled: true } };
+    const cfg: EVEConfig = { commitments: { enabled: true } };
     const valid = validateCommitmentCandidates({
       cfg,
       items: [item()],

@@ -44,13 +44,13 @@ The mutation helpers return `afterWrite` plus a typed `followUp` summary so call
 `api.runtime.config.loadConfig()` and `api.runtime.config.writeConfigFile(...)` are deprecated compatibility helpers under `runtime-config-load-write`. They warn once at runtime, and remain available for old external plugins during the migration window. Bundled plugins must not use them; the config boundary guards fail if plugin code calls them or imports those helpers from plugin SDK subpaths.
 
 For direct SDK imports, use the focused config subpaths instead of the broad
-`openclaw/plugin-sdk/config-runtime` compatibility barrel: `config-contracts` for
+`eve-agent/plugin-sdk/config-runtime` compatibility barrel: `config-contracts` for
 types, `plugin-config-runtime` for already-loaded config assertions and plugin
 entry lookup, `runtime-config-snapshot` for current process snapshots, and
 `config-mutation` for writes. Bundled plugin tests should mock these focused
 subpaths directly instead of mocking the broad compatibility barrel.
 
-Internal OpenClaw runtime code has the same direction: load config once at the CLI, gateway, or process boundary, then pass that value through. Successful mutation writes refresh the process runtime snapshot and advance its internal revision; long-lived caches should key off the runtime-owned cache key instead of serializing config locally. Long-lived runtime modules have a zero-tolerance scanner for ambient `loadConfig()` calls; use a passed `cfg`, a request `context.getRuntimeConfig()`, or `getRuntimeConfig()` at an explicit process boundary.
+Internal EVE runtime code has the same direction: load config once at the CLI, gateway, or process boundary, then pass that value through. Successful mutation writes refresh the process runtime snapshot and advance its internal revision; long-lived caches should key off the runtime-owned cache key instead of serializing config locally. Long-lived runtime modules have a zero-tolerance scanner for ambient `loadConfig()` calls; use a passed `cfg`, a request `context.getRuntimeConfig()`, or `getRuntimeConfig()` at an explicit process boundary.
 
 Provider and channel execution paths must use the active runtime config snapshot, not a file snapshot returned for config readback or editing. File snapshots preserve source values such as SecretRef markers for UI and writes; provider callbacks need the resolved runtime view. When a helper may be called with either the active source snapshot or the active runtime snapshot, route through `selectApplicableRuntimeConfig()` before reading credentials.
 
@@ -91,7 +91,7 @@ return {
 };
 ```
 
-Use `openclaw/plugin-sdk/pair-loop-guard-runtime` directly only for custom
+Use `eve-agent/plugin-sdk/pair-loop-guard-runtime` directly only for custom
 two-party event loops that do not go through the shared inbound reply runner.
 
 ## Runtime namespaces
@@ -142,7 +142,7 @@ two-party event loops that do not go through the shared inbound reply runner.
     });
     ```
 
-    `runEmbeddedAgent(...)` is the neutral helper for starting a normal OpenClaw agent turn from plugin code. It uses the same provider/model resolution and agent-harness selection as channel-triggered replies.
+    `runEmbeddedAgent(...)` is the neutral helper for starting a normal EVE agent turn from plugin code. It uses the same provider/model resolution and agent-harness selection as channel-triggered replies.
 
     `runEmbeddedPiAgent(...)` remains as a deprecated compatibility alias for existing plugins. New code should use `runEmbeddedAgent(...)`.
 
@@ -166,7 +166,7 @@ two-party event loops that do not go through the shared inbound reply runner.
 
     Prefer `getSessionEntry(...)`, `listSessionEntries(...)`, `patchSessionEntry(...)`, or `upsertSessionEntry(...)` for session workflows. These helpers address sessions by agent/session identity so plugins do not depend on the legacy `sessions.json` storage shape. Use `preserveActivity: true` for metadata-only patches that should not refresh session activity, and `replaceEntry: true` only when the callback returns a complete entry and deleted fields must stay deleted.
 
-    For transcript reads and writes, import `openclaw/plugin-sdk/session-transcript-runtime` and use `resolveSessionTranscriptIdentity(...)`, `resolveSessionTranscriptTarget(...)`, `readSessionTranscriptEvents(...)`, `appendSessionTranscriptMessageByIdentity(...)`, `publishSessionTranscriptUpdateByIdentity(...)`, or `withSessionTranscriptWriteLock(...)` with `{ agentId, sessionKey, sessionId }`. These APIs let plugins identify a transcript, read its events, append messages, publish updates, and run related operations under the same transcript write lock. Pass `sessionFile` only when adapting code that already receives an active transcript artifact and needs each helper to operate on that same artifact.
+    For transcript reads and writes, import `eve-agent/plugin-sdk/session-transcript-runtime` and use `resolveSessionTranscriptIdentity(...)`, `resolveSessionTranscriptTarget(...)`, `readSessionTranscriptEvents(...)`, `appendSessionTranscriptMessageByIdentity(...)`, `publishSessionTranscriptUpdateByIdentity(...)`, or `withSessionTranscriptWriteLock(...)` with `{ agentId, sessionKey, sessionId }`. These APIs let plugins identify a transcript, read its events, append messages, publish updates, and run related operations under the same transcript write lock. Pass `sessionFile` only when adapting code that already receives an active transcript artifact and needs each helper to operate on that same artifact.
 
     `loadSessionStore(...)`, `saveSessionStore(...)`, `updateSessionStore(...)`, and `resolveSessionFilePath(...)` are compatibility helpers for plugins that still intentionally depend on the legacy whole-store or transcript-file shape. New plugin code must not use those helpers, and existing callers should migrate to entry helpers.
 
@@ -183,7 +183,7 @@ two-party event loops that do not go through the shared inbound reply runner.
 
   <Accordion title="api.runtime.llm">
     Run a host-owned text completion without importing provider internals or
-    duplicating OpenClaw model/auth/base URL preparation.
+    duplicating EVE model/auth/base URL preparation.
 
     ```typescript
     const result = await api.runtime.llm.complete({
@@ -194,7 +194,7 @@ two-party event loops that do not go through the shared inbound reply runner.
     });
     ```
 
-    The helper uses the same simple-completion preparation path as OpenClaw's
+    The helper uses the same simple-completion preparation path as EVE's
     built-in runtime and the host-owned runtime config snapshot. Context engines
     receive a session-bound `llm.complete` capability, so model calls use the
     active session's agent and do not silently fall back to the default agent. The
@@ -255,13 +255,13 @@ two-party event loops that do not go through the shared inbound reply runner.
     });
     ```
 
-    Inside the Gateway this runtime is in-process. In plugin CLI commands it calls the configured Gateway over RPC, so commands such as `openclaw googlemeet recover-tab` can inspect paired nodes from the terminal. Node commands still go through normal Gateway node pairing, command allowlists, plugin node-invoke policies, and node-local command handling.
+    Inside the Gateway this runtime is in-process. In plugin CLI commands it calls the configured Gateway over RPC, so commands such as `eve googlemeet recover-tab` can inspect paired nodes from the terminal. Node commands still go through normal Gateway node pairing, command allowlists, plugin node-invoke policies, and node-local command handling.
 
     Plugins that expose dangerous node-host commands should register a node-invoke policy with `api.registerNodeInvokePolicy(...)`. The policy runs in the Gateway after command allowlist checks and before the command is forwarded to the node, so direct `node.invoke` calls and higher-level plugin tools share the same enforcement path.
 
   </Accordion>
   <Accordion title="api.runtime.tasks.managedFlows">
-    Bind a Task Flow runtime to an existing OpenClaw session key or trusted tool context, then create and manage Task Flows without passing an owner on every call.
+    Bind a Task Flow runtime to an existing EVE session key or trusted tool context, then create and manage Task Flows without passing an owner on every call.
 
     Task Flow tracks durable multi-step workflow state. It is not a scheduler:
     use Cron or `api.session.workflow.scheduleSessionTurn(...)` for future
@@ -293,7 +293,7 @@ two-party event loops that do not go through the shared inbound reply runner.
     });
     ```
 
-    Use `bindSession({ sessionKey, requesterOrigin })` when you already have a trusted OpenClaw session key from your own binding layer. Do not bind from raw user input.
+    Use `bindSession({ sessionKey, requesterOrigin })` when you already have a trusted EVE session key from your own binding layer. Do not bind from raw user input.
 
   </Accordion>
   <Accordion title="api.runtime.tts">
@@ -302,13 +302,13 @@ two-party event loops that do not go through the shared inbound reply runner.
     ```typescript
     // Standard TTS
     const clip = await api.runtime.tts.textToSpeech({
-      text: "Hello from OpenClaw",
+      text: "Hello from EVE",
       cfg: api.config,
     });
 
     // Telephony-optimized TTS
     const telephonyClip = await api.runtime.tts.textToSpeechTelephony({
-      text: "Hello from OpenClaw",
+      text: "Hello from EVE",
       cfg: api.config,
     });
 
@@ -409,7 +409,7 @@ two-party event loops that do not go through the shared inbound reply runner.
 
     const result = await api.runtime.webSearch.search({
       config: api.config,
-      args: { query: "OpenClaw plugin SDK", count: 5 },
+      args: { query: "EVE plugin SDK", count: 5 },
     });
     ```
 
@@ -424,14 +424,14 @@ two-party event loops that do not go through the shared inbound reply runner.
     const isVoice = api.runtime.media.isVoiceCompatibleAudio(filePath);
     const metadata = await api.runtime.media.getImageMetadata(filePath);
     const resized = await api.runtime.media.resizeToJpeg(buffer, { maxWidth: 800 });
-    const terminalQr = await api.runtime.media.renderQrTerminal("https://openclaw.ai");
-    const pngQr = await api.runtime.media.renderQrPngBase64("https://openclaw.ai", {
+    const terminalQr = await api.runtime.media.renderQrTerminal("https://eve.ai");
+    const pngQr = await api.runtime.media.renderQrPngBase64("https://eve.ai", {
       scale: 6, // 1-12
       marginModules: 4, // 0-16
     });
-    const pngQrDataUrl = await api.runtime.media.renderQrPngDataUrl("https://openclaw.ai");
-    const tmpRoot = resolvePreferredOpenClawTmpDir();
-    const pngQrFile = await api.runtime.media.writeQrPngTempFile("https://openclaw.ai", {
+    const pngQrDataUrl = await api.runtime.media.renderQrPngDataUrl("https://eve.ai");
+    const tmpRoot = resolvePreferredEVETmpDir();
+    const pngQrFile = await api.runtime.media.writeQrPngTempFile("https://eve.ai", {
       tmpRoot,
       dirPrefix: "my-plugin-qr-",
       fileName: "qr.png",
@@ -566,7 +566,7 @@ two-party event loops that do not go through the shared inbound reply runner.
     });
     ```
 
-    Use `saveRemoteMedia(...)` when a remote URL should become OpenClaw media. Use `saveResponseMedia(...)` when the plugin already fetched a `Response` with plugin-owned auth, redirect, or allowlist handling. Use `readRemoteMediaBuffer(...)` only when the plugin needs raw bytes for inspection, transforms, decryption, or reupload. `fetchRemoteMedia(...)` remains a deprecated compatibility alias for `readRemoteMediaBuffer(...)`.
+    Use `saveRemoteMedia(...)` when a remote URL should become EVE media. Use `saveResponseMedia(...)` when the plugin already fetched a `Response` with plugin-owned auth, redirect, or allowlist handling. Use `readRemoteMediaBuffer(...)` only when the plugin needs raw bytes for inspection, transforms, decryption, or reupload. `fetchRemoteMedia(...)` remains a deprecated compatibility alias for `readRemoteMediaBuffer(...)`.
 
     `api.runtime.channel.mentions` is the shared inbound mention-policy surface for bundled channel plugins that use runtime injection:
 
@@ -615,8 +615,8 @@ Use `createPluginRuntimeStore` to store the runtime reference for use outside th
 <Steps>
   <Step title="Create the store">
     ```typescript
-    import { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
-    import type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
+    import { createPluginRuntimeStore } from "eve-agent/plugin-sdk/runtime-store";
+    import type { PluginRuntime } from "eve-agent/plugin-sdk/runtime-store";
 
     const store = createPluginRuntimeStore<PluginRuntime>({
       pluginId: "my-plugin",
@@ -664,7 +664,7 @@ Beyond `api.runtime`, the API object also provides:
 <ParamField path="api.name" type="string">
   Plugin display name.
 </ParamField>
-<ParamField path="api.config" type="OpenClawConfig">
+<ParamField path="api.config" type="EVEConfig">
   Current config snapshot (active in-memory runtime snapshot when available).
 </ParamField>
 <ParamField path="api.pluginConfig" type="Record<string, unknown>">

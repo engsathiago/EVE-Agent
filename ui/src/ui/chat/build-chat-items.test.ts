@@ -4,7 +4,7 @@ import type { MessageGroup } from "../types/chat-types.ts";
 import { buildChatItems, type BuildChatItemsProps } from "./build-chat-items.ts";
 
 const SENDER_METADATA_BLOCK =
-  'Sender (untrusted metadata):\n```json\n{"label":"openclaw-control-ui","id":"openclaw-control-ui"}\n```';
+  'Sender (untrusted metadata):\n```json\n{"label":"eve-control-ui","id":"eve-control-ui"}\n```';
 
 function createProps(overrides: Partial<BuildChatItemsProps> = {}): BuildChatItemsProps {
   return {
@@ -194,18 +194,18 @@ describe("buildChatItems", () => {
     expect(messageRecord(groups[0]).content).toStrictEqual([{ type: "text", text: "Found it." }]);
   });
 
-  it("deduplicates relay-labeled assistant copies by OpenClaw transcript metadata id", () => {
+  it("deduplicates relay-labeled assistant copies by EVE transcript metadata id", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "reply-3" },
+          __eve: { id: "reply-3" },
           role: "assistant",
           content: [{ type: "text", text: "Parzival On it." }],
           senderLabel: "Parzival",
           timestamp: 1,
         },
         {
-          __openclaw: { id: "reply-3" },
+          __eve: { id: "reply-3" },
           role: "assistant",
           content: [{ type: "text", text: "On it." }],
           timestamp: 2,
@@ -219,12 +219,12 @@ describe("buildChatItems", () => {
     expect(messageRecord(groups[0]).content).toStrictEqual([{ type: "text", text: "On it." }]);
   });
 
-  it("deduplicates relay-labeled assistant copies by OpenClaw metadata before surface ids", () => {
+  it("deduplicates relay-labeled assistant copies by EVE metadata before surface ids", () => {
     const groups = messageGroups({
       messages: [
         {
           id: "relay-surface-copy",
-          __openclaw: { id: "reply-4" },
+          __eve: { id: "reply-4" },
           role: "assistant",
           content: [{ type: "text", text: "Parzival Ship it." }],
           senderLabel: "Parzival",
@@ -232,7 +232,7 @@ describe("buildChatItems", () => {
         },
         {
           id: "native-surface-copy",
-          __openclaw: { id: "reply-4" },
+          __eve: { id: "reply-4" },
           role: "assistant",
           content: [{ type: "text", text: "Ship it." }],
           timestamp: 2,
@@ -250,13 +250,13 @@ describe("buildChatItems", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "reply-5" },
+          __eve: { id: "reply-5" },
           role: "assistant",
           content: [{ type: "text", text: "Draft one" }],
           timestamp: 1,
         },
         {
-          __openclaw: { id: "reply-5" },
+          __eve: { id: "reply-5" },
           role: "assistant",
           content: [{ type: "text", text: "Draft two" }],
           timestamp: 2,
@@ -278,14 +278,14 @@ describe("buildChatItems", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "reply-formatted" },
+          __eve: { id: "reply-formatted" },
           role: "assistant",
           content: [{ type: "text", text: "Parzival first\n\nsecond" }],
           senderLabel: "Parzival",
           timestamp: 1,
         },
         {
-          __openclaw: { id: "reply-formatted" },
+          __eve: { id: "reply-formatted" },
           role: "assistant",
           content: [{ type: "text", text: "first second" }],
           timestamp: 2,
@@ -306,14 +306,14 @@ describe("buildChatItems", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "reply-case-change" },
+          __eve: { id: "reply-case-change" },
           role: "assistant",
           content: [{ type: "text", text: "PARZIVAL answer" }],
           senderLabel: "Parzival",
           timestamp: 1,
         },
         {
-          __openclaw: { id: "reply-case-change" },
+          __eve: { id: "reply-case-change" },
           role: "assistant",
           content: [{ type: "text", text: "answer" }],
           timestamp: 2,
@@ -332,14 +332,14 @@ describe("buildChatItems", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "reply-6" },
+          __eve: { id: "reply-6" },
           role: "assistant",
           content: [{ type: "text", text: "Parzival Draft one" }],
           senderLabel: "Parzival",
           timestamp: 1,
         },
         {
-          __openclaw: { id: "reply-6" },
+          __eve: { id: "reply-6" },
           role: "assistant",
           content: [{ type: "text", text: "Parzival Draft two" }],
           senderLabel: "Parzival",
@@ -389,14 +389,14 @@ describe("buildChatItems", () => {
     const groups = messageGroups({
       messages: [
         {
-          __openclaw: { id: "user-1" },
+          __eve: { id: "user-1" },
           role: "user",
           content: [{ type: "text", text: "Alice hello" }],
           senderLabel: "Alice",
           timestamp: 1,
         },
         {
-          __openclaw: { id: "user-1" },
+          __eve: { id: "user-1" },
           role: "user",
           content: [{ type: "text", text: "hello" }],
           timestamp: 2,
@@ -557,7 +557,7 @@ describe("buildChatItems", () => {
         {
           role: "user",
           content: SENDER_METADATA_BLOCK,
-          senderLabel: "openclaw-control-ui",
+          senderLabel: "eve-control-ui",
           timestamp: 1,
         },
       ],
@@ -931,7 +931,7 @@ describe("buildChatItems", () => {
             view: {
               backend: "canvas",
               id: "cv_nearest_turn",
-              url: "/__openclaw__/canvas/documents/cv_nearest_turn/index.html",
+              url: "/__eve__/canvas/documents/cv_nearest_turn/index.html",
               title: "Nearest turn demo",
               preferred_height: 320,
             },
@@ -969,7 +969,7 @@ describe("buildChatItems", () => {
             view: {
               backend: "canvas",
               id: "cv_empty_anchor",
-              url: "/__openclaw__/canvas/documents/cv_empty_anchor/index.html",
+              url: "/__eve__/canvas/documents/cv_empty_anchor/index.html",
               title: "Empty anchor demo",
               preferred_height: 320,
             },
@@ -1012,7 +1012,7 @@ describe("buildChatItems", () => {
               view: {
                 backend: "canvas",
                 id: "cv_generic_inline",
-                url: "/__openclaw__/canvas/documents/cv_generic_inline/index.html",
+                url: "/__eve__/canvas/documents/cv_generic_inline/index.html",
                 title: "Inline generic preview",
                 preferred_height: 420,
               },
@@ -1056,7 +1056,7 @@ describe("buildChatItems", () => {
                 view: {
                   backend: "canvas",
                   id: "cv_streamed_artifact",
-                  url: "/__openclaw__/canvas/documents/cv_streamed_artifact/index.html",
+                  url: "/__eve__/canvas/documents/cv_streamed_artifact/index.html",
                   title: "Streamed demo",
                   preferred_height: 320,
                 },
@@ -1088,7 +1088,7 @@ describe("buildChatItems", () => {
           {
             role: "system",
             timestamp: 2_000,
-            __openclaw: {
+            __eve: {
               kind: "compaction",
               id: "checkpoint-1",
             },
@@ -1133,7 +1133,7 @@ function createAssistantCanvasBlock(params: { suffix: string }) {
       render: "url",
       viewId,
       title: "Inline demo",
-      url: `/__openclaw__/canvas/documents/${viewId}/index.html`,
+      url: `/__eve__/canvas/documents/${viewId}/index.html`,
       preferredHeight: 360,
     },
   };

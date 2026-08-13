@@ -1,5 +1,5 @@
 // Qa Lab plugin module implements coverage report behavior.
-import { normalizeStringEntriesLower } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeStringEntriesLower } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   buildLiveTransportCoverageLaneSummaries,
   type LiveTransportCoverageLaneSummary,
@@ -455,7 +455,7 @@ function formatOptionalScenarioMetadata(match: QaScenarioSearchMatch) {
 
 function formatSuiteCommand(matches: readonly QaScenarioSearchMatch[]) {
   const scenarioArgs = matches.map((match) => `--scenario ${match.id}`).join(" ");
-  return `pnpm openclaw qa suite ${scenarioArgs}`;
+  return `pnpm eve qa suite ${scenarioArgs}`;
 }
 
 function scenarioMatchCommandGroups(matches: readonly QaScenarioSearchMatch[]) {

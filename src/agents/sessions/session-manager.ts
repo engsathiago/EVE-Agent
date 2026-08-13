@@ -431,7 +431,7 @@ export function buildSessionContext(
 
 /**
  * Compute the default session directory for a cwd.
- * Encodes cwd into a safe directory name under ~/.openclaw/agent/sessions/.
+ * Encodes cwd into a safe directory name under ~/.eve/agent/sessions/.
  */
 export function getDefaultSessionDir(cwd: string, agentDir: string = getDefaultAgentDir()): string {
   const safePath = `--${cwd.replace(/^[/\\]/, "").replace(/[/\\:]/g, "-")}--`;
@@ -2863,7 +2863,7 @@ export class SessionManager {
   /**
    * Create a new session.
    * @param cwd Working directory (stored in session header)
-   * @param sessionDir Optional session directory. If omitted, uses default (~/.openclaw/agent/sessions/<encoded-cwd>/).
+   * @param sessionDir Optional session directory. If omitted, uses default (~/.eve/agent/sessions/<encoded-cwd>/).
    */
   static create(cwd: string, sessionDir?: string): SessionManager {
     const dir = sessionDir ?? getDefaultSessionDir(cwd);
@@ -2891,7 +2891,7 @@ export class SessionManager {
   /**
    * Continue the most recent session, or create new if none.
    * @param cwd Working directory
-   * @param sessionDir Optional session directory. If omitted, uses default (~/.openclaw/agent/sessions/<encoded-cwd>/).
+   * @param sessionDir Optional session directory. If omitted, uses default (~/.eve/agent/sessions/<encoded-cwd>/).
    */
   static continueRecent(cwd: string, sessionDir?: string): SessionManager {
     const dir = sessionDir ?? getDefaultSessionDir(cwd);
@@ -2960,7 +2960,7 @@ export class SessionManager {
   /**
    * List all sessions for a directory.
    * @param cwd Working directory (used to compute default session directory)
-   * @param sessionDir Optional session directory. If omitted, uses default (~/.openclaw/agent/sessions/<encoded-cwd>/).
+   * @param sessionDir Optional session directory. If omitted, uses default (~/.eve/agent/sessions/<encoded-cwd>/).
    * @param onProgress Optional callback for progress updates (loaded, total)
    */
   static async list(

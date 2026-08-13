@@ -1,5 +1,5 @@
 // Coverage for embedded run auth initialization and runtime credential refresh.
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import type { AuthProfileStore } from "../../auth-profiles.js";
 import { FailoverError } from "../../failover-error.js";

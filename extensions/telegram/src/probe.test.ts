@@ -1,5 +1,5 @@
 // Telegram tests cover probe plugin behavior.
-import { withFetchPreconnect } from "openclaw/plugin-sdk/test-env";
+import { withFetchPreconnect } from "eve-agent/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi, type Mock } from "vitest";
 import { probeTelegram, resetTelegramProbeFetcherCacheForTests } from "./probe.js";
 

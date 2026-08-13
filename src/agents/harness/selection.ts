@@ -1,7 +1,7 @@
 /**
  * Selects and invokes native agent harnesses for embedded run attempts.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   createChildDiagnosticTraceContext,
   createDiagnosticTraceContext,
@@ -35,7 +35,7 @@ import {
   normalizeToolName,
   resolveToolProfilePolicy,
 } from "../tool-policy.js";
-import { createOpenClawAgentHarness } from "./builtin-openclaw.js";
+import { createEVEAgentHarness } from "./builtin-eve.js";
 import { MissingAgentHarnessError } from "./errors.js";
 import { runAgentHarnessLifecycleAttempt } from "./lifecycle.js";
 import {
@@ -70,16 +70,16 @@ type AgentHarnessSelectionDecision = {
   policy: AgentHarnessPolicy;
   selectedHarnessId: string;
   selectedReason:
-    | "forced_openclaw"
+    | "forced_eve"
     | "forced_plugin"
-    // Implicit Codex preference found no registered Codex harness, so OpenClaw handled the run.
-    | "implicit_plugin_unavailable_openclaw"
+    // Implicit Codex preference found no registered Codex harness, so EVE handled the run.
+    | "implicit_plugin_unavailable_eve"
     // Provider-owned CLI runtime aliases have no agent harness plugin counterpart.
-    | "cli_runtime_passthrough_openclaw"
+    | "cli_runtime_passthrough_eve"
     // Auto mode chose a registered plugin harness that supports the provider/model.
     | "auto_plugin"
-    // Auto mode found no supporting plugin harness, so OpenClaw handled the run.
-    | "auto_openclaw";
+    // Auto mode found no supporting plugin harness, so EVE handled the run.
+    | "auto_eve";
   candidates: AgentHarnessSelectionCandidate[];
 };
 
@@ -120,7 +120,7 @@ function listPluginAgentHarnesses(): AgentHarness[] {
 export function resolveAvailableAgentHarnessPolicy(params: {
   provider?: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   env?: NodeJS.ProcessEnv;
@@ -136,7 +136,7 @@ function applyAgentHarnessAvailabilityPolicy(policy: AgentHarnessPolicy): AgentH
   ) {
     return {
       ...policy,
-      runtime: "openclaw",
+      runtime: "eve",
     };
   }
   return policy;
@@ -156,7 +156,7 @@ function compareHarnessSupport(
 export function selectAgentHarness(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   agentHarnessId?: string;
@@ -168,7 +168,7 @@ export function selectAgentHarness(params: {
 function selectAgentHarnessDecision(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   sessionKey?: string;
   agentHarnessId?: string;
@@ -184,16 +184,16 @@ function selectAgentHarnessDecision(params: {
           runtimeSource: "model",
         } as AgentHarnessPolicy)
       : resolvedPolicy;
-  // OpenClaw's built-in harness is intentionally not part of the plugin candidate list. Explicit plugin
-  // runtimes fail closed; only `auto` may route an unmatched turn to OpenClaw.
+  // EVE's built-in harness is intentionally not part of the plugin candidate list. Explicit plugin
+  // runtimes fail closed; only `auto` may route an unmatched turn to EVE.
   const pluginHarnesses = listPluginAgentHarnesses();
-  const openClawHarness = createOpenClawAgentHarness();
+  const eveHarness = createEVEAgentHarness();
   const runtime = policy.runtime;
-  if (runtime === "openclaw") {
+  if (runtime === "eve") {
     return buildSelectionDecision({
-      harness: openClawHarness,
+      harness: eveHarness,
       policy,
-      selectedReason: "forced_openclaw",
+      selectedReason: "forced_eve",
       candidates: listHarnessCandidates(pluginHarnesses),
     });
   }
@@ -215,12 +215,12 @@ function selectAgentHarnessDecision(params: {
       }
       if (isCliRuntimeAliasForProvider({ runtime, provider: params.provider })) {
         return buildSelectionDecision({
-          harness: openClawHarness,
+          harness: eveHarness,
           policy: {
             ...policy,
-            runtime: "openclaw",
+            runtime: "eve",
           },
-          selectedReason: "cli_runtime_passthrough_openclaw",
+          selectedReason: "cli_runtime_passthrough_eve",
           candidates: listHarnessCandidates(pluginHarnesses),
         });
       }
@@ -232,12 +232,12 @@ function selectAgentHarnessDecision(params: {
     }
     if (runtime === "codex" && policy.runtimeSource === "implicit") {
       return buildSelectionDecision({
-        harness: openClawHarness,
+        harness: eveHarness,
         policy: {
           ...policy,
-          runtime: "openclaw",
+          runtime: "eve",
         },
-        selectedReason: "implicit_plugin_unavailable_openclaw",
+        selectedReason: "implicit_plugin_unavailable_eve",
         candidates: listHarnessCandidates(pluginHarnesses),
       });
     }
@@ -249,12 +249,12 @@ function selectAgentHarnessDecision(params: {
       })
     ) {
       return buildSelectionDecision({
-        harness: openClawHarness,
+        harness: eveHarness,
         policy: {
           ...policy,
-          runtime: "openclaw",
+          runtime: "eve",
         },
-        selectedReason: "cli_runtime_passthrough_openclaw",
+        selectedReason: "cli_runtime_passthrough_eve",
         candidates: listHarnessCandidates(pluginHarnesses),
       });
     }
@@ -290,9 +290,9 @@ function selectAgentHarnessDecision(params: {
     });
   }
   return buildSelectionDecision({
-    harness: openClawHarness,
+    harness: eveHarness,
     policy,
-    selectedReason: "auto_openclaw",
+    selectedReason: "auto_eve",
     candidates: candidates.map(toSelectionCandidate),
   });
 }
@@ -315,7 +315,7 @@ export async function runAgentHarnessAttempt(
   });
   const harness = selection.harness;
   const attemptParams =
-    harness.id === "openclaw" ? params : applyPluginHarnessDenyAllToolPolicy(params);
+    harness.id === "eve" ? params : applyPluginHarnessDenyAllToolPolicy(params);
   logAgentHarnessSelection(selection, {
     provider: params.provider,
     modelId: params.modelId,
@@ -323,14 +323,14 @@ export async function runAgentHarnessAttempt(
     agentId: params.agentId,
   });
   const runAttempt = () => runAgentHarnessLifecycleAttempt(harness, attemptParams);
-  if (harness.id === "openclaw") {
+  if (harness.id === "eve") {
     return await runWithDiagnosticTraceContext(harnessTrace, runAttempt);
   }
 
   try {
     return await runWithDiagnosticTraceContext(harnessTrace, runAttempt);
   } catch (error) {
-    log.warn(`${harness.label} failed; not falling back to embedded OpenClaw backend`, {
+    log.warn(`${harness.label} failed; not falling back to embedded EVE backend`, {
       harnessId: harness.id,
       provider: params.provider,
       modelId: params.modelId,

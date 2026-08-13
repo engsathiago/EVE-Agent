@@ -1,6 +1,6 @@
 /**
  * @deprecated Compatibility subpath. Import logger/runtime helpers from
- * `openclaw/plugin-sdk/runtime` instead.
+ * `eve-agent/plugin-sdk/runtime` instead.
  */
 
 import { format } from "node:util";
@@ -12,7 +12,7 @@ type LoggerLike = {
   error: (message: string) => void;
 };
 
-/** @deprecated Import from `openclaw/plugin-sdk/runtime` instead. */
+/** @deprecated Import from `eve-agent/plugin-sdk/runtime` instead. */
 export function createLoggerBackedRuntime(params: {
   logger: LoggerLike;
   exitError?: (code: number) => Error;
@@ -36,13 +36,13 @@ export function createLoggerBackedRuntime(params: {
   };
 }
 
-/** @deprecated Import from `openclaw/plugin-sdk/runtime` instead. */
+/** @deprecated Import from `eve-agent/plugin-sdk/runtime` instead. */
 export function resolveRuntimeEnv(params: {
   runtime: RuntimeEnv;
   logger: LoggerLike;
   exitError?: (code: number) => Error;
 }): RuntimeEnv;
-/** @deprecated Import from `openclaw/plugin-sdk/runtime` instead. */
+/** @deprecated Import from `eve-agent/plugin-sdk/runtime` instead. */
 export function resolveRuntimeEnv(params: {
   runtime?: undefined;
   logger: LoggerLike;
@@ -56,13 +56,13 @@ export function resolveRuntimeEnv(params: {
   return params.runtime ?? createLoggerBackedRuntime(params);
 }
 
-/** @deprecated Import from `openclaw/plugin-sdk/runtime` instead. */
+/** @deprecated Import from `eve-agent/plugin-sdk/runtime` instead. */
 export function resolveRuntimeEnvWithUnavailableExit(params: {
   runtime: RuntimeEnv;
   logger: LoggerLike;
   unavailableMessage?: string;
 }): RuntimeEnv;
-/** @deprecated Import from `openclaw/plugin-sdk/runtime` instead. */
+/** @deprecated Import from `eve-agent/plugin-sdk/runtime` instead. */
 export function resolveRuntimeEnvWithUnavailableExit(params: {
   runtime?: undefined;
   logger: LoggerLike;

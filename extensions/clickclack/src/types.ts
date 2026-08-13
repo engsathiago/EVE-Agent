@@ -1,7 +1,7 @@
 /**
  * Shared ClickClack config, runtime account, API object, and target types.
  */
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 
 /** User-configurable settings for one ClickClack account. */
 export type ClickClackAccountConfig = {
@@ -28,9 +28,9 @@ export type ClickClackConfig = ClickClackAccountConfig & {
   defaultAccount?: string;
 };
 
-/** OpenClaw config narrowed to include ClickClack channel settings. */
-export type CoreConfig = OpenClawConfig & {
-  channels?: OpenClawConfig["channels"] & {
+/** EVE config narrowed to include ClickClack channel settings. */
+export type CoreConfig = EVEConfig & {
+  channels?: EVEConfig["channels"] & {
     clickclack?: ClickClackConfig;
   };
 };

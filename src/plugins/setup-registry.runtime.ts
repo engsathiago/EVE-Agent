@@ -1,7 +1,7 @@
 /** Runtime lookup helpers for plugin setup CLI backend descriptors. */
 import { createRequire } from "node:module";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isInstalledPluginEnabled } from "./installed-plugin-index.js";
 import {
   resolvePluginMetadataSnapshot,
@@ -23,7 +23,7 @@ type SetupCliBackendRuntimeEntry = {
 
 type SetupCliBackendRuntimeLookupParams = {
   backend: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 };

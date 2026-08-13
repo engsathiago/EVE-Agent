@@ -22,7 +22,7 @@ import {
   shouldSuppressBuiltInModel,
 } from "./model-suppression.js";
 
-const originalBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+const originalBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
 
 describe("model suppression", () => {
   beforeEach(() => {
@@ -33,9 +33,9 @@ describe("model suppression", () => {
 
   afterEach(() => {
     if (originalBundledPluginsDir === undefined) {
-      delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+      delete process.env.EVE_BUNDLED_PLUGINS_DIR;
     } else {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = originalBundledPluginsDir;
+      process.env.EVE_BUNDLED_PLUGINS_DIR = originalBundledPluginsDir;
     }
   });
 
@@ -122,10 +122,10 @@ describe("model suppression", () => {
       .mockReturnValueOnce(firstResolver)
       .mockReturnValueOnce(secondResolver);
 
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/tmp/openclaw-bundled-a";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/tmp/eve-bundled-a";
     expect(shouldSuppressBuiltInModel({ provider: "openai", id: "gpt-5.3", config })).toBe(false);
 
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/tmp/openclaw-bundled-b";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/tmp/eve-bundled-b";
     expect(shouldSuppressBuiltInModel({ provider: "openai", id: "gpt-5.3", config })).toBe(false);
 
     expect(mocks.buildManifestBuiltInModelSuppressionResolver).toHaveBeenCalledTimes(2);
@@ -136,14 +136,14 @@ describe("model suppression", () => {
   it("refreshes manifest suppression resolver when config plugin inputs mutate in place", () => {
     const firstResolver = vi.fn().mockReturnValue(undefined);
     const secondResolver = vi.fn().mockReturnValue(undefined);
-    const config = { plugins: { load: { paths: ["/tmp/openclaw-plugin-a"] } } };
+    const config = { plugins: { load: { paths: ["/tmp/eve-plugin-a"] } } };
     mocks.buildManifestBuiltInModelSuppressionResolver
       .mockReturnValueOnce(firstResolver)
       .mockReturnValueOnce(secondResolver);
 
     expect(shouldSuppressBuiltInModel({ provider: "openai", id: "gpt-5.3", config })).toBe(false);
 
-    config.plugins.load.paths = ["/tmp/openclaw-plugin-b"];
+    config.plugins.load.paths = ["/tmp/eve-plugin-b"];
     expect(shouldSuppressBuiltInModel({ provider: "openai", id: "gpt-5.3", config })).toBe(false);
 
     expect(mocks.buildManifestBuiltInModelSuppressionResolver).toHaveBeenCalledTimes(2);

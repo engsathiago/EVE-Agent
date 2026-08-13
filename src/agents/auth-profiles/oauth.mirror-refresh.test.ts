@@ -73,7 +73,7 @@ describe("resolveApiKeyForProfile OAuth refresh mirror-to-main (#26322)", () => 
   let mainAgentDir = "";
 
   beforeAll(async () => {
-    tempRoot = await createOAuthTestTempRoot("openclaw-oauth-mirror-");
+    tempRoot = await createOAuthTestTempRoot("eve-oauth-mirror-");
   });
 
   beforeEach(async () => {

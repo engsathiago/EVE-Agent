@@ -1,7 +1,7 @@
 ---
 name: qqbot-channel
 description: QQ channel management skill. Use qqbot_channel_api to list guilds and channels, inspect members, publish posts, manage announcements, and work with schedules through the QQ Open Platform HTTP API with automatic token authentication.
-metadata: { "openclaw": { "emoji": "📡", "requires": { "config": ["channels.qqbot"] } } }
+metadata: { "eve": { "emoji": "📡", "requires": { "config": ["channels.qqbot"] } } }
 ---
 
 # QQ 频道 API 请求指导

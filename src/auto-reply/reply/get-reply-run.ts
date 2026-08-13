@@ -1,8 +1,8 @@
 /** Prepares and runs auto-reply agent turns, including prompt context and session policy. */
 import crypto from "node:crypto";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { asDateTimestampMs } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { asDateTimestampMs } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   clearAutoFallbackPrimaryProbeSelection,
   hasLegacyAutoFallbackWithoutOrigin,
@@ -28,7 +28,7 @@ import {
 import { resolveSessionStoreEntry } from "../../config/sessions/store.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
 import { resolveSilentReplySettings } from "../../config/silent-reply.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { measureDiagnosticsTimelineSpan } from "../../infra/diagnostics-timeline.js";
 import { clearCommandLane, getQueueSize } from "../../process/command-queue.js";
@@ -124,7 +124,7 @@ type InternalGetReplyOptions = GetReplyOptions & {
   onSessionPrepared?: (binding: ReplySessionBinding) => void;
 };
 
-type AgentDefaults = NonNullable<OpenClawConfig["agents"]>["defaults"];
+type AgentDefaults = NonNullable<EVEConfig["agents"]>["defaults"];
 type ExecOverrides = Pick<ExecToolDefaults, "host" | "security" | "ask" | "node">;
 const EPOCH_MILLISECONDS_THRESHOLD = 1_000_000_000_000;
 
@@ -397,11 +397,11 @@ function hasReplyTargetContext(ctx: MsgContext | TemplateContext): boolean {
 type RunPreparedReplyParams = {
   ctx: MsgContext;
   sessionCtx: TemplateContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   agentDir: string;
   agentCfg: AgentDefaults;
-  sessionCfg: OpenClawConfig["session"];
+  sessionCfg: EVEConfig["session"];
   commandAuthorized: boolean;
   command: ReturnType<typeof buildCommandContext>;
   commandSource?: string;
@@ -541,7 +541,7 @@ export async function runPreparedReply(
   });
   const useFastReplyRuntime = shouldUseReplyFastTestRuntime({
     cfg,
-    isFastTestEnv: process.env.OPENCLAW_TEST_FAST === "1",
+    isFastTestEnv: process.env.EVE_TEST_FAST === "1",
   });
   const fullAccessState = resolveEmbeddedFullAccessState({
     execElevated: {
@@ -840,7 +840,7 @@ export async function runPreparedReply(
     });
   };
   const skillResult =
-    process.env.OPENCLAW_TEST_FAST === "1"
+    process.env.EVE_TEST_FAST === "1"
       ? {
           sessionEntry,
           skillsSnapshot: sessionEntry?.skillsSnapshot,
@@ -1228,7 +1228,7 @@ export async function runPreparedReply(
           // LLM-boundary stamping site (normalizeMessagesForLlmBoundary) can
           // derive a stable per-message `[DOW YYYY-MM-DD HH:MM TZ]` prefix that
           // is identical whether this turn is sent as the current turn or
-          // replayed as history. See: https://github.com/openclaw/openclaw/issues/3658
+          // replayed as history. See: https://github.com/engsathiago/eve-agent/issues/3658
           ...(userTurnTimestamp ? { timestamp: userTurnTimestamp } : {}),
         }
       : undefined;

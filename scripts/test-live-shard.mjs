@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs one named live-test shard with OPENCLAW_LIVE_TEST enabled.
+// Runs one named live-test shard with EVE_LIVE_TEST enabled.
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -13,24 +13,24 @@ import {
 
 const LIVE_TEST_SUFFIX = ".live.test.ts";
 const OPTIONAL_LIVE_SHARD_FILE_ENVS = new Map([
-  ["src/agents/agent-mcp-style.cache.live.test.ts", ["OPENCLAW_LIVE_CACHE_TEST"]],
-  ["src/agents/cli-runner/bundle-mcp.gemini.live.test.ts", ["OPENCLAW_LIVE_CLI_MCP_GEMINI"]],
-  ["src/agents/embedded-agent-runner.cache.live.test.ts", ["OPENCLAW_LIVE_CACHE_TEST"]],
-  ["src/agents/live-cache-regression.live.test.ts", ["OPENCLAW_LIVE_CACHE_TEST"]],
-  ["src/agents/provider-headers.live.test.ts", ["OPENCLAW_LIVE_CACHE_TEST"]],
-  ["src/agents/subagent-announce.live.test.ts", ["OPENCLAW_LIVE_SUBAGENT_E2E"]],
-  ["src/agents/tools/image-tool.ollama.live.test.ts", ["OPENCLAW_LIVE_OLLAMA_IMAGE"]],
-  ["src/agents/tools/image-tool.providers.live.test.ts", ["OPENCLAW_LIVE_IMAGE_TOOL_TEST"]],
-  ["src/crestodian/rescue-channel.live.test.ts", ["OPENCLAW_LIVE_CRESTODIAN_RESCUE_CHANNEL"]],
-  ["src/gateway/android-node.capabilities.live.test.ts", ["OPENCLAW_LIVE_ANDROID_NODE"]],
-  ["src/gateway/gateway-acp-bind.live.test.ts", ["OPENCLAW_LIVE_ACP_BIND"]],
-  ["src/gateway/gateway-acp-spawn-defaults.live.test.ts", ["OPENCLAW_LIVE_ACP_SPAWN_DEFAULTS"]],
-  ["src/gateway/gateway-cli-backend.live.test.ts", ["OPENCLAW_LIVE_CLI_BACKEND"]],
-  ["src/gateway/gateway-codex-bind.live.test.ts", ["OPENCLAW_LIVE_CODEX_BIND"]],
-  ["src/gateway/gateway-codex-harness.live.test.ts", ["OPENCLAW_LIVE_CODEX_HARNESS"]],
-  ["src/gateway/gateway-trajectory-export.live.test.ts", ["OPENCLAW_LIVE_CODEX_HARNESS"]],
-  ["src/infra/push-apns-http2.live.test.ts", ["OPENCLAW_LIVE_APNS_REACHABILITY"]],
-  ["test/image-generation.infer-cli.live.test.ts", ["OPENCLAW_LIVE_INFER_CLI_TEST"]],
+  ["src/agents/agent-mcp-style.cache.live.test.ts", ["EVE_LIVE_CACHE_TEST"]],
+  ["src/agents/cli-runner/bundle-mcp.gemini.live.test.ts", ["EVE_LIVE_CLI_MCP_GEMINI"]],
+  ["src/agents/embedded-agent-runner.cache.live.test.ts", ["EVE_LIVE_CACHE_TEST"]],
+  ["src/agents/live-cache-regression.live.test.ts", ["EVE_LIVE_CACHE_TEST"]],
+  ["src/agents/provider-headers.live.test.ts", ["EVE_LIVE_CACHE_TEST"]],
+  ["src/agents/subagent-announce.live.test.ts", ["EVE_LIVE_SUBAGENT_E2E"]],
+  ["src/agents/tools/image-tool.ollama.live.test.ts", ["EVE_LIVE_OLLAMA_IMAGE"]],
+  ["src/agents/tools/image-tool.providers.live.test.ts", ["EVE_LIVE_IMAGE_TOOL_TEST"]],
+  ["src/crestodian/rescue-channel.live.test.ts", ["EVE_LIVE_CRESTODIAN_RESCUE_CHANNEL"]],
+  ["src/gateway/android-node.capabilities.live.test.ts", ["EVE_LIVE_ANDROID_NODE"]],
+  ["src/gateway/gateway-acp-bind.live.test.ts", ["EVE_LIVE_ACP_BIND"]],
+  ["src/gateway/gateway-acp-spawn-defaults.live.test.ts", ["EVE_LIVE_ACP_SPAWN_DEFAULTS"]],
+  ["src/gateway/gateway-cli-backend.live.test.ts", ["EVE_LIVE_CLI_BACKEND"]],
+  ["src/gateway/gateway-codex-bind.live.test.ts", ["EVE_LIVE_CODEX_BIND"]],
+  ["src/gateway/gateway-codex-harness.live.test.ts", ["EVE_LIVE_CODEX_HARNESS"]],
+  ["src/gateway/gateway-trajectory-export.live.test.ts", ["EVE_LIVE_CODEX_HARNESS"]],
+  ["src/infra/push-apns-http2.live.test.ts", ["EVE_LIVE_APNS_REACHABILITY"]],
+  ["test/image-generation.infer-cli.live.test.ts", ["EVE_LIVE_INFER_CLI_TEST"]],
 ]);
 const SKIPPED_ASSERTION_STATUSES = new Set(["disabled", "pending", "skipped", "todo"]);
 
@@ -360,7 +360,7 @@ export function buildLiveShardPnpmArgs(files, passthroughArgs) {
  * Builds the Vitest JSON report path used to prove that a live shard ran tests.
  */
 export function buildLiveShardReportPath(shard, env = process.env) {
-  const reportDir = env.OPENCLAW_LIVE_SHARD_REPORT_DIR || ".artifacts/live-shards";
+  const reportDir = env.EVE_LIVE_SHARD_REPORT_DIR || ".artifacts/live-shards";
   return path.join(reportDir, `${shard}.vitest.json`);
 }
 

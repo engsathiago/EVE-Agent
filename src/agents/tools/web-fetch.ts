@@ -7,9 +7,9 @@ import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { Type } from "typebox";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { SsrFBlockedError, type LookupFn, type SsrFPolicy } from "../../infra/net/ssrf.js";
 import { logDebug } from "../../logger.js";
 import type { RuntimeWebFetchMetadata } from "../../secrets/runtime-web-tools.types.js";
@@ -79,7 +79,7 @@ const WebFetchSchema = Type.Object({
   ),
 });
 
-type WebFetchConfig = NonNullable<OpenClawConfig["tools"]>["web"] extends infer Web
+type WebFetchConfig = NonNullable<EVEConfig["tools"]>["web"] extends infer Web
   ? Web extends { fetch?: infer Fetch }
     ? Fetch
     : undefined
@@ -113,7 +113,7 @@ async function loadWebGuardedFetch(): Promise<
   return (await webGuardedFetchLoader.load()).fetchWithWebToolsNetworkGuard;
 }
 
-function resolveFetchConfig(cfg?: OpenClawConfig): WebFetchConfig {
+function resolveFetchConfig(cfg?: EVEConfig): WebFetchConfig {
   return resolveWebProviderConfig(cfg, "fetch") as NonNullable<WebFetchConfig> | undefined;
 }
 
@@ -326,7 +326,7 @@ type WebFetchRuntimeParams = {
   cacheTtlMs: number;
   userAgent: string;
   readabilityEnabled: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   useTrustedEnvProxy: boolean;
   ssrfPolicy?: {
     allowRfc2544BenchmarkRange?: boolean;
@@ -373,7 +373,7 @@ function throwIfFetchAborted(signal: AbortSignal | undefined): void {
  * Sanitize a web_fetch URL parameter that may contain LLM-injected whitespace.
  *
  * Fixes the reported case where a model emits a space between the scheme and
- * authority (e.g. `https:// docs.openclaw.ai`), which causes `new URL()` to
+ * authority (e.g. `https:// docs.eve.ai`), which causes `new URL()` to
  * throw. Path and query whitespace is intentionally preserved — the WHATWG URL
  * parser percent-encodes those characters correctly per RFC 3986.
  */
@@ -700,7 +700,7 @@ async function runWebFetch(params: WebFetchRuntimeParams): Promise<Record<string
 }
 
 export function createWebFetchTool(options?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sandboxed?: boolean;
   runtimeWebFetch?: RuntimeWebFetchMetadata;
   lateBindRuntimeConfig?: boolean;

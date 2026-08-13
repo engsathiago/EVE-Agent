@@ -1,5 +1,5 @@
 /**
- * Amazon Bedrock Converse streaming runtime. It maps OpenClaw messages/tools,
+ * Amazon Bedrock Converse streaming runtime. It maps EVE messages/tools,
  * thinking, cache points, images, and usage into Bedrock Converse Stream calls.
  */
 import {
@@ -51,18 +51,18 @@ import {
   type Tool,
   type ToolCall,
   type ToolResultMessage,
-} from "openclaw/plugin-sdk/llm";
+} from "eve-agent/plugin-sdk/llm";
 import {
   resolveClaudeFable5ModelIdentity,
   resolveClaudeModelIdentity,
   supportsClaudeAdaptiveThinking,
   supportsClaudeNativeXhighEffort,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   applyAnthropicRefusal,
   createDeferredEventBuffer,
   notifyLlmRequestActivity,
-} from "openclaw/plugin-sdk/provider-stream-shared";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
 import { supportsBedrockPromptCaching, type BedrockOptions } from "./bedrock-options.js";
 import { supportsBedrockNativeMaxEffort } from "./thinking-policy.js";
 
@@ -346,7 +346,7 @@ function formatBedrockError(error: unknown): string {
   return message;
 }
 
-/** Stream a Bedrock Converse request from the generic OpenClaw stream options. */
+/** Stream a Bedrock Converse request from the generic EVE stream options. */
 export const streamSimpleBedrock: StreamFunction<"bedrock-converse-stream", SimpleStreamOptions> = (
   model: Model<"bedrock-converse-stream">,
   context: Context,
@@ -643,13 +643,13 @@ function mapThinkingLevelToEffort(
 
 /**
  * Resolve cache retention preference.
- * Defaults to "short" and uses OPENCLAW_CACHE_RETENTION for backward compatibility.
+ * Defaults to "short" and uses EVE_CACHE_RETENTION for backward compatibility.
  */
 function resolveCacheRetention(cacheRetention?: CacheRetention): CacheRetention {
   if (cacheRetention) {
     return cacheRetention;
   }
-  if (typeof process !== "undefined" && process.env.OPENCLAW_CACHE_RETENTION === "long") {
+  if (typeof process !== "undefined" && process.env.EVE_CACHE_RETENTION === "long") {
     return "long";
   }
   return "short";

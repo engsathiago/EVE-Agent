@@ -2,7 +2,7 @@
 import fsSync from "node:fs";
 import path from "node:path";
 import "./monitor-inbox.test-harness.js";
-import { defaultRuntime } from "openclaw/plugin-sdk/runtime-env";
+import { defaultRuntime } from "eve-agent/plugin-sdk/runtime-env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   registerWhatsAppConnectionController,
@@ -36,9 +36,9 @@ const { imageOps, sleepWithAbortMock } = vi.hoisted(() => ({
   sleepWithAbortMock: vi.fn(async (_ms: number, _signal?: AbortSignal) => undefined),
 }));
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/media-runtime")>(
-    "openclaw/plugin-sdk/media-runtime",
+vi.mock("eve-agent/plugin-sdk/media-runtime", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/media-runtime")>(
+    "eve-agent/plugin-sdk/media-runtime",
   );
   return {
     ...actual,

@@ -1,8 +1,8 @@
 // Plugin contract registry assembles bundled plugin fixtures for shared contract tests.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { loadBundledCapabilityRuntimeRegistry } from "../bundled-capability-runtime.js";
-import { discoverOpenClawPlugins } from "../discovery.js";
+import { discoverEVEPlugins } from "../discovery.js";
 import { loadPluginManifestRegistry } from "../manifest-registry.js";
 import { resolveManifestContractPluginIds } from "../plugin-registry.js";
 import { resolveBundledExplicitProviderContractsFromPublicArtifacts } from "../provider-contract-public-artifacts.js";
@@ -286,7 +286,7 @@ function loadScopedCapabilityRuntimeRegistryEntries<T>(params: {
     plugin: BundledCapabilityRuntimeRegistry["plugins"][number],
   ) => readonly string[];
 }): T[] {
-  const discovery = discoverOpenClawPlugins({});
+  const discovery = discoverEVEPlugins({});
   let lastFailure: Error | undefined;
 
   for (let attempt = 0; attempt < 2; attempt += 1) {

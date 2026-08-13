@@ -8,13 +8,13 @@
 
 import fs from "node:fs/promises";
 import nodePath from "node:path";
-import { resolveFetch } from "openclaw/plugin-sdk/fetch-runtime";
-import { detectMime, parseMediaContentLength } from "openclaw/plugin-sdk/media-runtime";
+import { resolveFetch } from "eve-agent/plugin-sdk/fetch-runtime";
+import { detectMime, parseMediaContentLength } from "eve-agent/plugin-sdk/media-runtime";
 import {
   parseStrictNonNegativeInteger,
   resolveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { readResponseWithLimit } from "eve-agent/plugin-sdk/response-limit-runtime";
 import WebSocket from "ws";
 
 export type ContainerRpcOptions = {

@@ -1,5 +1,5 @@
-// Implements `openclaw channels status` with gateway status and config-only fallback.
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
+// Implements `eve channels status` with gateway status and config-only fallback.
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
 import { formatDocsLink } from "../../../packages/terminal-core/src/links.js";
 import { theme } from "../../../packages/terminal-core/src/theme.js";
 import { normalizeChannelId } from "../../channels/plugins/index.js";
@@ -205,7 +205,7 @@ export function formatGatewayChannelsStatusLines(payload: Record<string, unknown
         `- ${issue.channel} ${issue.accountId}: ${issue.message}${issue.fix ? ` (${issue.fix})` : ""}`,
       );
     }
-    lines.push(`- Run: ${formatCliCommand("openclaw doctor")}`);
+    lines.push(`- Run: ${formatCliCommand("eve doctor")}`);
     lines.push("");
   }
   lines.push(

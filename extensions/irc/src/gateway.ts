@@ -1,6 +1,6 @@
 // Irc plugin module implements gateway behavior.
-import { runStoppablePassiveMonitor } from "openclaw/plugin-sdk/extension-shared";
-import type { ChannelAccountSnapshot } from "openclaw/plugin-sdk/status-helpers";
+import { runStoppablePassiveMonitor } from "eve-agent/plugin-sdk/extension-shared";
+import type { ChannelAccountSnapshot } from "eve-agent/plugin-sdk/status-helpers";
 import type { ResolvedIrcAccount } from "./accounts.js";
 import { createAccountStatusSink } from "./channel-api.js";
 import type { RuntimeEnv } from "./runtime-api.js";

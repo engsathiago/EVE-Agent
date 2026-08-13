@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import { normalizeBotFrameworkServiceUrl } from "./bot-framework-service-url.js";
 import type { MSTeamsCloudName } from "./cloud.js";
 import type { MSTeamsCredentials, MSTeamsFederatedCredentials } from "./token.js";
-import { buildOpenClawUserAgentFragment } from "./user-agent.js";
+import { buildEVEUserAgentFragment } from "./user-agent.js";
 
 /**
  * Structural shape of the SDK's HTTP server adapter (e.g. `ExpressAdapter`).
@@ -108,7 +108,7 @@ type MSTeamsAppOn = {
     cb: (ctx: FileConsentCtx) => void | Promise<void>,
   ): MSTeamsApp;
   // SSO sign-in invokes. The monitor registers guarded replacement routes and
-  // delegates back into the SDK handlers after OpenClaw sender policy passes.
+  // delegates back into the SDK handlers after EVE sender policy passes.
   (name: "signin.token-exchange", cb: (ctx: SigninTokenExchangeCtx) => unknown): MSTeamsApp;
   (name: "signin.verify-state", cb: (ctx: SigninVerifyStateCtx) => unknown): MSTeamsApp;
   // Feedback (thumbs up/down) on AI-generated messages — Teams delivers
@@ -285,7 +285,7 @@ export async function createMSTeamsApp(
 ): Promise<MSTeamsApp> {
   const { App, cloudFromName } = await loadSdkModules();
   // Tag outbound SDK HTTP calls with a User-Agent fragment so the Teams
-  // backend can identify OpenClaw traffic for usage telemetry. Teams SDK
+  // backend can identify EVE traffic for usage telemetry. Teams SDK
   // 2.0.11+ preserves both its own `teams.ts[apps]/<sdk-version>` identifier
   // and caller-provided User-Agent fragments when plain client headers are used.
   const cloud = options?.cloud ?? "Public";
@@ -294,7 +294,7 @@ export async function createMSTeamsApp(
     : undefined;
   const appOptions: Record<string, unknown> = {
     client: options?.httpClient ?? {
-      headers: { "User-Agent": buildOpenClawUserAgentFragment() },
+      headers: { "User-Agent": buildEVEUserAgentFragment() },
     },
     ...(options?.httpServerAdapter ? { httpServerAdapter: options.httpServerAdapter } : {}),
     ...(options?.messagingEndpoint ? { messagingEndpoint: options.messagingEndpoint } : {}),

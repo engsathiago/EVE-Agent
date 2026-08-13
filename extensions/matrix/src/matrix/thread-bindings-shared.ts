@@ -2,8 +2,8 @@
 import type {
   BindingTargetKind,
   SessionBindingRecord,
-} from "openclaw/plugin-sdk/thread-bindings-session-runtime";
-import { resolveThreadBindingLifecycle } from "openclaw/plugin-sdk/thread-bindings-session-runtime";
+} from "eve-agent/plugin-sdk/thread-bindings-session-runtime";
+import { resolveThreadBindingLifecycle } from "eve-agent/plugin-sdk/thread-bindings-session-runtime";
 
 type MatrixThreadBindingTargetKind = "subagent" | "acp";
 

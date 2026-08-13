@@ -215,13 +215,13 @@ describe("createAgentSession attribution headers", () => {
     });
 
     expect(providerOptions.headers).toMatchObject({
-      "HTTP-Referer": "https://openclaw.ai",
-      "X-OpenRouter-Title": "OpenClaw",
+      "HTTP-Referer": "https://eve.ai",
+      "X-OpenRouter-Title": "EVE",
       "X-OpenRouter-Categories": "cli-agent",
     });
     expect(endpointOptions.headers).toMatchObject({
-      "HTTP-Referer": "https://openclaw.ai",
-      "X-OpenRouter-Title": "OpenClaw",
+      "HTTP-Referer": "https://eve.ai",
+      "X-OpenRouter-Title": "EVE",
       "X-OpenRouter-Categories": "cli-agent",
     });
   });
@@ -238,8 +238,8 @@ describe("createAgentSession attribution headers", () => {
       baseUrl: "https://gateway.ai.cloudflare.com/v1/account/gateway/openai",
     });
 
-    expect(providerOptions.headers).toMatchObject({ "User-Agent": "openclaw" });
-    expect(endpointOptions.headers).toMatchObject({ "User-Agent": "openclaw" });
+    expect(providerOptions.headers).toMatchObject({ "User-Agent": "eve" });
+    expect(endpointOptions.headers).toMatchObject({ "User-Agent": "eve" });
   });
 });
 
@@ -321,7 +321,7 @@ describe("createAgentSession tool defaults", () => {
       settingsManager: SettingsManager.inMemory(),
       modelRegistry: ModelRegistry.inMemory(AuthStorage.inMemory()),
     });
-    const systemPrompt = "You are a personal assistant running inside OpenClaw.";
+    const systemPrompt = "You are a personal assistant running inside EVE.";
 
     session.setBaseSystemPrompt(systemPrompt);
     session.setActiveToolsByName(["bash", "custom_lookup"]);

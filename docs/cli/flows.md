@@ -1,21 +1,21 @@
 ---
-summary: "Redirect: flow commands live under `openclaw tasks flow`"
+summary: "Redirect: flow commands live under `eve tasks flow`"
 read_when:
-  - You encounter `openclaw flows` in older docs or release notes
+  - You encounter `eve flows` in older docs or release notes
   - You want a quick TaskFlow inspection reference
 title: "Flows (redirect)"
 ---
 
-# `openclaw tasks flow`
+# `eve tasks flow`
 
-There is no top-level `openclaw flows` command. Durable TaskFlow inspection lives under `openclaw tasks flow`.
+There is no top-level `eve flows` command. Durable TaskFlow inspection lives under `eve tasks flow`.
 
 ## Subcommands
 
 ```bash
-openclaw tasks flow list   [--json] [--status <name>]
-openclaw tasks flow show   <lookup> [--json]
-openclaw tasks flow cancel <lookup>
+eve tasks flow list   [--json] [--status <name>]
+eve tasks flow show   <lookup> [--json]
+eve tasks flow cancel <lookup>
 ```
 
 | Subcommand | Description                | Arguments / options                                                                   |
@@ -35,12 +35,12 @@ openclaw tasks flow cancel <lookup>
 ## Examples
 
 ```bash
-openclaw tasks flow list
-openclaw tasks flow list --status running
-openclaw tasks flow list --json
-openclaw tasks flow show flow_abc123
-openclaw tasks flow show flow_abc123 --json
-openclaw tasks flow cancel flow_abc123
+eve tasks flow list
+eve tasks flow list --status running
+eve tasks flow list --json
+eve tasks flow show flow_abc123
+eve tasks flow show flow_abc123 --json
+eve tasks flow cancel flow_abc123
 ```
 
 For full TaskFlow concepts and authoring see [TaskFlow](/automation/taskflow). For the parent `tasks` command see [tasks CLI reference](/cli/tasks).

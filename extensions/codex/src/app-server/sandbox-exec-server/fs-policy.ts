@@ -1,5 +1,5 @@
 /**
- * Resolves Codex filesystem sandbox policy payloads into OpenClaw path/glob
+ * Resolves Codex filesystem sandbox policy payloads into EVE path/glob
  * checks for sandbox exec-server filesystem operations.
  */
 import { posix as pathPosix } from "node:path";
@@ -7,14 +7,14 @@ import type { JsonObject } from "../protocol.js";
 import { requireObject, requireString } from "./json-rpc.js";
 import type {
   FsAccessMode,
-  OpenClawExecServer,
+  EVEExecServer,
   ResolvedFsSandboxEntry,
   ResolvedFsSandboxPolicy,
 } from "./types.js";
 
 /** Resolves request-local sandbox policy and asserts each requested path has the needed access. */
 export function assertFsSandboxAccess(
-  execServer: OpenClawExecServer,
+  execServer: EVEExecServer,
   record: JsonObject,
   requests: Array<{ path: string; access: "read" | "write" }>,
 ): void {
@@ -23,7 +23,7 @@ export function assertFsSandboxAccess(
 
 /** Parses a Codex managed filesystem sandbox context into normalized access entries. */
 export function resolveFsSandboxPolicy(
-  execServer: OpenClawExecServer,
+  execServer: EVEExecServer,
   record: JsonObject,
 ): ResolvedFsSandboxPolicy | undefined {
   if (record.sandbox === undefined || record.sandbox === null) {
@@ -63,7 +63,7 @@ export function resolveFsSandboxPolicy(
   };
 }
 
-function readFsSandboxCwd(execServer: OpenClawExecServer, sandbox: JsonObject): string {
+function readFsSandboxCwd(execServer: EVEExecServer, sandbox: JsonObject): string {
   if (sandbox.cwd === undefined || sandbox.cwd === null) {
     return normalizeSandboxAbsolutePath(execServer.sandbox.containerWorkdir, "sandbox cwd");
   }

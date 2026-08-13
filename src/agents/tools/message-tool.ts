@@ -4,8 +4,8 @@
  * Sends, edits, reacts to, polls, and routes messages through channel plugins and Gateway-backed actions.
  */
 import { createHash } from "node:crypto";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { sortUniqueStrings, uniqueValues } from "@openclaw/normalization-core/string-normalization";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { sortUniqueStrings, uniqueValues } from "@eve/normalization-core/string-normalization";
 import { Type, type TSchema } from "typebox";
 import {
   GATEWAY_CLIENT_IDS,
@@ -36,7 +36,7 @@ import { resolveCommandSecretRefsViaGateway } from "../../cli/command-secret-gat
 import { getScopedChannelsCommandSecretTargets } from "../../cli/command-secret-targets.js";
 import { resolveMessageSecretScope } from "../../cli/message-secret-scope.js";
 import { getRuntimeConfig } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   getBootEchoContextForSession,
   stripBootEchoFromOutboundText,
@@ -814,8 +814,8 @@ type MessageToolOptions = {
   runId?: string;
   sessionId?: string;
   agentId?: string;
-  config?: OpenClawConfig;
-  getRuntimeConfig?: () => OpenClawConfig;
+  config?: EVEConfig;
+  getRuntimeConfig?: () => EVEConfig;
   getScopedChannelsCommandSecretTargets?: typeof getScopedChannelsCommandSecretTargets;
   resolveCommandSecretRefsViaGateway?: typeof resolveCommandSecretRefsViaGateway;
   runMessageAction?: typeof runMessageAction;
@@ -838,7 +838,7 @@ type MessageToolOptions = {
 };
 
 type MessageToolDiscoveryParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   currentChannelProvider?: string;
   currentChannelId?: string;
   currentThreadTs?: string;
@@ -852,7 +852,7 @@ type MessageToolDiscoveryParams = {
 };
 
 type MessageActionDiscoveryInput = Omit<ChannelMessageActionDiscoveryInput, "cfg" | "channel"> & {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string;
 };
 
@@ -1077,7 +1077,7 @@ function resolveAgentAccountId(value?: string): string | undefined {
 }
 
 function buildMessageToolDescription(options?: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   currentChannel?: string;
   currentChannelId?: string;
   currentThreadTs?: string;

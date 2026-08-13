@@ -7,7 +7,7 @@ type ComparableSemver = {
 };
 
 /**
- * Converts legacy OpenClaw `1.2.3.beta.N` tags into semver-compatible `1.2.3-beta.N`.
+ * Converts legacy EVE `1.2.3.beta.N` tags into semver-compatible `1.2.3-beta.N`.
  */
 export function normalizeLegacyDotBetaVersion(version: string): string {
   const trimmed = version.trim();

@@ -1,5 +1,5 @@
 // Mistral tests cover realtime transcription provider plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   testing,
@@ -14,7 +14,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
   it("normalizes nested provider config", () => {
     const provider = buildMistralRealtimeTranscriptionProvider();
     const resolved = provider.resolveConfig?.({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       rawConfig: {
         providers: {
           mistral: {
@@ -41,7 +41,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
   it("normalizes pasted API key artifacts for realtime auth headers", () => {
     const provider = buildMistralRealtimeTranscriptionProvider();
     const resolved = provider.resolveConfig?.({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       rawConfig: {
         providers: {
           mistral: {

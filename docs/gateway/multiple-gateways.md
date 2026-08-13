@@ -1,5 +1,5 @@
 ---
-summary: "Run multiple OpenClaw Gateways on one host (isolation, ports, and profiles)"
+summary: "Run multiple EVE Gateways on one host (isolation, ports, and profiles)"
 read_when:
   - Running more than one Gateway on the same machine
   - You need isolated config/state/ports per Gateway
@@ -28,13 +28,13 @@ else:
 
 ```bash
 # Rescue bot (separate Telegram bot, separate profile, port 19789)
-openclaw --profile rescue onboard
-openclaw --profile rescue gateway install --port 19789
+eve --profile rescue onboard
+eve --profile rescue gateway install --port 19789
 ```
 
 If your main bot is already running, that is usually all you need.
 
-During `openclaw --profile rescue onboard`:
+During `eve --profile rescue onboard`:
 
 - use the separate Telegram bot token
 - keep the `rescue` profile
@@ -63,14 +63,14 @@ For most setups, use a completely separate Telegram bot for the rescue profile:
 
 ## What `--profile rescue onboard` Changes
 
-`openclaw --profile rescue onboard` uses the normal onboarding flow, but it
+`eve --profile rescue onboard` uses the normal onboarding flow, but it
 writes everything into a separate profile.
 
 In practice, that means the rescue bot gets its own:
 
 - config file
 - state directory
-- workspace (by default `~/.openclaw/workspace-rescue`)
+- workspace (by default `~/.eve/workspace-rescue`)
 - managed service name
 
 The prompts are otherwise the same as normal onboarding.
@@ -85,29 +85,29 @@ own base port:
 
 ```bash
 # main (default profile)
-openclaw setup
-openclaw gateway --port 18789
+eve setup
+eve gateway --port 18789
 
 # extra gateway
-openclaw --profile ops setup
-openclaw --profile ops gateway --port 19789
+eve --profile ops setup
+eve --profile ops gateway --port 19789
 ```
 
 If you want both Gateways to use named profiles, that also works:
 
 ```bash
-openclaw --profile main setup
-openclaw --profile main gateway --port 18789
+eve --profile main setup
+eve --profile main gateway --port 18789
 
-openclaw --profile ops setup
-openclaw --profile ops gateway --port 19789
+eve --profile ops setup
+eve --profile ops gateway --port 19789
 ```
 
 Services follow the same pattern:
 
 ```bash
-openclaw gateway install
-openclaw --profile ops gateway install --port 19789
+eve gateway install
+eve --profile ops gateway install --port 19789
 ```
 
 Use the rescue-bot quickstart when you want a fallback operator lane. Use the
@@ -118,8 +118,8 @@ different channels, tenants, workspaces, or operational roles.
 
 Keep these unique per Gateway instance:
 
-- `OPENCLAW_CONFIG_PATH` — per-instance config file
-- `OPENCLAW_STATE_DIR` — per-instance sessions, creds, caches
+- `EVE_CONFIG_PATH` — per-instance config file
+- `EVE_STATE_DIR` — per-instance sessions, creds, caches
 - `agents.defaults.workspace` — per-instance workspace root
 - `gateway.port` (or `--port`) — unique per instance
 - derived browser/canvas/CDP ports
@@ -128,7 +128,7 @@ If these are shared, you will hit config races and port conflicts.
 
 ## Port mapping (derived)
 
-Base port = `gateway.port` (or `OPENCLAW_GATEWAY_PORT` / `--port`).
+Base port = `gateway.port` (or `EVE_GATEWAY_PORT` / `--port`).
 
 - browser control service port = base + 2 (loopback only)
 - canvas host is served on the Gateway HTTP server (same port as `gateway.port`)
@@ -146,30 +146,30 @@ If you override any of these in config or env, you must keep them unique per ins
 ## Manual env example
 
 ```bash
-OPENCLAW_CONFIG_PATH=~/.openclaw/main.json \
-OPENCLAW_STATE_DIR=~/.openclaw \
-openclaw gateway --port 18789
+EVE_CONFIG_PATH=~/.eve/main.json \
+EVE_STATE_DIR=~/.eve \
+eve gateway --port 18789
 
-OPENCLAW_CONFIG_PATH=~/.openclaw/rescue.json \
-OPENCLAW_STATE_DIR=~/.openclaw-rescue \
-openclaw gateway --port 19789
+EVE_CONFIG_PATH=~/.eve/rescue.json \
+EVE_STATE_DIR=~/.eve-rescue \
+eve gateway --port 19789
 ```
 
 ## Quick checks
 
 ```bash
-openclaw gateway status --deep
-openclaw --profile rescue gateway status --deep
-openclaw --profile rescue gateway probe
-openclaw status
-openclaw --profile rescue status
-openclaw --profile rescue browser status
+eve gateway status --deep
+eve --profile rescue gateway status --deep
+eve --profile rescue gateway probe
+eve status
+eve --profile rescue status
+eve --profile rescue browser status
 ```
 
 Interpretation:
 
 - `gateway status --deep` helps catch stale launchd/systemd/schtasks services from older installs.
-- `gateway probe` warning text such as `multiple reachable gateway identities detected` is expected only when you intentionally run more than one isolated gateway, or when OpenClaw cannot prove reachable probe targets are the same gateway. An SSH tunnel, proxy URL, or configured remote URL to the same gateway is one gateway with multiple transports, even when transport ports differ.
+- `gateway probe` warning text such as `multiple reachable gateway identities detected` is expected only when you intentionally run more than one isolated gateway, or when EVE cannot prove reachable probe targets are the same gateway. An SSH tunnel, proxy URL, or configured remote URL to the same gateway is one gateway with multiple transports, even when transport ports differ.
 
 ## Related
 

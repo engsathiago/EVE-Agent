@@ -1,6 +1,6 @@
 // Workboard plugin module implements dispatcher behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import type { PluginRuntime } from "openclaw/plugin-sdk/plugin-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/plugin-runtime";
 import { WorkboardStore, type WorkboardDispatchResult } from "./store.js";
 import type { WorkboardCard, WorkboardExecution } from "./types.js";
 
@@ -95,7 +95,7 @@ function buildWorkerPrompt(params: {
   token: string;
 }): string {
   return [
-    `Work on this OpenClaw Workboard card: ${params.card.title}`,
+    `Work on this EVE Workboard card: ${params.card.title}`,
     "",
     "## Worker protocol",
     `Card id: ${params.card.id}`,

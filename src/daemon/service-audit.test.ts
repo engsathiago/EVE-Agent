@@ -44,7 +44,7 @@ function createGatewayAudit({
       programArguments: ["/usr/bin/node", "gateway"],
       environment: {
         PATH: pathLocal,
-        ...(serviceToken ? { OPENCLAW_GATEWAY_TOKEN: serviceToken } : {}),
+        ...(serviceToken ? { EVE_GATEWAY_TOKEN: serviceToken } : {}),
         ...extraEnvironment,
       },
       ...(environmentValueSources ? { environmentValueSources } : {}),
@@ -54,13 +54,13 @@ function createGatewayAudit({
 
 async function writeSystemdUnitForAudit(home: string, lines: string[]) {
   const unitDir = path.join(home, ".config", "systemd", "user");
-  const unitPath = path.join(unitDir, "openclaw-gateway.service");
+  const unitPath = path.join(unitDir, "eve-gateway.service");
   await fs.mkdir(unitDir, { recursive: true });
   await fs.writeFile(
     unitPath,
     [
       "[Unit]",
-      "Description=OpenClaw Gateway",
+      "Description=EVE Gateway",
       "[Service]",
       ...lines,
       "ExecStart=/usr/bin/node gateway",
@@ -125,7 +125,7 @@ describe("auditGatewayServiceConfig", () => {
   });
 
   it("accepts Linux minimal PATH with user directories", async () => {
-    const env = { HOME: "/tmp/openclaw-testuser", PNPM_HOME: "/opt/pnpm" };
+    const env = { HOME: "/tmp/eve-testuser", PNPM_HOME: "/opt/pnpm" };
     const minimalPath = buildMinimalServicePath({ platform: "linux", env });
     const audit = await auditGatewayServiceConfig({
       env,
@@ -145,7 +145,7 @@ describe("auditGatewayServiceConfig", () => {
   });
 
   it("accepts canonical macOS gateway service PATH without user-bin defaults", async () => {
-    const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-service-audit-home-"));
+    const home = await fs.mkdtemp(path.join(os.tmpdir(), "eve-service-audit-home-"));
     try {
       const servicePath = buildMinimalServicePath({ platform: "darwin", env: { HOME: home } });
       expect(servicePath).toBe(
@@ -168,7 +168,7 @@ describe("auditGatewayServiceConfig", () => {
   });
 
   it("requires Homebrew directories in canonical macOS gateway service PATH", async () => {
-    const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-service-audit-home-"));
+    const home = await fs.mkdtemp(path.join(os.tmpdir(), "eve-service-audit-home-"));
     try {
       const audit = await auditGatewayServiceConfig({
         env: { HOME: home },
@@ -191,7 +191,7 @@ describe("auditGatewayServiceConfig", () => {
 
   it("still requires explicit env-configured tool roots in gateway service PATH", async () => {
     const audit = await auditGatewayServiceConfig({
-      env: { HOME: "/tmp/openclaw-testuser", PNPM_HOME: "/opt/pnpm" },
+      env: { HOME: "/tmp/eve-testuser", PNPM_HOME: "/opt/pnpm" },
       platform: "linux",
       command: {
         programArguments: ["/usr/bin/node", "gateway"],
@@ -206,7 +206,7 @@ describe("auditGatewayServiceConfig", () => {
   });
 
   it("flags stale Linux version-manager and package-manager PATH entries", async () => {
-    const env = { HOME: "/tmp/openclaw-testuser-nonminimal" };
+    const env = { HOME: "/tmp/eve-testuser-nonminimal" };
     const minimalPath = buildMinimalServicePath({ platform: "linux", env });
     const staleEntries = [
       `${env.HOME}/.volta/bin`,
@@ -235,7 +235,7 @@ describe("auditGatewayServiceConfig", () => {
     expect(issue?.detail).toContain("/opt/pnpm/bin");
   });
 
-  it("accepts an expected active OpenClaw bin even when it looks package-managed", async () => {
+  it("accepts an expected active EVE bin even when it looks package-managed", async () => {
     const expectedServicePath = [
       "/opt/homebrew/opt/node/bin",
       "/Users/testuser/Library/pnpm",
@@ -255,7 +255,7 @@ describe("auditGatewayServiceConfig", () => {
       command: {
         programArguments: [
           "/opt/homebrew/opt/node/bin/node",
-          "/opt/openclaw/dist/index.js",
+          "/opt/eve/dist/index.js",
           "gateway",
         ],
         environment: { PATH: expectedServicePath },
@@ -286,7 +286,7 @@ describe("auditGatewayServiceConfig", () => {
       command: {
         programArguments: [
           "/opt/homebrew/opt/node/bin/node",
-          "/opt/openclaw/dist/index.js",
+          "/opt/eve/dist/index.js",
           "gateway",
         ],
         environment: { PATH: `${expectedServicePath}:/Users/testuser/.asdf/shims` },
@@ -302,8 +302,8 @@ describe("auditGatewayServiceConfig", () => {
 
   it("accepts Linux fnm aliases/default without requiring the legacy current symlink", async () => {
     const env = {
-      HOME: "/tmp/openclaw-testuser",
-      FNM_DIR: "/tmp/openclaw-testuser/.local/share/fnm",
+      HOME: "/tmp/eve-testuser",
+      FNM_DIR: "/tmp/eve-testuser/.local/share/fnm",
     };
     const pathParts = buildMinimalServicePath({ platform: "linux", env })
       .split(":")
@@ -324,8 +324,8 @@ describe("auditGatewayServiceConfig", () => {
 
   it("accepts Linux fnm current symlink without requiring aliases/default", async () => {
     const env = {
-      HOME: "/tmp/openclaw-testuser",
-      FNM_DIR: "/tmp/openclaw-testuser/.local/share/fnm",
+      HOME: "/tmp/eve-testuser",
+      FNM_DIR: "/tmp/eve-testuser/.local/share/fnm",
     };
     const pathParts = buildMinimalServicePath({ platform: "linux", env })
       .split(":")
@@ -429,7 +429,7 @@ describe("auditGatewayServiceConfig", () => {
   it.each(["process", "none"])(
     `warns when KillMode is %s in explicit unit file`,
     async (killMode) => {
-      const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-service-audit-killmode-"));
+      const home = await fs.mkdtemp(path.join(os.tmpdir(), "eve-service-audit-killmode-"));
       await writeSystemdUnitForAudit(home, [
         "After=network-online.target",
         "Wants=network-online.target",
@@ -454,7 +454,7 @@ describe("auditGatewayServiceConfig", () => {
   );
 
   it("does not warn when KillMode is control-group", async () => {
-    const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-service-audit-killmode-"));
+    const home = await fs.mkdtemp(path.join(os.tmpdir(), "eve-service-audit-killmode-"));
     await writeSystemdUnitForAudit(home, [
       "After=network-online.target",
       "Wants=network-online.target",
@@ -475,7 +475,7 @@ describe("auditGatewayServiceConfig", () => {
   });
 
   it("accepts systemd RestartSec values with seconds suffixes", async () => {
-    const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-service-audit-restartsec-"));
+    const home = await fs.mkdtemp(path.join(os.tmpdir(), "eve-service-audit-restartsec-"));
     await writeSystemdUnitForAudit(home, [
       "After=network-online.target",
       "Wants=network-online.target",
@@ -513,7 +513,7 @@ describe("auditGatewayServiceConfig", () => {
       expectedGatewayToken: "new-token",
       serviceToken: "old-token",
       environmentValueSources: {
-        OPENCLAW_GATEWAY_TOKEN: "file",
+        EVE_GATEWAY_TOKEN: "file",
       },
     });
     expectTokenAudit(audit, { embedded: false, mismatch: false });
@@ -524,7 +524,7 @@ describe("auditGatewayServiceConfig", () => {
       expectedGatewayToken: "new-token",
       serviceToken: "old-token",
       environmentValueSources: {
-        OPENCLAW_GATEWAY_TOKEN: "inline-and-file",
+        EVE_GATEWAY_TOKEN: "inline-and-file",
       },
     });
     expectTokenAudit(audit, { embedded: true, mismatch: true });
@@ -533,7 +533,7 @@ describe("auditGatewayServiceConfig", () => {
   it("flags inline managed service env values from the service key list", async () => {
     const audit = await createGatewayAudit({
       extraEnvironment: {
-        OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "TAVILY_API_KEY,OPENROUTER_API_KEY",
+        EVE_SERVICE_MANAGED_ENV_KEYS: "TAVILY_API_KEY,OPENROUTER_API_KEY",
         TAVILY_API_KEY: "tvly-test",
         OPENROUTER_API_KEY: "or-test",
       },
@@ -682,7 +682,7 @@ describe("checkTokenDrift", () => {
       code: SERVICE_AUDIT_CODES.gatewayTokenDrift,
       message:
         "Config token differs from service token. The daemon will use the old token after restart.",
-      detail: "Run `openclaw gateway install --force` to sync the token.",
+      detail: "Run `eve gateway install --force` to sync the token.",
       level: "recommended",
     });
   });
@@ -702,7 +702,7 @@ describe("checkTokenDrift", () => {
 describe("gateway service version mismatch detection", () => {
   it("flags stale gateway service version metadata", async () => {
     const audit = await createGatewayAudit({
-      extraEnvironment: { OPENCLAW_SERVICE_VERSION: "2026.4.15-beta.1" },
+      extraEnvironment: { EVE_SERVICE_VERSION: "2026.4.15-beta.1" },
     });
 
     const issue = audit.issues.find(
@@ -716,7 +716,7 @@ describe("gateway service version mismatch detection", () => {
 
   it("accepts current gateway service version metadata", async () => {
     const audit = await createGatewayAudit({
-      extraEnvironment: { OPENCLAW_SERVICE_VERSION: VERSION },
+      extraEnvironment: { EVE_SERVICE_VERSION: VERSION },
     });
 
     expect(

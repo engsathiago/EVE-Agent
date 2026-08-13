@@ -1,12 +1,12 @@
 // Googlechat plugin module implements channel base behavior.
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
-import { formatNormalizedAllowFromEntries } from "openclaw/plugin-sdk/allow-from";
+import { describeAccountSnapshot } from "eve-agent/plugin-sdk/account-helpers";
+import { formatNormalizedAllowFromEntries } from "eve-agent/plugin-sdk/allow-from";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-config-helpers";
+import type { ChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   type GoogleChatConfigAccessorAccount,
   listGoogleChatAccountIds,

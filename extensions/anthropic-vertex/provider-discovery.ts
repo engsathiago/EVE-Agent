@@ -2,8 +2,8 @@
  * Provider discovery descriptor for Anthropic Vertex. This variant is used by
  * catalog surfaces that need the provider contract without full plugin entry setup.
  */
-import type { ProviderCatalogContext } from "openclaw/plugin-sdk/provider-catalog-shared";
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+import type { ProviderCatalogContext } from "eve-agent/plugin-sdk/provider-catalog-shared";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-shared";
 import { buildAnthropicVertexProvider } from "./provider-catalog.js";
 import { hasAnthropicVertexAvailableAuth, resolveAnthropicVertexConfigApiKey } from "./region.js";
 

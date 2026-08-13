@@ -27,7 +27,7 @@ import {
   resolveControlUiLinks,
 } from "../commands/onboard-helpers.js";
 import type { OnboardOptions } from "../commands/onboard-types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { describeGatewayServiceRestart, resolveGatewayService } from "../daemon/service.js";
 import { isSystemdUserServiceAvailable } from "../daemon/systemd.js";
 import { ensureControlUiAssetsBuilt } from "../infra/control-ui-assets.js";
@@ -45,8 +45,8 @@ import type { GatewayWizardSettings, WizardFlow } from "./setup.types.js";
 type FinalizeOnboardingOptions = {
   flow: WizardFlow;
   opts: OnboardOptions;
-  baseConfig: OpenClawConfig;
-  nextConfig: OpenClawConfig;
+  baseConfig: EVEConfig;
+  nextConfig: EVEConfig;
   workspaceDir: string;
   settings: GatewayWizardSettings;
   prompter: WizardPrompter;
@@ -339,7 +339,7 @@ export async function finalizeSetupWizard(
     });
     if (gatewayProbe.ok) {
       try {
-        const healthConfig: OpenClawConfig =
+        const healthConfig: EVEConfig =
           settings.authMode === "token" && settings.gatewayToken
             ? {
                 ...nextConfig,
@@ -368,8 +368,8 @@ export async function finalizeSetupWizard(
         await prompter.note(
           [
             t("common.docs"),
-            "https://docs.openclaw.ai/gateway/health",
-            "https://docs.openclaw.ai/gateway/troubleshooting",
+            "https://docs.eve.ai/gateway/health",
+            "https://docs.eve.ai/gateway/troubleshooting",
           ].join("\n"),
           t("wizard.finalize.healthCheckHelp"),
         );
@@ -385,8 +385,8 @@ export async function finalizeSetupWizard(
       await prompter.note(
         [
           t("common.docs"),
-          "https://docs.openclaw.ai/gateway/health",
-          "https://docs.openclaw.ai/gateway/troubleshooting",
+          "https://docs.eve.ai/gateway/health",
+          "https://docs.eve.ai/gateway/troubleshooting",
         ].join("\n"),
         t("wizard.finalize.healthCheckHelp"),
       );
@@ -396,13 +396,13 @@ export async function finalizeSetupWizard(
           t("wizard.finalize.gatewayNotDetected"),
           t("wizard.finalize.noBackgroundGatewayExpected"),
           t("wizard.finalize.startGatewayNow", {
-            command: formatCliCommand("openclaw gateway run"),
+            command: formatCliCommand("eve gateway run"),
           }),
           t("wizard.finalize.rerunInstallDaemon", {
-            command: formatCliCommand("openclaw onboard --install-daemon"),
+            command: formatCliCommand("eve onboard --install-daemon"),
           }),
           t("wizard.finalize.skipHealthNextTime", {
-            command: formatCliCommand("openclaw onboard --skip-health"),
+            command: formatCliCommand("eve onboard --skip-health"),
           }),
         ].join("\n"),
         "Gateway",
@@ -500,14 +500,14 @@ export async function finalizeSetupWizard(
         t("wizard.finalize.gatewayTokenShared"),
         t("wizard.finalize.gatewayTokenStored"),
         t("wizard.finalize.gatewayTokenView", {
-          command: formatCliCommand("openclaw config get gateway.auth.token"),
+          command: formatCliCommand("eve config get gateway.auth.token"),
         }),
         t("wizard.finalize.gatewayTokenGenerate", {
-          command: formatCliCommand("openclaw doctor --generate-gateway-token"),
+          command: formatCliCommand("eve doctor --generate-gateway-token"),
         }),
         suppressGatewayTokenOutput ? undefined : t("wizard.finalize.dashboardTokenMemory"),
         t("wizard.finalize.dashboardOpenAnytime", {
-          command: formatCliCommand("openclaw dashboard --no-open"),
+          command: formatCliCommand("eve dashboard --no-open"),
         }),
         suppressGatewayTokenOutput ? undefined : t("wizard.finalize.dashboardTokenPrompt"),
       ].filter(Boolean);
@@ -556,7 +556,7 @@ export async function finalizeSetupWizard(
     } else {
       await prompter.note(
         t("wizard.finalize.dashboardWhenReady", {
-          command: formatCliCommand("openclaw dashboard --no-open"),
+          command: formatCliCommand("eve dashboard --no-open"),
         }),
         t("wizard.finalize.laterTitle"),
       );
@@ -638,7 +638,7 @@ export async function finalizeSetupWizard(
         [
           t("wizard.finalize.webSearchProviderUnavailable", { provider: label }),
           t("wizard.finalize.webSearchUnavailableAction"),
-          `  ${formatCliCommand("openclaw configure --section web")}`,
+          `  ${formatCliCommand("eve configure --section web")}`,
           "",
           t("wizard.finalize.webDocs"),
         ].join("\n"),
@@ -672,10 +672,10 @@ export async function finalizeSetupWizard(
         [
           t("wizard.finalize.webSearchNoKey", { provider: label }),
           t("wizard.finalize.webSearchNeedsKey"),
-          `  ${formatCliCommand("openclaw configure --section web")}`,
+          `  ${formatCliCommand("eve configure --section web")}`,
           "",
           t("wizard.finalize.webSearchGetKey", {
-            url: entry?.signupUrl ?? "https://docs.openclaw.ai/tools/web",
+            url: entry?.signupUrl ?? "https://docs.eve.ai/tools/web",
           }),
           t("wizard.finalize.webDocs"),
         ].join("\n"),
@@ -686,7 +686,7 @@ export async function finalizeSetupWizard(
         [
           t("wizard.finalize.webSearchDisabled", { provider: label }),
           t("wizard.finalize.webSearchReenable", {
-            command: formatCliCommand("openclaw configure --section web"),
+            command: formatCliCommand("eve configure --section web"),
           }),
           "",
           t("wizard.finalize.webDocs"),
@@ -722,7 +722,7 @@ export async function finalizeSetupWizard(
       await prompter.note(
         [
           t("wizard.finalize.webSearchSkipped"),
-          `  ${formatCliCommand("openclaw configure --section web")}`,
+          `  ${formatCliCommand("eve configure --section web")}`,
           "",
           t("wizard.finalize.webDocs"),
         ].join("\n"),

@@ -474,13 +474,13 @@ const LEGACY_TTS_PROVIDER_RULES: LegacyConfigRule[] = [
   {
     path: ["messages", "tts"],
     message:
-      'messages.tts legacy provider aliases/keys are legacy; use provider: "microsoft" and messages.tts.providers.<provider>. Run "openclaw doctor --fix".',
+      'messages.tts legacy provider aliases/keys are legacy; use provider: "microsoft" and messages.tts.providers.<provider>. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsProviderKeys(value),
   },
   {
     path: ["plugins", "entries"],
     message:
-      'plugins.entries.voice-call.config.tts legacy provider aliases/keys are legacy; use provider: "microsoft" and plugins.entries.voice-call.config.tts.providers.<provider>. Run "openclaw doctor --fix".',
+      'plugins.entries.voice-call.config.tts legacy provider aliases/keys are legacy; use provider: "microsoft" and plugins.entries.voice-call.config.tts.providers.<provider>. Run "eve doctor --fix".',
     match: (value) => hasLegacyPluginEntryTtsProviderKeys(value),
   },
 ];
@@ -488,25 +488,25 @@ const LEGACY_TTS_PROVIDER_RULES: LegacyConfigRule[] = [
 const LEGACY_TTS_ENABLED_RULES: LegacyConfigRule[] = [
   {
     path: ["messages", "tts"],
-    message: 'messages.tts.enabled is legacy; use messages.tts.auto. Run "openclaw doctor --fix".',
+    message: 'messages.tts.enabled is legacy; use messages.tts.auto. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsEnabled(value),
   },
   {
     path: ["agents"],
     message:
-      'agents.list[].tts.enabled is legacy; use agents.list[].tts.auto. Run "openclaw doctor --fix".',
+      'agents.list[].tts.enabled is legacy; use agents.list[].tts.auto. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsEnabledInAgentLocations(value),
   },
   {
     path: ["channels"],
     message:
-      'supported channel TTS enabled fields are legacy; use the same TTS block auto field. Run "openclaw doctor --fix".',
+      'supported channel TTS enabled fields are legacy; use the same TTS block auto field. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsEnabledInChannelLocations(value),
   },
   {
     path: ["plugins", "entries"],
     message:
-      'plugins.entries.voice-call.config.tts.enabled is legacy; use plugins.entries.voice-call.config.tts.auto. Run "openclaw doctor --fix".',
+      'plugins.entries.voice-call.config.tts.enabled is legacy; use plugins.entries.voice-call.config.tts.auto. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsEnabledInPluginLocations(value),
   },
 ];
@@ -515,25 +515,25 @@ const LEGACY_TTS_SPEAKER_SELECTION_RULES: LegacyConfigRule[] = [
   {
     path: ["messages", "tts"],
     message:
-      'messages.tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "openclaw doctor --fix".',
+      'messages.tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsSpeakerSelection(value),
   },
   {
     path: ["agents"],
     message:
-      'agents.list[].tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "openclaw doctor --fix".',
+      'agents.list[].tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsSpeakerSelectionInAgentLocations(value),
   },
   {
     path: ["channels"],
     message:
-      'supported channel TTS speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "openclaw doctor --fix".',
+      'supported channel TTS speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsSpeakerSelectionInChannelLocations(value),
   },
   {
     path: ["plugins", "entries"],
     message:
-      'plugins.entries.voice-call.config.tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "openclaw doctor --fix".',
+      'plugins.entries.voice-call.config.tts speaker selection fields voice/voiceName/voiceId are legacy; use speakerVoice or speakerVoiceId. Run "eve doctor --fix".',
     match: (value) => hasLegacyTtsSpeakerSelectionInPluginLocations(value),
   },
 ];

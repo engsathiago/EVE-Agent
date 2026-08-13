@@ -2,7 +2,7 @@
  * Builds extension factories available to embedded-agent runtime sessions.
  */
 import { randomUUID } from "node:crypto";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
 import { setCompactionSafeguardRuntime } from "../agent-hooks/compaction-safeguard-runtime.js";
 import compactionSafeguardExtension from "../agent-hooks/compaction-safeguard.js";
@@ -53,7 +53,7 @@ function buildAgentToolResultMiddlewareFactory(
   sessionManager: SessionManager,
   runId?: string,
 ): ExtensionFactory {
-  const runner = createAgentToolResultMiddlewareRunner({ runtime: "openclaw" });
+  const runner = createAgentToolResultMiddlewareRunner({ runtime: "eve" });
   return (agent) => {
     agent.on("tool_result", async (rawEvent: unknown, ctx: { cwd?: string }) => {
       const event = recordFromUnknown(rawEvent) as AgentToolResultEvent;
@@ -64,7 +64,7 @@ function buildAgentToolResultMiddlewareFactory(
         typeof event.toolCallId === "string" && event.toolCallId.trim()
           ? event.toolCallId
           : undefined;
-      const toolCallId = eventToolCallId ?? `openclaw-${randomUUID()}`;
+      const toolCallId = eventToolCallId ?? `eve-${randomUUID()}`;
       const content = Array.isArray(event.content) ? event.content : [];
       const current = {
         content,
@@ -108,7 +108,7 @@ function buildAgentToolResultMiddlewareFactory(
 }
 
 function resolveContextWindowTokens(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   modelId: string;
   model: ProviderRuntimeModel | undefined;
@@ -124,7 +124,7 @@ function resolveContextWindowTokens(params: {
 }
 
 function buildContextPruningFactory(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   sessionManager: SessionManager;
   provider: string;
   modelId: string;
@@ -163,7 +163,7 @@ function buildContextPruningFactory(params: {
 }
 
 export function buildEmbeddedExtensionFactories(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   sessionManager: SessionManager;
   workspaceDir?: string;
   provider: string;

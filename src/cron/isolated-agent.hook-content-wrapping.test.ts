@@ -25,7 +25,7 @@ function lastEmbeddedPrompt(): string {
 
 describe("runCronIsolatedAgentTurn hook content wrapping", () => {
   beforeEach(() => {
-    process.env.OPENCLAW_TEST_FAST = "1";
+    process.env.EVE_TEST_FAST = "1";
     vi.spyOn(isolatedAgentRunRuntime, "resolveThinkingDefault").mockReturnValue("off");
     vi.mocked(runEmbeddedAgent).mockClear();
     vi.mocked(loadModelCatalog).mockResolvedValue([]);

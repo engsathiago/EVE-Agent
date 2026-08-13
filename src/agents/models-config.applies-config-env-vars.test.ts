@@ -4,20 +4,20 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { createConfigRuntimeEnv } from "../config/env-vars.js";
 import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { saveAuthProfileStore } from "./auth-profiles/store.js";
 import { unsetEnv, withTempEnv } from "./models-config.e2e-harness.js";
 import {
-  planOpenClawModelsJsonWithDeps,
+  planEVEModelsJsonWithDeps,
   resolveProvidersForModelsJsonWithDeps,
 } from "./models-config.plan.js";
 import type { ProviderConfig } from "./models-config.providers.secrets.js";
 import { encodePluginModelCatalogRelativePath } from "./plugin-model-catalog.js";
 
-const TEST_ENV_VAR = "OPENCLAW_MODELS_CONFIG_TEST_ENV";
+const TEST_ENV_VAR = "EVE_MODELS_CONFIG_TEST_ENV";
 const BUNDLED_PLUGINS_DIR = fileURLToPath(new URL("../../extensions/", import.meta.url));
 
 function createImplicitOpenRouterProvider(): ProviderConfig {
@@ -79,7 +79,7 @@ function createImplicitGoogleVertexProvider(): ProviderConfig {
 }
 
 async function resolveProvidersForConfigEnvTest(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   onResolveImplicitProviders: (env: NodeJS.ProcessEnv) => void;
 }) {
   // Config env vars are materialized into the discovery env before implicit
@@ -88,7 +88,7 @@ async function resolveProvidersForConfigEnvTest(params: {
   return await resolveProvidersForModelsJsonWithDeps(
     {
       cfg: params.cfg,
-      agentDir: "/tmp/openclaw-models-config-env-vars-test",
+      agentDir: "/tmp/eve-models-config-env-vars-test",
       env,
     },
     {
@@ -102,7 +102,7 @@ async function resolveProvidersForConfigEnvTest(params: {
   );
 }
 
-function createConfigEnvVarsConfig(): OpenClawConfig {
+function createConfigEnvVarsConfig(): EVEConfig {
   return {
     models: { providers: {} },
     env: {
@@ -114,7 +114,7 @@ function createConfigEnvVarsConfig(): OpenClawConfig {
   };
 }
 
-async function resolveProvidersAndCaptureDiscoveryEnv(cfg: OpenClawConfig) {
+async function resolveProvidersAndCaptureDiscoveryEnv(cfg: EVEConfig) {
   let discoveryEnv: NodeJS.ProcessEnv | undefined;
   const providers = await resolveProvidersForConfigEnvTest({
     cfg,
@@ -125,16 +125,16 @@ async function resolveProvidersAndCaptureDiscoveryEnv(cfg: OpenClawConfig) {
   return { discoveryEnv, providers };
 }
 
-let unauthenticatedProviderWritePlan: Awaited<ReturnType<typeof planOpenClawModelsJsonWithDeps>>;
+let unauthenticatedProviderWritePlan: Awaited<ReturnType<typeof planEVEModelsJsonWithDeps>>;
 let unauthenticatedProviderParsed: { providers?: Record<string, unknown> };
 
 beforeAll(async () => {
   // Reused no-auth write plan proves generated providers stay serializable
   // even when discovery returns auth-only provider shells.
-  unauthenticatedProviderWritePlan = await planOpenClawModelsJsonWithDeps(
+  unauthenticatedProviderWritePlan = await planEVEModelsJsonWithDeps(
     {
       cfg: { models: { providers: {} } },
-      agentDir: "/tmp/openclaw-models-config-env-vars-test",
+      agentDir: "/tmp/eve-models-config-env-vars-test",
       env: {},
       existingRaw: "",
       existingParsed: null,
@@ -160,7 +160,7 @@ beforeAll(async () => {
 
 describe("models-config", () => {
   it("keeps the implicit provider catalog when explicit baseUrl is blank", async () => {
-    let observedConfig: OpenClawConfig | undefined;
+    let observedConfig: EVEConfig | undefined;
     const providers = await resolveProvidersForModelsJsonWithDeps(
       {
         cfg: {
@@ -174,7 +174,7 @@ describe("models-config", () => {
             },
           },
         },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
       },
       {
@@ -205,7 +205,7 @@ describe("models-config", () => {
     await resolveProvidersForModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
         pluginMetadataSnapshot,
       },
@@ -226,9 +226,9 @@ describe("models-config", () => {
     await resolveProvidersForModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
-        workspaceDir: "/tmp/openclaw-workspace",
+        workspaceDir: "/tmp/eve-workspace",
       },
       {
         resolveImplicitProviders: async ({ workspaceDir }) => {
@@ -238,7 +238,7 @@ describe("models-config", () => {
       },
     );
 
-    expect(observedWorkspaceDir).toBe("/tmp/openclaw-workspace");
+    expect(observedWorkspaceDir).toBe("/tmp/eve-workspace");
   });
 
   it("threads startup provider discovery scope into implicit provider discovery", async () => {
@@ -249,7 +249,7 @@ describe("models-config", () => {
     await resolveProvidersForModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
         providerDiscoveryProviderIds: ["openai"],
         providerDiscoveryEntriesOnly: true,
@@ -285,10 +285,10 @@ describe("models-config", () => {
       | Pick<PluginMetadataSnapshot, "index" | "manifestRegistry" | "owners">
       | undefined;
 
-    await planOpenClawModelsJsonWithDeps(
+    await planEVEModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
         existingRaw: "",
         existingParsed: null,
@@ -312,10 +312,10 @@ describe("models-config", () => {
   });
 
   it("treats empty replace-mode provider sets as authoritative", async () => {
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: { models: { mode: "replace", providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
         existingRaw: `${JSON.stringify({ providers: { stale: {} } }, null, 2)}\n`,
         existingParsed: { providers: { stale: {} } },
@@ -344,10 +344,10 @@ describe("models-config", () => {
         setupProviders: new Map(),
       },
     } as unknown as Pick<PluginMetadataSnapshot, "index" | "manifestRegistry" | "owners">;
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: { ZAI_API_KEY: "sk-test" } as NodeJS.ProcessEnv,
         existingRaw: "",
         existingParsed: null,
@@ -384,10 +384,10 @@ describe("models-config", () => {
   });
 
   it("falls back to canonical env markers when provider runtime has no api-key policy", async () => {
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: { models: { providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: { OPENAI_API_KEY: "sk-test" } as NodeJS.ProcessEnv,
         existingRaw: "",
         existingParsed: null,
@@ -410,10 +410,10 @@ describe("models-config", () => {
   });
 
   it("normalizes retired Gemini ids preserved from existing models.json rows", async () => {
-    const plan = await planOpenClawModelsJsonWithDeps(
+    const plan = await planEVEModelsJsonWithDeps(
       {
         cfg: { models: { mode: "merge", providers: {} } },
-        agentDir: "/tmp/openclaw-models-config-env-vars-test",
+        agentDir: "/tmp/eve-models-config-env-vars-test",
         env: {},
         existingRaw: "",
         existingParsed: {
@@ -468,7 +468,7 @@ describe("models-config", () => {
   });
 
   it("keeps google-vertex static catalog rows when an auth profile supplies the API key", async () => {
-    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-google-vertex-models-"));
+    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-google-vertex-models-"));
     try {
       saveAuthProfileStore(
         {
@@ -485,7 +485,7 @@ describe("models-config", () => {
         { filterExternalAuthProfiles: false, syncExternalCli: false },
       );
 
-      const plan = await planOpenClawModelsJsonWithDeps(
+      const plan = await planEVEModelsJsonWithDeps(
         {
           cfg: {
             agents: {
@@ -531,17 +531,17 @@ describe("models-config", () => {
   });
 
   it("keeps google-vertex static catalog rows when ADC auth evidence supplies the marker", async () => {
-    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-google-vertex-adc-models-"));
+    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-google-vertex-adc-models-"));
     const credentialsPath = path.join(agentDir, "application_default_credentials.json");
     await fs.writeFile(credentialsPath, JSON.stringify({ type: "authorized_user" }), "utf8");
     try {
       const plan = await withEnvAsync(
         {
-          OPENCLAW_BUNDLED_PLUGINS_DIR: BUNDLED_PLUGINS_DIR,
-          OPENCLAW_DISABLE_BUNDLED_PLUGINS: undefined,
+          EVE_BUNDLED_PLUGINS_DIR: BUNDLED_PLUGINS_DIR,
+          EVE_DISABLE_BUNDLED_PLUGINS: undefined,
         },
         async () =>
-          await planOpenClawModelsJsonWithDeps(
+          await planEVEModelsJsonWithDeps(
             {
               cfg: {
                 agents: {
@@ -556,8 +556,8 @@ describe("models-config", () => {
               },
               agentDir,
               env: {
-                OPENCLAW_BUNDLED_PLUGINS_DIR: BUNDLED_PLUGINS_DIR,
-                OPENCLAW_DISABLE_BUNDLED_PLUGINS: undefined,
+                EVE_BUNDLED_PLUGINS_DIR: BUNDLED_PLUGINS_DIR,
+                EVE_DISABLE_BUNDLED_PLUGINS: undefined,
                 GOOGLE_APPLICATION_CREDENTIALS: credentialsPath,
                 GOOGLE_CLOUD_PROJECT: "vertex-project",
                 GOOGLE_CLOUD_LOCATION: "global",

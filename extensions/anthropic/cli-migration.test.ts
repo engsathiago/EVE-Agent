@@ -2,7 +2,7 @@
 import type {
   ProviderAuthContext,
   ProviderAuthMethodNonInteractiveContext,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { readClaudeCliCredentialsForSetup, readClaudeCliCredentialsForSetupNonInteractive } =
@@ -23,7 +23,7 @@ vi.mock("./cli-auth-seam.js", async (importActual) => {
 const { buildAnthropicCliMigrationResult } = await import("./cli-migration.js");
 const { resolveKnownAnthropicModelRef } = await import("./claude-model-refs.js");
 const { createTestWizardPrompter, registerSingleProviderPlugin } =
-  await import("openclaw/plugin-sdk/plugin-test-runtime");
+  await import("eve-agent/plugin-sdk/plugin-test-runtime");
 const { default: anthropicPlugin } = await import("./index.js");
 
 beforeEach(() => {
@@ -97,8 +97,8 @@ function createProviderAuthContext(
     config,
     opts: {},
     env: {},
-    agentDir: "/tmp/openclaw/agents/main",
-    workspaceDir: "/tmp/openclaw/workspace",
+    agentDir: "/tmp/eve/agents/main",
+    workspaceDir: "/tmp/eve/workspace",
     prompter: createTestWizardPrompter(),
     runtime: {
       log: vi.fn(),
@@ -127,8 +127,8 @@ function createProviderAuthMethodNonInteractiveContext(
       error: vi.fn(),
       exit: vi.fn(),
     },
-    agentDir: "/tmp/openclaw/agents/main",
-    workspaceDir: "/tmp/openclaw/workspace",
+    agentDir: "/tmp/eve/agents/main",
+    workspaceDir: "/tmp/eve/workspace",
     resolveApiKey: vi.fn(async () => null),
     toApiKeyCredential: vi.fn(() => null),
   };
@@ -323,7 +323,7 @@ describe("anthropic cli migration", () => {
           models: {
             "anthropic/claude-opus-4-7": {
               alias: "Opus",
-              agentRuntime: { id: "openclaw" },
+              agentRuntime: { id: "eve" },
             },
             "anthropic/claude-sonnet-4-6": {
               alias: "Sonnet",
@@ -341,7 +341,7 @@ describe("anthropic cli migration", () => {
 
     expect(defaults.models?.["anthropic/claude-opus-4-7"]).toEqual({
       alias: "Opus",
-      agentRuntime: { id: "openclaw" },
+      agentRuntime: { id: "eve" },
     });
     expect(defaults.models?.["anthropic/claude-sonnet-4-6"]).toEqual({
       alias: "Sonnet",

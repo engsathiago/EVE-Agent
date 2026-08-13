@@ -23,13 +23,13 @@ describe("Plugin SDK API baseline", () => {
   });
 
   it("normalizes dependency source paths to stable node_modules paths", () => {
-    const repoRoot = path.join(path.sep, "workspace", "openclaw-worktree");
+    const repoRoot = path.join(path.sep, "workspace", "eve-worktree");
     const linkedDependencyPath = path.join(
       path.sep,
       "workspace",
-      "openclaw",
+      "eve",
       "node_modules",
-      "@openclaw",
+      "@eve",
       "fs-safe",
       "dist",
       "secret-file.d.ts",
@@ -38,9 +38,9 @@ describe("Plugin SDK API baseline", () => {
       repoRoot,
       "node_modules",
       ".pnpm",
-      "@openclaw+fs-safe@1.0.0",
+      "@eve+fs-safe@1.0.0",
       "node_modules",
-      "@openclaw",
+      "@eve",
       "fs-safe",
       "dist",
       "secret-file.d.ts",
@@ -55,7 +55,7 @@ describe("Plugin SDK API baseline", () => {
   });
 
   it("keeps repo source paths relative when a parent directory is named node_modules", () => {
-    const repoRoot = path.join(path.sep, "workspace", "node_modules", "openclaw");
+    const repoRoot = path.join(path.sep, "workspace", "node_modules", "eve");
     const sourcePath = path.join(repoRoot, "src", "plugin-sdk", "core.ts");
 
     expect(normalizePluginSdkApiSourcePath(repoRoot, sourcePath)).toBe("src/plugin-sdk/core.ts");

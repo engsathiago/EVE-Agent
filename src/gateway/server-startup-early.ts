@@ -1,7 +1,7 @@
 // Gateway early-startup runtime helpers.
 // Starts discovery, remote skills, task maintenance, and delayed maintenance setup.
 import type { GatewayTailscaleMode } from "../config/types.gateway.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveCronJobsStorePath } from "../cron/store.js";
 import type { PluginRegistry } from "../plugins/registry-types.js";
 
@@ -29,7 +29,7 @@ async function measureStartup<T>(
 /** Start plugin discovery and return the Bonjour shutdown callback when discovery is active. */
 export async function startGatewayPluginDiscovery(params: {
   minimalTestGateway: boolean;
-  cfgAtStart: OpenClawConfig;
+  cfgAtStart: EVEConfig;
   port: number;
   gatewayTls: { enabled: boolean; fingerprintSha256?: string };
   gatewayDirectReachable: boolean;
@@ -72,7 +72,7 @@ export async function startGatewayPluginDiscovery(params: {
 /** Start early Gateway side runtimes before the main server is fully ready. */
 export async function startGatewayEarlyRuntime(params: {
   minimalTestGateway: boolean;
-  cfgAtStart: OpenClawConfig;
+  cfgAtStart: EVEConfig;
   port: number;
   gatewayTls: { enabled: boolean; fingerprintSha256?: string };
   gatewayDirectReachable: boolean;
@@ -107,7 +107,7 @@ export async function startGatewayEarlyRuntime(params: {
   skillsRefreshDelayMs: number;
   getSkillsRefreshTimer: () => ReturnType<typeof setTimeout> | null;
   setSkillsRefreshTimer: (timer: ReturnType<typeof setTimeout> | null) => void;
-  getRuntimeConfig: () => OpenClawConfig;
+  getRuntimeConfig: () => EVEConfig;
   startupTrace?: GatewayStartupTrace;
 }) {
   const bonjourStop = await measureStartup(params.startupTrace, "runtime.early.discovery", () =>

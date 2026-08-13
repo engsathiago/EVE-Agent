@@ -4,16 +4,16 @@
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
+} from "@eve/model-catalog-core/provider-id";
 import {
   MAX_TIMER_TIMEOUT_MS,
   resolvePositiveTimerTimeoutMs,
-} from "@openclaw/normalization-core/number-coercion";
+} from "@eve/normalization-core/number-coercion";
 import {
   normalizeStringEntries,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig, MemorySearchConfig } from "../config/config.js";
+} from "@eve/normalization-core/string-normalization";
+import type { EVEConfig, MemorySearchConfig } from "../config/config.js";
 import type { SecretInput } from "../config/types.secrets.js";
 import {
   isMemoryMultimodalEnabled,
@@ -22,7 +22,7 @@ import {
 } from "../memory-host-sdk/multimodal.js";
 import { getEmbeddingProvider } from "../plugins/embedding-provider-runtime.js";
 import { getMemoryEmbeddingProvider } from "../plugins/memory-embedding-providers.js";
-import { resolveOpenClawAgentSqlitePath } from "../state/openclaw-agent-db.paths.js";
+import { resolveEVEAgentSqlitePath } from "../state/eve-agent-db.paths.js";
 import { clampInt, clampNumber } from "../utils.js";
 import { resolveAgentConfig } from "./agent-scope.js";
 
@@ -177,7 +177,7 @@ function normalizeSources(
 
 function getConfiguredMemoryEmbeddingProvider(
   providerId: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): ReturnType<typeof getMemoryEmbeddingProvider> {
   const directAdapter = getMemoryEmbeddingProvider(providerId);
   if (directAdapter) {
@@ -197,7 +197,7 @@ function getConfiguredMemoryEmbeddingProvider(
 }
 
 function mergeConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   defaults: MemorySearchConfig | undefined,
   overrides: MemorySearchConfig | undefined,
   agentId: string,
@@ -292,7 +292,7 @@ function mergeConfig(
   };
   const store = {
     driver: overrides?.store?.driver ?? defaults?.store?.driver ?? "sqlite",
-    databasePath: resolveOpenClawAgentSqlitePath({ agentId, env: process.env }),
+    databasePath: resolveEVEAgentSqlitePath({ agentId, env: process.env }),
     fts,
     vector,
   };
@@ -457,7 +457,7 @@ function resolveSyncConfig(
 }
 
 export function resolveMemorySearchConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string,
 ): ResolvedMemorySearchConfig | null {
   const defaults = cfg.agents?.defaults?.memorySearch;
@@ -489,7 +489,7 @@ export function resolveMemorySearchConfig(
 }
 
 export function resolveMemorySearchSyncConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string,
 ): ResolvedMemorySearchSyncConfig | null {
   const defaults = cfg.agents?.defaults?.memorySearch;

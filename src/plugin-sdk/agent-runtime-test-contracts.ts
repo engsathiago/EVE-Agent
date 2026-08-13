@@ -9,11 +9,11 @@ export { DELIVERY_NO_REPLY_RUNTIME_CONTRACT } from "./test-helpers/agents/delive
 export {
   createTerminalPresentationContractTool,
   installCodexToolResultMiddleware,
-  installOpenClawOwnedToolHooks,
+  installEVEOwnedToolHooks,
   mediaToolResult,
-  resetOpenClawOwnedToolHooks,
+  resetEVEOwnedToolHooks,
   textToolResult,
-} from "./test-helpers/agents/openclaw-owned-tool-runtime-contract.js";
+} from "./test-helpers/agents/eve-owned-tool-runtime-contract.js";
 export {
   createContractFallbackConfig,
   createContractRunResult,

@@ -1,5 +1,5 @@
 // Discord plugin module implements session key normalization behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type DiscordSessionKeyContext = {
   ChatType?: string;

@@ -1,6 +1,6 @@
 // Codex tests cover config plugin behavior.
 import fs from "node:fs/promises";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, expect, it, vi } from "vitest";
 import {
   CODEX_APP_SERVER_CONFIG_KEYS,
@@ -15,9 +15,9 @@ import {
   resolveCodexAppServerRuntimeOptions,
   resolveCodexComputerUseConfig,
   resolveCodexModelBackedReviewerPolicyContext,
-  resolveOpenClawExecModeForCodexAppServer,
-  resolveOpenClawExecModeFromConfig,
-  resolveOpenClawExecPolicyForCodexAppServer,
+  resolveEVEExecModeForCodexAppServer,
+  resolveEVEExecModeFromConfig,
+  resolveEVEExecPolicyForCodexAppServer,
   resolveCodexPluginsPolicy,
   shouldAutoApproveCodexAppServerApprovals,
 } from "./config.js";
@@ -93,11 +93,11 @@ describe("Codex app-server config", () => {
         approvalPolicy: "never",
         sandbox: "danger-full-access",
         networkProxy: {
-          profileName: "openclaw-network",
+          profileName: "eve-network",
           configFingerprint: "network-proxy-v1",
           configPatch: {
             "features.network_proxy.enabled": true,
-            default_permissions: "openclaw-network",
+            default_permissions: "eve-network",
             permissions: {},
           },
         },
@@ -123,8 +123,8 @@ describe("Codex app-server config", () => {
         },
       },
       env: {
-        OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
-        OPENCLAW_CODEX_APP_SERVER_SANDBOX: "read-only",
+        EVE_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
+        EVE_CODEX_APP_SERVER_SANDBOX: "read-only",
       },
       modelProvider: "openai",
     });
@@ -236,7 +236,7 @@ describe("Codex app-server config", () => {
       { filesystem: { ":project_roots": { ".": string } } }
     >;
 
-    expect(profileName).toMatch(/^openclaw-network-[a-f0-9]{16}$/u);
+    expect(profileName).toMatch(/^eve-network-[a-f0-9]{16}$/u);
     expect(runtime.networkProxy?.configPatch.default_permissions).toBe(profileName);
     expect(permissions[profileName ?? ""]?.filesystem[":project_roots"]["."]).toBe("read");
   });
@@ -371,8 +371,8 @@ describe("Codex app-server config", () => {
           connectionClass: "remote",
           remoteAppsSubstrate: "preconfigured",
           remoteWorkspace: {
-            localRoot: "/Users/kevinlin/code/openclaw",
-            remoteRoot: "/home/oai/openclaw-workspaces",
+            localRoot: "/Users/kevinlin/code/eve",
+            remoteRoot: "/home/oai/eve-workspaces",
           },
         },
       }),
@@ -381,8 +381,8 @@ describe("Codex app-server config", () => {
       readCodexPluginConfig({
         appServer: {
           remoteWorkspace: {
-            localRoot: "/Users/kevinlin/code/openclaw",
-            remoteRoot: "/home/oai/openclaw-workspaces",
+            localRoot: "/Users/kevinlin/code/eve",
+            remoteRoot: "/home/oai/eve-workspaces",
           },
         },
       }),
@@ -405,7 +405,7 @@ describe("Codex app-server config", () => {
           transport: "websocket",
           url: "wss://codex-app-server.example.internal/ws",
           authToken: "capability-token",
-          remoteWorkspaceRoot: " /home/oai/openclaw-workspaces ",
+          remoteWorkspaceRoot: " /home/oai/eve-workspaces ",
         },
       },
     });
@@ -413,7 +413,7 @@ describe("Codex app-server config", () => {
     expectFields(runtime, "runtime", {
       connectionClass: "remote",
       remoteAppsSubstrate: "preconfigured",
-      remoteWorkspaceRoot: "/home/oai/openclaw-workspaces",
+      remoteWorkspaceRoot: "/home/oai/eve-workspaces",
     });
   });
 
@@ -671,7 +671,7 @@ describe("Codex app-server config", () => {
       },
       {
         baseUrl: "https://api.openai.com/v1",
-        headers: { "x-openclaw-reviewer-proxy": "local" },
+        headers: { "x-eve-reviewer-proxy": "local" },
         models: [],
       },
       {
@@ -690,7 +690,7 @@ describe("Codex app-server config", () => {
             cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
             contextWindow: 128_000,
             maxTokens: 8_192,
-            headers: { "x-openclaw-reviewer-proxy": "local" },
+            headers: { "x-eve-reviewer-proxy": "local" },
           },
         ],
       },
@@ -1038,7 +1038,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     expectRuntimePolicy(
       resolveRuntimeForTest({
         pluginConfig: {},
-        env: { OPENCLAW_CODEX_APP_SERVER_MODE: "yolo" },
+        env: { EVE_CODEX_APP_SERVER_MODE: "yolo" },
         requirementsToml,
       }),
       {
@@ -1076,7 +1076,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   it("rejects the retired dynamic tool profile key", () => {
     expect(
       readCodexPluginConfig({
-        codexDynamicToolsProfile: "openclaw-compat",
+        codexDynamicToolsProfile: "eve-compat",
         codexDynamicToolsLoading: "direct",
       }),
     ).toEqual({});
@@ -1261,7 +1261,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     expectFields(
       resolveRuntimeForTest({
         pluginConfig: { appServer: { command: "/opt/codex/bin/codex" } },
-        env: { OPENCLAW_CODEX_APP_SERVER_BIN: "/usr/local/bin/codex" },
+        env: { EVE_CODEX_APP_SERVER_BIN: "/usr/local/bin/codex" },
       }).start,
       "configured start",
       {
@@ -1273,7 +1273,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     expectFields(
       resolveRuntimeForTest({
         pluginConfig: {},
-        env: { OPENCLAW_CODEX_APP_SERVER_BIN: "/usr/local/bin/codex" },
+        env: { EVE_CODEX_APP_SERVER_BIN: "/usr/local/bin/codex" },
       }).start,
       "environment start",
       {
@@ -1289,7 +1289,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         pluginConfig: {
           appServer: {
             command:
-              "node C:\\Users\\me\\.openclaw\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
+              "node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
           },
         },
       }),
@@ -1300,11 +1300,11 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       resolveRuntimeForTest({
         pluginConfig: {},
         env: {
-          OPENCLAW_CODEX_APP_SERVER_BIN:
-            "node C:\\Users\\me\\.openclaw\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
+          EVE_CODEX_APP_SERVER_BIN:
+            "node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
         },
       }),
-    ).toThrow("OPENCLAW_CODEX_APP_SERVER_BIN must be only the Codex app-server executable path");
+    ).toThrow("EVE_CODEX_APP_SERVER_BIN must be only the Codex app-server executable path");
   });
 
   it("preserves executable paths that contain spaces", () => {
@@ -1326,7 +1326,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
           },
         },
         env: {
-          OPENCLAW_CODEX_COMPUTER_USE_PLUGIN_NAME: "env-fallback-plugin",
+          EVE_CODEX_COMPUTER_USE_PLUGIN_NAME: "env-fallback-plugin",
         },
       }),
     ).toEqual({
@@ -1342,10 +1342,10 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       resolveCodexComputerUseConfig({
         pluginConfig: {},
         env: {
-          OPENCLAW_CODEX_COMPUTER_USE: "1",
-          OPENCLAW_CODEX_COMPUTER_USE_MARKETPLACE_SOURCE: "github:example/plugins",
-          OPENCLAW_CODEX_COMPUTER_USE_AUTO_INSTALL: "true",
-          OPENCLAW_CODEX_COMPUTER_USE_MARKETPLACE_DISCOVERY_TIMEOUT_MS: "30000",
+          EVE_CODEX_COMPUTER_USE: "1",
+          EVE_CODEX_COMPUTER_USE_MARKETPLACE_SOURCE: "github:example/plugins",
+          EVE_CODEX_COMPUTER_USE_AUTO_INSTALL: "true",
+          EVE_CODEX_COMPUTER_USE_MARKETPLACE_DISCOVERY_TIMEOUT_MS: "30000",
         },
       }),
       "computer use config",
@@ -1362,8 +1362,8 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         resolveCodexComputerUseConfig({
           pluginConfig: {},
           env: {
-            OPENCLAW_CODEX_COMPUTER_USE: "1",
-            OPENCLAW_CODEX_COMPUTER_USE_MARKETPLACE_DISCOVERY_TIMEOUT_MS: value,
+            EVE_CODEX_COMPUTER_USE: "1",
+            EVE_CODEX_COMPUTER_USE_MARKETPLACE_DISCOVERY_TIMEOUT_MS: value,
           },
         }),
         "computer use config",
@@ -1414,7 +1414,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
       modelProvider: "openai",
-      env: { OPENCLAW_CODEX_APP_SERVER_MODE: "guardian" },
+      env: { EVE_CODEX_APP_SERVER_MODE: "guardian" },
     });
 
     expectRuntimePolicy(runtime, {
@@ -1424,7 +1424,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     });
   });
 
-  it("maps normalized OpenClaw auto exec mode to guardian-reviewed local execution", () => {
+  it("maps normalized EVE auto exec mode to guardian-reviewed local execution", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
       execMode: "auto",
@@ -1448,8 +1448,8 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         },
       },
       env: {
-        OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
-        OPENCLAW_CODEX_APP_SERVER_SANDBOX: "danger-full-access",
+        EVE_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
+        EVE_CODEX_APP_SERVER_SANDBOX: "danger-full-access",
       },
       execMode: "auto",
       modelProvider: "openai",
@@ -1481,9 +1481,9 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       execMode: "auto",
       modelProvider: "openai",
       env: {
-        OPENCLAW_CODEX_APP_SERVER_MODE: "yolo",
-        OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
-        OPENCLAW_CODEX_APP_SERVER_SANDBOX: "read-only",
+        EVE_CODEX_APP_SERVER_MODE: "yolo",
+        EVE_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
+        EVE_CODEX_APP_SERVER_SANDBOX: "read-only",
       },
     });
 
@@ -1500,7 +1500,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it.each(["deny", "allowlist"] as const)(
-    "blocks Codex app-server local execution for normalized OpenClaw %s exec mode",
+    "blocks Codex app-server local execution for normalized EVE %s exec mode",
     (execMode) => {
       expect(() =>
         resolveRuntimeForTest({
@@ -1513,7 +1513,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     },
   );
 
-  it("maps normalized OpenClaw ask exec mode away from Codex yolo", () => {
+  it("maps normalized EVE ask exec mode away from Codex yolo", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
       execMode: "ask",
@@ -1539,7 +1539,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     const envRuntime = resolveRuntimeForTest({
       pluginConfig: {},
       execMode: "ask",
-      env: { OPENCLAW_CODEX_APP_SERVER_MODE: "guardian" },
+      env: { EVE_CODEX_APP_SERVER_MODE: "guardian" },
     });
 
     expectRuntimePolicy(configRuntime, {
@@ -1571,9 +1571,9 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       pluginConfig: {},
       execMode: "ask",
       env: {
-        OPENCLAW_CODEX_APP_SERVER_MODE: "yolo",
-        OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
-        OPENCLAW_CODEX_APP_SERVER_SANDBOX: "danger-full-access",
+        EVE_CODEX_APP_SERVER_MODE: "yolo",
+        EVE_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
+        EVE_CODEX_APP_SERVER_SANDBOX: "danger-full-access",
       },
     });
 
@@ -1606,9 +1606,9 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       pluginConfig: {},
       execMode: "ask",
       env: {
-        OPENCLAW_CODEX_APP_SERVER_MODE: "yolo",
-        OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
-        OPENCLAW_CODEX_APP_SERVER_SANDBOX: "read-only",
+        EVE_CODEX_APP_SERVER_MODE: "yolo",
+        EVE_CODEX_APP_SERVER_APPROVAL_POLICY: "never",
+        EVE_CODEX_APP_SERVER_SANDBOX: "read-only",
       },
     });
 
@@ -1624,7 +1624,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     });
   });
 
-  it("fails closed when normalized OpenClaw ask mode cannot use user approvals", () => {
+  it("fails closed when normalized EVE ask mode cannot use user approvals", () => {
     expect(() =>
       resolveRuntimeForTest({
         pluginConfig: {},
@@ -1660,7 +1660,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     { execMode: "ask", policies: ["on-failure"] },
     { execMode: "ask", policies: ["untrusted"] },
   ] as const)(
-    "fails closed when normalized OpenClaw $execMode mode can only use $policies approvals",
+    "fails closed when normalized EVE $execMode mode can only use $policies approvals",
     ({ execMode, policies }) => {
       expect(() =>
         resolveRuntimeForTest({
@@ -1674,7 +1674,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     },
   );
 
-  it("keeps normalized OpenClaw full exec mode on default Codex yolo", () => {
+  it("keeps normalized EVE full exec mode on default Codex yolo", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
       execMode: "full",
@@ -1687,7 +1687,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     });
   });
 
-  it("fails closed when normalized OpenClaw auto mode can only use on-failure approvals", () => {
+  it("fails closed when normalized EVE auto mode can only use on-failure approvals", () => {
     expect(() =>
       resolveRuntimeForTest({
         pluginConfig: {},
@@ -1698,7 +1698,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     ).toThrow("tools.exec.mode=auto requires Codex app-server prompting approvals");
   });
 
-  it("fails closed when normalized OpenClaw auto mode cannot force prompting over yolo", () => {
+  it("fails closed when normalized EVE auto mode cannot force prompting over yolo", () => {
     expect(() =>
       resolveRuntimeForTest({
         pluginConfig: {},
@@ -1709,7 +1709,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     ).toThrow("tools.exec.mode=auto requires Codex app-server prompting approvals");
   });
 
-  it("uses user approvals when normalized OpenClaw auto mode cannot use Codex auto-review", () => {
+  it("uses user approvals when normalized EVE auto mode cannot use Codex auto-review", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
       execMode: "auto",
@@ -1749,7 +1749,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     },
   );
 
-  it("keeps normalized OpenClaw auto mode when legacy app-server yolo was schema-defaulted", () => {
+  it("keeps normalized EVE auto mode when legacy app-server yolo was schema-defaulted", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {
         appServer: {
@@ -1782,7 +1782,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     });
   });
 
-  it("forces guarded policy fields for normalized OpenClaw auto mode", () => {
+  it("forces guarded policy fields for normalized EVE auto mode", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {
         appServer: {
@@ -1802,7 +1802,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     });
   });
 
-  it("resolves agent-scoped normalized OpenClaw exec mode for Codex app-server mapping", () => {
+  it("resolves agent-scoped normalized EVE exec mode for Codex app-server mapping", () => {
     const config = {
       tools: {
         exec: {
@@ -1823,13 +1823,13 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       },
     };
 
-    expect(resolveOpenClawExecModeFromConfig({ config, agentId: "codex-agent" })).toBe("auto");
-    expect(resolveOpenClawExecModeFromConfig({ config, agentId: "other-agent" })).toBe("ask");
+    expect(resolveEVEExecModeFromConfig({ config, agentId: "codex-agent" })).toBe("auto");
+    expect(resolveEVEExecModeFromConfig({ config, agentId: "other-agent" })).toBe("ask");
   });
 
-  it("keeps legacy exec security overrides ahead of normalized OpenClaw exec mode", () => {
+  it("keeps legacy exec security overrides ahead of normalized EVE exec mode", () => {
     expect(
-      resolveOpenClawExecModeFromConfig({
+      resolveEVEExecModeFromConfig({
         config: {
           tools: {
             exec: {
@@ -1865,9 +1865,9 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
           },
         },
       };
-      const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({ config });
+      const execPolicy = resolveEVEExecPolicyForCodexAppServer({ config });
 
-      expect(resolveOpenClawExecModeForCodexAppServer({ config })).toBe("ask");
+      expect(resolveEVEExecModeForCodexAppServer({ config })).toBe("ask");
       expectRuntimePolicy(
         resolveRuntimeForTest({
           pluginConfig: {
@@ -1898,9 +1898,9 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         },
       },
     };
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({ config });
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({ config });
 
-    expect(resolveOpenClawExecModeForCodexAppServer({ config })).toBe("full");
+    expect(resolveEVEExecModeForCodexAppServer({ config })).toBe("full");
     expectRuntimePolicy(resolveRuntimeForTest({ execPolicy }), {
       approvalPolicy: "never",
       sandbox: "danger-full-access",
@@ -1920,13 +1920,13 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
     expect(() =>
       resolveRuntimeForTest({
-        execPolicy: resolveOpenClawExecPolicyForCodexAppServer({ config }),
+        execPolicy: resolveEVEExecPolicyForCodexAppServer({ config }),
         requirementsToml: 'allowed_sandbox_modes = ["read-only", "workspace-write"]\n',
       }),
     ).toThrow("legacy full exec security with ask requires Codex app-server danger-full-access");
   });
 
-  it("clamps legacy full exec with ask when an OpenClaw sandbox is active", () => {
+  it("clamps legacy full exec with ask when an EVE sandbox is active", () => {
     const config = {
       tools: {
         exec: {
@@ -1938,8 +1938,8 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
     expectRuntimePolicy(
       resolveRuntimeForTest({
-        execPolicy: resolveOpenClawExecPolicyForCodexAppServer({ config }),
-        openClawSandboxActive: true,
+        execPolicy: resolveEVEExecPolicyForCodexAppServer({ config }),
+        eveSandboxActive: true,
         requirementsToml: 'allowed_sandbox_modes = ["read-only", "workspace-write"]\n',
       }),
       {
@@ -1951,7 +1951,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it("applies host exec approval security floors before starting Codex app-server", () => {
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({
       config: {
         tools: {
           exec: {
@@ -1984,7 +1984,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it("applies host exec approval ask floors before starting Codex app-server", () => {
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({
       config: {
         tools: {
           exec: {
@@ -2023,7 +2023,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it("preserves explicit read-only sandbox for host exec approval ask floors", () => {
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({
       config: {
         tools: {
           exec: {
@@ -2062,7 +2062,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it("applies agent-scoped exec approval security floors before starting Codex app-server", () => {
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({
       config: {
         tools: {
           exec: {
@@ -2100,7 +2100,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
   });
 
   it("applies agent-scoped exec approval ask floors before starting Codex app-server", () => {
-    const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+    const execPolicy = resolveEVEExecPolicyForCodexAppServer({
       config: {
         tools: {
           exec: {
@@ -2164,8 +2164,8 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       },
     };
 
-    expect(resolveOpenClawExecModeFromConfig({ config, agentId: "codex-agent" })).toBe("allowlist");
-    const execMode = resolveOpenClawExecModeForCodexAppServer({
+    expect(resolveEVEExecModeFromConfig({ config, agentId: "codex-agent" })).toBe("allowlist");
+    const execMode = resolveEVEExecModeForCodexAppServer({
       config,
       agentId: "main",
       execOverrides: {
@@ -2190,7 +2190,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     };
 
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config,
         agentId: "main",
         execOverrides: {
@@ -2199,7 +2199,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       }),
     ).toBe("full");
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config,
         agentId: "main",
         execOverrides: {
@@ -2208,7 +2208,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       }),
     ).toBe("ask");
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config,
         agentId: "main",
         execOverrides: {
@@ -2221,7 +2221,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
   it("preserves legacy full exec security before applying current ask overrides", () => {
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config: {
           tools: {
             exec: {
@@ -2233,7 +2233,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       }),
     ).toBe("full");
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config: {
           tools: {
             exec: {
@@ -2248,7 +2248,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       }),
     ).toBe("full");
     expect(
-      resolveOpenClawExecModeForCodexAppServer({
+      resolveEVEExecModeForCodexAppServer({
         config: {
           tools: {
             exec: {
@@ -2281,10 +2281,10 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
     ).toBe("guardian_subagent");
   });
 
-  it("ignores removed OPENCLAW_CODEX_APP_SERVER_GUARDIAN fallback", () => {
+  it("ignores removed EVE_CODEX_APP_SERVER_GUARDIAN fallback", () => {
     const runtime = resolveRuntimeForTest({
       pluginConfig: {},
-      env: { OPENCLAW_CODEX_APP_SERVER_GUARDIAN: "1" },
+      env: { EVE_CODEX_APP_SERVER_GUARDIAN: "1" },
     });
 
     expectRuntimePolicy(runtime, {
@@ -2453,7 +2453,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
   it("keeps runtime config keys aligned with manifest schema and UI hints", async () => {
     const manifest = JSON.parse(
-      await fs.readFile(new URL("../../openclaw.plugin.json", import.meta.url), "utf8"),
+      await fs.readFile(new URL("../../eve.plugin.json", import.meta.url), "utf8"),
     ) as {
       configSchema: {
         properties: {
@@ -2512,7 +2512,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
   it("does not schema-default mode-derived policy fields", async () => {
     const manifest = JSON.parse(
-      await fs.readFile(new URL("../../openclaw.plugin.json", import.meta.url), "utf8"),
+      await fs.readFile(new URL("../../eve.plugin.json", import.meta.url), "utf8"),
     ) as {
       configSchema: {
         properties: {

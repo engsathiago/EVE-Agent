@@ -1,8 +1,8 @@
 /**
  * Truncates oversized tool-result content in messages and transcripts.
  */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import type { TextContent } from "../../llm/types.js";
 import { emitSessionTranscriptUpdate } from "../../sessions/transcript-events.js";
@@ -240,7 +240,7 @@ export function calculateMaxToolResultCharsWithCap(
 
 export function resolveLiveToolResultMaxChars(params: {
   contextWindowTokens: number;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId?: string | null;
 }): number {
   const configuredCap = resolveAgentContextLimits(params.cfg, params.agentId)?.toolResultMaxChars;

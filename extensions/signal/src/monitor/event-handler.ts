@@ -1,6 +1,6 @@
 // Signal plugin module implements event handler behavior.
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
-import { logTypingFailure } from "openclaw/plugin-sdk/channel-feedback";
+import { resolveHumanDelayConfig } from "eve-agent/plugin-sdk/agent-runtime";
+import { logTypingFailure } from "eve-agent/plugin-sdk/channel-feedback";
 import {
   buildMentionRegexes,
   buildChannelInboundEventContext,
@@ -12,33 +12,33 @@ import {
   resolveEnvelopeFormatOptions,
   runChannelInboundEvent,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { logInboundDrop } from "openclaw/plugin-sdk/channel-inbound";
-import { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { logInboundDrop } from "eve-agent/plugin-sdk/channel-inbound";
+import { createChannelMessageReplyPipeline } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/channel-policy";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth-native";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
+} from "eve-agent/plugin-sdk/channel-policy";
+import { hasControlCommand } from "eve-agent/plugin-sdk/command-auth-native";
+import { recordInboundSession } from "eve-agent/plugin-sdk/conversation-runtime";
 import {
   createInternalHookEvent,
   fireAndForgetHook,
   toInternalMessageReceivedContext,
   triggerInternalHook,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { kindFromMime } from "openclaw/plugin-sdk/media-runtime";
-import { createChannelHistoryWindow } from "openclaw/plugin-sdk/reply-history";
-import { dispatchInboundMessage } from "openclaw/plugin-sdk/reply-runtime";
-import { createReplyDispatcherWithTyping } from "openclaw/plugin-sdk/reply-runtime";
-import { settleReplyDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute, resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { danger, logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { readSessionUpdatedAt, resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/system-event-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/hook-runtime";
+import { kindFromMime } from "eve-agent/plugin-sdk/media-runtime";
+import { createChannelHistoryWindow } from "eve-agent/plugin-sdk/reply-history";
+import { dispatchInboundMessage } from "eve-agent/plugin-sdk/reply-runtime";
+import { createReplyDispatcherWithTyping } from "eve-agent/plugin-sdk/reply-runtime";
+import { settleReplyDispatcher } from "eve-agent/plugin-sdk/reply-runtime";
+import { resolveAgentRoute, resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
+import { danger, logVerbose, shouldLogVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
+import { readSessionUpdatedAt, resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { enqueueSystemEvent } from "eve-agent/plugin-sdk/system-event-runtime";
+import { normalizeE164 } from "eve-agent/plugin-sdk/text-utility-runtime";
 import {
   maybeResolveSignalApprovalReaction,
   resolveSignalApprovalConversationKey,

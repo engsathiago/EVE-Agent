@@ -7,7 +7,7 @@ import type { MigrationPlan, MigrationProviderPlugin } from "../../plugins/types
 import { createNonExitingRuntime } from "../../runtime.js";
 import { runMigrationApply } from "./apply.js";
 
-const stateDir = mkdtempSync(path.join(tmpdir(), "openclaw-migrate-apply-"));
+const stateDir = mkdtempSync(path.join(tmpdir(), "eve-migrate-apply-"));
 
 vi.mock("../../config/paths.js", async (importActual) => {
   const actual = await importActual<typeof import("../../config/paths.js")>();

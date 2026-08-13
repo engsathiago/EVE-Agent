@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       package_spec:
-        description: Published OpenClaw package spec to test when no artifact is supplied
+        description: Published EVE package spec to test when no artifact is supplied
         required: true
-        default: openclaw@beta
+        default: eve@beta
         type: string
       package_label:
         description: Optional display label for an artifact-backed package candidate
@@ -53,7 +53,7 @@ on:
         default: false
         type: boolean
       package_spec:
-        description: Published OpenClaw package spec to test when no artifact is supplied
+        description: Published EVE package spec to test when no artifact is supplied
         required: true
         type: string
       package_artifact_name:
@@ -89,9 +89,9 @@ on:
     secrets:
       OPENAI_API_KEY:
         required: false
-      OPENCLAW_QA_CONVEX_SITE_URL:
+      EVE_QA_CONVEX_SITE_URL:
         required: false
-      OPENCLAW_QA_CONVEX_SECRET_CI:
+      EVE_QA_CONVEX_SECRET_CI:
         required: false
 
 permissions:
@@ -137,7 +137,7 @@ jobs:
           file: ./scripts/e2e/Dockerfile
           target: build
           platforms: linux/amd64
-          tags: openclaw-docker-e2e:local
+          tags: eve-docker-e2e:local
           load: true
           push: false
           provenance: false
@@ -154,15 +154,15 @@ jobs:
           PACKAGE_ARTIFACT_NAME: ${{ inputs.package_artifact_name || '' }}
           PROVIDER_MODE: ${{ inputs.provider_mode }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENCLAW_QA_CONVEX_SITE_URL: ${{ secrets.OPENCLAW_QA_CONVEX_SITE_URL }}
-          OPENCLAW_QA_CONVEX_SECRET_CI: ${{ secrets.OPENCLAW_QA_CONVEX_SECRET_CI }}
+          EVE_QA_CONVEX_SITE_URL: ${{ secrets.EVE_QA_CONVEX_SITE_URL }}
+          EVE_QA_CONVEX_SECRET_CI: ${{ secrets.EVE_QA_CONVEX_SECRET_CI }}
         shell: bash
         run: |
           set -euo pipefail
 
           if [[ -z "${PACKAGE_ARTIFACT_NAME// }" ]]; then
-            if [[ ! "${PACKAGE_SPEC}" =~ ^openclaw@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
-              echo "package_spec must be openclaw@alpha, openclaw@beta, openclaw@latest, or an exact OpenClaw release version; got: ${PACKAGE_SPEC}" >&2
+            if [[ ! "${PACKAGE_SPEC}" =~ ^eve@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
+              echo "package_spec must be eve@alpha, eve@beta, eve@latest, or an exact EVE release version; got: ${PACKAGE_SPEC}" >&2
               exit 1
             fi
           fi
@@ -182,8 +182,8 @@ jobs:
             fi
           }
 
-          require_var OPENCLAW_QA_CONVEX_SITE_URL
-          require_var OPENCLAW_QA_CONVEX_SECRET_CI
+          require_var EVE_QA_CONVEX_SITE_URL
+          require_var EVE_QA_CONVEX_SECRET_CI
           if [[ "${PROVIDER_MODE}" == "live-frontier" ]]; then
             require_var OPENAI_API_KEY
           fi
@@ -209,17 +209,17 @@ jobs:
         shell: bash
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENCLAW_SKIP_DOCKER_BUILD: "1"
-          OPENCLAW_DOCKER_E2E_IMAGE: openclaw-docker-e2e:local
-          OPENCLAW_NPM_TELEGRAM_PACKAGE_SPEC: ${{ inputs.package_spec }}
-          OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL: ${{ inputs.package_label }}
-          OPENCLAW_NPM_TELEGRAM_PROVIDER_MODE: ${{ inputs.provider_mode }}
-          OPENCLAW_NPM_TELEGRAM_CREDENTIAL_SOURCE: convex
-          OPENCLAW_NPM_TELEGRAM_CREDENTIAL_ROLE: ci
-          OPENCLAW_QA_CONVEX_SITE_URL: ${{ secrets.OPENCLAW_QA_CONVEX_SITE_URL }}
-          OPENCLAW_QA_CONVEX_SECRET_CI: ${{ secrets.OPENCLAW_QA_CONVEX_SECRET_CI }}
-          OPENCLAW_QA_CREDENTIAL_ACQUIRE_TIMEOUT_MS: "1800000"
-          OPENCLAW_QA_REDACT_PUBLIC_METADATA: "1"
+          EVE_SKIP_DOCKER_BUILD: "1"
+          EVE_DOCKER_E2E_IMAGE: eve-docker-e2e:local
+          EVE_NPM_TELEGRAM_PACKAGE_SPEC: ${{ inputs.package_spec }}
+          EVE_NPM_TELEGRAM_PACKAGE_LABEL: ${{ inputs.package_label }}
+          EVE_NPM_TELEGRAM_PROVIDER_MODE: ${{ inputs.provider_mode }}
+          EVE_NPM_TELEGRAM_CREDENTIAL_SOURCE: convex
+          EVE_NPM_TELEGRAM_CREDENTIAL_ROLE: ci
+          EVE_QA_CONVEX_SITE_URL: ${{ secrets.EVE_QA_CONVEX_SITE_URL }}
+          EVE_QA_CONVEX_SECRET_CI: ${{ secrets.EVE_QA_CONVEX_SECRET_CI }}
+          EVE_QA_CREDENTIAL_ACQUIRE_TIMEOUT_MS: "1800000"
+          EVE_QA_REDACT_PUBLIC_METADATA: "1"
           INPUT_SCENARIO: ${{ inputs.scenario }}
           PACKAGE_ARTIFACT_NAME: ${{ inputs.package_artifact_name || '' }}
         run: |
@@ -227,7 +227,7 @@ jobs:
 
           output_dir=".artifacts/qa-e2e/npm-telegram-beta-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           echo "output_dir=${output_dir}" >> "$GITHUB_OUTPUT"
-          export OPENCLAW_NPM_TELEGRAM_OUTPUT_DIR="${output_dir}"
+          export EVE_NPM_TELEGRAM_OUTPUT_DIR="${output_dir}"
 
           append_telegram_summary() {
             local status=$?
@@ -236,8 +236,8 @@ jobs:
               {
                 echo "## Package Telegram E2E"
                 echo
-                echo "- Package: ${OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL:-${OPENCLAW_NPM_TELEGRAM_PACKAGE_SPEC}}"
-                echo "- Provider mode: ${OPENCLAW_NPM_TELEGRAM_PROVIDER_MODE}"
+                echo "- Package: ${EVE_NPM_TELEGRAM_PACKAGE_LABEL:-${EVE_NPM_TELEGRAM_PACKAGE_SPEC}}"
+                echo "- Provider mode: ${EVE_NPM_TELEGRAM_PROVIDER_MODE}"
                 echo
                 cat "${report}"
               } >> "${GITHUB_STEP_SUMMARY}"
@@ -252,16 +252,16 @@ jobs:
               echo "package artifact ${PACKAGE_ARTIFACT_NAME} must contain exactly one .tgz; found ${#package_tgzs[@]}" >&2
               exit 1
             fi
-            export OPENCLAW_NPM_TELEGRAM_PACKAGE_TGZ="${package_tgzs[0]}"
-            if [[ -z "${OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL// }" ]]; then
-              export OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL="$(basename "${package_tgzs[0]}")"
+            export EVE_NPM_TELEGRAM_PACKAGE_TGZ="${package_tgzs[0]}"
+            if [[ -z "${EVE_NPM_TELEGRAM_PACKAGE_LABEL// }" ]]; then
+              export EVE_NPM_TELEGRAM_PACKAGE_LABEL="$(basename "${package_tgzs[0]}")"
             fi
-          elif [[ -z "${OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL// }" ]]; then
-            export OPENCLAW_NPM_TELEGRAM_PACKAGE_LABEL="${OPENCLAW_NPM_TELEGRAM_PACKAGE_SPEC}"
+          elif [[ -z "${EVE_NPM_TELEGRAM_PACKAGE_LABEL// }" ]]; then
+            export EVE_NPM_TELEGRAM_PACKAGE_LABEL="${EVE_NPM_TELEGRAM_PACKAGE_SPEC}"
           fi
 
           if [[ -n "${INPUT_SCENARIO// }" ]]; then
-            export OPENCLAW_NPM_TELEGRAM_SCENARIOS="${INPUT_SCENARIO}"
+            export EVE_NPM_TELEGRAM_SCENARIOS="${INPUT_SCENARIO}"
           fi
 
           pnpm test:docker:npm-telegram-live

@@ -4,4 +4,4 @@ export {
   dispatchReplyWithBufferedBlockDispatcher,
   dispatchInboundMessage,
   settleReplyDispatcher,
-} from "openclaw/plugin-sdk/reply-runtime";
+} from "eve-agent/plugin-sdk/reply-runtime";

@@ -1,5 +1,5 @@
 // Imessage plugin module implements private api status behavior.
-import { asDateTimestampMs } from "openclaw/plugin-sdk/number-runtime";
+import { asDateTimestampMs } from "eve-agent/plugin-sdk/number-runtime";
 
 export type IMessagePrivateApiStatus = {
   available: boolean;

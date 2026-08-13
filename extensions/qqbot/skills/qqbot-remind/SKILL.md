@@ -1,7 +1,7 @@
 ---
 name: qqbot-remind
 description: QQBot scheduled reminders. Create, list, and cancel one-time or recurring reminders when a QQ conversation involves reminders, alarms, or scheduled tasks.
-metadata: { "openclaw": { "emoji": "⏰", "requires": { "config": ["channels.qqbot"] } } }
+metadata: { "eve": { "emoji": "⏰", "requires": { "config": ["channels.qqbot"] } } }
 ---
 
 # QQ Bot 定时提醒

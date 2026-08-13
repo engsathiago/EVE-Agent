@@ -1,5 +1,5 @@
 import Darwin
-import OpenClawKit
+import EVEKit
 import SwiftUI
 import UserNotifications
 
@@ -110,7 +110,7 @@ enum SettingsNotificationStatus: Equatable {
     }
 
     var color: Color {
-        self == .allowed ? OpenClawBrand.ok : .secondary
+        self == .allowed ? EVEBrand.ok : .secondary
     }
 
     var shouldOpenNotificationSettings: Bool {
@@ -219,18 +219,18 @@ extension SettingsProTab {
 private struct SettingsGatewayStatesPreview: View {
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     self.stateSection("Connected") {
                         self.gatewayStatusCard(
                             title: "Gateway online",
-                            detail: "Connected to openclaw-gateway.tailnet.ts.net.",
+                            detail: "Connected to eve-gateway.tailnet.ts.net.",
                             value: "online",
-                            color: OpenClawBrand.ok)
+                            color: EVEBrand.ok)
                         self.gatewayFactsCard(
                             address: "100.88.41.20:18789",
-                            server: "openclaw-gateway",
+                            server: "eve-gateway",
                             discovered: "3",
                             agent: "Aiden")
                     }
@@ -240,7 +240,7 @@ private struct SettingsGatewayStatesPreview: View {
                             title: "Checking gateway",
                             detail: "Refreshing connection, discovery, and device trust state.",
                             value: "loading",
-                            color: OpenClawBrand.accent)
+                            color: EVEBrand.accent)
                         self.gatewayActionsCard(isBusy: true)
                     }
 
@@ -263,10 +263,10 @@ private struct SettingsGatewayStatesPreview: View {
                             title: "Tailscale warning",
                             detail: "Tailscale is off on this device. Turn it on, then try again.",
                             value: "network",
-                            color: OpenClawBrand.warn)
+                            color: EVEBrand.warn)
                     }
                 }
-                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                .padding(.horizontal, EVEProMetric.pagePadding)
                 .padding(.vertical, 18)
             }
         }
@@ -376,7 +376,7 @@ private struct SettingsGatewayStatesPreview: View {
         kind: .pairingRequired,
         owner: .gateway,
         title: "Pairing required",
-        message: "Run /pair approve in your OpenClaw chat before this iPad can connect.",
+        message: "Run /pair approve in your EVE chat before this iPad can connect.",
         actionCommand: "/pair approve req-ipad-preview",
         requestId: "req-ipad-preview",
         retryable: false,

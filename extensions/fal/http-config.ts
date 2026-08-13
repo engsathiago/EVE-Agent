@@ -1,21 +1,21 @@
 // Fal helper module supports http config behavior.
-import type { AuthProfileStore, OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
+import type { AuthProfileStore, EVEConfig } from "eve-agent/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "eve-agent/plugin-sdk/provider-auth-runtime";
 import {
   resolveProviderHttpRequestConfig,
   type ProviderRequestCapability,
-} from "openclaw/plugin-sdk/provider-http";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-http";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 const DEFAULT_FAL_BASE_URL = "https://fal.run";
 
 type FalAuthenticatedRequest = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   authStore?: AuthProfileStore;
 };
 
-function resolveFalConfiguredBaseUrl(cfg?: OpenClawConfig): string | undefined {
+function resolveFalConfiguredBaseUrl(cfg?: EVEConfig): string | undefined {
   return normalizeOptionalString(cfg?.models?.providers?.fal?.baseUrl);
 }
 

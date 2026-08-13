@@ -1,5 +1,5 @@
 /**
- * OpenClaw-owned agent runtime facade.
+ * EVE-owned agent runtime facade.
  *
  * Wires agent-core to the plugin SDK LLM runtime and re-exports reusable runtime helpers.
  */
@@ -11,18 +11,18 @@ import type { AgentCoreRuntimeDeps } from "../../../packages/agent-core/src/runt
 import type { CompleteSimpleFn, StreamFn } from "../../../packages/llm-core/src/index.js";
 import { completeSimple, streamSimple } from "../../plugin-sdk/llm.js";
 
-export const openClawAgentCoreRuntime = {
+export const eveAgentCoreRuntime = {
   completeSimple: completeSimple as unknown as CompleteSimpleFn,
   streamSimple: streamSimple as unknown as StreamFn,
 } satisfies AgentCoreRuntimeDeps;
 
 export class Agent extends CoreAgent {
   constructor(options: CoreAgentOptions = {}) {
-    super({ runtime: openClawAgentCoreRuntime, ...options });
+    super({ runtime: eveAgentCoreRuntime, ...options });
   }
 }
 
-// OpenClaw-owned reusable agent core
+// EVE-owned reusable agent core
 export * from "../../../packages/agent-core/src/index.js";
 // Proxy utilities
 export * from "./proxy.js";

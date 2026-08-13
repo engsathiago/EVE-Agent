@@ -1,11 +1,11 @@
 // Microsoft Foundry setup module handles plugin onboarding behavior.
-import type { ProviderAuthContext } from "openclaw/plugin-sdk/core";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { ProviderAuthContext } from "eve-agent/plugin-sdk/core";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   normalizeOptionalString,
   normalizeStringifiedOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   azLoginDeviceCode,
   azLoginDeviceCodeWithOptions,

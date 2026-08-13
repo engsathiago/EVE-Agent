@@ -1,6 +1,6 @@
 // Authorizes chat approval commands against channel approval policy.
 import { getChannelPlugin, resolveChannelApprovalCapability } from "../channels/plugins/index.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isImplicitSameChatApprovalAuthorization } from "../plugin-sdk/approval-auth-helpers.js";
 import { normalizeMessageChannel } from "../utils/message-channel.js";
 
@@ -12,7 +12,7 @@ type ApprovalCommandAuthorization = {
 
 /** Resolves whether a chat `/approve` command is authorized by channel-specific approval policy. */
 export function resolveApprovalCommandAuthorization(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string | null;
   accountId?: string | null;
   senderId?: string | null;

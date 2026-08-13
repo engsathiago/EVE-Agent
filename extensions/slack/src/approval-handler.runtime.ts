@@ -12,13 +12,13 @@ import type {
   PluginApprovalPendingView,
   PluginApprovalResolvedView,
   ResolvedApprovalView,
-} from "openclaw/plugin-sdk/approval-handler-runtime";
-import { createChannelApprovalNativeRuntimeAdapter } from "openclaw/plugin-sdk/approval-handler-runtime";
-import { buildChannelApprovalNativeTargetKey } from "openclaw/plugin-sdk/approval-native-runtime";
-import { buildApprovalPresentationFromActionDescriptors } from "openclaw/plugin-sdk/approval-reply-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { logError } from "openclaw/plugin-sdk/logging-core";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { createChannelApprovalNativeRuntimeAdapter } from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { buildChannelApprovalNativeTargetKey } from "eve-agent/plugin-sdk/approval-native-runtime";
+import { buildApprovalPresentationFromActionDescriptors } from "eve-agent/plugin-sdk/approval-reply-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { logError } from "eve-agent/plugin-sdk/logging-core";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   isSlackAnyNativeApprovalClientEnabled,
   resolveSlackApprovalKind,
@@ -52,7 +52,7 @@ const SLACK_CHAT_UPDATE_TEXT_LIMIT = 4000;
 const SLACK_TEXT_OBJECT_MAX = 3000;
 
 type SlackExecApprovalConfig = NonNullable<
-  NonNullable<NonNullable<OpenClawConfig["channels"]>["slack"]>["execApprovals"]
+  NonNullable<NonNullable<EVEConfig["channels"]>["slack"]>["execApprovals"]
 >;
 
 export type SlackApprovalHandlerContext = {

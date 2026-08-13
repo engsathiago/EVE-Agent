@@ -8,14 +8,14 @@ title: "API usage and costs"
 ---
 
 This doc lists **features that can invoke API keys** and where their costs show up. It focuses on
-OpenClaw features that can generate provider usage or paid API calls.
+EVE features that can generate provider usage or paid API calls.
 
 ## Where costs show up (chat + CLI)
 
 **Per-session cost snapshot**
 
 - `/status` shows the current session model, context usage, and last response tokens.
-- If OpenClaw has usage metadata and local pricing for the active model,
+- If EVE has usage metadata and local pricing for the active model,
   `/status` also shows **estimated cost** for the last reply. This can include
   explicitly priced non-API-key providers such as Bedrock `aws-sdk` models.
 - If live session metadata is sparse, `/status` can recover token/cache
@@ -35,33 +35,33 @@ OpenClaw features that can generate provider usage or paid API calls.
   both read usage from `stats`, normalize `stats.cached` into `cacheRead`, and
   derive input tokens from `stats.input_tokens - stats.cached` when needed.
 
-Anthropic note: Anthropic staff told us OpenClaw-style Claude CLI usage is
-allowed again, so OpenClaw treats Claude CLI reuse and `claude -p` usage as
+Anthropic note: Anthropic staff told us EVE-style Claude CLI usage is
+allowed again, so EVE treats Claude CLI reuse and `claude -p` usage as
 sanctioned for this integration unless Anthropic publishes a new policy.
-Anthropic still does not expose a per-message dollar estimate that OpenClaw can
+Anthropic still does not expose a per-message dollar estimate that EVE can
 show in `/usage full`.
 
 **CLI usage windows (provider quotas)**
 
-- `openclaw status --usage` and `openclaw channels list` show provider **usage windows**
+- `eve status --usage` and `eve channels list` show provider **usage windows**
   (quota snapshots, not per-message costs).
 - Human output is normalized to `X% left` across providers.
 - Current usage-window providers: Anthropic, GitHub Copilot, Gemini CLI,
   OpenAI Codex, MiniMax, Xiaomi, and z.ai.
 - MiniMax note: its raw `usage_percent` / `usagePercent` fields mean remaining
-  quota, so OpenClaw inverts them before display. Count-based fields still win
-  when present. If the provider returns `model_remains`, OpenClaw prefers the
+  quota, so EVE inverts them before display. Count-based fields still win
+  when present. If the provider returns `model_remains`, EVE prefers the
   chat-model entry, derives the window label from timestamps when needed, and
   includes the model name in the plan label.
 - Usage auth for those quota windows comes from provider-specific hooks when
-  available; otherwise OpenClaw falls back to matching OAuth/API-key
+  available; otherwise EVE falls back to matching OAuth/API-key
   credentials from auth profiles, env, or config.
 
 See [Token use & costs](/reference/token-use) for details and examples.
 
 ## How keys are discovered
 
-OpenClaw can pick up credentials from:
+EVE can pick up credentials from:
 
 - **Auth profiles** (per-agent, stored in `auth-profiles.json`).
 - **Environment variables** (e.g. `OPENAI_API_KEY`, `BRAVE_API_KEY`, `FIRECRAWL_API_KEY`).
@@ -78,9 +78,9 @@ Every reply or tool call uses the **current model provider** (OpenAI, Anthropic,
 primary source of usage and cost.
 
 This also includes subscription-style hosted providers that still bill outside
-OpenClaw's local UI, such as **OpenAI Codex**, **Alibaba Cloud Model Studio
+EVE's local UI, such as **OpenAI Codex**, **Alibaba Cloud Model Studio
 Coding Plan**, **MiniMax Coding Plan**, **Z.AI / GLM Coding Plan**, and
-Anthropic's OpenClaw Claude-login path with **Extra Usage** enabled.
+Anthropic's EVE Claude-login path with **Extra Usage** enabled.
 
 See [Models](/providers/models) for pricing config and [Token use & costs](/reference/token-use) for display.
 
@@ -168,8 +168,8 @@ See [Web tools](/tools/web).
 Some status commands call **provider usage endpoints** to display quota windows or auth health.
 These are typically low-volume calls but still hit provider APIs:
 
-- `openclaw status --usage`
-- `openclaw models status --json`
+- `eve status --usage`
+- `eve models status --json`
 
 See [Models CLI](/cli/models).
 
@@ -182,7 +182,7 @@ See [Session management + compaction](/reference/session-management-compaction).
 
 ### 8) Model scan / probe
 
-`openclaw models scan` can probe OpenRouter models and uses `OPENROUTER_API_KEY` when
+`eve models scan` can probe OpenRouter models and uses `OPENROUTER_API_KEY` when
 probing is enabled.
 
 See [Models CLI](/cli/models).

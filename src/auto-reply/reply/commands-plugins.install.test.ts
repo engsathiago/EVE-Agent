@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { withTempHome } from "../../config/home-env.test-harness.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { expectObjectFields, mockFirstObjectArg } from "../../test-utils/mock-call-assertions.js";
 import { createCommandWorkspaceHarness } from "./commands-filesystem.test-support.js";
 import { handlePluginsCommand } from "./commands-plugins.js";
@@ -59,13 +59,13 @@ vi.mock("../../cli/plugins-install-persist.js", async (importOriginal) => ({
   persistPluginInstall: persistPluginInstallMock,
 }));
 
-const workspaceHarness = createCommandWorkspaceHarness("openclaw-command-plugins-install-");
+const workspaceHarness = createCommandWorkspaceHarness("eve-command-plugins-install-");
 
 function buildPluginsParams(
   commandBodyNormalized: string,
   workspaceDir: string,
   options: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     gatewayClientScopes?: string[];
     omitGatewayClientScopes?: boolean;
     senderIsOwner?: boolean;
@@ -98,8 +98,8 @@ function expectPersistedInstall(pluginId: string, expectedInstall: Record<string
   expectObjectFields(persisted.snapshot, {
     writeOptions: expect.objectContaining({
       assertConfigPathForWrite: expect.any(Function),
-      expectedConfigPath: expect.stringContaining("openclaw.json"),
-      ownedConfigPathForWrite: expect.stringContaining("openclaw.json"),
+      expectedConfigPath: expect.stringContaining("eve.json"),
+      ownedConfigPathForWrite: expect.stringContaining("eve.json"),
     }),
   });
   expect(writeOptions).not.toHaveProperty("basePluginMetadataSnapshot");
@@ -117,7 +117,7 @@ describe("handleCommands /plugins install", () => {
   });
 
   it("passes the active config to npm install policy preflight", async () => {
-    const policyConfig: OpenClawConfig = {
+    const policyConfig: EVEConfig = {
       commands: {
         text: true,
         plugins: true,
@@ -151,9 +151,9 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async (home) => {
+    await withTempHome("eve-command-plugins-home-", async (home) => {
       await fs.writeFile(
-        path.join(home, ".openclaw", "openclaw.json"),
+        path.join(home, ".eve", "eve.json"),
         `${JSON.stringify(policyConfig, null, 2)}\n`,
       );
       const workspaceDir = await workspaceHarness.createWorkspace();
@@ -192,7 +192,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "path-install-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -214,7 +214,7 @@ describe("handleCommands /plugins install", () => {
   });
 
   it("blocks channel-authorized non-owner plugin installs before installer side effects", async () => {
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "channel-installed-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -249,7 +249,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "gateway-admin-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -280,11 +280,11 @@ describe("handleCommands /plugins install", () => {
       targetDir: "/tmp/clawhub-demo",
       version: "1.2.3",
       extensions: ["index.js"],
-      packageName: "@openclaw/clawhub-demo",
+      packageName: "@eve/clawhub-demo",
       clawhub: {
         source: "clawhub",
         clawhubUrl: "https://clawhub.ai",
-        clawhubPackage: "@openclaw/clawhub-demo",
+        clawhubPackage: "@eve/clawhub-demo",
         clawhubFamily: "code-plugin",
         clawhubChannel: "official",
         version: "1.2.3",
@@ -294,10 +294,10 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install clawhub:@openclaw/clawhub-demo@1.2.3",
+        "/plugins install clawhub:@eve/clawhub-demo@1.2.3",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -306,25 +306,25 @@ describe("handleCommands /plugins install", () => {
       }
       expect(result.reply?.text).toContain('Installed plugin "clawhub-demo"');
       expect(mockFirstObjectArg(installPluginFromClawHubMock).spec).toBe(
-        "clawhub:@openclaw/clawhub-demo@1.2.3",
+        "clawhub:@eve/clawhub-demo@1.2.3",
       );
       expectPersistedInstall("clawhub-demo", {
         source: "clawhub",
-        spec: "clawhub:@openclaw/clawhub-demo@1.2.3",
+        spec: "clawhub:@eve/clawhub-demo@1.2.3",
         installPath: "/tmp/clawhub-demo",
         version: "1.2.3",
         integrity: "sha512-demo",
-        clawhubPackage: "@openclaw/clawhub-demo",
+        clawhubPackage: "@eve/clawhub-demo",
         clawhubChannel: "official",
       });
     });
   });
 
   it("refuses plugin installs in Nix mode before package installer side effects", async () => {
-    const previousNixMode = process.env.OPENCLAW_NIX_MODE;
-    process.env.OPENCLAW_NIX_MODE = "1";
+    const previousNixMode = process.env.EVE_NIX_MODE;
+    process.env.EVE_NIX_MODE = "1";
     try {
-      await withTempHome("openclaw-command-plugins-home-", async () => {
+      await withTempHome("eve-command-plugins-home-", async () => {
         const workspaceDir = await workspaceHarness.createWorkspace();
         const params = buildPluginsParams("/plugins install @acme/demo", workspaceDir);
         const result = await handlePluginsCommand(params, true);
@@ -332,8 +332,8 @@ describe("handleCommands /plugins install", () => {
           throw new Error("expected plugin install result");
         }
 
-        expect(result.reply?.text).toContain("OPENCLAW_NIX_MODE=1");
-        expect(result.reply?.text).toContain("nix-openclaw#quick-start");
+        expect(result.reply?.text).toContain("EVE_NIX_MODE=1");
+        expect(result.reply?.text).toContain("nix-eve#quick-start");
         expect(installPluginFromNpmSpecMock).not.toHaveBeenCalled();
         expect(installPluginFromPathMock).not.toHaveBeenCalled();
         expect(installPluginFromClawHubMock).not.toHaveBeenCalled();
@@ -342,19 +342,19 @@ describe("handleCommands /plugins install", () => {
       });
     } finally {
       if (previousNixMode === undefined) {
-        delete process.env.OPENCLAW_NIX_MODE;
+        delete process.env.EVE_NIX_MODE;
       } else {
-        process.env.OPENCLAW_NIX_MODE = previousNixMode;
+        process.env.EVE_NIX_MODE = previousNixMode;
       }
     }
   });
 
   it("refuses installs through a root include before package installer side effects", async () => {
-    await withTempHome("openclaw-command-plugins-home-", async (home) => {
-      const sharedConfigPath = path.join(home, ".openclaw", "shared.json5");
+    await withTempHome("eve-command-plugins-home-", async (home) => {
+      const sharedConfigPath = path.join(home, ".eve", "shared.json5");
       await fs.writeFile(sharedConfigPath, `${JSON.stringify({ plugins: {} }, null, 2)}\n`);
       await fs.writeFile(
-        path.join(home, ".openclaw", "openclaw.json"),
+        path.join(home, ".eve", "eve.json"),
         `${JSON.stringify({ $include: "./shared.json5" }, null, 2)}\n`,
       );
       const workspaceDir = await workspaceHarness.createWorkspace();
@@ -390,7 +390,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
         "/plugins install git:github.com/acme/git-demo@v1.2.3",
@@ -423,11 +423,11 @@ describe("handleCommands /plugins install", () => {
       targetDir: "/tmp/alias-demo",
       version: "1.0.0",
       extensions: ["index.js"],
-      packageName: "@openclaw/alias-demo",
+      packageName: "@eve/alias-demo",
       clawhub: {
         source: "clawhub",
         clawhubUrl: "https://clawhub.ai",
-        clawhubPackage: "@openclaw/alias-demo",
+        clawhubPackage: "@eve/alias-demo",
         clawhubFamily: "code-plugin",
         clawhubChannel: "official",
         version: "1.0.0",
@@ -437,10 +437,10 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugin add clawhub:@openclaw/alias-demo@1.0.0",
+        "/plugin add clawhub:@eve/alias-demo@1.0.0",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -449,7 +449,7 @@ describe("handleCommands /plugins install", () => {
       }
       expect(result.reply?.text).toContain('Installed plugin "alias-demo"');
       expect(mockFirstObjectArg(installPluginFromClawHubMock).spec).toBe(
-        "clawhub:@openclaw/alias-demo@1.0.0",
+        "clawhub:@eve/alias-demo@1.0.0",
       );
     });
   });
@@ -457,44 +457,44 @@ describe("handleCommands /plugins install", () => {
   it("trusts catalog npm package installs with alternate selectors", async () => {
     installPluginFromNpmSpecMock.mockResolvedValue({
       ok: true,
-      pluginId: "wecom-openclaw-plugin",
-      targetDir: "/tmp/wecom-openclaw-plugin",
+      pluginId: "wecom-eve-plugin",
+      targetDir: "/tmp/wecom-eve-plugin",
       version: "2026.4.23",
       extensions: ["index.js"],
       npmResolution: {
-        name: "@wecom/wecom-openclaw-plugin",
+        name: "@wecom/wecom-eve-plugin",
         version: "2026.4.23",
-        resolvedSpec: "@wecom/wecom-openclaw-plugin@2026.4.23",
+        resolvedSpec: "@wecom/wecom-eve-plugin@2026.4.23",
         integrity: "sha512-wecom",
         resolvedAt: "2026-05-04T20:00:00.000Z",
       },
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install @wecom/wecom-openclaw-plugin@latest",
+        "/plugins install @wecom/wecom-eve-plugin@latest",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
       if (result === null) {
         throw new Error("expected plugin install result");
       }
-      expect(result.reply?.text).toContain('Installed plugin "wecom-openclaw-plugin"');
+      expect(result.reply?.text).toContain('Installed plugin "wecom-eve-plugin"');
       const npmInstallArgs = mockFirstObjectArg(installPluginFromNpmSpecMock);
       expectObjectFields(npmInstallArgs, {
-        spec: "@wecom/wecom-openclaw-plugin@latest",
-        expectedPluginId: "wecom-openclaw-plugin",
+        spec: "@wecom/wecom-eve-plugin@latest",
+        expectedPluginId: "wecom-eve-plugin",
         trustedSourceLinkedOfficialInstall: true,
       });
       expect(npmInstallArgs.expectedIntegrity).toBeUndefined();
-      expectPersistedInstall("wecom-openclaw-plugin", {
+      expectPersistedInstall("wecom-eve-plugin", {
         source: "npm",
-        spec: "@wecom/wecom-openclaw-plugin@latest",
-        installPath: "/tmp/wecom-openclaw-plugin",
+        spec: "@wecom/wecom-eve-plugin@latest",
+        installPath: "/tmp/wecom-eve-plugin",
         version: "2026.4.23",
-        resolvedName: "@wecom/wecom-openclaw-plugin",
+        resolvedName: "@wecom/wecom-eve-plugin",
         resolvedVersion: "2026.4.23",
       });
     });

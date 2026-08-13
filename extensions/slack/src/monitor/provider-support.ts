@@ -1,5 +1,5 @@
 // Slack provider module implements model/runtime integration.
-import { asOptionalRecord as asRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { asOptionalRecord as asRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { SlackChannelResolution } from "../resolve-channels.js";
 import type { SlackUserResolution } from "../resolve-users.js";
 import { formatUnknownError, waitForSlackSocketDisconnect } from "./reconnect-policy.js";
@@ -19,9 +19,9 @@ type SlackSocketModeLogger = SlackSdkLogger & {
 };
 type SlackSocketDisconnect = Awaited<ReturnType<typeof waitForSlackSocketDisconnect>>;
 
-const OPENCLAW_SLACK_CLIENT_PING_TIMEOUT_MS = 15_000;
-const OPENCLAW_SLACK_SOCKET_START_FAILED_EVENT = "unable_to_socket_mode_start";
-const OPENCLAW_SLACK_NATIVE_RECONNECT_OBSERVER_KEY = "__openclawNativeReconnectFailureObserver";
+const EVE_SLACK_CLIENT_PING_TIMEOUT_MS = 15_000;
+const EVE_SLACK_SOCKET_START_FAILED_EVENT = "unable_to_socket_mode_start";
+const EVE_SLACK_NATIVE_RECONNECT_OBSERVER_KEY = "__eveNativeReconnectFailureObserver";
 const SLACK_SOCKET_PONG_TIMEOUT_WARNING_PREFIX = "A pong wasn't received from the server";
 const SLACK_SOCKET_PING_TIMEOUT_WARNING_PREFIX = "A ping wasn't received from the server";
 const SLACK_SOCKET_LOG_LEVEL_IGNORED_WARNING_RE =
@@ -61,7 +61,7 @@ function installSlackNativeReconnectFailureObserver(receiver: unknown) {
   if (!client || typeof client !== "object") {
     return;
   }
-  if (Reflect.get(client, OPENCLAW_SLACK_NATIVE_RECONNECT_OBSERVER_KEY)) {
+  if (Reflect.get(client, EVE_SLACK_NATIVE_RECONNECT_OBSERVER_KEY)) {
     return;
   }
   const delayReconnectAttempt = Reflect.get(client, "delayReconnectAttempt");
@@ -70,7 +70,7 @@ function installSlackNativeReconnectFailureObserver(receiver: unknown) {
     return;
   }
 
-  Reflect.set(client, OPENCLAW_SLACK_NATIVE_RECONNECT_OBSERVER_KEY, true);
+  Reflect.set(client, EVE_SLACK_NATIVE_RECONNECT_OBSERVER_KEY, true);
   Reflect.set(
     client,
     "delayReconnectAttempt",
@@ -85,7 +85,7 @@ function installSlackNativeReconnectFailureObserver(receiver: unknown) {
       const delayMs =
         (Number.isFinite(pingTimeoutMs) && pingTimeoutMs >= 0
           ? pingTimeoutMs
-          : OPENCLAW_SLACK_CLIENT_PING_TIMEOUT_MS) * nextFailureCount;
+          : EVE_SLACK_CLIENT_PING_TIMEOUT_MS) * nextFailureCount;
       const logger = Reflect.get(this, "logger") as { debug?: (message: string) => void };
       logger?.debug?.(
         `Before trying to reconnect, this client will wait for ${delayMs} milliseconds`,
@@ -101,7 +101,7 @@ function installSlackNativeReconnectFailureObserver(receiver: unknown) {
           emit.call(this, "reconnecting");
           Promise.resolve(callback.call(this)).then(resolve, (error: unknown) => {
             if (callback === Reflect.get(this, "start")) {
-              emit.call(this, OPENCLAW_SLACK_SOCKET_START_FAILED_EVENT, error);
+              emit.call(this, EVE_SLACK_SOCKET_START_FAILED_EVENT, error);
               resolve(undefined);
               return;
             }
@@ -267,7 +267,7 @@ export function createSlackSocketModeLogger(
   };
 }
 
-export function shouldSkipOpenClawSlackSelfEvent(args: SlackSelfFilterArgs): boolean {
+export function shouldSkipEVESlackSelfEvent(args: SlackSelfFilterArgs): boolean {
   const botId = args.context?.botId;
   const botUserId = args.context?.botUserId;
   const message = asRecord(args.message);
@@ -309,7 +309,7 @@ export function createSlackBoltApp(params: {
     appToken: params.appToken ?? "",
     autoReconnectEnabled: true,
     clientPingTimeout:
-      params.socketMode?.clientPingTimeout ?? OPENCLAW_SLACK_CLIENT_PING_TIMEOUT_MS,
+      params.socketMode?.clientPingTimeout ?? EVE_SLACK_CLIENT_PING_TIMEOUT_MS,
     logger: socketModeLogger,
     installerOptions: {
       clientOptions: params.clientOptions,
@@ -339,11 +339,11 @@ export function createSlackBoltApp(params: {
     ignoreSelf: false,
     // Bolt eagerly starts an auth.test promise in the constructor when token
     // verification is enabled. Invalid tokens can reject before any listener
-    // consumes that promise, tripping OpenClaw's fatal unhandled-rejection path.
+    // consumes that promise, tripping EVE's fatal unhandled-rejection path.
     tokenVerificationEnabled: false,
   });
   app.use(async (args) => {
-    if (shouldSkipOpenClawSlackSelfEvent(args)) {
+    if (shouldSkipEVESlackSelfEvent(args)) {
       return;
     }
     await args.next();

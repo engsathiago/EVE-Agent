@@ -15,7 +15,7 @@ import type {
   MsgContext,
 } from "../../auto-reply/templating.js";
 import type { GroupKeyResolution } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type {
   DeliverOutboundPayloadsParams,
   DurableFinalDeliveryRequirements,
@@ -379,7 +379,7 @@ export type ChannelTurnReplyPipelineOptions = Omit<
 
 /** Fully assembled channel turn ready to build the dispatch runner. */
 export type AssembledChannelTurn = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: string;
   accountId?: string;
   agentId: string;

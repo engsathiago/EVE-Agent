@@ -1,4 +1,4 @@
-// Session Log Mentions script supports OpenClaw repository automation.
+// Session Log Mentions script supports EVE repository automation.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { readPositiveIntEnv } from "./env-limits.mjs";
@@ -18,12 +18,12 @@ export function readSessionLogMentionLimits(
 ): SessionLogMentionLimits {
   return {
     fileMaxBytes: readPositiveIntEnv(
-      "OPENCLAW_SESSION_LOG_MENTION_FILE_MAX_BYTES",
+      "EVE_SESSION_LOG_MENTION_FILE_MAX_BYTES",
       DEFAULT_FILE_MAX_BYTES,
       env,
     ),
     totalMaxBytes: readPositiveIntEnv(
-      "OPENCLAW_SESSION_LOG_MENTION_TOTAL_MAX_BYTES",
+      "EVE_SESSION_LOG_MENTION_TOTAL_MAX_BYTES",
       DEFAULT_TOTAL_MAX_BYTES,
       env,
     ),

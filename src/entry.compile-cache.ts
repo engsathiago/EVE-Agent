@@ -15,7 +15,7 @@ import {
 // Node 24.0-24.14 can deadlock during ESM module loading when compile cache is
 // enabled on Windows npm-global installs. Keep the skip scoped to that platform.
 const MIN_COMPILE_CACHE_NODE_24_MINOR = 15;
-const COMPILE_CACHE_DISABLED_RESPAWNED_ENV = "OPENCLAW_COMPILE_CACHE_DISABLED_RESPAWNED";
+const COMPILE_CACHE_DISABLED_RESPAWNED_ENV = "EVE_COMPILE_CACHE_DISABLED_RESPAWNED";
 
 export function resolveEntryInstallRoot(entryFile: string): string {
   const entryDir = path.dirname(entryFile);
@@ -56,7 +56,7 @@ export function isNodeVersionAffectedByCompileCacheDeadlock(
   return minor < MIN_COMPILE_CACHE_NODE_24_MINOR;
 }
 
-export function shouldEnableOpenClawCompileCache(params: {
+export function shouldEnableEVECompileCache(params: {
   env?: NodeJS.ProcessEnv;
   installRoot: string;
   nodeVersion?: string;
@@ -97,7 +97,7 @@ function readPackageVersion(packageJsonPath: string): string {
   return "unknown";
 }
 
-export function resolveOpenClawCompileCacheDirectory(params: {
+export function resolveEVECompileCacheDirectory(params: {
   env?: NodeJS.ProcessEnv;
   installRoot: string;
 }): string {
@@ -117,24 +117,24 @@ export function resolveOpenClawCompileCacheDirectory(params: {
       : path.join(os.tmpdir(), "node-compile-cache");
   return path.join(
     baseDirectory,
-    "openclaw",
+    "eve",
     version,
     sanitizeCompileCachePathSegment(installMarker),
   );
 }
 
-type OpenClawCompileCacheRespawnPlan = {
+type EVECompileCacheRespawnPlan = {
   command: string;
   args: string[];
   env: NodeJS.ProcessEnv;
   detachForProcessTree: boolean;
 };
 
-type OpenClawCompileCacheRespawnRuntime = RespawnChildRuntime & {
+type EVECompileCacheRespawnRuntime = RespawnChildRuntime & {
   writeError: (message: string) => void;
 };
 
-export function buildOpenClawCompileCacheRespawnPlan(params: {
+export function buildEVECompileCacheRespawnPlan(params: {
   currentFile: string;
   env?: NodeJS.ProcessEnv;
   execArgv?: string[];
@@ -144,7 +144,7 @@ export function buildOpenClawCompileCacheRespawnPlan(params: {
   compileCacheDir?: string;
   nodeVersion?: string;
   platform?: NodeJS.Platform;
-}): OpenClawCompileCacheRespawnPlan | undefined {
+}): EVECompileCacheRespawnPlan | undefined {
   const env = params.env ?? process.env;
   const needsDisabledCompileCacheRespawn =
     isSourceCheckoutInstallRoot(params.installRoot) ||
@@ -179,11 +179,11 @@ export function buildOpenClawCompileCacheRespawnPlan(params: {
   };
 }
 
-export function respawnWithoutOpenClawCompileCacheIfNeeded(params: {
+export function respawnWithoutEVECompileCacheIfNeeded(params: {
   currentFile: string;
   installRoot: string;
 }): boolean {
-  const plan = buildOpenClawCompileCacheRespawnPlan({
+  const plan = buildEVECompileCacheRespawnPlan({
     currentFile: params.currentFile,
     installRoot: params.installRoot,
     compileCacheDir: getCompileCacheDir?.(),
@@ -191,13 +191,13 @@ export function respawnWithoutOpenClawCompileCacheIfNeeded(params: {
   if (!plan) {
     return false;
   }
-  runOpenClawCompileCacheRespawnPlan(plan);
+  runEVECompileCacheRespawnPlan(plan);
   return true;
 }
 
-export function runOpenClawCompileCacheRespawnPlan(
-  plan: OpenClawCompileCacheRespawnPlan,
-  runtime: OpenClawCompileCacheRespawnRuntime = {
+export function runEVECompileCacheRespawnPlan(
+  plan: EVECompileCacheRespawnPlan,
+  runtime: EVECompileCacheRespawnRuntime = {
     spawn,
     attachChildProcessBridge,
     exit: process.exit.bind(process) as (code?: number) => never,
@@ -212,7 +212,7 @@ export function runOpenClawCompileCacheRespawnPlan(
     runtime,
     onError: (error) => {
       runtime.writeError(
-        `[openclaw] Failed to respawn CLI without compile cache: ${
+        `[eve] Failed to respawn CLI without compile cache: ${
           error instanceof Error ? (error.stack ?? error.message) : String(error)
         }\n`,
       );
@@ -220,15 +220,15 @@ export function runOpenClawCompileCacheRespawnPlan(
   });
 }
 
-export function enableOpenClawCompileCache(params: {
+export function enableEVECompileCache(params: {
   env?: NodeJS.ProcessEnv;
   installRoot: string;
 }): void {
-  if (!shouldEnableOpenClawCompileCache(params)) {
+  if (!shouldEnableEVECompileCache(params)) {
     return;
   }
   try {
-    enableCompileCache(resolveOpenClawCompileCacheDirectory(params));
+    enableCompileCache(resolveEVECompileCacheDirectory(params));
   } catch {
     // Best-effort only; never block startup.
   }

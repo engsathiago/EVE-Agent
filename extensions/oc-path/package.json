@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/oc-path",
+  "name": "@eve/oc-path",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw oc:// workspace path plugin",
+  "description": "EVE oc:// workspace path plugin",
   "type": "module",
   "dependencies": {
     "commander": "14.0.3",
@@ -11,18 +11,18 @@
     "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

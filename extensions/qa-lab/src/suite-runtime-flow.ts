@@ -3,10 +3,10 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import { formatMemoryDreamingDay } from "openclaw/plugin-sdk/memory-core-host-status";
-import { resolveSessionTranscriptsDirForAgent } from "openclaw/plugin-sdk/memory-host-core";
-import { buildAgentSessionKey } from "openclaw/plugin-sdk/routing";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatMemoryDreamingDay } from "eve-agent/plugin-sdk/memory-core-host-status";
+import { resolveSessionTranscriptsDirForAgent } from "eve-agent/plugin-sdk/memory-host-core";
+import { buildAgentSessionKey } from "eve-agent/plugin-sdk/routing";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   callQaBrowserRequest,
   qaBrowserAct,

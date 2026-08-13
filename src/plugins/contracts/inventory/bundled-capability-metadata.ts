@@ -42,7 +42,7 @@ export type BundledPluginContractSnapshot = {
 };
 
 const CURRENT_MODULE_PATH = fileURLToPath(import.meta.url);
-const OPENCLAW_PACKAGE_ROOT =
+const EVE_PACKAGE_ROOT =
   resolveLoaderPackageRoot({
     modulePath: CURRENT_MODULE_PATH,
     moduleUrl: import.meta.url,
@@ -87,7 +87,7 @@ function readBundledCapabilityManifest(pluginDir: string): BundledCapabilityMani
 
 function listBundledCapabilityManifests(): readonly BundledCapabilityManifest[] {
   const scanDir = resolveBundledPluginScanDir({
-    packageRoot: OPENCLAW_PACKAGE_ROOT,
+    packageRoot: EVE_PACKAGE_ROOT,
     runningFromBuiltArtifact: RUNNING_FROM_BUILT_ARTIFACT,
   });
   if (!scanDir) {

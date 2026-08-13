@@ -8,9 +8,9 @@ import {
 } from "./config-paths.js";
 import { readConfigFileSnapshot } from "./config.js";
 import { findLegacyConfigIssues } from "./legacy.js";
-import { buildWebSearchProviderConfig, withTempHome, writeOpenClawConfig } from "./test-helpers.js";
+import { buildWebSearchProviderConfig, withTempHome, writeEVEConfig } from "./test-helpers.js";
 import { validateConfigObject, validateConfigObjectRaw } from "./validation.js";
-import { OpenClawSchema } from "./zod-schema.js";
+import { EVESchema } from "./zod-schema.js";
 
 const nonBooleanConfigCases = [
   {
@@ -54,14 +54,14 @@ function expectSomeIssueMessageContains(issues: Array<{ message: string }>, text
 
 describe("boolean config validation", () => {
   it.each(nonBooleanConfigCases)("rejects non-boolean values for $name", ({ config }) => {
-    const result = OpenClawSchema.safeParse(config);
+    const result = EVESchema.safeParse(config);
     expect(result.success).toBe(false);
   });
 });
 
 describe("model provider localService config", () => {
   it("accepts standalone timeout overlays for bundled model providers", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         providers: {
           openai: {
@@ -97,7 +97,7 @@ describe("model provider localService config", () => {
   });
 
   it("rejects standalone timeout overlays for unknown model providers", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         providers: {
           anyManifestProvider: {
@@ -120,7 +120,7 @@ describe("model provider localService config", () => {
   });
 
   it("requires models when a model provider declaration sets baseUrl", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         providers: {
           custom: {
@@ -138,7 +138,7 @@ describe("model provider localService config", () => {
   });
 
   it("requires baseUrl when a model provider declaration sets models", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         providers: {
           custom: {
@@ -156,7 +156,7 @@ describe("model provider localService config", () => {
   });
 
   it("accepts on-demand local provider service settings", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         providers: {
           ds4: {
@@ -225,22 +225,22 @@ describe("model provider localService config", () => {
 
 describe("$schema key in config (#14998)", () => {
   it("accepts config with $schema string", () => {
-    const result = OpenClawSchema.safeParse({
-      $schema: "https://openclaw.ai/config.json",
+    const result = EVESchema.safeParse({
+      $schema: "https://eve.ai/config.json",
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.$schema).toBe("https://openclaw.ai/config.json");
+      expect(result.data.$schema).toBe("https://eve.ai/config.json");
     }
   });
 
   it("accepts config without $schema", () => {
-    const result = OpenClawSchema.safeParse({});
+    const result = EVESchema.safeParse({});
     expect(result.success).toBe(true);
   });
 
   it("rejects non-string $schema", () => {
-    const result = OpenClawSchema.safeParse({ $schema: 123 });
+    const result = EVESchema.safeParse({ $schema: 123 });
     expect(result.success).toBe(false);
   });
 
@@ -254,11 +254,11 @@ describe("$schema key in config (#14998)", () => {
 
   it("preserves $schema through validateConfigObject round-trip", () => {
     const res = validateConfigObject({
-      $schema: "https://openclaw.ai/config.json",
+      $schema: "https://eve.ai/config.json",
     });
     expect(res.ok).toBe(true);
     if (res.ok) {
-      expect(res.config.$schema).toBe("https://openclaw.ai/config.json");
+      expect(res.config.$schema).toBe("https://eve.ai/config.json");
     }
   });
 });
@@ -288,7 +288,7 @@ describe("legacy Canvas host config", () => {
 
 describe("accessGroups config", () => {
   it("accepts Discord channel audience access groups", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       accessGroups: {
         maintainers: {
           type: "discord.channelAudience",
@@ -309,7 +309,7 @@ describe("accessGroups config", () => {
   });
 
   it("rejects unknown access group membership modes", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       accessGroups: {
         maintainers: {
           type: "discord.channelAudience",
@@ -324,7 +324,7 @@ describe("accessGroups config", () => {
   });
 
   it("accepts message sender access groups for any channel", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       accessGroups: {
         owners: {
           type: "message.senders",
@@ -349,7 +349,7 @@ describe("accessGroups config", () => {
 
 describe("plugins.slots.contextEngine", () => {
   it("accepts a contextEngine slot id", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         slots: {
           contextEngine: "my-context-engine",
@@ -363,7 +363,7 @@ describe("plugins.slots.contextEngine", () => {
 describe("models.pricing", () => {
   it("accepts the model pricing bootstrap toggle", () => {
     for (const enabled of [true, false]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         models: {
           pricing: { enabled },
         },
@@ -373,7 +373,7 @@ describe("models.pricing", () => {
   });
 
   it("rejects non-boolean model pricing bootstrap values", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       models: {
         pricing: { enabled: "false" },
       },
@@ -384,7 +384,7 @@ describe("models.pricing", () => {
 
 describe("crestodian.rescue", () => {
   it("accepts documented rescue config", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       crestodian: {
         rescue: {
           enabled: "auto",
@@ -397,7 +397,7 @@ describe("crestodian.rescue", () => {
   });
 
   it("accepts boolean rescue enablement", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       crestodian: {
         rescue: {
           enabled: true,
@@ -409,7 +409,7 @@ describe("crestodian.rescue", () => {
   });
 
   it("rejects unknown rescue keys", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       crestodian: {
         rescue: {
           enabled: true,
@@ -424,7 +424,7 @@ describe("crestodian.rescue", () => {
 describe("diagnostics.otel.captureContent", () => {
   it("accepts supported OTEL log exporters and rejects unknown values", () => {
     for (const logsExporter of ["otlp", "stdout", "both"]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         diagnostics: {
           otel: {
             logs: true,
@@ -435,7 +435,7 @@ describe("diagnostics.otel.captureContent", () => {
       expect(result.success).toBe(true);
     }
 
-    const invalid = OpenClawSchema.safeParse({
+    const invalid = EVESchema.safeParse({
       diagnostics: {
         otel: {
           logs: true,
@@ -460,7 +460,7 @@ describe("diagnostics.otel.captureContent", () => {
         toolDefinitions: true,
       },
     ]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         diagnostics: {
           otel: {
             captureContent,
@@ -474,7 +474,7 @@ describe("diagnostics.otel.captureContent", () => {
 
 describe("auth.cooldowns auth_permanent backoff config", () => {
   it("accepts auth_permanent backoff knobs", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       auth: {
         cooldowns: {
           authPermanentBackoffMinutes: 10,
@@ -505,7 +505,7 @@ describe("ui.seamColor", () => {
 
 describe("tui.footer.showRemoteHost", () => {
   it("accepts the TUI remote-host footer toggle", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       tui: {
         footer: {
           showRemoteHost: true,
@@ -517,7 +517,7 @@ describe("tui.footer.showRemoteHost", () => {
   });
 
   it("rejects unknown TUI footer keys", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       tui: {
         footer: {
           showLocalHost: true,
@@ -532,7 +532,7 @@ describe("tui.footer.showRemoteHost", () => {
 describe("gateway.controlUi.embedSandbox", () => {
   it("accepts strict, scripts, and trusted modes", () => {
     for (const mode of ["strict", "scripts", "trusted"] as const) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         gateway: {
           controlUi: {
             embedSandbox: mode,
@@ -544,7 +544,7 @@ describe("gateway.controlUi.embedSandbox", () => {
   });
 
   it("rejects unsupported values", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       gateway: {
         controlUi: {
           embedSandbox: "yolo",
@@ -558,7 +558,7 @@ describe("gateway.controlUi.embedSandbox", () => {
 describe("gateway.controlUi.allowExternalEmbedUrls", () => {
   it("accepts boolean values", () => {
     for (const value of [true, false]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         gateway: {
           controlUi: {
             allowExternalEmbedUrls: value,
@@ -573,7 +573,7 @@ describe("gateway.controlUi.allowExternalEmbedUrls", () => {
 describe("gateway.controlUi.chatMessageMaxWidth", () => {
   it("accepts constrained CSS width values", () => {
     for (const value of ["960px", "82%", "min(1280px, 82%)", "calc(100% - 2rem)"]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         gateway: {
           controlUi: {
             chatMessageMaxWidth: value,
@@ -588,7 +588,7 @@ describe("gateway.controlUi.chatMessageMaxWidth", () => {
   });
 
   it("normalizes whitespace around the width value", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       gateway: {
         controlUi: {
           chatMessageMaxWidth: "  min(1280px,   82%)  ",
@@ -604,7 +604,7 @@ describe("gateway.controlUi.chatMessageMaxWidth", () => {
 
   it("rejects arbitrary CSS injection", () => {
     for (const value of ["url(https://example.com/x)", "960px; color: red", "var(--x)"]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         gateway: {
           controlUi: {
             chatMessageMaxWidth: value,
@@ -618,7 +618,7 @@ describe("gateway.controlUi.chatMessageMaxWidth", () => {
 
 describe("plugins.entries.*.hooks", () => {
   it.each([true, false])("accepts allowConversationAccess=%s", (allowConversationAccess) => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -634,7 +634,7 @@ describe("plugins.entries.*.hooks", () => {
   });
 
   it("accepts allowPromptInjection=false alongside allowConversationAccess=true", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -650,7 +650,7 @@ describe("plugins.entries.*.hooks", () => {
   });
 
   it("accepts bounded typed hook timeout overrides", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "memory-recall": {
@@ -669,7 +669,7 @@ describe("plugins.entries.*.hooks", () => {
   });
 
   it("rejects non-boolean conversation access values", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -691,7 +691,7 @@ describe("plugins.entries.*.hooks", () => {
       { timeouts: { before_prompt_build: -1 } },
       { timeouts: { before_prompt_build: 1.5 } },
     ]) {
-      const result = OpenClawSchema.safeParse({
+      const result = EVESchema.safeParse({
         plugins: {
           entries: {
             "memory-recall": { hooks },
@@ -705,7 +705,7 @@ describe("plugins.entries.*.hooks", () => {
 
 describe("plugins.entries.*.subagent", () => {
   it("accepts trusted subagent override settings", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -721,7 +721,7 @@ describe("plugins.entries.*.subagent", () => {
   });
 
   it("rejects invalid trusted subagent override settings", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -739,7 +739,7 @@ describe("plugins.entries.*.subagent", () => {
 
 describe("plugins.entries.*.llm", () => {
   it("accepts trusted llm override settings", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -756,7 +756,7 @@ describe("plugins.entries.*.llm", () => {
   });
 
   it("rejects invalid trusted llm override settings", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       plugins: {
         entries: {
           "voice-call": {
@@ -975,7 +975,7 @@ describe("config identity/materialization regressions", () => {
               theme: "space lobster",
               emoji: "🦞",
             },
-            groupChat: { mentionPatterns: ["@openclaw"] },
+            groupChat: { mentionPatterns: ["@eve"] },
           },
         ],
       },
@@ -987,7 +987,7 @@ describe("config identity/materialization regressions", () => {
     expect(res.ok).toBe(true);
     if (res.ok) {
       expect(res.config.messages?.responsePrefix).toBe("✅");
-      expect(res.config.agents?.list?.[0]?.groupChat?.mentionPatterns).toEqual(["@openclaw"]);
+      expect(res.config.agents?.list?.[0]?.groupChat?.mentionPatterns).toEqual(["@eve"]);
     }
   });
 
@@ -1058,7 +1058,7 @@ describe("config identity/materialization regressions", () => {
 
 describe("cron webhook schema", () => {
   it("accepts cron.webhookToken and legacy cron.webhook", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = EVESchema.safeParse({
       cron: {
         enabled: true,
         webhook: "https://example.invalid/legacy-cron-webhook",
@@ -1070,7 +1070,7 @@ describe("cron webhook schema", () => {
   });
 
   it("accepts cron.webhookToken SecretRef values", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = EVESchema.safeParse({
       cron: {
         webhook: "https://example.invalid/legacy-cron-webhook",
         webhookToken: {
@@ -1085,7 +1085,7 @@ describe("cron webhook schema", () => {
   });
 
   it("rejects non-http cron.webhook URLs", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = EVESchema.safeParse({
       cron: {
         webhook: "ftp://example.invalid/legacy-cron-webhook",
       },
@@ -1095,7 +1095,7 @@ describe("cron webhook schema", () => {
   });
 
   it("accepts cron.retry config", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = EVESchema.safeParse({
       cron: {
         retry: {
           maxAttempts: 5,
@@ -1141,7 +1141,7 @@ describe("model compat config schema", () => {
   it.each(["together", "zai", "qwen", "qwen-chat-template"] as const)(
     "accepts full openai-completions compat fields with %s thinking format",
     (thinkingFormat) => {
-      const res = OpenClawSchema.safeParse({
+      const res = EVESchema.safeParse({
         models: {
           providers: {
             local: {
@@ -1201,7 +1201,7 @@ describe("config paths", () => {
 describe("config strict validation", () => {
   it("rejects unknown fields", () => {
     const res = validateConfigObject({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "eve" }] },
       customUnknownField: { nested: "value" },
     });
     expect(res.ok).toBe(false);
@@ -1236,7 +1236,7 @@ describe("config strict validation", () => {
 
   it("rejects top-level memorySearch without read-time auto-migration", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         memorySearch: {
           provider: "local",
           fallback: "none",
@@ -1260,7 +1260,7 @@ describe("config strict validation", () => {
 
   it("rejects top-level heartbeat agent settings without read-time auto-migration", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         heartbeat: {
           every: "30m",
           model: "anthropic/claude-3-5-haiku-20241022",
@@ -1282,7 +1282,7 @@ describe("config strict validation", () => {
 
   it("rejects top-level heartbeat visibility without read-time auto-migration", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         heartbeat: {
           showOk: true,
           showAlerts: false,
@@ -1366,7 +1366,7 @@ describe("config strict validation", () => {
 
   it("rejects legacy sandbox perSession without read-time auto-migration", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         agents: {
           defaults: {
             sandbox: {
@@ -1375,7 +1375,7 @@ describe("config strict validation", () => {
           },
           list: [
             {
-              id: "openclaw",
+              id: "eve",
               sandbox: {
                 perSession: false,
               },
@@ -1398,12 +1398,12 @@ describe("config strict validation", () => {
 
   it("rejects resolved-only gateway.bind aliases as invalid schema values, not legacy", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
-        gateway: { bind: "${OPENCLAW_BIND}" },
+      await writeEVEConfig(home, {
+        gateway: { bind: "${EVE_BIND}" },
       });
 
-      const prev = process.env.OPENCLAW_BIND;
-      process.env.OPENCLAW_BIND = "0.0.0.0";
+      const prev = process.env.EVE_BIND;
+      process.env.EVE_BIND = "0.0.0.0";
       try {
         const snap = await readConfigFileSnapshot();
         expect(snap.valid).toBe(false);
@@ -1411,9 +1411,9 @@ describe("config strict validation", () => {
         expect(issuePaths(snap.issues)).toContain("gateway.bind");
       } finally {
         if (prev === undefined) {
-          delete process.env.OPENCLAW_BIND;
+          delete process.env.EVE_BIND;
         } else {
-          process.env.OPENCLAW_BIND = prev;
+          process.env.EVE_BIND = prev;
         }
       }
     });
@@ -1421,7 +1421,7 @@ describe("config strict validation", () => {
 
   it("rejects literal gateway.bind host aliases as legacy", async () => {
     await withTempHome(async (home) => {
-      await writeOpenClawConfig(home, {
+      await writeEVEConfig(home, {
         gateway: { bind: "0.0.0.0" },
       });
 

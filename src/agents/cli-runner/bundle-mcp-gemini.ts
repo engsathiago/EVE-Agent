@@ -64,7 +64,7 @@ export async function writeGeminiSystemSettings(
   mergedConfig: BundleMcpConfig,
   inheritedEnv: Record<string, string> | undefined,
 ): Promise<{ env: Record<string, string>; cleanup: () => Promise<void> }> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gemini-mcp-"));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gemini-mcp-"));
   const settingsPath = path.join(tempDir, "settings.json");
   const existingSettingsPath =
     inheritedEnv?.GEMINI_CLI_SYSTEM_SETTINGS_PATH ?? process.env.GEMINI_CLI_SYSTEM_SETTINGS_PATH;
@@ -113,9 +113,9 @@ export async function writeGeminiMcpCaptureSettings(params: {
   }
   const settings = await readJsonObject(existingSettingsPath);
   const mcpServers = isRecord(settings.mcpServers) ? settings.mcpServers : {};
-  const openclaw = isRecord(mcpServers.openclaw) ? mcpServers.openclaw : {};
-  const headers = normalizeStringRecord(openclaw.headers) ?? {};
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gemini-mcp-attempt-"));
+  const eve = isRecord(mcpServers.eve) ? mcpServers.eve : {};
+  const headers = normalizeStringRecord(eve.headers) ?? {};
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gemini-mcp-attempt-"));
   const settingsPath = path.join(tempDir, "settings.json");
   await writeJson(
     settingsPath,
@@ -123,11 +123,11 @@ export async function writeGeminiMcpCaptureSettings(params: {
       ...settings,
       mcpServers: {
         ...mcpServers,
-        openclaw: {
-          ...openclaw,
+        eve: {
+          ...eve,
           headers: {
             ...headers,
-            "x-openclaw-cli-capture-key": params.captureKey,
+            "x-eve-cli-capture-key": params.captureKey,
           },
         },
       },

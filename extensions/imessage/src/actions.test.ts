@@ -1,5 +1,5 @@
 // Imessage tests cover actions plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const probeMock = vi.hoisted(() => ({
@@ -26,9 +26,9 @@ const loggerMock = vi.hoisted(() => ({
   fatal: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/runtime-env")>(
-    "openclaw/plugin-sdk/runtime-env",
+vi.mock("eve-agent/plugin-sdk/runtime-env", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/runtime-env")>(
+    "eve-agent/plugin-sdk/runtime-env",
   );
   return {
     ...actual,
@@ -61,7 +61,7 @@ vi.mock("./monitor-reply-cache.js", async () => {
 
 const { imessageMessageActions } = await import("./actions.js");
 
-function cfg(actions?: Record<string, boolean | undefined>): OpenClawConfig {
+function cfg(actions?: Record<string, boolean | undefined>): EVEConfig {
   return {
     channels: {
       imessage: {
@@ -70,7 +70,7 @@ function cfg(actions?: Record<string, boolean | undefined>): OpenClawConfig {
         actions,
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function imsgOptions(chatGuid = "") {
@@ -440,7 +440,7 @@ describe("imessage message actions", () => {
     });
   });
 
-  describe("reply with attachment (openclaw/imsg#114 plumbing)", () => {
+  describe("reply with attachment (eve/imsg#114 plumbing)", () => {
     // The core message-action runner hydrates path/media/filePath/etc.
     // through the outbound media resolver (mediaLocalRoots/sandbox/size)
     // before reaching this handler, writing the result into `buffer` +
@@ -560,7 +560,7 @@ describe("imessage message actions", () => {
     it("rejects reply + attachment when imsg does not advertise send-rich --file", async () => {
       // Older imsg builds reject `--file` on send-rich, so refuse loudly
       // here rather than letting send-rich ship the text alone and silently
-      // drop the attachment (the original openclaw/openclaw#79822 symptom).
+      // drop the attachment (the original eve/eve#79822 symptom).
       probeMock.getCachedIMessagePrivateApiStatus.mockReturnValue({
         available: true,
         v2Ready: true,

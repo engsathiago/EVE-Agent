@@ -2,8 +2,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { SkillCommandSpec } from "../../skills/types.js";
 
 export function reserveSkillCommandNames(params: {
@@ -16,7 +16,7 @@ export function reserveSkillCommandNames(params: {
 }
 
 export function resolveConfiguredDirectiveAliases(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   commandTextHasSlash: boolean;
   reservedCommands: Set<string>;
 }) {

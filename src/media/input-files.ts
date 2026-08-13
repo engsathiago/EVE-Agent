@@ -1,13 +1,13 @@
 // Input file helpers normalize inline, fetched, and local media inputs.
-import { canonicalizeBase64, estimateBase64DecodedBytes } from "@openclaw/media-core/base64";
-import { parseMediaContentLength } from "@openclaw/media-core/content-length";
-import { detectMime } from "@openclaw/media-core/mime";
-import { readResponseWithLimit } from "@openclaw/media-core/read-response-with-limit";
+import { canonicalizeBase64, estimateBase64DecodedBytes } from "@eve/media-core/base64";
+import { parseMediaContentLength } from "@eve/media-core/content-length";
+import { detectMime } from "@eve/media-core/mime";
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import { fetchWithSsrFGuard } from "../infra/net/fetch-guard.js";
 import type { SsrFPolicy } from "../infra/net/ssrf.js";
 import { logWarn } from "../logger.js";
@@ -213,7 +213,7 @@ export async function fetchWithGuard(params: {
     timeoutMs: params.timeoutMs,
     policy: params.policy,
     auditContext: params.auditContext,
-    init: { headers: { "User-Agent": "OpenClaw-Gateway/1.0" } },
+    init: { headers: { "User-Agent": "EVE-Gateway/1.0" } },
   });
 
   try {
@@ -385,7 +385,7 @@ export async function extractImageContentFromSource(
 export async function extractFileContentFromSource(params: {
   source: InputFileSource;
   limits: InputFileLimits;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): Promise<InputFileExtractResult> {
   const { source, limits } = params;
   const filename = source.filename || "file";

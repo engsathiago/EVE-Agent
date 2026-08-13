@@ -1,5 +1,5 @@
 /** Shared daemon runtime status types and systemd cgroup hygiene helpers. */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 
 /** systemd cgroup fields used to spot unhealthy gateway service supervision. */
 export type GatewayServiceSystemdRuntime = {

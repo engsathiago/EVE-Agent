@@ -149,7 +149,7 @@ describe("attachGatewayWsConnectionHandler", () => {
 
     const registered = handlerParams.setClient({
       socket,
-      connect: { client: { id: "openclaw-control-ui", mode: "webchat" } },
+      connect: { client: { id: "eve-control-ui", mode: "webchat" } },
       connId: "late-client",
       usesSharedGatewayAuth: false,
     });
@@ -168,7 +168,7 @@ describe("attachGatewayWsConnectionHandler", () => {
     expect(
       handlerParams.setClient({
         socket,
-        connect: { client: { id: "openclaw-control-ui", mode: "webchat" } },
+        connect: { client: { id: "eve-control-ui", mode: "webchat" } },
         connId: "ping-client",
         usesSharedGatewayAuth: false,
       }),
@@ -217,7 +217,7 @@ describe("attachGatewayWsConnectionHandler", () => {
         socket,
         connect: {
           role: "node",
-          client: { id: "openclaw-macos", mode: "node" },
+          client: { id: "eve-macos", mode: "node" },
           device: { id: "node-1" },
         },
         connId: "conn-old",

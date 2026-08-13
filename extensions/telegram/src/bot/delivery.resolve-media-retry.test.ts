@@ -1,6 +1,6 @@
 // Telegram tests cover delivery.resolve media retry plugin behavior.
 import type { Message } from "grammy/types";
-import { retryAsync } from "openclaw/plugin-sdk/retry-runtime";
+import { retryAsync } from "eve-agent/plugin-sdk/retry-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveMedia } from "./delivery.resolve-media.js";
 import type { TelegramContext } from "./types.js";
@@ -29,7 +29,7 @@ const saveRemoteMedia = vi.fn(async (...args: unknown[]) => {
 });
 const rootRead = vi.fn();
 
-vi.mock("openclaw/plugin-sdk/file-access-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/file-access-runtime", () => ({
   root: async (rootDir: string) => ({
     read: async (relativePath: string, options?: { maxBytes?: number }) =>
       await rootRead({

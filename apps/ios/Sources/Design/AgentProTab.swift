@@ -1,4 +1,4 @@
-import OpenClawKit
+import EVEKit
 import SwiftUI
 
 struct AgentProTab: View {
@@ -6,7 +6,7 @@ struct AgentProTab: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.scenePhase) var scenePhase
     let directRoute: AgentRoute?
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
     let headerTitle: String
     let openSettings: (() -> Void)?
     @State var navigationPath: [AgentRoute] = []
@@ -104,7 +104,7 @@ struct AgentProTab: View {
 
         var color: Color {
             switch self {
-            case .online: OpenClawBrand.ok
+            case .online: EVEBrand.ok
             case .ready: Color(red: 0 / 255.0, green: 122 / 255.0, blue: 255 / 255.0)
             }
         }
@@ -126,7 +126,7 @@ struct AgentProTab: View {
 
     init(
         directRoute: AgentRoute? = nil,
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil,
+        headerLeadingAction: EVESidebarHeaderAction? = nil,
         headerTitle: String = "Agents",
         openSettings: (() -> Void)? = nil)
     {
@@ -159,7 +159,7 @@ struct AgentProTab: View {
     private var overviewNavigation: some View {
         NavigationStack(path: self.$navigationPath) {
             ZStack {
-                OpenClawProBackground()
+                EVEProBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         self.rosterHeader

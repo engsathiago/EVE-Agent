@@ -6,7 +6,7 @@
  *
  * Section bodies aren't writable through this primitive.
  *
- * @module @openclaw/oc-path/edit
+ * @module @eve/oc-path/edit
  */
 
 import type { AstBlock, AstItem, FrontmatterEntry, MdAst } from "./ast.js";

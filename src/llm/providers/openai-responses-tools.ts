@@ -35,7 +35,7 @@ export type ConvertedResponsesTools = {
   tools: OpenAITool[];
 };
 
-// Converts OpenClaw tool schemas to OpenAI Responses tools, including strict-mode compatibility.
+// Converts EVE tool schemas to OpenAI Responses tools, including strict-mode compatibility.
 const log = createSubsystemLogger("llm/openai-responses");
 const MAX_STRICT_TOOL_DOWNGRADE_DIAGNOSTIC_KEYS = 64;
 const loggedStrictToolDowngradeDiagnosticKeys = new Set<string>();

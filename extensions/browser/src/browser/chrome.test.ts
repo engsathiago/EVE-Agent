@@ -14,31 +14,31 @@ import {
 } from "./chrome.executables.js";
 import {
   clearStaleChromeSingletonLocks,
-  decorateOpenClawProfile,
+  decorateEVEProfile,
   diagnoseChromeCdp,
   ensureProfileCleanExit,
   findChromeExecutableLinux,
   findChromeExecutableMac,
   findChromeExecutableWindows,
   formatChromeCdpDiagnostic,
-  buildOpenClawChromeLaunchArgs,
+  buildEVEChromeLaunchArgs,
   getChromeWebSocketUrl,
   isProfileDecorated,
   isChromeCdpReady,
   isChromeReachable,
   resolveBrowserExecutableForPlatform,
-  stopOpenClawChrome,
+  stopEVEChrome,
 } from "./chrome.js";
 import {
-  DEFAULT_OPENCLAW_BROWSER_COLOR,
-  DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
+  DEFAULT_EVE_BROWSER_COLOR,
+  DEFAULT_EVE_BROWSER_PROFILE_NAME,
 } from "./constants.js";
 import { BrowserCdpEndpointBlockedError } from "./errors.js";
 import { DEFAULT_DOWNLOAD_DIR } from "./paths.js";
 
 const CHROME_TEST_WS_MAX_PAYLOAD_BYTES = 1024 * 1024;
 
-type StopChromeTarget = Parameters<typeof stopOpenClawChrome>[0];
+type StopChromeTarget = Parameters<typeof stopEVEChrome>[0];
 type ChromeCdpDiagnostic = Awaited<ReturnType<typeof diagnoseChromeCdp>>;
 
 function expectFailedChromeCdpDiagnostic(
@@ -121,7 +121,7 @@ async function withMockChromeCdpServer(params: {
 }
 
 async function stopChromeWithProc(proc: ReturnType<typeof makeChromeTestProc>, timeoutMs: number) {
-  await stopOpenClawChrome(
+  await stopEVEChrome(
     {
       proc,
       cdpPort: 12345,
@@ -149,7 +149,7 @@ describe("browser chrome profile decoration", () => {
   };
 
   beforeAll(async () => {
-    fixtureRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "openclaw-chrome-suite-"));
+    fixtureRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "eve-chrome-suite-"));
   });
 
   beforeEach(() => {
@@ -169,14 +169,14 @@ describe("browser chrome profile decoration", () => {
 
   it("writes expected name + signed ARGB seed to Chrome prefs", async () => {
     const userDataDir = await createUserDataDir();
-    decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
+    decorateEVEProfile(userDataDir, { color: DEFAULT_EVE_BROWSER_COLOR });
 
     const expectedSignedArgb = ((0xff << 24) | 0xff4500) >> 0;
 
     const def = await readDefaultProfileFromLocalState(userDataDir);
 
-    expect(def.name).toBe(DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME);
-    expect(def.shortcut_name).toBe(DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME);
+    expect(def.name).toBe(DEFAULT_EVE_BROWSER_PROFILE_NAME);
+    expect(def.shortcut_name).toBe(DEFAULT_EVE_BROWSER_PROFILE_NAME);
     expect(def.profile_color_seed).toBe(expectedSignedArgb);
     expect(def.profile_highlight_color).toBe(expectedSignedArgb);
     expect(def.default_avatar_fill_color).toBe(expectedSignedArgb);
@@ -194,7 +194,7 @@ describe("browser chrome profile decoration", () => {
     expect(prefs.savefile).toBeUndefined();
 
     const marker = await fsp.readFile(
-      path.join(userDataDir, ".openclaw-profile-decorated"),
+      path.join(userDataDir, ".eve-profile-decorated"),
       "utf-8",
     );
     expect(marker.trim()).toMatch(/^\d+$/);
@@ -202,8 +202,8 @@ describe("browser chrome profile decoration", () => {
 
   it("writes managed download prefs when a download dir is provided", async () => {
     const userDataDir = await createUserDataDir();
-    decorateOpenClawProfile(userDataDir, {
-      color: DEFAULT_OPENCLAW_BROWSER_COLOR,
+    decorateEVEProfile(userDataDir, {
+      color: DEFAULT_EVE_BROWSER_COLOR,
       downloadDir: DEFAULT_DOWNLOAD_DIR,
     });
 
@@ -218,8 +218,8 @@ describe("browser chrome profile decoration", () => {
     expect(
       isProfileDecorated(
         userDataDir,
-        DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
-        DEFAULT_OPENCLAW_BROWSER_COLOR,
+        DEFAULT_EVE_BROWSER_PROFILE_NAME,
+        DEFAULT_EVE_BROWSER_COLOR,
         DEFAULT_DOWNLOAD_DIR,
       ),
     ).toBe(true);
@@ -227,13 +227,13 @@ describe("browser chrome profile decoration", () => {
 
   it("treats missing managed download prefs as undecorated when required", async () => {
     const userDataDir = await createUserDataDir();
-    decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
+    decorateEVEProfile(userDataDir, { color: DEFAULT_EVE_BROWSER_COLOR });
 
     expect(
       isProfileDecorated(
         userDataDir,
-        DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
-        DEFAULT_OPENCLAW_BROWSER_COLOR,
+        DEFAULT_EVE_BROWSER_PROFILE_NAME,
+        DEFAULT_EVE_BROWSER_COLOR,
         DEFAULT_DOWNLOAD_DIR,
       ),
     ).toBe(false);
@@ -241,10 +241,10 @@ describe("browser chrome profile decoration", () => {
 
   it("best-effort writes name when color is invalid", async () => {
     const userDataDir = await createUserDataDir();
-    decorateOpenClawProfile(userDataDir, { color: "lobster-orange" });
+    decorateEVEProfile(userDataDir, { color: "lobster-orange" });
     const def = await readDefaultProfileFromLocalState(userDataDir);
 
-    expect(def.name).toBe(DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME);
+    expect(def.name).toBe(DEFAULT_EVE_BROWSER_PROFILE_NAME);
     expect(def.profile_color_seed).toBeUndefined();
   });
 
@@ -258,7 +258,7 @@ describe("browser chrome profile decoration", () => {
       "utf-8",
     );
 
-    decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
+    decorateEVEProfile(userDataDir, { color: DEFAULT_EVE_BROWSER_COLOR });
 
     const localState = await readJson(path.join(userDataDir, "Local State"));
     expect(typeof localState.profile).toBe("object");
@@ -277,12 +277,12 @@ describe("browser chrome profile decoration", () => {
 
   it("is idempotent when rerun on an existing profile", async () => {
     const userDataDir = await createUserDataDir();
-    decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
-    decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
+    decorateEVEProfile(userDataDir, { color: DEFAULT_EVE_BROWSER_COLOR });
+    decorateEVEProfile(userDataDir, { color: DEFAULT_EVE_BROWSER_COLOR });
 
     const prefs = await readJson(path.join(userDataDir, "Default", "Preferences"));
     const profile = prefs.profile as Record<string, unknown>;
-    expect(profile.name).toBe(DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME);
+    expect(profile.name).toBe(DEFAULT_EVE_BROWSER_PROFILE_NAME);
   });
 
   it("clears stale singleton artifacts when the lock points at another host", async () => {
@@ -393,7 +393,7 @@ describe("browser chrome helpers", () => {
   });
 
   it("finds Playwright-managed Linux Chromium", () => {
-    const browserPath = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ms-playwright-"));
+    const browserPath = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ms-playwright-"));
     const executablePath = path.join(browserPath, "chromium-1217", "chrome-linux64", "chrome");
     vi.stubEnv("PLAYWRIGHT_BROWSERS_PATH", browserPath);
     fs.mkdirSync(path.dirname(executablePath), { recursive: true });
@@ -871,20 +871,20 @@ describe("browser chrome helpers", () => {
     );
   });
 
-  it("stopOpenClawChrome no-ops when process is already killed", async () => {
+  it("stopEVEChrome no-ops when process is already killed", async () => {
     const proc = makeChromeTestProc({ killed: true });
     await stopChromeWithProc(proc, 10);
     expect(proc.kill).not.toHaveBeenCalled();
   });
 
-  it("stopOpenClawChrome sends SIGTERM and returns once CDP is down", async () => {
+  it("stopEVEChrome sends SIGTERM and returns once CDP is down", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("down")));
     const proc = makeChromeTestProc();
     await stopChromeWithProc(proc, 10);
     expect(proc.kill).toHaveBeenCalledWith("SIGTERM");
   });
 
-  it("stopOpenClawChrome escalates to SIGKILL when CDP stays reachable", async () => {
+  it("stopEVEChrome escalates to SIGKILL when CDP stays reachable", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -898,7 +898,7 @@ describe("browser chrome helpers", () => {
     expect(proc.kill).toHaveBeenNthCalledWith(2, "SIGKILL");
   });
 
-  it("stopOpenClawChrome releases the managed-proxy CDP bypass exactly once on a double stop", async () => {
+  it("stopEVEChrome releases the managed-proxy CDP bypass exactly once on a double stop", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("down")));
     const proc = makeChromeTestProc();
     const release = vi.fn();
@@ -907,12 +907,12 @@ describe("browser chrome helpers", () => {
       cdpPort: 12345,
       releaseCdpProxyBypass: release,
     } as unknown as StopChromeTarget;
-    await stopOpenClawChrome(running, 10);
-    await stopOpenClawChrome(running, 10);
+    await stopEVEChrome(running, 10);
+    await stopEVEChrome(running, 10);
     expect(release).toHaveBeenCalledOnce();
   });
 
-  it("stopOpenClawChrome still releases the bypass when the SIGKILL fallback fires", async () => {
+  it("stopEVEChrome still releases the bypass when the SIGKILL fallback fires", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -927,13 +927,13 @@ describe("browser chrome helpers", () => {
       cdpPort: 12345,
       releaseCdpProxyBypass: release,
     } as unknown as StopChromeTarget;
-    await stopOpenClawChrome(running, 1);
+    await stopEVEChrome(running, 1);
     expect(proc.kill).toHaveBeenNthCalledWith(1, "SIGTERM");
     expect(proc.kill).toHaveBeenNthCalledWith(2, "SIGKILL");
     expect(release).toHaveBeenCalledOnce();
   });
 
-  it("stopOpenClawChrome swallows a throw from the bypass release callback", async () => {
+  it("stopEVEChrome swallows a throw from the bypass release callback", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("down")));
     const proc = makeChromeTestProc();
     const release = vi.fn(() => {
@@ -944,7 +944,7 @@ describe("browser chrome helpers", () => {
       cdpPort: 12345,
       releaseCdpProxyBypass: release,
     } as unknown as StopChromeTarget;
-    await expect(stopOpenClawChrome(running, 10)).resolves.toBeUndefined();
+    await expect(stopEVEChrome(running, 10)).resolves.toBeUndefined();
     expect(release).toHaveBeenCalledOnce();
   });
 });
@@ -998,7 +998,7 @@ describe("chrome executables", () => {
 
 describe("browser chrome launch args", () => {
   it("does not force an about:blank tab at startup", () => {
-    const args = buildOpenClawChromeLaunchArgs({
+    const args = buildEVEChromeLaunchArgs({
       resolved: {
         enabled: true,
         controlPort: 18791,
@@ -1025,27 +1025,27 @@ describe("browser chrome launch args", () => {
           maxTabsPerSession: 8,
           sweepMinutes: 5,
         },
-        defaultProfile: "openclaw",
+        defaultProfile: "eve",
         profiles: {
-          openclaw: { cdpPort: 18800, color: "#FF4500" },
+          eve: { cdpPort: 18800, color: "#FF4500" },
         },
       },
       profile: {
-        name: "openclaw",
+        name: "eve",
         cdpUrl: "http://127.0.0.1:18800",
         cdpPort: 18800,
         cdpHost: "127.0.0.1",
         cdpIsLoopback: true,
         color: "#FF4500",
-        driver: "openclaw",
+        driver: "eve",
         headless: false,
         attachOnly: false,
       },
-      userDataDir: "/tmp/openclaw-test-user-data",
+      userDataDir: "/tmp/eve-test-user-data",
     });
 
     expect(args).not.toContain("about:blank");
     expect(args).toContain("--remote-debugging-port=18800");
-    expect(args).toContain("--user-data-dir=/tmp/openclaw-test-user-data");
+    expect(args).toContain("--user-data-dir=/tmp/eve-test-user-data");
   });
 });

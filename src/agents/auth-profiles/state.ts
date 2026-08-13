@@ -4,12 +4,12 @@
  * separately from secret-bearing credentials.
  */
 import { isDeepStrictEqual } from "node:util";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawAgentDatabase } from "../../state/openclaw-agent-db.js";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { normalizeTrimmedStringList } from "@eve/normalization-core/string-normalization";
+import type { EVEAgentDatabase } from "../../state/eve-agent-db.js";
 import { AUTH_STORE_VERSION } from "./constants.js";
 import { readPersistedAuthProfileStateRaw, writePersistedAuthProfileStateRaw } from "./sqlite.js";
 import type {
@@ -192,7 +192,7 @@ export function mergeAuthProfileState(
 /** Loads persisted auth profile runtime state from SQLite. */
 export function loadPersistedAuthProfileState(
   agentDir?: string,
-  database?: OpenClawAgentDatabase,
+  database?: EVEAgentDatabase,
 ): AuthProfileState {
   return coerceAuthProfileState(readPersistedAuthProfileStateRaw(agentDir, database));
 }

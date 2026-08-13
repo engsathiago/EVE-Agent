@@ -1,4 +1,4 @@
-// Qa Coverage Report script supports OpenClaw repository automation.
+// Qa Coverage Report script supports EVE repository automation.
 import { runQaCoverageReportCommand } from "../extensions/qa-lab/src/cli.runtime.ts";
 import { booleanFlag, parseFlagArgs, stringFlag, stringListFlag } from "./lib/arg-utils.mjs";
 
@@ -28,7 +28,7 @@ function parseArgs(args: string[]): Options {
         if (arg !== "--help" && arg !== "-h") {
           throw new Error(`Unknown qa coverage option: ${arg}`);
         }
-        process.stdout.write(`Usage: openclaw qa coverage [options]
+        process.stdout.write(`Usage: eve qa coverage [options]
 
 Options:
   --json                Print machine-readable JSON

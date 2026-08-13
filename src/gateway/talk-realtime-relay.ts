@@ -1,8 +1,8 @@
 // Gateway Talk realtime relay.
 // Bridges browser Talk audio sessions with realtime voice provider plugins.
 import { randomUUID } from "node:crypto";
-import { resolveExpiresAtMsFromDurationMs } from "@openclaw/normalization-core/number-coercion";
-import type { OpenClawConfig } from "../config/types.js";
+import { resolveExpiresAtMsFromDurationMs } from "@eve/normalization-core/number-coercion";
+import type { EVEConfig } from "../config/types.js";
 import type { RealtimeVoiceProviderPlugin } from "../plugins/types.js";
 import {
   REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME,
@@ -132,7 +132,7 @@ type TalkRealtimeRelayIssue = {
 type CreateTalkRealtimeRelaySessionParams = {
   context: GatewayRequestContext;
   connId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: RealtimeVoiceProviderPlugin;
   providerConfig: RealtimeVoiceProviderConfig;
   instructions: string;
@@ -212,14 +212,14 @@ function isRelayAssistantEchoTranscript(session: RelaySession | undefined, text:
 }
 function buildForcedConsultCheckingPrompt(): string {
   return [
-    "Briefly tell the person that you are checking with OpenClaw.",
-    "Do not answer the request yet. Wait for the OpenClaw result before giving the actual answer.",
+    "Briefly tell the person that you are checking with EVE.",
+    "Do not answer the request yet. Wait for the EVE result before giving the actual answer.",
   ].join(" ");
 }
 
 function buildForcedConsultSpeechPrompt(text: string): string {
   return [
-    "OpenClaw finished checking. Speak this result naturally and concisely.",
+    "EVE finished checking. Speak this result naturally and concisely.",
     "Do not mention tool calls, JSON, or internal routing.",
     "",
     text,
@@ -229,7 +229,7 @@ function buildForcedConsultSpeechPrompt(text: string): string {
 function buildAlreadyDeliveredToolResult(): Record<string, string> {
   return {
     status: "already_delivered",
-    message: "OpenClaw already delivered this consult result internally. Do not repeat it.",
+    message: "EVE already delivered this consult result internally. Do not repeat it.",
   };
 }
 
@@ -752,7 +752,7 @@ function scheduleForcedAgentConsult(session: RelaySession | undefined, question:
       args: {
         question: handle.question,
         context:
-          "The realtime provider produced a final user transcript without invoking openclaw_agent_consult, so OpenClaw is forcing the consult for realtime Talk.",
+          "The realtime provider produced a final user transcript without invoking eve_agent_consult, so EVE is forcing the consult for realtime Talk.",
         responseStyle: "Reply in a concise spoken tone.",
       },
       talkEvent: session.talk.emit({
@@ -984,7 +984,7 @@ export async function steerTalkRealtimeRelayAgentRun(params: {
       type: "tool.progress",
       turnId,
       payload: {
-        name: "openclaw_agent_control",
+        name: "eve_agent_control",
         phase: result.mode,
         result,
       },

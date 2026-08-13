@@ -3,17 +3,17 @@ import { lookup as dnsLookup } from "node:dns/promises";
 import {
   clearLiveCatalogCacheForTests,
   getCachedLiveProviderModelRows,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
-import { buildManifestModelProviderConfig } from "openclaw/plugin-sdk/provider-catalog-shared";
+} from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
+import { buildManifestModelProviderConfig } from "eve-agent/plugin-sdk/provider-catalog-shared";
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   type LookupFn,
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
-} from "openclaw/plugin-sdk/ssrf-runtime";
-import manifest from "./openclaw.plugin.json" with { type: "json" };
+} from "eve-agent/plugin-sdk/ssrf-runtime";
+import manifest from "./eve.plugin.json" with { type: "json" };
 
 export const NVIDIA_DEFAULT_MODEL_ID = "nvidia/nemotron-3-ultra-550b-a55b";
 export const NVIDIA_FEATURED_MODELS_URL =

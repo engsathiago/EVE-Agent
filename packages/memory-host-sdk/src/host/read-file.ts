@@ -5,7 +5,7 @@ import {
   resolveAgentContextLimits,
   resolveAgentWorkspaceDir,
   resolveMemorySearchConfig,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "./config-utils.js";
 import {
   assertNoSymlinkParents,
@@ -159,7 +159,7 @@ export async function readMemoryFile(params: {
 
 /** Resolve agent memory config and read one memory file for that agent. */
 export async function readAgentMemoryFile(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   relPath: string;
   from?: number;

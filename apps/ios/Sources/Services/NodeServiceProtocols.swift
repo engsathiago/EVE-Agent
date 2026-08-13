@@ -1,15 +1,15 @@
 import CoreLocation
 import Foundation
-import OpenClawKit
+import EVEKit
 import UIKit
 
-typealias OpenClawCameraSnapResult = (format: String, base64: String, width: Int, height: Int)
-typealias OpenClawCameraClipResult = (format: String, base64: String, durationMs: Int, hasAudio: Bool)
+typealias EVECameraSnapResult = (format: String, base64: String, width: Int, height: Int)
+typealias EVECameraClipResult = (format: String, base64: String, durationMs: Int, hasAudio: Bool)
 
 protocol CameraServicing: Sendable {
     func listDevices() async -> [CameraController.CameraDeviceInfo]
-    func snap(params: OpenClawCameraSnapParams) async throws -> OpenClawCameraSnapResult
-    func clip(params: OpenClawCameraClipParams) async throws -> OpenClawCameraClipResult
+    func snap(params: EVECameraSnapParams) async throws -> EVECameraSnapResult
+    func clip(params: EVECameraClipParams) async throws -> EVECameraClipResult
 }
 
 protocol ScreenRecordingServicing: Sendable {
@@ -25,10 +25,10 @@ protocol ScreenRecordingServicing: Sendable {
 protocol LocationServicing: Sendable {
     func authorizationStatus() -> CLAuthorizationStatus
     func accuracyAuthorization() -> CLAccuracyAuthorization
-    func ensureAuthorization(mode: OpenClawLocationMode) async -> CLAuthorizationStatus
+    func ensureAuthorization(mode: EVELocationMode) async -> CLAuthorizationStatus
     func currentLocation(
-        params: OpenClawLocationGetParams,
-        desiredAccuracy: OpenClawLocationAccuracy,
+        params: EVELocationGetParams,
+        desiredAccuracy: EVELocationAccuracy,
         maxAgeMs: Int?,
         timeoutMs: Int?) async throws -> CLLocation
     func startMonitoringSignificantLocationChanges(onUpdate: @escaping @Sendable (CLLocation) -> Void)
@@ -36,32 +36,32 @@ protocol LocationServicing: Sendable {
 
 @MainActor
 protocol DeviceStatusServicing: Sendable {
-    func status() async throws -> OpenClawDeviceStatusPayload
-    func info() -> OpenClawDeviceInfoPayload
+    func status() async throws -> EVEDeviceStatusPayload
+    func info() -> EVEDeviceInfoPayload
 }
 
 protocol PhotosServicing: Sendable {
-    func latest(params: OpenClawPhotosLatestParams) async throws -> OpenClawPhotosLatestPayload
+    func latest(params: EVEPhotosLatestParams) async throws -> EVEPhotosLatestPayload
 }
 
 protocol ContactsServicing: Sendable {
-    func search(params: OpenClawContactsSearchParams) async throws -> OpenClawContactsSearchPayload
-    func add(params: OpenClawContactsAddParams) async throws -> OpenClawContactsAddPayload
+    func search(params: EVEContactsSearchParams) async throws -> EVEContactsSearchPayload
+    func add(params: EVEContactsAddParams) async throws -> EVEContactsAddPayload
 }
 
 protocol CalendarServicing: Sendable {
-    func events(params: OpenClawCalendarEventsParams) async throws -> OpenClawCalendarEventsPayload
-    func add(params: OpenClawCalendarAddParams) async throws -> OpenClawCalendarAddPayload
+    func events(params: EVECalendarEventsParams) async throws -> EVECalendarEventsPayload
+    func add(params: EVECalendarAddParams) async throws -> EVECalendarAddPayload
 }
 
 protocol RemindersServicing: Sendable {
-    func list(params: OpenClawRemindersListParams) async throws -> OpenClawRemindersListPayload
-    func add(params: OpenClawRemindersAddParams) async throws -> OpenClawRemindersAddPayload
+    func list(params: EVERemindersListParams) async throws -> EVERemindersListPayload
+    func add(params: EVERemindersAddParams) async throws -> EVERemindersAddPayload
 }
 
 protocol MotionServicing: Sendable {
-    func activities(params: OpenClawMotionActivityParams) async throws -> OpenClawMotionActivityPayload
-    func pedometer(params: OpenClawPedometerParams) async throws -> OpenClawPedometerPayload
+    func activities(params: EVEMotionActivityParams) async throws -> EVEMotionActivityPayload
+    func pedometer(params: EVEPedometerParams) async throws -> EVEPedometerPayload
 }
 
 struct WatchMessagingStatus: Equatable {
@@ -86,7 +86,7 @@ struct WatchQuickReplyEvent: Equatable {
 struct WatchExecApprovalResolveEvent: Equatable {
     var replyId: String
     var approvalId: String
-    var decision: OpenClawWatchExecApprovalDecision
+    var decision: EVEWatchExecApprovalDecision
     var sentAtMs: Int?
     var transport: String
 }
@@ -105,7 +105,7 @@ struct WatchAppSnapshotRequestEvent: Equatable {
 
 struct WatchAppCommandEvent: Codable, Equatable {
     var commandId: String
-    var command: OpenClawWatchAppCommand
+    var command: EVEWatchAppCommand
     var sessionKey: String?
     var gatewayStableID: String?
     var text: String?
@@ -130,17 +130,17 @@ protocol WatchMessagingServicing: AnyObject, Sendable {
     func setAppCommandHandler(_ handler: (@Sendable (WatchAppCommandEvent) -> Void)?)
     func sendNotification(
         id: String,
-        params: OpenClawWatchNotifyParams) async throws -> WatchNotificationSendResult
+        params: EVEWatchNotifyParams) async throws -> WatchNotificationSendResult
     func sendExecApprovalPrompt(
-        _ message: OpenClawWatchExecApprovalPromptMessage) async throws -> WatchNotificationSendResult
+        _ message: EVEWatchExecApprovalPromptMessage) async throws -> WatchNotificationSendResult
     func sendExecApprovalResolved(
-        _ message: OpenClawWatchExecApprovalResolvedMessage) async throws -> WatchNotificationSendResult
+        _ message: EVEWatchExecApprovalResolvedMessage) async throws -> WatchNotificationSendResult
     func sendExecApprovalExpired(
-        _ message: OpenClawWatchExecApprovalExpiredMessage) async throws -> WatchNotificationSendResult
+        _ message: EVEWatchExecApprovalExpiredMessage) async throws -> WatchNotificationSendResult
     func syncExecApprovalSnapshot(
-        _ message: OpenClawWatchExecApprovalSnapshotMessage) async throws -> WatchNotificationSendResult
+        _ message: EVEWatchExecApprovalSnapshotMessage) async throws -> WatchNotificationSendResult
     func syncAppSnapshot(
-        _ message: OpenClawWatchAppSnapshotMessage) async throws -> WatchNotificationSendResult
+        _ message: EVEWatchAppSnapshotMessage) async throws -> WatchNotificationSendResult
 }
 
 extension CameraController: CameraServicing {}

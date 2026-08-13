@@ -7,7 +7,7 @@ import path from "node:path";
 import {
   normalizeSortedUniqueTrimmedStringList,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import type { RawData, WebSocket } from "ws";
 import {
   GATEWAY_CLIENT_IDS,
@@ -260,8 +260,8 @@ function isReleasedVersion(version: string): boolean {
 }
 
 /**
- * Lazily resolve the local node host's nodeId from ~/.openclaw/node.json.
- * Process-stable: only changes on `openclaw node install`, which requires restart.
+ * Lazily resolve the local node host's nodeId from ~/.eve/node.json.
+ * Process-stable: only changes on `eve node install`, which requires restart.
  */
 let cachedLocalNodeId: string | null | undefined;
 function resolveLocalNodeId(): string | null {
@@ -354,7 +354,7 @@ function resolveTrustedProxyControlUiScopes(params: {
   requestedScopes: string[];
   upgradeReq: IncomingMessage;
 }): string[] {
-  const rawHeader = firstHeaderValue(params.upgradeReq.headers["x-openclaw-scopes"]);
+  const rawHeader = firstHeaderValue(params.upgradeReq.headers["x-eve-scopes"]);
   if (rawHeader === undefined) {
     return params.requestedScopes;
   }
@@ -1893,7 +1893,7 @@ export function attachGatewayWsMessageHandler(params: GatewayWsMessageHandlerPar
 
         // Version mismatch: kick the local node host so the OS supervisor restarts it.
         // Only applies when the connecting node is the same-install local node (verified by
-        // matching instanceId against ~/.openclaw/node.json nodeId). SSH-tunneled remote
+        // matching instanceId against ~/.eve/node.json nodeId). SSH-tunneled remote
         // nodes also appear as loopback but have different instanceIds, so they are exempt.
         // Placed before setClient/presence to avoid phantom online state on rejection.
         if (role === "node" && isLocalClient) {

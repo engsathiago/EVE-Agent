@@ -17,7 +17,7 @@ export type {
   RegisteredEmbeddingProvider,
 } from "./embedding-provider-types.js";
 
-const EMBEDDING_PROVIDERS_KEY = Symbol.for("openclaw.embeddingProviders");
+const EMBEDDING_PROVIDERS_KEY = Symbol.for("eve.embeddingProviders");
 const CORE_EMBEDDING_PROVIDERS: RegisteredEmbeddingProvider[] = [
   {
     adapter: openAICompatibleEmbeddingProviderAdapter,

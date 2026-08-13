@@ -103,7 +103,7 @@ export async function modelsAliasesRemoveCommand(aliasRaw: string, runtime: Runt
     }
     if (!found) {
       throw new Error(
-        `Alias not found: ${alias}. Run ${formatCliCommand("openclaw models aliases list")} to see configured aliases.`,
+        `Alias not found: ${alias}. Run ${formatCliCommand("eve models aliases list")} to see configured aliases.`,
       );
     }
     return {

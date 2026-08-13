@@ -4,7 +4,7 @@ description: "Edit PDFs with natural-language instructions using the nano-pdf CL
 homepage: https://pypi.org/project/nano-pdf/
 metadata:
   {
-    "openclaw":
+    "eve":
       {
         "emoji": "📄",
         "requires": { "bins": ["nano-pdf"] },

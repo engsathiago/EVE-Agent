@@ -1,6 +1,6 @@
-# OpenClaw iOS (Super Alpha)
+# EVE iOS (Super Alpha)
 
-This iOS app is super-alpha and internal-use only. The first public App Store release targets iPhone and connects to an OpenClaw Gateway as a `role: node`.
+This iOS app is super-alpha and internal-use only. The first public App Store release targets iPhone and connects to an EVE Gateway as a `role: node`.
 
 ## Distribution Status
 
@@ -29,11 +29,11 @@ pnpm install
 ./scripts/ios-configure-signing.sh
 cd apps/ios
 xcodegen generate
-open OpenClaw.xcodeproj
+open EVE.xcodeproj
 ```
 
 3. In Xcode:
-   - Scheme: `OpenClaw`
+   - Scheme: `EVE`
    - Destination: connected iPhone (recommended for real behavior)
    - Build configuration: `Debug`
    - Run (`Product` -> `Run`)
@@ -55,19 +55,19 @@ Prereqs:
 - `pnpm`
 - `xcodegen`
 - `fastlane`
-- Apple account signed into Xcode for the canonical OpenClaw team (`FWJYW4S8P8`)
-- Fastlane Apple Developer Portal session for the canonical OpenClaw team when creating bundle IDs or enabling services
+- Apple account signed into Xcode for the canonical EVE team (`FWJYW4S8P8`)
+- Fastlane Apple Developer Portal session for the canonical EVE team when creating bundle IDs or enabling services
 - Release-owner access to the encrypted signing repo password (`MATCH_PASSWORD`)
-- App Store Connect app already created for `ai.openclawfoundation.app`
+- App Store Connect app already created for `ai.evefoundation.app`
 - App Store Connect API key set up in Keychain via `scripts/ios-app-store-connect-keychain-setup.sh` when auto-resolving a build number or uploading to App Store Connect
 
 Release behavior:
 
-- Local development uses the canonical `ai.openclawfoundation.app*` bundle IDs when the OpenClaw team is available, and unique `ai.openclawfoundation.app.test.*` bundle IDs only for non-canonical fallback teams.
-- App Store release uses canonical `ai.openclawfoundation.app*` bundle IDs through a temporary generated xcconfig in `apps/ios/build/AppStoreRelease.xcconfig`.
+- Local development uses the canonical `ai.evefoundation.app*` bundle IDs when the EVE team is available, and unique `ai.evefoundation.app.test.*` bundle IDs only for non-canonical fallback teams.
+- App Store release uses canonical `ai.evefoundation.app*` bundle IDs through a temporary generated xcconfig in `apps/ios/build/AppStoreRelease.xcconfig`.
 - App Store release uses manual `Apple Distribution` signing with profile names pinned in `apps/ios/Config/AppStoreSigning.json`.
 - Fastlane owns one-time Developer Portal setup, encrypted `match` signing sync to the repo/branch pinned in `apps/ios/Config/AppStoreSigning.json`, and release handling.
-- App Store release also switches the app to `OpenClawPushTransport=relay`, `OpenClawPushDistribution=official`, `OpenClawPushAPNsEnvironment=production`, and a production `aps-environment` entitlement.
+- App Store release also switches the app to `EVEPushTransport=relay`, `EVEPushDistribution=official`, `EVEPushAPNsEnvironment=production`, and a production `aps-environment` entitlement.
 - `pnpm ios:release:upload` generates App Store screenshots and uploads release notes before archiving and uploading the IPA.
 - `pnpm ios:release` remains a compatibility alias for `pnpm ios:release:upload`; prefer the explicit upload command in new release docs and automation.
 - App Review submission is manual in App Store Connect. The release lane uploads a build and metadata, but does not submit for review.
@@ -83,8 +83,8 @@ Release behavior:
 
 Relay behavior for App Store builds:
 
-- Release builds default to `https://ios-push-relay.openclaw.ai`.
-- Optional custom relay override: `OPENCLAW_PUSH_RELAY_BASE_URL=https://relay.example.com`
+- Release builds default to `https://ios-push-relay.eve.ai`.
+- Optional custom relay override: `EVE_PUSH_RELAY_BASE_URL=https://relay.example.com`
   This must be a plain `https://host[:port][/path]` base URL without whitespace, query params, fragments, or xcconfig metacharacters.
 
 Signing setup commands:
@@ -152,19 +152,19 @@ scripts/ios-app-store-connect-keychain-setup.sh \
 This should create `apps/ios/fastlane/.env` with non-secret App Store Connect variables while the private key stays in Keychain.
 
 3. Confirm the App Store Connect app and Apple Developer identifiers/capabilities exist for:
-   - `ai.openclawfoundation.app`
-   - `ai.openclawfoundation.app.share`
-   - `ai.openclawfoundation.app.activitywidget`
-   - `ai.openclawfoundation.app.watchkitapp`
+   - `ai.evefoundation.app`
+   - `ai.evefoundation.app.share`
+   - `ai.evefoundation.app.activitywidget`
+   - `ai.evefoundation.app.watchkitapp`
 
    The main app and share extension must both be associated with the App Group pinned in `apps/ios/Config/AppStoreSigning.json`.
 
    Use `pnpm ios:release:signing:setup` for the initial portal setup, then `MATCH_PASSWORD=... pnpm ios:release:signing:sync:push` to publish encrypted Fastlane match assets to the shared private repo.
 
-4. Optional: set a custom official relay URL for the build. If unset, the release flow uses `https://ios-push-relay.openclaw.ai`.
+4. Optional: set a custom official relay URL for the build. If unset, the release flow uses `https://ios-push-relay.eve.ai`.
 
 ```bash
-export OPENCLAW_PUSH_RELAY_BASE_URL=https://relay.example.com
+export EVE_PUSH_RELAY_BASE_URL=https://relay.example.com
 ```
 
 5. If you are starting a brand-new production release train, pin iOS to the current gateway version first:
@@ -186,13 +186,13 @@ pnpm ios:release:upload
    - generates deterministic App Store screenshots
    - uploads release notes and screenshots to the editable App Store version
    - generates `apps/ios/build/AppStoreRelease.xcconfig`
-   - archives `OpenClaw`
+   - archives `EVE`
    - uploads the IPA to App Store Connect for TestFlight/App Review use
    - leaves App Review submission for a maintainer to complete manually
 
 8. Expected outputs after a successful run:
-   - `apps/ios/build/app-store/OpenClaw-<version>.ipa`
-   - `apps/ios/build/app-store/OpenClaw-<version>.app.dSYM.zip`
+   - `apps/ios/build/app-store/EVE-<version>.ipa`
+   - `apps/ios/build/app-store/EVE-<version>.app.dSYM.zip`
    - Fastlane log line like `Uploaded iOS App Store build: version=<version> short=<short> build=<build>`
 
 9. If this is a fresh clone on a maintainer machine that already works elsewhere, it is OK to copy the non-secret `apps/ios/fastlane/.env` from another trusted local clone on the same Mac. The Keychain-backed private key remains machine-local and is not stored in the repo.
@@ -242,15 +242,15 @@ See `apps/ios/VERSIONING.md` for the detailed spec.
 ## APNs Expectations For Local/Manual Builds
 
 - The app calls `registerForRemoteNotifications()` at launch.
-- `apps/ios/Sources/OpenClaw.entitlements` derives `aps-environment` from the active build configuration/signing override.
+- `apps/ios/Sources/EVE.entitlements` derives `aps-environment` from the active build configuration/signing override.
 - APNs token registration to gateway happens only after gateway connection (`push.apns.register`).
-- Local/manual builds default to `OpenClawPushTransport=direct`, `OpenClawPushDistribution=local`, and a development `aps-environment` entitlement.
+- Local/manual builds default to `EVEPushTransport=direct`, `EVEPushDistribution=local`, and a development `aps-environment` entitlement.
 - Your selected team/profile must support Push Notifications for the app bundle ID you are signing.
 - If push capability or provisioning is wrong, APNs registration fails at runtime (check Xcode logs for `APNs registration failed`).
-- The gateway host also needs direct APNs auth configured separately with `OPENCLAW_APNS_TEAM_ID`, `OPENCLAW_APNS_KEY_ID`, and either `OPENCLAW_APNS_PRIVATE_KEY_P8` or `OPENCLAW_APNS_PRIVATE_KEY_PATH`.
-- Recommended gateway-host storage for the APNs `.p8` file is `~/.openclaw/credentials/apns/AuthKey_<KEYID>.p8` with restrictive permissions, then point `OPENCLAW_APNS_PRIVATE_KEY_PATH` at that file.
+- The gateway host also needs direct APNs auth configured separately with `EVE_APNS_TEAM_ID`, `EVE_APNS_KEY_ID`, and either `EVE_APNS_PRIVATE_KEY_P8` or `EVE_APNS_PRIVATE_KEY_PATH`.
+- Recommended gateway-host storage for the APNs `.p8` file is `~/.eve/credentials/apns/AuthKey_<KEYID>.p8` with restrictive permissions, then point `EVE_APNS_PRIVATE_KEY_PATH` at that file.
 - `apps/ios/fastlane/.env` only covers App Store Connect / Fastlane auth; it does not provide gateway APNs credentials for local direct-push testing.
-- Debug builds default to `OpenClawPushAPNsEnvironment=sandbox`; Release builds default to `production`.
+- Debug builds default to `EVEPushAPNsEnvironment=sandbox`; Release builds default to `production`.
 
 ## APNs Expectations For Official Builds
 
@@ -260,7 +260,7 @@ See `apps/ios/VERSIONING.md` for the detailed spec.
 - The app persists the relay handle metadata locally so reconnects can republish the gateway registration without re-registering on every connect.
 - If the relay base URL changes in a later build, the app refreshes the relay registration instead of reusing the old relay origin.
 - Relay mode requires a reachable relay base URL and uses App Attest plus a StoreKit app transaction JWS during registration.
-- Gateway-side relay sending is configured through `gateway.push.apns.relay.baseUrl` in `openclaw.json`. `OPENCLAW_APNS_RELAY_BASE_URL` remains a temporary env override only.
+- Gateway-side relay sending is configured through `gateway.push.apns.relay.baseUrl` in `eve.json`. `EVE_APNS_RELAY_BASE_URL` remains a temporary env override only.
 
 ## Official Build Relay Trust Model
 
@@ -282,7 +282,7 @@ See `apps/ios/VERSIONING.md` for the detailed spec.
   - Production APNs credentials and raw official-build APNs tokens stay in the relay deployment,
     not on the gateway.
 
-This exists to keep the hosted relay limited to genuine OpenClaw official builds and to ensure a
+This exists to keep the hosted relay limited to genuine EVE official builds and to ensure a
 gateway can only send pushes for iOS devices that paired with that gateway.
 
 ## What Works Now (Concrete)
@@ -296,7 +296,7 @@ gateway can only send pushes for iOS devices that paired with that gateway.
 
 ## Computer Use Relationship
 
-The iOS app is not a Codex Computer Use backend. Computer Use and `cua-driver mcp` are macOS desktop-control paths; iOS exposes device capabilities as OpenClaw node commands through the gateway. Agents can drive the iPhone canvas, camera, screen, location, voice, and other node capabilities with `node.invoke`, subject to iOS foreground/background limits.
+The iOS app is not a Codex Computer Use backend. Computer Use and `cua-driver mcp` are macOS desktop-control paths; iOS exposes device capabilities as EVE node commands through the gateway. Agents can drive the iPhone canvas, camera, screen, location, voice, and other node capabilities with `node.invoke`, subject to iOS foreground/background limits.
 
 ## Location Automation Use Case (Testing)
 
@@ -364,7 +364,7 @@ Automatic wake/reconnect hardening:
 5. If network path is unclear:
    - switch to manual host/port + TLS in Gateway Advanced settings
 6. In Xcode console, filter for subsystem/category signals:
-   - `ai.openclawfoundation.app`
+   - `ai.evefoundation.app`
    - `GatewayDiag`
    - `APNs registration failed`
 7. Validate background expectations:

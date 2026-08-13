@@ -177,7 +177,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
         role: "user",
         content: [{ type: "text", text: "Stored ask with index metadata" }],
         timestamp: 1717570800000,
-        __openclaw: {
+        __eve: {
           seq: 12,
           embeddingInput: "Stored ask with index metadata",
         },
@@ -190,13 +190,13 @@ describe("normalizeMessagesForLlmBoundary", () => {
     ) as unknown as Array<Record<string, unknown>>;
 
     expect(output[0]?.content).toBe("Stored ask with index metadata");
-    expect(output[0]?.["__openclaw"]).toEqual({
+    expect(output[0]?.["__eve"]).toEqual({
       seq: 12,
       embeddingInput: "Stored ask with index metadata",
     });
-    expect(output[0]?.["__openclaw"]).toBe(input[0]?.["__openclaw"]);
+    expect(output[0]?.["__eve"]).toBe(input[0]?.["__eve"]);
     expect(input[0]?.content).toEqual([{ type: "text", text: "Stored ask with index metadata" }]);
-    expect(input[0]?.["__openclaw"]).toEqual({
+    expect(input[0]?.["__eve"]).toEqual({
       seq: 12,
       embeddingInput: "Stored ask with index metadata",
     });
@@ -521,7 +521,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       },
       {
         role: "custom",
-        customType: "openclaw.runtime-context",
+        customType: "eve.runtime-context",
         content: "current secret runtime context",
         display: false,
         timestamp: 2,
@@ -533,7 +533,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       },
       {
         role: "custom",
-        customType: "openclaw.runtime-context",
+        customType: "eve.runtime-context",
         content: "post-user stale runtime context",
         display: false,
         timestamp: 4,
@@ -582,7 +582,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
     ];
     const runtimeContext = {
       role: "custom",
-      customType: "openclaw.runtime-context",
+      customType: "eve.runtime-context",
       content: "retry runtime context",
       display: false,
       timestamp: 3,
@@ -605,7 +605,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       "user",
     ]);
     expect(retryInput[2]).toMatchObject({
-      customType: "openclaw.runtime-context",
+      customType: "eve.runtime-context",
       content: "retry runtime context",
     });
     // User messages are form-canonicalized from array to plain string.
@@ -627,7 +627,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       },
       {
         role: "custom",
-        customType: "openclaw.runtime-context",
+        customType: "eve.runtime-context",
         content: "current runtime context",
         display: false,
         timestamp: 2,
@@ -650,7 +650,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       "user",
     ]);
     expect(modelInput[2]).toMatchObject({
-      customType: "openclaw.runtime-context",
+      customType: "eve.runtime-context",
       content: "current runtime context",
     });
     // User messages are form-canonicalized from array to plain string.
@@ -669,7 +669,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
           },
         ],
         timestamp: 1,
-        __openclaw: {
+        __eve: {
           beforeAgentRunBlocked: {
             blockedBy: "policy-plugin",
             blockedAt: 1,
@@ -688,11 +688,11 @@ describe("normalizeMessagesForLlmBoundary", () => {
     expect(output[0]?.content).toBe(
       "Your message could not be sent: The agent cannot read this message. (blocked by policy-plugin)",
     );
-    expect(output[0]).toHaveProperty("__openclaw.beforeAgentRunBlocked");
-    expect(output[0]).not.toHaveProperty("__openclaw.beforeAgentRunBlocked.reason");
+    expect(output[0]).toHaveProperty("__eve.beforeAgentRunBlocked");
+    expect(output[0]).not.toHaveProperty("__eve.beforeAgentRunBlocked.reason");
     expect(JSON.stringify(output)).not.toContain("secret prompt");
     expect(JSON.stringify(output)).not.toContain("matched secret prompt");
-    expect(input[0]).toHaveProperty("__openclaw");
+    expect(input[0]).toHaveProperty("__eve");
   });
 
   it("replaces only the armed prompt with model prompt context", async () => {
@@ -734,7 +734,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
     ]);
     expect(armedRecords[0]?.content).toEqual([{ type: "text", text: "private model prompt" }]);
     expect(armedResult[0]).toHaveProperty(
-      "__openclawTranscriptPromptText",
+      "__eveTranscriptPromptText",
       "visible transcript prompt",
     );
     expect(captured).toHaveLength(2);

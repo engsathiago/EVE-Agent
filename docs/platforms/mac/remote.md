@@ -1,16 +1,16 @@
 ---
-summary: "macOS app flow for controlling a remote OpenClaw gateway"
+summary: "macOS app flow for controlling a remote EVE gateway"
 read_when:
   - Setting up or debugging remote mac control
 title: "Remote control"
 ---
 
-This flow lets the macOS app act as a full remote control for an OpenClaw gateway running on another host (desktop/server). The app can connect directly to trusted LAN/Tailnet gateway URLs or manage an SSH tunnel when the remote gateway is loopback-only. Health checks, Voice Wake forwarding, and Web Chat reuse the same remote configuration from _Settings → General_.
+This flow lets the macOS app act as a full remote control for an EVE gateway running on another host (desktop/server). The app can connect directly to trusted LAN/Tailnet gateway URLs or manage an SSH tunnel when the remote gateway is loopback-only. Health checks, Voice Wake forwarding, and Web Chat reuse the same remote configuration from _Settings → General_.
 
 ## Modes
 
 - **Local (this Mac)**: Everything runs on the laptop. No SSH involved.
-- **Remote over SSH (default)**: OpenClaw commands are executed on the remote host. The mac app opens an SSH connection with `-o BatchMode` plus your chosen identity/key and a local port-forward.
+- **Remote over SSH (default)**: EVE commands are executed on the remote host. The mac app opens an SSH connection with `-o BatchMode` plus your chosen identity/key and a local port-forward.
 - **Remote direct (ws/wss)**: No SSH tunnel. The mac app connects to the gateway URL directly (for example, via LAN, Tailscale, Tailscale Serve, or a public HTTPS reverse proxy).
 
 ## Remote transports
@@ -30,14 +30,14 @@ If the local tunnel port differs from the remote gateway port, set
 Browser automation in remote mode is owned by the CLI node host, not by the
 native macOS app node. The app starts the installed node host service when
 possible; if you need browser control from that Mac, install/start it with
-`openclaw node install ...` and `openclaw node start` (or run
-`openclaw node run ...` in the foreground), then target that browser-capable
+`eve node install ...` and `eve node start` (or run
+`eve node run ...` in the foreground), then target that browser-capable
 node.
 
 ## Prereqs on the remote host
 
-1. Install Node + pnpm and build/install the OpenClaw CLI (`pnpm install && pnpm build && pnpm link --global`).
-2. Ensure `openclaw` is on PATH for non-interactive shells (symlink into `/usr/local/bin` or `/opt/homebrew/bin` if needed).
+1. Install Node + pnpm and build/install the EVE CLI (`pnpm install && pnpm build && pnpm link --global`).
+2. Ensure `eve` is on PATH for non-interactive shells (symlink into `/usr/local/bin` or `/opt/homebrew/bin` if needed).
 3. For SSH transport only: open SSH with key auth. We recommend **Tailscale** IPs for stable reachability off-LAN.
 
 ## macOS app setup
@@ -45,34 +45,34 @@ node.
 To preconfigure the app without the welcome flow:
 
 ```bash
-openclaw-mac configure-remote \
+eve-mac configure-remote \
   --ssh-target user@gateway.local \
   --local-port 18789 \
   --remote-port 18789 \
-  --token "$OPENCLAW_GATEWAY_TOKEN"
+  --token "$EVE_GATEWAY_TOKEN"
 ```
 
 For a gateway already reachable on a trusted LAN or Tailnet, skip SSH entirely:
 
 ```bash
-openclaw-mac configure-remote \
+eve-mac configure-remote \
   --direct-url ws://192.168.0.202:18789 \
-  --token "$OPENCLAW_GATEWAY_TOKEN"
+  --token "$EVE_GATEWAY_TOKEN"
 ```
 
 This writes the remote config, marks onboarding complete, and lets the app own
 the selected transport when it starts.
 
 1. Open _Settings → General_.
-2. Under **OpenClaw runs**, pick **Remote** and set:
+2. Under **EVE runs**, pick **Remote** and set:
    - **Transport**: **SSH tunnel** or **Direct (ws/wss)**.
    - **SSH target**: `user@host` (optional `:port`).
      - If the gateway is on the same LAN and advertises Bonjour, pick it from the discovered list to auto-fill this field.
    - **Gateway URL** (Direct only): `wss://gateway.example.ts.net` (or `ws://...` for local/LAN).
    - **Identity file** (advanced): path to your key.
    - **Project root** (advanced): remote checkout path used for commands.
-   - **CLI path** (advanced): optional path to a runnable `openclaw` entrypoint/binary (auto-filled when advertised).
-3. Hit **Test remote**. Success indicates the remote `openclaw status --json` runs correctly. Failures usually mean PATH/CLI issues; exit 127 means the CLI isn't found remotely.
+   - **CLI path** (advanced): optional path to a runnable `eve` entrypoint/binary (auto-filled when advertised).
+3. Hit **Test remote**. Success indicates the remote `eve status --json` runs correctly. Failures usually mean PATH/CLI issues; exit 127 means the CLI isn't found remotely.
 4. Health checks and Web Chat will now run through the selected transport automatically.
 
 ## Web Chat
@@ -95,13 +95,13 @@ the selected transport when it starts.
 
 ## WhatsApp login flow (remote)
 
-- Run `openclaw channels login --verbose` **on the remote host**. Scan the QR with WhatsApp on your phone.
+- Run `eve channels login --verbose` **on the remote host**. Scan the QR with WhatsApp on your phone.
 - Re-run login on that host if auth expires. Health check will surface link problems.
 
 ## Troubleshooting
 
-- **exit 127 / not found**: `openclaw` isn't on PATH for non-login shells. Add it to `/etc/paths`, your shell rc, or symlink into `/usr/local/bin`/`/opt/homebrew/bin`.
-- **Health probe failed**: check SSH reachability, PATH, and that Baileys is logged in (`openclaw status --json`).
+- **exit 127 / not found**: `eve` isn't on PATH for non-login shells. Add it to `/etc/paths`, your shell rc, or symlink into `/usr/local/bin`/`/opt/homebrew/bin`.
+- **Health probe failed**: check SSH reachability, PATH, and that Baileys is logged in (`eve status --json`).
 - **Web Chat stuck**: confirm the gateway is running on the remote host and the forwarded port matches the gateway WS port; the UI requires a healthy WS connection.
 - **Node IP shows 127.0.0.1**: expected with the SSH tunnel. Switch **Transport** to **Direct (ws/wss)** if you want the gateway to see the real client IP.
 - **Dashboard works but Mac capabilities are offline**: this means the app's operator/control connection is healthy, but the companion node connection is not connected or is missing its command surface. Open the menu bar device section and check whether the Mac is `paired · disconnected`. For `wss://*.ts.net` Tailscale Serve endpoints, the app detects stale legacy TLS leaf pins after certificate rotation, clears the stale pin when macOS trusts the new certificate, and retries automatically. If the certificate is not system-trusted or the host is not a Tailscale Serve name, set `gateway.remote.tlsFingerprint` to the expected certificate fingerprint, review the certificate, or switch to **Remote over SSH**.
@@ -109,10 +109,10 @@ the selected transport when it starts.
 
 ## Notification sounds
 
-Pick sounds per notification from scripts with `openclaw` and `node.invoke`, e.g.:
+Pick sounds per notification from scripts with `eve` and `node.invoke`, e.g.:
 
 ```bash
-openclaw nodes notify --node <id> --title "Ping" --body "Remote gateway ready" --sound Glass
+eve nodes notify --node <id> --title "Ping" --body "Remote gateway ready" --sound Glass
 ```
 
 There is no global "default sound" toggle in the app anymore; callers choose a sound (or none) per request.

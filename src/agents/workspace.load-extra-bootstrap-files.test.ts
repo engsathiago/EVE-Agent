@@ -17,7 +17,7 @@ describe("loadExtraBootstrapFilesWithDiagnostics", () => {
   };
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-extra-bootstrap-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-extra-bootstrap-"));
   });
 
   afterAll(async () => {

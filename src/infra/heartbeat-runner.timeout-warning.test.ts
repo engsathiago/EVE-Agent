@@ -1,14 +1,14 @@
 // Covers heartbeat timeout warning emission and suppression behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 
-function createHeartbeatConfig(every: string): OpenClawConfig {
+function createHeartbeatConfig(every: string): EVEConfig {
   return {
     agents: {
       defaults: { heartbeat: { every } },
       list: [{ id: "main", heartbeat: { every } }],
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 describe("startHeartbeatRunner timeout overflow warnings", () => {

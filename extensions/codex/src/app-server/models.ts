@@ -2,7 +2,7 @@
  * Lists and normalizes models exposed by the Codex app-server `model/list`
  * endpoint, including pagination and shared-client lease handling.
  */
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { resolveCodexAppServerAuthProfileIdForAgent } from "./auth-bridge.js";
 import type { CodexAppServerClient } from "./client.js";
 import type { CodexAppServerStartOptions } from "./config.js";
@@ -130,7 +130,7 @@ async function requestModelListPage(
   return readModelListResult(response);
 }
 
-/** Parses a raw Codex app-server model/list response into OpenClaw's normalized shape. */
+/** Parses a raw Codex app-server model/list response into EVE's normalized shape. */
 export function readModelListResult(value: unknown): CodexAppServerModelListResult {
   const response = readCodexModelListResponse(value);
   if (!response) {

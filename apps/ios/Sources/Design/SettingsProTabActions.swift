@@ -1,4 +1,4 @@
-import OpenClawKit
+import EVEKit
 import SwiftUI
 import UIKit
 import UserNotifications
@@ -26,7 +26,7 @@ extension SettingsProTab {
                 ProValuePill(value: value, color: color)
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     var diagnosticChecksCard: some View {
@@ -51,7 +51,7 @@ extension SettingsProTab {
                     title: "Discovery",
                     detail: self.gatewayController.discoveryStatusText,
                     value: "\(self.gatewayController.gateways.count)",
-                    color: self.gatewayController.gateways.isEmpty ? .secondary : OpenClawBrand.accent)
+                    color: self.gatewayController.gateways.isEmpty ? .secondary : EVEBrand.accent)
                 Divider().padding(.leading, 60)
                 self.diagnosticCheckRow(
                     icon: "waveform",
@@ -72,17 +72,17 @@ extension SettingsProTab {
                     title: "Screen Capture",
                     detail: "Live foreground capture state",
                     value: self.appModel.screenRecordActive ? "live" : "idle",
-                    color: self.appModel.screenRecordActive ? OpenClawBrand.ok : .secondary)
+                    color: self.appModel.screenRecordActive ? EVEBrand.ok : .secondary)
                 Divider().padding(.leading, 60)
                 self.diagnosticCheckRow(
                     icon: "mic",
                     title: "Voice Wake",
                     detail: self.appModel.voiceWake.statusText,
                     value: self.voiceWakeEnabled ? "on" : "off",
-                    color: self.voiceWakeEnabled ? OpenClawBrand.ok : .secondary)
+                    color: self.voiceWakeEnabled ? EVEBrand.ok : .secondary)
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     func diagnosticCheckRow(
@@ -113,7 +113,7 @@ extension SettingsProTab {
         ProCard(padding: 0, radius: SettingsLayout.cardRadius) {
             VStack(spacing: 0, content: content)
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     func detailRow(_ label: String, value: String) -> some View {
@@ -378,7 +378,7 @@ extension SettingsProTab {
     func handleLocationModeChange(_ newValue: String) {
         guard !self.isChangingLocationMode else { return }
         guard newValue != self.previousLocationModeRaw else { return }
-        guard let mode = OpenClawLocationMode(rawValue: newValue) else { return }
+        guard let mode = EVELocationMode(rawValue: newValue) else { return }
         let previous = self.previousLocationModeRaw
         Task {
             await self.applyLocationMode(mode, rawValue: newValue, previous: previous)
@@ -387,7 +387,7 @@ extension SettingsProTab {
 
     @MainActor
     func applyLocationMode(
-        _ mode: OpenClawLocationMode,
+        _ mode: EVELocationMode,
         rawValue: String,
         previous: String) async
     {
@@ -549,7 +549,7 @@ extension SettingsProTab {
     func friendlyGatewayMessage(from raw: String) -> String? {
         let lower = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if lower.contains("pairing required") {
-            return "Pairing required. Run /pair approve in your OpenClaw chat, then connect again."
+            return "Pairing required. Run /pair approve in your EVE chat, then connect again."
         }
         if lower.contains("device nonce required") || lower.contains("device nonce mismatch") {
             return "Secure handshake failed. Check Tailscale, then connect again."
@@ -645,8 +645,8 @@ extension SettingsProTab {
     }
 
     var gatewayStatusColor: Color {
-        if self.appModel.isAppleReviewDemoModeEnabled { return OpenClawBrand.accent }
-        return self.gatewayConnected ? OpenClawBrand.ok : .secondary
+        if self.appModel.isAppleReviewDemoModeEnabled { return EVEBrand.accent }
+        return self.gatewayConnected ? EVEBrand.ok : .secondary
     }
 
     var gatewayDiagnosticConnected: Bool {
@@ -676,7 +676,7 @@ extension SettingsProTab {
 
     var gatewayTalkConfigColor: Color {
         if self.appModel.isAppleReviewDemoModeEnabled { return .secondary }
-        return self.appModel.talkMode.gatewayTalkConfigLoaded ? OpenClawBrand.ok : .secondary
+        return self.appModel.talkMode.gatewayTalkConfigLoaded ? EVEBrand.ok : .secondary
     }
 
     var gatewayAddress: String {
@@ -684,13 +684,13 @@ extension SettingsProTab {
     }
 
     var gatewayServer: String {
-        self.appModel.gatewayServerName ?? "OpenClaw Gateway"
+        self.appModel.gatewayServerName ?? "EVE Gateway"
     }
 
     var permissionsDetail: String {
         var enabled = 0
         if self.cameraEnabled { enabled += 1 }
-        if self.locationModeRaw != OpenClawLocationMode.off.rawValue { enabled += 1 }
+        if self.locationModeRaw != EVELocationMode.off.rawValue { enabled += 1 }
         if self.preventSleep { enabled += 1 }
         return "\(enabled) enabled"
     }
@@ -712,14 +712,14 @@ extension SettingsProTab {
                 title: pendingApproval.commandPreview ?? "Review gateway action",
                 detail: "Agent: \(self.appModel.activeAgentName)",
                 priority: self.appModel.pendingExecApprovalPromptResolving ? "Resolving" : "High",
-                color: OpenClawBrand.danger),
+                color: EVEBrand.danger),
             SettingsApprovalItem(
                 id: "pending-context",
                 icon: "doc.text.fill",
                 title: pendingApproval.allowsAllowAlways ? "Permission can be saved" : "One-time approval",
                 detail: "Gateway request",
                 priority: pendingApproval.allowsAllowAlways ? "Medium" : "Review",
-                color: OpenClawBrand.warn),
+                color: EVEBrand.warn),
         ]
     }
 
@@ -748,16 +748,16 @@ extension SettingsProTab {
 
     var diagnosticsRunColor: Color {
         guard let diagnosticsIssueCount else { return .secondary }
-        return diagnosticsIssueCount == 0 ? OpenClawBrand.ok : OpenClawBrand.warn
+        return diagnosticsIssueCount == 0 ? EVEBrand.ok : EVEBrand.warn
     }
 
     var privacyDetail: String {
-        let location = OpenClawLocationMode(rawValue: self.locationModeRaw) ?? .off
+        let location = EVELocationMode(rawValue: self.locationModeRaw) ?? .off
         return location == .off ? "Location off" : "Location \(self.locationLabel)"
     }
 
     var locationLabel: String {
-        switch OpenClawLocationMode(rawValue: self.locationModeRaw) ?? .off {
+        switch EVELocationMode(rawValue: self.locationModeRaw) ?? .off {
         case .off: "Off"
         case .whileUsing: "While Using"
         case .always: "Always"

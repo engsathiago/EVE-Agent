@@ -35,7 +35,7 @@ function makeSnapshot() {
     issues: [] as ConfigIssue[],
     warnings: [] as ConfigIssue[],
     legacyIssues: [] as ConfigIssue[],
-    path: "/tmp/openclaw.json",
+    path: "/tmp/eve.json",
   };
 }
 
@@ -97,41 +97,41 @@ describe("ensureConfigReady", () => {
     });
   }
 
-  function useTempOpenClawHome(): string {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-config-guard-"));
+  function useTempEVEHome(): string {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-config-guard-"));
     tempRoots.push(root);
-    setTestEnvValue("OPENCLAW_HOME", root);
-    deleteTestEnvValue("OPENCLAW_STATE_DIR");
+    setTestEnvValue("EVE_HOME", root);
+    deleteTestEnvValue("EVE_STATE_DIR");
     return root;
   }
 
   function writeLegacyTaskSidecarMarker(root: string): void {
-    const markerPath = path.join(root, ".openclaw", "tasks", "runs.sqlite");
+    const markerPath = path.join(root, ".eve", "tasks", "runs.sqlite");
     fs.mkdirSync(path.dirname(markerPath), { recursive: true });
     fs.writeFileSync(markerPath, "");
   }
 
   function writePendingTaskSidecarArchiveMarker(root: string): void {
-    const markerPath = path.join(root, ".openclaw", "tasks", "runs.sqlite");
+    const markerPath = path.join(root, ".eve", "tasks", "runs.sqlite");
     fs.mkdirSync(path.dirname(markerPath), { recursive: true });
     fs.writeFileSync(`${markerPath}.migrated`, "");
     fs.writeFileSync(`${markerPath}-wal`, "");
   }
 
   function writeStateMarker(root: string, relativePath: string): void {
-    const markerPath = path.join(root, ".openclaw", relativePath);
+    const markerPath = path.join(root, ".eve", relativePath);
     fs.mkdirSync(path.dirname(markerPath), { recursive: true });
     fs.writeFileSync(markerPath, "{}");
   }
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["HOME", "OPENCLAW_HOME", "OPENCLAW_STATE_DIR"]);
+    envSnapshot = captureEnv(["HOME", "EVE_HOME", "EVE_STATE_DIR"]);
     vi.clearAllMocks();
     resetConfigGuardStateForTests();
     for (const root of tempRoots.splice(0)) {
       fs.rmSync(root, { recursive: true, force: true });
     }
-    useTempOpenClawHome();
+    useTempEVEHome();
     readConfigFileSnapshotMock.mockResolvedValue(makeSnapshot());
     loadAndMaybeMigrateDoctorConfigMock.mockImplementation(async () => ({
       snapshot: makeSnapshot(),
@@ -181,7 +181,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow when lightweight startup detection finds legacy state", async () => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     writeLegacyTaskSidecarMarker(root);
 
     await runEnsureConfigReady(["status"]);
@@ -194,7 +194,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow when lightweight startup detection finds a pending SQLite archive", async () => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     writePendingTaskSidecarArchiveMarker(root);
 
     await runEnsureConfigReady(["status"]);
@@ -207,8 +207,8 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow for legacy sessions without task sidecars", async () => {
-    const root = useTempOpenClawHome();
-    fs.mkdirSync(path.join(root, ".openclaw", "sessions"), { recursive: true });
+    const root = useTempEVEHome();
+    fs.mkdirSync(path.join(root, ".eve", "sessions"), { recursive: true });
 
     await runEnsureConfigReady(["status"]);
 
@@ -216,7 +216,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow before agent commands when the legacy plugin install index exists", async () => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     writeStateMarker(root, "plugins/installs.json");
 
     await runEnsureConfigReady(["agent"]);
@@ -230,9 +230,9 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow before agent commands when default exec approvals must move to a custom state dir", async () => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     const stateDir = path.join(root, "custom-state");
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
+    setTestEnvValue("EVE_STATE_DIR", stateDir);
     writeStateMarker(root, "exec-approvals.json");
 
     await runEnsureConfigReady(["agent"]);
@@ -259,7 +259,7 @@ describe("ensureConfigReady", () => {
     ["iMessage catchup cursor", "imessage/catchup/default__37a8eec1ce19.json"],
     ["WhatsApp root auth", "credentials/creds.json"],
   ])("runs doctor flow for bundled channel legacy state: %s", async (_label, relativePath) => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     writeStateMarker(root, relativePath);
 
     await runEnsureConfigReady(["status"]);
@@ -267,12 +267,12 @@ describe("ensureConfigReady", () => {
     expect(loadAndMaybeMigrateDoctorConfigMock).toHaveBeenCalledOnce();
   });
 
-  it("uses shared tilde expansion for OPENCLAW_HOME in the startup detector", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-config-guard-home-"));
+  it("uses shared tilde expansion for EVE_HOME in the startup detector", async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-config-guard-home-"));
     tempRoots.push(root);
     setTestEnvValue("HOME", root);
-    setTestEnvValue("OPENCLAW_HOME", "~/svc");
-    deleteTestEnvValue("OPENCLAW_STATE_DIR");
+    setTestEnvValue("EVE_HOME", "~/svc");
+    deleteTestEnvValue("EVE_STATE_DIR");
     writeLegacyTaskSidecarMarker(path.join(root, "svc"));
 
     await runEnsureConfigReady(["status"]);
@@ -281,7 +281,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor flow for read-only commands with configured custom session stores", async () => {
-    const root = useTempOpenClawHome();
+    const root = useTempEVEHome();
     const customStore = path.join(root, "sessions", "sessions.json");
     const snapshot = {
       ...makeSnapshot(),
@@ -346,13 +346,13 @@ describe("ensureConfigReady", () => {
     const runtime = await runEnsureConfigReady(["message"]);
 
     expect(plainErrorCalls(runtime)).toEqual([
-      "OpenClaw config is invalid",
-      "File: /tmp/openclaw.json",
+      "EVE config is invalid",
+      "File: /tmp/eve.json",
       "Problem:",
       "  - channels.quietchat: invalid",
       "",
-      `Fix: ${formatCliCommand("openclaw doctor --fix")}`,
-      `Inspect: ${formatCliCommand("openclaw config validate")}`,
+      `Fix: ${formatCliCommand("eve doctor --fix")}`,
+      `Inspect: ${formatCliCommand("eve config validate")}`,
       "Status, health, logs, tasks list/audit, and doctor commands still run with invalid config.",
     ]);
     expect(runtime.exit).toHaveBeenCalledWith(1);
@@ -378,7 +378,7 @@ describe("ensureConfigReady", () => {
     const calls = plainErrorCalls(runtime);
 
     expect(calls).toContain(`Fix: ${pluginPackagingRecoveryHint}`);
-    expect(calls).not.toContain(`Fix: ${formatCliCommand("openclaw doctor --fix")}`);
+    expect(calls).not.toContain(`Fix: ${formatCliCommand("eve doctor --fix")}`);
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 
@@ -427,7 +427,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("runs doctor migration flow only once per module instance", async () => {
-    writeLegacyTaskSidecarMarker(useTempOpenClawHome());
+    writeLegacyTaskSidecarMarker(useTempEVEHome());
     const runtimeA = makeRuntime();
     const runtimeB = makeRuntime();
 
@@ -437,13 +437,13 @@ describe("ensureConfigReady", () => {
   });
 
   it("still runs doctor flow when stdout suppression is enabled", async () => {
-    writeLegacyTaskSidecarMarker(useTempOpenClawHome());
+    writeLegacyTaskSidecarMarker(useTempEVEHome());
     await runEnsureConfigReady(["message"], true);
     expect(loadAndMaybeMigrateDoctorConfigMock).toHaveBeenCalledTimes(1);
   });
 
   it("prevents preflight note noise when suppression is enabled", async () => {
-    writeLegacyTaskSidecarMarker(useTempOpenClawHome());
+    writeLegacyTaskSidecarMarker(useTempEVEHome());
     loadAndMaybeMigrateDoctorConfigMock.mockImplementation(async () => {
       note("Doctor warnings", "Config warnings");
       return {
@@ -458,7 +458,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("allows preflight note noise when suppression is not enabled", async () => {
-    writeLegacyTaskSidecarMarker(useTempOpenClawHome());
+    writeLegacyTaskSidecarMarker(useTempEVEHome());
     loadAndMaybeMigrateDoctorConfigMock.mockImplementation(async () => {
       note("Doctor warnings", "Config warnings");
       return {
@@ -473,7 +473,7 @@ describe("ensureConfigReady", () => {
   });
 
   it("does not suppress unrelated concurrent stdout writes while suppressing preflight notes", async () => {
-    writeLegacyTaskSidecarMarker(useTempOpenClawHome());
+    writeLegacyTaskSidecarMarker(useTempEVEHome());
     let releasePreflight: (() => void) | undefined;
     let preflightStarted: (() => void) | undefined;
     const preflightStartedPromise = new Promise<void>((resolve) => {

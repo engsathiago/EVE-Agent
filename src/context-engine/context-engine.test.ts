@@ -1,8 +1,8 @@
 // Context engine tests cover context extraction and prompt context assembly.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MemoryCitationsMode } from "../config/types.memory.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { clearMemoryPluginState, registerMemoryPromptSection } from "../plugins/memory-state.js";
 // ---------------------------------------------------------------------------
 // We dynamically import the registry so we can get a fresh module per test
@@ -74,7 +74,7 @@ function requireCompactRuntimeParams(callIndex: number): Record<string, unknown>
 // ---------------------------------------------------------------------------
 
 /** Build a config object with a contextEngine slot for testing. */
-function configWithSlot(engineId: string): OpenClawConfig {
+function configWithSlot(engineId: string): EVEConfig {
   return { plugins: { slots: { contextEngine: engineId } } };
 }
 
@@ -117,7 +117,7 @@ function requireFactoryContext(
 
 function requireRegistryState() {
   const registryState = (globalThis as Record<symbol, unknown>)[
-    Symbol.for("openclaw.contextEngineRegistryState")
+    Symbol.for("eve.contextEngineRegistryState")
   ] as { engines: Map<string, unknown> } | undefined;
   if (!registryState) {
     throw new Error("expected context engine registry state");
@@ -1441,7 +1441,7 @@ describe("Invalid engine fallback", () => {
   });
 
   it("accepts resolved engines whose info.id differs from the registered slot id (#66601)", async () => {
-    // Regression for openclaw/openclaw#66601: third-party plugins like
+    // Regression for eve/eve#66601: third-party plugins like
     // lossless-claw register under an external slot id ("lossless-claw") but
     // the ContextEngine they return uses the plugin's own internal id
     // (e.g. "lcm"). That id is metadata, not the lookup key.

@@ -1,5 +1,5 @@
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { splitShellArgs } from "../utils/shell-argv.js";
 import { buildCommandPayloadCandidates } from "./command-analysis/risks.js";
 import { explainShellCommand } from "./command-explainer/extract.js";
@@ -36,21 +36,21 @@ function normalizeCommandBaseName(token: string | undefined): string {
   return base.replace(/\.(?:cmd|exe)$/u, "");
 }
 
-function stripOpenClawPackageRunner(argv: string[]): string[] {
+function stripEVEPackageRunner(argv: string[]): string[] {
   const commandName = normalizeCommandBaseName(argv[0]);
-  if (commandName === "openclaw") {
+  if (commandName === "eve") {
     return argv;
   }
   if (
     (commandName === "pnpm" || commandName === "npm" || commandName === "yarn") &&
-    normalizeCommandBaseName(argv[1]) === "openclaw"
+    normalizeCommandBaseName(argv[1]) === "eve"
   ) {
     return argv.slice(1);
   }
   if (
     (commandName === "pnpm" || commandName === "npm" || commandName === "yarn") &&
     (argv[1] === "exec" || argv[1] === "dlx" || argv[1] === "run") &&
-    normalizeCommandBaseName(argv[2]) === "openclaw"
+    normalizeCommandBaseName(argv[2]) === "eve"
   ) {
     return argv.slice(2);
   }
@@ -70,23 +70,23 @@ function stripOpenClawPackageRunner(argv: string[]): string[] {
         idx += 1;
       }
     }
-    if (normalizeCommandBaseName(argv[idx]) === "openclaw") {
+    if (normalizeCommandBaseName(argv[idx]) === "eve") {
       return argv.slice(idx);
     }
   }
   return argv;
 }
 
-export function parseOpenClawChannelsLoginShellCommand(raw: string): boolean {
+export function parseEVEChannelsLoginShellCommand(raw: string): boolean {
   const argv = splitShellArgs(raw);
   if (!argv) {
     return false;
   }
-  const openclawArgv = stripOpenClawPackageRunner(argv);
+  const eveArgv = stripEVEPackageRunner(argv);
   return (
-    normalizeCommandBaseName(openclawArgv[0]) === "openclaw" &&
-    (openclawArgv[1] === "channels" || openclawArgv[1] === "channel") &&
-    openclawArgv[2] === "login"
+    normalizeCommandBaseName(eveArgv[0]) === "eve" &&
+    (eveArgv[1] === "channels" || eveArgv[1] === "channel") &&
+    eveArgv[2] === "login"
   );
 }
 
@@ -113,7 +113,7 @@ export async function detectUnsafeExecControlShellCommand(
     if (parseExecApprovalShellCommand(candidate)) {
       return "approve";
     }
-    if (parseOpenClawChannelsLoginShellCommand(candidate)) {
+    if (parseEVEChannelsLoginShellCommand(candidate)) {
       return "channel-login";
     }
   }
@@ -133,8 +133,8 @@ export async function rejectUnsafeExecControlShellCommand(command: string): Prom
   if (unsafeKind === "channel-login") {
     throw new Error(
       [
-        "exec cannot run interactive OpenClaw channel login commands.",
-        "Run `openclaw channels login` in a terminal on the gateway host, or use the channel-specific login agent tool when available (for WhatsApp: `whatsapp_login`).",
+        "exec cannot run interactive EVE channel login commands.",
+        "Run `eve channels login` in a terminal on the gateway host, or use the channel-specific login agent tool when available (for WhatsApp: `whatsapp_login`).",
       ].join(" "),
     );
   }

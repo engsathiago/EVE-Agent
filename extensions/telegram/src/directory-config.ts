@@ -1,8 +1,8 @@
 // Telegram helper module supports directory config behavior.
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-core";
-import { mapAllowFromEntries } from "openclaw/plugin-sdk/channel-config-helpers";
-import type { OpenClawConfig, TelegramAccountConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createResolvedDirectoryEntriesLister } from "openclaw/plugin-sdk/directory-config-runtime";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/account-core";
+import { mapAllowFromEntries } from "eve-agent/plugin-sdk/channel-config-helpers";
+import type { EVEConfig, TelegramAccountConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { createResolvedDirectoryEntriesLister } from "eve-agent/plugin-sdk/directory-config-runtime";
 import { mergeTelegramAccountConfig } from "./account-config.js";
 import { resolveDefaultTelegramAccountSelection } from "./account-selection.js";
 
@@ -11,7 +11,7 @@ type TelegramDirectoryAccount = {
 };
 
 function resolveTelegramDirectoryAccount(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId?: string | null,
 ): TelegramDirectoryAccount {
   const resolvedAccountId = accountId?.trim()

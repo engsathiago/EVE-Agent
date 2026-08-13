@@ -15,7 +15,7 @@ describe("Crestodian Docker E2E scripts", () => {
     expect(source).toContain("../../dist/crestodian/crestodian.js");
     expect(source).toContain("shouldStartOnboardingForFreshInstall");
     expect(source).toContain("shouldStartCrestodianForModernOnboard");
-    expect(source).toContain("runCli([\"node\", \"openclaw\", \"onboard\"");
+    expect(source).toContain("runCli([\"node\", \"eve\", \"onboard\"");
     expect(source).toContain("runCrestodian(");
     expect(source).toContain("Config: missing");
     expect(source).toContain("Crestodian first-run Docker E2E passed");
@@ -32,7 +32,7 @@ describe("Crestodian Docker E2E scripts", () => {
     expect(source).toContain("Fake Claude planner selected a typed model update.");
     expect(source).toContain("[crestodian] interpreted: set default model openai/gpt-5.2");
     expect(source).toContain("[crestodian] done: config.setDefaultModel");
-    expect(source).toContain("OpenClaw docs:");
+    expect(source).toContain("EVE docs:");
     expect(source).toContain("Crestodian planner Docker E2E passed");
   });
 

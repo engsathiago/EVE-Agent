@@ -40,14 +40,14 @@ describe("qqbot storage laziness", () => {
     }
   });
 
-  it("does not create ~/.openclaw/qqbot from module imports or read-only probes", async () => {
+  it("does not create ~/.eve/qqbot from module imports or read-only probes", async () => {
     const homeDir = makeHome();
     const stateDir = makeHome();
     await useMockHome(homeDir);
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
     installQQBotRuntimeForStateTests(stateDir);
 
-    const qqbotRoot = path.join(homeDir, ".openclaw", "qqbot");
+    const qqbotRoot = path.join(homeDir, ".eve", "qqbot");
 
     await import("../session/session-store.js");
     await import("../session/known-users.js");
@@ -62,11 +62,11 @@ describe("qqbot storage laziness", () => {
     const homeDir = makeHome();
     const stateDir = makeHome();
     await useMockHome(homeDir);
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
     installQQBotRuntimeForStateTests(stateDir);
 
-    const qqbotRoot = path.join(homeDir, ".openclaw", "qqbot");
-    const sqlitePath = path.join(stateDir, "state", "openclaw.sqlite");
+    const qqbotRoot = path.join(homeDir, ".eve", "qqbot");
+    const sqlitePath = path.join(stateDir, "state", "eve.sqlite");
     const { saveCredentialBackup } = await import("../config/credential-backup.js");
 
     saveCredentialBackup("default", "123456", "secret");

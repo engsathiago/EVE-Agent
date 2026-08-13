@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiagnosticSecurityEvent } from "../infra/diagnostic-events.js";
 
@@ -152,7 +152,7 @@ describe("installPluginFromGitSpec", () => {
     preflightPluginGitInstallPolicyMock.mockReset();
     preflightPluginGitInstallPolicyMock.mockResolvedValue(null);
     const globalConfigRoot = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-git-install-npmrc-"),
+      path.join(os.tmpdir(), "eve-git-install-npmrc-"),
     );
     tempDirs.push(globalConfigRoot);
     const globalConfig = path.join(globalConfigRoot, "global-npmrc");
@@ -241,7 +241,7 @@ describe("installPluginFromGitSpec", () => {
   });
 
   it("does not emit git install success when committing the managed repo fails", async () => {
-    const gitRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-git-install-fail-"));
+    const gitRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-git-install-fail-"));
     const gitDir = path.join(gitRoot, "not-a-directory");
     await fs.writeFile(gitDir, "file blocks nested managed repo creation", "utf8");
     try {
@@ -450,7 +450,7 @@ describe("installPluginFromGitSpec", () => {
   });
 
   it("reports effective install mode for requested git update without an installed target", async () => {
-    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-git-install-mode-"));
+    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-git-install-mode-"));
     try {
       runCommandWithTimeoutMock
         .mockResolvedValueOnce({ code: 0, stdout: "", stderr: "" })
@@ -487,7 +487,7 @@ describe("installPluginFromGitSpec", () => {
   });
 
   it("uses a credential-free managed repo path for authenticated git URLs", async () => {
-    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-git-install-path-"));
+    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-git-install-path-"));
     try {
       runCommandWithTimeoutMock
         .mockResolvedValueOnce({ code: 0, stdout: "", stderr: "" })
@@ -578,7 +578,7 @@ describe("installPluginFromGitSpec", () => {
   });
 
   it("keeps the existing managed repo when replacement install fails", async () => {
-    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-git-install-preserve-"));
+    const gitDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-git-install-preserve-"));
     const normalizedSpec = "git:https://github.com/acme/demo.git";
     const existingRepoDir = expectedGitRepoDir({ gitDir, normalizedSpec });
     const markerPath = path.join(existingRepoDir, "existing.txt");

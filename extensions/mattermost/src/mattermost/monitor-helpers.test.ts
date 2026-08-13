@@ -88,7 +88,7 @@ describe("shouldDropEmptyMattermostBody", () => {
       shouldDropEmptyMattermostBody({
         bodyText: "",
         rawText: "   ",
-        botUsername: "openclaw",
+        botUsername: "eve",
       }),
     ).toBe(true);
   });
@@ -98,7 +98,7 @@ describe("shouldDropEmptyMattermostBody", () => {
       shouldDropEmptyMattermostBody({
         bodyText: "hello",
         rawText: "hello",
-        botUsername: "openclaw",
+        botUsername: "eve",
       }),
     ).toBe(false);
   });
@@ -107,8 +107,8 @@ describe("shouldDropEmptyMattermostBody", () => {
     expect(
       shouldDropEmptyMattermostBody({
         bodyText: "",
-        rawText: "@openclaw",
-        botUsername: "openclaw",
+        rawText: "@eve",
+        botUsername: "eve",
       }),
     ).toBe(false);
   });
@@ -117,8 +117,8 @@ describe("shouldDropEmptyMattermostBody", () => {
     expect(
       shouldDropEmptyMattermostBody({
         bodyText: "",
-        rawText: "@OpenClaw",
-        botUsername: "openclaw",
+        rawText: "@EVE",
+        botUsername: "eve",
       }),
     ).toBe(false);
   });
@@ -138,7 +138,7 @@ describe("shouldDropEmptyMattermostBody", () => {
       shouldDropEmptyMattermostBody({
         bodyText: "",
         rawText: "",
-        botUsername: "openclaw",
+        botUsername: "eve",
       }),
     ).toBe(true);
   });
@@ -147,8 +147,8 @@ describe("shouldDropEmptyMattermostBody", () => {
     expect(
       shouldDropEmptyMattermostBody({
         bodyText: "\u0085",
-        rawText: "@openclaw\u0085",
-        botUsername: "openclaw",
+        rawText: "@eve\u0085",
+        botUsername: "eve",
       }),
     ).toBe(true);
   });
@@ -157,29 +157,29 @@ describe("shouldDropEmptyMattermostBody", () => {
     expect(
       shouldDropEmptyMattermostBody({
         bodyText: "\ufe0f",
-        rawText: "@openclaw\ufe0f",
-        botUsername: "openclaw",
+        rawText: "@eve\ufe0f",
+        botUsername: "eve",
       }),
     ).toBe(true);
   });
 
   it.each([
-    "@openclaw @openclaw",
-    "@openclaw\n@openclaw",
-    "@openclaw\n",
-    "\n@openclaw",
-    "@openclaw\r\n",
-    "@openclaw\u2028",
-    "@openclaw\u2029",
-    "\v@openclaw\f",
-    "@openclaw\u00a0",
-    "\u2003@openclaw",
+    "@eve @eve",
+    "@eve\n@eve",
+    "@eve\n",
+    "\n@eve",
+    "@eve\r\n",
+    "@eve\u2028",
+    "@eve\u2029",
+    "\v@eve\f",
+    "@eve\u00a0",
+    "\u2003@eve",
   ])("drops an invalid empty-body candidate: %j", (rawText) => {
     expect(
       shouldDropEmptyMattermostBody({
         bodyText: "",
         rawText,
-        botUsername: "openclaw",
+        botUsername: "eve",
       }),
     ).toBe(true);
   });

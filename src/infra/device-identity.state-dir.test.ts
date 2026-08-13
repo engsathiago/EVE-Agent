@@ -6,8 +6,8 @@ import { withStateDirEnv } from "../test-helpers/state-dir-env.js";
 import { loadOrCreateDeviceIdentity } from "./device-identity.js";
 
 describe("device identity state dir defaults", () => {
-  it("writes the default identity file under OPENCLAW_STATE_DIR", async () => {
-    await withStateDirEnv("openclaw-identity-state-", async ({ stateDir }) => {
+  it("writes the default identity file under EVE_STATE_DIR", async () => {
+    await withStateDirEnv("eve-identity-state-", async ({ stateDir }) => {
       const identity = loadOrCreateDeviceIdentity();
       const identityPath = path.join(stateDir, "identity", "device.json");
       const raw = JSON.parse(await fs.readFile(identityPath, "utf8")) as { deviceId?: string };
@@ -16,7 +16,7 @@ describe("device identity state dir defaults", () => {
   });
 
   it("reuses the stored identity on subsequent loads", async () => {
-    await withStateDirEnv("openclaw-identity-state-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-identity-state-", async ({ stateDir }) => {
       const first = loadOrCreateDeviceIdentity();
       const second = loadOrCreateDeviceIdentity();
       const identityPath = path.join(stateDir, "identity", "device.json");
@@ -32,7 +32,7 @@ describe("device identity state dir defaults", () => {
   });
 
   it("repairs stored device IDs that no longer match the public key", async () => {
-    await withStateDirEnv("openclaw-identity-state-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-identity-state-", async ({ stateDir }) => {
       const original = loadOrCreateDeviceIdentity();
       const identityPath = path.join(stateDir, "identity", "device.json");
       const raw = JSON.parse(await fs.readFile(identityPath, "utf8")) as Record<string, unknown>;
@@ -52,7 +52,7 @@ describe("device identity state dir defaults", () => {
   });
 
   it("regenerates the identity when the stored file is invalid", async () => {
-    await withStateDirEnv("openclaw-identity-state-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-identity-state-", async ({ stateDir }) => {
       const identityPath = path.join(stateDir, "identity", "device.json");
       await fs.mkdir(path.dirname(identityPath), { recursive: true });
       await fs.writeFile(identityPath, '{"version":1,"deviceId":"broken"}\n', "utf8");

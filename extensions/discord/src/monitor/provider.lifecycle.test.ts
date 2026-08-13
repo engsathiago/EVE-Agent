@@ -1,6 +1,6 @@
 // Discord tests cover provider.lifecycle plugin behavior.
 import { EventEmitter } from "node:events";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { beforeAll, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import type { GatewayPlugin } from "../internal/gateway.js";
 import type { WaitForDiscordGatewayStopParams } from "../monitor.gateway.js";
@@ -218,7 +218,7 @@ describe("runDiscordGatewayLifecycle", () => {
     expect(resolveDiscordGatewayReadyTimeoutMs({ configuredTimeoutMs: 45_000 })).toBe(45_000);
     expect(
       resolveDiscordGatewayReadyTimeoutMs({
-        env: { OPENCLAW_DISCORD_READY_TIMEOUT_MS: "90000" },
+        env: { EVE_DISCORD_READY_TIMEOUT_MS: "90000" },
       }),
     ).toBe(90_000);
     expect(resolveDiscordGatewayReadyTimeoutMs({ env: {} })).toBe(15_000);
@@ -228,7 +228,7 @@ describe("runDiscordGatewayLifecycle", () => {
     );
     expect(
       resolveDiscordGatewayRuntimeReadyTimeoutMs({
-        env: { OPENCLAW_DISCORD_RUNTIME_READY_TIMEOUT_MS: "120000" },
+        env: { EVE_DISCORD_RUNTIME_READY_TIMEOUT_MS: "120000" },
       }),
     ).toBe(120_000);
     expect(resolveDiscordGatewayRuntimeReadyTimeoutMs({ env: {} })).toBe(30_000);
@@ -238,12 +238,12 @@ describe("runDiscordGatewayLifecycle", () => {
     expect(
       resolveDiscordGatewayReadyTimeoutMs({
         configuredTimeoutMs: 1.5,
-        env: { OPENCLAW_DISCORD_READY_TIMEOUT_MS: "0x1000" },
+        env: { EVE_DISCORD_READY_TIMEOUT_MS: "0x1000" },
       }),
     ).toBe(15_000);
     expect(
       resolveDiscordGatewayRuntimeReadyTimeoutMs({
-        env: { OPENCLAW_DISCORD_RUNTIME_READY_TIMEOUT_MS: "1e3" },
+        env: { EVE_DISCORD_RUNTIME_READY_TIMEOUT_MS: "1e3" },
       }),
     ).toBe(30_000);
   });

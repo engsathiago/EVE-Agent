@@ -23,7 +23,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
   let tempDir: string;
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-plugin-deps-cleanup-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-plugin-deps-cleanup-"));
   });
 
   afterEach(async () => {
@@ -32,7 +32,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
   it("collects and removes legacy plugin dependency state roots", async () => {
     const stateDir = path.join(tempDir, "state");
-    const explicitStageDir = path.join(stateDir, ".openclaw-install-stage-explicit");
+    const explicitStageDir = path.join(stateDir, ".eve-install-stage-explicit");
     const stateDirectory = path.join(tempDir, "systemd-state");
     const packageRoot = path.join(tempDir, "package");
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
@@ -49,13 +49,13 @@ describe("cleanupLegacyPluginDependencyState", () => {
       "dist",
       "extensions",
       "demo",
-      ".openclaw-runtime-deps-stamp.json",
+      ".eve-runtime-deps-stamp.json",
     );
     const legacyManifest = path.join(
       packageRoot,
       "extensions",
       "demo",
-      ".openclaw-runtime-deps.json",
+      ".eve-runtime-deps.json",
     );
     const thirdPartyNodeModules = path.join(
       stateDir,
@@ -75,8 +75,8 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.mkdir(path.join(stateDirectory, "plugin-runtime-deps"), { recursive: true });
 
     const env = {
-      OPENCLAW_STATE_DIR: stateDir,
-      OPENCLAW_PLUGIN_STAGE_DIR: explicitStageDir,
+      EVE_STATE_DIR: stateDir,
+      EVE_PLUGIN_STAGE_DIR: explicitStageDir,
       STATE_DIRECTORY: stateDirectory,
     };
     const targets = await testing.collectLegacyPluginDependencyTargets(env, { packageRoot });
@@ -103,7 +103,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await expectPathMissing(path.join(stateDirectory, "plugin-runtime-deps"));
   });
 
-  it("removes configured plugin stage roots outside OpenClaw roots", async () => {
+  it("removes configured plugin stage roots outside EVE roots", async () => {
     const stateDir = path.join(tempDir, "state");
     const packageRoot = path.join(tempDir, "package");
     const stageRoot = path.join(tempDir, "stage");
@@ -112,14 +112,14 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.mkdir(packageRoot, { recursive: true });
     await fs.mkdir(path.join(stageRoot, "node_modules", "ansi-escapes"), { recursive: true });
     await fs.writeFile(
-      path.join(stageRoot, "node_modules", "ansi-escapes", ".openclaw-rename-tmp"),
+      path.join(stageRoot, "node_modules", "ansi-escapes", ".eve-rename-tmp"),
       "corrupt rename residue\n",
     );
 
     const result = await cleanupLegacyPluginDependencyState({
       env: {
-        OPENCLAW_STATE_DIR: stateDir,
-        OPENCLAW_PLUGIN_STAGE_DIR: stageRoot,
+        EVE_STATE_DIR: stateDir,
+        EVE_PLUGIN_STAGE_DIR: stageRoot,
       },
       packageRoot,
     });
@@ -129,7 +129,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await expectPathMissing(stageRoot);
   });
 
-  it("refuses arbitrary explicit plugin stage roots outside OpenClaw roots", async () => {
+  it("refuses arbitrary explicit plugin stage roots outside EVE roots", async () => {
     const stateDir = path.join(tempDir, "state");
     const packageRoot = path.join(tempDir, "package");
     const stageRoot = path.join(tempDir, "stage-without-marker");
@@ -140,8 +140,8 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
     const result = await cleanupLegacyPluginDependencyState({
       env: {
-        OPENCLAW_STATE_DIR: stateDir,
-        OPENCLAW_PLUGIN_STAGE_DIR: stageRoot,
+        EVE_STATE_DIR: stateDir,
+        EVE_PLUGIN_STAGE_DIR: stageRoot,
       },
       packageRoot,
     });
@@ -156,7 +156,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
   it("refuses explicit plugin stage paths with parent segments", async () => {
     const stateDir = path.join(tempDir, "state");
     const packageRoot = path.join(tempDir, "package");
-    const dotDotStage = `${stateDir}${path.sep}..${path.sep}.openclaw-install-stage-dotdot`;
+    const dotDotStage = `${stateDir}${path.sep}..${path.sep}.eve-install-stage-dotdot`;
     const resolvedDotDotStage = path.resolve(dotDotStage);
 
     await fs.mkdir(stateDir, { recursive: true });
@@ -165,8 +165,8 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
     const result = await cleanupLegacyPluginDependencyState({
       env: {
-        OPENCLAW_STATE_DIR: stateDir,
-        OPENCLAW_PLUGIN_STAGE_DIR: dotDotStage,
+        EVE_STATE_DIR: stateDir,
+        EVE_PLUGIN_STAGE_DIR: dotDotStage,
       },
       packageRoot,
     });
@@ -178,7 +178,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await expectDirectoryPresent(resolvedDotDotStage);
   });
 
-  it("does not follow symlinked extension roots outside OpenClaw roots", async () => {
+  it("does not follow symlinked extension roots outside EVE roots", async () => {
     const stateDir = path.join(tempDir, "state");
     const packageRoot = path.join(tempDir, "package");
     const extensionsRoot = path.join(packageRoot, "extensions");
@@ -189,17 +189,17 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.mkdir(stateDir, { recursive: true });
     await fs.mkdir(extensionsRoot, { recursive: true });
     await fs.mkdir(externalNodeModules, { recursive: true });
-    await fs.writeFile(path.join(externalPlugin, ".openclaw-runtime-deps.json"), "{}");
+    await fs.writeFile(path.join(externalPlugin, ".eve-runtime-deps.json"), "{}");
     await fs.symlink(externalPlugin, linkedPlugin, "dir");
 
     const targets = await testing.collectLegacyPluginDependencyTargets(
-      { OPENCLAW_STATE_DIR: stateDir },
+      { EVE_STATE_DIR: stateDir },
       { packageRoot },
     );
     expect(targets).not.toContain(path.join(linkedPlugin, "node_modules"));
 
     const result = await cleanupLegacyPluginDependencyState({
-      env: { OPENCLAW_STATE_DIR: stateDir },
+      env: { EVE_STATE_DIR: stateDir },
       packageRoot,
     });
 
@@ -207,7 +207,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await expectDirectoryPresent(externalNodeModules);
   });
 
-  it("refuses legacy roots that resolve outside OpenClaw roots", async () => {
+  it("refuses legacy roots that resolve outside EVE roots", async () => {
     const stateDir = path.join(tempDir, "state");
     const packageRoot = path.join(tempDir, "package");
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
@@ -219,13 +219,13 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.symlink(externalRuntimeRoot, legacyRuntimeRoot, "dir");
 
     const result = await cleanupLegacyPluginDependencyState({
-      env: { OPENCLAW_STATE_DIR: stateDir },
+      env: { EVE_STATE_DIR: stateDir },
       packageRoot,
     });
 
     expect(result.changes).toStrictEqual([]);
     expect(result.warnings).toContain(
-      `Skipped legacy plugin dependency state ${legacyRuntimeRoot}: resolved outside OpenClaw cleanup roots`,
+      `Skipped legacy plugin dependency state ${legacyRuntimeRoot}: resolved outside EVE cleanup roots`,
     );
     expect((await fs.lstat(legacyRuntimeRoot)).isSymbolicLink()).toBe(true);
     await expectDirectoryPresent(externalRuntimeRoot);
@@ -233,19 +233,19 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
   it("does not unlink global runtime symlinks through unsafe cleanup roots", async () => {
     const stateDir = path.join(tempDir, "state");
-    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "openclaw");
+    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve");
     const nodeModulesRoot = path.dirname(packageRoot);
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
     const externalRuntimeRoot = path.join(tempDir, "external-runtime");
     const activeRuntimeTarget = path.join(
       externalRuntimeRoot,
-      "openclaw-external",
+      "eve-external",
       "node_modules",
       "left-pad",
     );
     const unsafeRuntimeTarget = path.join(
       legacyRuntimeRoot,
-      "openclaw-external",
+      "eve-external",
       "node_modules",
       "left-pad",
     );
@@ -258,13 +258,13 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.symlink(unsafeRuntimeTarget, leftPadLink, "dir");
 
     const result = await cleanupLegacyPluginDependencyState({
-      env: { OPENCLAW_STATE_DIR: stateDir },
+      env: { EVE_STATE_DIR: stateDir },
       packageRoot,
     });
 
     expect(result.changes).toStrictEqual([]);
     expect(result.warnings).toContain(
-      `Skipped legacy plugin dependency state ${legacyRuntimeRoot}: resolved outside OpenClaw cleanup roots`,
+      `Skipped legacy plugin dependency state ${legacyRuntimeRoot}: resolved outside EVE cleanup roots`,
     );
     expect((await fs.lstat(leftPadLink)).isSymbolicLink()).toBe(true);
     expect((await fs.lstat(legacyRuntimeRoot)).isSymbolicLink()).toBe(true);
@@ -273,12 +273,12 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
   it("removes dangling global plugin-runtime symlinks that point at legacy runtime deps", async () => {
     const stateDir = path.join(tempDir, "state");
-    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "openclaw");
+    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve");
     const nodeModulesRoot = path.dirname(packageRoot);
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
     const legacyTarget = path.join(
       legacyRuntimeRoot,
-      "openclaw-2026.4.29-slack",
+      "eve-2026.4.29-slack",
       "node_modules",
       "@slack",
       "web-api",
@@ -298,7 +298,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
     await fs.symlink(liveTarget, liveLink, "dir");
 
     const result = await cleanupLegacyPluginDependencyState({
-      env: { OPENCLAW_STATE_DIR: stateDir },
+      env: { EVE_STATE_DIR: stateDir },
       packageRoot,
     });
 

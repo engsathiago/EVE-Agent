@@ -1,14 +1,14 @@
 ---
-summary: "Typed workflow runtime for OpenClaw with resumable approval gates."
+summary: "Typed workflow runtime for EVE with resumable approval gates."
 title: Lobster
 read_when:
   - You want deterministic multi-step workflows with explicit approvals
   - You need to resume a workflow without re-running earlier steps
 ---
 
-Lobster is a workflow shell that lets OpenClaw run multi-step tool sequences as a single, deterministic operation with explicit approval checkpoints.
+Lobster is a workflow shell that lets EVE run multi-step tool sequences as a single, deterministic operation with explicit approval checkpoints.
 
-Lobster is one authoring layer above detached background work. For flow orchestration above individual tasks, see [Task Flow](/automation/taskflow) (`openclaw tasks flow`). For the task activity ledger, see [`openclaw tasks`](/automation/tasks).
+Lobster is one authoring layer above detached background work. For flow orchestration above individual tasks, see [Task Flow](/automation/taskflow) (`eve tasks flow`). For the task activity ledger, see [`eve tasks`](/automation/tasks).
 
 ## Hook
 
@@ -18,7 +18,7 @@ Your assistant can build the tools that manage itself. Ask for a workflow, and 3
 
 Today, complex workflows require many back-and-forth tool calls. Each call costs tokens, and the LLM has to orchestrate every step. Lobster moves that orchestration into a typed runtime:
 
-- **One call instead of many**: OpenClaw runs one Lobster tool call and gets a structured result.
+- **One call instead of many**: EVE runs one Lobster tool call and gets a structured result.
 - **Approvals built in**: Side effects (send email, post comment) halt the workflow until explicitly approved.
 - **Resumable**: Halted workflows return a token; approve and resume without re-running everything.
 
@@ -34,7 +34,7 @@ Lobster is intentionally small. The goal is not "a new language," it's a predict
 
 ## How it works
 
-OpenClaw runs Lobster workflows **in-process** using an embedded runner. No external CLI subprocess is spawned; the workflow engine executes inside the gateway process and returns a JSON envelope directly.
+EVE runs Lobster workflows **in-process** using an embedded runner. No external CLI subprocess is spawned; the workflow engine executes inside the gateway process and returns a JSON envelope directly.
 If the pipeline pauses for approval, the tool returns a `resumeToken` so you can continue later.
 
 ## Pattern: small CLI + JSON pipes + approvals
@@ -71,7 +71,7 @@ Example: map input items into tool calls:
 
 ```bash
 gog.gmail.search --query 'newer_than:1d' \
-  | openclaw.invoke --tool message --action send --each --item-key message --args-json '{"provider":"telegram","to":"..."}'
+  | eve.invoke --tool message --action send --each --item-key message --args-json '{"provider":"telegram","to":"..."}'
 ```
 
 ## JSON-only LLM steps (llm-task)
@@ -100,22 +100,22 @@ Enable the tool:
 }
 ```
 
-### Important limitation: embedded Lobster vs `openclaw.invoke`
+### Important limitation: embedded Lobster vs `eve.invoke`
 
-The bundled Lobster plugin runs workflows **in-process** inside the gateway. In that embedded mode, `openclaw.invoke` does **not** automatically inherit a gateway URL/auth context for nested OpenClaw CLI tool calls.
+The bundled Lobster plugin runs workflows **in-process** inside the gateway. In that embedded mode, `eve.invoke` does **not** automatically inherit a gateway URL/auth context for nested EVE CLI tool calls.
 
 That means this pattern is **not currently reliable in the embedded runner**:
 
 ```lobster
-openclaw.invoke --tool llm-task --action json --args-json '{ ... }'
+eve.invoke --tool llm-task --action json --args-json '{ ... }'
 ```
 
-Use the example below only when running the **standalone Lobster CLI** in an environment where `openclaw.invoke` is already configured with the correct gateway/auth context.
+Use the example below only when running the **standalone Lobster CLI** in an environment where `eve.invoke` is already configured with the correct gateway/auth context.
 
 Use it in a standalone Lobster CLI pipeline:
 
 ```lobster
-openclaw.invoke --tool llm-task --action json --args-json '{
+eve.invoke --tool llm-task --action json --args-json '{
   "prompt": "Given the input email, return intent and draft.",
   "thinking": "low",
   "input": { "subject": "Hello", "body": "Can you help?" },
@@ -134,13 +134,13 @@ openclaw.invoke --tool llm-task --action json --args-json '{
 If you are using the embedded Lobster plugin today, prefer either:
 
 - a direct `llm-task` tool call outside Lobster, or
-- non-`openclaw.invoke` steps inside the Lobster pipeline until a supported embedded bridge is added.
+- non-`eve.invoke` steps inside the Lobster pipeline until a supported embedded bridge is added.
 
 See [LLM Task](/tools/llm-task) for details and configuration options.
 
 ## Workflow files (.lobster)
 
-Lobster can run YAML/JSON workflow files with `name`, `args`, `steps`, `env`, `condition`, and `approval` fields. In OpenClaw tool calls, set `pipeline` to the file path.
+Lobster can run YAML/JSON workflow files with `name`, `args`, `steps`, `env`, `condition`, and `approval` fields. In EVE tool calls, set `pipeline` to the file path.
 
 ```yaml
 name: inbox-triage
@@ -172,7 +172,7 @@ Notes:
 
 Bundled Lobster workflows run in-process; no separate `lobster` binary is required. The embedded runner ships with the Lobster plugin.
 
-If you need the standalone Lobster CLI for development or external pipelines, install it from the [Lobster repo](https://github.com/openclaw/lobster) and ensure `lobster` is on `PATH`.
+If you need the standalone Lobster CLI for development or external pipelines, install it from the [Lobster repo](https://github.com/eve/lobster) and ensure `lobster` is on `PATH`.
 
 ## Enable the tool
 
@@ -217,12 +217,12 @@ Without Lobster:
 
 ```
 User: "Check my email and draft replies"
-→ openclaw calls gmail.list
+→ eve calls gmail.list
 → LLM summarizes
 → User: "draft replies to #2 and #5"
 → LLM drafts
 → User: "send #2"
-→ openclaw calls gmail.send
+→ eve calls gmail.send
 (repeat daily, no memory of what was triaged)
 ```
 
@@ -335,7 +335,7 @@ OpenProse pairs well with Lobster: use `/prose` to orchestrate multi-agent prep,
 ## Safety
 
 - **Local in-process only** - workflows execute inside the gateway process; no network calls from the plugin itself.
-- **No secrets** - Lobster doesn't manage OAuth; it calls OpenClaw tools that do.
+- **No secrets** - Lobster doesn't manage OAuth; it calls EVE tools that do.
 - **Sandbox-aware** - disabled when the tool context is sandboxed.
 - **Hardened** - timeouts and output caps enforced by the embedded runner.
 

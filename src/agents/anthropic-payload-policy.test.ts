@@ -286,8 +286,8 @@ describe("anthropic payload policy", () => {
   });
 
   it("keeps implicit env-driven long retention conservative for custom hosts", () => {
-    const previous = process.env.OPENCLAW_CACHE_RETENTION;
-    process.env.OPENCLAW_CACHE_RETENTION = "long";
+    const previous = process.env.EVE_CACHE_RETENTION;
+    process.env.EVE_CACHE_RETENTION = "long";
     try {
       const policy = resolveAnthropicPayloadPolicy({
         provider: "anthropic",
@@ -302,9 +302,9 @@ describe("anthropic payload policy", () => {
       expectShortEphemeralTextPayload(payload);
     } finally {
       if (previous === undefined) {
-        delete process.env.OPENCLAW_CACHE_RETENTION;
+        delete process.env.EVE_CACHE_RETENTION;
       } else {
-        process.env.OPENCLAW_CACHE_RETENTION = previous;
+        process.env.EVE_CACHE_RETENTION = previous;
       }
     }
   });

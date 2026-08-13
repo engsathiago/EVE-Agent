@@ -1,5 +1,5 @@
 // Discord plugin module implements inbound dedupe behavior.
-import { createClaimableDedupe, type ClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+import { createClaimableDedupe, type ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 import type { DiscordMessageEvent } from "./listeners.js";
 import { resolveDiscordMessageChannelId } from "./message-utils.js";
 

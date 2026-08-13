@@ -1,14 +1,14 @@
 /**
  * Builds heartbeat-specific guidance for agent system prompts.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   DEFAULT_HEARTBEAT_EVERY,
   resolveHeartbeatPrompt as resolveHeartbeatPromptText,
 } from "../auto-reply/heartbeat.js";
 import { parseDurationMs } from "../cli/parse-duration.js";
 import type { AgentDefaultsConfig } from "../config/types.agent-defaults.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeAgentId } from "../routing/session-key.js";
 import { listAgentEntries, resolveAgentConfig, resolveDefaultAgentId } from "./agent-scope.js";
 
@@ -17,7 +17,7 @@ type HeartbeatConfig = AgentDefaultsConfig["heartbeat"];
 // System prompt heartbeat config inherits defaults, then per-agent overrides,
 // matching runtime scheduling without exposing disabled agents to the section.
 function resolveHeartbeatConfigForSystemPrompt(
-  config?: OpenClawConfig,
+  config?: EVEConfig,
   agentId?: string,
 ): HeartbeatConfig | undefined {
   const defaults = config?.agents?.defaults?.heartbeat;
@@ -33,7 +33,7 @@ function resolveHeartbeatConfigForSystemPrompt(
 
 // Explicit heartbeat config on any agent means only those agents are opted in;
 // otherwise the default agent receives the standard heartbeat guidance.
-function isHeartbeatEnabledByAgentPolicy(config: OpenClawConfig, agentId: string): boolean {
+function isHeartbeatEnabledByAgentPolicy(config: EVEConfig, agentId: string): boolean {
   const resolvedAgentId = normalizeAgentId(agentId);
   const agents = listAgentEntries(config);
   const hasExplicitHeartbeatAgents = agents.some((entry) => Boolean(entry?.heartbeat));
@@ -60,7 +60,7 @@ function isHeartbeatCadenceEnabled(heartbeat?: HeartbeatConfig): boolean {
 
 /** Returns true when heartbeat guidance should be included in the system prompt. */
 export function shouldIncludeHeartbeatGuidanceForSystemPrompt(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   defaultAgentId?: string;
 }): boolean {
@@ -81,7 +81,7 @@ export function shouldIncludeHeartbeatGuidanceForSystemPrompt(params: {
 
 /** Resolves the heartbeat system prompt section for the selected/default agent. */
 export function resolveHeartbeatPromptForSystemPrompt(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   defaultAgentId?: string;
 }): string | undefined {

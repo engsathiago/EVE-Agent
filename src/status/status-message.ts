@@ -4,7 +4,7 @@ import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveContextTokensForModel } from "../agents/context.js";
 import { DEFAULT_CONTEXT_TOKENS, DEFAULT_MODEL, DEFAULT_PROVIDER } from "../agents/defaults.js";
 import { resolveExtraParams } from "../agents/embedded-agent-runner/extra-params.js";
@@ -43,7 +43,7 @@ import {
 } from "../config/sessions.js";
 import { resolveSessionLifecycleTimestamps } from "../config/sessions/lifecycle.js";
 import { hasSessionAutoModelFallbackProvenance } from "../config/sessions/model-override-provenance.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { readRecentSessionUsageFromTranscript } from "../gateway/session-transcript-readers.js";
 import { formatDurationCompact } from "../infra/format-time/format-duration.ts";
 import { formatTimeAgo } from "../infra/format-time/format-relative.ts";
@@ -65,7 +65,7 @@ import { VERSION } from "../version.js";
 import { resolveAgentRuntimeLabel } from "./agent-runtime-label.js";
 import { resolveActiveFallbackState } from "./fallback-notice-state.js";
 
-type AgentDefaults = NonNullable<NonNullable<OpenClawConfig["agents"]>["defaults"]>;
+type AgentDefaults = NonNullable<NonNullable<EVEConfig["agents"]>["defaults"]>;
 type AgentConfig = Partial<AgentDefaults> & {
   model?: AgentDefaults["model"] | string;
 };
@@ -80,7 +80,7 @@ type QueueStatus = {
 };
 
 export type StatusArgs = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agent: AgentConfig;
   agentId?: string;
   configuredDefaultModelLabel?: string;
@@ -142,7 +142,7 @@ function normalizeAuthMode(value?: string): NormalizedAuthMode | undefined {
 }
 
 function resolveConfiguredTextVerbosity(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   agentId?: string;
   provider?: string | null;
   model?: string | null;
@@ -298,7 +298,7 @@ const readUsageFromSessionLog = (
       model?: string;
     }
   | undefined => {
-  // Transcripts are stored at the session file path (fallback: ~/.openclaw/sessions/<SessionId>.jsonl)
+  // Transcripts are stored at the session file path (fallback: ~/.eve/sessions/<SessionId>.jsonl)
   if (!sessionId) {
     return undefined;
   }
@@ -450,7 +450,7 @@ const formatMediaUnderstandingLine = (decisions?: ReadonlyArray<MediaUnderstandi
 };
 
 const formatVoiceModeLine = (
-  config?: OpenClawConfig,
+  config?: EVEConfig,
   sessionEntry?: SessionEntry,
   agentId?: string,
 ): string | null => {
@@ -490,7 +490,7 @@ const formatVoiceModeLine = (
 };
 
 function resolveChannelModelNote(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   entry?: SessionEntry;
   selectedProvider: string;
   selectedModel: string;
@@ -560,7 +560,7 @@ export function buildStatusMessage(args: StatusArgs): string {
     agents: {
       defaults: args.agent ?? {},
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
   const contextConfig = args.config
     ? ({
         ...args.config,
@@ -571,12 +571,12 @@ export function buildStatusMessage(args: StatusArgs): string {
             ...args.agent,
           },
         },
-      } as OpenClawConfig)
+      } as EVEConfig)
     : ({
         agents: {
           defaults: args.agent ?? {},
         },
-      } as OpenClawConfig);
+      } as EVEConfig);
   const resolved = resolveConfiguredModelRef({
     cfg: selectionConfig,
     defaultProvider: DEFAULT_PROVIDER,
@@ -1059,7 +1059,7 @@ export function buildStatusMessage(args: StatusArgs): string {
         "⚠️ Reason: session override",
         `⚠️ This session is pinned to ${selectedModelLabel}; config primary ${configuredDefaultModelLabel} will apply to new/unpinned sessions.`,
         "↩️ Clear with: /model default",
-        "📖 Docs: https://docs.openclaw.ai/concepts/models#selection-source-and-fallback-behavior",
+        "📖 Docs: https://docs.eve.ai/concepts/models#selection-source-and-fallback-behavior",
       ]
     : [`🧠 Model: ${selectedModelLabel}${selectedAuthLabel}${modelNote}`];
 
@@ -1082,7 +1082,7 @@ export function buildStatusMessage(args: StatusArgs): string {
       } (${fallbackState.reason ?? "selected model unavailable"})`
     : null;
   const commit = resolveCommitHash({ moduleUrl: import.meta.url });
-  const versionLine = `🦞 OpenClaw ${VERSION}${commit ? ` (${commit})` : ""}`;
+  const versionLine = `🦞 EVE ${VERSION}${commit ? ` (${commit})` : ""}`;
   const usagePair = formatUsagePair(inputTokens, outputTokens);
   const cacheLine = formatCacheLine(inputTokens, cacheRead, cacheWrite);
   const costLine = costLabel ? `💵 Cost: ${costLabel}` : null;

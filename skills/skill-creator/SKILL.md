@@ -12,7 +12,7 @@ Skills are compact triggerable workflows. Metadata is always visible; body loads
 - Keep `SKILL.md` lean; Codex is already capable.
 - Put only trigger-critical facts in frontmatter `description`.
 - Quote frontmatter `description`.
-- Frontmatter needs `name` + `description`; local OpenClaw skills may also use `metadata`, `homepage`, `allowed-tools`, `user-invocable`, `license`.
+- Frontmatter needs `name` + `description`; local EVE skills may also use `metadata`, `homepage`, `allowed-tools`, `user-invocable`, `license`.
 - Prefer noun-phrase descriptions; short generic trigger phrase, not full workflow.
 - Move long examples/docs to `references/`; scripts to `scripts/`; templates/media to `assets/`.
 - No extra README/changelog/setup docs inside a skill unless they are actual task references.

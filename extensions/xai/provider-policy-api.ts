@@ -2,7 +2,7 @@
 import type {
   ProviderDefaultThinkingPolicyContext,
   ProviderThinkingProfile,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import { resolveXaiCatalogEntry } from "./model-definitions.js";
 
 export function resolveThinkingProfile(

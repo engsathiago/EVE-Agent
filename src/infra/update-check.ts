@@ -1,10 +1,10 @@
-// Computes git, dependency, and registry update status for OpenClaw installs.
+// Computes git, dependency, and registry update status for EVE installs.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { fetchWithTimeout } from "../utils/fetch-timeout.js";
 import { detectPackageManager as detectPackageManagerImpl } from "./detect-package-manager.js";
-import { compareOpenClawReleaseVersions } from "./npm-registry-spec.js";
+import { compareEVEReleaseVersions } from "./npm-registry-spec.js";
 import { compareComparableSemver, parseComparableSemver } from "./semver-compare.js";
 import { channelToNpmTag, type UpdateChannel } from "./update-channels.js";
 
@@ -103,7 +103,7 @@ function formatNpmViewError(res: { stdout: string; stderr: string }): string {
 
 function packageTargetSpec(params: { target: string; spec?: string }): string {
   const spec = params.spec?.trim();
-  return spec || `openclaw@${params.target.trim() || "latest"}`;
+  return spec || `eve@${params.target.trim() || "latest"}`;
 }
 
 async function fetchPublicNpmPackageTargetStatus(params: {
@@ -113,7 +113,7 @@ async function fetchPublicNpmPackageTargetStatus(params: {
   let res: Response | undefined;
   try {
     res = await fetchWithTimeout(
-      `https://registry.npmjs.org/openclaw/${encodeURIComponent(params.target)}`,
+      `https://registry.npmjs.org/eve/${encodeURIComponent(params.target)}`,
       {},
       Math.max(250, params.timeoutMs),
     );
@@ -538,9 +538,9 @@ export async function resolveNpmChannelTag(params: {
 
 export function compareSemverStrings(a: string | null, b: string | null): number | null {
   if (a && b) {
-    const openClawReleaseCmp = compareOpenClawReleaseVersions(a, b);
-    if (openClawReleaseCmp != null) {
-      return openClawReleaseCmp;
+    const eveReleaseCmp = compareEVEReleaseVersions(a, b);
+    if (eveReleaseCmp != null) {
+      return eveReleaseCmp;
     }
   }
   return compareComparableSemver(

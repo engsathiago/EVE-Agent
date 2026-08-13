@@ -1,8 +1,8 @@
 // Legacy Talk config normalizer for provider scalar fields and realtime aliases.
 import { isDeepStrictEqual } from "node:util";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 import { normalizeTalkSection } from "../../../config/talk.js";
-import type { OpenClawConfig } from "../../../config/types.js";
+import type { EVEConfig } from "../../../config/types.js";
 
 function buildLegacyTalkProviderCompat(
   talk: Record<string, unknown>,
@@ -18,7 +18,7 @@ function buildLegacyTalkProviderCompat(
 
 function buildLegacyRealtimeTalkCompat(
   talk: Record<string, unknown>,
-  normalizedTalk: NonNullable<OpenClawConfig["talk"]>,
+  normalizedTalk: NonNullable<EVEConfig["talk"]>,
 ): Record<string, unknown> | undefined {
   if (talk.realtime !== undefined) {
     return undefined;
@@ -38,12 +38,12 @@ function buildLegacyRealtimeTalkCompat(
   if (normalizedTalk.providers !== undefined) {
     compat.providers = normalizedTalk.providers;
   }
-  return normalizeTalkSection({ realtime: compat } as OpenClawConfig["talk"])?.realtime;
+  return normalizeTalkSection({ realtime: compat } as EVEConfig["talk"])?.realtime;
 }
 
 function removeDerivedRealtimeSpeakerVoice(
   rawTalk: Record<string, unknown>,
-  normalizedTalk: NonNullable<OpenClawConfig["talk"]>,
+  normalizedTalk: NonNullable<EVEConfig["talk"]>,
 ): void {
   const rawRealtime = rawTalk.realtime;
   const normalizedRealtime = normalizedTalk.realtime;
@@ -63,13 +63,13 @@ function removeDerivedRealtimeSpeakerVoice(
 }
 
 /** Normalize legacy Talk provider/realtime fields into current talk.providers and talk.realtime. */
-export function normalizeLegacyTalkConfig(cfg: OpenClawConfig, changes: string[]): OpenClawConfig {
+export function normalizeLegacyTalkConfig(cfg: EVEConfig, changes: string[]): EVEConfig {
   const rawTalk = cfg.talk;
   if (!isRecord(rawTalk)) {
     return cfg;
   }
 
-  const normalizedTalk = normalizeTalkSection(rawTalk as OpenClawConfig["talk"]) ?? {};
+  const normalizedTalk = normalizeTalkSection(rawTalk as EVEConfig["talk"]) ?? {};
   const legacyProviderCompat = buildLegacyTalkProviderCompat(rawTalk);
   if (legacyProviderCompat) {
     normalizedTalk.providers = {

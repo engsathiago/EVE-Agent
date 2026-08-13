@@ -2,12 +2,12 @@
 import { mkdtempSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   finalizeDebugProxyCapture,
   getDebugProxyCaptureStore,
   initializeDebugProxyCapture,
-} from "openclaw/plugin-sdk/proxy-capture";
+} from "eve-agent/plugin-sdk/proxy-capture";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { installDebugProxyTestResetHooks } from "../test-support/debug-proxy-env-test-helpers.js";
 
@@ -24,7 +24,7 @@ import {
 } from "./speech-provider.js";
 import * as ttsModule from "./tts.js";
 
-const TEST_CFG = {} as OpenClawConfig;
+const TEST_CFG = {} as EVEConfig;
 
 function requireFirstEdgeTtsCall(edgeSpy: ReturnType<typeof vi.spyOn>): {
   config?: unknown;
@@ -98,9 +98,9 @@ describe("listMicrosoftVoices", () => {
   it("records voice discovery exchanges in debug proxy capture mode", async () => {
     const tempDir = mkdtempSync(path.join(os.tmpdir(), "microsoft-voices-capture-"));
     proxyReset.captureProxyEnv();
-    process.env.OPENCLAW_DEBUG_PROXY_ENABLED = "1";
-    process.env.OPENCLAW_STATE_DIR = tempDir;
-    process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = "ms-voices-session";
+    process.env.EVE_DEBUG_PROXY_ENABLED = "1";
+    process.env.EVE_STATE_DIR = tempDir;
+    process.env.EVE_DEBUG_PROXY_SESSION_ID = "ms-voices-session";
 
     globalThis.fetch = vi
       .fn()
@@ -113,8 +113,8 @@ describe("listMicrosoftVoices", () => {
       id: "ms-voices-session",
       startedAt: Date.now(),
       mode: "test",
-      sourceScope: "openclaw",
-      sourceProcess: "openclaw",
+      sourceScope: "eve",
+      sourceProcess: "eve",
     });
 
     await listMicrosoftVoices();
@@ -137,9 +137,9 @@ describe("listMicrosoftVoices", () => {
   it("does not double-capture voice discovery when the global fetch patch is installed", async () => {
     const tempDir = mkdtempSync(path.join(os.tmpdir(), "microsoft-voices-global-"));
     proxyReset.captureProxyEnv();
-    process.env.OPENCLAW_DEBUG_PROXY_ENABLED = "1";
-    process.env.OPENCLAW_STATE_DIR = tempDir;
-    process.env.OPENCLAW_DEBUG_PROXY_SESSION_ID = "ms-voices-global-session";
+    process.env.EVE_DEBUG_PROXY_ENABLED = "1";
+    process.env.EVE_STATE_DIR = tempDir;
+    process.env.EVE_DEBUG_PROXY_SESSION_ID = "ms-voices-global-session";
 
     globalThis.fetch = vi.fn(
       async () => new Response(JSON.stringify([{ ShortName: "en-US-AvaNeural" }]), { status: 200 }),
@@ -150,8 +150,8 @@ describe("listMicrosoftVoices", () => {
       id: "ms-voices-global-session",
       startedAt: Date.now(),
       mode: "test",
-      sourceScope: "openclaw",
-      sourceProcess: "openclaw",
+      sourceScope: "eve",
+      sourceProcess: "eve",
     });
     initializeDebugProxyCapture("test");
 

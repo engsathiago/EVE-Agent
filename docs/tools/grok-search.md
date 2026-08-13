@@ -6,7 +6,7 @@ read_when:
 title: "Grok search"
 ---
 
-OpenClaw supports Grok as a `web_search` provider, using xAI web-grounded
+EVE supports Grok as a `web_search` provider, using xAI web-grounded
 responses to produce AI-synthesized answers backed by live search results
 with citations.
 
@@ -14,7 +14,7 @@ Grok web search prefers your existing xAI OAuth sign-in when one is available.
 If no OAuth profile exists, the same xAI API key can also power the built-in
 `x_search` tool for X (formerly Twitter) post search and the `code_execution`
 tool. If you store the key under `plugins.entries.xai.config.webSearch.apiKey`,
-OpenClaw reuses it as a fallback for the bundled xAI model provider too.
+EVE reuses it as a fallback for the bundled xAI model provider too.
 
 For post-level X metrics such as reposts, replies, bookmarks, or views, prefer
 `x_search` with the exact post URL or status ID instead of a broad search
@@ -24,12 +24,12 @@ query.
 
 If you choose **Grok** during:
 
-- `openclaw onboard`
-- `openclaw configure --section web`
+- `eve onboard`
+- `eve configure --section web`
 
-OpenClaw can use an existing xAI OAuth profile without prompting for a separate
+EVE can use an existing xAI OAuth profile without prompting for a separate
 web-search key. If OAuth is not available, it falls back to xAI API-key setup.
-OpenClaw can also show a separate follow-up step to enable `x_search` with the
+EVE can also show a separate follow-up step to enable `x_search` with the
 same xAI credential. That follow-up:
 
 - only appears after you choose Grok for `web_search`
@@ -46,8 +46,8 @@ If you skip it, you can enable or change `x_search` later in config.
     Grok as the `web_search` provider. No separate API key is required:
 
     ```bash
-    openclaw onboard --auth-choice xai-oauth
-    openclaw config set tools.web.search.provider grok
+    eve onboard --auth-choice xai-oauth
+    eve config set tools.web.search.provider grok
     ```
 
   </Step>
@@ -59,7 +59,7 @@ If you skip it, you can enable or change `x_search` later in config.
     Set `XAI_API_KEY` in the Gateway environment, or configure via:
 
     ```bash
-    openclaw configure --section web
+    eve configure --section web
     ```
 
   </Step>
@@ -91,10 +91,10 @@ If you skip it, you can enable or change `x_search` later in config.
 }
 ```
 
-**Credential alternatives:** sign in with `openclaw models auth login
+**Credential alternatives:** sign in with `eve models auth login
 --provider xai --method oauth`, set `XAI_API_KEY` in the Gateway environment,
 or store `plugins.entries.xai.config.webSearch.apiKey`. For a gateway install,
-put env vars in `~/.openclaw/.env`.
+put env vars in `~/.eve/.env`.
 
 ## How it works
 
@@ -117,7 +117,7 @@ web-grounded searches can run longer than the shared `web_search` default. Set
 ## Base URL overrides
 
 Set `plugins.entries.xai.config.webSearch.baseUrl` when Grok web search should
-route through an operator proxy or xAI-compatible Responses endpoint. OpenClaw
+route through an operator proxy or xAI-compatible Responses endpoint. EVE
 posts to `<baseUrl>/responses` after trimming trailing slashes. `x_search`
 uses the same `webSearch.baseUrl` fallback unless
 `plugins.entries.xai.config.xSearch.baseUrl` is set.

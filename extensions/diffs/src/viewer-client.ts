@@ -42,8 +42,8 @@ function parsePayload(element: HTMLScriptElement): DiffViewerPayload {
 function getCards(): Array<{ host: HTMLElement; payload: DiffViewerPayload }> {
   const cards: Array<{ host: HTMLElement; payload: DiffViewerPayload }> = [];
   for (const card of document.querySelectorAll<HTMLElement>(".oc-diff-card")) {
-    const host = card.querySelector<HTMLElement>("[data-openclaw-diff-host]");
-    const payloadNode = card.querySelector<HTMLScriptElement>("[data-openclaw-diff-payload]");
+    const host = card.querySelector<HTMLElement>("[data-eve-diff-host]");
+    const payloadNode = card.querySelector<HTMLScriptElement>("[data-eve-diff-payload]");
     if (!host || !payloadNode) {
       continue;
     }
@@ -337,14 +337,14 @@ export async function hydrateViewer(): Promise<void> {
 async function main(): Promise<void> {
   try {
     await hydrateViewer();
-    document.documentElement.dataset.openclawDiffsReady = "true";
+    document.documentElement.dataset.eveDiffsReady = "true";
   } catch (error) {
-    document.documentElement.dataset.openclawDiffsError = "true";
+    document.documentElement.dataset.eveDiffsError = "true";
     console.error("Failed to hydrate diff viewer", error);
   }
 }
 
-export const disableAutoStartKey = Symbol.for("openclaw.diffs.disableAutoStart");
+export const disableAutoStartKey = Symbol.for("eve.diffs.disableAutoStart");
 
 const autoStartDisabled = Boolean(
   (globalThis as typeof globalThis & Record<symbol, unknown>)[disableAutoStartKey],

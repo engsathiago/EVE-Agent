@@ -1,12 +1,12 @@
-// Opencode plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
+// Opencode plugin entrypoint registers its EVE integration.
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth-api-key";
 import {
   matchesExactOrPrefix,
   PASSTHROUGH_GEMINI_REPLAY_HOOKS,
   resolveClaudeThinkingProfile,
-} from "openclaw/plugin-sdk/provider-model-shared";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-model-shared";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { applyOpencodeZenConfig, OPENCODE_ZEN_DEFAULT_MODEL } from "./api.js";
 import { opencodeMediaUnderstandingProvider } from "./media-understanding-provider.js";
 

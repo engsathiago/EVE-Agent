@@ -4,9 +4,9 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { saveCronStore } from "../cron/store.js";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../test-utils/eve-test-state.js";
 import {
   formatCronSessionDiagnosticFields,
   formatStoppedCronSessionDiagnosticFields,
@@ -16,7 +16,7 @@ import {
 } from "./diagnostic-session-context.js";
 
 let tempDir: string | undefined;
-let testState: OpenClawTestState | undefined;
+let testState: EVETestState | undefined;
 
 function writeJsonl(filePath: string, rows: unknown[]) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -25,9 +25,9 @@ function writeJsonl(filePath: string, rows: unknown[]) {
 
 describe("diagnostic session context", () => {
   beforeEach(async () => {
-    testState = await createOpenClawTestState({
+    testState = await createEVETestState({
       layout: "state-only",
-      prefix: "openclaw-diagnostic-session-",
+      prefix: "eve-diagnostic-session-",
     });
     tempDir = testState.stateDir;
   });

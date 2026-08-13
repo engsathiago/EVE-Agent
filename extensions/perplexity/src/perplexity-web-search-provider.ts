@@ -4,8 +4,8 @@ import {
   resolveProviderWebSearchPluginConfig,
   type WebSearchProviderPlugin,
   type WebSearchProviderToolDefinition,
-} from "openclaw/plugin-sdk/provider-web-search-config-contract";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-web-search-config-contract";
+import { isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   createPerplexityWebSearchProviderBase,
   resolvePerplexityWebSearchRuntimeMetadata,

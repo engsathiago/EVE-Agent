@@ -1,7 +1,7 @@
 /** Shared bundle MCP catalog, runtime, and manager types. */
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { TSchema } from "typebox";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { AnyAgentTool } from "./tools/common.js";
 
 /** Materialized MCP tools plus diagnostics and cleanup handle for one run. */
@@ -91,7 +91,7 @@ export type SessionMcpRuntimeManager = {
     sessionId: string;
     sessionKey?: string;
     workspaceDir: string;
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
   }) => Promise<SessionMcpRuntime>;
   bindSessionKey: (sessionKey: string, sessionId: string) => void;
   resolveSessionId: (sessionKey: string) => string | undefined;

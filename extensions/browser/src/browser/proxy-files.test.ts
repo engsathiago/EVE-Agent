@@ -1,7 +1,7 @@
 // Browser tests cover proxy files plugin behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { MEDIA_MAX_BYTES } from "openclaw/plugin-sdk/media-runtime";
+import { MEDIA_MAX_BYTES } from "eve-agent/plugin-sdk/media-runtime";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTempHomeEnv, type TempHomeEnv } from "../../test-support.js";
 import { persistBrowserProxyFiles } from "./proxy-files.js";
@@ -10,7 +10,7 @@ describe("persistBrowserProxyFiles", () => {
   let tempHome: TempHomeEnv;
 
   beforeEach(async () => {
-    tempHome = await createTempHomeEnv("openclaw-browser-proxy-files-");
+    tempHome = await createTempHomeEnv("eve-browser-proxy-files-");
   });
 
   afterEach(async () => {
@@ -30,7 +30,7 @@ describe("persistBrowserProxyFiles", () => {
     const savedPath = mapping.get(sourcePath);
     expect(typeof savedPath).toBe("string");
     expect(path.normalize(savedPath ?? "")).toContain(
-      `${path.sep}.openclaw${path.sep}media${path.sep}browser${path.sep}`,
+      `${path.sep}.eve${path.sep}media${path.sep}browser${path.sep}`,
     );
     await expect(fs.readFile(savedPath ?? "", "utf8")).resolves.toBe("hello from browser proxy");
   });
@@ -49,7 +49,7 @@ describe("persistBrowserProxyFiles", () => {
     ).rejects.toThrow("Media exceeds 5MB limit");
 
     await expect(
-      fs.stat(path.join(tempHome.home, ".openclaw", "media", "browser")),
+      fs.stat(path.join(tempHome.home, ".eve", "media", "browser")),
     ).rejects.toHaveProperty("code", "ENOENT");
   });
 });

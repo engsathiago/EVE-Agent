@@ -2,11 +2,11 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stateMigrations } from "./doctor-contract-api.js";
 import {
@@ -28,11 +28,11 @@ async function makeTempDir(): Promise<string> {
 }
 
 function resolveLegacyImportRunRecordPath(vaultRoot: string, runId: string): string {
-  return path.join(vaultRoot, ".openclaw-wiki", "import-runs", `${runId}.json`);
+  return path.join(vaultRoot, ".eve-wiki", "import-runs", `${runId}.json`);
 }
 
 function migrationParams(params: { stateDir: string; vaultRoot: string }) {
-  const env = { ...process.env, HOME: params.stateDir, OPENCLAW_STATE_DIR: params.stateDir };
+  const env = { ...process.env, HOME: params.stateDir, EVE_STATE_DIR: params.stateDir };
   return {
     config: {
       plugins: {
@@ -126,7 +126,7 @@ describe("memory-wiki doctor source sync migration", () => {
     const legacyPath = resolveLegacyImportRunRecordPath(vaultRoot, "chatgpt-alpha");
     const snapshotPath = path.join(
       vaultRoot,
-      ".openclaw-wiki",
+      ".eve-wiki",
       "import-runs",
       "chatgpt-alpha",
       "snapshots",

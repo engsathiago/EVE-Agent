@@ -1,7 +1,7 @@
 /**
  * Warns when assistant text appears to expose raw tool-call syntax.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { AssistantMessage } from "../llm/types.js";
 import { extractTextFromChatContent } from "../shared/chat-content.js";
 import { detectToolCallShapedText } from "../shared/text/tool-call-shaped-text.js";

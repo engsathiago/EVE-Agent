@@ -1,6 +1,6 @@
 // Gateway iOS exec-approval push delivery.
 // Sends APNs request/resolution wakes to paired operator devices.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import { getRuntimeConfig } from "../config/io.js";
 import {
   hasEffectivePairedDeviceRole,

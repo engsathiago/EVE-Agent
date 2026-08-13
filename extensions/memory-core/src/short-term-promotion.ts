@@ -2,18 +2,18 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { MemorySearchResult } from "openclaw/plugin-sdk/memory-core-host-runtime-files";
+import type { MemorySearchResult } from "eve-agent/plugin-sdk/memory-core-host-runtime-files";
 import {
   DEFAULT_MEMORY_DEEP_DREAMING_MAX_PROMOTED_SNIPPET_TOKENS,
   formatMemoryDreamingDay,
   isSameMemoryDreamingDay,
-} from "openclaw/plugin-sdk/memory-core-host-status";
-import { appendMemoryHostEvent } from "openclaw/plugin-sdk/memory-host-events";
+} from "eve-agent/plugin-sdk/memory-core-host-status";
+import { appendMemoryHostEvent } from "eve-agent/plugin-sdk/memory-host-events";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeStringEntries,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   deriveConceptTags,
   MAX_CONCEPT_TAGS,
@@ -47,7 +47,7 @@ const DEFAULT_RECENCY_HALF_LIFE_DAYS = 14;
 export const DEFAULT_PROMOTION_MIN_SCORE = 0.75;
 export const DEFAULT_PROMOTION_MIN_RECALL_COUNT = 3;
 export const DEFAULT_PROMOTION_MIN_UNIQUE_QUERIES = 2;
-const PROMOTION_MARKER_PREFIX = "openclaw-memory-promotion:";
+const PROMOTION_MARKER_PREFIX = "eve-memory-promotion:";
 const PROMOTED_SNIPPET_CHARS_PER_TOKEN_ESTIMATE = 4;
 const MAX_QUERY_HASHES = 32;
 const MAX_RECALL_DAYS = 16;
@@ -408,7 +408,7 @@ function isContaminatedDreamingSnippet(raw: string): boolean {
     return false;
   }
   if (
-    /<!--\s*openclaw-memory-promotion:/i.test(snippet) ||
+    /<!--\s*eve-memory-promotion:/i.test(snippet) ||
     DREAMING_TRANSCRIPT_PROMPT_LINE_RE.test(snippet)
   ) {
     return true;
@@ -2204,8 +2204,8 @@ function relocateCandidateRange(
   };
 }
 
-const DREAMING_FENCE_START_RE = /<!--\s*openclaw:dreaming:[a-z][a-z0-9-]*:start\s*-->/i;
-const DREAMING_FENCE_END_RE = /<!--\s*openclaw:dreaming:[a-z][a-z0-9-]*:end\s*-->/i;
+const DREAMING_FENCE_START_RE = /<!--\s*eve:dreaming:[a-z][a-z0-9-]*:start\s*-->/i;
+const DREAMING_FENCE_END_RE = /<!--\s*eve:dreaming:[a-z][a-z0-9-]*:end\s*-->/i;
 
 function lineRangeOverlapsDreamingFence(
   lines: string[],
@@ -2258,7 +2258,7 @@ async function rehydratePromotionCandidate(
       continue;
     }
     // Managed dreaming blocks in daily memory files are scratchwork, not durable
-    // content. If rehydration lands inside an openclaw:dreaming fence (for example
+    // content. If rehydration lands inside an eve:dreaming fence (for example
     // because file edits shifted lines between ranking and apply), refuse the
     // candidate so dream artifacts cannot be promoted into MEMORY.md.
     if (lineRangeOverlapsDreamingFence(lines, relocated.startLine, relocated.endLine)) {
@@ -2348,7 +2348,7 @@ function extractPromotionMarkers(memoryText: string): Set<string> {
   // Marker keys include source paths, so spaces are valid. Capture until the
   // comment close; otherwise a path like "memory/project alpha/..." is missed
   // and the same candidate can be appended again.
-  const matches = memoryText.matchAll(/<!--\s*openclaw-memory-promotion:([^\n]*?)\s*-->/gi);
+  const matches = memoryText.matchAll(/<!--\s*eve-memory-promotion:([^\n]*?)\s*-->/gi);
   for (const match of matches) {
     const key = match[1]?.trim();
     if (key) {

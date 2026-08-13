@@ -14,29 +14,29 @@ import {
   resolveAgentEffectiveModelPrimary,
   resolveAgentWorkspaceDir,
   resolveDefaultModelForAgent,
-} from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { closeActiveMemorySearchManager } from "openclaw/plugin-sdk/memory-host-search";
+} from "eve-agent/plugin-sdk/agent-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { closeActiveMemorySearchManager } from "eve-agent/plugin-sdk/memory-host-search";
 import {
   asDateTimestampMs,
   parseStrictPositiveInteger,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   resolveLivePluginConfigObject,
   resolvePluginConfigObject,
-} from "openclaw/plugin-sdk/plugin-config-runtime";
-import { definePluginEntry, type OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import { parseAgentSessionKey, parseThreadSessionSuffix } from "openclaw/plugin-sdk/routing";
-import { isPathInside } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { definePluginEntry, type EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
+import { parseAgentSessionKey, parseThreadSessionSuffix } from "eve-agent/plugin-sdk/routing";
+import { isPathInside } from "eve-agent/plugin-sdk/security-runtime";
 import {
   asOptionalRecord as asRecord,
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   normalizeStringEntries,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { tempWorkspace, resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { tempWorkspace, resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_AGENT_ID = "main";
@@ -476,13 +476,13 @@ function isReservedActiveMemoryToolsAllowEntry(value: string): boolean {
   return normalized.startsWith("group:") || ACTIVE_MEMORY_RESERVED_TOOLS_ALLOW.has(normalized);
 }
 
-function resolveDefaultToolsAllow(cfg: OpenClawConfig | undefined): string[] {
+function resolveDefaultToolsAllow(cfg: EVEConfig | undefined): string[] {
   return cfg?.plugins?.slots?.memory === "memory-lancedb"
     ? [...LANCEDB_ACTIVE_MEMORY_TOOLS_ALLOW]
     : [...DEFAULT_ACTIVE_MEMORY_TOOLS_ALLOW];
 }
 
-function resolveToolsAllow(params: { pluginToolsAllow: unknown; cfg?: OpenClawConfig }): string[] {
+function resolveToolsAllow(params: { pluginToolsAllow: unknown; cfg?: EVEConfig }): string[] {
   return (
     normalizeConfiguredToolsAllow(params.pluginToolsAllow) ?? resolveDefaultToolsAllow(params.cfg)
   );
@@ -523,7 +523,7 @@ function toSafeTranscriptAgentDirName(agentId: string): string {
   return encoded ? encoded : "unknown-agent";
 }
 
-function resolvePersistentTranscriptBaseDir(api: OpenClawPluginApi, agentId: string): string {
+function resolvePersistentTranscriptBaseDir(api: EVEPluginApi, agentId: string): string {
   return path.join(
     api.runtime.state.resolveStateDir(),
     "plugins",
@@ -542,7 +542,7 @@ function requireTransientWorkspaceDir(tempDir: string | undefined): string {
 }
 
 function resolveCanonicalSessionKeyFromSessionId(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   agentId: string;
   sessionId?: string;
 }): string | undefined {
@@ -612,7 +612,7 @@ function isMissingRegisteredMemoryToolsError(
 }
 
 function resolveRecallRunChannelContext(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   agentId: string;
   sessionKey?: string;
   sessionId?: string;
@@ -706,7 +706,7 @@ function activeMemoryToggleKey(sessionKey: string): string {
   return crypto.createHash("sha256").update(sessionKey, "utf8").digest("hex");
 }
 
-function openActiveMemoryToggleStore(api: OpenClawPluginApi) {
+function openActiveMemoryToggleStore(api: EVEPluginApi) {
   return api.runtime.state.openKeyedStore<ActiveMemoryToggleEntry>({
     namespace: "session-toggles",
     maxEntries: 10_000,
@@ -714,7 +714,7 @@ function openActiveMemoryToggleStore(api: OpenClawPluginApi) {
 }
 
 async function isSessionActiveMemoryDisabled(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   sessionKey?: string;
 }): Promise<boolean> {
   const sessionKey = params.sessionKey?.trim();
@@ -738,7 +738,7 @@ async function isSessionActiveMemoryDisabled(params: {
 }
 
 async function setSessionActiveMemoryDisabled(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   sessionKey: string;
   disabled: boolean;
 }): Promise<void> {
@@ -755,7 +755,7 @@ async function setSessionActiveMemoryDisabled(params: {
 }
 
 function resolveCommandSessionKey(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   config: ResolvedActiveRecallPluginConfig;
   sessionKey?: string;
   sessionId?: string;
@@ -793,7 +793,7 @@ function formatActiveMemoryCommandHelp(): string {
   ].join("\n");
 }
 
-function isActiveMemoryGloballyEnabled(cfg: OpenClawConfig): boolean {
+function isActiveMemoryGloballyEnabled(cfg: EVEConfig): boolean {
   const entry = asRecord(cfg.plugins?.entries?.["active-memory"]);
   if (entry?.enabled === false) {
     return false;
@@ -803,9 +803,9 @@ function isActiveMemoryGloballyEnabled(cfg: OpenClawConfig): boolean {
 }
 
 function updateActiveMemoryGlobalEnabledInConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   enabled: boolean,
-): OpenClawConfig {
+): EVEConfig {
   const entries = { ...cfg.plugins?.entries };
   const existingEntry = asRecord(entries["active-memory"]) ?? {};
   const existingConfig = asRecord(existingEntry.config) ?? {};
@@ -836,7 +836,7 @@ const ACTIVE_MEMORY_GLOBAL_MUTATION_ADMIN_REQUIRED_TEXT =
 
 function normalizePluginConfig(
   pluginConfig: unknown,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): ResolvedActiveRecallPluginConfig {
   const raw = (
     pluginConfig && typeof pluginConfig === "object" ? pluginConfig : {}
@@ -915,9 +915,9 @@ function normalizePluginConfig(
 }
 
 function applyActiveMemoryRuntimeConfigSnapshot(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   pluginConfig: ResolvedActiveRecallPluginConfig,
-): OpenClawConfig {
+): EVEConfig {
   const existingEntry = asRecord(cfg.plugins?.entries?.["active-memory"]);
   const existingPluginConfig = asRecord(existingEntry?.config);
   return {
@@ -941,19 +941,19 @@ function applyActiveMemoryRuntimeConfigSnapshot(
   };
 }
 
-function resolveActiveMemoryCleanupConfig(api: OpenClawPluginApi): OpenClawConfig | undefined {
+function resolveActiveMemoryCleanupConfig(api: EVEPluginApi): EVEConfig | undefined {
   try {
     return (
-      (api.runtime.config?.current?.() as OpenClawConfig | undefined) ??
-      (api.config as OpenClawConfig | undefined)
+      (api.runtime.config?.current?.() as EVEConfig | undefined) ??
+      (api.config as EVEConfig | undefined)
     );
   } catch {
-    return api.config as OpenClawConfig | undefined;
+    return api.config as EVEConfig | undefined;
   }
 }
 
 function scheduleMemorySearchCleanupAfterTimeout(
-  api: OpenClawPluginApi,
+  api: EVEPluginApi,
   logPrefix: string,
   agentId: string,
 ): void {
@@ -1550,7 +1550,7 @@ function sanitizeDebugText(text: string): string {
 }
 
 async function persistPluginStatusLines(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   agentId: string;
   sessionKey?: string;
   statusLine?: string;
@@ -2847,7 +2847,7 @@ function parseModelCandidate(modelRef: string | undefined, defaultProvider = DEF
 }
 
 function getModelRef(
-  api: OpenClawPluginApi,
+  api: EVEPluginApi,
   agentId: string,
   config: ResolvedActiveRecallPluginConfig,
   ctx?: {
@@ -2879,7 +2879,7 @@ function getModelRef(
 }
 
 async function runRecallSubagent(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   config: ResolvedActiveRecallPluginConfig;
   agentId: string;
   sessionKey?: string;
@@ -2925,8 +2925,8 @@ async function runRecallSubagent(params: {
   const transientWorkspace = params.config.persistTranscripts
     ? undefined
     : await tempWorkspace({
-        rootDir: resolvePreferredOpenClawTmpDir(),
-        prefix: "openclaw-active-memory-",
+        rootDir: resolvePreferredEVETmpDir(),
+        prefix: "eve-active-memory-",
       });
   const tempDir = transientWorkspace?.dir;
   const persistedDir = params.config.persistTranscripts
@@ -3071,7 +3071,7 @@ async function runRecallSubagent(params: {
 }
 
 async function maybeResolveActiveRecall(params: {
-  api: OpenClawPluginApi;
+  api: EVEPluginApi;
   config: ResolvedActiveRecallPluginConfig;
   agentId: string;
   sessionKey?: string;
@@ -3426,15 +3426,15 @@ export default definePluginEntry({
   id: "active-memory",
   name: "Active Memory",
   description: "Proactively surfaces relevant memory before eligible conversational replies.",
-  register(api: OpenClawPluginApi) {
-    const readCurrentConfig = (): OpenClawConfig | undefined => {
+  register(api: EVEPluginApi) {
+    const readCurrentConfig = (): EVEConfig | undefined => {
       try {
         return (
-          (api.runtime.config?.current?.() as OpenClawConfig | undefined) ??
-          (api.config as OpenClawConfig | undefined)
+          (api.runtime.config?.current?.() as EVEConfig | undefined) ??
+          (api.config as EVEConfig | undefined)
         );
       } catch {
-        return api.config as OpenClawConfig | undefined;
+        return api.config as EVEConfig | undefined;
       }
     };
     let config = normalizePluginConfig(api.pluginConfig, readCurrentConfig());
@@ -3460,7 +3460,7 @@ export default definePluginEntry({
     const refreshLiveConfigFromRuntime = () => {
       const livePluginConfig = resolveLivePluginConfigObject(
         api.runtime.config?.current
-          ? () => api.runtime.config.current() as OpenClawConfig
+          ? () => api.runtime.config.current() as EVEConfig
           : undefined,
         "active-memory",
         api.pluginConfig as Record<string, unknown>,
@@ -3482,7 +3482,7 @@ export default definePluginEntry({
           return { text: formatActiveMemoryCommandHelp() };
         }
         if (isGlobal) {
-          const currentConfig = api.runtime.config.current() as OpenClawConfig;
+          const currentConfig = api.runtime.config.current() as EVEConfig;
           if (action === "status") {
             return {
               text: `Active Memory: ${isActiveMemoryGloballyEnabled(currentConfig) ? "on" : "off"} globally.`,

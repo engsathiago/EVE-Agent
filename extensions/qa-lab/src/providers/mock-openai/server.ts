@@ -2,8 +2,8 @@
 import { createHash } from "node:crypto";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { setTimeout as sleep } from "node:timers/promises";
-import { escapeRegExp } from "openclaw/plugin-sdk/text-utility-runtime";
-import { readRequestBodyWithLimit } from "openclaw/plugin-sdk/webhook-ingress";
+import { escapeRegExp } from "eve-agent/plugin-sdk/text-utility-runtime";
+import { readRequestBodyWithLimit } from "eve-agent/plugin-sdk/webhook-ingress";
 import { closeQaHttpServer } from "../../bus-server.js";
 import { writeJson } from "../shared/http-json.js";
 
@@ -186,7 +186,7 @@ const QA_MCP_CODE_MODE_PROMPT_RE = /mcp code mode qa check/i;
 const QA_AUDIO_TRANSCRIPTION_TEXT =
   "Reply with only this exact marker: WHATSAPP_QA_AUDIO_TRANSCRIPT_OK";
 const QA_GROUP_AUDIO_TRANSCRIPTION_TEXT =
-  "openclawqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK";
+  "eveqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK";
 const QA_GROUP_AUDIO_MIN_MULTIPART_BODY_CHARS = 48_000;
 const QA_MCP_CODE_MODE_API_FILE_PROMPT_RE = /mcp code mode api file qa check/i;
 
@@ -863,7 +863,7 @@ function buildQaToolSearchArgs(targetTool: string, failureMode: boolean): Record
     };
   }
   if (targetTool === "web_search") {
-    return { query: "OpenClaw runtime parity fixed query", count: 1 };
+    return { query: "EVE runtime parity fixed query", count: 1 };
   }
   if (targetTool === "web_fetch") {
     return { url: "https://example.com/", maxChars: 500 };
@@ -1318,7 +1318,7 @@ function buildAssistantText(
     return "Protocol note: I do not have enough context to say what you usually want for QA movie night.";
   }
   if (/tool continuity check/i.test(prompt) && toolOutput) {
-    return `Protocol note: model switch handoff confirmed on ${model || "the requested model"}. QA mission from QA_KICKOFF_TASK.md still applies: understand this OpenClaw repo from source + docs before acting.`;
+    return `Protocol note: model switch handoff confirmed on ${model || "the requested model"}. QA mission from QA_KICKOFF_TASK.md still applies: understand this EVE repo from source + docs before acting.`;
   }
   if ((toolOutput || allInputText) && /repo contract followthrough check/i.test(allInputText)) {
     const repoEvidenceText = [scenarioToolOutput, allInputText].filter(Boolean).join("\n");
@@ -1957,10 +1957,10 @@ async function buildResponsesPayload(
     if (targetTool && hasDeclaredTool(body, "tool_search_code")) {
       return buildToolCallEventsWithArgs("tool_search_code", {
         code: [
-          `const hits = await openclaw.tools.search(${JSON.stringify(targetTool)}, { limit: 1 });`,
+          `const hits = await eve.tools.search(${JSON.stringify(targetTool)}, { limit: 1 });`,
           "const match = hits.find((tool) => tool.name === " + JSON.stringify(targetTool) + ");",
           "if (!match) throw new Error('target tool not found');",
-          `return await openclaw.tools.call(match.id, ${JSON.stringify(plannedArgs)});`,
+          `return await eve.tools.call(match.id, ${JSON.stringify(plannedArgs)});`,
         ].join("\n"),
       });
     }
@@ -2375,7 +2375,7 @@ async function buildResponsesPayload(
         path: "dreaming-shadow-trial-report.md",
         content: [
           "Candidate: The user prefers release reports that include exact verification commands and remaining risk.",
-          "Trial prompt: Prepare a release readiness reply for a local OpenClaw QA change.",
+          "Trial prompt: Prepare a release readiness reply for a local EVE QA change.",
           "Baseline outcome: mentions tests passed but omits the exact command and remaining risk.",
           "Candidate outcome: includes the exact verification command and calls out the remaining review risk.",
           "Verdict: helpful",
@@ -2811,12 +2811,12 @@ async function buildResponsesPayload(
     if (
       !taskEvidenceText ||
       (!taskEvidenceText.includes("# Personal task ledger") &&
-        !taskEvidenceText.includes("Task: prepare a local OpenClaw PR readiness note."))
+        !taskEvidenceText.includes("Task: prepare a local EVE PR readiness note."))
     ) {
       return buildToolCallEventsWithArgs("read", { path: "PERSONAL_TASK_LEDGER.md" });
     }
     if (
-      taskEvidenceText.includes("Task: prepare a local OpenClaw PR readiness note.") &&
+      taskEvidenceText.includes("Task: prepare a local EVE PR readiness note.") &&
       taskEvidenceText.includes("Done: local evidence captured in personal-task-status.txt.")
     ) {
       return buildToolCallEventsWithArgs("write", {

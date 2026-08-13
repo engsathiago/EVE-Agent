@@ -1,7 +1,7 @@
 // Slack plugin module implements dm auth behavior.
-import { formatAllowlistMatchMeta } from "openclaw/plugin-sdk/allow-from";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatAllowlistMatchMeta } from "eve-agent/plugin-sdk/allow-from";
+import { createChannelPairingChallengeIssuer } from "eve-agent/plugin-sdk/channel-pairing";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import { resolveSlackAllowListMatch } from "./allow-list.js";
 import type { SlackMonitorContext } from "./context.js";
 import { upsertChannelPairingRequest } from "./conversation.runtime.js";

@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
 import {
   buildRuntimeContextCustomMessage,
   resolveRuntimeContextPromptParts,
@@ -53,15 +53,15 @@ function messageText(content: unknown): string {
 }
 
 async function verifyRuntimeContextTranscriptShape(root: string) {
-  const sessionFile = path.join(root, ".openclaw", "agents", "main", "sessions", "runtime.jsonl");
+  const sessionFile = path.join(root, ".eve", "agents", "main", "sessions", "runtime.jsonl");
   await fs.mkdir(path.dirname(sessionFile), { recursive: true });
   const sessionManager = SessionManager.open(sessionFile);
   const effectivePrompt = [
     "visible ask",
     "",
-    "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+    "<<<BEGIN_EVE_INTERNAL_CONTEXT>>>",
     "secret docker context",
-    "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+    "<<<END_EVE_INTERNAL_CONTEXT>>>",
   ].join("\n");
   const promptSubmission = resolveRuntimeContextPromptParts({
     effectivePrompt,
@@ -91,7 +91,7 @@ async function verifyRuntimeContextTranscriptShape(root: string) {
   const customEntry = entries.find((entry) => entry.type === "custom_message");
   assert(!customEntry, "runtime custom message should not be persisted without its user turn");
   assert(
-    runtimeContextMessage.customType === "openclaw.runtime-context",
+    runtimeContextMessage.customType === "eve.runtime-context",
     "unexpected custom message type",
   );
   assert(!runtimeContextMessage.display, "runtime custom message should be hidden");
@@ -105,7 +105,7 @@ async function verifyRuntimeContextTranscriptShape(root: string) {
   const userText = messageText(userEntries[0]?.message?.content);
   assert(userText === "visible ask", `unexpected visible user text: ${JSON.stringify(userText)}`);
   assert(
-    !userText.includes("OPENCLAW_INTERNAL_CONTEXT") && !userText.includes("secret docker context"),
+    !userText.includes("EVE_INTERNAL_CONTEXT") && !userText.includes("secret docker context"),
     "visible user transcript leaked runtime context",
   );
 }
@@ -131,9 +131,9 @@ async function seedBrokenSession(stateDir: string): Promise<string> {
         content: [
           "visible ask",
           "",
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_EVE_INTERNAL_CONTEXT>>>",
           "secret doctor context",
-          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<END_EVE_INTERNAL_CONTEXT>>>",
         ].join("\n"),
       },
     },
@@ -181,8 +181,8 @@ async function seedBrokenSession(stateDir: string): Promise<string> {
 }
 
 async function verifyDoctorRepair(root: string) {
-  const stateDir = path.join(root, ".openclaw");
-  const configPath = path.join(stateDir, "openclaw.json");
+  const stateDir = path.join(root, ".eve");
+  const configPath = path.join(stateDir, "eve.json");
   const sessionFile = await seedBrokenSession(stateDir);
   await fs.mkdir(path.dirname(configPath), { recursive: true });
   await fs.writeFile(configPath, JSON.stringify({ plugins: { enabled: false } }, null, 2));
@@ -196,15 +196,15 @@ async function verifyDoctorRepair(root: string) {
     env: {
       ...process.env,
       HOME: root,
-      OPENCLAW_CONFIG_PATH: configPath,
-      OPENCLAW_DISABLE_BONJOUR: "1",
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-      OPENCLAW_NO_ONBOARD: "1",
-      OPENCLAW_STATE_DIR: stateDir,
-      OPENCLAW_SKIP_CANVAS_HOST: "1",
-      OPENCLAW_SKIP_CHANNELS: "1",
-      OPENCLAW_SKIP_CRON: "1",
-      OPENCLAW_SKIP_GMAIL_WATCHER: "1",
+      EVE_CONFIG_PATH: configPath,
+      EVE_DISABLE_BONJOUR: "1",
+      EVE_DISABLE_BUNDLED_PLUGINS: "1",
+      EVE_NO_ONBOARD: "1",
+      EVE_STATE_DIR: stateDir,
+      EVE_SKIP_CANVAS_HOST: "1",
+      EVE_SKIP_CHANNELS: "1",
+      EVE_SKIP_CRON: "1",
+      EVE_SKIP_GMAIL_WATCHER: "1",
     },
     encoding: "utf-8",
     timeout: 120_000,
@@ -234,16 +234,16 @@ async function verifyDoctorRepair(root: string) {
 }
 
 async function main() {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-runtime-context-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-runtime-context-"));
   process.env.HOME = root;
-  process.env.OPENCLAW_STATE_DIR = path.join(root, ".openclaw");
-  process.env.OPENCLAW_CONFIG_PATH = path.join(process.env.OPENCLAW_STATE_DIR, "openclaw.json");
+  process.env.EVE_STATE_DIR = path.join(root, ".eve");
+  process.env.EVE_CONFIG_PATH = path.join(process.env.EVE_STATE_DIR, "eve.json");
   try {
     await verifyRuntimeContextTranscriptShape(root);
     await verifyDoctorRepair(root);
     console.log("session runtime context Docker E2E passed");
   } finally {
-    if (process.env.OPENCLAW_SESSION_RUNTIME_CONTEXT_KEEP_ARTIFACTS !== "1") {
+    if (process.env.EVE_SESSION_RUNTIME_CONTEXT_KEEP_ARTIFACTS !== "1") {
       await fs.rm(root, { recursive: true, force: true });
     } else {
       console.error(`kept artifacts: ${root}`);

@@ -8,8 +8,8 @@ read_when:
 ---
 
 Channel plugins should expose outbound message behavior from
-`openclaw/plugin-sdk/channel-outbound`. Use
-`openclaw/plugin-sdk/channel-inbound` for receive/context/dispatch orchestration.
+`eve-agent/plugin-sdk/channel-outbound`. Use
+`eve-agent/plugin-sdk/channel-inbound` for receive/context/dispatch orchestration.
 
 Core owns queueing, durability, generic retry policy, hooks, receipts, and the
 shared `message` tool. The plugin owns native send/edit/delete calls, target
@@ -24,7 +24,7 @@ Most plugins define one `message` adapter:
 import {
   defineChannelMessageAdapter,
   createMessageReceiptFromOutboundResults,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 
 export const demoMessageAdapter = defineChannelMessageAdapter({
   id: "demo",
@@ -71,7 +71,7 @@ If the channel already has a compatible `outbound` adapter, derive the message
 adapter instead of duplicating send code:
 
 ```ts
-import { createChannelMessageAdapterFromOutbound } from "openclaw/plugin-sdk/channel-outbound";
+import { createChannelMessageAdapterFromOutbound } from "eve-agent/plugin-sdk/channel-outbound";
 
 export const messageAdapter = createChannelMessageAdapterFromOutbound({
   id: "demo",

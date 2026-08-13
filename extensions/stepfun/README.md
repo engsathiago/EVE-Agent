@@ -1,12 +1,12 @@
-# OpenClaw StepFun Provider
+# EVE StepFun Provider
 
-Official OpenClaw provider plugin for StepFun.
+Official EVE provider plugin for StepFun.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/stepfun-provider
-openclaw gateway restart
+eve plugins install @eve/stepfun-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/stepfun> for setup and configuration.
+See <https://docs.eve.ai/providers/stepfun> for setup and configuration.

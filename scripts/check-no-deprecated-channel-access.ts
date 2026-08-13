@@ -1,4 +1,4 @@
-// Check No Deprecated Channel Access script supports OpenClaw repository automation.
+// Check No Deprecated Channel Access script supports EVE repository automation.
 import fs from "node:fs";
 import path from "node:path";
 import { collectFilesSync, isCodeFile, relativeToCwd } from "./check-file-utils.js";
@@ -47,7 +47,7 @@ const RULES: Rule[] = [
   },
   {
     label: "deprecated group access compatibility module",
-    pattern: /from\s+["']openclaw\/plugin-sdk\/group-access["']/u,
+    pattern: /from\s+["']eve\/plugin-sdk\/group-access["']/u,
   },
   {
     label: "deprecated command authorization helper",
@@ -55,7 +55,7 @@ const RULES: Rule[] = [
   },
   {
     label: "deprecated command auth SDK facade",
-    pattern: /from\s+["']openclaw\/plugin-sdk\/command-auth["']/u,
+    pattern: /from\s+["']eve\/plugin-sdk\/command-auth["']/u,
   },
   {
     label: "deprecated AccessFacts command authorizers",

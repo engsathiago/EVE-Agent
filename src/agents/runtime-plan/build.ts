@@ -7,7 +7,7 @@ import type { TSchema } from "typebox";
 import type { ThinkLevel } from "../../auto-reply/thinking.js";
 import { isSilentReplyPayloadText, SILENT_REPLY_TOKEN } from "../../auto-reply/tokens.js";
 import { projectConfigOntoRuntimeSourceSnapshot } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { hasReplyPayloadContent } from "../../interactive/payload.js";
 import { loadManifestMetadataSnapshot } from "../../plugins/manifest-contract-eligibility.js";
 import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
@@ -43,9 +43,9 @@ function formatResolvedRef(params: { provider: string; modelId: string }): strin
   return `${params.provider}/${params.modelId}`;
 }
 
-function asOpenClawConfig(value: unknown): OpenClawConfig | undefined {
+function asEVEConfig(value: unknown): EVEConfig | undefined {
   return value !== null && typeof value === "object" && !Array.isArray(value)
-    ? (value as OpenClawConfig)
+    ? (value as EVEConfig)
     : undefined;
 }
 
@@ -68,7 +68,7 @@ function isProviderRuntimePluginHandle(
 function resolveProviderRuntimeHandleForPlugins(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   runtimeHandle?: BuildAgentRuntimePlanParams["providerRuntimeHandle"];
   resolveWhenMissing?: boolean;
@@ -87,7 +87,7 @@ function resolveProviderRuntimeHandleForPlugins(params: {
   return resolveProviderRuntimePluginHandle({
     provider: params.runtimeHandle?.provider ?? params.provider,
     modelId: params.modelId,
-    config: asOpenClawConfig(params.runtimeHandle?.config) ?? params.config,
+    config: asEVEConfig(params.runtimeHandle?.config) ?? params.config,
     workspaceDir: params.runtimeHandle?.workspaceDir ?? params.workspaceDir,
     env: params.runtimeHandle?.env ?? process.env,
     applyAutoEnable: params.runtimeHandle?.applyAutoEnable,
@@ -99,7 +99,7 @@ function resolveProviderRuntimeHandleForPlugins(params: {
 export function buildAgentRuntimeDeliveryPlan(
   params: BuildAgentRuntimeDeliveryPlanParams,
 ): AgentRuntimeDeliveryPlan {
-  const config = asOpenClawConfig(params.config);
+  const config = asEVEConfig(params.config);
   const providerRuntimeHandle = resolveProviderRuntimeHandleForPlugins({
     provider: params.provider,
     modelId: params.modelId,
@@ -146,7 +146,7 @@ export function buildAgentRuntimeOutcomePlan(): AgentRuntimeOutcomePlan {
 
 /** Build the complete runtime plan for an embedded agent attempt. */
 export function buildAgentRuntimePlan(params: BuildAgentRuntimePlanParams): AgentRuntimePlan {
-  const config = asOpenClawConfig(params.config);
+  const config = asEVEConfig(params.config);
   const model = asProviderRuntimeModel(params.model);
   const modelApi = params.modelApi ?? params.model?.api ?? undefined;
   const transport = params.resolvedTransport;
@@ -276,7 +276,7 @@ export function buildAgentRuntimePlan(params: BuildAgentRuntimePlanParams): Agen
           runtimeHandle: providerRuntimeHandleForPlugins,
           context: {
             ...context,
-            config: asOpenClawConfig(context.config),
+            config: asEVEConfig(context.config),
           },
         });
       },
@@ -288,7 +288,7 @@ export function buildAgentRuntimePlan(params: BuildAgentRuntimePlanParams): Agen
           runtimeHandle: providerRuntimeHandleForPlugins,
           context: {
             ...context,
-            config: asOpenClawConfig(context.config),
+            config: asEVEConfig(context.config),
           },
         });
       },

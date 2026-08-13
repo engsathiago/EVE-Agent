@@ -25,9 +25,9 @@ title: "Usage tracking"
 
 - `/status` in chats: emoji-rich status card with session tokens + estimated cost (API key only). Provider usage shows for the **current model provider** when available as a normalized `X% left` window or provider summary text.
 - `/usage off|tokens|full` in chats: per-response usage footer (OAuth shows tokens only).
-- `/usage cost` in chats: local cost summary aggregated from OpenClaw session logs.
-- CLI: `openclaw status --usage` prints a full per-provider breakdown.
-- CLI: `openclaw channels list` prints the same usage snapshot alongside provider config (use `--no-usage` to skip).
+- `/usage cost` in chats: local cost summary aggregated from EVE session logs.
+- CLI: `eve status --usage` prints a full per-provider breakdown.
+- CLI: `eve channels list` prints the same usage snapshot alongside provider config (use `--no-usage` to skip).
 - macOS menu bar: "Usage" section under Context (only if available).
 
 ## Custom `/usage full` footer
@@ -43,7 +43,7 @@ footer when valid:
 ```json
 {
   "messages": {
-    "usageTemplate": "~/.openclaw/usage-footer.json"
+    "usageTemplate": "~/.eve/usage-footer.json"
   }
 }
 ```
@@ -57,7 +57,7 @@ change:
 
 ```jsonc
 {
-  "schema": "openclaw.usageBar.v1",
+  "schema": "eve.usageBar.v1",
   "scales": {
     "braille": "⠐⡀⡄⡆⡇⣇⣧⣷⣿",
     "block": "░▏▎▍▌▋▊▉█",
@@ -134,7 +134,7 @@ change:
 
 ```jsonc
 {
-  "schema": "openclaw.usageBar.v1",
+  "schema": "eve.usageBar.v1",
   "scales": { "<name>": "low-to-high glyphs" }, // string (1 glyph/char) or array
   "aliases": { "<table>": { "<value>": "<label>" } },
   "output": {
@@ -204,7 +204,7 @@ Pipe a value through verbs left to right; a non-verb segment is the fallback.
 
 ```jsonc
 {
-  "schema": "openclaw.usageBar.v1",
+  "schema": "eve.usageBar.v1",
   "scales": { "braille": "⠐⡀⡄⡆⡇⣇⣧⣷⣿" },
   "aliases": { "reasoning": { "medium": "🌗", "high": "🌕" } },
   "output": {
@@ -233,7 +233,7 @@ renders e.g. `claude-sonnet-4-6 🌗 🐌 | 📚 [⣿⣿⣿⣿⣧]272k`.
   - JSON usage falls back to `stats`; `stats.cached` is normalized into
     `cacheRead`.
 - **OpenAI Codex**: OAuth tokens in auth profiles (accountId used when present).
-- **MiniMax**: API key or MiniMax OAuth auth profile. OpenClaw treats
+- **MiniMax**: API key or MiniMax OAuth auth profile. EVE treats
   `minimax`, `minimax-cn`, and `minimax-portal` as the same MiniMax quota
   surface, prefers stored MiniMax OAuth when present, and otherwise falls back
   to `MINIMAX_CODE_PLAN_KEY`, `MINIMAX_CODING_API_KEY`, or `MINIMAX_API_KEY`.
@@ -241,22 +241,22 @@ renders e.g. `claude-sonnet-4-6 🌗 🐌 | 📚 [⣿⣿⣿⣿⣧]272k`.
   or `models.providers.minimax.baseUrl` when configured, and otherwise uses the
   MiniMax CN host.
   MiniMax's raw `usage_percent` / `usagePercent` fields mean **remaining**
-  quota, so OpenClaw inverts them before display; count-based fields win when
+  quota, so EVE inverts them before display; count-based fields win when
   present.
   - Coding-plan window labels come from provider hours/minutes fields when
     present, then fall back to the `start_time` / `end_time` span.
-  - If the coding-plan endpoint returns `model_remains`, OpenClaw prefers the
+  - If the coding-plan endpoint returns `model_remains`, EVE prefers the
     chat-model entry, derives the window label from timestamps when explicit
     `window_hours` / `window_minutes` fields are absent, and includes the model
     name in the plan label.
 - **Xiaomi MiMo**: API key via env/config/auth store (`XIAOMI_API_KEY`).
 - **z.ai**: API key via env/config/auth store.
 - **DeepSeek**: API key via env/config/auth store (`DEEPSEEK_API_KEY`).
-  OpenClaw calls DeepSeek's balance endpoint and shows the provider-reported
+  EVE calls DeepSeek's balance endpoint and shows the provider-reported
   balance as text instead of a percent-left quota window.
 
 Usage is hidden when no usable provider usage auth can be resolved. Providers
-can supply plugin-specific usage auth logic; otherwise OpenClaw falls back to
+can supply plugin-specific usage auth logic; otherwise EVE falls back to
 matching OAuth/API-key credentials from auth profiles, environment variables,
 or config.
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { getReplyPayloadMetadata } from "../reply-payload.js";
 import { markCompleteReplyConfig } from "./get-reply-fast-path.js";
 import { buildTestCtx } from "./test-ctx.js";
@@ -58,8 +58,8 @@ describe("maybeResolveNativeSlashCommandFastReply", () => {
     const result = await maybeResolveNativeSlashCommandFastReply({
       ctx,
       cfg: markCompleteReplyConfig({
-        session: { store: "/tmp/openclaw-native-slash-sessions.json" },
-      } as OpenClawConfig),
+        session: { store: "/tmp/eve-native-slash-sessions.json" },
+      } as EVEConfig),
       agentId: "main",
       agentDir: "/tmp/agent",
       agentCfg: undefined,
@@ -120,8 +120,8 @@ describe("maybeResolveNativeSlashCommandFastReply", () => {
     const result = await maybeResolveNativeSlashCommandFastReply({
       ctx,
       cfg: markCompleteReplyConfig({
-        session: { store: "/tmp/openclaw-text-slash-sessions.json" },
-      } as OpenClawConfig),
+        session: { store: "/tmp/eve-text-slash-sessions.json" },
+      } as EVEConfig),
       agentId: "dev",
       agentDir: "/tmp/agent",
       agentCfg: undefined,
@@ -173,8 +173,8 @@ describe("maybeResolveNativeSlashCommandFastReply", () => {
     const result = await maybeResolveNativeSlashCommandFastReply({
       ctx,
       cfg: markCompleteReplyConfig({
-        session: { store: "/tmp/openclaw-external-text-slash-sessions.json" },
-      } as OpenClawConfig),
+        session: { store: "/tmp/eve-external-text-slash-sessions.json" },
+      } as EVEConfig),
       agentId: "dev",
       agentDir: "/tmp/agent",
       agentCfg: undefined,

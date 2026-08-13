@@ -9,7 +9,7 @@ import {
   addSubagentRunForTests,
   resetSubagentRegistryForTests,
 } from "../agents/subagent-registry.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { loadSessionStore, type SessionEntry } from "../config/sessions.js";
 import { registerAgentRunContext, resetAgentRunContextForTest } from "../infra/agent-events.js";
 import { withStateDirEnv } from "../test-helpers/state-dir-env.js";
@@ -33,7 +33,7 @@ describe("listSessionsFromStore subagent metadata", () => {
   const cfg = {
     session: { mainKey: "main" },
     agents: { list: [{ id: "main", default: true }] },
-  } as OpenClawConfig;
+  } as EVEConfig;
 
   test("searches channel-derived display names before row enrichment", () => {
     const result = listSessionsFromStore({
@@ -706,7 +706,7 @@ describe("listSessionsFromStore subagent metadata", () => {
   });
 
   test("prefers persisted terminal session state when only stale active subagent snapshots remain", () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-utils-subagent-"));
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-utils-subagent-"));
     const stateDir = path.join(tempRoot, "state");
     fs.mkdirSync(stateDir, { recursive: true });
     try {
@@ -752,8 +752,8 @@ describe("listSessionsFromStore subagent metadata", () => {
 
       const row = withEnv(
         {
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
+          EVE_STATE_DIR: stateDir,
+          EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
         },
         () => {
           const result = listSessionsFromStore({
@@ -788,7 +788,7 @@ describe("listSessionsFromStore subagent metadata", () => {
 
   test("reuses one subagent registry disk snapshot across sessions.list filtering and row enrichment", () => {
     const tempRoot = fs.mkdtempSync(
-      path.join(os.tmpdir(), "openclaw-session-utils-subagent-cache-"),
+      path.join(os.tmpdir(), "eve-session-utils-subagent-cache-"),
     );
     const stateDir = path.join(tempRoot, "state");
     const registryPath = path.join(stateDir, "subagents", "runs.json");
@@ -850,8 +850,8 @@ describe("listSessionsFromStore subagent metadata", () => {
     try {
       const result = withEnv(
         {
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
+          EVE_STATE_DIR: stateDir,
+          EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
         },
         () =>
           listSessionsFromStore({
@@ -875,7 +875,7 @@ describe("listSessionsFromStore subagent metadata", () => {
 
   test("does not read the subagent registry when raw filters drop every session", () => {
     const tempRoot = fs.mkdtempSync(
-      path.join(os.tmpdir(), "openclaw-session-utils-subagent-cache-empty-"),
+      path.join(os.tmpdir(), "eve-session-utils-subagent-cache-empty-"),
     );
     const stateDir = path.join(tempRoot, "state");
     const registryPath = path.join(stateDir, "subagents", "runs.json");
@@ -886,8 +886,8 @@ describe("listSessionsFromStore subagent metadata", () => {
     try {
       const result = withEnv(
         {
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
+          EVE_STATE_DIR: stateDir,
+          EVE_TEST_READ_SUBAGENT_RUNS_FROM_DISK: "1",
         },
         () =>
           listSessionsFromStore({
@@ -1243,7 +1243,7 @@ describe("listSessionsFromStore subagent metadata", () => {
 
 describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)", () => {
   test("ACP agent sessions are visible even when agents.list is configured", async () => {
-    await withStateDirEnv("openclaw-acp-vis-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-acp-vis-", async ({ stateDir }) => {
       const customRoot = path.join(stateDir, "custom-state");
       const agentsDir = path.join(customRoot, "agents");
       const mainDir = path.join(agentsDir, "main", "sessions");
@@ -1275,7 +1275,7 @@ describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)"
         agents: {
           list: [{ id: "main", default: true }],
         },
-      } as OpenClawConfig;
+      } as EVEConfig;
 
       const { store } = loadCombinedSessionStoreForGateway(cfg);
       expect(store["agent:main:main"]?.sessionId).toBe("s-main");
@@ -1284,7 +1284,7 @@ describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)"
   });
 
   test("agent-scoped loads read only matching agent stores", async () => {
-    await withStateDirEnv("openclaw-acp-scoped-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-acp-scoped-", async ({ stateDir }) => {
       const customRoot = path.join(stateDir, "custom-state");
       const agentsDir = path.join(customRoot, "agents");
       const mainDir = path.join(agentsDir, "main", "sessions");
@@ -1317,7 +1317,7 @@ describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)"
         agents: {
           list: [{ id: "main", default: true }],
         },
-      } as OpenClawConfig;
+      } as EVEConfig;
 
       const readSpy = vi.spyOn(fs, "readFileSync");
 
@@ -1337,7 +1337,7 @@ describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)"
   });
 
   test("keeps canonical single-target entries by reference", async () => {
-    await withStateDirEnv("openclaw-acp-canonical-", async ({ stateDir }) => {
+    await withStateDirEnv("eve-acp-canonical-", async ({ stateDir }) => {
       const customRoot = path.join(stateDir, "custom-state");
       const codexDir = path.join(customRoot, "agents", "codex", "sessions");
       fs.mkdirSync(codexDir, { recursive: true });
@@ -1363,7 +1363,7 @@ describe("loadCombinedSessionStoreForGateway includes disk-only agents (#32804)"
         agents: {
           list: [{ id: "codex", default: true }],
         },
-      } as OpenClawConfig;
+      } as EVEConfig;
 
       const cachedStore = loadSessionStore(fs.realpathSync.native(codexStorePath), {
         clone: false,

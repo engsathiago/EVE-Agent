@@ -1,5 +1,5 @@
 // Matrix plugin module implements approval reactions behavior.
-import type { ExecApprovalReplyDecision } from "openclaw/plugin-sdk/approval-runtime";
+import type { ExecApprovalReplyDecision } from "eve-agent/plugin-sdk/approval-runtime";
 import { getOptionalMatrixRuntime } from "./runtime.js";
 
 const MATRIX_APPROVAL_REACTION_META = {

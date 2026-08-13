@@ -1,7 +1,7 @@
 // Model auth-list tests cover provider auth listing and output formatting.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AuthProfileStore } from "../../agents/auth-profiles.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { OutputRuntimeEnv } from "../../runtime.js";
 import { modelsAuthListCommand } from "./auth-list.js";
 
@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../../agents/agent-scope.js", () => ({
-  resolveAgentDir: (_cfg: OpenClawConfig, agentId: string) => `/tmp/openclaw/agents/${agentId}`,
+  resolveAgentDir: (_cfg: EVEConfig, agentId: string) => `/tmp/eve/agents/${agentId}`,
   resolveDefaultAgentId: () => "main",
 }));
 
@@ -22,7 +22,7 @@ vi.mock("../../agents/auth-profiles.js", () => ({
   ensureAuthProfileStore: mocks.ensureAuthProfileStore,
   externalCliDiscoveryForProviderAuth: mocks.externalCliDiscoveryForProviderAuth,
   resolveAuthProfileDisplayLabel: mocks.resolveAuthProfileDisplayLabel,
-  resolveAuthStatePathForDisplay: (agentDir: string) => `${agentDir}/openclaw-agent.sqlite`,
+  resolveAuthStatePathForDisplay: (agentDir: string) => `${agentDir}/eve-agent.sqlite`,
 }));
 
 vi.mock("./load-config.js", () => ({
@@ -55,7 +55,7 @@ function createRuntime(): OutputRuntimeEnv & { logs: string[]; jsonPayloads: unk
 
 describe("modelsAuthListCommand", () => {
   beforeEach(() => {
-    mocks.loadModelsConfig.mockReset().mockResolvedValue({} as OpenClawConfig);
+    mocks.loadModelsConfig.mockReset().mockResolvedValue({} as EVEConfig);
     mocks.ensureAuthProfileStore.mockReset();
     mocks.externalCliDiscoveryForProviderAuth.mockClear();
     mocks.resolveAuthProfileDisplayLabel.mockClear();
@@ -97,9 +97,9 @@ describe("modelsAuthListCommand", () => {
     });
     expect(runtime.jsonPayloads).toStrictEqual([
       {
-        agentDir: "/tmp/openclaw/agents/coder",
+        agentDir: "/tmp/eve/agents/coder",
         agentId: "coder",
-        authStatePath: "/tmp/openclaw/agents/coder/openclaw-agent.sqlite",
+        authStatePath: "/tmp/eve/agents/coder/eve-agent.sqlite",
         profiles: [
           {
             cooldownUntil: "2027-01-15T08:00:10.000Z",
@@ -152,9 +152,9 @@ describe("modelsAuthListCommand", () => {
     });
     expect(runtime.jsonPayloads).toStrictEqual([
       {
-        agentDir: "/tmp/openclaw/agents/main",
+        agentDir: "/tmp/eve/agents/main",
         agentId: "main",
-        authStatePath: "/tmp/openclaw/agents/main/openclaw-agent.sqlite",
+        authStatePath: "/tmp/eve/agents/main/eve-agent.sqlite",
         profiles: [
           {
             id: "openai:api-key-backup",
@@ -185,7 +185,7 @@ describe("modelsAuthListCommand", () => {
 
     expect(runtime.logs).toEqual([
       "Agent: main",
-      "Auth state store: /tmp/openclaw/agents/main/openclaw-agent.sqlite",
+      "Auth state store: /tmp/eve/agents/main/eve-agent.sqlite",
       "Profiles: (none)",
     ]);
   });
@@ -216,9 +216,9 @@ describe("modelsAuthListCommand", () => {
 
     expect(runtime.jsonPayloads).toStrictEqual([
       {
-        agentDir: "/tmp/openclaw/agents/main",
+        agentDir: "/tmp/eve/agents/main",
         agentId: "main",
-        authStatePath: "/tmp/openclaw/agents/main/openclaw-agent.sqlite",
+        authStatePath: "/tmp/eve/agents/main/eve-agent.sqlite",
         profiles: [
           {
             email: "user@example.com",

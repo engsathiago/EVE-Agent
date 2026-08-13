@@ -5,7 +5,7 @@ import {
   type ChannelPluginCatalogEntry,
 } from "../../channels/plugins/catalog.js";
 import { applyPluginAutoEnable } from "../../config/plugin-auto-enable.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   normalizePluginsConfig,
   resolveEffectivePluginActivationState,
@@ -34,21 +34,21 @@ function isLocalChannelPluginOrigin(
   return origin !== undefined && LOCAL_CHANNEL_PLUGIN_ORIGIN_SET.has(origin);
 }
 
-function resolveEffectiveTrustConfig(cfg: OpenClawConfig, env?: NodeJS.ProcessEnv): OpenClawConfig {
+function resolveEffectiveTrustConfig(cfg: EVEConfig, env?: NodeJS.ProcessEnv): EVEConfig {
   return applyPluginAutoEnable({
     config: cfg,
     env: env ?? process.env,
   }).config;
 }
 
-function resolveTrustedCatalogExtraPaths(cfg: OpenClawConfig): string[] | undefined {
+function resolveTrustedCatalogExtraPaths(cfg: EVEConfig): string[] | undefined {
   const extraPaths = normalizePluginsConfig(cfg.plugins).loadPaths;
   return extraPaths.length > 0 ? extraPaths : undefined;
 }
 
 function isTrustedLocalChannelCatalogEntry(
   entry: ChannelPluginCatalogEntry | undefined,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env?: NodeJS.ProcessEnv,
 ): boolean {
   if (!isLocalChannelPluginOrigin(entry?.origin)) {
@@ -121,7 +121,7 @@ function resolveRejectedCatalogEntryKey(entry: ChannelPluginCatalogEntry): strin
 function resolveTrustedCatalogEntry(
   channelId: string,
   params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     workspaceDir?: string;
     env?: NodeJS.ProcessEnv;
   },
@@ -168,7 +168,7 @@ function resolveTrustedCatalogEntry(
 export function getTrustedChannelPluginCatalogEntry(
   channelId: string,
   params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     workspaceDir?: string;
     env?: NodeJS.ProcessEnv;
   },
@@ -178,7 +178,7 @@ export function getTrustedChannelPluginCatalogEntry(
 
 function listChannelPluginCatalogEntriesWithTrustedFallback(
   params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     workspaceDir?: string;
     env?: NodeJS.ProcessEnv;
   },
@@ -201,7 +201,7 @@ function listChannelPluginCatalogEntriesWithTrustedFallback(
 
 /** List trusted catalog entries, dropping untrusted workspace-only shadows. */
 export function listTrustedChannelPluginCatalogEntries(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): ChannelPluginCatalogEntry[] {
@@ -210,7 +210,7 @@ export function listTrustedChannelPluginCatalogEntries(params: {
 
 /** List setup discovery entries, preserving untrusted workspace-only entries for install prompts. */
 export function listSetupDiscoveryChannelPluginCatalogEntries(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): ChannelPluginCatalogEntry[] {

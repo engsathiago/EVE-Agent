@@ -24,7 +24,7 @@ describe("isChannelConfigured", () => {
     expect(
       isChannelConfigured({}, "irc", {
         IRC_HOST: "irc.example.com",
-        IRC_NICK: "openclaw",
+        IRC_NICK: "eve",
       }),
     ).toBe(true);
   });
@@ -50,12 +50,12 @@ describe("isChannelConfigured", () => {
       isChannelConfigured(
         {
           channels: {
-            "openclaw-weixin": {
+            "eve-weixin": {
               enabled: true,
             },
           },
         },
-        "openclaw-weixin",
+        "eve-weixin",
         {},
       ),
     ).toBe(true);
@@ -66,12 +66,12 @@ describe("isChannelConfigured", () => {
       isChannelConfigured(
         {
           channels: {
-            "openclaw-weixin": {
+            "eve-weixin": {
               enabled: false,
             },
           },
         },
-        "openclaw-weixin",
+        "eve-weixin",
         {},
       ),
     ).toBe(false);
@@ -79,7 +79,7 @@ describe("isChannelConfigured", () => {
 
   it("does not treat persisted Matrix credentials as configured channel state", () => {
     expect(
-      isChannelConfigured({}, "matrix", { OPENCLAW_STATE_DIR: "state-with-matrix-creds" }),
+      isChannelConfigured({}, "matrix", { EVE_STATE_DIR: "state-with-matrix-creds" }),
     ).toBe(false);
   });
 });

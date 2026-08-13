@@ -1,10 +1,10 @@
 // Nextcloud Talk plugin module implements session route behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { buildOutboundBaseSessionKey } from "openclaw/plugin-sdk/routing";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { buildOutboundBaseSessionKey } from "eve-agent/plugin-sdk/routing";
 import { stripNextcloudTalkTargetPrefix } from "./normalize.js";
 
 type NextcloudTalkOutboundSessionRouteParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   accountId?: string | null;
   target: string;

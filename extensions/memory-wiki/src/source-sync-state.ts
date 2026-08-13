@@ -2,11 +2,11 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { readJsonFileWithFallback } from "openclaw/plugin-sdk/json-store";
+import { readJsonFileWithFallback } from "eve-agent/plugin-sdk/json-store";
 import type {
   OpenKeyedStoreOptions,
   PluginStateKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 
 export type MemoryWikiImportedSourceGroup = "bridge" | "unsafe-local";
 
@@ -46,7 +46,7 @@ let configuredSourceSyncStore: MemoryWikiSourceSyncStateStore | undefined;
 const memorySourceSyncStateByVault = new Map<string, MemoryWikiImportedSourceState>();
 
 export function resolveMemoryWikiSourceSyncStatePath(vaultRoot: string): string {
-  return path.join(vaultRoot, ".openclaw-wiki", "source-sync.json");
+  return path.join(vaultRoot, ".eve-wiki", "source-sync.json");
 }
 
 function cloneSourceSyncState(state: MemoryWikiImportedSourceState): MemoryWikiImportedSourceState {

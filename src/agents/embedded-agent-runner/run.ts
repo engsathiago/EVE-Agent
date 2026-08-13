@@ -3,7 +3,7 @@
  */
 import { randomBytes } from "node:crypto";
 import fs from "node:fs/promises";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../../packages/terminal-core/src/ansi.js";
 import type { ReplyPayload } from "../../auto-reply/reply-payload.js";
 import type { ThinkLevel } from "../../auto-reply/thinking.js";
@@ -11,7 +11,7 @@ import { SILENT_REPLY_TOKEN } from "../../auto-reply/tokens.js";
 import { getRuntimeConfigSnapshot } from "../../config/config.js";
 import { resolveStorePath } from "../../config/sessions.js";
 import { updateSessionEntry } from "../../config/sessions/session-accessor.js";
-import { OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
+import { EVE_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
 import { ensureContextEnginesInitialized } from "../../context-engine/init.js";
 import {
   resolveContextEngine,
@@ -108,7 +108,7 @@ import {
   resolveModelRefFromString,
 } from "../model-selection.js";
 import { resolveThinkingDefault } from "../model-thinking-default.js";
-import { ensureOpenClawModelsJson } from "../models-config.js";
+import { ensureEVEModelsJson } from "../models-config.js";
 import {
   OPENAI_PROVIDER_ID,
   listOpenAIAuthProfileProvidersForAgentRuntime,
@@ -492,7 +492,7 @@ function buildTraceToolSummary(params: {
  * The return value is normalized: whitespace-only inputs collapse to undefined, and
  * successful resolution returns a trimmed session key. This is a read-only lookup
  * with no side effects.
- * See: https://github.com/openclaw/openclaw/issues/60552
+ * See: https://github.com/engsathiago/eve-agent/issues/60552
  */
 function backfillSessionKey(params: {
   config: RunEmbeddedAgentParams["config"];
@@ -921,7 +921,7 @@ async function runEmbeddedAgentInternal(
         agentHarnessId: params.agentHarnessId,
         agentHarnessRuntimeOverride: params.agentHarnessRuntimeOverride,
       });
-      const pluginHarnessOwnsTransport = agentHarness.id !== "openclaw";
+      const pluginHarnessOwnsTransport = agentHarness.id !== "eve";
       const modelConfigProvider = provider;
       const selectedRuntimeProvider = resolveSelectedOpenAIRuntimeProvider({
         provider,
@@ -945,7 +945,7 @@ async function runEmbeddedAgentInternal(
           params.config,
           {
             // Plugin dynamic model hooks can resolve explicit model refs without
-            // first generating OpenClaw models.json. This keeps one-shot model runs from
+            // first generating EVE models.json. This keeps one-shot model runs from
             // blocking on unrelated provider discovery.
             skipAgentDiscovery: true,
             allowBundledStaticCatalogFallback: pluginHarnessOwnsTransport,
@@ -965,7 +965,7 @@ async function runEmbeddedAgentInternal(
         modelResolution ??= firstModelResolution;
       }
       if (!modelResolution) {
-        await ensureOpenClawModelsJson(params.config, agentDir, {
+        await ensureEVEModelsJson(params.config, agentDir, {
           workspaceDir: resolvedWorkspace,
         });
         for (const candidateProvider of modelResolutionProviders) {
@@ -1026,17 +1026,17 @@ async function runEmbeddedAgentInternal(
       startupStages.mark("model-resolution");
       notifyExecutionPhase("model_resolution", { provider, model: modelId });
 
-      const pluginHarnessNeedsOpenClawAuthBootstrap =
+      const pluginHarnessNeedsEVEAuthBootstrap =
         pluginHarnessOwnsTransport &&
         provider === OPENAI_PROVIDER_ID &&
         effectiveModel.api === "openai-chatgpt-responses";
-      const openClawNativeCodexResponsesNeedsAuthBootstrap =
+      const eveNativeCodexResponsesNeedsAuthBootstrap =
         !pluginHarnessOwnsTransport &&
         provider === OPENAI_PROVIDER_ID &&
         effectiveModel.api === "openai-chatgpt-responses";
       let piExternalCliAuthScope = pluginHarnessOwnsTransport
         ? { ignoreAutoPreferredProfile: false }
-        : openClawNativeCodexResponsesNeedsAuthBootstrap
+        : eveNativeCodexResponsesNeedsAuthBootstrap
           ? {
               providerIds: [OPENAI_PROVIDER_ID],
               ignoreAutoPreferredProfile: false,
@@ -1053,7 +1053,7 @@ async function runEmbeddedAgentInternal(
       let noExternalAuthStore: AuthProfileStore | undefined;
       if (
         !pluginHarnessOwnsTransport &&
-        !pluginHarnessNeedsOpenClawAuthBootstrap &&
+        !pluginHarnessNeedsEVEAuthBootstrap &&
         !piExternalCliAuthScope.providerIds
       ) {
         noExternalAuthStore = ensureAuthProfileStoreWithoutExternalProfiles(agentDir, {
@@ -1071,9 +1071,9 @@ async function runEmbeddedAgentInternal(
         });
       }
       const authStore =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsEVEAuthBootstrap
           ? createEmptyAuthProfileStore()
-          : pluginHarnessNeedsOpenClawAuthBootstrap
+          : pluginHarnessNeedsEVEAuthBootstrap
             ? ensureAuthProfileStore(agentDir, {
                 externalCliProviderIds: [OPENAI_PROVIDER_ID],
                 allowKeychainPrompt: false,
@@ -1088,7 +1088,7 @@ async function runEmbeddedAgentInternal(
                   allowKeychainPrompt: false,
                 }));
       const attemptAuthProfileStore =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsEVEAuthBootstrap
           ? ensureAuthProfileStoreWithoutExternalProfiles(agentDir, {
               allowKeychainPrompt: false,
             })
@@ -1275,7 +1275,7 @@ async function runEmbeddedAgentInternal(
       }) => {
         const fallbackReason = resolveRuntimeFallbackReason();
         return buildContextEngineRuntimeSettings({
-          contextEngineHost: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+          contextEngineHost: EVE_EMBEDDED_CONTEXT_ENGINE_HOST,
           provider,
           requestedModel: requestedModelId,
           resolvedModel: modelId,
@@ -1378,14 +1378,14 @@ async function runEmbeddedAgentInternal(
         return false;
       };
       const advanceAttemptAuthProfile =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsEVEAuthBootstrap
           ? advancePluginHarnessAuthProfile
           : advanceAuthProfile;
 
-      // Plugin harnesses own their model transport/auth. Running OpenClaw's generic
+      // Plugin harnesses own their model transport/auth. Running EVE's generic
       // auth bootstrap here can turn synthetic provider markers into real
       // vendor-token refresh attempts before the plugin gets control.
-      if (!pluginHarnessOwnsTransport || pluginHarnessNeedsOpenClawAuthBootstrap) {
+      if (!pluginHarnessOwnsTransport || pluginHarnessNeedsEVEAuthBootstrap) {
         await initializeAuthProfile();
       } else if (lockedProfileId) {
         lastProfileId = lockedProfileId;
@@ -1402,7 +1402,7 @@ async function runEmbeddedAgentInternal(
               : lastProfileId,
           )
         : attemptAuthProfileStore;
-      const harnessBuildsOpenClawTools =
+      const harnessBuildsEVETools =
         agentHarness.id === "codex" || agentHarness.id === "copilot";
       const { sessionAgentId } = resolveSessionAgentIds({
         sessionKey: params.sessionKey,
@@ -1583,7 +1583,7 @@ async function runEmbeddedAgentInternal(
         }
         if (pluginHarnessOwnsTransport && reason === "timeout") {
           // Harness-owned transport timeouts are lifecycle failures, not
-          // credential evidence. Do not poison OpenClaw auth cooldowns.
+          // credential evidence. Do not poison EVE auth cooldowns.
           return;
         }
         await markAuthProfileFailure({
@@ -1958,8 +1958,8 @@ async function runEmbeddedAgentInternal(
             fallbackActive: modelId !== requestedModelId || Boolean(resolveRuntimeFallbackReason()),
             fallbackReason: resolveRuntimeFallbackReason(),
             // Use the harness selected before model/auth setup for the actual
-            // attempt too. Otherwise plugin-owned transports can skip OpenClaw auth
-            // bootstrap but drift back to OpenClaw when the attempt is created.
+            // attempt too. Otherwise plugin-owned transports can skip EVE auth
+            // bootstrap but drift back to EVE when the attempt is created.
             agentHarnessId: agentHarness.id,
             ...(params.sessionKey
               ? {
@@ -1984,9 +1984,9 @@ async function runEmbeddedAgentInternal(
             initialReplayState: accumulatedReplayState,
             authStorage,
             authProfileStore: runAttemptAuthProfileStore,
-            // These harnesses build OpenClaw tools internally. Keep transport auth
+            // These harnesses build EVE tools internally. Keep transport auth
             // scoped while letting tool construction see plugin/provider creds.
-            toolAuthProfileStore: harnessBuildsOpenClawTools ? attemptAuthProfileStore : undefined,
+            toolAuthProfileStore: harnessBuildsEVETools ? attemptAuthProfileStore : undefined,
             modelRegistry,
             agentId: workspaceResolution.agentId,
             beforeAgentStartResult,

@@ -1,29 +1,29 @@
 ---
-summary: "CLI reference for `openclaw configure` (interactive configuration prompts)"
+summary: "CLI reference for `eve configure` (interactive configuration prompts)"
 read_when:
   - You want to tweak credentials, devices, or agent defaults interactively
 title: "Configure"
 ---
 
-# `openclaw configure`
+# `eve configure`
 
 Interactive prompt for targeted changes to an existing setup: credentials, devices, agent defaults, gateway, channels, plugins, skills, and health checks.
 
-Use `openclaw onboard` for the full guided first-run journey, `openclaw setup` for the baseline config/workspace only, and `openclaw channels add` when you only need channel account setup.
+Use `eve onboard` for the full guided first-run journey, `eve setup` for the baseline config/workspace only, and `eve channels add` when you only need channel account setup.
 
 <Note>
 The **Model** section includes a multi-select for the `agents.defaults.models` allowlist (what shows up in `/model` and the model picker). Provider-scoped setup choices merge their selected models into the existing allowlist instead of replacing unrelated providers already in the config.
 
-Re-running provider auth from configure preserves an existing `agents.defaults.model.primary`, even when the provider's auth step returns a config patch with its own recommended default model. That means adding or reauthing xAI, OpenRouter, or another provider should make the new model available without taking over from your current primary model. Use `openclaw models auth login --provider <id> --set-default` or `openclaw models set <model>` when you intentionally want to change the default model.
+Re-running provider auth from configure preserves an existing `agents.defaults.model.primary`, even when the provider's auth step returns a config patch with its own recommended default model. That means adding or reauthing xAI, OpenRouter, or another provider should make the new model available without taking over from your current primary model. Use `eve models auth login --provider <id> --set-default` or `eve models set <model>` when you intentionally want to change the default model.
 </Note>
 
 When configure starts from a provider auth choice, the default-model and allowlist pickers prefer that provider automatically. For paired providers such as Volcengine and BytePlus, the same preference also matches their coding-plan variants (`volcengine-plan/*`, `byteplus-plan/*`). If the preferred-provider filter would produce an empty list, configure falls back to the unfiltered catalog instead of showing a blank picker.
 
 <Tip>
-`openclaw config` without a subcommand opens the same wizard. Use `openclaw config get|set|unset` for non-interactive edits.
+`eve config` without a subcommand opens the same wizard. Use `eve config get|set|unset` for non-interactive edits.
 </Tip>
 
-For web search, `openclaw configure --section web` lets you choose a provider
+For web search, `eve configure --section web` lets you choose a provider
 and configure its credentials. Some providers also show provider-specific
 follow-up prompts:
 
@@ -65,10 +65,10 @@ Notes:
 ## Examples
 
 ```bash
-openclaw configure
-openclaw configure --section web
-openclaw configure --section model --section channels
-openclaw configure --section gateway --section daemon
+eve configure
+eve configure --section web
+eve configure --section model --section channels
+eve configure --section gateway --section daemon
 ```
 
 ## Related

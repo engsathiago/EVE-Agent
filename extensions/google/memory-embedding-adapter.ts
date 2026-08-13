@@ -5,7 +5,7 @@ import {
   mapBatchEmbeddingsByIndex,
   sanitizeEmbeddingCacheHeaders,
   type MemoryEmbeddingProviderAdapter,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
 import { runGeminiEmbeddingBatches } from "./embedding-batch.js";
 import {
   buildGeminiEmbeddingRequest,

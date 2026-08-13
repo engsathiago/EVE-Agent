@@ -1,8 +1,8 @@
 // Line plugin module implements auto reply delivery behavior.
 import type { messagingApi } from "@line/bot-sdk";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveSendableOutboundReplyParts } from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import type { FlexContainer } from "./flex-templates.js";
 import type { ProcessedLineMessage } from "./markdown-to-line.js";
 import { buildLineQuickReplyFallbackText } from "./quick-reply-fallback.js";
@@ -20,7 +20,7 @@ export type LineAutoReplyDeps = {
   pushMessagesLine: (
     to: string,
     messages: messagingApi.Message[],
-    opts: { cfg: OpenClawConfig; accountId?: string },
+    opts: { cfg: EVEConfig; accountId?: string },
   ) => Promise<unknown>;
   createFlexMessage: (altText: string, contents: FlexContainer) => messagingApi.FlexMessage;
   createImageMessage: (
@@ -49,7 +49,7 @@ export async function deliverLineAutoReply(params: {
   replyToken?: string | null;
   replyTokenUsed: boolean;
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   textLimit: number;
   deps: LineAutoReplyDeps;
 }): Promise<{ replyTokenUsed: boolean }> {

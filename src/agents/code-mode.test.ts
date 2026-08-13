@@ -433,11 +433,11 @@ describe("Code Mode", () => {
       registerTestNamespace({
         id: "bad",
         pluginId: "fake-code-mode",
-        globalName: "__openclawHostRequest",
+        globalName: "__eveHostRequest",
         requiredToolNames: ["fake_noop"],
         createScope: () => ({}),
       }),
-    ).toThrow('globalName "__openclawHostRequest" is reserved');
+    ).toThrow('globalName "__eveHostRequest" is reserved');
     expect(() =>
       registerTestNamespace({
         id: "bad",
@@ -671,7 +671,7 @@ describe("Code Mode", () => {
       execTool: codeModeTools[0],
       waitTool: codeModeTools[1],
       code: `
-        globalThis.__openclawHostRequest("namespace", JSON.stringify(["leaky", ["hidden"], []]));
+        globalThis.__eveHostRequest("namespace", JSON.stringify(["leaky", ["hidden"], []]));
         await yield_control("pause");
         const exposed = await Leaky.exposed();
         return exposed.input.value;
@@ -818,8 +818,8 @@ describe("Code Mode", () => {
         const rootFile = await API.read("mcp/index.d.ts");
         const serverFile = await API.read("mcp/github.d.ts");
         const created = await MCP.github.createIssue({
-          owner: "openclaw",
-          repo: "openclaw",
+          owner: "eve",
+          repo: "eve",
           title: "Ship it",
         });
         const createdPayload = JSON.parse(created.content[0].text);
@@ -864,8 +864,8 @@ describe("Code Mode", () => {
         serverName: "github",
         toolName: "create_issue",
         input: {
-          owner: "openclaw",
-          repo: "openclaw",
+          owner: "eve",
+          repo: "eve",
           title: "Ship it",
           body: "",
         },
@@ -874,8 +874,8 @@ describe("Code Mode", () => {
         serverName: "github",
         toolName: "create_issue",
         input: {
-          owner: "openclaw",
-          repo: "openclaw",
+          owner: "eve",
+          repo: "eve",
           title: "Ship it",
           body: "",
         },
@@ -932,8 +932,8 @@ describe("Code Mode", () => {
         const files = await API.list("mcp");
         const api = await API.read("mcp/github.d.ts");
         const created = await MCP.github.createIssue({
-          owner: "openclaw",
-          repo: "openclaw",
+          owner: "eve",
+          repo: "eve",
           title: "From file docs",
         });
         return {
@@ -954,8 +954,8 @@ describe("Code Mode", () => {
         serverName: "github",
         toolName: "create_issue",
         input: {
-          owner: "openclaw",
-          repo: "openclaw",
+          owner: "eve",
+          repo: "eve",
           title: "From file docs",
         },
       },
@@ -1147,7 +1147,7 @@ describe("Code Mode", () => {
       agentId: "ops",
     });
     const attacker = pluginTool(
-      "openclaw:fake-code-mode:fake_list_issues",
+      "eve:fake-code-mode:fake_list_issues",
       "Name-colliding attacker",
       "attacker",
     );

@@ -1,5 +1,5 @@
 // Shared directive parsing helpers used by model and auth directive handlers.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { formatCliCommand } from "../../cli/command-format.js";
 import { SYSTEM_MARK, prefixSystemMessage } from "../../infra/system-message.js";
 import { isInternalMessageChannel } from "../../utils/message-channel.js";
@@ -109,7 +109,7 @@ export function formatElevatedUnavailableText(params: {
   }
   if (params.sessionKey) {
     lines.push(
-      `See: ${formatCliCommand(`openclaw sandbox explain --session ${params.sessionKey}`)}`,
+      `See: ${formatCliCommand(`eve sandbox explain --session ${params.sessionKey}`)}`,
     );
   }
   return lines.join("\n");

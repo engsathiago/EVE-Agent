@@ -1,12 +1,12 @@
 // Verifies transport-aware model stream aliases and fail-closed boundaries.
-import type { Api, Model } from "openclaw/plugin-sdk/llm";
+import type { Api, Model } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import { attachModelProviderLocalService } from "./provider-local-service.js";
 import { attachModelProviderRequestTransport } from "./provider-request-config.js";
 import {
   buildTransportAwareSimpleStreamFn,
   createBoundaryAwareStreamFnForModel,
-  createOpenClawTransportStreamFnForModel,
+  createEVETransportStreamFnForModel,
   createTransportAwareStreamFnForModel,
   isTransportAwareApiSupported,
   prepareTransportAwareSimpleModel,
@@ -38,49 +38,49 @@ function buildModel<TApi extends Api>(
 
 describe("provider transport stream contracts", () => {
   it("covers the supported transport api alias matrix", () => {
-    // Supported APIs can be projected to OpenClaw transport aliases when needed.
+    // Supported APIs can be projected to EVE transport aliases when needed.
     const cases = [
       {
         api: "openai-responses" as const,
         provider: "openai",
         id: "gpt-5.4",
         baseUrl: "https://api.openai.com/v1",
-        alias: "openclaw-openai-responses-transport",
+        alias: "eve-openai-responses-transport",
       },
       {
         api: "openai-chatgpt-responses" as const,
         provider: "openai",
         id: "codex-mini-latest",
         baseUrl: "https://chatgpt.com/backend-api",
-        alias: "openclaw-openai-responses-transport",
+        alias: "eve-openai-responses-transport",
       },
       {
         api: "openai-completions" as const,
         provider: "xai",
         id: "grok-4",
         baseUrl: "https://api.x.ai/v1",
-        alias: "openclaw-openai-completions-transport",
+        alias: "eve-openai-completions-transport",
       },
       {
         api: "azure-openai-responses" as const,
         provider: "azure-openai-responses",
         id: "gpt-5.4",
         baseUrl: "https://example.openai.azure.com/openai/v1",
-        alias: "openclaw-azure-openai-responses-transport",
+        alias: "eve-azure-openai-responses-transport",
       },
       {
         api: "anthropic-messages" as const,
         provider: "anthropic",
         id: "claude-sonnet-4.6",
         baseUrl: "https://api.anthropic.com",
-        alias: "openclaw-anthropic-messages-transport",
+        alias: "eve-anthropic-messages-transport",
       },
       {
         api: "google-generative-ai" as const,
         provider: "google",
         id: "gemini-3.1-pro-preview",
         baseUrl: "https://generativelanguage.googleapis.com/v1beta",
-        alias: "openclaw-google-generative-ai-transport",
+        alias: "eve-google-generative-ai-transport",
         providerOwnedRuntime: true,
       },
     ];
@@ -156,7 +156,7 @@ describe("provider transport stream contracts", () => {
     expect(prepareTransportAwareSimpleModel(model)).toBe(model);
   });
 
-  it("keeps OpenAI API-key default streams on OpenClaw transport", () => {
+  it("keeps OpenAI API-key default streams on EVE transport", () => {
     const cases = [
       buildModel("openai-responses", {
         id: "gpt-5.4",
@@ -172,14 +172,14 @@ describe("provider transport stream contracts", () => {
 
     for (const model of cases) {
       expect(createBoundaryAwareStreamFnForModel(model)).toBeTypeOf("function");
-      expect(createOpenClawTransportStreamFnForModel(model)).toBeTypeOf("function");
+      expect(createEVETransportStreamFnForModel(model)).toBeTypeOf("function");
       expect(createTransportAwareStreamFnForModel(model)).toBeUndefined();
       expect(buildTransportAwareSimpleStreamFn(model)).toBeUndefined();
       expect(prepareTransportAwareSimpleModel(model)).toBe(model);
     }
   });
 
-  it("routes localService models through the OpenClaw simple-completion transport", () => {
+  it("routes localService models through the EVE simple-completion transport", () => {
     const model = attachModelProviderLocalService(
       buildModel("openai-completions", {
         id: "google/gemma-4-E2B-it",
@@ -195,12 +195,12 @@ describe("provider transport stream contracts", () => {
     expect(createTransportAwareStreamFnForModel(model)).toBeTypeOf("function");
     expect(buildTransportAwareSimpleStreamFn(model)).toBeTypeOf("function");
     const preparedModel = prepareTransportAwareSimpleModel(model);
-    expect(preparedModel.api).toBe("openclaw-openai-completions-transport");
+    expect(preparedModel.api).toBe("eve-openai-completions-transport");
     expect(preparedModel.provider).toBe("inferrs");
     expect(preparedModel.id).toBe("google/gemma-4-E2B-it");
   });
 
-  it("keeps Codex defaults on the OpenClaw transport until OpenClaw preserves attribution", () => {
+  it("keeps Codex defaults on the EVE transport until EVE preserves attribution", () => {
     const model = buildModel("openai-chatgpt-responses", {
       id: "gpt-5.4",
       provider: "openai",

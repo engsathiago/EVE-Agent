@@ -1,7 +1,7 @@
 // ACPX doctor contract migrates shipped plugin-owned runtime state.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
 import {
   normalizeAcpxProcessLease,
   normalizeAcpxProcessLeaseFile,

@@ -1,0 +1,25 @@
+{
+  "id": "policy",
+  "name": "EVE Policy",
+  "description": "Empty first-party policy contract reserved for future EVE-owned rules.",
+  "activation": {
+    "onStartup": true,
+    "onCommands": ["policy"]
+  },
+  "commandAliases": [
+    {
+      "name": "policy",
+      "kind": "cli"
+    }
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "Expose the EVE-owned policy contract. It is permissive until rules are authored in phase two."
+      }
+    }
+  }
+}

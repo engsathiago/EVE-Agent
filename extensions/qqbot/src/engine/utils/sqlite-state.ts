@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import type {
   OpenKeyedStoreOptions,
   PluginStateSyncKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import { getQQBotRuntime } from "../../bridge/runtime.js";
 
 type QQBotSyncStoreOptions = OpenKeyedStoreOptions & {
@@ -16,7 +16,7 @@ function resolveStoreEnv(options: QQBotSyncStoreOptions): NodeJS.ProcessEnv | un
   }
   return {
     ...(options.env ?? process.env),
-    OPENCLAW_STATE_DIR: options.stateDir,
+    EVE_STATE_DIR: options.stateDir,
   };
 }
 

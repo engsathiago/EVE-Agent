@@ -1,15 +1,15 @@
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 // Zalo tests cover outbound media plugin behavior.
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PluginRuntime } from "../runtime-api.js";
 
 const loadWebMediaMock = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/web-media", () => {
+vi.mock("eve-agent/plugin-sdk/web-media", () => {
   return {
     loadWebMedia: (...args: unknown[]) => loadWebMediaMock(...args),
   };
@@ -60,7 +60,7 @@ describe("zalo outbound hosted media", () => {
     });
   });
 
-  it("loads outbound media under OpenClaw control and returns a hosted URL", async () => {
+  it("loads outbound media under EVE control and returns a hosted URL", async () => {
     const hostedUrl = await prepareHostedZaloMediaUrl({
       mediaUrl: "https://example.com/photo.png",
       webhookUrl: "https://gateway.example.com/zalo-webhook",

@@ -12,9 +12,9 @@ import type {
 } from "./types.js";
 
 /** Env gate for exposing transcript-derived fields through standalone MCP. */
-export const RAW_TRANSCRIPTS_ENV = "OPENCLAW_CODEX_SUPERVISOR_ALLOW_RAW_TRANSCRIPTS";
+export const RAW_TRANSCRIPTS_ENV = "EVE_CODEX_SUPERVISOR_ALLOW_RAW_TRANSCRIPTS";
 /** Env gate for mutating/steering Codex sessions through standalone MCP. */
-export const WRITE_CONTROLS_ENV = "OPENCLAW_CODEX_SUPERVISOR_ALLOW_WRITE_CONTROLS";
+export const WRITE_CONTROLS_ENV = "EVE_CODEX_SUPERVISOR_ALLOW_WRITE_CONTROLS";
 
 /** Optional policy callbacks for standalone MCP tool exposure. */
 export type CodexSupervisorMcpToolOptions = {
@@ -176,7 +176,7 @@ export function registerCodexSupervisorMcpTools(
 
   server.tool(
     "codex_sessions_list",
-    "List Codex sessions visible to the OpenClaw supervisor.",
+    "List Codex sessions visible to the EVE supervisor.",
     {
       include_stored: z.boolean().optional(),
       max_stored_sessions: z.number().int().min(1).max(1000).optional(),

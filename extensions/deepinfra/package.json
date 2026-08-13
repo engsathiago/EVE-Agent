@@ -1,22 +1,22 @@
 {
-  "name": "@openclaw/deepinfra-provider",
+  "name": "@eve/deepinfra-provider",
   "version": "2026.6.8",
-  "description": "OpenClaw DeepInfra provider plugin.",
+  "description": "EVE DeepInfra provider plugin.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/deepinfra-provider",
-      "npmSpec": "@openclaw/deepinfra-provider",
+      "clawhubSpec": "clawhub:@eve/deepinfra-provider",
+      "npmSpec": "@eve/deepinfra-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -24,7 +24,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8",
+      "eveVersion": "2026.6.8",
       "bundledDist": false
     },
     "release": {

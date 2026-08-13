@@ -1,6 +1,6 @@
 // Msteams tests cover graph members plugin behavior.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { getMemberInfoMSTeams } from "./graph-members.js";
 
 const mockState = vi.hoisted(() => ({
@@ -34,7 +34,7 @@ describe("getMemberInfoMSTeams", () => {
     });
 
     const result = await getMemberInfoMSTeams({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       userId: "user-123",
     });
 
@@ -61,7 +61,7 @@ describe("getMemberInfoMSTeams", () => {
     });
 
     const result = await getMemberInfoMSTeams({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       userId: "user-456",
     });
 
@@ -82,7 +82,7 @@ describe("getMemberInfoMSTeams", () => {
 
     await expect(
       getMemberInfoMSTeams({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         userId: "nonexistent-user",
       }),
     ).rejects.toThrow("Graph API 404: user not found");

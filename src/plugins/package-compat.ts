@@ -1,7 +1,7 @@
 // Checks package compatibility metadata for plugin manifests.
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 
-/** Result of reading package.json openclaw.compat.pluginApi metadata. */
+/** Result of reading package.json eve.compat.pluginApi metadata. */
 export type PackagePluginApiRangeResult =
   | { ok: true; range?: string }
   | { ok: false; error: string };
@@ -24,18 +24,18 @@ export function resolvePackagePluginApiRange(
     return { ok: true };
   }
   if (!isRecord(compat)) {
-    return { ok: false, error: "package.json openclaw.compat must be an object" };
+    return { ok: false, error: "package.json eve.compat must be an object" };
   }
   if (!("pluginApi" in compat)) {
     return { ok: true };
   }
   const pluginApi = compat.pluginApi;
   if (typeof pluginApi !== "string") {
-    return { ok: false, error: "package.json openclaw.compat.pluginApi must be a string" };
+    return { ok: false, error: "package.json eve.compat.pluginApi must be a string" };
   }
   const range = pluginApi.trim();
   if (!range) {
-    return { ok: false, error: "package.json openclaw.compat.pluginApi must not be empty" };
+    return { ok: false, error: "package.json eve.compat.pluginApi must not be empty" };
   }
   return { ok: true, range };
 }

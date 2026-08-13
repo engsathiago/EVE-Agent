@@ -1,5 +1,5 @@
-// Gradium plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+// Gradium plugin entrypoint registers its EVE integration.
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 import { buildGradiumSpeechProvider } from "./speech-provider.js";
 
 export default definePluginEntry({

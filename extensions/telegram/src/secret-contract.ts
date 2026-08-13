@@ -6,15 +6,15 @@ import {
   hasOwnProperty,
   type ResolverContext,
   type SecretDefaults,
-} from "openclaw/plugin-sdk/channel-secret-basic-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-secret-basic-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
-export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
+export const secretTargetRegistryEntries: import("eve-agent/plugin-sdk/channel-secret-basic-runtime").SecretTargetRegistryEntry[] =
   [
     {
       id: "channels.telegram.accounts.*.botToken",
       targetType: "channels.telegram.accounts.*.botToken",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.telegram.accounts.*.botToken",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -25,7 +25,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.telegram.accounts.*.webhookSecret",
       targetType: "channels.telegram.accounts.*.webhookSecret",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.telegram.accounts.*.webhookSecret",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -36,7 +36,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.telegram.botToken",
       targetType: "channels.telegram.botToken",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.telegram.botToken",
       secretShape: "secret_input",
       expectedResolvedValue: "string",
@@ -47,7 +47,7 @@ export const secretTargetRegistryEntries: import("openclaw/plugin-sdk/channel-se
     {
       id: "channels.telegram.webhookSecret",
       targetType: "channels.telegram.webhookSecret",
-      configFile: "openclaw.json",
+      configFile: "eve.json",
       pathPattern: "channels.telegram.webhookSecret",
       secretShape: "secret_input",
       expectedResolvedValue: "string",

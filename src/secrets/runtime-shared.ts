@@ -1,5 +1,5 @@
 /** Shared secrets runtime resolver context, assignments, and warning helpers. */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { coerceSecretRef, type SecretRef } from "../config/types.secrets.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { secretRefKey } from "./ref-contract.js";
@@ -33,7 +33,7 @@ export type SecretAssignment = {
 };
 
 export type ResolverContext = {
-  sourceConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
   env: NodeJS.ProcessEnv;
   cache: SecretRefResolveCache;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
@@ -42,14 +42,14 @@ export type ResolverContext = {
   assignments: SecretAssignment[];
 };
 
-export type SecretDefaults = NonNullable<OpenClawConfig["secrets"]>["defaults"];
+export type SecretDefaults = NonNullable<EVEConfig["secrets"]>["defaults"];
 export type { SecretRefResolveCache } from "./resolve-types.js";
 
 /**
  * Creates the mutable collection context used while preparing a secrets runtime snapshot.
  */
 export function createResolverContext(params: {
-  sourceConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
   env: NodeJS.ProcessEnv;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
 }): ResolverContext {

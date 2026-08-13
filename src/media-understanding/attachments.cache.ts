@@ -6,8 +6,8 @@ import path from "node:path";
 import {
   isInboundPathAllowed,
   mergeInboundPathRoots,
-} from "@openclaw/media-core/inbound-path-policy";
-import { detectMime } from "@openclaw/media-core/mime";
+} from "@eve/media-core/inbound-path-policy";
+import { detectMime } from "@eve/media-core/mime";
 import { resolveStateDir } from "../config/paths.js";
 import { logVerbose, shouldLogVerbose } from "../globals.js";
 import { FsSafeError, openLocalFileSafely } from "../infra/fs-safe.js";
@@ -300,7 +300,7 @@ export class MediaAttachmentCache {
     });
     const extension = path.extname(bufferResult.fileName || "") || "";
     const tmpPath = buildRandomTempFilePath({
-      prefix: "openclaw-media",
+      prefix: "eve-media",
       extension,
     });
     await fs.writeFile(tmpPath, bufferResult.buffer);

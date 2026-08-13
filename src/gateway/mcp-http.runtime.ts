@@ -2,7 +2,7 @@
 // Resolves Gateway-visible tools for MCP clients with short-lived schema caching.
 import type { SourceReplyDeliveryMode } from "../auto-reply/get-reply-options.types.js";
 import type { InboundEventKind } from "../channels/inbound-event/kind.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   buildMcpToolSchema,
   type McpLoopbackTool,
@@ -21,12 +21,12 @@ type CachedScopedTools = {
   agentId: string | undefined;
   tools: McpLoopbackTool[];
   toolSchema: McpToolSchemaEntry[];
-  configRef: OpenClawConfig;
+  configRef: EVEConfig;
   time: number;
 };
 
 type McpLoopbackScopeParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   sessionId?: string;
   yieldContextCacheKey?: string;

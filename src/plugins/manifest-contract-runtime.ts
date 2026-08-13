@@ -1,6 +1,6 @@
 // Resolves manifest contracts into runtime-facing plugin capabilities.
-import { sortUniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   hasManifestContractValue,
   listAvailableManifestContractPlugins,
@@ -18,7 +18,7 @@ const DEMAND_ONLY_CONTRACT_LOOKUP_OPTIONS = {
 } as const;
 
 export function resolveManifestContractRuntimePluginResolution(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   contract: PluginManifestContractListKey;
   value?: string;
 }): ManifestContractRuntimePluginResolution {

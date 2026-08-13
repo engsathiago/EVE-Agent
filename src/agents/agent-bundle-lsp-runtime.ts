@@ -1,7 +1,7 @@
 /** Session-scoped embedded LSP runtime and tool materialization for agent bundles. */
 import { spawn, type ChildProcess } from "node:child_process";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import { sanitizeHostExecEnv } from "../infra/host-env-security.js";
 import { logDebug, logWarn } from "../logger.js";
 import {
@@ -400,7 +400,7 @@ function formatLspResult(
 
 export async function createBundleLspToolRuntime(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   reservedToolNames?: Iterable<string>;
 }): Promise<BundleLspToolRuntime> {
   const loaded = loadEmbeddedAgentLspConfig({

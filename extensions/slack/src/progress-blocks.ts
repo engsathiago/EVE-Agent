@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import type { AnyChunk } from "@slack/types";
 import type { Block, KnownBlock } from "@slack/web-api";
-import type { ChannelProgressDraftLine } from "openclaw/plugin-sdk/channel-outbound";
+import type { ChannelProgressDraftLine } from "eve-agent/plugin-sdk/channel-outbound";
 import { SLACK_MAX_BLOCKS } from "./blocks-input.js";
 import { escapeSlackMrkdwn } from "./monitor/mrkdwn.js";
 import { truncateSlackText } from "./truncate.js";

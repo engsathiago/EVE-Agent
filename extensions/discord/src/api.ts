@@ -1,12 +1,12 @@
 // Discord API module exposes the plugin public contract.
-import { resolveFetch } from "openclaw/plugin-sdk/fetch-runtime";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
+import { resolveFetch } from "eve-agent/plugin-sdk/fetch-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
 import {
   resolveRetryConfig,
   retryAsync,
   type RetryConfig,
-} from "openclaw/plugin-sdk/retry-runtime";
+} from "eve-agent/plugin-sdk/retry-runtime";
 import { isDiscordHtmlResponseBody, summarizeDiscordResponseBody } from "./error-body.js";
 import { parseDiscordRetryAfterBodySeconds, parseRetryAfterHeaderSeconds } from "./retry-after.js";
 

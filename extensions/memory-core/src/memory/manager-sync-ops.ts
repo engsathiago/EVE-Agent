@@ -5,24 +5,24 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import chokidar, { FSWatcher } from "chokidar";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { classifyMemoryMultimodalPath } from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { classifyMemoryMultimodalPath } from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
 import {
   createSubsystemLogger,
   onSessionTranscriptUpdate,
   resolveAgentDir,
   resolveSessionTranscriptsDirForAgent,
   resolveUserPath,
-  type OpenClawConfig,
+  type EVEConfig,
   type ResolvedMemorySearchConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
 import {
   buildSessionEntry,
   isSessionArchiveArtifactName,
   isUsageCountedSessionTranscriptFileName,
   listSessionFilesForAgent,
   sessionPathForFile,
-} from "openclaw/plugin-sdk/memory-core-host-engine-qmd";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-qmd";
 import {
   buildFileEntry,
   ensureMemoryIndexSchema,
@@ -37,9 +37,9 @@ import {
   runWithConcurrency,
   type MemorySource,
   type MemorySyncProgressUpdate,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   createEmbeddingProvider,
   resolveEmbeddingProviderAdapterId,
@@ -165,8 +165,8 @@ const IGNORED_MEMORY_WATCH_DIR_NAMES = new Set([
 ]);
 
 const log = createSubsystemLogger("memory");
-const TEST_MEMORY_WATCH_FACTORY_KEY = Symbol.for("openclaw.test.memoryWatchFactory");
-const TEST_MEMORY_NATIVE_WATCH_FACTORY_KEY = Symbol.for("openclaw.test.memoryNativeWatchFactory");
+const TEST_MEMORY_WATCH_FACTORY_KEY = Symbol.for("eve.test.memoryWatchFactory");
+const TEST_MEMORY_NATIVE_WATCH_FACTORY_KEY = Symbol.for("eve.test.memoryNativeWatchFactory");
 
 function memoryTableExists(db: DatabaseSync, tableName: string): boolean {
   return Boolean(
@@ -255,7 +255,7 @@ function createSessionSyncYield(total: number): () => Promise<void> {
 }
 
 export abstract class MemoryManagerSyncOps {
-  protected abstract readonly cfg: OpenClawConfig;
+  protected abstract readonly cfg: EVEConfig;
   protected abstract readonly agentId: string;
   protected abstract readonly workspaceDir: string;
   protected abstract readonly settings: ResolvedMemorySearchConfig;
@@ -931,7 +931,7 @@ export abstract class MemoryManagerSyncOps {
       this.memoryWatchPressureWarning,
       count,
       unit,
-      "Large memory folders or extraPaths can make OpenClaw run out of file watchers or open files.",
+      "Large memory folders or extraPaths can make EVE run out of file watchers or open files.",
       "Remove large extraPaths, or set memorySearch.sync.watch to false and refresh memory manually or with sync.intervalMinutes.",
       (message) => log.warn(message),
     );

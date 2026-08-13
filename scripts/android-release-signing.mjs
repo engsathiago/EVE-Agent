@@ -8,13 +8,13 @@ import { fileURLToPath } from "node:url";
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const defaultManifestPath = path.join(rootDir, "apps", "android", "Config", "ReleaseSigning.json");
 const requiredPropertyNames = [
-  "OPENCLAW_ANDROID_STORE_FILE",
-  "OPENCLAW_ANDROID_STORE_PASSWORD",
-  "OPENCLAW_ANDROID_KEY_ALIAS",
-  "OPENCLAW_ANDROID_KEY_PASSWORD",
+  "EVE_ANDROID_STORE_FILE",
+  "EVE_ANDROID_STORE_PASSWORD",
+  "EVE_ANDROID_KEY_ALIAS",
+  "EVE_ANDROID_KEY_PASSWORD",
 ];
 const sourceRequiredPropertyNames = requiredPropertyNames.filter(
-  (name) => name !== "OPENCLAW_ANDROID_STORE_FILE",
+  (name) => name !== "EVE_ANDROID_STORE_FILE",
 );
 
 function usage() {
@@ -42,8 +42,8 @@ function parseArgs(argv) {
     manifestPath: defaultManifestPath,
     workspace: "",
     materializedDir: "",
-    keystorePath: process.env.OPENCLAW_ANDROID_UPLOAD_KEYSTORE || "",
-    propertiesPath: process.env.OPENCLAW_ANDROID_SIGNING_PROPERTIES || "",
+    keystorePath: process.env.EVE_ANDROID_UPLOAD_KEYSTORE || "",
+    propertiesPath: process.env.EVE_ANDROID_SIGNING_PROPERTIES || "",
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -261,7 +261,7 @@ function writeMaterializedProperties(materializedDir, sourceProperties) {
   const propertiesPath = materializedPropertiesPath(materializedDir);
   const tempPath = `${propertiesPath}.${process.pid}.tmp`;
   const properties = new Map(sourceProperties);
-  properties.set("OPENCLAW_ANDROID_STORE_FILE", keystorePath);
+  properties.set("EVE_ANDROID_STORE_FILE", keystorePath);
   requireProperties(properties, requiredPropertyNames, propertiesPath);
 
   const content = [
@@ -297,9 +297,9 @@ function validateMaterializedSigning(materializedDir) {
 
   const properties = readProperties(propertiesPath);
   requireProperties(properties, requiredPropertyNames, propertiesPath);
-  if (properties.get("OPENCLAW_ANDROID_STORE_FILE") !== keystorePath) {
+  if (properties.get("EVE_ANDROID_STORE_FILE") !== keystorePath) {
     throw new Error(
-      `${relativePath(propertiesPath)} must point OPENCLAW_ANDROID_STORE_FILE at ${relativePath(keystorePath)}.`,
+      `${relativePath(propertiesPath)} must point EVE_ANDROID_STORE_FILE at ${relativePath(keystorePath)}.`,
     );
   }
 }
@@ -374,12 +374,12 @@ function syncPull(manifest, options) {
 function requirePushSources(options) {
   if (!options.keystorePath) {
     throw new Error(
-      "Missing Android upload keystore source. Pass --keystore or set OPENCLAW_ANDROID_UPLOAD_KEYSTORE.",
+      "Missing Android upload keystore source. Pass --keystore or set EVE_ANDROID_UPLOAD_KEYSTORE.",
     );
   }
   if (!options.propertiesPath) {
     throw new Error(
-      "Missing Android signing properties source. Pass --properties or set OPENCLAW_ANDROID_SIGNING_PROPERTIES.",
+      "Missing Android signing properties source. Pass --properties or set EVE_ANDROID_SIGNING_PROPERTIES.",
     );
   }
   if (!fs.existsSync(options.keystorePath) || fs.statSync(options.keystorePath).size === 0) {

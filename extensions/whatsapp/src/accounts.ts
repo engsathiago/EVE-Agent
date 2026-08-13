@@ -5,11 +5,11 @@ import {
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   resolveUserPath,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-core";
-import type { DmPolicy, GroupPolicy, ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
-import { resolveOAuthDir } from "openclaw/plugin-sdk/state-paths";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/account-core";
+import type { DmPolicy, GroupPolicy, ReplyToMode } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveOAuthDir } from "eve-agent/plugin-sdk/state-paths";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveMergedWhatsAppAccountConfig } from "./account-config.js";
 import {
   listConfiguredAccountIds,
@@ -51,7 +51,7 @@ export type ResolvedWhatsAppAccount = {
 
 export const DEFAULT_WHATSAPP_MEDIA_MAX_MB = 50;
 
-export function listWhatsAppAuthDirs(cfg: OpenClawConfig): string[] {
+export function listWhatsAppAuthDirs(cfg: EVEConfig): string[] {
   const oauthDir = resolveOAuthDir();
   const whatsappDir = path.join(oauthDir, "whatsapp");
   const authDirs = new Set<string>([oauthDir, path.join(whatsappDir, DEFAULT_ACCOUNT_ID)]);
@@ -76,7 +76,7 @@ export function listWhatsAppAuthDirs(cfg: OpenClawConfig): string[] {
   return Array.from(authDirs);
 }
 
-export function hasAnyWhatsAppAuth(cfg: OpenClawConfig): boolean {
+export function hasAnyWhatsAppAuth(cfg: EVEConfig): boolean {
   return listWhatsAppAuthDirs(cfg).some((authDir) => hasWebCredsSync(authDir));
 }
 
@@ -93,7 +93,7 @@ function legacyAuthExists(authDir: string): boolean {
   return hasWebCredsRegularFileSync(authDir);
 }
 
-export function resolveWhatsAppAuthDir(params: { cfg: OpenClawConfig; accountId: string }): {
+export function resolveWhatsAppAuthDir(params: { cfg: EVEConfig; accountId: string }): {
   authDir: string;
   isLegacy: boolean;
 } {
@@ -116,7 +116,7 @@ export function resolveWhatsAppAuthDir(params: { cfg: OpenClawConfig; accountId:
 }
 
 export function resolveWhatsAppAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): ResolvedWhatsAppAccount {
   const merged = resolveMergedWhatsAppAccountConfig({
@@ -168,7 +168,7 @@ export function resolveWhatsAppMediaMaxBytes(
   return Math.floor(mediaMaxMb * 1024 * 1024);
 }
 
-export function listEnabledWhatsAppAccounts(cfg: OpenClawConfig): ResolvedWhatsAppAccount[] {
+export function listEnabledWhatsAppAccounts(cfg: EVEConfig): ResolvedWhatsAppAccount[] {
   return listWhatsAppAccountIds(cfg)
     .map((accountId) => resolveWhatsAppAccount({ cfg, accountId }))
     .filter((account) => account.enabled);

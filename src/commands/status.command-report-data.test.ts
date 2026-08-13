@@ -36,7 +36,7 @@ describe("buildStatusCommandReportData", () => {
       Value: "macOS · node " + process.versions.node,
     });
     expect(result.taskMaintenanceHint).toBe(
-      "Task maintenance: cmd:openclaw tasks maintenance --apply",
+      "Task maintenance: cmd:eve tasks maintenance --apply",
     );
     expect(result.pluginCompatibilityLines).toEqual(["  warn(WARN) legacy"]);
     expect(result.pairingRecoveryLines[0]).toBe("warn(Gateway pairing approval required.)");
@@ -48,7 +48,7 @@ describe("buildStatusCommandReportData", () => {
       Status: "ok(reachable)",
       Detail: "42ms",
     });
-    expect(result.footerLines.at(-1)).toBe("  Need to test channels? cmd:openclaw status --deep");
+    expect(result.footerLines.at(-1)).toBe("  Need to test channels? cmd:eve status --deep");
   });
 
   it("shows skipped audit text when fast status omits the security audit", async () => {
@@ -59,8 +59,8 @@ describe("buildStatusCommandReportData", () => {
     );
 
     expect(result.securityAuditLines).toEqual([
-      "muted(Skipped in fast status. Full report: cmd:openclaw security audit)",
-      "muted(Deep probe: cmd:openclaw status --deep)",
+      "muted(Skipped in fast status. Full report: cmd:eve security audit)",
+      "muted(Deep probe: cmd:eve status --deep)",
     ]);
   });
 

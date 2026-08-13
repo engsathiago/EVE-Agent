@@ -43,7 +43,7 @@ async function readTrustedSnapshot(file: string) {
 }
 
 async function createTempSessionPath() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-repair-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-repair-"));
   tempDirs.push(dir);
   return { dir, file: path.join(dir, "session.jsonl") };
 }
@@ -830,7 +830,7 @@ describe("repairSessionFileIfNeeded", () => {
       timestamp: new Date().toISOString(),
       message: {
         role: "assistant",
-        provider: "openclaw",
+        provider: "eve",
         model: "delivery-mirror",
         api: "openai-responses",
         content: [{ type: "text", text: "Process: `wild-wharf`" }],

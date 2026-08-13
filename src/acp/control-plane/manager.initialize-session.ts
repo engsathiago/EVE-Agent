@@ -2,10 +2,10 @@
 import {
   createIdentityFromEnsure,
   mergeSessionIdentity,
-} from "@openclaw/acp-core/runtime/session-identity";
-import type { AcpRuntime, AcpRuntimeHandle } from "@openclaw/acp-core/runtime/types";
+} from "@eve/acp-core/runtime/session-identity";
+import type { AcpRuntime, AcpRuntimeHandle } from "@eve/acp-core/runtime/types";
 import { resolveRuntimeConfigCacheKey } from "../../config/runtime-snapshot.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { normalizeAgentId } from "../../routing/session-key.js";
 import { AcpRuntimeError, withAcpRuntimeErrorBoundary } from "../runtime/errors.js";
@@ -29,7 +29,7 @@ export async function runManagerInitializeSession(params: {
   sessionKey: string;
   deps: Pick<AcpSessionManagerDeps, "requireRuntimeBackend">;
   runtimeHandles: ManagerRuntimeHandleCache;
-  enforceConcurrentSessionLimit: (params: { cfg: OpenClawConfig; sessionKey: string }) => void;
+  enforceConcurrentSessionLimit: (params: { cfg: EVEConfig; sessionKey: string }) => void;
   writeSessionMeta: WriteManagerSessionMeta;
 }): Promise<{
   runtime: AcpRuntime;
@@ -131,7 +131,7 @@ export async function runManagerInitializeSession(params: {
 }
 
 async function persistInitializedSessionMeta(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   meta: SessionAcpMeta;
   runtime: AcpRuntime;

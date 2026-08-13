@@ -1,8 +1,8 @@
 // Doctor config analysis tests cover schema analysis, model fallback values, and issue generation.
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { resolveAgentModelFallbackValues } from "../config/model-input.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
-import { OpenClawSchema } from "../config/zod-schema.js";
+import type { EVEConfig } from "../config/types.eve.js";
+import { EVESchema } from "../config/zod-schema.js";
 import {
   collectImplicitFallbackClobberWarnings,
   formatConfigPath,
@@ -61,7 +61,7 @@ describe("doctor config analysis helpers", () => {
     expect(result.removed).not.toContain("defaultModel");
     expect(result.removed).not.toContain("agents.list[0].description");
     expect(result.removed).not.toContain("agents.list[1].description");
-    expect(OpenClawSchema.safeParse({ defaultModel: "minimax/MiniMax-M2.7" }).success).toBe(false);
+    expect(EVESchema.safeParse({ defaultModel: "minimax/MiniMax-M2.7" }).success).toBe(false);
     expect(result.config).toMatchObject({
       defaultModel: "minimax/MiniMax-M2.7",
       mcp: {
@@ -82,30 +82,30 @@ describe("doctor config analysis helpers", () => {
   });
 
   describe("stripUnknownConfigKeys during update", () => {
-    const originalEnv = process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+    const originalEnv = process.env.EVE_UPDATE_IN_PROGRESS;
 
     beforeEach(() => {
-      delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+      delete process.env.EVE_UPDATE_IN_PROGRESS;
     });
 
     afterEach(() => {
       if (originalEnv !== undefined) {
-        process.env.OPENCLAW_UPDATE_IN_PROGRESS = originalEnv;
+        process.env.EVE_UPDATE_IN_PROGRESS = originalEnv;
       } else {
-        delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+        delete process.env.EVE_UPDATE_IN_PROGRESS;
       }
     });
 
-    it("returns input unchanged when OPENCLAW_UPDATE_IN_PROGRESS=1", () => {
-      process.env.OPENCLAW_UPDATE_IN_PROGRESS = "1";
+    it("returns input unchanged when EVE_UPDATE_IN_PROGRESS=1", () => {
+      process.env.EVE_UPDATE_IN_PROGRESS = "1";
       const input = { hooks: {}, unexpected: true } as never;
       const result = stripUnknownConfigKeys(input);
       expect(result.config).toBe(input);
       expect(result.removed).toEqual([]);
     });
 
-    it("returns input unchanged when OPENCLAW_UPDATE_IN_PROGRESS=true", () => {
-      process.env.OPENCLAW_UPDATE_IN_PROGRESS = "true";
+    it("returns input unchanged when EVE_UPDATE_IN_PROGRESS=true", () => {
+      process.env.EVE_UPDATE_IN_PROGRESS = "true";
       const input = { hooks: {}, unexpected: true } as never;
       const result = stripUnknownConfigKeys(input);
       expect(result.config).toBe(input);
@@ -122,17 +122,17 @@ describe("doctor config analysis helpers", () => {
   });
 
   describe("plugins.installs whitelist", () => {
-    const originalEnv = process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+    const originalEnv = process.env.EVE_UPDATE_IN_PROGRESS;
 
     beforeEach(() => {
-      delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+      delete process.env.EVE_UPDATE_IN_PROGRESS;
     });
 
     afterEach(() => {
       if (originalEnv !== undefined) {
-        process.env.OPENCLAW_UPDATE_IN_PROGRESS = originalEnv;
+        process.env.EVE_UPDATE_IN_PROGRESS = originalEnv;
       } else {
-        delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+        delete process.env.EVE_UPDATE_IN_PROGRESS;
       }
     });
 
@@ -150,13 +150,13 @@ describe("doctor config analysis helpers", () => {
 });
 
 describe("collectImplicitFallbackClobberWarnings", () => {
-  function buildConfig(overrides: { defaults?: unknown; list?: unknown[] }): OpenClawConfig {
+  function buildConfig(overrides: { defaults?: unknown; list?: unknown[] }): EVEConfig {
     return {
       agents: {
         defaults: { model: overrides.defaults },
         list: overrides.list,
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
   }
 
   it("returns empty when defaults has no fallbacks", () => {
@@ -211,7 +211,7 @@ describe("collectImplicitFallbackClobberWarnings", () => {
         defaults: { model: { primary: "openai/gpt-5.5", fallbacks: ["openai/gpt-5.4"] } },
         list: { ops: { id: "ops", model: "openai/gpt-5.3" } },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(collectImplicitFallbackClobberWarnings(cfg)).toEqual([]);
   });

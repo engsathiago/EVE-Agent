@@ -1,5 +1,5 @@
-project("OpenClaw.xcodeproj")
-scheme("OpenClawUITests")
+project("EVE.xcodeproj")
+scheme("EVEUITests")
 configuration("Debug")
 
 devices([
@@ -12,7 +12,7 @@ languages([
 ])
 
 launch_arguments([
-  "--openclaw-screenshot-mode",
+  "--eve-screenshot-mode",
 ])
 
 output_directory("fastlane/screenshots")

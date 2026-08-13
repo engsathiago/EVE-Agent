@@ -7,7 +7,7 @@ import {
   readAcpSessionMeta,
   writeAcpSessionMetaForMigration,
 } from "../acp/runtime/session-meta.js";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { embeddedRunMock, rpcReq, writeSessionStore } from "./test-helpers.js";
 import {
   setupGatewaySessionsTestHarness,
@@ -32,7 +32,7 @@ const {
 } = setupGatewaySessionsTestHarness();
 
 afterEach(() => {
-  closeOpenClawStateDatabaseForTest();
+  closeEVEStateDatabaseForTest();
 });
 
 function expectObject(value: unknown) {

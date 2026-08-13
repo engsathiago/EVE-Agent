@@ -1,8 +1,8 @@
 ---
-summary: "Use DeepInfra's unified API to access the most popular open source and frontier models in OpenClaw"
+summary: "Use DeepInfra's unified API to access the most popular open source and frontier models in EVE"
 read_when:
   - You want a single API key for the top open source LLMs
-  - You want to run models via DeepInfra's API in OpenClaw
+  - You want to run models via DeepInfra's API in EVE
 title: "DeepInfra"
 ---
 
@@ -14,8 +14,8 @@ endpoint and API key. It is OpenAI-compatible, so most OpenAI SDKs work by switc
 Install the official plugin, then restart Gateway:
 
 ```bash
-openclaw plugins install @openclaw/deepinfra-provider
-openclaw gateway restart
+eve plugins install @eve/deepinfra-provider
+eve gateway restart
 ```
 
 ## Getting an API key
@@ -27,7 +27,7 @@ openclaw gateway restart
 ## CLI setup
 
 ```bash
-openclaw onboard --deepinfra-api-key <key>
+eve onboard --deepinfra-api-key <key>
 ```
 
 Or set the environment variable:
@@ -49,15 +49,15 @@ export DEEPINFRA_API_KEY="<your-deepinfra-api-key>" # pragma: allowlist secret
 }
 ```
 
-## Supported OpenClaw surfaces
+## Supported EVE surfaces
 
 The plugin registers all DeepInfra surfaces that match current
-OpenClaw provider contracts. Chat, image generation, and video generation
-refresh their model catalogues live from `/v1/openai/models?sort_by=openclaw&filter=with_meta`
+EVE provider contracts. Chat, image generation, and video generation
+refresh their model catalogues live from `/v1/openai/models?sort_by=eve&filter=with_meta`
 when `DEEPINFRA_API_KEY` is configured; the other surfaces use the curated
 static defaults below.
 
-| Surface                  | Default model                                                                                         | OpenClaw config/tool                                     |
+| Surface                  | Default model                                                                                         | EVE config/tool                                     |
 | ------------------------ | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Chat / model provider    | first chat-tagged entry from live catalog (manifest fallback `deepseek-ai/DeepSeek-V4-Flash`)         | `agents.defaults.model`                                  |
 | Image generation/editing | first `image-gen`-tagged entry from live catalog (static fallback `black-forest-labs/FLUX-1-schnell`) | `image_generate`, `agents.defaults.imageGenerationModel` |
@@ -68,12 +68,12 @@ static defaults below.
 | Memory embeddings        | `BAAI/bge-m3`                                                                                         | `agents.defaults.memorySearch.provider: "deepinfra"`     |
 
 DeepInfra also exposes reranking, classification, object-detection, and other
-native model types. OpenClaw does not currently have first-class provider
+native model types. EVE does not currently have first-class provider
 contracts for those categories, so this plugin does not register them yet.
 
 ## Available models
 
-OpenClaw dynamically discovers available DeepInfra models at startup. Use
+EVE dynamically discovers available DeepInfra models at startup. Use
 `/models deepinfra` to see the full list of models available.
 
 Any model available on [DeepInfra.com](https://deepinfra.com/) can be used with the `deepinfra/` prefix:

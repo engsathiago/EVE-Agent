@@ -3,12 +3,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { ConfigFileSnapshot } from "../config/types.openclaw.js";
+import type { ConfigFileSnapshot } from "../config/types.eve.js";
 import { collectIncludeFilePermFindings } from "./audit-extra.async.js";
 
 describe("security audit config include permissions", () => {
   it("flags group/world-readable config include files", async () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-include-perms-"));
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "eve-include-perms-"));
     const stateDir = path.join(tmp, "state");
     fs.mkdirSync(stateDir, { recursive: true, mode: 0o700 });
 
@@ -17,7 +17,7 @@ describe("security audit config include permissions", () => {
     fs.chmodSync(includePath, 0o644);
 
     const configSnapshot: ConfigFileSnapshot = {
-      path: path.join(stateDir, "openclaw.json"),
+      path: path.join(stateDir, "eve.json"),
       exists: true,
       raw: `{ "$include": ${JSON.stringify(includePath)} }\n`,
       parsed: { $include: includePath },

@@ -1,4 +1,4 @@
-/** CLI entrypoint for `openclaw gateway status`. */
+/** CLI entrypoint for `eve gateway status`. */
 import { isRich } from "../../packages/terminal-core/src/theme.js";
 import { withProgress } from "../cli/progress.js";
 import { readBestEffortConfig, resolveGatewayPort } from "../config/config.js";

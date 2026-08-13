@@ -5,15 +5,15 @@ import { resolveCompletionProfilePath } from "../cli/completion-runtime.js";
 import { setupWizardShellCompletion } from "./setup.completion.js";
 
 async function withLocale(locale: string, run: () => Promise<void>): Promise<void> {
-  const previousLocale = process.env.OPENCLAW_LOCALE;
-  process.env.OPENCLAW_LOCALE = locale;
+  const previousLocale = process.env.EVE_LOCALE;
+  process.env.EVE_LOCALE = locale;
   try {
     await run();
   } finally {
     if (previousLocale === undefined) {
-      delete process.env.OPENCLAW_LOCALE;
+      delete process.env.EVE_LOCALE;
     } else {
-      process.env.OPENCLAW_LOCALE = previousLocale;
+      process.env.EVE_LOCALE = previousLocale;
     }
   }
 }
@@ -27,12 +27,12 @@ function createPrompter(confirmValue = false) {
 
 function createDeps(shell: "zsh" | "bash" | "fish" | "powershell" = "zsh") {
   const deps: NonNullable<Parameters<typeof setupWizardShellCompletion>[0]["deps"]> = {
-    resolveCliName: () => "openclaw",
+    resolveCliName: () => "eve",
     checkShellCompletionStatus: vi.fn(async (_binName: string) => ({
       shell,
       profileInstalled: false,
       cacheExists: false,
-      cachePath: `/tmp/openclaw.${shell === "powershell" ? "ps1" : shell}`,
+      cachePath: `/tmp/eve.${shell === "powershell" ? "ps1" : shell}`,
       usesSlowPattern: false,
     })),
     ensureCompletionCacheExists: vi.fn(async (_binName: string) => true),
@@ -49,8 +49,8 @@ describe("setupWizardShellCompletion", () => {
     await setupWizardShellCompletion({ flow: "quickstart", prompter, deps });
 
     expect(prompter.confirm).not.toHaveBeenCalled();
-    expect(deps.ensureCompletionCacheExists).toHaveBeenCalledWith("openclaw");
-    expect(deps.installCompletion).toHaveBeenCalledWith("zsh", true, "openclaw");
+    expect(deps.ensureCompletionCacheExists).toHaveBeenCalledWith("eve");
+    expect(deps.installCompletion).toHaveBeenCalledWith("zsh", true, "eve");
     expect(prompter.note).toHaveBeenCalled();
   });
 
@@ -75,7 +75,7 @@ describe("setupWizardShellCompletion", () => {
 
       expect(prompter.confirm).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: "为 openclaw 启用 zsh shell completion？",
+          message: "为 eve 启用 zsh shell completion？",
         }),
       );
       expect(prompter.note).toHaveBeenCalledWith(
@@ -111,7 +111,7 @@ describe("setupWizardShellCompletion", () => {
 
       await setupWizardShellCompletion({ flow: "quickstart", prompter, deps });
 
-      expect(deps.installCompletion).toHaveBeenCalledWith("powershell", true, "openclaw");
+      expect(deps.installCompletion).toHaveBeenCalledWith("powershell", true, "eve");
       expect(prompter.note).toHaveBeenCalledWith(
         "Shell completion installed. Restart your shell or run: . '/Users/ada/.config/powershell/Microsoft.PowerShell_profile.ps1'",
         "Shell completion",

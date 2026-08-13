@@ -4,16 +4,16 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   parseBrowserMajorVersion,
   readBrowserVersion,
   resolveBrowserExecutableForPlatform,
   resolveGoogleChromeExecutableForPlatform,
 } from "./browser/chrome.executables.js";
-import { DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME, resolveBrowserConfig } from "./browser/config.js";
+import { DEFAULT_EVE_BROWSER_PROFILE_NAME, resolveBrowserConfig } from "./browser/config.js";
 import { movePathToTrash } from "./browser/trash.js";
-import type { OpenClawConfig } from "./config/config.js";
+import type { EVEConfig } from "./config/config.js";
 import { asRecord } from "./record-shared.js";
 import { formatCliCommand, note } from "./sdk-setup-tools.js";
 import { CONFIG_DIR, resolveUserPath } from "./utils.js";
@@ -48,7 +48,7 @@ type BrowserDoctorFilesystemDeps = {
   movePathToTrash?: (targetPath: string) => Promise<string>;
 };
 
-function collectChromeMcpProfiles(cfg: OpenClawConfig): ExistingSessionProfile[] {
+function collectChromeMcpProfiles(cfg: EVEConfig): ExistingSessionProfile[] {
   const browser = asRecord(cfg.browser);
   if (!browser) {
     return [];
@@ -79,7 +79,7 @@ function collectChromeMcpProfiles(cfg: OpenClawConfig): ExistingSessionProfile[]
   return [...profiles.values()].toSorted((a, b) => a.name.localeCompare(b.name));
 }
 
-function collectManagedProfiles(cfg: OpenClawConfig): ManagedProfile[] {
+function collectManagedProfiles(cfg: EVEConfig): ManagedProfile[] {
   const browser = asRecord(cfg.browser);
   if (!browser) {
     return [];
@@ -98,7 +98,7 @@ function collectManagedProfiles(cfg: OpenClawConfig): ManagedProfile[] {
 
   for (const [profileName, rawProfile] of Object.entries(configuredProfiles)) {
     const profile = asRecord(rawProfile);
-    const driver = normalizeOptionalString(profile?.driver) ?? "openclaw";
+    const driver = normalizeOptionalString(profile?.driver) ?? "eve";
     if (driver !== "existing-session") {
       profiles.set(profileName, { name: profileName });
     }
@@ -125,7 +125,7 @@ function isSameOrChildPath(candidatePath: string, parentPath: string): boolean {
   return candidate === parent || candidate.startsWith(`${parent}${path.sep}`);
 }
 
-function isLegacyClawdProfileConfigured(cfg: OpenClawConfig, legacyProfileDir: string): boolean {
+function isLegacyClawdProfileConfigured(cfg: EVEConfig, legacyProfileDir: string): boolean {
   const browser = asRecord(cfg.browser);
   if (!browser) {
     return false;
@@ -154,7 +154,7 @@ function isLegacyClawdProfileConfigured(cfg: OpenClawConfig, legacyProfileDir: s
 
 /** Detects unmanaged legacy clawd browser profile residue on disk. */
 export function detectLegacyClawdBrowserProfileResidue(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   deps?: BrowserDoctorFilesystemDeps,
 ): LegacyClawdBrowserProfileResidue | null {
   const configDir = deps?.configDir ?? CONFIG_DIR;
@@ -178,7 +178,7 @@ export function detectLegacyClawdBrowserProfileResidue(
   const resolved = resolveBrowserConfig(cfg.browser, cfg);
   const defaultProfile = resolved.profiles[resolved.defaultProfile];
   if (
-    resolved.defaultProfile !== DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME ||
+    resolved.defaultProfile !== DEFAULT_EVE_BROWSER_PROFILE_NAME ||
     defaultProfile?.driver === "existing-session"
   ) {
     return null;
@@ -189,7 +189,7 @@ export function detectLegacyClawdBrowserProfileResidue(
     legacyUserDataDir,
     canonicalUserDataDir: resolveManagedBrowserUserDataDir(
       configDir,
-      DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
+      DEFAULT_EVE_BROWSER_PROFILE_NAME,
     ),
   };
 }
@@ -199,14 +199,14 @@ function formatLegacyClawdBrowserProfileResidueNote(
 ): string {
   return [
     `- Legacy managed browser profile residue was found at ${residue.legacyProfileDir}.`,
-    `- The canonical OpenClaw-managed browser profile is ${residue.canonicalUserDataDir}.`,
-    `- If no browser is using the legacy profile, run ${formatCliCommand("openclaw doctor --fix")} to archive it safely instead of deleting it in place.`,
+    `- The canonical EVE-managed browser profile is ${residue.canonicalUserDataDir}.`,
+    `- If no browser is using the legacy profile, run ${formatCliCommand("eve doctor --fix")} to archive it safely instead of deleting it in place.`,
   ].join("\n");
 }
 
 /** Emits Browser doctor notes for Chrome MCP, managed Chrome, and legacy residue readiness. */
 export async function noteChromeMcpBrowserReadiness(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   deps?: {
     platform?: NodeJS.Platform;
     noteFn?: typeof note;
@@ -252,8 +252,8 @@ export async function noteChromeMcpBrowserReadiness(
   if (!browserExecutable && managedProfiles.length > 0) {
     noteFn(
       [
-        `- OpenClaw-managed browser profile(s) are configured: ${managedProfileLabel}.`,
-        "- No Chromium-based browser executable was found on this host for OpenClaw-managed launch.",
+        `- EVE-managed browser profile(s) are configured: ${managedProfileLabel}.`,
+        "- No Chromium-based browser executable was found on this host for EVE-managed launch.",
         "- Install Chrome, Chromium, Brave, Edge, or set browser.executablePath explicitly.",
       ].join("\n"),
       "Browser",
@@ -261,7 +261,7 @@ export async function noteChromeMcpBrowserReadiness(
   }
 
   if (missingDisplay || shouldWarnRootNoSandbox) {
-    const lines = [`- OpenClaw-managed browser profile(s) are configured: ${managedProfileLabel}.`];
+    const lines = [`- EVE-managed browser profile(s) are configured: ${managedProfileLabel}.`];
     if (missingDisplay) {
       lines.push(
         "- No DISPLAY or WAYLAND_DISPLAY is set, and browser.headless is false. Managed browser launch needs a desktop session, Xvfb, or browser.headless: true.",
@@ -291,7 +291,7 @@ export async function noteChromeMcpBrowserReadiness(
         "- These profiles use an explicit Chromium user data directory instead of Chrome's default auto-connect path.",
         `- Verify the matching Chromium-based browser is version ${CHROME_MCP_MIN_MAJOR}+ on the same host as the Gateway or node.`,
         `- Enable remote debugging in that browser's inspect page (${REMOTE_DEBUGGING_PAGES}).`,
-        "- Keep the browser running and accept the attach consent prompt the first time OpenClaw connects.",
+        "- Keep the browser running and accept the attach consent prompt the first time EVE connects.",
       ].join("\n"),
       "Browser",
     );
@@ -304,10 +304,10 @@ export async function noteChromeMcpBrowserReadiness(
   if (!chrome) {
     const lines = [
       `- Chrome MCP existing-session is configured for profile(s): ${profileLabel}.`,
-      `- Google Chrome was not found on this host for auto-connect profile(s): ${autoProfileLabel}. OpenClaw does not bundle Chrome.`,
+      `- Google Chrome was not found on this host for auto-connect profile(s): ${autoProfileLabel}. EVE does not bundle Chrome.`,
       `- Install Google Chrome ${CHROME_MCP_MIN_MAJOR}+ on the same host as the Gateway or node, or set browser.profiles.<name>.userDataDir for a different Chromium-based browser.`,
       `- Enable remote debugging in the browser inspect page (${REMOTE_DEBUGGING_PAGES}).`,
-      "- Keep the browser running and accept the attach consent prompt the first time OpenClaw connects.",
+      "- Keep the browser running and accept the attach consent prompt the first time EVE connects.",
       "- Docker, headless, and sandbox browser flows stay on raw CDP; this check only applies to host-local Chrome MCP attach.",
     ];
     if (explicitProfiles.length > 0) {
@@ -342,7 +342,7 @@ export async function noteChromeMcpBrowserReadiness(
 
   lines.push(`- Enable remote debugging in the browser inspect page (${REMOTE_DEBUGGING_PAGES}).`);
   lines.push(
-    "- Keep the browser running and accept the attach consent prompt the first time OpenClaw connects.",
+    "- Keep the browser running and accept the attach consent prompt the first time EVE connects.",
   );
   if (explicitProfiles.length > 0) {
     lines.push(
@@ -357,7 +357,7 @@ export async function noteChromeMcpBrowserReadiness(
 
 /** Archives legacy clawd browser profile residue when doctor --fix is requested. */
 export async function maybeArchiveLegacyClawdBrowserProfileResidue(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   deps?: BrowserDoctorFilesystemDeps,
 ): Promise<{ changes: string[]; warnings: string[] }> {
   const residue = detectLegacyClawdBrowserProfileResidue(cfg, deps);

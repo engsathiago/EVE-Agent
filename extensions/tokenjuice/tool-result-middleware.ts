@@ -3,20 +3,20 @@ import process from "node:process";
 import type {
   AgentToolResultMiddleware,
   AgentToolResultMiddlewareEvent,
-  OpenClawAgentToolResult,
-} from "openclaw/plugin-sdk/agent-harness";
-import { createTokenjuiceOpenClawEmbeddedExtension } from "./runtime-api.js";
+  EVEAgentToolResult,
+} from "eve-agent/plugin-sdk/agent-harness";
+import { createTokenjuiceEVEEmbeddedExtension } from "./runtime-api.js";
 
 type TokenjuiceToolResultHandler = (
   event: {
     toolName: string;
     input: Record<string, unknown>;
-    content: OpenClawAgentToolResult["content"];
+    content: EVEAgentToolResult["content"];
     details: unknown;
     isError?: boolean;
   },
   ctx: { cwd: string },
-) => Promise<Partial<OpenClawAgentToolResult> | void> | Partial<OpenClawAgentToolResult> | void;
+) => Promise<Partial<EVEAgentToolResult> | void> | Partial<EVEAgentToolResult> | void;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -33,7 +33,7 @@ function readCwd(event: AgentToolResultMiddlewareEvent): string {
   return process.cwd();
 }
 
-function readTextContent(content: OpenClawAgentToolResult["content"]): string {
+function readTextContent(content: EVEAgentToolResult["content"]): string {
   if (typeof content === "string") {
     return content;
   }
@@ -81,7 +81,7 @@ function hasFailureState(
 
 function normalizeDetails(
   event: AgentToolResultMiddlewareEvent,
-  current: OpenClawAgentToolResult,
+  current: EVEAgentToolResult,
 ): unknown {
   const isExecLike = event.toolName === "exec" || event.toolName === "bash";
   const details = isRecord(current.details) ? current.details : undefined;
@@ -124,7 +124,7 @@ function normalizeDetails(
 
 export function createTokenjuiceAgentToolResultMiddleware(): AgentToolResultMiddleware {
   const handlers: TokenjuiceToolResultHandler[] = [];
-  createTokenjuiceOpenClawEmbeddedExtension()({
+  createTokenjuiceEVEEmbeddedExtension()({
     on(event, handler) {
       if (event === "tool_result") {
         handlers.push(handler as TokenjuiceToolResultHandler);

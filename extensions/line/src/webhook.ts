@@ -4,8 +4,8 @@ import type { NextFunction, Request, Response } from "express";
 import {
   createMessageReceiveContext,
   type MessageReceiveContext,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { danger, logVerbose, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { danger, logVerbose, type RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { parseLineWebhookBody, validateLineSignature } from "./webhook-utils.js";
 
 const LINE_WEBHOOK_MAX_RAW_BODY_BYTES = 64 * 1024;

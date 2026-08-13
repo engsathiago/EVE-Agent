@@ -1,4 +1,4 @@
-// Update Job Timeout script supports OpenClaw repository automation.
+// Update Job Timeout script supports EVE repository automation.
 interface TimedUpdateJobOptions {
   abortSettleMs?: number;
   append(this: void, chunk: string): void;

@@ -1,6 +1,6 @@
 // Discord plugin module implements client behavior.
 import type { APIInteraction } from "discord-api-types/v10";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 import { DiscordCommandDeployer, type DeployCommandOptions } from "./command-deploy.js";
 import type { BaseCommand } from "./commands.js";
 import { BaseMessageInteractiveComponent, parseCustomId, type Modal } from "./components.js";

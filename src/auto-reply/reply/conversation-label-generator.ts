@@ -4,7 +4,7 @@ import { requireApiKey } from "../../agents/model-auth.js";
 import { resolveDefaultModelForAgent } from "../../agents/model-selection.js";
 import { applyPreparedRuntimeAuthToModel } from "../../agents/provider-request-config.js";
 import { prepareModelForSimpleCompletion } from "../../agents/simple-completion-transport.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { completeSimple } from "../../llm/stream.js";
 import type { TextContent } from "../../llm/types.js";
@@ -17,7 +17,7 @@ const TIMEOUT_MS = 15_000;
 export type ConversationLabelParams = {
   userMessage: string;
   prompt: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   agentDir?: string;
   maxLength?: number;

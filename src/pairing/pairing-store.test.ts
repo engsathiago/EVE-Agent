@@ -43,7 +43,7 @@ type FileReadSpy = {
 };
 
 beforeAll(() => {
-  fixtureRoot = fsSync.mkdtempSync(path.join(os.tmpdir(), "openclaw-pairing-"));
+  fixtureRoot = fsSync.mkdtempSync(path.join(os.tmpdir(), "eve-pairing-"));
 });
 
 afterAll(() => {
@@ -81,7 +81,7 @@ function requireFirstPairingRequest(
 async function withTempStateDir<T>(fn: (stateDir: string, env: NodeJS.ProcessEnv) => Promise<T>) {
   const dir = path.join(fixtureRoot, `case-${caseId++}`);
   fsSync.mkdirSync(dir, { recursive: true });
-  const env = { ...process.env, OPENCLAW_STATE_DIR: dir };
+  const env = { ...process.env, EVE_STATE_DIR: dir };
   return await fn(dir, env);
 }
 

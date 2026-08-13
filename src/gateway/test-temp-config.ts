@@ -8,7 +8,7 @@ import {
   resetConfigRuntimeState,
   setRuntimeConfigSnapshot,
 } from "../config/config.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { clearSecretsRuntimeSnapshot } from "../secrets/runtime.js";
 
 function withStableOwnerDisplaySecretForTest(cfg: unknown): unknown {
@@ -27,24 +27,24 @@ function withStableOwnerDisplaySecretForTest(cfg: unknown): unknown {
     ...record,
     commands: {
       ...commands,
-      ownerDisplaySecret: "openclaw-test-owner-display-secret",
+      ownerDisplaySecret: "eve-test-owner-display-secret",
     },
   };
 }
 
-/** Writes a temp OpenClaw config, installs it as runtime state, then restores globals. */
+/** Writes a temp EVE config, installs it as runtime state, then restores globals. */
 export async function withTempConfig(params: {
   cfg: unknown;
   run: () => Promise<void>;
   prefix?: string;
 }): Promise<void> {
-  const prevConfigPath = process.env.OPENCLAW_CONFIG_PATH;
+  const prevConfigPath = process.env.EVE_CONFIG_PATH;
 
-  const testConfig = withStableOwnerDisplaySecretForTest(params.cfg) as OpenClawConfig;
-  const dir = await mkdtemp(path.join(os.tmpdir(), params.prefix ?? "openclaw-test-config-"));
-  const configPath = path.join(dir, "openclaw.json");
+  const testConfig = withStableOwnerDisplaySecretForTest(params.cfg) as EVEConfig;
+  const dir = await mkdtemp(path.join(os.tmpdir(), params.prefix ?? "eve-test-config-"));
+  const configPath = path.join(dir, "eve.json");
 
-  process.env.OPENCLAW_CONFIG_PATH = configPath;
+  process.env.EVE_CONFIG_PATH = configPath;
 
   try {
     await writeFile(configPath, JSON.stringify(testConfig, null, 2), "utf-8");
@@ -57,9 +57,9 @@ export async function withTempConfig(params: {
     await params.run();
   } finally {
     if (prevConfigPath === undefined) {
-      delete process.env.OPENCLAW_CONFIG_PATH;
+      delete process.env.EVE_CONFIG_PATH;
     } else {
-      process.env.OPENCLAW_CONFIG_PATH = prevConfigPath;
+      process.env.EVE_CONFIG_PATH = prevConfigPath;
     }
     clearConfigCache();
     resetConfigRuntimeState();

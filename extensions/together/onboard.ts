@@ -1,8 +1,8 @@
 // Together setup module handles plugin onboarding behavior.
 import {
   createModelCatalogPresetAppliers,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/provider-onboard";
 import {
   buildTogetherModelDefinition,
   TOGETHER_BASE_URL,
@@ -13,7 +13,7 @@ export const TOGETHER_DEFAULT_MODEL_REF = "together/meta-llama/Llama-3.3-70B-Ins
 
 const togetherPresetAppliers = createModelCatalogPresetAppliers({
   primaryModelRef: TOGETHER_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig) => ({
+  resolveParams: (_cfg: EVEConfig) => ({
     providerId: "together",
     api: "openai-completions",
     baseUrl: TOGETHER_BASE_URL,
@@ -22,6 +22,6 @@ const togetherPresetAppliers = createModelCatalogPresetAppliers({
   }),
 });
 
-export function applyTogetherConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyTogetherConfig(cfg: EVEConfig): EVEConfig {
   return togetherPresetAppliers.applyConfig(cfg);
 }

@@ -1,4 +1,4 @@
-// Scope script supports OpenClaw repository automation.
+// Scope script supports EVE repository automation.
 import fs from "node:fs";
 import path from "node:path";
 import { BUNDLED_PLUGIN_PATH_PREFIX } from "../bundled-plugin-paths.mjs";
@@ -126,9 +126,9 @@ export function createPluginSdkScope(_repoRoot: string): TopologyScope {
     entrypoint,
     sourcePath: `src/plugin-sdk/${entrypoint}.ts`,
     importSpecifier:
-      entrypoint === "index" ? "openclaw/plugin-sdk" : `openclaw/plugin-sdk/${entrypoint}`,
+      entrypoint === "index" ? "eve-agent/plugin-sdk" : `eve-agent/plugin-sdk/${entrypoint}`,
   }));
-  return buildScopeFromEntrypoints("plugin-sdk", "OpenClaw plugin-sdk public surface", entrypoints);
+  return buildScopeFromEntrypoints("plugin-sdk", "EVE plugin-sdk public surface", entrypoints);
 }
 
 export function createFilesystemPublicSurfaceScope(

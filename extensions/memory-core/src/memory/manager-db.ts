@@ -8,11 +8,11 @@ import {
   ensureDir,
   loadSqliteVecExtension,
   requireNodeSqlite,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 import {
-  ensureOpenClawAgentDatabaseSchema,
+  ensureEVEAgentDatabaseSchema,
   runSqliteImmediateTransactionSync,
-} from "openclaw/plugin-sdk/sqlite-runtime";
+} from "eve-agent/plugin-sdk/sqlite-runtime";
 import {
   tryAcquireMemoryReindexLock,
   type MemoryReindexLockHandle,
@@ -299,7 +299,7 @@ export function openMemoryDatabaseAtPath(
       databasePath: dbPath,
     });
     if (agentId) {
-      ensureOpenClawAgentDatabaseSchema(db, { agentId, path: dbPath, register: true });
+      ensureEVEAgentDatabaseSchema(db, { agentId, path: dbPath, register: true });
     }
     return db;
   } catch (err) {

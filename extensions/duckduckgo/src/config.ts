@@ -1,6 +1,6 @@
 // Duckduckgo helper module supports config behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export const DEFAULT_DDG_SAFE_SEARCH = "moderate";
 
@@ -14,7 +14,7 @@ type DdgPluginConfig = {
 };
 
 function resolveDdgWebSearchConfig(
-  config?: OpenClawConfig,
+  config?: EVEConfig,
 ): DdgPluginConfig["webSearch"] | undefined {
   const pluginConfig = config?.plugins?.entries?.duckduckgo?.config as DdgPluginConfig | undefined;
   const webSearch = pluginConfig?.webSearch;
@@ -24,7 +24,7 @@ function resolveDdgWebSearchConfig(
   return undefined;
 }
 
-export function resolveDdgRegion(config?: OpenClawConfig): string | undefined {
+export function resolveDdgRegion(config?: EVEConfig): string | undefined {
   const region = resolveDdgWebSearchConfig(config)?.region;
   if (typeof region !== "string") {
     return undefined;
@@ -33,7 +33,7 @@ export function resolveDdgRegion(config?: OpenClawConfig): string | undefined {
   return trimmed || undefined;
 }
 
-export function resolveDdgSafeSearch(config?: OpenClawConfig): DdgSafeSearch {
+export function resolveDdgSafeSearch(config?: EVEConfig): DdgSafeSearch {
   const safeSearch = resolveDdgWebSearchConfig(config)?.safeSearch;
   const normalized = normalizeLowercaseStringOrEmpty(safeSearch);
   if (normalized === "strict" || normalized === "off") {

@@ -60,20 +60,20 @@ export type PluginRegistrySnapshotResult = {
   discovery?: PluginDiscoveryResult;
 };
 
-export const DISABLE_PERSISTED_PLUGIN_REGISTRY_ENV = "OPENCLAW_DISABLE_PERSISTED_PLUGIN_REGISTRY";
+export const DISABLE_PERSISTED_PLUGIN_REGISTRY_ENV = "EVE_DISABLE_PERSISTED_PLUGIN_REGISTRY";
 const MAX_PLUGIN_REGISTRY_SNAPSHOT_MEMOS = 8;
 const REGISTRY_SNAPSHOT_MEMO_ENV_KEYS = [
   "APPDATA",
   "HOME",
-  "OPENCLAW_BUNDLED_PLUGINS_DIR",
-  "OPENCLAW_COMPATIBILITY_HOST_VERSION",
-  "OPENCLAW_CONFIG_PATH",
-  "OPENCLAW_DISABLE_BUNDLED_PLUGINS",
-  "OPENCLAW_DISABLE_BUNDLED_SOURCE_OVERLAYS",
+  "EVE_BUNDLED_PLUGINS_DIR",
+  "EVE_COMPATIBILITY_HOST_VERSION",
+  "EVE_CONFIG_PATH",
+  "EVE_DISABLE_BUNDLED_PLUGINS",
+  "EVE_DISABLE_BUNDLED_SOURCE_OVERLAYS",
   DISABLE_PERSISTED_PLUGIN_REGISTRY_ENV,
-  "OPENCLAW_HOME",
-  "OPENCLAW_NIX_MODE",
-  "OPENCLAW_STATE_DIR",
+  "EVE_HOME",
+  "EVE_NIX_MODE",
+  "EVE_STATE_DIR",
   "USERPROFILE",
   "XDG_CONFIG_HOME",
 ] as const;
@@ -92,7 +92,7 @@ function clearLoadPluginRegistrySnapshotMemo(): void {
 registerPluginMetadataProcessMemoLifecycleClear(clearLoadPluginRegistrySnapshotMemo);
 
 function formatDeprecatedPersistedRegistryDisableWarning(): string {
-  return `${DISABLE_PERSISTED_PLUGIN_REGISTRY_ENV} is a deprecated break-glass compatibility switch; use \`openclaw plugins registry --refresh\` or \`openclaw doctor --fix\` to repair registry state.`;
+  return `${DISABLE_PERSISTED_PLUGIN_REGISTRY_ENV} is a deprecated break-glass compatibility switch; use \`eve plugins registry --refresh\` or \`eve doctor --fix\` to repair registry state.`;
 }
 
 export type LoadPluginRegistryParams = LoadInstalledPluginIndexParams &
@@ -533,42 +533,42 @@ export function loadPluginRegistrySnapshotWithMetadata(
           level: "warn",
           code: "persisted-registry-stale-policy",
           message:
-            "Persisted plugin registry policy does not match current config; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry policy does not match current config; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (hasMissingPersistedPluginSource(persistedIndex)) {
         diagnostics.push({
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry points at missing plugin files; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry points at missing plugin files; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (hasMismatchedPersistedBundledPluginRoot(persistedIndex, env)) {
         diagnostics.push({
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry points at a different bundled plugin tree; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry points at a different bundled plugin tree; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (hasStalePersistedPluginDiagnostics(persistedIndex)) {
         diagnostics.push({
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry contains diagnostics referencing missing paths; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry contains diagnostics referencing missing paths; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (hasMissingConfigPathActivationMetadata(persistedIndex)) {
         diagnostics.push({
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry is missing config-path startup metadata; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry is missing config-path startup metadata; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (hasStalePersistedPluginMetadata(persistedIndex)) {
         diagnostics.push({
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry metadata no longer matches plugin manifest or package files; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry metadata no longer matches plugin manifest or package files; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else if (
         hasRecoveredInstallRecordsMissingFromPersistedIndex(
@@ -581,7 +581,7 @@ export function loadPluginRegistrySnapshotWithMetadata(
           level: "warn",
           code: "persisted-registry-stale-source",
           message:
-            "Persisted plugin registry is missing recoverable managed npm plugins; using derived plugin index. Run `openclaw plugins registry --refresh` to update the persisted registry.",
+            "Persisted plugin registry is missing recoverable managed npm plugins; using derived plugin index. Run `eve plugins registry --refresh` to update the persisted registry.",
         });
       } else {
         const persistedResult: PluginRegistrySnapshotResult = {

@@ -1,7 +1,7 @@
 // Gateway session event broadcaster.
 // Projects transcript and lifecycle updates to websocket subscribers.
-import { asPositiveSafeInteger } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { asPositiveSafeInteger } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { getRuntimeConfig } from "../config/io.js";
 import { normalizeAgentId } from "../routing/session-key.js";
@@ -17,7 +17,7 @@ import type {
 import { hasTrackedActiveSessionRun } from "./server-methods/session-active-runs.js";
 import { resolveSessionKeyForTranscriptFile } from "./session-transcript-key.js";
 import {
-  attachOpenClawTranscriptMeta,
+  attachEVETranscriptMeta,
   readSessionMessageCountAsync,
 } from "./session-transcript-readers.js";
 import {
@@ -212,7 +212,7 @@ async function handleTranscriptUpdateBroadcast(
     includeSession: true,
     hasActiveRun,
   });
-  const rawMessage = attachOpenClawTranscriptMeta(update.message, {
+  const rawMessage = attachEVETranscriptMeta(update.message, {
     ...(typeof update.messageId === "string" ? { id: update.messageId } : {}),
     ...(messageSeq !== undefined ? { seq: messageSeq } : {}),
   });

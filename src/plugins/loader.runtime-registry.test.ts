@@ -9,7 +9,7 @@ import {
   testing,
   clearPluginLoaderCache,
   clearPluginRegistryLoadCache,
-  loadOpenClawPlugins,
+  loadEVEPlugins,
   resolveRuntimePluginRegistry,
 } from "./loader.js";
 import { resetPluginLoaderTestStateForTest } from "./loader.test-fixtures.js";
@@ -88,9 +88,9 @@ function requireMemoryEmbeddingProvider(providerId: string) {
   return provider;
 }
 
-function makeOpenClawDevSourceRoot(): string {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-loader-dev-source-"));
-  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "openclaw" }), "utf-8");
+function makeEVEDevSourceRoot(): string {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-loader-dev-source-"));
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf-8");
   fs.mkdirSync(path.join(root, "src"), { recursive: true });
   fs.mkdirSync(path.join(root, "extensions"), { recursive: true });
   return root;
@@ -322,7 +322,7 @@ describe("getCompatibleActivePluginRegistry", () => {
   });
 
   it("separates dev source root precedence in the loader cache key", () => {
-    const devSourceRoot = makeOpenClawDevSourceRoot();
+    const devSourceRoot = makeEVEDevSourceRoot();
     try {
       const baseOptions = {
         config: {
@@ -331,13 +331,13 @@ describe("getCompatibleActivePluginRegistry", () => {
             load: { paths: ["/tmp/demo.js"] },
           },
         },
-        env: { ...process.env, OPENCLAW_DEV_SOURCE_ROOT: undefined },
+        env: { ...process.env, EVE_DEV_SOURCE_ROOT: undefined },
       };
 
       const base = testing.resolvePluginLoadCacheContext(baseOptions).cacheKey;
       const dev = testing.resolvePluginLoadCacheContext({
         ...baseOptions,
-        env: { ...process.env, OPENCLAW_DEV_SOURCE_ROOT: devSourceRoot },
+        env: { ...process.env, EVE_DEV_SOURCE_ROOT: devSourceRoot },
       }).cacheKey;
 
       expect(dev).not.toBe(base);
@@ -721,10 +721,10 @@ describe("resolveRuntimePluginRegistry", () => {
         },
         workspaceDir: "/tmp/workspace-a",
       };
-      const fullRegistry = loadOpenClawPlugins(loadOptions);
+      const fullRegistry = loadEVEPlugins(loadOptions);
 
-      loadOpenClawPlugins({ ...loadOptions, onlyPluginIds: ["alpha"] });
-      loadOpenClawPlugins({ ...loadOptions, onlyPluginIds: ["bravo"] });
+      loadEVEPlugins({ ...loadOptions, onlyPluginIds: ["alpha"] });
+      loadEVEPlugins({ ...loadOptions, onlyPluginIds: ["bravo"] });
 
       expect(resolveRuntimePluginRegistry(loadOptions)).toBe(fullRegistry);
     } finally {
@@ -790,7 +790,7 @@ describe("clearPluginLoaderCache", () => {
   });
 });
 
-describe("loadOpenClawPlugins active runtime clearing", () => {
+describe("loadEVEPlugins active runtime clearing", () => {
   it("clears plugin-owned global providers before activating a new registry", () => {
     registerEmbeddingProvider({
       id: "stale-embedding",
@@ -806,7 +806,7 @@ describe("loadOpenClawPlugins active runtime clearing", () => {
       create: async () => ({ provider: null }),
     });
 
-    loadOpenClawPlugins({ onlyPluginIds: [] });
+    loadEVEPlugins({ onlyPluginIds: [] });
 
     expect(getEmbeddingProvider("stale-embedding")).toBeUndefined();
     expect(getCompactionProvider("stale-compaction")).toBeUndefined();
@@ -839,10 +839,10 @@ describe("clearPluginRegistryLoadCache", () => {
       },
       workspaceDir: "/tmp/workspace-a",
     };
-    const registry = loadOpenClawPlugins(loadOptions);
+    const registry = loadEVEPlugins(loadOptions);
 
     clearPluginRegistryLoadCache();
 
-    expect(loadOpenClawPlugins(loadOptions)).not.toBe(registry);
+    expect(loadEVEPlugins(loadOptions)).not.toBe(registry);
   });
 });

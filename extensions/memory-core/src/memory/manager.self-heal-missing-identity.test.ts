@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import { resolveOpenClawAgentSqlitePath } from "openclaw/plugin-sdk/sqlite-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
+import { resolveEVEAgentSqlitePath } from "eve-agent/plugin-sdk/sqlite-runtime";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { closeAllMemorySearchManagers, getMemorySearchManager } from "./index.js";
 import type { MemoryIndexManager } from "./manager.js";
@@ -41,7 +41,7 @@ describe("memory manager self-heal missing identity with FTS-only chunks", () =>
   }
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-mem-self-heal-91167-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-mem-self-heal-91167-"));
   });
 
   beforeEach(async () => {
@@ -49,8 +49,8 @@ describe("memory manager self-heal missing identity with FTS-only chunks", () =>
     workspaceDir = path.join(fixtureRoot, `case-${caseId++}`);
     await fs.mkdir(path.join(workspaceDir, "memory"), { recursive: true });
     await fs.writeFile(path.join(workspaceDir, "MEMORY.md"), "Alpha topic\n\nKeep this note.");
-    vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, "state"));
-    indexPath = resolveOpenClawAgentSqlitePath({ agentId: "main" });
+    vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, "state"));
+    indexPath = resolveEVEAgentSqlitePath({ agentId: "main" });
   });
 
   afterEach(async () => {
@@ -91,7 +91,7 @@ describe("memory manager self-heal missing identity with FTS-only chunks", () =>
         },
         list: [{ id: "main", default: true }],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const result = await getMemorySearchManager({ cfg, agentId: "main" });
     if (!result.manager) {
       throw new Error(result.error ?? "manager missing");

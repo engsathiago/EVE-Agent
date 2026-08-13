@@ -2,10 +2,10 @@
 export {
   registerSessionBindingAdapter,
   testing,
-} from "openclaw/plugin-sdk/session-binding-runtime";
-export { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/session-binding-runtime";
+export { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
 export {
   createTestRegistry,
   setActivePluginRegistry,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";

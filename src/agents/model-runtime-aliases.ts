@@ -1,9 +1,9 @@
 /**
  * Resolves CLI runtime aliases to provider/model auth labels and execution ids.
  */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   isCliRuntimeModelBackendForProvider,
   listCliRuntimeModelBackendBindings,
@@ -17,7 +17,7 @@ import { resolveProviderIdForAuth } from "./provider-auth-aliases.js";
 /** True for CLI runtime provider ids such as `claude-cli` and `google-gemini-cli`. */
 export function isCliRuntimeProvider(
   provider: string,
-  params: { config?: OpenClawConfig; env?: NodeJS.ProcessEnv; includeSetupRegistry?: boolean } = {},
+  params: { config?: EVEConfig; env?: NodeJS.ProcessEnv; includeSetupRegistry?: boolean } = {},
 ): boolean {
   const normalized = normalizeProviderId(provider);
   return listCliRuntimeProviderIds({
@@ -38,7 +38,7 @@ export function isCliRuntimeAlias(runtime: string | undefined): boolean {
 export function isCliRuntimeAliasForProvider(params: {
   runtime: string | undefined;
   provider: string | undefined;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): boolean {
   return isCliRuntimeModelBackendForProvider({
     provider: params.provider,
@@ -48,7 +48,7 @@ export function isCliRuntimeAliasForProvider(params: {
 }
 
 type RuntimeAliasComparisonOptions = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   includeSetupRegistry?: boolean;
 };
@@ -132,7 +132,7 @@ export function shouldPreferActiveRuntimeAliasAuthLabel(params: {
 }
 
 function resolveConfiguredRuntime(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   agentId?: string;
   modelId?: string;
@@ -150,7 +150,7 @@ function resolveConfiguredRuntime(params: {
 }
 
 function resolveProfileRuntimeAlias(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   profileId: string;
 }): string | undefined {
@@ -179,7 +179,7 @@ function resolveProfileRuntimeAlias(params: {
 }
 
 function resolveCliRuntimeFromAuthProfile(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   authProfileId?: string;
 }): string | undefined {
@@ -231,14 +231,14 @@ function resolveCliRuntimeFromAuthProfile(params: {
 
 export function resolveCliRuntimeExecutionProvider(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId?: string;
   modelId?: string;
   authProfileId?: string;
 }): string | undefined {
   const provider = normalizeProviderId(params.provider);
   const { runtime, matchedProvider } = resolveConfiguredRuntime({ ...params, provider });
-  if (runtime === "openclaw") {
+  if (runtime === "eve") {
     return undefined;
   }
   if (!runtime || runtime === "auto") {

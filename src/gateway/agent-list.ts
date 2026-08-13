@@ -2,11 +2,11 @@
 // Combines configured agents and existing on-disk agent state for lightweight UI use.
 import fs from "node:fs";
 import path from "node:path";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { resolveStateDir } from "../config/paths.js";
 import type { SessionScope } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeAgentId, normalizeMainKey } from "../routing/session-key.js";
 
 type GatewayAgentListRow = {
@@ -28,7 +28,7 @@ function listExistingAgentIdsFromDisk(): string[] {
   }
 }
 
-export function listGatewayAgentIds(cfg: OpenClawConfig): string[] {
+export function listGatewayAgentIds(cfg: EVEConfig): string[] {
   const ids = new Set<string>();
   const defaultId = normalizeAgentId(resolveDefaultAgentId(cfg));
   ids.add(defaultId);
@@ -53,7 +53,7 @@ export function listGatewayAgentIds(cfg: OpenClawConfig): string[] {
 }
 
 /** Lists gateway-visible agent ids with default/main session metadata. */
-export function listGatewayAgentsBasic(cfg: OpenClawConfig): {
+export function listGatewayAgentsBasic(cfg: EVEConfig): {
   defaultId: string;
   mainKey: string;
   scope: SessionScope;

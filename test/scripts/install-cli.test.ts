@@ -26,7 +26,7 @@ function runInstallCliShell(script: string, env: NodeJS.ProcessEnv = {}) {
     encoding: "utf8",
     env: {
       ...process.env,
-      OPENCLAW_INSTALL_CLI_SH_NO_RUN: "1",
+      EVE_INSTALL_CLI_SH_NO_RUN: "1",
       ...env,
     },
   });
@@ -53,12 +53,12 @@ describe("install-cli.sh", () => {
     expect(result.stdout + result.stderr).not.toContain("unbound variable");
   });
 
-  it("keeps HOME for default prefix while OPENCLAW_HOME controls git checkout paths", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-home-"));
+  it("keeps HOME for default prefix while EVE_HOME controls git checkout paths", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-home-"));
     const osHome = join(tmp, "os-home");
-    const openclawHome = join(tmp, "openclaw-home");
+    const eveHome = join(tmp, "eve-home");
     mkdirSync(osHome, { recursive: true });
-    mkdirSync(openclawHome, { recursive: true });
+    mkdirSync(eveHome, { recursive: true });
 
     let result: ReturnType<typeof runInstallCliShell> | undefined;
     try {
@@ -70,9 +70,9 @@ describe("install-cli.sh", () => {
         ].join("\n"),
         {
           HOME: osHome,
-          OPENCLAW_HOME: openclawHome,
-          OPENCLAW_GIT_DIR: undefined,
-          OPENCLAW_PREFIX: undefined,
+          EVE_HOME: eveHome,
+          EVE_GIT_DIR: undefined,
+          EVE_PREFIX: undefined,
         },
       );
     } finally {
@@ -81,8 +81,8 @@ describe("install-cli.sh", () => {
 
     expect(result?.status).toBe(0);
     const output = result?.stdout ?? "";
-    expect(output).toContain(`prefix=${join(osHome, ".openclaw")}`);
-    expect(output).toContain(`git=${join(openclawHome, "openclaw")}`);
+    expect(output).toContain(`prefix=${join(osHome, ".eve")}`);
+    expect(output).toContain(`git=${join(eveHome, "eve")}`);
   });
 
   it("resolves requested git install versions to checkout refs", () => {
@@ -91,20 +91,20 @@ describe("install-cli.sh", () => {
       source "${SCRIPT_PATH}"
       npm_bin() { echo npm; }
       npm() {
-        if [[ "$1" == "view" && "$2" == "openclaw" && "$3" == "dist-tags.beta" ]]; then
+        if [[ "$1" == "view" && "$2" == "eve" && "$3" == "dist-tags.beta" ]]; then
           printf '2026.5.12-beta.3\\n'
           return 0
         fi
         return 1
       }
-      OPENCLAW_VERSION=v2026.5.12-beta.3
-      printf 'tag=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=2026.5.12-beta.3
-      printf 'semver=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=beta
-      printf 'beta=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=main
-      printf 'main=%s\\n' "$(resolve_git_openclaw_ref)"
+      EVE_VERSION=v2026.5.12-beta.3
+      printf 'tag=%s\\n' "$(resolve_git_eve_ref)"
+      EVE_VERSION=2026.5.12-beta.3
+      printf 'semver=%s\\n' "$(resolve_git_eve_ref)"
+      EVE_VERSION=beta
+      printf 'beta=%s\\n' "$(resolve_git_eve_ref)"
+      EVE_VERSION=main
+      printf 'main=%s\\n' "$(resolve_git_eve_ref)"
     `);
 
     expect(result.status).toBe(0);
@@ -159,7 +159,7 @@ describe("install-cli.sh", () => {
   });
 
   it("links an existing usable Alpine/musl Node runtime without sudo", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-alpine-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-alpine-"));
     const bin = join(tmp, "bin");
     const prefix = join(tmp, "prefix");
     const apkLog = join(tmp, "apk.log");
@@ -230,7 +230,7 @@ describe("install-cli.sh", () => {
   });
 
   it("replaces a stale Alpine/musl prefix Node before the generic skip", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-alpine-stale-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-alpine-stale-"));
     const bin = join(tmp, "bin");
     const oldBin = join(tmp, "old-bin");
     const prefix = join(tmp, "prefix");
@@ -341,7 +341,7 @@ describe("install-cli.sh", () => {
   });
 
   it("uses apk-managed Node and Git on Alpine/musl when the existing Node is unusable", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-alpine-apk-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-alpine-apk-"));
     const bin = join(tmp, "bin");
     const prefix = join(tmp, "prefix");
     const apkLog = join(tmp, "apk.log");
@@ -426,7 +426,7 @@ describe("install-cli.sh", () => {
   });
 
   it("rejects Alpine/musl Node packages below the requested runtime floor", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-alpine-old-node-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-alpine-old-node-"));
     const bin = join(tmp, "bin");
     const prefix = join(tmp, "prefix");
     const apkLog = join(tmp, "apk.log");
@@ -495,7 +495,7 @@ describe("install-cli.sh", () => {
   });
 
   it("replaces cached generic Node runtimes below the runtime floor", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-generic-stale-node-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-generic-stale-node-"));
     const prefix = join(tmp, "prefix");
     const nodePrefixBin = join(prefix, "tools", "node-v22.22.0", "bin");
     const staleNode = join(nodePrefixBin, "node");
@@ -589,7 +589,7 @@ describe("install-cli.sh", () => {
   });
 
   it("rejects downloaded generic Node runtimes below the runtime floor", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-generic-old-node-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-generic-old-node-"));
     const prefix = join(tmp, "prefix");
     const newNode = join(tmp, "new-node");
     const newNpm = join(tmp, "new-npm");
@@ -669,7 +669,7 @@ describe("install-cli.sh", () => {
   });
 
   it("does not emit --before when raw user npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-npmrc-"));
     const bin = join(tmp, "bin");
     const npmrc = join(tmp, "user.npmrc");
     const installArgs = join(tmp, "npm-install-args.txt");
@@ -712,8 +712,8 @@ describe("install-cli.sh", () => {
           "log() { :; }",
           `PREFIX=${JSON.stringify(prefix)}`,
           "SET_NPM_PREFIX=0",
-          "OPENCLAW_VERSION=1.2.3",
-          "install_openclaw",
+          "EVE_VERSION=1.2.3",
+          "install_eve",
         ].join("\n"),
         {
           NPM_CONFIG_USERCONFIG: npmrc,
@@ -731,7 +731,7 @@ describe("install-cli.sh", () => {
   });
 
   it("does not emit --before when default global npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-global-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-global-npmrc-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const prefix = join(tmp, "prefix");
@@ -784,8 +784,8 @@ describe("install-cli.sh", () => {
           "log() { :; }",
           `PREFIX=${JSON.stringify(installPrefix)}`,
           "SET_NPM_PREFIX=0",
-          "OPENCLAW_VERSION=1.2.3",
-          "install_openclaw",
+          "EVE_VERSION=1.2.3",
+          "install_eve",
         ].join("\n"),
         {
           HOME: home,
@@ -810,7 +810,7 @@ describe("install-cli.sh", () => {
   });
 
   it("does not emit --before when builtin npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-builtin-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-builtin-npmrc-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const npmrc = join(tmp, "npmrc");
@@ -861,8 +861,8 @@ describe("install-cli.sh", () => {
           "log() { :; }",
           `PREFIX=${JSON.stringify(installPrefix)}`,
           "SET_NPM_PREFIX=0",
-          "OPENCLAW_VERSION=1.2.3",
-          "install_openclaw",
+          "EVE_VERSION=1.2.3",
+          "install_eve",
         ].join("\n"),
         {
           HOME: home,
@@ -886,21 +886,21 @@ describe("install-cli.sh", () => {
     }
   });
 
-  it("rejects OpenClaw GitHub source targets for npm installs", () => {
+  it("rejects EVE GitHub source targets for npm installs", () => {
     const result = runInstallCliShell(`
       set -euo pipefail
       source "${SCRIPT_PATH}"
-      OPENCLAW_VERSION=main
-      install_openclaw
+      EVE_VERSION=main
+      install_eve
     `);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain("npm installs do not support OpenClaw GitHub source targets");
+    expect(result.stdout).toContain("npm installs do not support EVE GitHub source targets");
     expect(result.stdout).toContain("--install-method git --version main");
   });
 
   it("does not emit before args when npmrc min-release-age computes a before cutoff", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-freshness-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-freshness-"));
     const prefix = join(tmp, "prefix");
     const home = join(tmp, "home");
     const nodeBin = join(prefix, "tools/node-v22.22.0/bin");
@@ -917,11 +917,11 @@ describe("install-cli.sh", () => {
         [
           "set -euo pipefail",
           `HOME=${JSON.stringify(home)}`,
-          `OPENCLAW_PREFIX=${JSON.stringify(prefix)}`,
-          "OPENCLAW_VERSION=2026.5.19",
+          `EVE_PREFIX=${JSON.stringify(prefix)}`,
+          "EVE_VERSION=2026.5.19",
           `source ${JSON.stringify(SCRIPT_PATH)}`,
           "ensure_git() { return 0; }",
-          "install_openclaw",
+          "install_eve",
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");
@@ -935,7 +935,7 @@ describe("install-cli.sh", () => {
   });
 
   it("ignores project npmrc when choosing global install freshness args", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-cli-global-freshness-"));
+    const tmp = mkdtempSync(join(tmpdir(), "eve-install-cli-global-freshness-"));
     const prefix = join(tmp, "prefix");
     const home = join(tmp, "home");
     const project = join(tmp, "project");
@@ -956,11 +956,11 @@ describe("install-cli.sh", () => {
           "set -euo pipefail",
           `cd ${JSON.stringify(project)}`,
           `HOME=${JSON.stringify(home)}`,
-          `OPENCLAW_PREFIX=${JSON.stringify(prefix)}`,
-          "OPENCLAW_VERSION=2026.5.19",
+          `EVE_PREFIX=${JSON.stringify(prefix)}`,
+          "EVE_VERSION=2026.5.19",
           `source ${JSON.stringify(process.cwd() + "/" + SCRIPT_PATH)}`,
           "ensure_git() { return 0; }",
-          "install_openclaw",
+          "install_eve",
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");

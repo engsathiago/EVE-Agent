@@ -111,7 +111,7 @@ describe("renderTable", () => {
             `\x1b[2mGet current weather and forecasts via wttr.in or Open-Meteo. ` +
             `Use when: user asks about weather, temperature, or forecasts for any location.` +
             `\x1b[0m`,
-          Source: "openclaw-bundled",
+          Source: "eve-bundled",
         },
       ],
     });
@@ -192,7 +192,7 @@ describe("renderTable", () => {
           Status: "✗ missing",
           Skill: "📸 peekaboo",
           Description: "Capture screenshots from macOS windows and keep table wrapping stable.",
-          Source: "openclaw-bundled",
+          Source: "eve-bundled",
         },
       ],
     });
@@ -330,7 +330,7 @@ describe("wrapNoteMessage", () => {
 
   it("preserves long Windows paths without inserting spaces/newlines", () => {
     // No spaces: wrapNoteMessage splits on whitespace, so a "Program Files" style path would wrap.
-    const input = "C:\\\\State\\\\OpenClaw\\\\bin\\\\openclaw.exe";
+    const input = "C:\\\\State\\\\EVE\\\\bin\\\\eve.exe";
     const wrapped = wrapNoteMessage(input, { maxWidth: 10, columns: 80 });
     expect(wrapped).toBe(input);
   });
@@ -353,7 +353,7 @@ describe("wrapNoteMessage", () => {
     const wrapped = wrapNoteMessage(
       [
         "- Found 1 session lock file.",
-        "- ~/.openclaw/agents/main/sessions/9c2acae5-841f-4aea-936b-fdb513b60202.jsonl.lock pid=86519 (alive) age=2m47s stale=no",
+        "- ~/.eve/agents/main/sessions/9c2acae5-841f-4aea-936b-fdb513b60202.jsonl.lock pid=86519 (alive) age=2m47s stale=no",
       ].join("\n"),
       { columns: 80 },
     );
@@ -372,7 +372,7 @@ describe("wrapNoteMessage", () => {
     expect(rendered).toContain(".jsonl.lock");
     expect(rendered).not.toContain(".js\n");
     expect(rendered).toContain(
-      "- ~/.openclaw/agents/main/sessions/9c2acae5-841f-4aea-936b-fdb513b60202.jsonl.lock",
+      "- ~/.eve/agents/main/sessions/9c2acae5-841f-4aea-936b-fdb513b60202.jsonl.lock",
     );
   });
 

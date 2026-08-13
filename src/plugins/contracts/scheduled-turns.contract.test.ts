@@ -1,9 +1,9 @@
 // Scheduled turn contract tests cover plugin scheduled turn metadata and timestamp bounds.
-import { MAX_DATE_TIMESTAMP_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_DATE_TIMESTAMP_MS } from "@eve/normalization-core/number-coercion";
 import {
   createPluginRegistryFixture,
   registerTestPlugin,
-} from "openclaw/plugin-sdk/plugin-test-contracts";
+} from "eve-agent/plugin-sdk/plugin-test-contracts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CronServiceContract } from "../../cron/service-contract.js";
 import type { CronJob, CronJobCreate } from "../../cron/types.js";
@@ -23,12 +23,12 @@ import {
   schedulePluginSessionTurn,
   unschedulePluginSessionTurnsByTag,
 } from "../host-hook-scheduled-turns.js";
-import { clearPluginLoaderCache, loadOpenClawPlugins } from "../loader.js";
+import { clearPluginLoaderCache, loadEVEPlugins } from "../loader.js";
 import { makeTempDir, writePlugin } from "../loader.test-fixtures.js";
 import { createEmptyPluginRegistry } from "../registry-empty.js";
 import { setActivePluginRegistry } from "../runtime.js";
 import { createPluginRecord } from "../status.test-helpers.js";
-import type { OpenClawPluginApi } from "../types.js";
+import type { EVEPluginApi } from "../types.js";
 
 const workflowMocks = vi.hoisted(() => ({
   cronAdd: vi.fn(),
@@ -91,9 +91,9 @@ function createMockCronService(): CronServiceContract {
     stop: vi.fn(),
     status: vi.fn(async () => ({
       enabled: true,
-      storePath: "/tmp/openclaw-test-cron.json",
+      storePath: "/tmp/eve-test-cron.json",
       storage: "sqlite" as const,
-      sqlitePath: "/tmp/openclaw-test-state/state/openclaw.sqlite",
+      sqlitePath: "/tmp/eve-test-state/state/eve.sqlite",
       jobs: 0,
       nextWakeAtMs: null,
     })),
@@ -527,11 +527,11 @@ describe("plugin scheduled turns", () => {
 
     const registry = withEnv(
       {
-        OPENCLAW_BUNDLED_PLUGINS_DIR: bundledDir,
-        OPENCLAW_DISABLE_BUNDLED_PLUGINS: undefined,
+        EVE_BUNDLED_PLUGINS_DIR: bundledDir,
+        EVE_DISABLE_BUNDLED_PLUGINS: undefined,
       },
       () =>
-        loadOpenClawPlugins({
+        loadEVEPlugins({
           cache: false,
           hostServices: { cron },
           config: {
@@ -664,11 +664,11 @@ describe("plugin scheduled turns", () => {
 
     const registry = withEnv(
       {
-        OPENCLAW_BUNDLED_PLUGINS_DIR: bundledDir,
-        OPENCLAW_DISABLE_BUNDLED_PLUGINS: undefined,
+        EVE_BUNDLED_PLUGINS_DIR: bundledDir,
+        EVE_DISABLE_BUNDLED_PLUGINS: undefined,
       },
       () =>
-        loadOpenClawPlugins({
+        loadEVEPlugins({
           cache: false,
           hostServices: { cron },
           config: {
@@ -1053,7 +1053,7 @@ describe("plugin scheduled turns", () => {
   it("wires schedule and unschedule through the plugin API with stale-registry protection", async () => {
     workflowMocks.cronAdd.mockResolvedValue(makeCronJob({ id: "job-live" }));
     const { config, registry } = createPluginRegistryFixture({}, { hostServices: { cron } });
-    let capturedApi: OpenClawPluginApi | undefined;
+    let capturedApi: EVEPluginApi | undefined;
     registerTestPlugin({
       registry,
       config,
@@ -1136,7 +1136,7 @@ describe("plugin scheduled turns", () => {
       },
     };
     const { config, registry } = createPluginRegistryFixture({}, { hostServices });
-    let capturedApi: OpenClawPluginApi | undefined;
+    let capturedApi: EVEPluginApi | undefined;
     registerTestPlugin({
       registry,
       config,

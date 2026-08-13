@@ -1,12 +1,12 @@
-# OpenClaw Cerebras Provider
+# EVE Cerebras Provider
 
-Official OpenClaw provider plugin for Cerebras.
+Official EVE provider plugin for Cerebras.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/cerebras-provider
-openclaw gateway restart
+eve plugins install @eve/cerebras-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/cerebras> for setup and configuration.
+See <https://docs.eve.ai/providers/cerebras> for setup and configuration.

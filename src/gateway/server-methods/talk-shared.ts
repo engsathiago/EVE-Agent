@@ -1,11 +1,11 @@
 // Talk shared helpers build provider configs, launch options, tool schemas, and
 // room event broadcasts used by browser and gateway-owned Talk sessions.
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { ErrorCodes } from "../../../packages/gateway-protocol/src/index.js";
 import {
   getVoiceProviderConfig,
@@ -13,7 +13,7 @@ import {
   resolveSupportedVoiceModelRefs,
   type VoiceModelProvider,
 } from "../../../packages/speech-core/voice-models.js";
-import type { OpenClawConfig } from "../../config/types.js";
+import type { EVEConfig } from "../../config/types.js";
 import { listRealtimeTranscriptionProviders } from "../../realtime-transcription/provider-registry.js";
 import type { RealtimeTranscriptionProviderConfig } from "../../realtime-transcription/provider-types.js";
 import { REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME } from "../../talk/agent-consult-tool.js";
@@ -75,7 +75,7 @@ function singleRecordKey(record: Record<string, unknown> | undefined): string | 
 }
 
 function getVoiceCallProviderConfig<TConfig extends Record<string, unknown>>(
-  config: OpenClawConfig,
+  config: EVEConfig,
   sectionName: "realtime" | "streaming",
 ): {
   provider?: string;
@@ -102,14 +102,14 @@ function getVoiceCallProviderConfig<TConfig extends Record<string, unknown>>(
   };
 }
 
-function getVoiceCallRealtimeConfig(config: OpenClawConfig): {
+function getVoiceCallRealtimeConfig(config: EVEConfig): {
   provider?: string;
   providers?: Record<string, RealtimeVoiceProviderConfig>;
 } {
   return getVoiceCallProviderConfig(config, "realtime");
 }
 
-export function getVoiceCallStreamingConfig(config: OpenClawConfig): {
+export function getVoiceCallStreamingConfig(config: EVEConfig): {
   provider?: string;
   providers?: Record<string, RealtimeTranscriptionProviderConfig>;
 } {
@@ -117,12 +117,12 @@ export function getVoiceCallStreamingConfig(config: OpenClawConfig): {
 }
 
 type RealtimeProviderWithConfig<TConfig extends Record<string, unknown>> = VoiceModelProvider & {
-  resolveConfig?: (ctx: { cfg: OpenClawConfig; rawConfig: TConfig }) => TConfig;
-  isConfigured: (ctx: { cfg: OpenClawConfig; providerConfig: TConfig }) => boolean;
+  resolveConfig?: (ctx: { cfg: EVEConfig; rawConfig: TConfig }) => TConfig;
+  isConfigured: (ctx: { cfg: EVEConfig; providerConfig: TConfig }) => boolean;
 };
 
 function resolveConfiguredVoiceModelDefaultRef<TConfig extends Record<string, unknown>>(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   provider: string | undefined;
   providerConfigs: Record<string, TConfig>;
   providers: readonly RealtimeProviderWithConfig<TConfig>[];
@@ -159,7 +159,7 @@ function resolveConfiguredVoiceModelDefaultRef<TConfig extends Record<string, un
   return undefined;
 }
 
-export function buildTalkRealtimeConfig(config: OpenClawConfig, requestedProvider?: string) {
+export function buildTalkRealtimeConfig(config: EVEConfig, requestedProvider?: string) {
   const voiceCallRealtime = getVoiceCallRealtimeConfig(config);
   const talkRealtime = getRecord(config.talk?.realtime);
   const talkRealtimeProviderConfigs = talkRealtime?.providers as
@@ -203,7 +203,7 @@ export function buildTalkRealtimeConfig(config: OpenClawConfig, requestedProvide
   };
 }
 
-export function buildTalkTranscriptionConfig(config: OpenClawConfig, requestedProvider?: string) {
+export function buildTalkTranscriptionConfig(config: EVEConfig, requestedProvider?: string) {
   const streamingConfig = getVoiceCallStreamingConfig(config);
   const provider = normalizeOptionalString(requestedProvider) ?? streamingConfig.provider;
   const providerConfigs = streamingConfig.providers ?? {};
@@ -229,7 +229,7 @@ export function configuredOrFalse(callback: () => boolean): boolean {
 }
 
 export function resolveConfiguredRealtimeTranscriptionProvider(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   configuredProviderId?: string;
   providerConfigs: Record<string, RealtimeTranscriptionProviderConfig>;
   defaultModel?: string;
@@ -273,12 +273,12 @@ export function resolveConfiguredRealtimeTranscriptionProvider(params: {
 }
 
 const DEFAULT_REALTIME_INSTRUCTIONS = [
-  "You are OpenClaw's realtime voice interface. Keep spoken replies concise.",
-  `If the user asks for code, repository state, files, current OpenClaw context, tool-backed actions, or deeper reasoning, call ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} and then summarize the result naturally.`,
-  `Do not claim you cannot use tools, perform actions, or reach OpenClaw unless ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} returns that failure.`,
-  `When ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} is in progress, speak one brief acknowledgement such as "Let me check that for you", then wait for the final OpenClaw result before answering with the actual result.`,
-  `If OpenClaw is already working through ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} and the user asks in any language for progress, cancellation, a redirect/change, or a follow-up, call ${REALTIME_VOICE_AGENT_CONTROL_TOOL_NAME} with the semantic mode.`,
-  "For greetings and casual chatter while OpenClaw is working, answer naturally and do not redirect the active work.",
+  "You are EVE's realtime voice interface. Keep spoken replies concise.",
+  `If the user asks for code, repository state, files, current EVE context, tool-backed actions, or deeper reasoning, call ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} and then summarize the result naturally.`,
+  `Do not claim you cannot use tools, perform actions, or reach EVE unless ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} returns that failure.`,
+  `When ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} is in progress, speak one brief acknowledgement such as "Let me check that for you", then wait for the final EVE result before answering with the actual result.`,
+  `If EVE is already working through ${REALTIME_VOICE_AGENT_CONSULT_TOOL_NAME} and the user asks in any language for progress, cancellation, a redirect/change, or a follow-up, call ${REALTIME_VOICE_AGENT_CONTROL_TOOL_NAME} with the semantic mode.`,
+  "For greetings and casual chatter while EVE is working, answer naturally and do not redirect the active work.",
 ].join(" ");
 
 export function buildRealtimeInstructions(configuredInstructions?: string): string {

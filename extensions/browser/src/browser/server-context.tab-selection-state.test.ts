@@ -23,7 +23,7 @@ afterEach(async () => {
 
 function seedRunningProfileState(
   state: ReturnType<typeof makeState>,
-  profileName = "openclaw",
+  profileName = "eve",
 ): void {
   (state.profiles as Map<string, unknown>).set(profileName, {
     profile: { name: profileName },
@@ -92,11 +92,11 @@ async function openManagedTabWithRunningProfile(params: {
   url?: string;
 }) {
   global.fetch = withBrowserFetchPreconnect(params.fetchMock);
-  const state = makeState("openclaw");
+  const state = makeState("eve");
   seedRunningProfileState(state);
   const ctx = createTestBrowserRouteContext({ getState: () => state });
-  const openclaw = ctx.forProfile("openclaw");
-  return await openclaw.openTab(params.url ?? "http://127.0.0.1:3009");
+  const eve = ctx.forProfile("eve");
+  return await eve.openTab(params.url ?? "http://127.0.0.1:3009");
 }
 
 describe("browser server-context tab selection state", () => {
@@ -125,13 +125,13 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const opened = await openclaw.openTab("http://127.0.0.1:8080");
+    const opened = await eve.openTab("http://127.0.0.1:8080");
     expect(opened.targetId).toBe("CREATED");
-    expect(state.profiles.get("openclaw")?.lastTargetId).toBe("CREATED");
+    expect(state.profiles.get("eve")?.lastTargetId).toBe("CREATED");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "http://127.0.0.1:18800",
       url: "http://127.0.0.1:8080",
@@ -169,12 +169,12 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     state.resolved.ssrfPolicy = {};
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const selected = await openclaw.ensureTabAvailable();
+    const selected = await eve.ensureTabAvailable();
     expect(selected.targetId).toBe("CREATED");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "http://127.0.0.1:18800",
@@ -228,13 +228,13 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const selected = await openclaw.ensureTabAvailable();
+    const selected = await eve.ensureTabAvailable();
     expect(selected.targetId).toBe("REAL");
-    expect(state.profiles.get("openclaw")?.lastTargetId).toBe("REAL");
+    expect(state.profiles.get("eve")?.lastTargetId).toBe("REAL");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "http://127.0.0.1:18800",
       url: "about:blank",
@@ -291,12 +291,12 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     seedRunningProfileState(state);
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const opened = await openclaw.openTab("http://127.0.0.1:3009");
+    const opened = await eve.openTab("http://127.0.0.1:3009");
     expect(opened.targetId).toBe("NEW");
   });
 
@@ -311,12 +311,12 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     state.resolved.attachOnly = true;
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const opened = await openclaw.openTab("http://127.0.0.1:3009");
+    const opened = await eve.openTab("http://127.0.0.1:3009");
     expect(opened.targetId).toBe("NEW");
     expect(fetchCallUrls(fetchMock).filter((url) => url.includes("/json/close/"))).toEqual([]);
   });
@@ -355,11 +355,11 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    await expect(openclaw.openTab("file:///etc/passwd")).rejects.toBeInstanceOf(
+    await expect(eve.openTab("file:///etc/passwd")).rejects.toBeInstanceOf(
       InvalidBrowserNavigationUrlError,
     );
     expect(fetchMock).not.toHaveBeenCalled();
@@ -376,12 +376,12 @@ describe("browser server-context tab selection state", () => {
       type: "page",
     });
 
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     state.resolved.ssrfPolicy = {};
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    const opened = await openclaw.openTab("https://example.com");
+    const opened = await eve.openTab("https://example.com");
     expect(opened.targetId).toBe("NEW");
     const jsonNewEndpoint = "http://127.0.0.1:18800/json/new?https%3A%2F%2Fexample.com";
     expect(fetchJsonCall(fetchJson, 0)).toEqual([
@@ -426,11 +426,11 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    expect(await openclaw.listTabs()).toEqual([
+    expect(await eve.listTabs()).toEqual([
       expect.objectContaining({
         targetId: "DOCS_RAW",
         tabId: "t1",
@@ -443,7 +443,7 @@ describe("browser server-context tab selection state", () => {
       }),
     ]);
 
-    await expect(openclaw.labelTab("t1", "docs")).resolves.toEqual(
+    await expect(eve.labelTab("t1", "docs")).resolves.toEqual(
       expect.objectContaining({
         targetId: "DOCS_RAW",
         tabId: "t1",
@@ -502,12 +502,12 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    expect((await openclaw.listTabs()).map((tab) => tab.tabId)).toEqual(["t1", "t2"]);
-    expect(await openclaw.listTabs()).toEqual([
+    expect((await eve.listTabs()).map((tab) => tab.tabId)).toEqual(["t1", "t2"]);
+    expect(await eve.listTabs()).toEqual([
       expect.objectContaining({ targetId: "FIRST_RAW", tabId: "t1" }),
       expect.objectContaining({ targetId: "THIRD_RAW", tabId: "t2" }),
     ]);
@@ -537,24 +537,24 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    await expect(openclaw.labelTab("OLD_RAW", "checkout")).resolves.toEqual(
+    await expect(eve.labelTab("OLD_RAW", "checkout")).resolves.toEqual(
       expect.objectContaining({
         targetId: "OLD_RAW",
         tabId: "t1",
         suggestedTargetId: "checkout",
       }),
     );
-    const profileState = state.profiles.get("openclaw");
+    const profileState = state.profiles.get("eve");
     if (!profileState) {
       throw new Error("expected profile state");
     }
     profileState.lastTargetId = "OLD_RAW";
 
-    await expect(openclaw.listTabs()).resolves.toEqual([
+    await expect(eve.listTabs()).resolves.toEqual([
       expect.objectContaining({
         targetId: "NEW_RAW",
         tabId: "t1",
@@ -562,7 +562,7 @@ describe("browser server-context tab selection state", () => {
         suggestedTargetId: "checkout",
       }),
     ]);
-    expect(state.profiles.get("openclaw")?.lastTargetId).toBe("NEW_RAW");
+    expect(state.profiles.get("eve")?.lastTargetId).toBe("NEW_RAW");
   });
 
   it("resolves friendly tab references before backend focus and close calls", async () => {
@@ -589,16 +589,16 @@ describe("browser server-context tab selection state", () => {
     });
 
     global.fetch = withBrowserFetchPreconnect(fetchMock);
-    const state = makeState("openclaw");
+    const state = makeState("eve");
     const ctx = createTestBrowserRouteContext({ getState: () => state });
-    const openclaw = ctx.forProfile("openclaw");
+    const eve = ctx.forProfile("eve");
 
-    await openclaw.labelTab("DOCS_RAW", "docs");
-    await expect(openclaw.ensureTabAvailable("t1")).resolves.toEqual(
+    await eve.labelTab("DOCS_RAW", "docs");
+    await expect(eve.ensureTabAvailable("t1")).resolves.toEqual(
       expect.objectContaining({ targetId: "DOCS_RAW" }),
     );
-    await openclaw.focusTab("docs");
-    await openclaw.closeTab("t1");
+    await eve.focusTab("docs");
+    await eve.closeTab("t1");
 
     expect(fetchCallUrls(fetchMock).some((url) => url.includes("/json/activate/DOCS_RAW"))).toBe(
       true,

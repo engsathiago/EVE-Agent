@@ -2,4 +2,4 @@
 export {
   buildSecretInputSchema,
   normalizeResolvedSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
+} from "eve-agent/plugin-sdk/secret-input";

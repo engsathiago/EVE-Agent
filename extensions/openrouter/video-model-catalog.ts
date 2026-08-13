@@ -2,22 +2,22 @@
 import type {
   UnifiedModelCatalogEntry,
   UnifiedModelCatalogProviderContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { getCachedLiveCatalogValue } from "openclaw/plugin-sdk/provider-catalog-shared";
+} from "eve-agent/plugin-sdk/plugin-entry";
+import { resolveApiKeyForProvider } from "eve-agent/plugin-sdk/provider-auth-runtime";
+import { getCachedLiveCatalogValue } from "eve-agent/plugin-sdk/provider-catalog-shared";
 import {
   assertOkOrThrowHttpError,
   resolveProviderHttpRequestConfig,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 import {
   normalizeOptionalString,
   normalizeTrimmedStringList,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type {
   VideoGenerationModelCapabilitiesContext,
   VideoGenerationProviderCapabilities,
   VideoGenerationResolution,
-} from "openclaw/plugin-sdk/video-generation";
+} from "eve-agent/plugin-sdk/video-generation";
 import { OPENROUTER_BASE_URL } from "./provider-catalog.js";
 import { fetchOpenRouterVideoGet, type OpenRouterVideoDispatcherPolicy } from "./video-http.js";
 
@@ -220,8 +220,8 @@ async function fetchOpenRouterVideoModels(params: {
     load: async () => {
       const headers = new Headers({
         Authorization: `Bearer ${params.apiKey}`,
-        "HTTP-Referer": "https://openclaw.ai",
-        "X-OpenRouter-Title": "OpenClaw",
+        "HTTP-Referer": "https://eve.ai",
+        "X-OpenRouter-Title": "EVE",
       });
       const { response, release } = await fetchOpenRouterVideoGet({
         url: "videos/models",

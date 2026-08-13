@@ -5,13 +5,13 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveStateDir } from "../config/paths.js";
 import { pathExists } from "../utils.js";
 
 export const COMPLETION_SHELLS = ["zsh", "bash", "powershell", "fish"] as const;
 export type CompletionShell = (typeof COMPLETION_SHELLS)[number];
-export const COMPLETION_SKIP_PLUGIN_COMMANDS_ENV = "OPENCLAW_COMPLETION_SKIP_PLUGIN_COMMANDS";
+export const COMPLETION_SKIP_PLUGIN_COMMANDS_ENV = "EVE_COMPLETION_SKIP_PLUGIN_COMMANDS";
 
 /** Narrows an arbitrary shell label to a completion shell supported by installer logic. */
 export function isCompletionShell(value: string): value is CompletionShell {
@@ -51,7 +51,7 @@ export function resolveShellFromEnv(env: NodeJS.ProcessEnv = process.env): Compl
 function sanitizeCompletionBasename(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) {
-    return "openclaw";
+    return "eve";
   }
   return trimmed.replace(/[^a-zA-Z0-9._-]/g, "-");
 }
@@ -72,7 +72,7 @@ export function resolveCompletionCachePath(shell: CompletionShell, binName: stri
 /** Check if the completion cache file exists for the given shell. */
 export async function completionCacheExists(
   shell: CompletionShell,
-  binName = "openclaw",
+  binName = "eve",
 ): Promise<boolean> {
   const cachePath = resolveCompletionCachePath(shell, binName);
   return pathExists(cachePath);
@@ -101,7 +101,7 @@ export function formatCompletionReloadCommand(shell: CompletionShell, profilePat
 }
 
 function isCompletionProfileHeader(line: string): boolean {
-  return line.trim() === "# OpenClaw Completion";
+  return line.trim() === "# EVE Completion";
 }
 
 function isCompletionProfileLine(line: string, binName: string, cachePath: string | null): boolean {
@@ -148,12 +148,12 @@ function updateCompletionProfile(
   }
 
   const trimmed = filtered.join("\n").trimEnd();
-  const block = `# OpenClaw Completion\n${sourceLine}`;
+  const block = `# EVE Completion\n${sourceLine}`;
   const next = trimmed ? `${trimmed}\n\n${block}\n` : `${block}\n`;
   return { next, changed: next !== content, hadExisting };
 }
 
-/** Resolves the shell startup profile path that should contain the OpenClaw completion block. */
+/** Resolves the shell startup profile path that should contain the EVE completion block. */
 export function resolveCompletionProfilePath(
   shell: CompletionShell,
   options: {
@@ -189,10 +189,10 @@ export function resolveCompletionProfilePath(
   return path.join(home, ".config", "powershell", "Microsoft.PowerShell_profile.ps1");
 }
 
-/** Returns whether a shell profile already contains an OpenClaw completion block or source line. */
+/** Returns whether a shell profile already contains an EVE completion block or source line. */
 export async function isCompletionInstalled(
   shell: CompletionShell,
-  binName = "openclaw",
+  binName = "eve",
 ): Promise<boolean> {
   const profilePath = resolveCompletionProfilePath(shell);
 
@@ -210,11 +210,11 @@ export async function isCompletionInstalled(
 
 /**
  * Check if the profile uses the slow dynamic completion pattern.
- * Returns true if profile has `source <(openclaw completion ...)` instead of cached file.
+ * Returns true if profile has `source <(eve completion ...)` instead of cached file.
  */
 export async function usesSlowDynamicCompletion(
   shell: CompletionShell,
-  binName = "openclaw",
+  binName = "eve",
 ): Promise<boolean> {
   const profilePath = resolveCompletionProfilePath(shell);
 
@@ -234,7 +234,7 @@ export async function usesSlowDynamicCompletion(
   return false;
 }
 
-export async function installCompletion(shell: string, yes: boolean, binName = "openclaw") {
+export async function installCompletion(shell: string, yes: boolean, binName = "eve") {
   const isShellSupported = isCompletionShell(shell);
   if (!isShellSupported) {
     throw new Error(`Automated installation not supported for ${shell} yet.`);

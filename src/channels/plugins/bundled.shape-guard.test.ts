@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { expectNoReaddirSyncDuring } from "../../test-utils/fs-scan-assertions.js";
 
@@ -12,7 +12,7 @@ vi.mock("../../plugins/bundled-dir.js", async (importOriginal) => {
   return {
     ...actual,
     resolveBundledPluginsDir: (env: NodeJS.ProcessEnv = process.env) =>
-      env.OPENCLAW_BUNDLED_PLUGINS_DIR ?? actual.resolveBundledPluginsDir(env),
+      env.EVE_BUNDLED_PLUGINS_DIR ?? actual.resolveBundledPluginsDir(env),
   };
 });
 
@@ -22,9 +22,9 @@ type BundledEntrySource = { built?: string; source?: string };
 
 function restoreBundledPluginsDir(previousBundledPluginsDir: string | undefined) {
   if (previousBundledPluginsDir === undefined) {
-    delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    delete process.env.EVE_BUNDLED_PLUGINS_DIR;
   } else {
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = previousBundledPluginsDir;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = previousBundledPluginsDir;
   }
 }
 
@@ -108,7 +108,7 @@ function listSourceBundledPluginRoots(): string[] {
     .filter(
       (entryPath) =>
         fs.existsSync(path.join(entryPath, "package.json")) ||
-        fs.existsSync(path.join(entryPath, "openclaw.plugin.json")),
+        fs.existsSync(path.join(entryPath, "eve.plugin.json")),
     );
 }
 
@@ -122,7 +122,7 @@ function listExternalSourceBundledPluginRoots(extensionsDir: string): string[] |
 function listGitSourceBundledPluginRoots(extensionsDir: string): string[] | null {
   const result = spawnSync(
     "git",
-    ["ls-files", "--", "extensions/*/package.json", "extensions/*/openclaw.plugin.json"],
+    ["ls-files", "--", "extensions/*/package.json", "extensions/*/eve.plugin.json"],
     {
       cwd: process.cwd(),
       encoding: "utf8",
@@ -150,7 +150,7 @@ function listFindSourceBundledPluginRoots(extensionsDir: string): string[] | nul
       "package.json",
       "-o",
       "-name",
-      "openclaw.plugin.json",
+      "eve.plugin.json",
       ")",
     ],
     {
@@ -180,8 +180,8 @@ function packageMarkerPathsToRoots(markerPaths: string[], extensionsDir: string)
 }
 
 afterEach(() => {
-  delete (globalThis as { __openclawBundledChannelReenter?: () => void })[
-    "__openclawBundledChannelReenter"
+  delete (globalThis as { __eveBundledChannelReenter?: () => void })[
+    "__eveBundledChannelReenter"
   ];
   vi.resetModules();
   vi.doUnmock("../../plugins/bundled-channel-runtime.js");
@@ -260,8 +260,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("fills sparse bundled channel plugin metadata from package metadata", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-metadata-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-metadata-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginDir = path.join(tempRoot, "dist", "extensions", "alpha");
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
@@ -309,7 +309,7 @@ describe("bundled channel entry shape guards", () => {
     }));
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(tempRoot, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(tempRoot, "dist", "extensions");
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -329,8 +329,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("uses the active bundled plugin root override for channel entry loading", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-override-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-override-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginDir = path.join(tempRoot, "dist", "extensions", "alpha");
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
@@ -377,7 +377,7 @@ describe("bundled channel entry shape guards", () => {
     }));
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(tempRoot, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(tempRoot, "dist", "extensions");
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -401,14 +401,14 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("falls back through the cached loader for package-local dist entries needing SDK aliases", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-package-dist-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-package-dist-"));
     const pluginDir = path.join(root, "extensions", "alpha", "dist");
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(path.join(root, "package.json"), '{"type":"module"}\n', "utf8");
     fs.writeFileSync(
       path.join(pluginDir, "index.js"),
       [
-        'import { defineBundledChannelEntry } from "openclaw/plugin-sdk/channel-entry-contract";',
+        'import { defineBundledChannelEntry } from "eve-agent/plugin-sdk/channel-entry-contract";',
         "export default defineBundledChannelEntry({",
         "  id: 'alpha',",
         "  name: 'Alpha',",
@@ -466,8 +466,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("falls back through the cached loader for direct override dist entries needing SDK aliases", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-direct-dist-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-direct-dist-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginsRoot = path.join(root, "bundled-plugins");
     const pluginDir = path.join(pluginsRoot, "alpha", "dist");
     fs.mkdirSync(pluginDir, { recursive: true });
@@ -475,7 +475,7 @@ describe("bundled channel entry shape guards", () => {
     fs.writeFileSync(
       path.join(pluginDir, "index.js"),
       [
-        'import { defineBundledChannelEntry } from "openclaw/plugin-sdk/channel-entry-contract";',
+        'import { defineBundledChannelEntry } from "eve-agent/plugin-sdk/channel-entry-contract";',
         "export default defineBundledChannelEntry({",
         "  id: 'alpha',",
         "  name: 'Alpha',",
@@ -507,7 +507,7 @@ describe("bundled channel entry shape guards", () => {
     }));
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = pluginsRoot;
+      process.env.EVE_BUNDLED_PLUGINS_DIR = pluginsRoot;
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -522,8 +522,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("treats direct bundled plugin-tree overrides as scan roots", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-direct-override-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-direct-override-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginsRoot = path.join(tempRoot, "bundled-plugins");
     const pluginDir = path.join(pluginsRoot, "alpha");
     fs.mkdirSync(pluginDir, { recursive: true });
@@ -572,7 +572,7 @@ describe("bundled channel entry shape guards", () => {
     }));
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = pluginsRoot;
+      process.env.EVE_BUNDLED_PLUGINS_DIR = pluginsRoot;
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -597,9 +597,9 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("partitions bundled channel lazy caches by active bundled root without re-importing", async () => {
-    const rootA = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-root-a-"));
-    const rootB = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-root-b-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const rootA = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-root-a-"));
+    const rootB = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-root-b-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const testGlobal = globalThis as typeof globalThis & {
       __bundledRootRuntime?: unknown;
     };
@@ -672,7 +672,7 @@ describe("bundled channel entry shape guards", () => {
         "./bundled.js?scope=bundled-root-partition",
       );
 
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(rootA, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(rootA, "dist", "extensions");
       expect(bundled.getBundledChannelPlugin("alpha")?.meta.label).toBe("Alpha A");
       expect(bundled.getBundledChannelSetupPlugin("alpha")?.meta.label).toBe("Setup A");
       expect(bundled.getBundledChannelSecrets("alpha")?.secretTargetRegistryEntries?.[0]?.id).toBe(
@@ -683,7 +683,7 @@ describe("bundled channel entry shape guards", () => {
       ).toBe("channels.alpha.A.setup-entry-token");
       bundled.setBundledChannelRuntime("alpha", { marker: "first" } as never);
 
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(rootB, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(rootB, "dist", "extensions");
       expect(bundled.getBundledChannelPlugin("alpha")?.meta.label).toBe("Alpha B");
       expect(bundled.getBundledChannelSetupPlugin("alpha")?.meta.label).toBe("Setup B");
       expect(bundled.getBundledChannelSecrets("alpha")?.secretTargetRegistryEntries?.[0]?.id).toBe(
@@ -704,7 +704,7 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("uses dist-runtime as the boundary root for packaged setup entries", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-runtime-root-"));
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-runtime-root-"));
     const pluginDir = path.join(root, "dist-runtime", "extensions", "alpha");
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
@@ -761,8 +761,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("loads setup-entry feature plugins without loading the main channel entry", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-setup-only-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-setup-only-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginDir = path.join(root, "dist", "extensions", "alpha");
     const testGlobal = globalThis as typeof globalThis & {
       __bundledSetupOnlyMainLoaded?: boolean;
@@ -807,7 +807,7 @@ describe("bundled channel entry shape guards", () => {
     mockAlphaDistExtensionRuntime();
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -848,8 +848,8 @@ describe("bundled channel entry shape guards", () => {
     }
   });
   it("swallows and caches bundled plugin and setup load failures", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-load-failure-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-load-failure-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginDir = path.join(root, "dist", "extensions", "alpha");
     const testGlobal = globalThis as typeof globalThis & {
       __bundledPluginFailureLoads?: number;
@@ -860,7 +860,7 @@ describe("bundled channel entry shape guards", () => {
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "openclaw", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve", version: "2026.4.21" }),
       "utf8",
     );
     fs.writeFileSync(
@@ -907,7 +907,7 @@ describe("bundled channel entry shape guards", () => {
     mockAlphaDistExtensionRuntime();
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -937,8 +937,8 @@ describe("bundled channel entry shape guards", () => {
   });
 
   it("caches undefined bundled plugin loads as unavailable", async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-null-load-"));
-    const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-null-load-"));
+    const previousBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
     const pluginDir = path.join(root, "dist", "extensions", "alpha");
     const testGlobal = globalThis as typeof globalThis & {
       __bundledPluginUndefinedLoads?: number;
@@ -966,7 +966,7 @@ describe("bundled channel entry shape guards", () => {
     mockAlphaDistExtensionRuntime();
 
     try {
-      process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
+      process.env.EVE_BUNDLED_PLUGINS_DIR = path.join(root, "dist", "extensions");
 
       const bundled = await importFreshModule<typeof import("./bundled.js")>(
         import.meta.url,
@@ -987,9 +987,9 @@ describe("bundled channel entry shape guards", () => {
     const offenders = collectBundledChannelEntrypointOffenders(
       bundledPluginRoots,
       (source) =>
-        !source.includes('from "openclaw/plugin-sdk/channel-entry-contract"') ||
-        source.includes('from "openclaw/plugin-sdk/core"') ||
-        source.includes('from "openclaw/plugin-sdk/channel-core"'),
+        !source.includes('from "eve-agent/plugin-sdk/channel-entry-contract"') ||
+        source.includes('from "eve-agent/plugin-sdk/core"') ||
+        source.includes('from "eve-agent/plugin-sdk/channel-core"'),
     );
 
     expect(offenders).toStrictEqual([]);
@@ -1006,13 +1006,13 @@ describe("bundled channel entry shape guards", () => {
       }
       const setupEntrySource = fs.readFileSync(setupEntryPath, "utf8");
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")) as {
-        openclaw?: {
+        eve?: {
           setupFeatures?: Record<string, boolean>;
         };
       };
       for (const feature of ["legacyStateMigrations", "legacySessionSurfaces"]) {
         const usesFeature = setupEntrySource.includes(`${feature}: true`);
-        const hasHint = packageJson.openclaw?.setupFeatures?.[feature] === true;
+        const hasHint = packageJson.eve?.setupFeatures?.[feature] === true;
         if (usesFeature !== hasHint) {
           offenders.push(`${path.relative(process.cwd(), extensionDir)}:${feature}`);
         }
@@ -1043,7 +1043,7 @@ describe("bundled channel entry shape guards", () => {
         if (!source.includes("createChatChannelPlugin")) {
           continue;
         }
-        if (source.includes('from "openclaw/plugin-sdk/core"')) {
+        if (source.includes('from "eve-agent/plugin-sdk/core"')) {
           offenders.push(path.relative(process.cwd(), filePath));
         }
       }
@@ -1065,7 +1065,7 @@ describe("bundled channel entry shape guards", () => {
       "extensions/irc/src/runtime-api.ts",
       "extensions/matrix/src/runtime-api.ts",
     ].filter((filePath) =>
-      fs.readFileSync(path.resolve(filePath), "utf8").includes("openclaw/plugin-sdk/core"),
+      fs.readFileSync(path.resolve(filePath), "utf8").includes("eve-agent/plugin-sdk/core"),
     );
 
     expect(offenders).toStrictEqual([]);
@@ -1100,19 +1100,19 @@ describe("bundled channel entry shape guards", () => {
     ].filter((filePath) =>
       fs
         .readFileSync(path.resolve(filePath), "utf8")
-        .includes('from "openclaw/plugin-sdk/runtime"'),
+        .includes('from "eve-agent/plugin-sdk/runtime"'),
     );
 
     expect(offenders).toStrictEqual([]);
   });
 
   it("breaks reentrant bundled channel discovery cycles with an empty fallback", async () => {
-    const pluginDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-bundled-reentrant-"));
+    const pluginDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-bundled-reentrant-"));
     const modulePath = path.join(pluginDir, "index.cjs");
     fs.writeFileSync(
       modulePath,
       `
-const reenter = globalThis["__openclawBundledChannelReenter"];
+const reenter = globalThis["__eveBundledChannelReenter"];
 if (typeof reenter === "function") {
   reenter();
 }
@@ -1172,8 +1172,8 @@ module.exports = {
     }));
 
     let reentered = false;
-    (globalThis as { __openclawBundledChannelReenter?: () => void })[
-      "__openclawBundledChannelReenter"
+    (globalThis as { __eveBundledChannelReenter?: () => void })[
+      "__eveBundledChannelReenter"
     ] = () => {
       if (!reentered) {
         reentered = true;

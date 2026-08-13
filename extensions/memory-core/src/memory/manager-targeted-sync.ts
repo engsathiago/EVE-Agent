@@ -1,6 +1,6 @@
 // Memory Core plugin module implements manager targeted sync behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import type { MemorySyncProgressUpdate } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import type { MemorySyncProgressUpdate } from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 
 type TargetedSyncProgress = {
   completed: number;

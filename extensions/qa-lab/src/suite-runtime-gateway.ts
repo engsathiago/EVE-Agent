@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements suite runtime gateway behavior.
 import { setTimeout as sleep } from "node:timers/promises";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { isRecord as isPlainObject } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
+import { isRecord as isPlainObject } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { QaSuiteInfraError, toQaErrorObject } from "./errors.js";
 import { applyQaMergePatch } from "./suite-merge-patch.js";
 import { liveTurnTimeoutMs } from "./suite-runtime-agent-common.js";

@@ -6,11 +6,11 @@
 import fs from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
-  type OpenClawTestState,
-  withOpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  type EVETestState,
+  withEVETestState,
+} from "../../test-utils/eve-test-state.js";
 import { resolveSessionAuthProfileOverride } from "./session-override.js";
 import type { AuthProfileStore } from "./types.js";
 
@@ -35,7 +35,7 @@ const authStoreMocks = vi.hoisted(() => {
         store,
         provider,
       }: {
-        cfg?: OpenClawConfig;
+        cfg?: EVEConfig;
         store: AuthProfileStore;
         provider: string;
       }) => {
@@ -77,7 +77,7 @@ vi.mock("./order.js", () => ({
     provider,
     credential,
   }: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     provider: string;
     credential: { type: string; provider: string };
   }) => {
@@ -96,7 +96,7 @@ vi.mock("./order.js", () => ({
     provider,
     profileId,
   }: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     provider: string;
     profileId: string;
   }) => {
@@ -114,11 +114,11 @@ vi.mock("./usage.js", () => ({
   isProfileInCooldown: authStoreMocks.isProfileInCooldown,
 }));
 
-async function withAuthState<T>(run: (state: OpenClawTestState) => Promise<T>): Promise<T> {
-  return await withOpenClawTestState(
+async function withAuthState<T>(run: (state: EVETestState) => Promise<T>): Promise<T> {
+  return await withEVETestState(
     {
       layout: "state-only",
-      prefix: "openclaw-auth-",
+      prefix: "eve-auth-",
     },
     run,
   );
@@ -168,7 +168,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "openrouter",
         agentDir,
         sessionEntry,
@@ -206,7 +206,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "z.ai",
         agentDir,
         sessionEntry,
@@ -256,7 +256,7 @@ describe("resolveSessionAuthProfileOverride", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
         provider: "amazon-bedrock",
         agentDir,
         sessionEntry,
@@ -314,7 +314,7 @@ describe("resolveSessionAuthProfileOverride", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
         provider: "amazon-bedrock",
         agentDir,
         sessionEntry,
@@ -362,7 +362,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "openai",
         agentDir,
         sessionEntry,
@@ -405,7 +405,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "codex-cli",
         agentDir,
         sessionEntry,
@@ -447,7 +447,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "openai",
         acceptedProviderIds: ["openai"],
         agentDir,
@@ -495,7 +495,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "openai",
         acceptedProviderIds: ["openai"],
         agentDir,
@@ -547,7 +547,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         provider: "openai",
         agentDir,
         sessionEntry,

@@ -1,4 +1,4 @@
-// Ios Pin Version script supports OpenClaw repository automation.
+// Ios Pin Version script supports EVE repository automation.
 import path from "node:path";
 import {
   normalizePinnedIosVersion,

@@ -7,7 +7,7 @@ export function createSharedCoreVitestConfig(env?: Record<string, string | undef
     dir: "src",
     env,
     exclude: getUnitFastTestFiles(),
-    includeOpenClawRuntimeSetup: false,
+    includeEVERuntimeSetup: false,
     name: "shared-core",
     passWithNoTests: true,
   });

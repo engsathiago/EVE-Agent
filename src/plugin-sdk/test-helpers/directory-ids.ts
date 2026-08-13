@@ -3,10 +3,10 @@
  */
 import { expect } from "vitest";
 import type { ChannelDirectoryEntry } from "../channel-contract.js";
-import type { OpenClawConfig } from "../config-types.js";
+import type { EVEConfig } from "../config-types.js";
 
 export type DirectoryListFn = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   query?: string | null;
   limit?: number | null;
@@ -15,7 +15,7 @@ export type DirectoryListFn = (params: {
 /** Calls a directory lister and compares returned ids, optionally ignoring order. */
 export async function expectDirectoryIds(
   listFn: DirectoryListFn,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   expected: string[],
   options?: { sorted?: boolean },
 ) {

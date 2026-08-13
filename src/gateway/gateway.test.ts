@@ -26,17 +26,17 @@ const GATEWAY_E2E_TIMEOUT_MS = 90_000;
 let gatewayTestSeq = 0;
 const GATEWAY_TEST_ENV_KEYS = [
   "HOME",
-  "OPENCLAW_STATE_DIR",
-  "OPENCLAW_CONFIG_PATH",
-  "OPENCLAW_GATEWAY_TOKEN",
-  "OPENCLAW_SKIP_CHANNELS",
-  "OPENCLAW_SKIP_GMAIL_WATCHER",
-  "OPENCLAW_SKIP_CRON",
-  "OPENCLAW_SKIP_CANVAS_HOST",
-  "OPENCLAW_SKIP_BROWSER_CONTROL_SERVER",
-  "OPENCLAW_SKIP_PROVIDERS",
-  "OPENCLAW_BUNDLED_PLUGINS_DIR",
-  "OPENCLAW_DISABLE_BUNDLED_PLUGINS",
+  "EVE_STATE_DIR",
+  "EVE_CONFIG_PATH",
+  "EVE_GATEWAY_TOKEN",
+  "EVE_SKIP_CHANNELS",
+  "EVE_SKIP_GMAIL_WATCHER",
+  "EVE_SKIP_CRON",
+  "EVE_SKIP_CANVAS_HOST",
+  "EVE_SKIP_BROWSER_CONTROL_SERVER",
+  "EVE_SKIP_PROVIDERS",
+  "EVE_BUNDLED_PLUGINS_DIR",
+  "EVE_DISABLE_BUNDLED_PLUGINS",
 ] as const;
 
 function nextGatewayId(prefix: string): string {
@@ -44,13 +44,13 @@ function nextGatewayId(prefix: string): string {
 }
 
 async function createEmptyBundledPluginsDir(tempHome: string): Promise<string> {
-  const bundledPluginsDir = path.join(tempHome, "openclaw-test-empty-bundled-plugins");
+  const bundledPluginsDir = path.join(tempHome, "eve-test-empty-bundled-plugins");
   await fs.mkdir(bundledPluginsDir, { recursive: true });
   return bundledPluginsDir;
 }
 
 async function createGatewayConfigPath(tempHome: string): Promise<string> {
-  const configPath = path.join(tempHome, ".openclaw", "openclaw.json");
+  const configPath = path.join(tempHome, ".eve", "eve.json");
   await fs.mkdir(path.dirname(configPath), { recursive: true });
   return configPath;
 }
@@ -81,10 +81,10 @@ async function writeWorkspacePlugin(params: {
   body: string;
   activation?: { onStartup?: boolean };
 }): Promise<void> {
-  const pluginDir = path.join(params.workspaceDir, ".openclaw", "extensions", params.id);
+  const pluginDir = path.join(params.workspaceDir, ".eve", "extensions", params.id);
   await fs.mkdir(pluginDir, { recursive: true });
   await fs.writeFile(
-    path.join(pluginDir, "openclaw.plugin.json"),
+    path.join(pluginDir, "eve.plugin.json"),
     `${JSON.stringify(
       {
         id: params.id,
@@ -132,29 +132,29 @@ async function readCounterWithRetry(filePath: string): Promise<number> {
 async function setupGatewayTempHome(params: { prefix: string; minimalGateway?: boolean }) {
   const envSnapshot = captureEnv([
     ...GATEWAY_TEST_ENV_KEYS,
-    ...(params.minimalGateway ? (["OPENCLAW_TEST_MINIMAL_GATEWAY"] as const) : []),
+    ...(params.minimalGateway ? (["EVE_TEST_MINIMAL_GATEWAY"] as const) : []),
   ]);
 
   const tempHome = await fs.mkdtemp(path.join(os.tmpdir(), params.prefix));
   setTestEnvValue("HOME", tempHome);
-  setTestEnvValue("OPENCLAW_STATE_DIR", path.join(tempHome, ".openclaw"));
-  deleteTestEnvValue("OPENCLAW_CONFIG_PATH");
-  setTestEnvValue("OPENCLAW_SKIP_CHANNELS", "1");
-  setTestEnvValue("OPENCLAW_SKIP_GMAIL_WATCHER", "1");
-  setTestEnvValue("OPENCLAW_SKIP_CRON", "1");
-  setTestEnvValue("OPENCLAW_SKIP_CANVAS_HOST", "1");
-  setTestEnvValue("OPENCLAW_SKIP_BROWSER_CONTROL_SERVER", "1");
-  setTestEnvValue("OPENCLAW_SKIP_PROVIDERS", "1");
+  setTestEnvValue("EVE_STATE_DIR", path.join(tempHome, ".eve"));
+  deleteTestEnvValue("EVE_CONFIG_PATH");
+  setTestEnvValue("EVE_SKIP_CHANNELS", "1");
+  setTestEnvValue("EVE_SKIP_GMAIL_WATCHER", "1");
+  setTestEnvValue("EVE_SKIP_CRON", "1");
+  setTestEnvValue("EVE_SKIP_CANVAS_HOST", "1");
+  setTestEnvValue("EVE_SKIP_BROWSER_CONTROL_SERVER", "1");
+  setTestEnvValue("EVE_SKIP_PROVIDERS", "1");
   if (params.minimalGateway) {
-    setTestEnvValue("OPENCLAW_TEST_MINIMAL_GATEWAY", "1");
+    setTestEnvValue("EVE_TEST_MINIMAL_GATEWAY", "1");
   } else {
-    deleteTestEnvValue("OPENCLAW_TEST_MINIMAL_GATEWAY");
+    deleteTestEnvValue("EVE_TEST_MINIMAL_GATEWAY");
   }
 
-  const workspaceDir = path.join(tempHome, "openclaw");
+  const workspaceDir = path.join(tempHome, "eve");
   await fs.mkdir(workspaceDir, { recursive: true });
-  setTestEnvValue("OPENCLAW_BUNDLED_PLUGINS_DIR", await createEmptyBundledPluginsDir(tempHome));
-  setTestEnvValue("OPENCLAW_DISABLE_BUNDLED_PLUGINS", "1");
+  setTestEnvValue("EVE_BUNDLED_PLUGINS_DIR", await createEmptyBundledPluginsDir(tempHome));
+  setTestEnvValue("EVE_DISABLE_BUNDLED_PLUGINS", "1");
   return { envSnapshot, tempHome, workspaceDir };
 }
 
@@ -182,12 +182,12 @@ describe("gateway e2e", () => {
     async () => {
       const { baseUrl: openaiBaseUrl, restore } = installOpenAiResponsesMock();
       const { envSnapshot, tempHome, workspaceDir } = await setupGatewayTempHome({
-        prefix: "openclaw-gw-mock-home-",
+        prefix: "eve-gw-mock-home-",
         minimalGateway: true,
       });
 
       const token = nextGatewayId("test-token");
-      setTestEnvValue("OPENCLAW_GATEWAY_TOKEN", token);
+      setTestEnvValue("EVE_GATEWAY_TOKEN", token);
 
       const configPath = await createGatewayConfigPath(tempHome);
       const mockProvider = buildMockOpenAiResponsesProvider(openaiBaseUrl);
@@ -262,11 +262,11 @@ describe("gateway e2e", () => {
     { timeout: GATEWAY_E2E_TIMEOUT_MS },
     async () => {
       const { envSnapshot, tempHome, workspaceDir } = await setupGatewayTempHome({
-        prefix: "openclaw-gw-http-tools-home-",
+        prefix: "eve-gw-http-tools-home-",
       });
 
       const token = nextGatewayId("http-tools-token");
-      setTestEnvValue("OPENCLAW_GATEWAY_TOKEN", token);
+      setTestEnvValue("EVE_GATEWAY_TOKEN", token);
       const registerCountPath = path.join(tempHome, "workspace-plugin-register-count.txt");
       await writeWorkspacePlugin({
         workspaceDir,
@@ -299,7 +299,7 @@ module.exports = {
         gateway: { auth: { token } },
       };
       await fs.writeFile(configPath, `${JSON.stringify(cfg, null, 2)}\n`);
-      setTestEnvValue("OPENCLAW_CONFIG_PATH", configPath);
+      setTestEnvValue("EVE_CONFIG_PATH", configPath);
 
       const { port, server } = await startLoopbackTokenGateway(token);
 
@@ -341,13 +341,13 @@ module.exports = {
     { timeout: GATEWAY_E2E_TIMEOUT_MS },
     async () => {
       const { envSnapshot, tempHome } = await setupGatewayTempHome({
-        prefix: "openclaw-wizard-home-",
+        prefix: "eve-wizard-home-",
         minimalGateway: true,
       });
-      deleteTestEnvValue("OPENCLAW_GATEWAY_TOKEN");
+      deleteTestEnvValue("EVE_GATEWAY_TOKEN");
 
       const configPath = await createGatewayConfigPath(tempHome);
-      setTestEnvValue("OPENCLAW_CONFIG_PATH", configPath);
+      setTestEnvValue("EVE_CONFIG_PATH", configPath);
       clearRuntimeConfigSnapshot();
       clearConfigCache();
 
@@ -464,38 +464,38 @@ module.exports = {
     async () => {
       const envSnapshot = captureEnv([
         "HOME",
-        "OPENCLAW_STATE_DIR",
-        "OPENCLAW_CONFIG_PATH",
-        "OPENCLAW_GATEWAY_TOKEN",
-        "OPENCLAW_SKIP_CHANNELS",
-        "OPENCLAW_SKIP_GMAIL_WATCHER",
-        "OPENCLAW_SKIP_CRON",
-        "OPENCLAW_SKIP_CANVAS_HOST",
-        "OPENCLAW_SKIP_BROWSER_CONTROL_SERVER",
-        "OPENCLAW_SKIP_PROVIDERS",
-        "OPENCLAW_BUNDLED_PLUGINS_DIR",
-        "OPENCLAW_TEST_MINIMAL_GATEWAY",
+        "EVE_STATE_DIR",
+        "EVE_CONFIG_PATH",
+        "EVE_GATEWAY_TOKEN",
+        "EVE_SKIP_CHANNELS",
+        "EVE_SKIP_GMAIL_WATCHER",
+        "EVE_SKIP_CRON",
+        "EVE_SKIP_CANVAS_HOST",
+        "EVE_SKIP_BROWSER_CONTROL_SERVER",
+        "EVE_SKIP_PROVIDERS",
+        "EVE_BUNDLED_PLUGINS_DIR",
+        "EVE_TEST_MINIMAL_GATEWAY",
         "DISCORD_BOT_TOKEN",
       ]);
 
-      const tempHome = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-minimal-gateway-home-"));
+      const tempHome = await fs.mkdtemp(path.join(os.tmpdir(), "eve-minimal-gateway-home-"));
       const configPath = await createGatewayConfigPath(tempHome);
-      const bundledPluginsDir = path.join(tempHome, "openclaw-test-no-bundled-extensions");
+      const bundledPluginsDir = path.join(tempHome, "eve-test-no-bundled-extensions");
       setTestEnvValue("HOME", tempHome);
-      setTestEnvValue("OPENCLAW_STATE_DIR", path.join(tempHome, ".openclaw"));
-      setTestEnvValue("OPENCLAW_CONFIG_PATH", configPath);
-      setTestEnvValue("OPENCLAW_SKIP_CHANNELS", "1");
-      setTestEnvValue("OPENCLAW_SKIP_GMAIL_WATCHER", "1");
-      setTestEnvValue("OPENCLAW_SKIP_CRON", "1");
-      setTestEnvValue("OPENCLAW_SKIP_CANVAS_HOST", "1");
-      setTestEnvValue("OPENCLAW_SKIP_BROWSER_CONTROL_SERVER", "1");
-      setTestEnvValue("OPENCLAW_SKIP_PROVIDERS", "1");
-      setTestEnvValue("OPENCLAW_BUNDLED_PLUGINS_DIR", bundledPluginsDir);
-      setTestEnvValue("OPENCLAW_TEST_MINIMAL_GATEWAY", "1");
+      setTestEnvValue("EVE_STATE_DIR", path.join(tempHome, ".eve"));
+      setTestEnvValue("EVE_CONFIG_PATH", configPath);
+      setTestEnvValue("EVE_SKIP_CHANNELS", "1");
+      setTestEnvValue("EVE_SKIP_GMAIL_WATCHER", "1");
+      setTestEnvValue("EVE_SKIP_CRON", "1");
+      setTestEnvValue("EVE_SKIP_CANVAS_HOST", "1");
+      setTestEnvValue("EVE_SKIP_BROWSER_CONTROL_SERVER", "1");
+      setTestEnvValue("EVE_SKIP_PROVIDERS", "1");
+      setTestEnvValue("EVE_BUNDLED_PLUGINS_DIR", bundledPluginsDir);
+      setTestEnvValue("EVE_TEST_MINIMAL_GATEWAY", "1");
       setTestEnvValue("DISCORD_BOT_TOKEN", "discord-test-token");
 
       const token = nextGatewayId("minimal-token");
-      setTestEnvValue("OPENCLAW_GATEWAY_TOKEN", token);
+      setTestEnvValue("EVE_GATEWAY_TOKEN", token);
       await fs.mkdir(bundledPluginsDir, { recursive: true });
       await fs.writeFile(
         configPath,

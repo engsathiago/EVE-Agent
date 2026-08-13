@@ -11,8 +11,8 @@ Generic JSON-only LLM tool for structured tasks callable from workflows.
 
 ## Distribution
 
-- Package: `@openclaw/llm-task`
-- Install route: included in OpenClaw
+- Package: `@eve/llm-task`
+- Install route: included in EVE
 
 ## Surface
 

@@ -1,4 +1,4 @@
-// `openclaw plugins update` command implementation for tracked npm plugins and hook packs.
+// `eve plugins update` command implementation for tracked npm plugins and hook packs.
 import { theme } from "../../packages/terminal-core/src/theme.js";
 import {
   assertConfigWriteAllowedInCurrentMode,
@@ -9,7 +9,7 @@ import {
 import { createMergePatch } from "../config/io.write-prepare.js";
 import { applyMergePatch } from "../config/merge-patch.js";
 import { extractShippedPluginInstallConfigRecords } from "../config/plugin-install-config-migration.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { updateNpmInstalledHookPacks } from "../hooks/update.js";
 import {
@@ -89,12 +89,12 @@ function shouldPreserveEmptyPlugins(params: {
 }
 
 function projectUpdaterResultOntoSourceConfig(params: {
-  runtimeBase: OpenClawConfig;
-  sourceBase: OpenClawConfig;
-  updatedConfig: OpenClawConfig;
-}): OpenClawConfig {
+  runtimeBase: EVEConfig;
+  sourceBase: EVEConfig;
+  updatedConfig: EVEConfig;
+}): EVEConfig {
   const updatePatch = createMergePatch(params.runtimeBase, params.updatedConfig);
-  return applyMergePatch(params.sourceBase, updatePatch) as OpenClawConfig;
+  return applyMergePatch(params.sourceBase, updatePatch) as EVEConfig;
 }
 
 /** Run plugin/hook-pack updates, persist changed install records, and refresh runtime registry. */

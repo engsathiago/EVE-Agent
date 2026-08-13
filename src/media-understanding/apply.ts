@@ -4,10 +4,10 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { finalizeInboundContext } from "../auto-reply/reply/inbound-context.js";
 import type { MsgContext } from "../auto-reply/templating.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { logVerbose, shouldLogVerbose } from "../globals.js";
 import { renderFileContextBlock } from "../media/file-context.js";
 import { extractFileContentFromSource, normalizeMimeType } from "../media/input-files.js";
@@ -334,7 +334,7 @@ function buildSyntheticSkippedAudioOutputs(
         kind: "audio.transcription" as const,
         attachmentIndex: attachment.attachmentIndex,
         text: EMPTY_VOICE_NOTE_PLACEHOLDER,
-        provider: "openclaw",
+        provider: "eve",
         model: "synthetic-empty-audio",
       },
     ];
@@ -380,7 +380,7 @@ function isBinaryMediaMime(mime?: string): boolean {
 async function extractFileBlocks(params: {
   attachments: ReturnType<typeof normalizeMediaAttachments>;
   cache: ReturnType<typeof createMediaAttachmentCache>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   limits: FileExtractionLimits;
   skipAttachmentIndexes?: Set<number>;
 }): Promise<string[]> {
@@ -516,7 +516,7 @@ async function extractFileBlocks(params: {
 
 export async function applyMediaUnderstanding(params: {
   ctx: MsgContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   agentDir?: string;
   workspaceDir?: string;

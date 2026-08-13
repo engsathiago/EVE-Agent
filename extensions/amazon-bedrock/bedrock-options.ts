@@ -2,7 +2,7 @@
  * Stream option extensions and prompt-cache policy for Amazon Bedrock models.
  * Provider registration and runtime streaming share these contracts.
  */
-import type { StreamOptions, ThinkingBudgets, ThinkingLevel } from "openclaw/plugin-sdk/llm";
+import type { StreamOptions, ThinkingBudgets, ThinkingLevel } from "eve-agent/plugin-sdk/llm";
 
 /** How Bedrock thinking output should be displayed to users. */
 export type BedrockThinkingDisplay = "summarized" | "omitted";

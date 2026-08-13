@@ -1,7 +1,7 @@
 // DashScope-compatible video provider adapts DashScope-style generation APIs.
-import { readResponseWithLimit } from "@openclaw/media-core/read-response-with-limit";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import {
   assertOkOrThrowHttpError,
   createProviderOperationDeadline,
@@ -12,7 +12,7 @@ import {
   resolveProviderOperationTimeoutMs,
   waitProviderOperationPollInterval,
   type ProviderOperationTimeoutMs,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 import { resolveGeneratedMediaMaxBytes } from "../media/configured-max-bytes.js";
 import type {
   GeneratedVideoAsset,
@@ -309,7 +309,7 @@ export async function runDashscopeVideoGenerationTask(params: {
 }
 
 // Downloads task result URLs into generated video assets. The byte limit comes
-// from OpenClaw media config so provider URLs cannot overfill memory.
+// from EVE media config so provider URLs cannot overfill memory.
 export async function downloadDashscopeGeneratedVideos(params: {
   providerLabel: string;
   urls: string[];

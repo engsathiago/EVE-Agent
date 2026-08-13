@@ -20,7 +20,7 @@ export function writeIosFixture(params: {
   versionXcconfig?: string;
   prefix?: string;
 }): string {
-  const rootDir = makeTempDir(tempDirs, params.prefix ?? "openclaw-ios-version-");
+  const rootDir = makeTempDir(tempDirs, params.prefix ?? "eve-ios-version-");
   fs.mkdirSync(path.join(rootDir, "apps", "ios", "Config"), { recursive: true });
   fs.mkdirSync(path.join(rootDir, "apps", "ios", "fastlane", "metadata", "en-US"), {
     recursive: true,

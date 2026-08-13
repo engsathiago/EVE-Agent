@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { EmbeddedRunAttemptParams } from "openclaw/plugin-sdk/agent-harness-runtime";
+import type { EmbeddedRunAttemptParams } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { describe, expect, it } from "vitest";
 import {
   buildCodexWorkspaceBootstrapContext,
@@ -30,7 +30,7 @@ describe("Codex app-server attempt context", () => {
       },
       {
         type: "namespace",
-        name: "openclaw",
+        name: "eve",
         description: "",
         tools: [
           {

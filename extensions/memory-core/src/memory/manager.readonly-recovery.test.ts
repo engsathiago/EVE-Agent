@@ -140,7 +140,7 @@ describe("memory manager readonly recovery", () => {
   }
 
   beforeEach(async () => {
-    workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-mem-readonly-"));
+    workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-mem-readonly-"));
     indexPath = path.join(workspaceDir, "index.sqlite");
     await fs.mkdir(path.join(workspaceDir, "memory"), { recursive: true });
     await fs.writeFile(path.join(workspaceDir, "MEMORY.md"), "Hello memory.");

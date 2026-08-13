@@ -1,6 +1,6 @@
 // Plugin uninstall selection tests cover CLI uninstall target matching.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolvePluginUninstallId } from "./plugins-uninstall-selection.js";
 
 describe("resolvePluginUninstallId", () => {
@@ -20,7 +20,7 @@ describe("resolvePluginUninstallId", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       plugins: [{ id: "linkmind-context", name: "linkmind-context" }],
     });
 
@@ -42,7 +42,7 @@ describe("resolvePluginUninstallId", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       plugins: [{ id: "linkmind-context", name: "linkmind-context" }],
     });
 

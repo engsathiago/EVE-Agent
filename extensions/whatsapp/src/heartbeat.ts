@@ -1,11 +1,11 @@
 // Whatsapp plugin module implements heartbeat behavior.
 import { resolveWhatsAppAccount } from "./accounts.js";
 import { readWebAuthExistsForDecision, WHATSAPP_AUTH_UNSTABLE_CODE } from "./auth-store.js";
-import type { OpenClawConfig } from "./runtime-api.js";
+import type { EVEConfig } from "./runtime-api.js";
 import { loadWhatsAppChannelRuntime } from "./shared.js";
 
 export async function checkWhatsAppHeartbeatReady(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   deps?: {
     readWebAuthExistsForDecision?: typeof readWebAuthExistsForDecision;

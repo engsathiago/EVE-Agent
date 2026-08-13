@@ -1,5 +1,5 @@
-// Setup wizard orchestrates onboarding prompts and generated OpenClaw config.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+// Setup wizard orchestrates onboarding prompts and generated EVE config.
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { formatCliCommand } from "../cli/command-format.js";
 import {
   commitConfigWriteWithPendingPluginInstalls,
@@ -15,7 +15,7 @@ import type {
   ResetScope,
 } from "../commands/onboard-types.js";
 import { createConfigIO, replaceConfigFile, resolveGatewayPort } from "../config/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizeSecretInputString } from "../config/types.secrets.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
@@ -69,13 +69,13 @@ function loadOnboardConfigModule(): Promise<OnboardConfigModule> {
 }
 
 async function writeWizardConfigFile(
-  configInput: OpenClawConfig,
+  configInput: EVEConfig,
   opts: {
     allowConfigSizeDrop?: boolean;
-    migrationBaseConfig?: OpenClawConfig;
+    migrationBaseConfig?: EVEConfig;
     onPendingPluginInstallMigration?: () => void;
   } = {},
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   let config = configInput;
   const allowConfigSizeDrop = opts.allowConfigSizeDrop === true;
   if (!allowConfigSizeDrop && hasPendingPluginInstallRecords(config)) {
@@ -119,12 +119,12 @@ async function readSetupConfigFileSnapshot() {
 
 async function resolveAuthChoiceModelSelectionPolicy(params: {
   authChoice: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   resolvePreferredProviderForAuthChoice: (params: {
     choice: string;
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     workspaceDir?: string;
     env?: NodeJS.ProcessEnv;
   }) => Promise<string | undefined>;
@@ -234,18 +234,18 @@ export async function runSetupWizard(
   await requireRiskAcknowledgement({ opts, prompter });
 
   const snapshot = await readSetupConfigFileSnapshot();
-  let baseConfig: OpenClawConfig = snapshot.valid
+  let baseConfig: EVEConfig = snapshot.valid
     ? snapshot.exists
       ? (snapshot.sourceConfig ?? snapshot.config)
       : {}
     : {};
   // Ordinary onboard reruns must preserve existing agents.list / bindings. Only
   // explicit reset or import flows are allowed to shrink the config — see issue
-  // openclaw#84692.
+  // eve#84692.
   let configResetPerformed = false;
-  let pendingPluginInstallMigrationBaseConfig: OpenClawConfig | undefined = baseConfig;
+  let pendingPluginInstallMigrationBaseConfig: EVEConfig | undefined = baseConfig;
   const writeSetupConfigFile = async (
-    config: OpenClawConfig,
+    config: EVEConfig,
     optsLocal: { allowConfigSizeDrop?: boolean } = {},
   ) =>
     await writeWizardConfigFile(config, {
@@ -266,13 +266,13 @@ export async function runSetupWizard(
         [
           ...snapshot.issues.map((iss) => `- ${iss.path}: ${iss.message}`),
           "",
-          "Docs: https://docs.openclaw.ai/gateway/configuration",
+          "Docs: https://docs.eve.ai/gateway/configuration",
         ].join("\n"),
         "Config issues",
       );
     }
     await prompter.outro(
-      `Config invalid. Run \`${formatCliCommand("openclaw doctor")}\` to repair it, then re-run setup.`,
+      `Config invalid. Run \`${formatCliCommand("eve doctor")}\` to repair it, then re-run setup.`,
     );
     runtime.exit(1);
     return;
@@ -292,15 +292,15 @@ export async function runSetupWizard(
           ? [`- ... +${compatibilityNotices.length - 4} more`]
           : []),
         "",
-        `Review: ${formatCliCommand("openclaw doctor")}`,
-        `Inspect: ${formatCliCommand("openclaw plugins inspect --all")}`,
+        `Review: ${formatCliCommand("eve doctor")}`,
+        `Inspect: ${formatCliCommand("eve plugins inspect --all")}`,
       ].join("\n"),
       t("wizard.setup.pluginCompatibilityTitle"),
     );
   }
 
   const quickstartHint = t("wizard.setup.flowQuickstartHint", {
-    command: formatCliCommand("openclaw configure"),
+    command: formatCliCommand("eve configure"),
   });
   const manualHint = t("wizard.setup.flowAdvancedHint");
   const migrationDetections = await detectSetupMigrationSources({ config: baseConfig, runtime });
@@ -321,7 +321,7 @@ export async function runSetupWizard(
     normalizedExplicitFlow !== "import"
   ) {
     runtime.error(
-      "Invalid --flow. Use quickstart, manual, advanced, or import. Example: openclaw onboard --flow quickstart",
+      "Invalid --flow. Use quickstart, manual, advanced, or import. Example: eve onboard --flow quickstart",
     );
     runtime.exit(1);
     return;
@@ -513,7 +513,7 @@ export async function runSetupWizard(
 
   const localPort = resolveGatewayPort(baseConfig);
   const localUrl = `ws://127.0.0.1:${localPort}`;
-  let localGatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN;
+  let localGatewayToken = process.env.EVE_GATEWAY_TOKEN;
   try {
     const resolvedGatewayToken = await resolveSetupSecretInputString({
       config: baseConfig,
@@ -533,7 +533,7 @@ export async function runSetupWizard(
       t("wizard.gateway.auth"),
     );
   }
-  let localGatewayPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
+  let localGatewayPassword = process.env.EVE_GATEWAY_PASSWORD;
   try {
     const resolvedGatewayPassword = await resolveSetupSecretInputString({
       config: baseConfig,
@@ -645,7 +645,7 @@ export async function runSetupWizard(
 
   const { applyLocalSetupWorkspaceConfig, applySkipBootstrapConfig } =
     await loadOnboardConfigModule();
-  let nextConfig: OpenClawConfig = applyLocalSetupWorkspaceConfig(baseConfig, workspaceDir);
+  let nextConfig: EVEConfig = applyLocalSetupWorkspaceConfig(baseConfig, workspaceDir);
   if (opts.skipBootstrap) {
     nextConfig = applySkipBootstrapConfig(nextConfig);
   }

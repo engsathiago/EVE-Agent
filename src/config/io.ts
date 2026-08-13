@@ -1,9 +1,9 @@
-// Loads, validates, migrates, snapshots, and writes OpenClaw config files.
+// Loads, validates, migrates, snapshots, and writes EVE config files.
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { collectManifestModelIdNormalizationPolicies } from "@openclaw/model-catalog-core/provider-model-id-normalization";
+import { collectManifestModelIdNormalizationPolicies } from "@eve/model-catalog-core/provider-model-id-normalization";
 import JSON5 from "json5";
 import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text.js";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope-config.js";
@@ -120,7 +120,7 @@ import {
 } from "./runtime-snapshot.js";
 export { projectConfigOntoRuntimeSourceSnapshot } from "./runtime-source-projection.js";
 import { resolveShellEnvExpectedKeys } from "./shell-env-expected-keys.js";
-import type { OpenClawConfig, ConfigFileSnapshot, LegacyConfigIssue } from "./types.js";
+import type { EVEConfig, ConfigFileSnapshot, LegacyConfigIssue } from "./types.js";
 import {
   validateConfigObjectRawWithPlugins,
   validateConfigObjectWithPlugins,
@@ -190,7 +190,7 @@ type ConfigHealthState = {
 };
 
 export type ParseConfigJson5Result = { ok: true; parsed: unknown } | { ok: false; error: string };
-export type ConfigWriteResult = { persistedHash: string; persistedConfig: OpenClawConfig };
+export type ConfigWriteResult = { persistedHash: string; persistedConfig: EVEConfig };
 const configWritePostCommitRollback = Symbol("configWritePostCommitRollback");
 type InternalConfigWriteResult = ConfigWriteResult & {
   [configWritePostCommitRollback]?: () => void;
@@ -227,7 +227,7 @@ export type ConfigWriteOptions = {
    * Internal companion for explicitSetPaths after a wrapper has projected a
    * runtime-shaped config back onto the authored source shape.
    */
-  explicitSetValueSource?: OpenClawConfig;
+  explicitSetValueSource?: EVEConfig;
   /**
    * Internal fast path for callers that already hold a fresh config snapshot.
    * Avoids rereading the full config just to prepare an immediate write.
@@ -287,7 +287,7 @@ export type ConfigWriteOptions = {
    * Internal hook used by the exported runtime-aware writer after validation
    * has produced the exact source config that will be committed.
    */
-  preCommitRuntimePreflight?: (sourceConfig: OpenClawConfig) => Promise<unknown>;
+  preCommitRuntimePreflight?: (sourceConfig: EVEConfig) => Promise<unknown>;
   /** Internal snapshot-time hashes for include files that mutation writers may update directly. */
   includeFileHashesForWrite?: Record<string, string>;
   /** Internal snapshot-time canonical targets for include files that mutation writers may update. */
@@ -433,11 +433,11 @@ async function rollbackConfigFileWriteIfUnchanged(params: {
   return true;
 }
 
-function coerceConfig(value: unknown): OpenClawConfig {
+function coerceConfig(value: unknown): EVEConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
   }
-  return value as OpenClawConfig;
+  return value as EVEConfig;
 }
 
 function hasConfigMeta(value: unknown): boolean {
@@ -984,8 +984,8 @@ export type ConfigSnapshotReadOptions = {
   lowerPrecedenceEnv?: Readonly<Record<string, string>>;
   recoverSuspicious?: boolean;
   allowSuspiciousRecovery?: (
-    candidate: OpenClawConfig,
-    current: OpenClawConfig,
+    candidate: EVEConfig,
+    current: EVEConfig,
   ) => boolean | Promise<boolean>;
   skipPluginValidation?: boolean;
   preservedLegacyRootKeys?: readonly string[];
@@ -1007,11 +1007,11 @@ function warnOnConfigMiskeys(raw: unknown, logger: Pick<typeof console, "warn">)
   }
 }
 
-function stampConfigVersion(cfg: OpenClawConfig, version?: string): OpenClawConfig {
+function stampConfigVersion(cfg: EVEConfig, version?: string): EVEConfig {
   return stampConfigWriteMetadata(cfg, new Date().toISOString(), version);
 }
 
-function warnIfConfigFromFuture(cfg: OpenClawConfig, logger: Pick<typeof console, "warn">): void {
+function warnIfConfigFromFuture(cfg: EVEConfig, logger: Pick<typeof console, "warn">): void {
   const touched = cfg.meta?.lastTouchedVersion;
   if (!touched) {
     return;
@@ -1023,9 +1023,9 @@ function warnIfConfigFromFuture(cfg: OpenClawConfig, logger: Pick<typeof console
     warnedFutureTouchedVersions.add(touched);
     logger.warn(
       [
-        `Your OpenClaw config was written by version ${touched}, but this command is running ${VERSION}.`,
-        "Check: `openclaw --version`, `which openclaw`, and `openclaw gateway status --deep`.",
-        "If unexpected, update PATH so `openclaw` points to the version you want, or reinstall the Gateway service from that same OpenClaw install.",
+        `Your EVE config was written by version ${touched}, but this command is running ${VERSION}.`,
+        "Check: `eve --version`, `which eve`, and `eve gateway status --deep`.",
+        "If unexpected, update PATH so `eve` points to the version you want, or reinstall the Gateway service from that same EVE install.",
       ].join("\n"),
     );
   }
@@ -1033,8 +1033,8 @@ function warnIfConfigFromFuture(cfg: OpenClawConfig, logger: Pick<typeof console
 
 function shouldSuppressFutureVersionWarningForEnv(env: NodeJS.ProcessEnv): boolean {
   return (
-    isTruthyEnvValue(env.OPENCLAW_UPDATE_IN_PROGRESS) ||
-    isTruthyEnvValue(env.OPENCLAW_UPDATE_POST_CORE)
+    isTruthyEnvValue(env.EVE_UPDATE_IN_PROGRESS) ||
+    isTruthyEnvValue(env.EVE_UPDATE_POST_CORE)
   );
 }
 
@@ -1079,7 +1079,7 @@ export function parseConfigJson5(
     return { ok: true, parsed: JSON.parse(raw) };
   } catch {
     // Keep JSON5 compatibility for authored config, but avoid the slower parser
-    // on the JSON files OpenClaw writes itself.
+    // on the JSON files EVE writes itself.
   }
   try {
     return { ok: true, parsed: json5.parse(raw) };
@@ -1319,7 +1319,7 @@ function resolveConfigForRead(
 ): ConfigReadResolution {
   // Apply config.env to process.env BEFORE substitution so ${VAR} can reference config-defined vars.
   if (resolvedIncludes && typeof resolvedIncludes === "object" && "env" in resolvedIncludes) {
-    applyConfigEnvVars(resolvedIncludes as OpenClawConfig, env, { lowerPrecedenceEnv });
+    applyConfigEnvVars(resolvedIncludes as EVEConfig, env, { lowerPrecedenceEnv });
   }
 
   // Collect missing env var references as warnings instead of throwing,
@@ -1372,8 +1372,8 @@ export type ReadConfigFileSnapshotWithPluginMetadataResult = {
 };
 
 export type BestEffortConfigSnapshot = {
-  config: OpenClawConfig;
-  sourceConfig: OpenClawConfig;
+  config: EVEConfig;
+  sourceConfig: EVEConfig;
 };
 
 function createConfigFileSnapshot(params: {
@@ -1381,9 +1381,9 @@ function createConfigFileSnapshot(params: {
   exists: boolean;
   raw: string | null;
   parsed: unknown;
-  sourceConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
   valid: boolean;
-  runtimeConfig: OpenClawConfig;
+  runtimeConfig: EVEConfig;
   hash?: string;
   issues: ConfigFileSnapshot["issues"];
   warnings: ConfigFileSnapshot["warnings"];
@@ -1446,7 +1446,7 @@ export function createConfigIO(
     return snapshot;
   }
 
-  function finalizeLoadedRuntimeConfig(cfg: OpenClawConfig): OpenClawConfig {
+  function finalizeLoadedRuntimeConfig(cfg: EVEConfig): EVEConfig {
     const duplicates = findDuplicateAgentDirs(cfg, {
       env: deps.env,
       homedir: deps.homedir,
@@ -1556,9 +1556,9 @@ export function createConfigIO(
   }
 
   function retainRuntimeOnlyShippedPluginInstallConfigRecords(
-    config: OpenClawConfig,
+    config: EVEConfig,
     sourceRaw: unknown,
-  ): OpenClawConfig {
+  ): EVEConfig {
     const installRecords = extractShippedPluginInstallConfigRecords(sourceRaw);
     if (Object.keys(installRecords).length === 0) {
       return config;
@@ -1576,7 +1576,7 @@ export function createConfigIO(
     effectiveConfigRaw: unknown;
     env: NodeJS.ProcessEnv;
   }): {
-    load: (config: OpenClawConfig) => PluginMetadataSnapshot;
+    load: (config: EVEConfig) => PluginMetadataSnapshot;
     getSnapshot: () => PluginMetadataSnapshot | undefined;
   } {
     let pluginMetadataSnapshot: PluginMetadataSnapshot | undefined;
@@ -1606,7 +1606,7 @@ export function createConfigIO(
     };
   }
 
-  function resolveRuntimePreflightSourceConfig(candidate: OpenClawConfig): OpenClawConfig {
+  function resolveRuntimePreflightSourceConfig(candidate: EVEConfig): EVEConfig {
     const env = { ...deps.env } as NodeJS.ProcessEnv;
     const resolvedIncludes = resolveConfigIncludesForRead(candidate, configPath, {
       ...deps,
@@ -1658,7 +1658,7 @@ export function createConfigIO(
       };
     } catch (err) {
       throw new Error(
-        `Config write blocked: shipped plugins.installs records in ${configPath} could not be migrated into the plugin index. Fix state directory permissions or run openclaw plugins registry --refresh, then retry. ${formatErrorMessage(
+        `Config write blocked: shipped plugins.installs records in ${configPath} could not be migrated into the plugin index. Fix state directory permissions or run eve plugins registry --refresh, then retry. ${formatErrorMessage(
           err,
         )}`,
         { cause: err },
@@ -1675,7 +1675,7 @@ export function createConfigIO(
     return false;
   }
 
-  function resolveSuspiciousRecoveryBackupCandidate(parsed: unknown): OpenClawConfig | null {
+  function resolveSuspiciousRecoveryBackupCandidate(parsed: unknown): EVEConfig | null {
     try {
       const candidateEnv = cloneEnvWithPlatformSemantics(deps.env);
       const candidateDeps = { ...deps, env: candidateEnv };
@@ -1707,7 +1707,7 @@ export function createConfigIO(
     }
   }
 
-  function loadConfigLocal(options: { skipSuspiciousRecovery?: boolean } = {}): OpenClawConfig {
+  function loadConfigLocal(options: { skipSuspiciousRecovery?: boolean } = {}): EVEConfig {
     try {
       maybeLoadDotEnvForConfig(deps.env);
       const envBeforeRead = snapshotEnv(deps.env);
@@ -1769,7 +1769,7 @@ export function createConfigIO(
         return {};
       }
       const preValidationDuplicates = findDuplicateAgentDirs(
-        validationConfigRaw as OpenClawConfig,
+        validationConfigRaw as EVEConfig,
         {
           env: deps.env,
           homedir: deps.homedir,
@@ -1888,8 +1888,8 @@ export function createConfigIO(
       recoverSuspicious?: boolean;
       skipSuspiciousRecovery?: boolean;
       allowSuspiciousRecovery?: (
-        candidate: OpenClawConfig,
-        current: OpenClawConfig,
+        candidate: EVEConfig,
+        current: EVEConfig,
       ) => boolean | Promise<boolean>;
     } = {},
   ): Promise<ReadConfigFileSnapshotInternalResult> {
@@ -1919,7 +1919,7 @@ export function createConfigIO(
 
     let fallbackRaw: string | null = null;
     let fallbackParsed: unknown = {};
-    let fallbackSourceConfig: OpenClawConfig = {};
+    let fallbackSourceConfig: EVEConfig = {};
     let fallbackHash = hashConfigRaw(null);
     let fallbackEnvSnapshotForRestore: Record<string, string | undefined> | undefined;
     const includeFileHashesForWrite: Record<string, string> = {};
@@ -2076,7 +2076,7 @@ export function createConfigIO(
         !containsConfigIncludeDirective(effectiveParsed)
       ) {
         const allowSuspiciousRecovery = options.allowSuspiciousRecovery;
-        let recoveryCandidate: OpenClawConfig | null = null;
+        let recoveryCandidate: EVEConfig | null = null;
         const recovery = await deps.measure("config.snapshot.read.recover-suspicious", () =>
           maybeRecoverSuspiciousConfigReadWithDeps({
             deps,
@@ -2290,11 +2290,11 @@ export function createConfigIO(
     };
   }
 
-  async function readBestEffortConfigLocal(): Promise<OpenClawConfig> {
+  async function readBestEffortConfigLocal(): Promise<EVEConfig> {
     return (await readBestEffortConfigSnapshotLocal()).config;
   }
 
-  async function readSourceConfigBestEffortLocal(): Promise<OpenClawConfig> {
+  async function readSourceConfigBestEffortLocal(): Promise<EVEConfig> {
     maybeLoadDotEnvForConfig(deps.env);
     const exists = deps.fs.existsSync(configPath);
     if (!exists) {
@@ -2323,7 +2323,7 @@ export function createConfigIO(
   }
 
   async function writeConfigFileLocal(
-    cfg: OpenClawConfig,
+    cfg: EVEConfig,
     options: ConfigWriteOptions = {},
   ): Promise<InternalConfigWriteResult> {
     options.assertConfigPathForWrite?.();
@@ -2400,14 +2400,14 @@ export function createConfigIO(
       }
     }
 
-    persistCandidate = applyUnsetPathsForWrite(persistCandidate as OpenClawConfig, unsetPaths);
+    persistCandidate = applyUnsetPathsForWrite(persistCandidate as EVEConfig, unsetPaths);
 
     const envForRestore = options.envSnapshotForRestore ?? deps.env;
     const validationSourceCandidate = containsConfigIncludeDirective(persistCandidate)
       ? restoreEnvVarRefs(persistCandidate, snapshot.parsed, envForRestore)
       : persistCandidate;
     const validationCandidate = containsConfigIncludeDirective(validationSourceCandidate)
-      ? resolveRuntimePreflightSourceConfig(validationSourceCandidate as OpenClawConfig)
+      ? resolveRuntimePreflightSourceConfig(validationSourceCandidate as EVEConfig)
       : validationSourceCandidate;
     const validated = validateConfigObjectRawWithPlugins(validationCandidate, {
       env: deps.env,
@@ -2440,7 +2440,7 @@ export function createConfigIO(
     // persisted to disk (issue #56772).
     // Apply legacy web-search normalization so that migration results are still
     // persisted even though we bypass validated.config.
-    let cfgToWrite = persistCandidate as OpenClawConfig;
+    let cfgToWrite = persistCandidate as EVEConfig;
     try {
       if (deps.fs.existsSync(configPath)) {
         const currentRaw = await deps.fs.promises.readFile(configPath, "utf-8");
@@ -2454,7 +2454,7 @@ export function createConfigIO(
             cfgToWrite,
             parsedRes.parsed,
             envForRestore,
-          ) as OpenClawConfig;
+          ) as EVEConfig;
           collectChangedPaths(configBeforeIdentityRestore, cfgToWrite, "", identityRestoredPaths);
         }
       }
@@ -2481,14 +2481,14 @@ export function createConfigIO(
             envRefMap,
             changedPaths,
             identityRestoredPaths,
-          ) as OpenClawConfig)
+          ) as EVEConfig)
         : cfgToWrite;
     const tildeRestoredOutputConfig = restoreAuthoredTildePathsForWrite(
       outputConfigBase,
       snapshot.parsed,
       undefined,
       deps.homedir(),
-    ) as OpenClawConfig;
+    ) as EVEConfig;
     const outputConfig = applyUnsetPathsForWrite(tildeRestoredOutputConfig, unsetPaths);
     // Do NOT apply runtime defaults when writing - user config should only contain
     // explicitly set values. Runtime defaults are applied when loading (issue #6070).
@@ -2526,11 +2526,11 @@ export function createConfigIO(
         return;
       }
       const isVitest = deps.env.VITEST === "true";
-      const shouldLogInVitest = deps.env.OPENCLAW_TEST_CONFIG_OVERWRITE_LOG === "1";
+      const shouldLogInVitest = deps.env.EVE_TEST_CONFIG_OVERWRITE_LOG === "1";
       if (isVitest && !shouldLogInVitest) {
         return;
       }
-      if (!isVerbose() && deps.env.OPENCLAW_CONFIG_OVERWRITE_LOG !== "1" && !shouldLogInVitest) {
+      if (!isVerbose() && deps.env.EVE_CONFIG_OVERWRITE_LOG !== "1" && !shouldLogInVitest) {
         return;
       }
       deps.logger.warn(
@@ -2551,12 +2551,12 @@ export function createConfigIO(
       }
       // Tests often write minimal configs (missing meta, etc); keep output quiet unless requested.
       const isVitest = deps.env.VITEST === "true";
-      const shouldLogInVitest = deps.env.OPENCLAW_TEST_CONFIG_WRITE_ANOMALY_LOG === "1";
+      const shouldLogInVitest = deps.env.EVE_TEST_CONFIG_WRITE_ANOMALY_LOG === "1";
       if (isVitest && !shouldLogInVitest) {
         return;
       }
       const shouldLogBenignMissingMeta =
-        isVerbose() || deps.env.OPENCLAW_CONFIG_WRITE_ANOMALY_LOG === "1" || shouldLogInVitest;
+        isVerbose() || deps.env.EVE_CONFIG_WRITE_ANOMALY_LOG === "1" || shouldLogInVitest;
       const visibleReasons = shouldLogBenignMissingMeta
         ? suspiciousReasons
         : suspiciousReasons.filter((reason) => reason !== "missing-meta-before-write");
@@ -2622,7 +2622,7 @@ export function createConfigIO(
 
     const preCommitRuntimePreflight =
       options.preCommitRuntimePreflight ??
-      (async (sourceConfig: OpenClawConfig) => {
+      (async (sourceConfig: EVEConfig) => {
         await preflightRuntimeSnapshotWrite({
           nextSourceConfig: sourceConfig,
           refreshOptions: options.runtimeRefresh,
@@ -2729,7 +2729,7 @@ export function createConfigIO(
 }
 
 // NOTE: These wrappers intentionally do *not* cache the resolved config path at
-// module scope. `OPENCLAW_CONFIG_PATH` (and friends) are expected to work even
+// module scope. `EVE_CONFIG_PATH` (and friends) are expected to work even
 // when set after the module has been imported (tests, one-off scripts, etc.).
 const AUTO_OWNER_DISPLAY_SECRET_BY_PATH = new Map<string, string>();
 export function clearConfigCache(): void {
@@ -2746,7 +2746,7 @@ export function loadConfig(options?: {
   skipPluginValidation?: boolean;
   pin?: boolean;
   skipShellEnvFallback?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   const loadFresh = () =>
     createConfigIO({
       ...(options?.skipPluginValidation ? { pluginValidation: "skip" as const } : {}),
@@ -2757,7 +2757,7 @@ export function loadConfig(options?: {
   }
   // First successful load becomes the process snapshot. Long-lived runtimes
   // should swap this snapshot via explicit reload/watcher paths instead of
-  // reparsing openclaw.json on hot code paths.
+  // reparsing eve.json on hot code paths.
   return loadPinnedRuntimeConfig(loadFresh);
 }
 
@@ -2765,7 +2765,7 @@ export function getRuntimeConfig(options?: {
   skipPluginValidation?: boolean;
   pin?: boolean;
   skipShellEnvFallback?: boolean;
-}): OpenClawConfig {
+}): EVEConfig {
   return loadConfig(options);
 }
 
@@ -2773,7 +2773,7 @@ export async function readBestEffortConfig(options?: {
   isolateEnv?: boolean;
   observe?: boolean;
   skipPluginValidation?: boolean;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   return await createConfigIO({
     ...(options?.isolateEnv ? { env: cloneEnvWithPlatformSemantics(process.env) } : {}),
     ...(options?.observe === false ? { observe: false } : {}),
@@ -2789,7 +2789,7 @@ export async function readBestEffortConfigSnapshot(options?: {
   ).readBestEffortConfigSnapshot();
 }
 
-export async function readSourceConfigBestEffort(): Promise<OpenClawConfig> {
+export async function readSourceConfigBestEffort(): Promise<EVEConfig> {
   return await createConfigIO().readSourceConfigBestEffort();
 }
 
@@ -2880,7 +2880,7 @@ export async function readSourceConfigSnapshotForWrite(): Promise<ReadConfigFile
 }
 
 export async function writeConfigFile(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options: ConfigWriteOptions = {},
 ): Promise<ConfigWriteResult> {
   options.assertConfigPathForWrite?.();
@@ -2963,7 +2963,7 @@ export async function writeConfigFile(
   // phantom paths under plugins.entries.* on every save — incorrectly
   // triggering a `plugins`-scoped restart of the gateway for changes that
   // never touched any plugin entry.
-  let canonicalSourceConfig: OpenClawConfig = nextCfg;
+  let canonicalSourceConfig: EVEConfig = nextCfg;
   const envBeforeCanonicalRead = snapshotEnv(process.env);
   let envAfterCanonicalRead;
   try {

@@ -1,5 +1,5 @@
 ---
-summary: "Adds Ollama, Ollama Cloud model provider support to OpenClaw."
+summary: "Adds Ollama, Ollama Cloud model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the ollama plugin
 title: "Ollama plugin"
@@ -7,12 +7,12 @@ title: "Ollama plugin"
 
 # Ollama plugin
 
-Adds Ollama, Ollama Cloud model provider support to OpenClaw.
+Adds Ollama, Ollama Cloud model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/ollama-provider`
-- Install route: included in OpenClaw
+- Package: `@eve/ollama-provider`
+- Install route: included in EVE
 
 ## Surface
 

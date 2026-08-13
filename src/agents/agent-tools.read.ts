@@ -6,7 +6,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { URL } from "node:url";
-import { detectMime } from "@openclaw/media-core/mime";
+import { detectMime } from "@eve/media-core/mime";
 import { isWindowsDrivePath } from "../infra/archive-path.js";
 import {
   canonicalPathFromExistingAncestor,
@@ -58,7 +58,7 @@ const ADAPTIVE_READ_CONTEXT_SHARE = 0.1;
 const CHARS_PER_TOKEN_ESTIMATE = 4;
 const MAX_ADAPTIVE_READ_PAGES = 4;
 
-type OpenClawReadToolOptions = {
+type EVEReadToolOptions = {
   modelContextWindowTokens?: number;
   imageSanitization?: ImageSanitizationLimits;
 };
@@ -78,7 +78,7 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function resolveAdaptiveReadMaxBytes(options?: OpenClawReadToolOptions): number {
+function resolveAdaptiveReadMaxBytes(options?: EVEReadToolOptions): number {
   const contextWindowTokens = options?.modelContextWindowTokens;
   if (
     typeof contextWindowTokens !== "number" ||
@@ -702,9 +702,9 @@ function withWorkspaceSafeTempHint(error: unknown): unknown {
   if (!isSandboxRootEscapeError(error)) {
     return error;
   }
-  const message = error.message.includes(".openclaw/tmp/")
+  const message = error.message.includes(".eve/tmp/")
     ? error.message
-    : `${error.message}. Use a relative path under \`.openclaw/tmp/\` inside the workspace for scratch/temp/meta files that file tools need to read or write later.`;
+    : `${error.message}. Use a relative path under \`.eve/tmp/\` inside the workspace for scratch/temp/meta files that file tools need to read or write later.`;
   return new Error(message, { cause: error });
 }
 
@@ -833,12 +833,12 @@ type SandboxToolParams = {
   imageSanitization?: ImageSanitizationLimits;
 };
 
-/** Create a sandbox-backed read tool with OpenClaw result normalization. */
+/** Create a sandbox-backed read tool with EVE result normalization. */
 export function createSandboxedReadTool(params: SandboxToolParams) {
   const base = createReadTool(params.root, {
     operations: createSandboxReadOperations(params),
   }) as unknown as AnyAgentTool;
-  return createOpenClawReadTool(base, {
+  return createEVEReadTool(base, {
     modelContextWindowTokens: params.modelContextWindowTokens,
     imageSanitization: params.imageSanitization,
   });
@@ -876,10 +876,10 @@ export function createHostWorkspaceEditTool(root: string, options?: { workspaceO
   return wrapToolParamValidation(base, REQUIRED_PARAM_GROUPS.edit);
 }
 
-/** Wrap the base read tool with OpenClaw paging, MIME, and image handling. */
-export function createOpenClawReadTool(
+/** Wrap the base read tool with EVE paging, MIME, and image handling. */
+export function createEVEReadTool(
   base: AnyAgentTool,
-  options?: OpenClawReadToolOptions,
+  options?: EVEReadToolOptions,
 ): AnyAgentTool {
   return {
     ...base,

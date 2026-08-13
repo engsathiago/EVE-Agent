@@ -57,7 +57,7 @@ export function resolvePowerShellPath(): string {
 // Non-interactive placeholder shells that reject "-c"-style invocations.
 // macOS LaunchDaemon service users commonly use /usr/bin/false so login sessions
 // cannot be opened; honoring SHELL in that case causes every exec to exit 1.
-// See https://github.com/openclaw/openclaw/issues/69077.
+// See https://github.com/engsathiago/eve-agent/issues/69077.
 const NON_INTERACTIVE_SHELLS = new Set(["false", "nologin"]);
 
 function isNonInteractiveShell(shellPath: string): boolean {
@@ -216,7 +216,7 @@ function normalizeShellName(value: string): string {
 }
 
 export function detectRuntimeShell(): string | undefined {
-  const overrideShell = process.env.OPENCLAW_SHELL?.trim();
+  const overrideShell = process.env.EVE_SHELL?.trim();
   if (overrideShell) {
     const name = normalizeShellName(overrideShell);
     if (name) {

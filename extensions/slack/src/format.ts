@@ -1,11 +1,11 @@
 // Slack helper module supports format behavior.
-import type { MarkdownTableMode } from "openclaw/plugin-sdk/config-contracts";
+import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
 import {
   markdownToIR,
   type MarkdownLinkSpan,
   renderMarkdownIRChunksWithinLimit,
-} from "openclaw/plugin-sdk/text-chunking";
-import { renderMarkdownWithMarkers } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/text-chunking";
+import { renderMarkdownWithMarkers } from "eve-agent/plugin-sdk/text-chunking";
 
 // Escape special characters for Slack mrkdwn format.
 // Preserve Slack's angle-bracket tokens so mentions and links stay intact.

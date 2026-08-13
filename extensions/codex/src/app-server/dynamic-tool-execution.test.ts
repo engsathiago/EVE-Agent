@@ -1,5 +1,5 @@
 // Codex tests cover dynamic tool execution plugin behavior.
-import { embeddedAgentLog } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   CODEX_DYNAMIC_IMAGE_TOOL_TIMEOUT_MS,
@@ -214,7 +214,7 @@ describe("dynamic tool execution helpers", () => {
       contentItems: [
         {
           type: "inputText",
-          text: "OpenClaw dynamic tool call timed out after 1ms while running tool message.",
+          text: "EVE dynamic tool call timed out after 1ms while running tool message.",
         },
       ],
     });
@@ -227,12 +227,12 @@ describe("dynamic tool execution helpers", () => {
         content: [
           {
             type: "text",
-            text: "OpenClaw dynamic tool call timed out after 1ms while running tool message.",
+            text: "EVE dynamic tool call timed out after 1ms while running tool message.",
           },
         ],
         details: {
           status: "failed",
-          error: "OpenClaw dynamic tool call timed out after 1ms while running tool message.",
+          error: "EVE dynamic tool call timed out after 1ms while running tool message.",
         },
       },
       isError: true,
@@ -263,7 +263,7 @@ describe("dynamic tool execution helpers", () => {
     expect(result).toEqual({
       success: false,
       contentItems: [
-        { type: "inputText", text: "OpenClaw dynamic tool call aborted before execution." },
+        { type: "inputText", text: "EVE dynamic tool call aborted before execution." },
       ],
     });
     expect(handleToolCall).not.toHaveBeenCalled();
@@ -271,10 +271,10 @@ describe("dynamic tool execution helpers", () => {
     expect(onAgentToolResult).toHaveBeenCalledWith({
       toolName: "memory_search",
       result: {
-        content: [{ type: "text", text: "OpenClaw dynamic tool call aborted before execution." }],
+        content: [{ type: "text", text: "EVE dynamic tool call aborted before execution." }],
         details: {
           status: "failed",
-          error: "OpenClaw dynamic tool call aborted before execution.",
+          error: "EVE dynamic tool call aborted before execution.",
         },
       },
       isError: true,
@@ -307,7 +307,7 @@ describe("dynamic tool execution helpers", () => {
       contentItems: [
         {
           type: "inputText",
-          text: "OpenClaw dynamic tool call timed out after 1ms while waiting for process action=poll sessionId=process-session. This is a tool RPC timeout, not a session idle timeout.",
+          text: "EVE dynamic tool call timed out after 1ms while waiting for process action=poll sessionId=process-session. This is a tool RPC timeout, not a session idle timeout.",
         },
       ],
     });
@@ -361,7 +361,7 @@ describe("dynamic tool execution helpers", () => {
         currentTurnHadNonTerminalDynamicToolResult: false,
         activeAppServerTurnRequests: 0,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
       }),
     ).toBe(true);
     expect(
@@ -372,7 +372,7 @@ describe("dynamic tool execution helpers", () => {
         currentTurnHadNonTerminalDynamicToolResult: true,
         activeAppServerTurnRequests: 0,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
       }),
     ).toBe(false);
     expect(
@@ -383,7 +383,7 @@ describe("dynamic tool execution helpers", () => {
         currentTurnHadNonTerminalDynamicToolResult: false,
         activeAppServerTurnRequests: 1,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
       }),
     ).toBe(false);
     expect(
@@ -394,7 +394,7 @@ describe("dynamic tool execution helpers", () => {
         currentTurnHadNonTerminalDynamicToolResult: false,
         activeAppServerTurnRequests: 0,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 1,
+        pendingEVEDynamicToolCompletionIdsCount: 1,
       }),
     ).toBe(false);
   });
@@ -404,7 +404,7 @@ describe("dynamic tool execution helpers", () => {
       resolveTerminalDynamicToolBatchAction({
         activeAppServerTurnRequests: 1,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
         currentTurnHadNonTerminalDynamicToolResult: false,
         hasPendingTerminalDynamicToolRelease: true,
       }),
@@ -413,7 +413,7 @@ describe("dynamic tool execution helpers", () => {
       resolveTerminalDynamicToolBatchAction({
         activeAppServerTurnRequests: 0,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
         currentTurnHadNonTerminalDynamicToolResult: true,
         hasPendingTerminalDynamicToolRelease: true,
       }),
@@ -422,7 +422,7 @@ describe("dynamic tool execution helpers", () => {
       resolveTerminalDynamicToolBatchAction({
         activeAppServerTurnRequests: 0,
         activeTurnItemIdsCount: 0,
-        pendingOpenClawDynamicToolCompletionIdsCount: 0,
+        pendingEVEDynamicToolCompletionIdsCount: 0,
         currentTurnHadNonTerminalDynamicToolResult: false,
         hasPendingTerminalDynamicToolRelease: true,
       }),

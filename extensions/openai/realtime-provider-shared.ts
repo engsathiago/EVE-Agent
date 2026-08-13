@@ -1,16 +1,16 @@
 // Openai provider module implements model/runtime integration.
-import { resolveExpiresAtMsFromEpochSeconds } from "openclaw/plugin-sdk/number-runtime";
+import { resolveExpiresAtMsFromEpochSeconds } from "eve-agent/plugin-sdk/number-runtime";
 import {
   createProviderHttpError,
   resolveProviderRequestHeaders,
-} from "openclaw/plugin-sdk/provider-http";
-import { captureWsEvent } from "openclaw/plugin-sdk/proxy-capture";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/provider-http";
+import { captureWsEvent } from "eve-agent/plugin-sdk/proxy-capture";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   asFiniteNumber,
   asOptionalRecord as asObjectRecord,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export const trimToUndefined = normalizeOptionalString;
 export { asFiniteNumber, asObjectRecord };

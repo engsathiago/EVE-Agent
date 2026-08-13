@@ -1,6 +1,6 @@
 // Covers exec sandbox host audit findings.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { collectExecRuntimeFindings } from "./audit.js";
 
 function hasFinding(
@@ -29,7 +29,7 @@ describe("security audit exec sandbox host findings", () => {
             },
           },
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       checkId: "tools.exec.host_sandbox_no_sandbox_defaults" as const,
     },
     {
@@ -57,7 +57,7 @@ describe("security audit exec sandbox host findings", () => {
             },
           ],
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       checkId: "tools.exec.host_sandbox_no_sandbox_agents" as const,
     },
   ])("$name", ({ cfg, checkId }) => {

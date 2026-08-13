@@ -6,11 +6,11 @@
 import crypto from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
+import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { isAcpRuntimeSpawnAvailable } from "../acp/runtime/availability.js";
 import {
   resolveChannelDefaultBindingPlacement,
@@ -29,7 +29,7 @@ import {
   resolveThreadBindingSpawnPolicy,
 } from "../channels/thread-bindings-policy.js";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SubagentSpawnPreparation } from "../context-engine/types.js";
 import { stringifyRouteThreadId } from "../plugin-sdk/channel-route.js";
 import { listRegisteredPluginAgentPromptGuidance } from "../plugins/command-registry-state.js";
@@ -129,7 +129,7 @@ export type {
 
 export { decodeStrictBase64 };
 
-function resolveConfiguredAgentIds(cfg: OpenClawConfig): string[] {
+function resolveConfiguredAgentIds(cfg: EVEConfig): string[] {
   return listAgentIds(cfg);
 }
 
@@ -370,7 +370,7 @@ function loadSubagentConfig() {
 }
 
 async function persistInitialChildSessionRuntimeModel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   childSessionKey: string;
   resolvedModel?: string;
 }): Promise<string | undefined> {
@@ -414,7 +414,7 @@ function resolveStoreEntryByKeys(
 }
 
 function readRequesterThinkingLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   requesterInternalKey: string;
   requesterAgentId?: string;
 }): string | undefined {
@@ -488,7 +488,7 @@ type PreparedSpawnContext =
   | { status: "error"; error: string };
 
 async function prepareSubagentSessionContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   contextMode: SpawnSubagentContextMode;
   requesterAgentId: string;
   targetAgentId: string;
@@ -543,7 +543,7 @@ async function prepareSubagentSessionContext(params: {
       });
       if (!fork) {
         throw new Error(
-          'context="fork" requested but OpenClaw could not fork the requester transcript.',
+          'context="fork" requested but EVE could not fork the requester transcript.',
         );
       }
       pruneLegacyStoreKeys({
@@ -573,7 +573,7 @@ async function prepareSubagentSessionContext(params: {
         }
         return {
           status: "error",
-          error: 'context="fork" requested but OpenClaw could not prepare forked context.',
+          error: 'context="fork" requested but EVE could not prepare forked context.',
         };
       }
       return {
@@ -597,7 +597,7 @@ async function prepareSubagentSessionContext(params: {
 }
 
 async function prepareContextEngineSubagentSpawn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: PreparedSpawnContext & { status: "ok" };
   requesterInternalKey: string;
   childSessionKey: string;
@@ -724,7 +724,7 @@ function resolveSpawnMode(params: {
 function resolveSubagentContextMode(params: {
   requestedContext?: SpawnSubagentContextMode;
   threadRequested: boolean;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   requester: {
     channel?: string;
     accountId?: string;
@@ -784,7 +784,7 @@ function resolvePlacementWithoutChannelPlugin(params: {
 }
 
 function resolveSubagentSpawnChannelAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string;
   accountId?: string;
 }): string | undefined {
@@ -801,7 +801,7 @@ function resolveSubagentSpawnChannelAccountId(params: {
 }
 
 function resolveConversationRefForThreadBinding(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string;
   accountId?: string;
   to?: string;
@@ -869,7 +869,7 @@ function resolveRequesterBoundConversationRef(params: {
 }
 
 function prepareSubagentThreadBinding(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   mode: SpawnSubagentMode;
   requesterSessionKey?: string;
   requester: {
@@ -985,7 +985,7 @@ function prepareSubagentThreadBinding(params: {
 }
 
 async function bindThreadForSubagentSpawn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   childSessionKey: string;
   agentId: string;
   label?: string;

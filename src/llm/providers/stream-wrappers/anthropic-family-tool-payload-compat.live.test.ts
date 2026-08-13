@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { Model } from "openclaw/plugin-sdk/llm";
-import { createAssistantMessageEventStream } from "openclaw/plugin-sdk/llm";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
+import type { Model } from "eve-agent/plugin-sdk/llm";
+import { createAssistantMessageEventStream } from "eve-agent/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import { isLiveTestEnabled } from "../../../agents/live-test-helpers.js";
 import { createOpenAIAnthropicToolPayloadCompatibilityWrapper } from "./anthropic-family-tool-payload-compat.js";
@@ -12,7 +12,7 @@ const describeLive = LIVE ? describe : describe.skip;
 
 describeLive("OpenAI-compatible Anthropic tool payload wrapper live", () => {
   it("sends a healthy pinned tool after quarantining an unreadable sibling", async () => {
-    const liveModelId = process.env.OPENCLAW_LIVE_OPENAI_CHAT_TOOL_MODEL || "gpt-5.5";
+    const liveModelId = process.env.EVE_LIVE_OPENAI_CHAT_TOOL_MODEL || "gpt-5.5";
     let projectedPayload: Record<string, unknown> | undefined;
     const baseStreamFn: StreamFn = (model, context, options) => {
       const payload: Record<string, unknown> = {

@@ -1,11 +1,11 @@
-# OpenClaw WhatsApp
+# EVE WhatsApp
 
-Official OpenClaw channel plugin for WhatsApp Web chats.
+Official EVE channel plugin for WhatsApp Web chats.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/whatsapp
+eve plugin add @eve/whatsapp
 ```
 
-Link a WhatsApp account through the plugin's setup flow, then configure which chats OpenClaw agents should monitor and reply to.
+Link a WhatsApp account through the plugin's setup flow, then configure which chats EVE agents should monitor and reply to.

@@ -1,6 +1,6 @@
 /** Tests configured ACP binding lifecycle behavior. */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   buildConfiguredAcpSessionKey,
   type ConfiguredAcpBindingSpec,
@@ -27,7 +27,7 @@ const baseCfg = {
   agents: {
     list: [{ id: "codex" }, { id: "claude" }],
   },
-} satisfies OpenClawConfig;
+} satisfies EVEConfig;
 
 let ensureConfiguredAcpBindingSession: typeof import("./persistent-bindings.lifecycle.js").ensureConfiguredAcpBindingSession;
 
@@ -101,7 +101,7 @@ describe("ensureConfiguredAcpBindingSession", () => {
     const spec = createPersistentSpec();
     const sessionKey = mockReadySession({
       spec,
-      cwd: "/workspace/openclaw",
+      cwd: "/workspace/eve",
     });
 
     const ensured = await ensureConfiguredAcpBindingSession({

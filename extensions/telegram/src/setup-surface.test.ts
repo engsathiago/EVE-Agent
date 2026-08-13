@@ -1,6 +1,6 @@
 // Telegram tests cover setup surface plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/setup";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/setup";
 import { describe, expect, it, vi } from "vitest";
 import { promptTelegramAllowFromForAccount } from "./setup-core.js";
 import {
@@ -55,10 +55,10 @@ describe("telegram DM access warning helpers", () => {
     const lines = buildTelegramDmAccessWarningLines(DEFAULT_ACCOUNT_ID);
 
     expect(lines.join("\n")).toContain(
-      'openclaw config set channels.telegram.dmPolicy "allowlist"',
+      'eve config set channels.telegram.dmPolicy "allowlist"',
     );
     expect(lines.join("\n")).toContain(
-      `openclaw config set channels.telegram.allowFrom '["YOUR_USER_ID"]'`,
+      `eve config set channels.telegram.allowFrom '["YOUR_USER_ID"]'`,
     );
   });
 
@@ -66,10 +66,10 @@ describe("telegram DM access warning helpers", () => {
     const lines = buildTelegramDmAccessWarningLines("alerts");
 
     expect(lines.join("\n")).toContain(
-      'openclaw config set channels.telegram.accounts.alerts.dmPolicy "allowlist"',
+      'eve config set channels.telegram.accounts.alerts.dmPolicy "allowlist"',
     );
     expect(lines.join("\n")).toContain(
-      `openclaw config set channels.telegram.accounts.alerts.allowFrom '["YOUR_USER_ID"]'`,
+      `eve config set channels.telegram.accounts.alerts.allowFrom '["YOUR_USER_ID"]'`,
     );
   });
 
@@ -120,7 +120,7 @@ describe("telegramSetupDmPolicy", () => {
   });
 
   it("uses configured defaultAccount for omitted DM policy account context", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         telegram: {
           defaultAccount: "alerts",
@@ -148,7 +148,7 @@ describe("telegramSetupDmPolicy", () => {
   });
 
   it('writes open policy state to the named account and preserves inherited allowFrom with "*"', () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       channels: {
         telegram: {
           allowFrom: ["123"],
@@ -194,8 +194,8 @@ describe("telegramSetupWizard allowFrom", () => {
   });
 
   it("localizes setup wizard allowFrom copy when loaded under zh-CN", async () => {
-    const previousLocale = process.env.OPENCLAW_LOCALE;
-    process.env.OPENCLAW_LOCALE = "zh-CN";
+    const previousLocale = process.env.EVE_LOCALE;
+    process.env.EVE_LOCALE = "zh-CN";
 
     try {
       vi.resetModules();
@@ -208,16 +208,16 @@ describe("telegramSetupWizard allowFrom", () => {
       );
     } finally {
       if (previousLocale === undefined) {
-        delete process.env.OPENCLAW_LOCALE;
+        delete process.env.EVE_LOCALE;
       } else {
-        process.env.OPENCLAW_LOCALE = previousLocale;
+        process.env.EVE_LOCALE = previousLocale;
       }
     }
   });
 
   it("localizes legacy allowFrom prompt copy", async () => {
-    const previousLocale = process.env.OPENCLAW_LOCALE;
-    process.env.OPENCLAW_LOCALE = "zh-CN";
+    const previousLocale = process.env.EVE_LOCALE;
+    process.env.EVE_LOCALE = "zh-CN";
     const note = vi.fn(async () => {});
     const text = vi.fn(async () => "123456789");
 
@@ -239,9 +239,9 @@ describe("telegramSetupWizard allowFrom", () => {
       );
     } finally {
       if (previousLocale === undefined) {
-        delete process.env.OPENCLAW_LOCALE;
+        delete process.env.EVE_LOCALE;
       } else {
-        process.env.OPENCLAW_LOCALE = previousLocale;
+        process.env.EVE_LOCALE = previousLocale;
       }
     }
   });

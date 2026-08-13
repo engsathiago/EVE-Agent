@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { registerSandboxBackend } from "./sandbox/backend.js";
 import { ensureSandboxWorkspaceForSession, resolveSandboxContext } from "./sandbox/context.js";
 
@@ -57,7 +57,7 @@ async function createSandboxFixtureDir(prefix: string): Promise<string> {
 }
 
 beforeAll(async () => {
-  sandboxFixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sandbox-context-"));
+  sandboxFixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-sandbox-context-"));
 });
 
 afterAll(async () => {
@@ -66,7 +66,7 @@ afterAll(async () => {
 
 describe("resolveSandboxContext", () => {
   it("does not sandbox the agent main session in non-main mode", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: { mode: "non-main", scope: "session" },
@@ -78,14 +78,14 @@ describe("resolveSandboxContext", () => {
     const result = await resolveSandboxContext({
       config: cfg,
       sessionKey: "agent:main:main",
-      workspaceDir: "/tmp/openclaw-test",
+      workspaceDir: "/tmp/eve-test",
     });
 
     expect(result).toBeNull();
   }, 15_000);
 
   it("does not create a sandbox workspace for the agent main session in non-main mode", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: { mode: "non-main", scope: "session" },
@@ -97,7 +97,7 @@ describe("resolveSandboxContext", () => {
     const result = await ensureSandboxWorkspaceForSession({
       config: cfg,
       sessionKey: "agent:main:main",
-      workspaceDir: "/tmp/openclaw-test",
+      workspaceDir: "/tmp/eve-test",
     });
 
     expect(result).toBeNull();
@@ -123,7 +123,7 @@ describe("resolveSandboxContext", () => {
     }));
     const restore = registerSandboxBackend("test-off-backend", backendFactory);
     try {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         agents: {
           defaults: {
             sandbox: {
@@ -139,14 +139,14 @@ describe("resolveSandboxContext", () => {
         resolveSandboxContext({
           config: cfg,
           sessionKey: "agent:main:cron:job:run:uuid",
-          workspaceDir: "/tmp/openclaw-test",
+          workspaceDir: "/tmp/eve-test",
         }),
       ).resolves.toBeNull();
       await expect(
         resolveSandboxContext({
           config: cfg,
           sessionKey: "agent:main:subagent:child",
-          workspaceDir: "/tmp/openclaw-test",
+          workspaceDir: "/tmp/eve-test",
         }),
       ).resolves.toBeNull();
 
@@ -157,7 +157,7 @@ describe("resolveSandboxContext", () => {
   }, 15_000);
 
   it("treats main session aliases as main in non-main mode", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       session: { mainKey: "work" },
       agents: {
         defaults: {
@@ -171,7 +171,7 @@ describe("resolveSandboxContext", () => {
       await resolveSandboxContext({
         config: cfg,
         sessionKey: "main",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       }),
     ).toBeNull();
 
@@ -179,7 +179,7 @@ describe("resolveSandboxContext", () => {
       await resolveSandboxContext({
         config: cfg,
         sessionKey: "agent:main:main",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       }),
     ).toBeNull();
 
@@ -187,7 +187,7 @@ describe("resolveSandboxContext", () => {
       await ensureSandboxWorkspaceForSession({
         config: cfg,
         sessionKey: "work",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       }),
     ).toBeNull();
 
@@ -195,7 +195,7 @@ describe("resolveSandboxContext", () => {
       await ensureSandboxWorkspaceForSession({
         config: cfg,
         sessionKey: "agent:main:main",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       }),
     ).toBeNull();
   }, 15_000);
@@ -221,7 +221,7 @@ describe("resolveSandboxContext", () => {
       resolveWorkdir: () => "/runtime/workspace",
     });
     try {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         agents: {
           defaults: {
             sandbox: {
@@ -238,7 +238,7 @@ describe("resolveSandboxContext", () => {
       const result = await resolveSandboxContext({
         config: cfg,
         sessionKey: "agent:worker:task",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       });
 
       expect(result?.backendId).toBe("test-backend");
@@ -249,7 +249,7 @@ describe("resolveSandboxContext", () => {
       const workspace = await ensureSandboxWorkspaceForSession({
         config: cfg,
         sessionKey: "agent:worker:task",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       });
       expect(workspace?.containerWorkdir).toBe("/runtime/workspace");
     } finally {
@@ -277,7 +277,7 @@ describe("resolveSandboxContext", () => {
       }),
     }));
     try {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         browser: {
           ssrfPolicy: { dangerouslyAllowPrivateNetwork: true },
         },
@@ -298,7 +298,7 @@ describe("resolveSandboxContext", () => {
       await resolveSandboxContext({
         config: cfg,
         sessionKey: "agent:worker:browser",
-        workspaceDir: "/tmp/openclaw-test",
+        workspaceDir: "/tmp/eve-test",
       });
 
       const browserCalls = ensureSandboxBrowserMock.mock.calls as unknown as Array<
@@ -316,7 +316,7 @@ describe("resolveSandboxContext", () => {
     const bundledDir = await createSandboxFixtureDir("bundled");
     const workspaceDir = await createSandboxFixtureDir("workspace");
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: {
@@ -344,7 +344,7 @@ describe("resolveSandboxContext", () => {
         {
           sourceWorkspaceDir?: string;
           targetWorkspaceDir?: string;
-          config?: OpenClawConfig;
+          config?: EVEConfig;
           agentId?: string;
           eligibility?: unknown;
         },
@@ -363,7 +363,7 @@ describe("resolveSandboxContext", () => {
     const workspaceDir = await createSandboxFixtureDir("workspace");
     const userOwnedSandboxSkillsDir = path.join(
       workspaceDir,
-      ".openclaw",
+      ".eve",
       "sandbox-skills",
       "skills",
       "user-owned",
@@ -371,14 +371,14 @@ describe("resolveSandboxContext", () => {
     await fs.mkdir(userOwnedSandboxSkillsDir, { recursive: true });
     await fs.writeFile(path.join(userOwnedSandboxSkillsDir, "SKILL.md"), "# User owned\n");
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: {
             mode: "all",
             scope: "session",
             workspaceAccess: "rw",
-            workspaceRoot: path.join(workspaceDir, ".openclaw", "sandboxes"),
+            workspaceRoot: path.join(workspaceDir, ".eve", "sandboxes"),
           },
         },
       },
@@ -396,7 +396,7 @@ describe("resolveSandboxContext", () => {
         {
           sourceWorkspaceDir?: string;
           targetWorkspaceDir?: string;
-          config?: OpenClawConfig;
+          config?: EVEConfig;
           agentId?: string;
           eligibility?: unknown;
         },
@@ -405,15 +405,15 @@ describe("resolveSandboxContext", () => {
     const [syncOptions] = syncCalls[0] ?? [];
     expect(syncOptions?.sourceWorkspaceDir).toBe(workspaceDir);
     expect(syncOptions?.targetWorkspaceDir).toContain(
-      path.join(".openclaw", "sandbox", "skills-workspaces"),
+      path.join(".eve", "sandbox", "skills-workspaces"),
     );
     expect(syncOptions?.targetWorkspaceDir).toMatch(
-      /[\\/]agent-main-main-[a-f0-9]{8}[\\/]\.openclaw[\\/]sandbox-skills$/,
+      /[\\/]agent-main-main-[a-f0-9]{8}[\\/]\.eve[\\/]sandbox-skills$/,
     );
     expect(syncOptions?.targetWorkspaceDir).not.toBe(
-      path.join(workspaceDir, ".openclaw", "sandbox-skills"),
+      path.join(workspaceDir, ".eve", "sandbox-skills"),
     );
-    expect(syncOptions?.targetWorkspaceDir?.startsWith(path.join(workspaceDir, ".openclaw"))).toBe(
+    expect(syncOptions?.targetWorkspaceDir?.startsWith(path.join(workspaceDir, ".eve"))).toBe(
       false,
     );
     expect(syncOptions?.config).toBe(cfg);
@@ -430,7 +430,7 @@ describe("resolveSandboxContext", () => {
   it("uses the SSH backend remote workspace for sandbox workspace info", async () => {
     syncSkillsToWorkspaceMock.mockClear();
     const workspaceDir = await createSandboxFixtureDir("ssh-workspace");
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: {
@@ -440,7 +440,7 @@ describe("resolveSandboxContext", () => {
             workspaceAccess: "rw",
             ssh: {
               target: "ssh.example.test",
-              workspaceRoot: "/remote/openclaw",
+              workspaceRoot: "/remote/eve",
             },
           },
         },
@@ -455,11 +455,11 @@ describe("resolveSandboxContext", () => {
 
     expect(result?.workspaceDir).toBe(workspaceDir);
     expect(result?.containerWorkdir).toMatch(
-      /^\/remote\/openclaw\/openclaw-ssh-agent-main-main-[a-f0-9]{8}\/workspace$/,
+      /^\/remote\/eve\/eve-ssh-agent-main-main-[a-f0-9]{8}\/workspace$/,
     );
     expect(result?.containerWorkdir).not.toBe("/workspace");
     expect(result?.skillsWorkspaceDir).toContain(
-      path.join(".openclaw", "sandbox", "skills-workspaces"),
+      path.join(".eve", "sandbox", "skills-workspaces"),
     );
   }, 15_000);
 
@@ -468,7 +468,7 @@ describe("resolveSandboxContext", () => {
     const workspaceDir = await createSandboxFixtureDir("shared-workspace");
     const userOwnedSandboxSkillsDir = path.join(
       workspaceDir,
-      ".openclaw",
+      ".eve",
       "sandbox-skills",
       "skills",
       "user-owned",
@@ -476,7 +476,7 @@ describe("resolveSandboxContext", () => {
     await fs.mkdir(userOwnedSandboxSkillsDir, { recursive: true });
     await fs.writeFile(path.join(userOwnedSandboxSkillsDir, "SKILL.md"), "# User owned\n");
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           sandbox: {
@@ -507,13 +507,13 @@ describe("resolveSandboxContext", () => {
     const [syncOptions] = syncCalls[0] ?? [];
     expect(syncOptions?.sourceWorkspaceDir).toBe(workspaceDir);
     expect(syncOptions?.targetWorkspaceDir).toContain(
-      path.join(".openclaw", "sandbox", "skills-workspaces"),
+      path.join(".eve", "sandbox", "skills-workspaces"),
     );
     expect(syncOptions?.targetWorkspaceDir).toMatch(
-      /[\\/]shared-[a-f0-9]{8}[\\/]\.openclaw[\\/]sandbox-skills$/,
+      /[\\/]shared-[a-f0-9]{8}[\\/]\.eve[\\/]sandbox-skills$/,
     );
     expect(syncOptions?.targetWorkspaceDir).not.toBe(
-      path.join(workspaceDir, ".openclaw", "sandbox-skills"),
+      path.join(workspaceDir, ".eve", "sandbox-skills"),
     );
     await expect(
       fs.readFile(path.join(userOwnedSandboxSkillsDir, "SKILL.md"), "utf8"),

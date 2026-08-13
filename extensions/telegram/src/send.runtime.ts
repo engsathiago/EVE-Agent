@@ -1,8 +1,8 @@
 // Telegram plugin module implements send behavior.
-export { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-export { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-export type { PollInput, MediaKind } from "openclaw/plugin-sdk/media-runtime";
+export { requireRuntimeConfig } from "eve-agent/plugin-sdk/plugin-config-runtime";
+export { resolveMarkdownTableMode } from "eve-agent/plugin-sdk/markdown-table-runtime";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+export type { PollInput, MediaKind } from "eve-agent/plugin-sdk/media-runtime";
 export {
   buildOutboundMediaLoadOptions,
   getImageMetadata,
@@ -10,5 +10,5 @@ export {
   kindFromMime,
   normalizePollInput,
   probeVideoDimensions,
-} from "openclaw/plugin-sdk/media-runtime";
-export { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "eve-agent/plugin-sdk/media-runtime";
+export { loadWebMedia } from "eve-agent/plugin-sdk/web-media";

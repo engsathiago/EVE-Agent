@@ -1,12 +1,12 @@
 ---
-summary: "CLI reference for `openclaw nodes` (status, pairing, invoke, camera/canvas/screen)"
+summary: "CLI reference for `eve nodes` (status, pairing, invoke, camera/canvas/screen)"
 read_when:
   - You're managing paired nodes (cameras, screen, canvas)
   - You need to approve requests or invoke node commands
 title: "Nodes"
 ---
 
-# `openclaw nodes`
+# `eve nodes`
 
 Manage paired nodes (devices) and invoke node capabilities.
 
@@ -23,17 +23,17 @@ Common options:
 ## Common commands
 
 ```bash
-openclaw nodes list
-openclaw nodes list --connected
-openclaw nodes list --last-connected 24h
-openclaw nodes pending
-openclaw nodes approve <requestId>
-openclaw nodes reject <requestId>
-openclaw nodes remove --node <id|name|ip>
-openclaw nodes rename --node <id|name|ip> --name <displayName>
-openclaw nodes status
-openclaw nodes status --connected
-openclaw nodes status --last-connected 24h
+eve nodes list
+eve nodes list --connected
+eve nodes list --last-connected 24h
+eve nodes pending
+eve nodes approve <requestId>
+eve nodes reject <requestId>
+eve nodes remove --node <id|name|ip>
+eve nodes rename --node <id|name|ip> --name <displayName>
+eve nodes status
+eve nodes status --connected
+eve nodes status --last-connected 24h
 ```
 
 `nodes list` prints pending/paired tables. Paired rows include the most recent connect age (Last Connect).
@@ -49,11 +49,11 @@ mixed-role device additionally needs `operator.admin`.
 
 Approval note:
 
-- `openclaw nodes pending` only needs pairing scope.
+- `eve nodes pending` only needs pairing scope.
 - `gateway.nodes.pairing.autoApproveCidrs` can skip the pending step only for
   explicitly trusted, first-time `role: node` device pairing. It is off by
   default and does not approve upgrades.
-- `openclaw nodes approve <requestId>` inherits extra scope requirements from the
+- `eve nodes approve <requestId>` inherits extra scope requirements from the
   pending request:
   - commandless request: pairing only
   - non-exec node commands: pairing + write
@@ -62,7 +62,7 @@ Approval note:
 ## Invoke
 
 ```bash
-openclaw nodes invoke --node <id|name|ip> --command <command> --params <json>
+eve nodes invoke --node <id|name|ip> --command <command> --params <json>
 ```
 
 Invoke flags:
@@ -72,9 +72,9 @@ Invoke flags:
 - `--idempotency-key <key>`: optional idempotency key.
 - `system.run` and `system.run.prepare` are blocked here; use the `exec` tool with `host=node` for shell execution.
 
-For shell execution on a node, use the `exec` tool with `host=node` instead of `openclaw nodes run`.
+For shell execution on a node, use the `exec` tool with `host=node` instead of `eve nodes run`.
 The `nodes` CLI is now capability-focused: direct RPC via `nodes invoke`, plus pairing, camera,
-screen, location, Canvas, and notifications. Canvas commands are implemented by the bundled experimental Canvas plugin; core keeps a compatibility hook so they remain under `openclaw nodes canvas`.
+screen, location, Canvas, and notifications. Canvas commands are implemented by the bundled experimental Canvas plugin; core keeps a compatibility hook so they remain under `eve nodes canvas`.
 
 ## Related
 

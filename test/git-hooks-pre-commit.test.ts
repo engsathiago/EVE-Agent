@@ -107,7 +107,7 @@ afterEach(() => {
 
 describe("git-hooks/pre-commit (integration)", () => {
   it("does not treat staged filenames as git-add flags (e.g. --all)", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-pre-commit-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-pre-commit-");
     run(dir, "git", ["init", "-q", "--initial-branch=main"]);
 
     // Use the real hook script and lightweight helper stubs.
@@ -129,7 +129,7 @@ describe("git-hooks/pre-commit (integration)", () => {
   });
 
   it("does not run the changed-scope check for non-doc staged changes", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-pre-commit-no-check-changed-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-pre-commit-no-check-changed-");
     run(dir, "git", ["init", "-q", "--initial-branch=main"]);
 
     const fakeBinDir = installPreCommitFixture(dir);
@@ -152,7 +152,7 @@ describe("git-hooks/pre-commit (integration)", () => {
   });
 
   it("does not re-add staged paths that are ignored by the current .gitignore", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-pre-commit-ignored-staged-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-pre-commit-ignored-staged-");
     run(dir, "git", ["init", "-q", "--initial-branch=main"]);
 
     const fakeBinDir = installPreCommitFixture(dir);
@@ -176,7 +176,7 @@ describe("git-hooks/pre-commit (integration)", () => {
   });
 
   it("ignores FAST_COMMIT because the hook is already formatting-only", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-pre-commit-fast-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-pre-commit-fast-");
     run(dir, "git", ["init", "-q", "--initial-branch=main"]);
 
     const fakeBinDir = installPreCommitFixture(dir);
@@ -203,7 +203,7 @@ describe("git-hooks/pre-commit (integration)", () => {
 
 describe("scripts/pre-commit/run-node-tool.sh", () => {
   it("runs the installed local tool without invoking pnpm", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-run-node-tool-local-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-run-node-tool-local-");
     installRunNodeToolFixture(dir);
     writeFileSync(path.join(dir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'\n", "utf8");
 
@@ -226,7 +226,7 @@ describe("scripts/pre-commit/run-node-tool.sh", () => {
   });
 
   it("fails before pnpm can hydrate dependencies when node_modules is missing", () => {
-    const dir = makeTempRepoRoot(tempDirs, "openclaw-run-node-tool-missing-deps-");
+    const dir = makeTempRepoRoot(tempDirs, "eve-run-node-tool-missing-deps-");
     installRunNodeToolFixture(dir);
     writeFileSync(path.join(dir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'\n", "utf8");
 

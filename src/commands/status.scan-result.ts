@@ -1,7 +1,7 @@
 // Normalized full status scan result shape.
 // Builders flatten the gateway snapshot so downstream text/JSON code reads one stable object.
 
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { collectChannelStatusIssues as collectChannelStatusIssuesFn } from "../infra/channels-status-issues.js";
 import { resolveOsSummary } from "../infra/os-summary.js";
 import type { UpdateCheckResult } from "../infra/update-check.js";
@@ -17,8 +17,8 @@ import type {
 import type { getStatusSummary as getStatusSummaryFn } from "./status.summary.js";
 
 export type StatusScanResult = {
-  cfg: OpenClawConfig;
-  sourceConfig: OpenClawConfig;
+  cfg: EVEConfig;
+  sourceConfig: EVEConfig;
   secretDiagnostics: string[];
   osSummary: ReturnType<typeof resolveOsSummary>;
   tailscaleMode: string;
@@ -47,8 +47,8 @@ export type StatusScanResult = {
 
 /** Flattens overview, gateway, channel, summary, memory, and compatibility inputs into a scan result. */
 export function buildStatusScanResult(params: {
-  cfg: OpenClawConfig;
-  sourceConfig: OpenClawConfig;
+  cfg: EVEConfig;
+  sourceConfig: EVEConfig;
   secretDiagnostics: string[];
   osSummary: ReturnType<typeof resolveOsSummary>;
   tailscaleMode: string;

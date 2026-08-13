@@ -4,9 +4,9 @@ import path from "node:path";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { parseFrontmatterBlock } from "../../packages/markdown-core/src/frontmatter.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { readRootJsonObjectSync } from "../infra/json-files.js";
 import { isPathInsideWithRealpath } from "../security/scan-paths.js";
 import {
@@ -159,7 +159,7 @@ function loadBundleCommandsFromRoot(params: {
 
 export function loadEnabledClaudeBundleCommands(params: {
   workspaceDir: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): ClaudeBundleCommandSpec[] {
   if (!hasExplicitPluginConfig(params.cfg?.plugins)) {
     return [];

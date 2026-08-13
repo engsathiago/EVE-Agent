@@ -6,13 +6,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import type { OpenClawConfig } from "../../../../config/config.js";
+import type { EVEConfig } from "../../../../config/config.js";
 import {
   getSessionBindingService,
   type SessionBindingCapabilities,
   type SessionBindingRecord,
 } from "../../../../infra/outbound/session-binding-service.js";
-import { resolvePreferredOpenClawTmpDir } from "../../../../infra/tmp-openclaw-dir.js";
+import { resolvePreferredEVETmpDir } from "../../../../infra/tmp-eve-dir.js";
 import type { OpenKeyedStoreOptions } from "../../../../plugin-sdk/plugin-state-runtime.js";
 import {
   createPluginStateKeyedStoreForTests,
@@ -42,7 +42,7 @@ type SessionBindingContractEntry = {
 const contractApiPromises = new Map<string, Promise<Record<string, unknown>>>();
 
 const matrixSessionBindingStateDir = fs.mkdtempSync(
-  path.join(resolvePreferredOpenClawTmpDir(), "openclaw-matrix-session-binding-contract-"),
+  path.join(resolvePreferredEVETmpDir(), "eve-matrix-session-binding-contract-"),
 );
 const matrixSessionBindingAuth = {
   accountId: "ops",
@@ -133,7 +133,7 @@ async function createContractMatrixThreadBindingManager() {
 
 const baseSessionBindingCfg = {
   session: { mainKey: "main", scope: "per-sender" },
-} satisfies OpenClawConfig;
+} satisfies EVEConfig;
 
 type ChannelConversationBindingManagerFactory = NonNullable<
   NonNullable<ChannelPlugin["conversationBindings"]>["createManager"]
@@ -142,7 +142,7 @@ type ChannelConversationBindingManagerFactory = NonNullable<
 type DiscordContractApi = {
   createThreadBindingManager: (params: {
     accountId: string;
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     persist: boolean;
     enableSweeper: boolean;
   }) => unknown;
@@ -154,7 +154,7 @@ type DiscordContractApi = {
 type FeishuContractApi = {
   createFeishuThreadBindingManager: (params: {
     accountId?: string;
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
   }) => unknown;
   feishuThreadBindingTesting: {
     resetFeishuThreadBindingsForTests: () => void;

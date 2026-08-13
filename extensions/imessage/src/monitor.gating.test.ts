@@ -1,5 +1,5 @@
 // Imessage tests cover monitor.gating plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it } from "vitest";
 import { resetIMessageShortIdState } from "./monitor-reply-cache.js";
 import {
@@ -15,7 +15,7 @@ beforeEach(() => {
   resetIMessageShortIdState();
 });
 
-function baseCfg(): OpenClawConfig {
+function baseCfg(): EVEConfig {
   return {
     channels: {
       imessage: {
@@ -27,13 +27,13 @@ function baseCfg(): OpenClawConfig {
     },
     session: { mainKey: "main" },
     messages: {
-      groupChat: { mentionPatterns: ["@openclaw"] },
+      groupChat: { mentionPatterns: ["@eve"] },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
 async function resolve(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   message: IMessagePayload;
   storeAllowFrom?: string[];
 }) {
@@ -57,7 +57,7 @@ async function resolve(params: {
 }
 
 async function resolveDispatchDecision(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   message: IMessagePayload;
   groupHistories?: Parameters<typeof resolveIMessageInboundDecision>[0]["groupHistories"];
   allowFrom?: string[];
@@ -91,7 +91,7 @@ async function resolveDispatchDecision(params: {
 }
 
 async function buildDispatchContextPayload(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   message: IMessagePayload;
 }) {
   const { cfg, message } = params;
@@ -162,7 +162,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_id: 42,
       sender: "+15550002222",
       is_from_me: false,
-      text: "@openclaw ping",
+      text: "@eve ping",
       is_group: true,
       chat_name: "Lobster Squad",
       participants: ["+1555", "+1556"],
@@ -186,7 +186,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_identifier: "thread-42",
       sender: "+15550002222",
       is_from_me: false,
-      text: "@openclaw ping",
+      text: "@eve ping",
       is_group: true,
       chat_name: "Lobster Squad",
       participants: ["+1555", "+1556"],
@@ -231,7 +231,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_id: 55,
       sender: "+15550001111",
       is_from_me: false,
-      text: "@openclaw replying now",
+      text: "@eve replying now",
       is_group: true,
       reply_to_id: 9001,
       reply_to_text: "blocked quote",
@@ -270,7 +270,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_id: 55,
       sender: "+15550001111",
       is_from_me: false,
-      text: "@openclaw replying now",
+      text: "@eve replying now",
       is_group: true,
       reply_to_id: 9001,
       reply_to_text: "quoted context",
@@ -315,7 +315,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_id: 56,
       sender: "+15559998888",
       is_from_me: false,
-      text: "@openclaw replying now",
+      text: "@eve replying now",
       is_group: true,
       reply_to_id: 9002,
       reply_to_text: "own quoted context",
@@ -354,7 +354,7 @@ describe("imessage monitor gating + envelope builders", () => {
       chat_id: 55,
       sender: "+15550001111",
       is_from_me: false,
-      text: "@openclaw replying now",
+      text: "@eve replying now",
       is_group: true,
       reply_to_id: 9001,
       reply_to_text: "quoted context",
@@ -448,12 +448,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 123,
         sender: "+15550001111",
         is_from_me: false,
-        text: "@openclaw hello",
+        text: "@eve hello",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw hello",
-      bodyText: "@openclaw hello",
+      messageText: "@eve hello",
+      bodyText: "@eve hello",
       allowFrom: ["*"],
       groupAllowFrom: [],
       groupPolicy: "open",
@@ -480,12 +480,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 202,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw hi",
+        text: "@eve hi",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw hi",
-      bodyText: "@openclaw hi",
+      messageText: "@eve hi",
+      bodyText: "@eve hi",
       allowFrom: ["*"],
       groupAllowFrom: ["chat_id:101"],
       groupPolicy: "allowlist",
@@ -504,12 +504,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 101,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw ok",
+        text: "@eve ok",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw ok",
-      bodyText: "@openclaw ok",
+      messageText: "@eve ok",
+      bodyText: "@eve ok",
       allowFrom: ["*"],
       groupAllowFrom: ["chat_id:101"],
       groupPolicy: "allowlist",
@@ -534,7 +534,7 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 101,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw ok",
+        text: "@eve ok",
         is_group: true,
       },
       allowFrom: ["chat_id:101"],
@@ -560,12 +560,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 101,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw ok",
+        text: "@eve ok",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw ok",
-      bodyText: "@openclaw ok",
+      messageText: "@eve ok",
+      bodyText: "@eve ok",
       allowFrom: ["chat_id:101"],
       groupAllowFrom: [],
       groupPolicy: "allowlist",
@@ -595,12 +595,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 101,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw ok",
+        text: "@eve ok",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw ok",
-      bodyText: "@openclaw ok",
+      messageText: "@eve ok",
+      bodyText: "@eve ok",
       allowFrom: ["chat_id:101"],
       groupAllowFrom: ["+15550004444"],
       groupPolicy: "allowlist",
@@ -693,12 +693,12 @@ describe("imessage monitor gating + envelope builders", () => {
         chat_id: 303,
         sender: "+15550003333",
         is_from_me: false,
-        text: "@openclaw hi",
+        text: "@eve hi",
         is_group: true,
       },
       opts: {},
-      messageText: "@openclaw hi",
-      bodyText: "@openclaw hi",
+      messageText: "@eve hi",
+      bodyText: "@eve hi",
       allowFrom: ["*"],
       groupAllowFrom: [],
       groupPolicy: "disabled",

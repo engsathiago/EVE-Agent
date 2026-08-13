@@ -49,7 +49,7 @@ describe("media store outside-workspace mapping", () => {
 
   beforeAll(async () => {
     ({ SaveMediaSourceError, saveMediaSource } = await import("./store.js"));
-    tempHome = await createTempHomeEnv("openclaw-media-store-test-home-");
+    tempHome = await createTempHomeEnv("eve-media-store-test-home-");
     home = tempHome.home;
   });
 

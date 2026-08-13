@@ -1,11 +1,11 @@
 // Loads post-compaction context summaries for continuation prompts.
 import fs from "node:fs";
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { resolveAgentContextLimits } from "../../agents/agent-scope.js";
 import { resolveCronStyleNow } from "../../agents/current-time.js";
 import { formatDateStamp, resolveUserTimezone } from "../../agents/date-time.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { openRootFile } from "../../infra/boundary-file-read.js";
 
 const MAX_CONTEXT_CHARS = 1800;
@@ -48,7 +48,7 @@ function matchesSectionSet(sectionNames: string[], expectedSections: string[]): 
  * daily memory files instead of guessing based on training cutoff.
  */
 export type PostCompactionContextOptions = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId?: string;
   nowMs?: number;
 };

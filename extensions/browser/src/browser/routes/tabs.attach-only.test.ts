@@ -24,7 +24,7 @@ describe("browser tab routes attachOnly loopback profiles", () => {
         cdpIsLoopback: true,
         cdpPort: 9222,
         color: "#00AA00",
-        driver: "openclaw",
+        driver: "eve",
         headless: false,
         attachOnly: true,
       },

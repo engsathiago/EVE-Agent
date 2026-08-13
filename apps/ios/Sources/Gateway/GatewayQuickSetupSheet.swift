@@ -1,4 +1,4 @@
-import OpenClawKit
+import EVEKit
 import SwiftUI
 
 struct GatewayQuickSetupSheet: View {

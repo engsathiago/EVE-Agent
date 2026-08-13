@@ -1,6 +1,6 @@
 // Verifies plugin loading needed before agent harness selection.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 
 const mocks = vi.hoisted(() => ({
   ensurePluginRegistryLoaded: vi.fn(),
@@ -56,7 +56,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       agentHarnessRuntimeOverride: "codex",
       workspaceDir: "/tmp/workspace",
     });
@@ -83,7 +83,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -110,7 +110,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -154,7 +154,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -186,7 +186,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             codex: { enabled: true },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -220,7 +220,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             openai: { enabled: true },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -251,7 +251,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
         plugins: {
           slots: { memory: "workspace-memory" },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -296,7 +296,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             codex: { enabled: true },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -330,7 +330,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             telegram: { enabled: true },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -376,7 +376,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
     );
   });
 
-  it("keeps custom OpenAI-compatible providers on embedded OpenClaw when no runtime override is set", async () => {
+  it("keeps custom OpenAI-compatible providers on embedded EVE when no runtime override is set", async () => {
     await ensureSelectedAgentHarnessPlugin({
       provider: "openai",
       modelId: "gpt-5.5",
@@ -389,7 +389,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 
@@ -411,7 +411,7 @@ describe("ensureSelectedAgentHarnessPlugin", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       workspaceDir: "/tmp/workspace",
     });
 

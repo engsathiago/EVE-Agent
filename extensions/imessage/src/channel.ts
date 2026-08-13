@@ -1,20 +1,20 @@
 // Imessage plugin module implements channel behavior.
-import { buildDmGroupAccountAllowlistAdapter } from "openclaw/plugin-sdk/allowlist-config-edit";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/channel-core";
+import { buildDmGroupAccountAllowlistAdapter } from "eve-agent/plugin-sdk/allowlist-config-edit";
+import { createChatChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
 import {
   createMessageReceiptFromOutboundResults,
   defineChannelMessageAdapter,
   type ChannelMessageSendResult,
   type MessageReceiptPartKind,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { sanitizeForPlainText } from "openclaw/plugin-sdk/channel-outbound";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { buildOutboundBaseSessionKey, type RoutePeer } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { sanitizeForPlainText } from "eve-agent/plugin-sdk/channel-outbound";
+import { buildPassiveProbedChannelStatusSummary } from "eve-agent/plugin-sdk/extension-shared";
+import { createLazyRuntimeModule } from "eve-agent/plugin-sdk/lazy-runtime";
+import { buildOutboundBaseSessionKey, type RoutePeer } from "eve-agent/plugin-sdk/routing";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "eve-agent/plugin-sdk/status-helpers";
 import { resolveIMessageAccount, type ResolvedIMessageAccount } from "./accounts.js";
 import { imessageMessageActions } from "./actions.js";
 import {
@@ -324,7 +324,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount, IMessageProb
     pairing: {
       text: {
         idLabel: "imessageSenderId",
-        message: "OpenClaw: your access has been approved.",
+        message: "EVE: your access has been approved.",
         notify: async ({ id, cfg }) =>
           await (await loadIMessageChannelRuntime()).notifyIMessageApproval({ id, cfg }),
       },

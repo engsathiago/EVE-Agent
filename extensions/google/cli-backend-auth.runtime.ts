@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { CliBackendPreparedExecution } from "openclaw/plugin-sdk/cli-backend";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import type { CliBackendPreparedExecution } from "eve-agent/plugin-sdk/cli-backend";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import {
   GOOGLE_GEMINI_CLI_PROVIDER_ID,
   resolveGeminiCliProfileHome as resolveGeminiCliProfileHomePath,
@@ -75,7 +75,7 @@ function normalizeString(value: string | undefined): string | undefined {
 function throwUnsupportedGeminiCredential(credential: GeminiAuthProfileCredential): never {
   if (credential.provider === VERCEL_AI_GATEWAY_PROVIDER_ID) {
     throw new Error(
-      "Gemini CLI execution cannot use a vercel-ai-gateway auth profile. Use the OpenClaw vercel-ai-gateway provider instead.",
+      "Gemini CLI execution cannot use a vercel-ai-gateway auth profile. Use the EVE vercel-ai-gateway provider instead.",
     );
   }
   throw new Error("Gemini CLI execution requires a google-gemini-cli auth profile.");
@@ -91,14 +91,14 @@ function throwUnstageableSelectedGeminiProfile(
   }
   if (!credential) {
     throw new Error(
-      "Gemini CLI auth profile was selected but no credential material was found. Re-authenticate with `openclaw models auth login --provider google-gemini-cli --force`.",
+      "Gemini CLI auth profile was selected but no credential material was found. Re-authenticate with `eve models auth login --provider google-gemini-cli --force`.",
     );
   }
   if (credential.provider !== GEMINI_CLI_PROVIDER_ID) {
     throwUnsupportedGeminiCredential(credential);
   }
   throw new Error(
-    "Gemini CLI execution supports google-gemini-cli OAuth or API-key auth profiles. Re-authenticate with `openclaw models auth login --provider google-gemini-cli --force`.",
+    "Gemini CLI execution supports google-gemini-cli OAuth or API-key auth profiles. Re-authenticate with `eve models auth login --provider google-gemini-cli --force`.",
   );
 }
 
@@ -124,7 +124,7 @@ function requireGeminiOAuthCredential(
     !Number.isFinite(credential.expires)
   ) {
     throw new Error(
-      "Gemini CLI OAuth profile is missing usable token material. Re-authenticate with `openclaw models auth login --provider google-gemini-cli --force`.",
+      "Gemini CLI OAuth profile is missing usable token material. Re-authenticate with `eve models auth login --provider google-gemini-cli --force`.",
     );
   }
 
@@ -243,7 +243,7 @@ async function buildGeminiCliSystemSettings(
   );
   if (enforcedType && enforcedType !== selectedType) {
     throw new Error(
-      `Gemini CLI system settings enforce ${enforcedType} auth, but the selected OpenClaw profile requires ${selectedType}.`,
+      `Gemini CLI system settings enforce ${enforcedType} auth, but the selected EVE profile requires ${selectedType}.`,
     );
   }
   security.auth = { ...auth, selectedType };
@@ -277,7 +277,7 @@ async function prepareGeminiCliProfileHome(
   const settings = buildGeminiCliAuthSettings(selectedType);
   const systemSettings = await buildGeminiCliSystemSettings(ctx, selectedType);
   const systemSettingsDir = await fs.mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-gemini-cli-"),
+    path.join(resolvePreferredEVETmpDir(), "eve-gemini-cli-"),
   );
   await fs.chmod(systemSettingsDir, 0o700);
   const systemSettingsPath = path.join(systemSettingsDir, "settings.json");
@@ -303,7 +303,7 @@ async function prepareGeminiCliProfileHome(
 
 async function clearGeminiCliCachedCredentials(geminiDir: string): Promise<void> {
   // Gemini prefers its token store over oauth_creds.json. Rebuild that store
-  // from the selected OpenClaw profile each run so stale CLI auth cannot win.
+  // from the selected EVE profile each run so stale CLI auth cannot win.
   await fs.rm(path.join(geminiDir, GEMINI_CLI_CREDENTIALS_FILENAME), { force: true });
 }
 

@@ -5,9 +5,9 @@ import {
   type Context,
   type Model,
   type Tool,
-} from "openclaw/plugin-sdk/llm";
-import { registerSingleProviderPlugin } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { isLiveTestEnabled } from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/llm";
+import { registerSingleProviderPlugin } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { isLiveTestEnabled } from "eve-agent/plugin-sdk/test-env";
 import { Type } from "typebox";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
@@ -74,7 +74,7 @@ describeLive("moonshot plugin live", () => {
     let lastError: unknown;
     for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
-        result = await tool?.execute({ query: "OpenClaw GitHub", count: 1 });
+        result = await tool?.execute({ query: "EVE GitHub", count: 1 });
         lastError = undefined;
         break;
       } catch (error) {

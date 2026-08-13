@@ -1,8 +1,8 @@
 /** Control-plane provider discovery helpers that keep runtime imports lazy until catalog hooks run. */
-import { sortUniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
 import { normalizeProviderId } from "../agents/model-selection.js";
 import type { ModelProviderConfig } from "../config/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { createLazyImportLoader } from "../shared/lazy-promise.js";
 import { listManifestProviderContributionIds } from "./manifest-contribution-ids.js";
 import type { PluginMetadataRegistryView } from "./plugin-metadata-snapshot.types.js";
@@ -38,7 +38,7 @@ function isSafeProviderConfigKey(value: string): boolean {
 
 /** Options for resolving plugin providers that can contribute model catalog entries. */
 export type ResolveRuntimePluginDiscoveryProvidersParams = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   bundledProviderVitestCompat?: boolean;
@@ -151,7 +151,7 @@ export function normalizePluginDiscoveryResult(params: {
 
 export function runProviderCatalog(params: {
   provider: ProviderPlugin;
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
@@ -182,7 +182,7 @@ export function runProviderCatalog(params: {
 
 export function runProviderStaticCatalog(params: {
   provider: ProviderPlugin;
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;

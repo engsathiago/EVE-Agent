@@ -5,9 +5,9 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { root as fsRoot, sanitizeUntrustedFileName } from "openclaw/plugin-sdk/security-runtime";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
-import { resolveUserPath } from "openclaw/plugin-sdk/text-utility-runtime";
+import { root as fsRoot, sanitizeUntrustedFileName } from "eve-agent/plugin-sdk/security-runtime";
+import { resolveStateDir } from "eve-agent/plugin-sdk/state-paths";
+import { resolveUserPath } from "eve-agent/plugin-sdk/text-utility-runtime";
 import { CANVAS_HOST_PATH } from "./host/a2ui.js";
 
 type CanvasDocumentKind = "html_bundle" | "url_embed" | "document" | "image" | "video_asset";

@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import type { CliBackendConfig } from "../config/types.js";
 import { captureEnv, deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
 import {
@@ -25,7 +25,7 @@ import type {
 const E2E_TIMEOUT_MS = 30_000;
 
 type BundleMcpFixture = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   envSnapshot: ReturnType<typeof captureEnv>;
   fakeClaudePath: string;
   fakeClaudePidPath?: string;
@@ -65,16 +65,16 @@ async function createBundleMcpFixture(params: {
   const envSnapshot = captureEnv([
     "HOME",
     "USERPROFILE",
-    "OPENCLAW_HOME",
-    "OPENCLAW_STATE_DIR",
-    "OPENCLAW_DISABLE_PERSISTED_PLUGIN_REGISTRY",
+    "EVE_HOME",
+    "EVE_STATE_DIR",
+    "EVE_DISABLE_PERSISTED_PLUGIN_REGISTRY",
   ]);
   const tempHome = await fs.mkdtemp(path.join(os.tmpdir(), params.tempPrefix));
   setTestEnvValue("HOME", tempHome);
   setTestEnvValue("USERPROFILE", tempHome);
-  deleteTestEnvValue("OPENCLAW_HOME");
-  deleteTestEnvValue("OPENCLAW_STATE_DIR");
-  setTestEnvValue("OPENCLAW_DISABLE_PERSISTED_PLUGIN_REGISTRY", "1");
+  deleteTestEnvValue("EVE_HOME");
+  deleteTestEnvValue("EVE_STATE_DIR");
+  setTestEnvValue("EVE_DISABLE_PERSISTED_PLUGIN_REGISTRY", "1");
 
   const workspaceDir = path.join(tempHome, "workspace");
   const sessionFile = path.join(tempHome, "session.jsonl");
@@ -87,7 +87,7 @@ async function createBundleMcpFixture(params: {
   const fakeClaudePidPath = params.liveSession
     ? path.join(tempHome, "fake-live-claude.pid")
     : undefined;
-  const pluginRoot = path.join(tempHome, ".openclaw", "extensions", "bundle-probe");
+  const pluginRoot = path.join(tempHome, ".eve", "extensions", "bundle-probe");
   await fs.mkdir(workspaceDir, { recursive: true });
   await writeBundleProbeMcpServer(serverScriptPath);
   if (params.liveSession) {
@@ -97,7 +97,7 @@ async function createBundleMcpFixture(params: {
   }
   await writeClaudeBundle({ pluginRoot, serverScriptPath });
 
-  const config: OpenClawConfig = {
+  const config: EVEConfig = {
     agents: {
       defaults: {
         workspace: workspaceDir,
@@ -139,7 +139,7 @@ function buildTestBackend(params: {
 
 async function prepareBundleMcpExecutionContext(params: {
   backend: CliBackendConfig;
-  config: OpenClawConfig;
+  config: EVEConfig;
   model: string;
   prompt: string;
   runId: string;
@@ -210,7 +210,7 @@ describe("CLI bundle MCP e2e", () => {
     async () => {
       const { executePreparedCliRun } = await import("./cli-runner/execute.js");
       const fixture = await createBundleMcpFixture({
-        tempPrefix: "openclaw-cli-bundle-mcp-",
+        tempPrefix: "eve-cli-bundle-mcp-",
       });
       const context = await prepareBundleMcpExecutionContext({
         backend: buildTestBackend({ commandPath: fixture.fakeClaudePath }),
@@ -243,7 +243,7 @@ describe("CLI bundle MCP e2e", () => {
         await import("./cli-runner/claude-live-session.js");
       const fixture = await createBundleMcpFixture({
         liveSession: true,
-        tempPrefix: "openclaw-cli-live-cleanup-",
+        tempPrefix: "eve-cli-live-cleanup-",
       });
       const context = await prepareBundleMcpExecutionContext({
         backend: buildTestBackend({

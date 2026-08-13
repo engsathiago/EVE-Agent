@@ -1,9 +1,9 @@
 // Opencode Go plugin module implements stream behavior.
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   createDeepSeekV4OpenAICompatibleThinkingWrapper,
   streamWithPayloadPatch,
-} from "openclaw/plugin-sdk/provider-stream-shared";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
 import { isOpencodeGoKimiNoReasoningModelId } from "./provider-catalog.js";
 import { stripOpencodeGoKimiReasoningPayload } from "./reasoning-sanitizer.js";
 

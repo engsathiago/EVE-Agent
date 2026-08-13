@@ -1,8 +1,8 @@
 // File Transfer plugin module implements lazy node invoke policy behavior.
-import type { OpenClawPluginNodeInvokePolicy } from "openclaw/plugin-sdk/plugin-entry";
+import type { EVEPluginNodeInvokePolicy } from "eve-agent/plugin-sdk/plugin-entry";
 import { FILE_TRANSFER_NODE_INVOKE_COMMANDS } from "./node-invoke-policy-commands.js";
 
-type LoadFileTransferNodeInvokePolicy = () => Promise<OpenClawPluginNodeInvokePolicy>;
+type LoadFileTransferNodeInvokePolicy = () => Promise<EVEPluginNodeInvokePolicy>;
 
 const loadFileTransferNodeInvokePolicy: LoadFileTransferNodeInvokePolicy = async () => {
   const { createFileTransferNodeInvokePolicy } = await import("./node-invoke-policy.js");
@@ -11,13 +11,13 @@ const loadFileTransferNodeInvokePolicy: LoadFileTransferNodeInvokePolicy = async
 
 export function createLazyFileTransferNodeInvokePolicy(
   loadPolicy: LoadFileTransferNodeInvokePolicy = loadFileTransferNodeInvokePolicy,
-): OpenClawPluginNodeInvokePolicy {
-  let policyPromise: Promise<OpenClawPluginNodeInvokePolicy> | undefined;
+): EVEPluginNodeInvokePolicy {
+  let policyPromise: Promise<EVEPluginNodeInvokePolicy> | undefined;
 
   return {
     commands: [...FILE_TRANSFER_NODE_INVOKE_COMMANDS],
     async handle(ctx) {
-      let policy: OpenClawPluginNodeInvokePolicy;
+      let policy: EVEPluginNodeInvokePolicy;
       try {
         policyPromise ??= loadPolicy();
         policy = await policyPromise;

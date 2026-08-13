@@ -1,5 +1,5 @@
 // Qa Lab tests cover cron run wait plugin behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, expect, it, vi } from "vitest";
 import { resolveCronRunPollIntervalMs, waitForCronRunCompletion } from "./cron-run-wait.js";
 

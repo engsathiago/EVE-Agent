@@ -24,8 +24,8 @@ function readJsonFile(filePath) {
 /** Return whether a plugin package publishes through an artifact release workflow. */
 export function isPublishablePluginPackage(packageJson) {
   return (
-    packageJson.openclaw?.release?.publishToNpm === true ||
-    packageJson.openclaw?.release?.publishToClawHub === true
+    packageJson.eve?.release?.publishToNpm === true ||
+    packageJson.eve?.release?.publishToClawHub === true
   );
 }
 
@@ -70,7 +70,7 @@ function getRecord(value) {
 function createNeverBundleDependencyMatcher(packageJson) {
   const externalDependencies = collectExternalDependencyNames(packageJson);
   return (id) => {
-    if (id === "openclaw" || id.startsWith("openclaw/")) {
+    if (id === "eve" || id.startsWith("eve/")) {
       return true;
     }
     for (const dependency of externalDependencies) {
@@ -128,8 +128,8 @@ export function resolvePluginNpmRuntimePackageFiles(plan) {
       : [],
   );
   merged.add("dist/**");
-  if (packageRelativePathExists(plan.packageDir, "openclaw.plugin.json")) {
-    merged.add("openclaw.plugin.json");
+  if (packageRelativePathExists(plan.packageDir, "eve.plugin.json")) {
+    merged.add("eve.plugin.json");
   }
   if (packageRelativePathExists(plan.packageDir, "npm-shrinkwrap.json")) {
     merged.add("npm-shrinkwrap.json");
@@ -146,7 +146,7 @@ export function resolvePluginNpmRuntimePackageFiles(plan) {
   return [...merged];
 }
 
-function normalizeOpenClawPeerRange(value) {
+function normalizeEVEPeerRange(value) {
   const normalized = normalizePackageEntry(value);
   if (!normalized) {
     return "";
@@ -156,36 +156,36 @@ function normalizeOpenClawPeerRange(value) {
     : `>=${normalized}`;
 }
 
-function resolveOpenClawPeerRange(packageJson, rootPackageJson) {
+function resolveEVEPeerRange(packageJson, rootPackageJson) {
   return (
-    normalizeOpenClawPeerRange(packageJson.openclaw?.compat?.pluginApi) ||
-    normalizeOpenClawPeerRange(packageJson.peerDependencies?.openclaw) ||
-    normalizeOpenClawPeerRange(packageJson.openclaw?.build?.openclawVersion) ||
-    normalizeOpenClawPeerRange(rootPackageJson?.version) ||
-    normalizeOpenClawPeerRange(packageJson.version)
+    normalizeEVEPeerRange(packageJson.eve?.compat?.pluginApi) ||
+    normalizeEVEPeerRange(packageJson.peerDependencies?.eve) ||
+    normalizeEVEPeerRange(packageJson.eve?.build?.eveVersion) ||
+    normalizeEVEPeerRange(rootPackageJson?.version) ||
+    normalizeEVEPeerRange(packageJson.version)
   );
 }
 
-/** Resolve package peer dependency metadata for the OpenClaw plugin API. */
+/** Resolve package peer dependency metadata for the EVE plugin API. */
 export function resolvePluginNpmRuntimePackagePeerMetadata(plan) {
-  const openclawPeerRange = resolveOpenClawPeerRange(plan.packageJson, plan.rootPackageJson);
-  if (!openclawPeerRange) {
+  const evePeerRange = resolveEVEPeerRange(plan.packageJson, plan.rootPackageJson);
+  if (!evePeerRange) {
     throw new Error(
-      `cannot infer openclaw peerDependency range for ${plan.pluginDir}; set openclaw.compat.pluginApi or package version`,
+      `cannot infer eve peerDependency range for ${plan.pluginDir}; set eve.compat.pluginApi or package version`,
     );
   }
   const existingPeerDependencies = getStringRecord(plan.packageJson.peerDependencies);
   const existingPeerDependenciesMeta = getRecord(plan.packageJson.peerDependenciesMeta);
-  const existingOpenClawMeta = getRecord(existingPeerDependenciesMeta.openclaw);
+  const existingEVEMeta = getRecord(existingPeerDependenciesMeta.eve);
   return {
     peerDependencies: {
       ...existingPeerDependencies,
-      openclaw: openclawPeerRange,
+      eve: evePeerRange,
     },
     peerDependenciesMeta: {
       ...existingPeerDependenciesMeta,
-      openclaw: {
-        ...existingOpenClawMeta,
+      eve: {
+        ...existingEVEMeta,
         optional: true,
       },
     },
@@ -238,15 +238,15 @@ export function resolvePluginNpmRuntimeBuildPlan(params) {
     sourceEntries,
     entry,
     outDir: path.join(packageDir, "dist"),
-    runtimeExtensions: (Array.isArray(packageJson.openclaw?.extensions)
-      ? packageJson.openclaw.extensions
+    runtimeExtensions: (Array.isArray(packageJson.eve?.extensions)
+      ? packageJson.eve.extensions
       : []
     )
       .map(normalizePackageEntry)
       .filter(Boolean)
       .map(toPackageRuntimeEntry),
-    runtimeSetupEntry: normalizePackageEntry(packageJson.openclaw?.setupEntry)
-      ? toPackageRuntimeEntry(packageJson.openclaw.setupEntry)
+    runtimeSetupEntry: normalizePackageEntry(packageJson.eve?.setupEntry)
+      ? toPackageRuntimeEntry(packageJson.eve.setupEntry)
       : undefined,
   };
   return {

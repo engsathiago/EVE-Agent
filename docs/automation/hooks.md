@@ -6,18 +6,18 @@ read_when:
 title: "Hooks"
 ---
 
-Hooks are small scripts that run when something happens inside the Gateway. They can be discovered from directories and inspected with `openclaw hooks`. The Gateway loads internal hooks only after you enable hooks or configure at least one hook entry, hook pack, legacy handler, or extra hook directory.
+Hooks are small scripts that run when something happens inside the Gateway. They can be discovered from directories and inspected with `eve hooks`. The Gateway loads internal hooks only after you enable hooks or configure at least one hook entry, hook pack, legacy handler, or extra hook directory.
 
-There are two kinds of hooks in OpenClaw:
+There are two kinds of hooks in EVE:
 
 - **Internal hooks** (this page): run inside the Gateway when agent events fire, like `/new`, `/reset`, `/stop`, or lifecycle events.
-- **Webhooks**: external HTTP endpoints that let other systems trigger work in OpenClaw. See [Webhooks](/automation/cron-jobs#webhooks).
+- **Webhooks**: external HTTP endpoints that let other systems trigger work in EVE. See [Webhooks](/automation/cron-jobs#webhooks).
 
-Hooks can also be bundled inside plugins. `openclaw hooks list` shows both standalone hooks and plugin-managed hooks.
+Hooks can also be bundled inside plugins. `eve hooks list` shows both standalone hooks and plugin-managed hooks.
 
 ## Choose the right surface
 
-OpenClaw has several extension surfaces that look similar but solve different problems:
+EVE has several extension surfaces that look similar but solve different problems:
 
 | If you want to...                                                                                                     | Use...                                | Why                                                                                           |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -31,16 +31,16 @@ Use internal hooks when you want automation that behaves like a small installed 
 
 ```bash
 # List available hooks
-openclaw hooks list
+eve hooks list
 
 # Enable a hook
-openclaw hooks enable session-memory
+eve hooks enable session-memory
 
 # Check hook status
-openclaw hooks check
+eve hooks check
 
 # Get detailed information
-openclaw hooks info session-memory
+eve hooks info session-memory
 ```
 
 ## Event types
@@ -82,7 +82,7 @@ my-hook/
 name: my-hook
 description: "Short description of what this hook does"
 metadata:
-  { "openclaw": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+  { "eve": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 
 # My Hook
@@ -90,7 +90,7 @@ metadata:
 Detailed documentation goes here.
 ```
 
-**Metadata fields** (`metadata.openclaw`):
+**Metadata fields** (`metadata.eve`):
 
 | Field      | Description                                          |
 | ---------- | ---------------------------------------------------- |
@@ -166,7 +166,7 @@ export default async function handler(event) {
   }
 
   const restartInSeconds = Math.ceil(event.context.restartExpectedMs / 1000);
-  await execFileAsync("openclaw", [
+  await execFileAsync("eve", [
     "system",
     "event",
     "--mode",
@@ -183,21 +183,21 @@ Between the `gateway:shutdown` (or `gateway:pre-restart`) event and the rest of 
 
 Hooks are discovered from these directories, in order of increasing override precedence:
 
-1. **Bundled hooks**: shipped with OpenClaw
+1. **Bundled hooks**: shipped with EVE
 2. **Plugin hooks**: hooks bundled inside installed plugins
-3. **Managed hooks**: `~/.openclaw/hooks/` (user-installed, shared across workspaces). Extra directories from `hooks.internal.load.extraDirs` share this precedence.
+3. **Managed hooks**: `~/.eve/hooks/` (user-installed, shared across workspaces). Extra directories from `hooks.internal.load.extraDirs` share this precedence.
 4. **Workspace hooks**: `<workspace>/hooks/` (per-agent, disabled by default until explicitly enabled)
 
 Workspace hooks can add new hook names but cannot override bundled, managed, or plugin-provided hooks with the same name.
 
-The Gateway skips internal hook discovery on startup until internal hooks are configured. Enable a bundled or managed hook with `openclaw hooks enable <name>`, install a hook pack, or set `hooks.internal.enabled=true` to opt in. When you enable one named hook, the Gateway loads only that hook's handler; `hooks.internal.enabled=true`, extra hook directories, and legacy handlers opt into broad discovery.
+The Gateway skips internal hook discovery on startup until internal hooks are configured. Enable a bundled or managed hook with `eve hooks enable <name>`, install a hook pack, or set `hooks.internal.enabled=true` to opt in. When you enable one named hook, the Gateway loads only that hook's handler; `hooks.internal.enabled=true`, extra hook directories, and legacy handlers opt into broad discovery.
 
 ### Hook packs
 
-Hook packs are npm packages that export hooks via `openclaw.hooks` in `package.json`. Install with:
+Hook packs are npm packages that export hooks via `eve.hooks` in `package.json`. Install with:
 
 ```bash
-openclaw plugins install <path-or-spec>
+eve plugins install <path-or-spec>
 ```
 
 Npm specs are registry-only (package name + optional exact version or dist-tag). Git/URL/file specs and semver ranges are rejected.
@@ -208,14 +208,14 @@ Npm specs are registry-only (package name + optional exact version or dist-tag).
 | --------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
 | session-memory        | `command:new`, `command:reset`                    | Saves session context to `<workspace>/memory/`                 |
 | bootstrap-extra-files | `agent:bootstrap`                                 | Injects additional bootstrap files from glob patterns          |
-| command-logger        | `command`                                         | Logs all commands to `~/.openclaw/logs/commands.log`           |
+| command-logger        | `command`                                         | Logs all commands to `~/.eve/logs/commands.log`           |
 | compaction-notifier   | `session:compact:before`, `session:compact:after` | Sends visible chat notices when session compaction starts/ends |
 | boot-md               | `gateway:startup`                                 | Runs `BOOT.md` when the gateway starts                         |
 
 Enable any bundled hook:
 
 ```bash
-openclaw hooks enable <hook-name>
+eve hooks enable <hook-name>
 ```
 
 <a id="session-memory"></a>
@@ -249,13 +249,13 @@ Paths resolve relative to workspace. Only recognized bootstrap basenames are loa
 
 ### command-logger details
 
-Logs every slash command to `~/.openclaw/logs/commands.log`.
+Logs every slash command to `~/.eve/logs/commands.log`.
 
 <a id="compaction-notifier"></a>
 
 ### compaction-notifier details
 
-Sends short status messages into the current conversation when OpenClaw starts and finishes compacting the session transcript. This makes long turns less confusing on chat surfaces because the user can see that the assistant is summarizing context and will continue after compaction.
+Sends short status messages into the current conversation when EVE starts and finishes compacting the session transcript. This makes long turns less confusing on chat surfaces because the user can see that the assistant is summarizing context and will continue after compaction.
 
 <a id="boot-md"></a>
 
@@ -271,7 +271,7 @@ Use plugin hooks when you need `before_tool_call`, `before_agent_reply`,
 `before_install`, or other in-process lifecycle hooks.
 
 Plugin-managed internal hooks are different: they participate in this page's
-coarse command/lifecycle event system and show up in `openclaw hooks list` as
+coarse command/lifecycle event system and show up in `eve hooks list` as
 `plugin:<id>`. Use those for side effects and compatibility with hook packs, not
 for ordered middleware or policy gates.
 
@@ -332,17 +332,17 @@ The legacy `hooks.internal.handlers` array config format is still supported for 
 
 ```bash
 # List all hooks (add --eligible, --verbose, or --json)
-openclaw hooks list
+eve hooks list
 
 # Show detailed info about a hook
-openclaw hooks info <hook-name>
+eve hooks info <hook-name>
 
 # Show eligibility summary
-openclaw hooks check
+eve hooks check
 
 # Enable/disable
-openclaw hooks enable <hook-name>
-openclaw hooks disable <hook-name>
+eve hooks enable <hook-name>
+eve hooks disable <hook-name>
 ```
 
 ## Best practices
@@ -358,24 +358,24 @@ openclaw hooks disable <hook-name>
 
 ```bash
 # Verify directory structure
-ls -la ~/.openclaw/hooks/my-hook/
+ls -la ~/.eve/hooks/my-hook/
 # Should show: HOOK.md, handler.ts
 
 # List all discovered hooks
-openclaw hooks list
+eve hooks list
 ```
 
 ### Hook not eligible
 
 ```bash
-openclaw hooks info my-hook
+eve hooks info my-hook
 ```
 
 Check for missing binaries (PATH), environment variables, config values, or OS compatibility.
 
 ### Hook not executing
 
-1. Verify the hook is enabled: `openclaw hooks list`
+1. Verify the hook is enabled: `eve hooks list`
 2. Restart your gateway process so hooks reload.
 3. Check gateway logs: `./scripts/clawlog.sh | grep hook`
 

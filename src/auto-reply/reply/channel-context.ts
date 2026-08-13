@@ -2,8 +2,8 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { getActivePluginChannelRegistry } from "../../plugins/runtime.js";
 
 type CommandSurfaceParams = {
@@ -19,7 +19,7 @@ type CommandSurfaceParams = {
 };
 
 type ChannelAccountParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: {
     OriginatingChannel?: string;
     Surface?: string;

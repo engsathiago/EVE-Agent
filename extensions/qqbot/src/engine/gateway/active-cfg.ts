@@ -10,17 +10,17 @@
  * Issue #69546.
  */
 
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
+import type { EVEConfig } from "eve-agent/plugin-sdk/core";
+import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
 
-export type GatewayCfgLoader = () => OpenClawConfig;
+export type GatewayCfgLoader = () => EVEConfig;
 
 export interface ActiveCfgProvider {
-  getActiveCfg(): OpenClawConfig;
+  getActiveCfg(): EVEConfig;
 }
 
 export interface ActiveCfgProviderOptions {
-  fallback: OpenClawConfig;
+  fallback: EVEConfig;
   load?: GatewayCfgLoader;
 }
 
@@ -28,7 +28,7 @@ export function createActiveCfgProvider(options: ActiveCfgProviderOptions): Acti
   const loader = options.load ?? defaultGatewayCfgLoader;
   const fallback = options.fallback;
   return {
-    getActiveCfg(): OpenClawConfig {
+    getActiveCfg(): EVEConfig {
       return resolveActiveCfg(loader, fallback);
     },
   };
@@ -36,8 +36,8 @@ export function createActiveCfgProvider(options: ActiveCfgProviderOptions): Acti
 
 export function resolveActiveCfg(
   loader: GatewayCfgLoader,
-  fallback: OpenClawConfig,
-): OpenClawConfig {
+  fallback: EVEConfig,
+): EVEConfig {
   try {
     return loader();
   } catch {
@@ -45,6 +45,6 @@ export function resolveActiveCfg(
   }
 }
 
-function defaultGatewayCfgLoader(): OpenClawConfig {
+function defaultGatewayCfgLoader(): EVEConfig {
   return getRuntimeConfig();
 }

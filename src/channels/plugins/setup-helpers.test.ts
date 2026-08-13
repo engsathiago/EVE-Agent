@@ -1,6 +1,6 @@
 // Setup helper tests cover channel setup helper outputs and lifecycle cleanup.
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "../../plugins/runtime.js";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../../routing/session-key.js";
 import {
@@ -15,8 +15,8 @@ import {
   prepareScopedSetupConfig,
 } from "./setup-helpers.js";
 
-function asConfig(value: unknown): OpenClawConfig {
-  return value as OpenClawConfig;
+function asConfig(value: unknown): EVEConfig {
+  return value as EVEConfig;
 }
 
 function requireRecord(value: unknown): Record<string, unknown> {
@@ -26,7 +26,7 @@ function requireRecord(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
-function channelRecord(cfg: OpenClawConfig, channelKey: string): Record<string, unknown> {
+function channelRecord(cfg: EVEConfig, channelKey: string): Record<string, unknown> {
   return requireRecord(cfg.channels?.[channelKey]);
 }
 

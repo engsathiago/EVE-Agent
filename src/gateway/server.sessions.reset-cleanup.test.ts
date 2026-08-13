@@ -9,7 +9,7 @@ import {
 } from "../acp/runtime/session-meta.js";
 import type { SessionAcpMeta } from "../config/sessions/types.js";
 import { enqueueSystemEvent, peekSystemEvents } from "../infra/system-events.js";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { embeddedRunMock, testState, writeSessionStore } from "./test-helpers.js";
 import {
   setupGatewaySessionsTestHarness,
@@ -49,7 +49,7 @@ type ResetAcpState = {
 type ConfigFilePatch = Parameters<(typeof import("../config/config.js"))["writeConfigFile"]>[0];
 
 afterEach(() => {
-  closeOpenClawStateDatabaseForTest();
+  closeEVEStateDatabaseForTest();
 });
 
 function expectResetAcpState(acp: ResetAcpState | undefined) {
@@ -420,9 +420,9 @@ test("sessions.reset closes child ACP runtime handles spawned from the parent", 
 });
 
 test("sessions.reset closes a spawned ACP child that lives in a different agent store", async () => {
-  const stateDir = process.env.OPENCLAW_STATE_DIR;
+  const stateDir = process.env.EVE_STATE_DIR;
   if (!stateDir) {
-    throw new Error("OPENCLAW_STATE_DIR is required for gateway session tests");
+    throw new Error("EVE_STATE_DIR is required for gateway session tests");
   }
   // Per-agent store layout: ACP children live under the target agent's own
   // store file, which is different from the parent's store.

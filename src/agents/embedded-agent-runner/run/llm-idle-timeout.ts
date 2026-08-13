@@ -5,8 +5,8 @@ import {
   finiteSecondsToTimerSafeMilliseconds,
   clampTimerTimeoutMs,
   MAX_TIMER_TIMEOUT_MS,
-} from "@openclaw/normalization-core/number-coercion";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+} from "@eve/normalization-core/number-coercion";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { onLlmRequestActivity } from "../../../shared/llm-request-activity.js";
 import type { StreamFn } from "../../runtime/index.js";
 import type { MutableAssistantMessageEventStream } from "../../stream-compat.js";
@@ -117,7 +117,7 @@ function isOllamaCloudModel(model: { id?: string; provider?: string } | undefine
  * local provider base URLs disable the implicit cloud-provider default.
  */
 export function resolveLlmIdleTimeoutMs(params?: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   trigger?: EmbeddedRunTrigger;
   runTimeoutMs?: number;
   modelRequestTimeoutMs?: number;

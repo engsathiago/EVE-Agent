@@ -1,6 +1,6 @@
 // Telegram helper module supports format behavior.
-import type { MarkdownTableMode } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   FILE_REF_EXTENSIONS_WITH_TLD,
   isAutoLinkedFileRef,
@@ -13,7 +13,7 @@ import {
   renderMarkdownIRChunksWithinLimit,
   renderMarkdownWithMarkers,
   sliceMarkdownIR,
-} from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/text-chunking";
 
 export type TelegramFormattedChunk = {
   html: string;

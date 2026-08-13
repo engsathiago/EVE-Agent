@@ -5,14 +5,14 @@ import {
   type RealtimeTranscriptionProviderPlugin,
   type RealtimeTranscriptionSession,
   type RealtimeTranscriptionSessionCreateRequest,
-} from "openclaw/plugin-sdk/realtime-transcription";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+} from "eve-agent/plugin-sdk/realtime-transcription";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 import {
   asOptionalRecord as readRecord,
   normalizeOptionalString,
   parseBooleanValue as readBoolean,
   parseFiniteNumber as readFiniteNumber,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { DEFAULT_DEEPGRAM_AUDIO_BASE_URL, DEFAULT_DEEPGRAM_AUDIO_MODEL } from "./audio.js";
 
 type DeepgramRealtimeTranscriptionEncoding = "linear16" | "mulaw" | "alaw";

@@ -1,8 +1,8 @@
 // Slack plugin module implements channel migration behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { SlackChannelConfig } from "openclaw/plugin-sdk/config-contracts";
-import { normalizeAccountId } from "openclaw/plugin-sdk/routing";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { SlackChannelConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/routing";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type SlackChannels = Record<string, SlackChannelConfig>;
 
@@ -15,7 +15,7 @@ type SlackChannelMigrationResult = {
 };
 
 function resolveAccountChannels(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId?: string | null,
 ): { channels?: SlackChannels } {
   if (!accountId) {
@@ -59,7 +59,7 @@ export function migrateSlackChannelsInPlace(
 }
 
 export function migrateSlackChannelConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   oldChannelId: string;
   newChannelId: string;

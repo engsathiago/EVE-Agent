@@ -1,10 +1,10 @@
 // Telegram plugin module implements group policy behavior.
-import type { ChannelGroupContext } from "openclaw/plugin-sdk/channel-contract";
+import type { ChannelGroupContext } from "eve-agent/plugin-sdk/channel-contract";
 import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
+} from "eve-agent/plugin-sdk/channel-policy";
 
 function parseTelegramGroupId(value?: string | null) {
   const raw = value?.trim() ?? "";

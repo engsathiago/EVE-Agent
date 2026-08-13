@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { MEDIA_MAX_BYTES } from "../../media/store.js";
 
 const { resolveChannelMessageToolMediaSourceParamKeysMock } = vi.hoisted(() => ({
@@ -24,21 +24,21 @@ import {
   resolveAttachmentMediaPolicy,
 } from "./message-action-params.js";
 
-const cfg = {} as OpenClawConfig;
+const cfg = {} as EVEConfig;
 const maybeIt = process.platform === "win32" ? it.skip : it;
 const matrixMediaSourceParamKeys = ["avatarPath", "avatarUrl"] as const;
 
-async function withTempOpenClawStateDir<T>(test: (stateDir: string) => Promise<T>): Promise<T> {
-  const previous = process.env.OPENCLAW_STATE_DIR;
+async function withTempEVEStateDir<T>(test: (stateDir: string) => Promise<T>): Promise<T> {
+  const previous = process.env.EVE_STATE_DIR;
   const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "msg-params-state-"));
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  process.env.EVE_STATE_DIR = stateDir;
   try {
     return await test(stateDir);
   } finally {
     if (previous === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = previous;
+      process.env.EVE_STATE_DIR = previous;
     }
     await fs.rm(stateDir, { recursive: true, force: true });
   }
@@ -629,7 +629,7 @@ describe("message action media helpers", () => {
   });
 
   it("hydrates buffer-only send params into outbound media paths", async () => {
-    await withTempOpenClawStateDir(async () => {
+    await withTempEVEStateDir(async () => {
       const args: Record<string, unknown> = {
         buffer: Buffer.from("artifact bytes").toString("base64"),
         filename: "artifact.txt",
@@ -653,7 +653,7 @@ describe("message action media helpers", () => {
   });
 
   it("rejects oversized buffer-only send params before base64 decoding", async () => {
-    await withTempOpenClawStateDir(async () => {
+    await withTempEVEStateDir(async () => {
       const fromSpy = vi.spyOn(Buffer, "from");
       const args: Record<string, unknown> = {
         buffer: Buffer.alloc(MEDIA_MAX_BYTES + 1, 1).toString("base64"),
@@ -684,7 +684,7 @@ describe("message action media helpers", () => {
   });
 
   it("rejects invalid buffer-only send base64 without staging media", async () => {
-    await withTempOpenClawStateDir(async () => {
+    await withTempEVEStateDir(async () => {
       const args: Record<string, unknown> = {
         buffer: "not-base64!",
         contentType: "text/plain",
@@ -706,7 +706,7 @@ describe("message action media helpers", () => {
   });
 
   it("skips send buffer materialization when an explicit media source is present", async () => {
-    await withTempOpenClawStateDir(async (stateDir) => {
+    await withTempEVEStateDir(async (stateDir) => {
       const args: Record<string, unknown> = {
         buffer: Buffer.from("ignored").toString("base64"),
         mediaUrl: "https://example.com/pic.png",
@@ -728,7 +728,7 @@ describe("message action media helpers", () => {
   });
 
   it("previews dry-run buffer-only sends without writing outbound media files", async () => {
-    await withTempOpenClawStateDir(async (stateDir) => {
+    await withTempEVEStateDir(async (stateDir) => {
       const args: Record<string, unknown> = {
         buffer: Buffer.from("preview").toString("base64"),
         filename: "preview.txt",

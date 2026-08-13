@@ -11,7 +11,7 @@ const windowsAuditEnv = {
 };
 
 describe("security audit filesystem Windows findings", () => {
-  const tempCases = new AsyncTempCaseFactory("openclaw-security-audit-win-");
+  const tempCases = new AsyncTempCaseFactory("eve-security-audit-win-");
 
   beforeAll(async () => {
     await tempCases.setup();
@@ -27,7 +27,7 @@ describe("security audit filesystem Windows findings", () => {
         const tmp = await tempCases.makeTmpDir("win");
         const stateDir = path.join(tmp, "state");
         await fs.mkdir(stateDir, { recursive: true });
-        const configPath = path.join(stateDir, "openclaw.json");
+        const configPath = path.join(stateDir, "eve.json");
         await fs.writeFile(configPath, "{}\n", "utf-8");
         const findings = await collectFilesystemFindings({
           stateDir,
@@ -58,7 +58,7 @@ describe("security audit filesystem Windows findings", () => {
         const tmp = await tempCases.makeTmpDir("win-open");
         const stateDir = path.join(tmp, "state");
         await fs.mkdir(stateDir, { recursive: true });
-        const configPath = path.join(stateDir, "openclaw.json");
+        const configPath = path.join(stateDir, "eve.json");
         await fs.writeFile(configPath, "{}\n", "utf-8");
         const findings = await collectFilesystemFindings({
           stateDir,
@@ -90,7 +90,7 @@ describe("security audit filesystem Windows findings", () => {
         const tmp = await tempCases.makeTmpDir("win-anon-world");
         const stateDir = path.join(tmp, "state");
         await fs.mkdir(stateDir, { recursive: true });
-        const configPath = path.join(stateDir, "openclaw.json");
+        const configPath = path.join(stateDir, "eve.json");
         await fs.writeFile(configPath, "{}\n", "utf-8");
         const findings = await collectFilesystemFindings({
           stateDir,

@@ -1,4 +1,4 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 import { llamaCppEmbeddingProviderAdapter } from "./src/embedding-provider.js";
 
 export default definePluginEntry({

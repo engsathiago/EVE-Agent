@@ -6,7 +6,7 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { sanitizeInlineImageBase64 } from "@openclaw/media-core/inline-image-data-url";
+import { sanitizeInlineImageBase64 } from "@eve/media-core/inline-image-data-url";
 import { replaceFileAtomic } from "../infra/replace-file.js";
 import type { AgentMessage } from "./runtime/index.js";
 import { makeMissingToolResult } from "./session-transcript-repair.js";

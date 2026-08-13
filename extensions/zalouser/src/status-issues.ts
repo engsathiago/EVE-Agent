@@ -2,11 +2,11 @@
 import type {
   ChannelAccountSnapshot,
   ChannelStatusIssue,
-} from "openclaw/plugin-sdk/channel-contract";
+} from "eve-agent/plugin-sdk/channel-contract";
 import {
   coerceStatusIssueAccountId,
   readStatusIssueFields,
-} from "openclaw/plugin-sdk/extension-shared";
+} from "eve-agent/plugin-sdk/extension-shared";
 
 const ZALOUSER_STATUS_FIELDS = [
   "accountId",
@@ -39,7 +39,7 @@ export function collectZalouserStatusIssues(
         accountId,
         kind: "auth",
         message: "Not authenticated (no saved Zalo session).",
-        fix: "Run: openclaw channels login --channel zalouser",
+        fix: "Run: eve channels login --channel zalouser",
       });
       continue;
     }

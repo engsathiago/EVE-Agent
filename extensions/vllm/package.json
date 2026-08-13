@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/vllm-provider",
+  "name": "@eve/vllm-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw vLLM provider plugin",
+  "description": "EVE vLLM provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

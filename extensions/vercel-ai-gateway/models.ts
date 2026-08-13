@@ -1,12 +1,12 @@
 // Vercel Ai Gateway plugin module implements models behavior.
-import { parseStrictFiniteNumber } from "openclaw/plugin-sdk/number-runtime";
+import { parseStrictFiniteNumber } from "eve-agent/plugin-sdk/number-runtime";
 import {
   getCachedLiveProviderModelRows,
   LiveModelCatalogHttpError,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-model-shared";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { asPositiveSafeInteger } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
+import type { ModelDefinitionConfig } from "eve-agent/plugin-sdk/provider-model-shared";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { asPositiveSafeInteger } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export const VERCEL_AI_GATEWAY_PROVIDER_ID = "vercel-ai-gateway";
 export const VERCEL_AI_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh";

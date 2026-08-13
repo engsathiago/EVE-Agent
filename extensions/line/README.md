@@ -1,11 +1,11 @@
-# OpenClaw LINE
+# EVE LINE
 
-Official OpenClaw channel plugin for LINE Bot API chats.
+Official EVE channel plugin for LINE Bot API chats.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/line
+eve plugin add @eve/line
 ```
 
-Configure LINE channel credentials in OpenClaw, then connect the bot to the chats where agents should receive and send messages.
+Configure LINE channel credentials in EVE, then connect the bot to the chats where agents should receive and send messages.

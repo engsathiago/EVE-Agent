@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements character eval behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { normalizeStringEntries, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { isQaFastModeModelRef, type QaProviderMode } from "./model-selection.js";
 import {
   QA_FRONTIER_CHARACTER_EVAL_MODELS,
@@ -321,7 +321,7 @@ ${run.transcript}
     })
     .join("\n\n");
 
-  const prompt = `You are grading OpenClaw natural character conversation transcripts for naturalness, vibes, and funniness.
+  const prompt = `You are grading EVE natural character conversation transcripts for naturalness, vibes, and funniness.
 
 Scenario id: ${params.scenarioId}
 
@@ -438,7 +438,7 @@ function renderCharacterEvalReport(params: {
   judgments: readonly QaCharacterEvalJudgeResult[];
 }) {
   const lines = [
-    "# OpenClaw Character Eval Report",
+    "# EVE Character Eval Report",
     "",
     `- Started: ${params.startedAt.toISOString()}`,
     `- Finished: ${params.finishedAt.toISOString()}`,

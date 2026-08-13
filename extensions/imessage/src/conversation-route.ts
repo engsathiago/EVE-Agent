@@ -1,15 +1,15 @@
 // Imessage plugin module implements conversation route behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   resolveConfiguredBindingRoute,
   resolveRuntimeConversationBindingRoute,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/conversation-runtime";
+import { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { resolveIMessageInboundConversationId } from "./conversation-id.js";
 
 export function resolveIMessageConversationRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   isGroup: boolean;
   peerId: string;

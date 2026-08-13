@@ -3,25 +3,25 @@ import path from "node:path";
 import {
   attachChannelToResult,
   createAttachedChannelResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
+} from "eve-agent/plugin-sdk/channel-send-result";
 import {
   interactiveReplyToPresentation,
   normalizeInteractiveReply,
   normalizeMessagePresentation,
   renderMessagePresentationFallbackText,
   resolveInteractiveTextFallback,
-} from "openclaw/plugin-sdk/interactive-runtime";
+} from "eve-agent/plugin-sdk/interactive-runtime";
 import {
   resolvePayloadMediaUrls,
   sendPayloadMediaSequenceAndFinalize,
   sendTextMediaPayload,
-} from "openclaw/plugin-sdk/reply-payload";
-import { statRegularFileSync } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/reply-payload";
+import { statRegularFileSync } from "eve-agent/plugin-sdk/security-runtime";
 import {
   isRecord,
   normalizeLowercaseStringOrEmpty,
   normalizeStringEntries,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveFeishuAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
 import { cleanupAmbientCommentTypingReaction } from "./comment-reaction.js";
@@ -38,7 +38,7 @@ import {
   sendStructuredCardFeishu,
 } from "./send.js";
 
-const RENDERED_FEISHU_CARD = Symbol("openclaw.renderedFeishuCard");
+const RENDERED_FEISHU_CARD = Symbol("eve.renderedFeishuCard");
 
 function normalizePossibleLocalImagePath(text: string | undefined): string | null {
   const raw = text?.trim();

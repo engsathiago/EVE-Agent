@@ -1,9 +1,9 @@
 // Comfy tests cover comfy plugin behavior.
-import { resolveDefaultAgentDir } from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { isLiveTestEnabled } from "openclaw/plugin-sdk/test-env";
+import { resolveDefaultAgentDir } from "eve-agent/plugin-sdk/agent-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
+import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { isLiveTestEnabled } from "eve-agent/plugin-sdk/test-env";
 import { beforeAll, describe, expect, it } from "vitest";
 import plugin from "./index.js";
 import { getComfyConfig, isComfyCapabilityConfigured } from "./workflow-runtime.js";
@@ -41,7 +41,7 @@ function requireProvider<T extends { id: string }>(providers: T[], id: string): 
 }
 
 describeLive("comfy live", () => {
-  let cfg = {} as OpenClawConfig;
+  let cfg = {} as EVEConfig;
   let agentDir = "";
   const imageProviders: Array<{ id: string; generateImage: Function; isConfigured?: Function }> =
     [];

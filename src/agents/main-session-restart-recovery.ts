@@ -5,7 +5,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizePendingFinalDeliveryText } from "../auto-reply/reply/pending-final-delivery.js";
 import { resolveStateDir } from "../config/paths.js";
 import {
@@ -17,7 +17,7 @@ import {
   resolveSessionTranscriptPathInDir,
 } from "../config/sessions.js";
 import { applyRestartRecoveryLifecycle } from "../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { callGateway } from "../gateway/call.js";
 import { readSessionMessagesAsync } from "../gateway/session-transcript-readers.js";
 import { resolveGatewaySessionStoreTarget } from "../gateway/session-utils.js";
@@ -130,8 +130,8 @@ function resolveEntryTranscriptLockPaths(params: {
 }
 
 export async function markRestartAbortedMainSessions(params: {
-  cfg?: OpenClawConfig;
-  additionalCfgs?: Iterable<OpenClawConfig | undefined>;
+  cfg?: EVEConfig;
+  additionalCfgs?: Iterable<EVEConfig | undefined>;
   stateDir?: string;
   sessionKeys?: Iterable<string>;
   sessionIds?: Iterable<string>;
@@ -173,10 +173,10 @@ export async function markRestartAbortedMainSessions(params: {
   const env =
     params.stateDir === undefined
       ? process.env
-      : { ...process.env, OPENCLAW_STATE_DIR: params.stateDir };
+      : { ...process.env, EVE_STATE_DIR: params.stateDir };
   const stateDir = resolveStateDir(env);
   const configs = [params.cfg, ...(params.additionalCfgs ?? [])].filter(
-    (cfg): cfg is OpenClawConfig => Boolean(cfg),
+    (cfg): cfg is EVEConfig => Boolean(cfg),
   );
   for (const cfg of configs) {
     try {
@@ -309,7 +309,7 @@ export async function markRestartAbortedMainSessions(params: {
 }
 
 export async function markStartupOrphanedMainSessionsForRecovery(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   stateDir?: string;
   activeSessionIds?: Iterable<string>;
   activeSessionKeys?: Iterable<string>;
@@ -424,7 +424,7 @@ function resolveMainSessionResumeBlockReason(messages: unknown[]): string | null
 function buildResumeMessage(pendingFinalDeliveryText?: string | null): string {
   const base =
     "[System] Your previous turn was interrupted by a gateway restart while " +
-    "OpenClaw was waiting on tool/model work. Continue from the existing " +
+    "EVE was waiting on tool/model work. Continue from the existing " +
     "transcript and finish the interrupted response.";
   const sanitizedPendingText =
     typeof pendingFinalDeliveryText === "string"
@@ -472,7 +472,7 @@ async function markSessionFailed(params: {
 }
 
 async function sendUnresumableSessionNotice(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   entry: SessionEntry;
   reason: string;
   sessionKey: string;
@@ -527,7 +527,7 @@ async function sendUnresumableSessionNotice(params: {
 }
 
 function resolveRestartRecoveryDeliveryContext(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   entry: SessionEntry;
   includeSessionDeliveryFallback?: boolean;
   sessionKey: string;
@@ -561,7 +561,7 @@ function resolveRestartRecoveryDeliveryContext(params: {
 }
 
 async function resumeMainSession(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   entry: SessionEntry;
   storePath: string;
   sessionKey: string;
@@ -696,7 +696,7 @@ export async function markRestartAbortedMainSessionsFromLocks(params: {
 }
 
 function isRoutableRecoveryStore(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   sessionKey: string;
   storePath: string;
 }): boolean {
@@ -720,7 +720,7 @@ function isRoutableRecoveryStore(params: {
 }
 
 async function recoverStore(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   storePath: string;
   resumedSessionKeys: Set<string>;
   activeSessionIds?: Iterable<string>;
@@ -858,7 +858,7 @@ async function recoverStore(params: {
 }
 
 async function resolveRestartRecoveryStorePaths(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   stateDir?: string;
 }): Promise<string[]> {
   const storePaths = new Set<string>();
@@ -867,7 +867,7 @@ async function resolveRestartRecoveryStorePaths(params: {
     storePaths.add(path.join(sessionsDir, "sessions.json"));
   }
   if (params.cfg) {
-    const env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+    const env = { ...process.env, EVE_STATE_DIR: stateDir };
     for (const target of resolveAllAgentSessionStoreTargetsSync(params.cfg, { env })) {
       storePaths.add(path.resolve(target.storePath));
     }
@@ -877,7 +877,7 @@ async function resolveRestartRecoveryStorePaths(params: {
 
 export async function recoverRestartAbortedMainSessions(
   params: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     stateDir?: string;
     resumedSessionKeys?: Set<string>;
     activeSessionIds?: Iterable<string>;
@@ -910,7 +910,7 @@ export async function recoverRestartAbortedMainSessions(
 
 export async function recoverStartupOrphanedMainSessions(
   params: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     stateDir?: string;
     activeSessionIds?: Iterable<string>;
     activeSessionKeys?: Iterable<string>;
@@ -943,7 +943,7 @@ export async function recoverStartupOrphanedMainSessions(
 
 export function scheduleRestartAbortedMainSessionRecovery(
   params: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     delayMs?: number;
     maxRetries?: number;
     stateDir?: string;

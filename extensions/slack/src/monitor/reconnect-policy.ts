@@ -88,7 +88,7 @@ export function waitForSlackSocketDisconnect(
 
 /**
  * Detect permanent Slack account and credential failures.
- * Transient request and HTTP failures stay in OpenClaw's reconnect loop.
+ * Transient request and HTTP failures stay in EVE's reconnect loop.
  */
 export function isNonRecoverableSlackAuthError(error: unknown): boolean {
   return SLACK_AUTH_ERROR_RE.test(formatUnknownError(error, ""));

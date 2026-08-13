@@ -1,6 +1,6 @@
 /** Tests command-specific secret assignment collection from config snapshots. */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   buildTalkTestProviderConfig,
   TALK_TEST_PROVIDER_API_KEY_PATH,
@@ -62,7 +62,7 @@ describe("collectCommandSecretAssignmentsFromSnapshot", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     const resolvedConfig = {
       agents: {
         defaults: {
@@ -73,7 +73,7 @@ describe("collectCommandSecretAssignmentsFromSnapshot", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = collectCommandSecretAssignmentsFromSnapshot({
       sourceConfig,

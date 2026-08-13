@@ -1,5 +1,5 @@
 // Covers session delivery queue recovery behavior.
-import { MAX_DATE_TIMESTAMP_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_DATE_TIMESTAMP_MS } from "@eve/normalization-core/number-coercion";
 import { describe, expect, it, vi } from "vitest";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 import {
@@ -13,7 +13,7 @@ import {
 
 describe("session-delivery queue recovery", () => {
   it("replays and acks pending entries on recovery", async () => {
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       await enqueueSessionDelivery(
         {
           kind: "systemEvent",
@@ -44,7 +44,7 @@ describe("session-delivery queue recovery", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(MAX_DATE_TIMESTAMP_MS));
 
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       await enqueueSessionDelivery(
         {
           kind: "systemEvent",
@@ -79,7 +79,7 @@ describe("session-delivery queue recovery", () => {
   });
 
   it("keeps failed entries queued with retry metadata for later recovery", async () => {
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       await enqueueSessionDelivery(
         {
           kind: "agentTurn",
@@ -110,7 +110,7 @@ describe("session-delivery queue recovery", () => {
   });
 
   it("uses the entry retry budget when draining entries", async () => {
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       const id = await enqueueSessionDelivery(
         {
           kind: "agentTurn",
@@ -151,7 +151,7 @@ describe("session-delivery queue recovery", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-04-23T00:00:00.000Z"));
 
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       await enqueueSessionDelivery(
         {
           kind: "systemEvent",
@@ -201,7 +201,7 @@ describe("session-delivery queue recovery", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-04-23T00:00:00.000Z"));
 
-    await withTempDir({ prefix: "openclaw-session-delivery-" }, async (tempDir) => {
+    await withTempDir({ prefix: "eve-session-delivery-" }, async (tempDir) => {
       const id = await enqueueSessionDelivery(
         {
           kind: "systemEvent",

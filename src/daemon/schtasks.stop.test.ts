@@ -84,7 +84,7 @@ function expectGatewayTermination(pid: number) {
 async function withPreparedGatewayTask(
   run: (context: { env: Record<string, string>; stdout: PassThrough }) => Promise<void>,
 ) {
-  await withWindowsEnv("openclaw-win-stop-", async ({ env }) => {
+  await withWindowsEnv("eve-win-stop-", async ({ env }) => {
     await writeGatewayScript(env, GATEWAY_PORT);
     const stdout = new PassThrough();
     await run({ env, stdout });
@@ -157,7 +157,7 @@ describe("Scheduled Task stop/restart cleanup", () => {
         .mockResolvedValueOnce(
           busyPortUsage(6262, {
             commandLine:
-              '"C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\steipete\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\index.js" gateway --port 18789',
+              '"C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\steipete\\AppData\\Roaming\\npm\\node_modules\\eve\\dist\\index.js" gateway --port 18789',
           }),
         )
         .mockResolvedValueOnce(freePortUsage());
@@ -172,8 +172,8 @@ describe("Scheduled Task stop/restart cleanup", () => {
   it("does not reclaim gateway listeners when stopping a node Scheduled Task", async () => {
     await withPreparedGatewayTask(async ({ env, stdout }) => {
       pushSuccessfulSchtasksResponses(3);
-      env.OPENCLAW_SERVICE_KIND = "node";
-      env.OPENCLAW_WINDOWS_TASK_NAME = "OpenClaw Node";
+      env.EVE_SERVICE_KIND = "node";
+      env.EVE_WINDOWS_TASK_NAME = "EVE Node";
       findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([4242]);
       inspectPortUsage.mockResolvedValue(busyPortUsage(4242));
 
@@ -184,8 +184,8 @@ describe("Scheduled Task stop/restart cleanup", () => {
       expect(killProcessTree).not.toHaveBeenCalled();
       expect(schtasksCalls).toEqual([
         ["/Query"],
-        ["/Query", "/TN", "OpenClaw Node"],
-        ["/End", "/TN", "OpenClaw Node"],
+        ["/Query", "/TN", "EVE Node"],
+        ["/End", "/TN", "EVE Node"],
       ]);
     });
   });
@@ -207,11 +207,11 @@ describe("Scheduled Task stop/restart cleanup", () => {
       expect(inspectPortUsage).toHaveBeenCalledTimes(2);
       expect(schtasksCalls).toEqual([
         ["/Query"],
-        ["/Query", "/TN", "OpenClaw Gateway"],
-        ["/End", "/TN", "OpenClaw Gateway"],
-        ["/Run", "/TN", "OpenClaw Gateway"],
+        ["/Query", "/TN", "EVE Gateway"],
+        ["/End", "/TN", "EVE Gateway"],
+        ["/Run", "/TN", "EVE Gateway"],
         ["/Query"],
-        ["/Query", "/TN", "OpenClaw Gateway", "/V", "/FO", "LIST"],
+        ["/Query", "/TN", "EVE Gateway", "/V", "/FO", "LIST"],
       ]);
     });
   });
@@ -219,8 +219,8 @@ describe("Scheduled Task stop/restart cleanup", () => {
   it("does not wait on or force-kill the gateway port when restarting a node Scheduled Task", async () => {
     await withPreparedGatewayTask(async ({ env, stdout }) => {
       pushSuccessfulSchtasksResponses(4);
-      env.OPENCLAW_SERVICE_KIND = "node";
-      env.OPENCLAW_WINDOWS_TASK_NAME = "OpenClaw Node";
+      env.EVE_SERVICE_KIND = "node";
+      env.EVE_WINDOWS_TASK_NAME = "EVE Node";
       findVerifiedGatewayListenerPidsOnPortSync.mockReturnValue([5151]);
       inspectPortUsage.mockResolvedValue(busyPortUsage(5151));
 
@@ -233,11 +233,11 @@ describe("Scheduled Task stop/restart cleanup", () => {
       expect(killProcessTree).not.toHaveBeenCalled();
       expect(schtasksCalls).toEqual([
         ["/Query"],
-        ["/Query", "/TN", "OpenClaw Node"],
-        ["/End", "/TN", "OpenClaw Node"],
-        ["/Run", "/TN", "OpenClaw Node"],
+        ["/Query", "/TN", "EVE Node"],
+        ["/End", "/TN", "EVE Node"],
+        ["/Run", "/TN", "EVE Node"],
         ["/Query"],
-        ["/Query", "/TN", "OpenClaw Node", "/V", "/FO", "LIST"],
+        ["/Query", "/TN", "EVE Node", "/V", "/FO", "LIST"],
       ]);
     });
   });
@@ -254,7 +254,7 @@ describe("Scheduled Task stop/restart cleanup", () => {
       await expect(restartScheduledTask({ env, stdout })).rejects.toThrow(
         "schtasks run failed: ERROR: Access is denied.",
       );
-      expect(schtasksCalls.at(-1)).toEqual(["/Run", "/TN", "OpenClaw Gateway"]);
+      expect(schtasksCalls.at(-1)).toEqual(["/Run", "/TN", "EVE Gateway"]);
     });
   });
 });

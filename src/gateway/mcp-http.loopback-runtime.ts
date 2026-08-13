@@ -370,25 +370,25 @@ export function clearActiveMcpLoopbackRuntimeByOwnerToken(ownerToken: string): v
 export function createMcpLoopbackServerConfig(port: number) {
   return {
     mcpServers: {
-      openclaw: {
+      eve: {
         type: "http",
         url: `http://127.0.0.1:${port}/mcp`,
         headers: {
-          Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
-          "x-session-key": "${OPENCLAW_MCP_SESSION_KEY}",
-          "x-openclaw-session-id": "${OPENCLAW_MCP_SESSION_ID}",
-          "x-openclaw-agent-id": "${OPENCLAW_MCP_AGENT_ID}",
-          "x-openclaw-account-id": "${OPENCLAW_MCP_ACCOUNT_ID}",
-          "x-openclaw-message-channel": "${OPENCLAW_MCP_MESSAGE_CHANNEL}",
-          "x-openclaw-current-channel-id": "${OPENCLAW_MCP_CURRENT_CHANNEL_ID}",
-          "x-openclaw-current-thread-ts": "${OPENCLAW_MCP_CURRENT_THREAD_TS}",
-          "x-openclaw-current-message-id": "${OPENCLAW_MCP_CURRENT_MESSAGE_ID}",
-          "x-openclaw-current-inbound-audio": "${OPENCLAW_MCP_CURRENT_INBOUND_AUDIO}",
-          "x-openclaw-inbound-event-kind": "${OPENCLAW_MCP_INBOUND_EVENT_KIND}",
-          "x-openclaw-source-reply-delivery-mode": "${OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE}",
-          "x-openclaw-require-explicit-message-target":
-            "${OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
-          "x-openclaw-cli-capture-key": "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+          Authorization: "Bearer ${EVE_MCP_TOKEN}",
+          "x-session-key": "${EVE_MCP_SESSION_KEY}",
+          "x-eve-session-id": "${EVE_MCP_SESSION_ID}",
+          "x-eve-agent-id": "${EVE_MCP_AGENT_ID}",
+          "x-eve-account-id": "${EVE_MCP_ACCOUNT_ID}",
+          "x-eve-message-channel": "${EVE_MCP_MESSAGE_CHANNEL}",
+          "x-eve-current-channel-id": "${EVE_MCP_CURRENT_CHANNEL_ID}",
+          "x-eve-current-thread-ts": "${EVE_MCP_CURRENT_THREAD_TS}",
+          "x-eve-current-message-id": "${EVE_MCP_CURRENT_MESSAGE_ID}",
+          "x-eve-current-inbound-audio": "${EVE_MCP_CURRENT_INBOUND_AUDIO}",
+          "x-eve-inbound-event-kind": "${EVE_MCP_INBOUND_EVENT_KIND}",
+          "x-eve-source-reply-delivery-mode": "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
+          "x-eve-require-explicit-message-target":
+            "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+          "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
         },
       },
     },

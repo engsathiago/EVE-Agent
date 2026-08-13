@@ -2,21 +2,21 @@
  * Alibaba Model Studio video provider adapter. It resolves DashScope auth and
  * HTTP policy before delegating task polling to the shared video helper.
  */
-import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { resolveProviderHttpRequestConfig } from "openclaw/plugin-sdk/provider-http";
+import { isProviderApiKeyConfigured } from "eve-agent/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "eve-agent/plugin-sdk/provider-auth-runtime";
+import { resolveProviderHttpRequestConfig } from "eve-agent/plugin-sdk/provider-http";
 import {
   DASHSCOPE_WAN_VIDEO_CAPABILITIES,
   DASHSCOPE_WAN_VIDEO_MODELS,
   DEFAULT_DASHSCOPE_WAN_VIDEO_MODEL,
   DEFAULT_VIDEO_GENERATION_TIMEOUT_MS,
   runDashscopeVideoGenerationTask,
-} from "openclaw/plugin-sdk/video-generation";
+} from "eve-agent/plugin-sdk/video-generation";
 import type {
   VideoGenerationProvider,
   VideoGenerationRequest,
   VideoGenerationResult,
-} from "openclaw/plugin-sdk/video-generation";
+} from "eve-agent/plugin-sdk/video-generation";
 
 const DEFAULT_ALIBABA_VIDEO_BASE_URL = "https://dashscope-intl.aliyuncs.com";
 const DEFAULT_ALIBABA_VIDEO_MODEL = DEFAULT_DASHSCOPE_WAN_VIDEO_MODEL;

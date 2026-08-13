@@ -1,13 +1,13 @@
 // Amazon Bedrock tests cover index plugin behavior.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { PluginRuntime } from "openclaw/plugin-sdk/core";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/core";
 import {
   buildPluginApi,
   registerSingleProviderPlugin,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import { withEnvAsync } from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { withEnvAsync } from "eve-agent/plugin-sdk/test-env";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { supportsBedrockPromptCaching } from "./bedrock-options.js";
 import { resetBedrockDiscoveryCacheForTest } from "./discovery.js";
@@ -108,7 +108,7 @@ async function registerWithConfig(
     name: "Amazon Bedrock Provider",
     source: "test",
     registrationMode: "full",
-    config: {} as OpenClawConfig,
+    config: {} as EVEConfig,
     pluginConfig,
     runtime: {} as PluginRuntime,
     logger: noopLogger,
@@ -168,7 +168,7 @@ async function callWrappedStream(
   provider: RegisteredProviderPlugin,
   modelId: string,
   modelDescriptor: never,
-  config?: OpenClawConfig,
+  config?: EVEConfig,
   extraParams?: Record<string, unknown>,
   payload: Record<string, unknown> = {},
 ): Promise<Record<string, unknown>> {
@@ -198,7 +198,7 @@ async function callWrappedStream(
   return result;
 }
 
-function runtimePluginConfig(config?: Record<string, unknown>): OpenClawConfig {
+function runtimePluginConfig(config?: Record<string, unknown>): EVEConfig {
   return {
     plugins: {
       entries: config
@@ -209,7 +209,7 @@ function runtimePluginConfig(config?: Record<string, unknown>): OpenClawConfig {
           }
         : {},
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function requireRecord(value: unknown, label: string): Record<string, unknown> {
@@ -876,7 +876,7 @@ describe("amazon-bedrock provider plugin", () => {
   describe("guardrail config schema", () => {
     it("defines discovery and guardrail objects with the expected shape", () => {
       const pluginJson = JSON.parse(
-        readFileSync(resolve(import.meta.dirname, "openclaw.plugin.json"), "utf-8"),
+        readFileSync(resolve(import.meta.dirname, "eve.plugin.json"), "utf-8"),
       );
       const discovery = pluginJson.configSchema?.properties?.discovery;
       const guardrail = pluginJson.configSchema?.properties?.guardrail;

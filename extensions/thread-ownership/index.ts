@@ -1,13 +1,13 @@
-// Thread Ownership plugin entrypoint registers its OpenClaw integration.
-import { resolveLivePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { escapeRegExp } from "openclaw/plugin-sdk/text-utility-runtime";
+// Thread Ownership plugin entrypoint registers its EVE integration.
+import { resolveLivePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { escapeRegExp } from "eve-agent/plugin-sdk/text-utility-runtime";
 import {
   definePluginEntry,
   fetchWithSsrFGuard,
   ssrfPolicyFromDangerouslyAllowPrivateNetwork,
-  type OpenClawConfig,
-  type OpenClawPluginApi,
+  type EVEConfig,
+  type EVEPluginApi,
 } from "./api.js";
 
 type ThreadOwnershipConfig = {
@@ -15,7 +15,7 @@ type ThreadOwnershipConfig = {
   abTestChannels?: string[];
 };
 
-type AgentEntry = NonNullable<NonNullable<OpenClawConfig["agents"]>["list"]>[number];
+type AgentEntry = NonNullable<NonNullable<EVEConfig["agents"]>["list"]>[number];
 type ThreadOwnershipMessageSendingResult = { cancel: true } | undefined;
 
 // In-memory set of {channel}:{thread} keys where this agent was @-mentioned.
@@ -59,7 +59,7 @@ function containsAgentNameMention(text: string, agentName: string): boolean {
   return new RegExp(`(^|[^\\w])@${escapeRegExp(trimmedName)}(?=$|[^\\w])`, "i").test(text);
 }
 
-function resolveOwnershipAgent(config: OpenClawConfig): { id: string; name: string } {
+function resolveOwnershipAgent(config: EVEConfig): { id: string; name: string } {
   const list = Array.isArray(config.agents?.list)
     ? config.agents.list.filter(
         (entry): entry is AgentEntry => entry !== null && typeof entry === "object",
@@ -79,12 +79,12 @@ export default definePluginEntry({
   id: "thread-ownership",
   name: "Thread Ownership",
   description: "Slack thread claim coordination for multi-agent setups",
-  register(api: OpenClawPluginApi) {
+  register(api: EVEPluginApi) {
     const resolveCurrentState = () => {
-      const currentConfig = (api.runtime.config?.current?.() ?? api.config) as OpenClawConfig;
+      const currentConfig = (api.runtime.config?.current?.() ?? api.config) as EVEConfig;
       const livePluginCfg = resolveLivePluginConfigObject(
         api.runtime.config?.current
-          ? () => api.runtime.config.current() as OpenClawConfig
+          ? () => api.runtime.config.current() as EVEConfig
           : undefined,
         "thread-ownership",
         isThreadOwnershipConfig(api.pluginConfig)

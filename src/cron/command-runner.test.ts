@@ -95,7 +95,7 @@ describe("runCronCommandJob", () => {
   });
 
   it.skipIf(process.platform === "win32")("kills shell process groups on timeout", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cron-command-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-cron-command-"));
     const markerPath = path.join(tempDir, "survived");
     const childScript = [
       `setTimeout(() => require("node:fs").writeFileSync(${JSON.stringify(markerPath)}, "alive"), 350)`,

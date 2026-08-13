@@ -18,9 +18,9 @@ let originalAgentDir: string | undefined;
 let tempAgentDir: string | undefined;
 
 beforeEach(() => {
-  originalAgentDir = process.env.OPENCLAW_AGENT_DIR;
-  tempAgentDir = mkdtempSync(join(tmpdir(), "openclaw-tools-manager-"));
-  process.env.OPENCLAW_AGENT_DIR = tempAgentDir;
+  originalAgentDir = process.env.EVE_AGENT_DIR;
+  tempAgentDir = mkdtempSync(join(tmpdir(), "eve-tools-manager-"));
+  process.env.EVE_AGENT_DIR = tempAgentDir;
   fetchWithSsrFGuardMock.mockReset();
   spawnSyncMock.mockReturnValue({
     error: new Error("ENOENT"),
@@ -34,9 +34,9 @@ afterEach(() => {
   vi.clearAllMocks();
   vi.resetModules();
   if (originalAgentDir === undefined) {
-    delete process.env.OPENCLAW_AGENT_DIR;
+    delete process.env.EVE_AGENT_DIR;
   } else {
-    process.env.OPENCLAW_AGENT_DIR = originalAgentDir;
+    process.env.EVE_AGENT_DIR = originalAgentDir;
   }
   if (tempAgentDir) {
     rmSync(tempAgentDir, { recursive: true, force: true });

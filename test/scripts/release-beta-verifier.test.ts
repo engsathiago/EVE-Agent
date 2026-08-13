@@ -19,7 +19,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "openclaw/openclaw",
+      repo: "eve/eve",
       registry: "https://clawhub.ai",
       workflowRef: undefined,
       clawHubWorkflowRef: undefined,
@@ -43,10 +43,10 @@ describe("parseReleaseVerifyBetaArgs", () => {
         "--clawhub-workflow-ref",
         "v2026.5.10-beta.3",
         "--plugins",
-        "@openclaw/plugin-a,@openclaw/plugin-b",
+        "@eve/plugin-a,@eve/plugin-b",
         "--full-release-validation-run",
         "10",
-        "--openclaw-npm-run",
+        "--eve-npm-run",
         "11",
         "--plugin-npm-run",
         "22",
@@ -67,11 +67,11 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "openclaw/openclaw",
+      repo: "eve/eve",
       registry: "https://clawhub.ai",
       workflowRef: "release/2026.5.10",
       clawHubWorkflowRef: "v2026.5.10-beta.3",
-      pluginSelection: ["@openclaw/plugin-a", "@openclaw/plugin-b"],
+      pluginSelection: ["@eve/plugin-a", "@eve/plugin-b"],
       evidenceOut: ".artifacts/release-evidence.json",
       skipPostpublish: true,
       skipGitHubRelease: true,
@@ -79,7 +79,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       rerunFailedClawHub: true,
       workflowRuns: {
         fullReleaseValidation: "10",
-        openclawNpm: "11",
+        eveNpm: "11",
         pluginNpm: "22",
         pluginClawHub: "33",
         pluginClawHubBootstrap: "34",
@@ -97,7 +97,7 @@ describe("parseNpmViewFields", () => {
           version: "2026.5.10-beta.3",
           "dist-tags.beta": "2026.5.10-beta.3",
           "dist.integrity": "sha512-test",
-          "dist.tarball": "https://registry.example/openclaw.tgz",
+          "dist.tarball": "https://registry.example/eve.tgz",
         }),
         "beta",
       ),
@@ -105,7 +105,7 @@ describe("parseNpmViewFields", () => {
       version: "2026.5.10-beta.3",
       distTagVersion: "2026.5.10-beta.3",
       integrity: "sha512-test",
-      tarball: "https://registry.example/openclaw.tgz",
+      tarball: "https://registry.example/eve.tgz",
     });
   });
 
@@ -117,7 +117,7 @@ describe("parseNpmViewFields", () => {
           "dist-tags": { beta: "2026.5.10-beta.3" },
           dist: {
             integrity: "sha512-test",
-            tarball: "https://registry.example/openclaw.tgz",
+            tarball: "https://registry.example/eve.tgz",
           },
         }),
         "beta",
@@ -126,7 +126,7 @@ describe("parseNpmViewFields", () => {
       version: "2026.5.10-beta.3",
       distTagVersion: "2026.5.10-beta.3",
       integrity: "sha512-test",
-      tarball: "https://registry.example/openclaw.tgz",
+      tarball: "https://registry.example/eve.tgz",
     });
   });
 });
@@ -137,7 +137,7 @@ describe("runNpmViewWithRetry", () => {
     const delays: number[] = [];
 
     await expect(
-      runNpmViewWithRetry(["view", "openclaw@2026.5.10-beta.3", "version", "--json"], {
+      runNpmViewWithRetry(["view", "eve@2026.5.10-beta.3", "version", "--json"], {
         attempts: 3,
         delay: async (delayMs) => {
           delays.push(delayMs);

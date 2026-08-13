@@ -2,7 +2,7 @@
  * Test script for shell completion installation feature.
  *
  * This script simulates the shell completion prompt that appears during
- * `openclaw update`. Use it to verify the completion installation flow
+ * `eve update`. Use it to verify the completion installation flow
  * without running a full update.
  *
  * Run from repo root:
@@ -41,7 +41,7 @@ import {
   ensureCompletionCacheExists,
 } from "../src/commands/doctor-completion.js";
 
-const CLI_NAME = "openclaw";
+const CLI_NAME = "eve";
 
 interface Options {
   checkOnly: boolean;
@@ -94,7 +94,7 @@ function printHelp(): void {
 ${theme.heading("Shell Completion Test Script")}
 
 This script simulates the shell completion checks that run during
-\`openclaw update\`, \`openclaw doctor\`, and \`openclaw onboard\`.
+\`eve update\`, \`eve doctor\`, and \`eve onboard\`.
 
 ${theme.heading("Usage (run from repo root):")}
   node --import tsx scripts/test-shell-completion.ts [options]
@@ -184,7 +184,7 @@ async function main() {
   if (status.profileInstalled && status.cacheExists && !options.force) {
     console.log(theme.muted("Shell completion is fully configured. To test the prompt:"));
     console.log(
-      theme.muted("  1. Remove the '# OpenClaw Completion' block from your shell profile"),
+      theme.muted("  1. Remove the '# EVE Completion' block from your shell profile"),
     );
     console.log(theme.muted("  2. Re-run this script"));
     console.log(theme.muted("  Or use --force to prompt anyway"));
@@ -201,7 +201,7 @@ async function main() {
   });
 
   if (isCancel(shouldInstall) || !shouldInstall) {
-    console.log(theme.muted(`Skipped. Run \`openclaw completion --install\` later to enable.`));
+    console.log(theme.muted(`Skipped. Run \`eve completion --install\` later to enable.`));
     return;
   }
 

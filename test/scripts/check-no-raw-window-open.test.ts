@@ -6,7 +6,7 @@ describe("check-no-raw-window-open", () => {
   it("finds direct window.open calls", () => {
     const source = `
       function openDocs() {
-        window.open("https://docs.openclaw.ai");
+        window.open("https://docs.eve.ai");
       }
     `;
     expect(findRawWindowOpenLines(source)).toEqual([3]);
@@ -15,7 +15,7 @@ describe("check-no-raw-window-open", () => {
   it("finds globalThis.open calls", () => {
     const source = `
       function openDocs() {
-        globalThis.open("https://docs.openclaw.ai");
+        globalThis.open("https://docs.eve.ai");
       }
     `;
     expect(findRawWindowOpenLines(source)).toEqual([3]);

@@ -247,7 +247,7 @@ boot_emulator() {
   local serial
 
   emulator="$(emulator_bin)"
-  EMULATOR_LOG="$(mktemp "${TMPDIR:-/tmp}/openclaw-android-screenshot-emulator.XXXXXX.log")"
+  EMULATOR_LOG="$(mktemp "${TMPDIR:-/tmp}/eve-android-screenshot-emulator.XXXXXX.log")"
   echo "No connected Android device found. Booting AVD '${avd}'." >&2
   emulator_args=(-avd "$avd" -no-window -no-audio -no-boot-anim)
   if [[ -n "${ANDROID_SCREENSHOT_EMULATOR_ARGS:-}" ]]; then
@@ -344,12 +344,12 @@ elif [[ "$SKIP_BUILD" != "1" ]]; then
 fi
 
 for scene in "${SCENES[@]}"; do
-  output_path="${OUTPUT_DIR}/openclaw-${scene}.png"
-  "$ADB_BIN" -s "$ADB_SERIAL" shell am force-stop ai.openclaw.app >/dev/null
+  output_path="${OUTPUT_DIR}/eve-${scene}.png"
+  "$ADB_BIN" -s "$ADB_SERIAL" shell am force-stop ai.eve.app >/dev/null
   "$ADB_BIN" -s "$ADB_SERIAL" shell am start -W \
-    -n ai.openclaw.app/.MainActivity \
-    --ez openclaw.screenshotMode true \
-    --es openclaw.screenshotScene "$scene" >/dev/null
+    -n ai.eve.app/.MainActivity \
+    --ez eve.screenshotMode true \
+    --es eve.screenshotScene "$scene" >/dev/null
   sleep "${ANDROID_SCREENSHOT_SETTLE_SECONDS:-1.5}"
   "$ADB_BIN" -s "$ADB_SERIAL" exec-out screencap -p >"$output_path"
   echo "Captured ${output_path}"

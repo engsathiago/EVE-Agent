@@ -1,6 +1,6 @@
 // Base session-key helper keeps outbound-only delivery aligned with route
 // resolution session-scope rules.
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { buildAgentSessionKey, type RoutePeer } from "../../routing/resolve-route.js";
 
 /**
@@ -10,7 +10,7 @@ import { buildAgentSessionKey, type RoutePeer } from "../../routing/resolve-rout
  * inbound route resolution keep the same `dmScope` and identity-link behavior.
  */
 export function buildOutboundBaseSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   channel: string;
   accountId?: string | null;

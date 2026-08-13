@@ -1,19 +1,19 @@
 // Parses npm registry specs into package, version, and tag references.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 
 const EXACT_SEMVER_VERSION_RE =
   /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z.-]+))?(?:\+([0-9A-Za-z.-]+))?$/;
-const OPENCLAW_STABLE_CORRECTION_VERSION_RE =
+const EVE_STABLE_CORRECTION_VERSION_RE =
   /^(?<year>\d{4})\.(?<month>[1-9]\d?)\.(?<patch>[1-9]\d*)-(?<correction>[1-9]\d*)$/;
-const OPENCLAW_STABLE_VERSION_RE = /^(?<year>\d{4})\.(?<month>[1-9]\d?)\.(?<patch>[1-9]\d*)$/;
-const OPENCLAW_ALPHA_VERSION_RE =
+const EVE_STABLE_VERSION_RE = /^(?<year>\d{4})\.(?<month>[1-9]\d?)\.(?<patch>[1-9]\d*)$/;
+const EVE_ALPHA_VERSION_RE =
   /^(?<year>\d{4})\.(?<month>[1-9]\d?)\.(?<patch>[1-9]\d*)-alpha\.(?<alpha>[1-9]\d*)$/;
-const OPENCLAW_BETA_VERSION_RE =
+const EVE_BETA_VERSION_RE =
   /^(?<year>\d{4})\.(?<month>[1-9]\d?)\.(?<patch>[1-9]\d*)-beta\.(?<beta>[1-9]\d*)$/;
 const DIST_TAG_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
-/** Parsed monthly patch OpenClaw release version used for channel-aware ordering. */
-type OpenClawReleaseVersion = {
+/** Parsed monthly patch EVE release version used for channel-aware ordering. */
+type EVEReleaseVersion = {
   channel: "alpha" | "beta" | "stable";
   year: number;
   month: number;
@@ -101,7 +101,7 @@ function parseRegistryNpmSpecInternal(
         selector,
         selectorKind: "exact-version",
         selectorIsPrerelease:
-          Boolean(exactVersionMatch[4]) && !isOpenClawStableCorrectionVersion(selector),
+          Boolean(exactVersionMatch[4]) && !isEVEStableCorrectionVersion(selector),
       },
     };
   }
@@ -129,10 +129,10 @@ export function parseRegistryNpmSpec(rawSpec: string): ParsedRegistryNpmSpec | n
   return parsed.ok ? parsed.parsed : null;
 }
 
-/** Returns whether a user-provided npm spec resolves to the official OpenClaw npm scope. */
-export function isOpenClawOrgNpmSpec(rawSpec: string | undefined): boolean {
+/** Returns whether a user-provided npm spec resolves to the official EVE npm scope. */
+export function isEVEOrgNpmSpec(rawSpec: string | undefined): boolean {
   const parsed = rawSpec ? parseRegistryNpmSpec(rawSpec) : null;
-  return parsed?.name.startsWith("@openclaw/") === true;
+  return parsed?.name.startsWith("@eve/") === true;
 }
 
 /** Validates a registry-only npm spec and returns a user-facing error when rejected. */
@@ -146,14 +146,14 @@ export function isExactSemverVersion(value: string): boolean {
   return EXACT_SEMVER_VERSION_RE.test(value.trim());
 }
 
-/** Parses OpenClaw's monthly patch stable/alpha/beta/correction version format. */
-function parseOpenClawReleaseVersion(value: string): OpenClawReleaseVersion | null {
+/** Parses EVE's monthly patch stable/alpha/beta/correction version format. */
+function parseEVEReleaseVersion(value: string): EVEReleaseVersion | null {
   const trimmed = value.trim();
   const candidates = [
-    { match: OPENCLAW_STABLE_VERSION_RE.exec(trimmed), channel: "stable" as const },
-    { match: OPENCLAW_STABLE_CORRECTION_VERSION_RE.exec(trimmed), channel: "stable" as const },
-    { match: OPENCLAW_ALPHA_VERSION_RE.exec(trimmed), channel: "alpha" as const },
-    { match: OPENCLAW_BETA_VERSION_RE.exec(trimmed), channel: "beta" as const },
+    { match: EVE_STABLE_VERSION_RE.exec(trimmed), channel: "stable" as const },
+    { match: EVE_STABLE_CORRECTION_VERSION_RE.exec(trimmed), channel: "stable" as const },
+    { match: EVE_ALPHA_VERSION_RE.exec(trimmed), channel: "alpha" as const },
+    { match: EVE_BETA_VERSION_RE.exec(trimmed), channel: "beta" as const },
   ];
   const candidate = candidates.find((entry) => entry.match?.groups);
   if (!candidate?.match?.groups) {
@@ -200,16 +200,16 @@ function parseOpenClawReleaseVersion(value: string): OpenClawReleaseVersion | nu
   };
 }
 
-/** Returns whether a version is an OpenClaw monthly patch stable correction release. */
-export function isOpenClawStableCorrectionVersion(value: string): boolean {
-  const parsed = parseOpenClawReleaseVersion(value);
+/** Returns whether a version is an EVE monthly patch stable correction release. */
+export function isEVEStableCorrectionVersion(value: string): boolean {
+  const parsed = parseEVEReleaseVersion(value);
   return parsed?.channel === "stable" && parsed.correctionNumber !== undefined;
 }
 
-/** Compares OpenClaw monthly patch release versions across alpha, beta, stable, and corrections. */
-export function compareOpenClawReleaseVersions(left: string, right: string): number | null {
-  const parsedLeft = parseOpenClawReleaseVersion(left);
-  const parsedRight = parseOpenClawReleaseVersion(right);
+/** Compares EVE monthly patch release versions across alpha, beta, stable, and corrections. */
+export function compareEVEReleaseVersions(left: string, right: string): number | null {
+  const parsedLeft = parseEVEReleaseVersion(left);
+  const parsedRight = parseEVEReleaseVersion(right);
   if (!parsedLeft || !parsedRight) {
     return null;
   }
@@ -239,13 +239,13 @@ export function compareOpenClawReleaseVersions(left: string, right: string): num
 export function isPrereleaseSemverVersion(value: string): boolean {
   const trimmed = value.trim();
   const match = EXACT_SEMVER_VERSION_RE.exec(trimmed);
-  return Boolean(match?.[4]) && !isOpenClawStableCorrectionVersion(trimmed);
+  return Boolean(match?.[4]) && !isEVEStableCorrectionVersion(trimmed);
 }
 
 /**
  * Enforces explicit opt-in before an npm spec may resolve to a prerelease.
  * Bare specs and `latest` stay on stable releases unless the resolved version
- * is an OpenClaw stable correction.
+ * is an EVE stable correction.
  */
 export function isPrereleaseResolutionAllowed(params: {
   spec: ParsedRegistryNpmSpec;

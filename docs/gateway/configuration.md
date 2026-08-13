@@ -1,19 +1,19 @@
 ---
 summary: "Configuration overview: common tasks, quick setup, and links to the full reference"
 read_when:
-  - Setting up OpenClaw for the first time
+  - Setting up EVE for the first time
   - Looking for common configuration patterns
   - Navigating to specific config sections
 title: "Configuration"
 ---
 
-OpenClaw reads an optional <Tooltip tip="JSON5 supports comments and trailing commas">**JSON5**</Tooltip> config from `~/.openclaw/openclaw.json`.
-The active config path must be a regular file. Symlinked `openclaw.json`
-layouts are unsupported for OpenClaw-owned writes; an atomic write may replace
+EVE reads an optional <Tooltip tip="JSON5 supports comments and trailing commas">**JSON5**</Tooltip> config from `~/.eve/eve.json`.
+The active config path must be a regular file. Symlinked `eve.json`
+layouts are unsupported for EVE-owned writes; an atomic write may replace
 the path instead of preserving the symlink. If you keep config outside the
-default state directory, point `OPENCLAW_CONFIG_PATH` directly at the real file.
+default state directory, point `EVE_CONFIG_PATH` directly at the real file.
 
-If the file is missing, OpenClaw uses safe defaults. Common reasons to add a config:
+If the file is missing, EVE uses safe defaults. Common reasons to add a config:
 
 - Connect channels and control who can message the bot
 - Set models, tools, sandboxing, or automation (cron, hooks)
@@ -27,15 +27,15 @@ docs before editing config. Use this page for task-oriented guidance and
 field map and defaults.
 
 <Tip>
-**New to configuration?** Start with `openclaw onboard` for interactive setup, or check out the [Configuration Examples](/gateway/configuration-examples) guide for complete copy-paste configs.
+**New to configuration?** Start with `eve onboard` for interactive setup, or check out the [Configuration Examples](/gateway/configuration-examples) guide for complete copy-paste configs.
 </Tip>
 
 ## Minimal config
 
 ```json5
-// ~/.openclaw/openclaw.json
+// ~/.eve/eve.json
 {
-  agents: { defaults: { workspace: "~/.openclaw/workspace" } },
+  agents: { defaults: { workspace: "~/.eve/workspace" } },
   channels: { whatsapp: { allowFrom: ["+15555550123"] } },
 }
 ```
@@ -45,15 +45,15 @@ field map and defaults.
 <Tabs>
   <Tab title="Interactive wizard">
     ```bash
-    openclaw onboard       # full onboarding flow
-    openclaw configure     # config wizard
+    eve onboard       # full onboarding flow
+    eve configure     # config wizard
     ```
   </Tab>
   <Tab title="CLI (one-liners)">
     ```bash
-    openclaw config get agents.defaults.workspace
-    openclaw config set agents.defaults.heartbeat.every "2h"
-    openclaw config unset plugins.entries.brave.config.webSearch.apiKey
+    eve config get agents.defaults.workspace
+    eve config set agents.defaults.heartbeat.every "2h"
+    eve config unset plugins.entries.brave.config.webSearch.apiKey
     ```
   </Tab>
   <Tab title="Control UI">
@@ -65,17 +65,17 @@ field map and defaults.
     fetch one path-scoped schema node plus immediate child summaries.
   </Tab>
   <Tab title="Direct edit">
-    Edit `~/.openclaw/openclaw.json` directly. The Gateway watches the file and applies changes automatically (see [hot reload](#config-hot-reload)).
+    Edit `~/.eve/eve.json` directly. The Gateway watches the file and applies changes automatically (see [hot reload](#config-hot-reload)).
   </Tab>
 </Tabs>
 
 ## Strict validation
 
 <Warning>
-OpenClaw only accepts configurations that fully match the schema. Unknown keys, malformed types, or invalid values cause the Gateway to **refuse to start**. The only root-level exception is `$schema` (string), so editors can attach JSON Schema metadata.
+EVE only accepts configurations that fully match the schema. Unknown keys, malformed types, or invalid values cause the Gateway to **refuse to start**. The only root-level exception is `$schema` (string), so editors can attach JSON Schema metadata.
 </Warning>
 
-`openclaw config schema` prints the canonical JSON Schema used by Control UI
+`eve config schema` prints the canonical JSON Schema used by Control UI
 and validation. `config.schema.lookup` fetches a single path-scoped node plus
 child summaries for drill-down tooling. Field `title`/`description` docs metadata
 carries through nested objects, wildcard (`*`), array-item (`[]`), and `anyOf`/
@@ -85,15 +85,15 @@ manifest registry is loaded.
 When validation fails:
 
 - The Gateway does not boot
-- Only diagnostic commands work (`openclaw doctor`, `openclaw logs`, `openclaw health`, `openclaw status`)
-- Run `openclaw doctor` to see exact issues
-- Run `openclaw doctor --fix` (or `--yes`) to apply repairs
+- Only diagnostic commands work (`eve doctor`, `eve logs`, `eve health`, `eve status`)
+- Run `eve doctor` to see exact issues
+- Run `eve doctor --fix` (or `--yes`) to apply repairs
 
 The Gateway keeps a trusted last-known-good copy after each successful startup,
-but startup and hot reload do not restore it automatically. If `openclaw.json`
+but startup and hot reload do not restore it automatically. If `eve.json`
 fails validation (including plugin-local validation), Gateway startup fails or
 the reload is skipped and the current runtime keeps the last accepted config.
-Run `openclaw doctor --fix` (or `--yes`) to repair prefixed/clobbered config or
+Run `eve doctor --fix` (or `--yes`) to repair prefixed/clobbered config or
 restore the last-known-good copy. Promotion to last-known-good is skipped when a
 candidate contains redacted secret placeholders such as `***`.
 
@@ -152,7 +152,7 @@ candidate contains redacted secret placeholders such as `***`.
     ```
 
     - `agents.defaults.models` defines the model catalog and acts as the allowlist for `/model`; `provider/*` entries filter `/model`, `/models`, and model pickers to selected providers while still using dynamic model discovery.
-    - Use `openclaw config set agents.defaults.models '<json>' --strict-json --merge` to add allowlist entries without removing existing models. Plain replacements that would remove entries are rejected unless you pass `--replace`.
+    - Use `eve config set agents.defaults.models '<json>' --strict-json --merge` to add allowlist entries without removing existing models. Plain replacements that would remove entries are rejected unless you pass `--replace`.
     - Model refs use `provider/model` format (e.g. `anthropic/claude-opus-4-6`).
     - `agents.defaults.imageMaxDimensionPx` controls transcript/tool image downscaling (default `1200`); lower values usually reduce vision-token usage on screenshot-heavy runs.
     - See [Models CLI](/concepts/models) for switching models in chat and [Model Failover](/concepts/model-failover) for auth rotation and fallback behavior.
@@ -191,7 +191,7 @@ candidate contains redacted secret placeholders such as `***`.
           {
             id: "main",
             groupChat: {
-              mentionPatterns: ["@openclaw", "openclaw"],
+              mentionPatterns: ["@eve", "eve"],
             },
           },
         ],
@@ -281,7 +281,7 @@ candidate contains redacted secret placeholders such as `***`.
     ```
 
     - Default is `15000` milliseconds.
-    - `OPENCLAW_HANDSHAKE_TIMEOUT_MS` still takes precedence for one-off service or shell overrides.
+    - `EVE_HANDSHAKE_TIMEOUT_MS` still takes precedence for one-off service or shell overrides.
     - Prefer fixing startup/event-loop stalls first; this knob is for hosts that are healthy but slow during warmup.
 
   </Accordion>
@@ -337,7 +337,7 @@ candidate contains redacted secret placeholders such as `***`.
   </Accordion>
 
   <Accordion title="Enable relay-backed push for official iOS builds">
-    Relay-backed push uses the hosted OpenClaw relay by default: `https://ios-push-relay.openclaw.ai`.
+    Relay-backed push uses the hosted EVE relay by default: `https://ios-push-relay.eve.ai`.
 
     To use a custom relay, set this in gateway config:
 
@@ -360,7 +360,7 @@ candidate contains redacted secret placeholders such as `***`.
     CLI equivalent:
 
     ```bash
-    openclaw config set gateway.push.apns.relay.baseUrl https://relay.example.com
+    eve config set gateway.push.apns.relay.baseUrl https://relay.example.com
     ```
 
     What this does:
@@ -386,9 +386,9 @@ candidate contains redacted secret placeholders such as `***`.
 
     Compatibility note:
 
-    - `OPENCLAW_APNS_RELAY_BASE_URL` and `OPENCLAW_APNS_RELAY_TIMEOUT_MS` still work as temporary env overrides.
+    - `EVE_APNS_RELAY_BASE_URL` and `EVE_APNS_RELAY_TIMEOUT_MS` still work as temporary env overrides.
     - Custom gateway relay URLs must match the relay base URL baked into the official/TestFlight iOS build.
-    - `OPENCLAW_APNS_RELAY_ALLOW_HTTP=true` remains a loopback-only development escape hatch; do not persist HTTP relay URLs in config.
+    - `EVE_APNS_RELAY_ALLOW_HTTP=true` remains a loopback-only development escape hatch; do not persist HTTP relay URLs in config.
 
     See [iOS App](/platforms/ios#relay-backed-push-for-official-builds) for the end-to-end flow and [Authentication and trust flow](/platforms/ios#authentication-and-trust-flow) for the relay security model.
 
@@ -462,8 +462,8 @@ candidate contains redacted secret placeholders such as `***`.
 
     Security note:
     - Treat all hook/webhook payload content as untrusted input.
-    - Use a dedicated `hooks.token`; do not reuse active Gateway auth secrets (`gateway.auth.token` / `OPENCLAW_GATEWAY_TOKEN` or `gateway.auth.password` / `OPENCLAW_GATEWAY_PASSWORD`).
-    - Hook auth is header-only (`Authorization: Bearer ...` or `x-openclaw-token`); query-string tokens are rejected.
+    - Use a dedicated `hooks.token`; do not reuse active Gateway auth secrets (`gateway.auth.token` / `EVE_GATEWAY_TOKEN` or `gateway.auth.password` / `EVE_GATEWAY_PASSWORD`).
+    - Hook auth is header-only (`Authorization: Bearer ...` or `x-eve-token`); query-string tokens are rejected.
     - `hooks.path` cannot be `/`; keep webhook ingress on a dedicated subpath such as `/hooks`.
     - Keep unsafe-content bypass flags disabled (`hooks.gmail.allowUnsafeExternalContent`, `hooks.mappings[].allowUnsafeExternalContent`) unless doing tightly scoped debugging.
     - If you enable `hooks.allowRequestSessionKey`, also set `hooks.allowedSessionKeyPrefixes` to bound caller-selected session keys.
@@ -480,8 +480,8 @@ candidate contains redacted secret placeholders such as `***`.
     {
       agents: {
         list: [
-          { id: "home", default: true, workspace: "~/.openclaw/workspace-home" },
-          { id: "work", workspace: "~/.openclaw/workspace-work" },
+          { id: "home", default: true, workspace: "~/.eve/workspace-home" },
+          { id: "work", workspace: "~/.eve/workspace-work" },
         ],
       },
       bindings: [
@@ -499,7 +499,7 @@ candidate contains redacted secret placeholders such as `***`.
     Use `$include` to organize large configs:
 
     ```json5
-    // ~/.openclaw/openclaw.json
+    // ~/.eve/eve.json
     {
       gateway: { port: 18789 },
       agents: { $include: "./agents.json5" },
@@ -515,15 +515,15 @@ candidate contains redacted secret placeholders such as `***`.
     - **Nested includes**: supported up to 10 levels deep
     - **Relative paths**: resolved relative to the including file
     - **Path format**: include paths must not contain null bytes and must be strictly shorter than 4096 characters before and after resolution
-    - **OpenClaw-owned writes**: when a write changes only one top-level section
+    - **EVE-owned writes**: when a write changes only one top-level section
       backed by a single-file include such as `plugins: { $include: "./plugins.json5" }`,
-      OpenClaw updates that included file and leaves `openclaw.json` intact
+      EVE updates that included file and leaves `eve.json` intact
     - **Unsupported write-through**: root includes, include arrays, and includes
-      with sibling overrides fail closed for OpenClaw-owned writes instead of
+      with sibling overrides fail closed for EVE-owned writes instead of
       flattening the config
     - **Confinement**: `$include` paths must resolve under the directory holding
-      `openclaw.json`. To share a tree across machines or users, set
-      `OPENCLAW_INCLUDE_ROOTS` to a path-list (`:` on POSIX, `;` on Windows) of
+      `eve.json`. To share a tree across machines or users, set
+      `EVE_INCLUDE_ROOTS` to a path-list (`:` on POSIX, `;` on Windows) of
       additional directories that includes may reference. Symlinks are resolved
       and re-checked, so a path that lexically lives in a config dir but whose
       real target escapes every allowed root is still rejected.
@@ -534,17 +534,17 @@ candidate contains redacted secret placeholders such as `***`.
 
 ## Config hot reload
 
-The Gateway watches `~/.openclaw/openclaw.json` and applies changes automatically - no manual restart needed for most settings.
+The Gateway watches `~/.eve/eve.json` and applies changes automatically - no manual restart needed for most settings.
 
 Direct file edits are treated as untrusted until they validate. The watcher waits
 for editor temp-write/rename churn to settle, reads the final file, and rejects
-invalid external edits without rewriting `openclaw.json`. OpenClaw-owned config
+invalid external edits without rewriting `eve.json`. EVE-owned config
 writes use the same schema gate before writing; destructive clobbers such as
 dropping `gateway.mode` or shrinking the file by more than half are rejected and
 saved as `.rejected.*` for inspection.
 
 If you see `config reload skipped (invalid config)` or startup reports `Invalid
-config`, inspect the config, run `openclaw config validate`, then run `openclaw
+config`, inspect the config, run `eve config validate`, then run `eve
 doctor --fix` for repair. See [Gateway troubleshooting](/gateway/troubleshooting#gateway-rejected-invalid-config)
 for the checklist.
 
@@ -586,7 +586,7 @@ Most fields hot-apply without downtime. In `hybrid` mode, restart-required chang
 
 ### Reload planning
 
-When you edit a source file that is referenced through `$include`, OpenClaw plans
+When you edit a source file that is referenced through `$include`, EVE plans
 the reload from the source-authored layout, not the flattened in-memory view.
 That keeps hot-reload decisions (hot-apply vs restart) predictable even when a
 single top-level section lives in its own included file such as
@@ -623,8 +623,8 @@ include update step summaries and command output tails.
 Example partial patch:
 
 ```bash
-openclaw gateway call config.get --params '{}'  # capture payload.hash
-openclaw gateway call config.patch --params '{
+eve gateway call config.get --params '{}'  # capture payload.hash
+eve gateway call config.patch --params '{
   "raw": "{ channels: { telegram: { groups: { \"*\": { requireMention: false } } } } }",
   "baseHash": "<hash>"
 }'
@@ -644,10 +644,10 @@ intend to replace the full config.
 
 ## Environment variables
 
-OpenClaw reads env vars from the parent process plus:
+EVE reads env vars from the parent process plus:
 
 - `.env` from the current working directory (if present)
-- `~/.openclaw/.env` (global fallback)
+- `~/.eve/.env` (global fallback)
 
 Neither file overrides existing env vars. You can also set inline env vars in config:
 
@@ -661,7 +661,7 @@ Neither file overrides existing env vars. You can also set inline env vars in co
 ```
 
 <Accordion title="Shell env import (optional)">
-  If enabled and expected keys aren't set, OpenClaw runs your login shell and imports only the missing keys:
+  If enabled and expected keys aren't set, EVE runs your login shell and imports only the missing keys:
 
 ```json5
 {
@@ -671,7 +671,7 @@ Neither file overrides existing env vars. You can also set inline env vars in co
 }
 ```
 
-Env var equivalent: `OPENCLAW_LOAD_SHELL_ENV=1`
+Env var equivalent: `EVE_LOAD_SHELL_ENV=1`
 </Accordion>
 
 <Accordion title="Env var substitution in config values">
@@ -679,7 +679,7 @@ Env var equivalent: `OPENCLAW_LOAD_SHELL_ENV=1`
 
 ```json5
 {
-  gateway: { auth: { token: "${OPENCLAW_GATEWAY_TOKEN}" } },
+  gateway: { auth: { token: "${EVE_GATEWAY_TOKEN}" } },
   models: { providers: { custom: { apiKey: "${CUSTOM_API_KEY}" } } },
 }
 ```

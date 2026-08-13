@@ -3,7 +3,7 @@
  *
  * Infers child completion from persisted session entries when registry updates arrive late.
  */
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
 import { getRuntimeConfig } from "../config/config.js";
 import {
   loadSessionStore,
@@ -11,7 +11,7 @@ import {
   resolveStorePath,
   type SessionEntry,
 } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SubagentRunOutcome } from "./subagent-announce-output.js";
 import {
   SUBAGENT_ENDED_REASON_COMPLETE,
@@ -78,7 +78,7 @@ function findSessionEntryByKey(store: Record<string, SessionEntry>, sessionKey: 
 export function loadSubagentSessionEntry(params: {
   childSessionKey: string;
   storeCache?: SubagentSessionStoreCache;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): SessionEntry | undefined {
   const key = params.childSessionKey.trim();
   if (!key) {
@@ -172,7 +172,7 @@ export function resolveSubagentSessionCompletion(params: {
   fallbackEndedAt: number;
   notBeforeMs?: number;
   storeCache?: SubagentSessionStoreCache;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): SubagentSessionCompletion | null {
   return resolveCompletionFromSessionEntry(
     loadSubagentSessionEntry({
@@ -190,7 +190,7 @@ export function resolveSubagentSessionStartedAt(params: {
   childSessionKey: string;
   notBeforeMs?: number;
   storeCache?: SubagentSessionStoreCache;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): number | undefined {
   const sessionEntry = loadSubagentSessionEntry({
     childSessionKey: params.childSessionKey,

@@ -7,7 +7,7 @@ import path from "node:path";
 import {
   clampPositiveTimerTimeoutMs,
   resolvePositiveTimerTimeoutMs,
-} from "@openclaw/normalization-core/number-coercion";
+} from "@eve/normalization-core/number-coercion";
 import type { ModelProviderLocalServiceConfig } from "../config/types.models.js";
 import type { Model } from "../llm/types.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
@@ -22,7 +22,7 @@ const DEFAULT_READY_TIMEOUT_MS = 120_000;
 const DEFAULT_PROBE_TIMEOUT_MS = 2_000;
 const PROBE_INTERVAL_MS = 250;
 
-const MODEL_PROVIDER_LOCAL_SERVICE_SYMBOL = Symbol.for("openclaw.modelProviderLocalService");
+const MODEL_PROVIDER_LOCAL_SERVICE_SYMBOL = Symbol.for("eve.modelProviderLocalService");
 
 type ModelWithProviderLocalService = {
   [MODEL_PROVIDER_LOCAL_SERVICE_SYMBOL]?: ModelProviderLocalServiceConfig;

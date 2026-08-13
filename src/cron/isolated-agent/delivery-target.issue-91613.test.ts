@@ -4,7 +4,7 @@
 // crons carrying an explicit target / their own delivery context are unaffected.
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChannelOutboundAdapter } from "../../channels/plugins/types.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
 import {
   forumMessagingForTest,
@@ -148,7 +148,7 @@ beforeEach(() => {
           config: {
             listAccountIds: () => [],
             resolveAccount: () => ({}),
-            resolveAllowFrom: ({ cfg }: { cfg: OpenClawConfig }) =>
+            resolveAllowFrom: ({ cfg }: { cfg: EVEConfig }) =>
               (cfg.channels?.alpha as { allowFrom?: string[] } | undefined)?.allowFrom,
           },
         },
@@ -162,12 +162,12 @@ afterEach(() => {
   resetPluginRuntimeStateForTest();
 });
 
-function makeCfg(overrides?: Partial<OpenClawConfig>): OpenClawConfig {
+function makeCfg(overrides?: Partial<EVEConfig>): EVEConfig {
   return {
     bindings: [],
     channels: {},
     ...overrides,
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 const AGENT_ID = "agent-b";
@@ -200,7 +200,7 @@ function setLastSessionEntry(params: {
   });
 }
 
-async function resolveLastTarget(cfg: OpenClawConfig) {
+async function resolveLastTarget(cfg: EVEConfig) {
   // Implicit/keyless cron: delivery.channel="last", no per-job target, no sessionKey.
   return resolveDeliveryTarget(cfg, AGENT_ID, { channel: "last", to: undefined });
 }

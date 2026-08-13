@@ -5,8 +5,8 @@ import { StringDecoder } from "node:string_decoder";
 import {
   resolveIntegerOption,
   resolveNonNegativeIntegerOption,
-} from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { deriveSessionTotalTokens, hasNonzeroUsage, normalizeUsage } from "../agents/usage.js";
 import {
   scanSessionTranscriptTree,
@@ -130,8 +130,8 @@ async function yieldTranscriptScan(): Promise<void> {
   });
 }
 
-/** Attach OpenClaw metadata to a transcript message without dropping existing metadata. */
-export function attachOpenClawTranscriptMeta(
+/** Attach EVE metadata to a transcript message without dropping existing metadata. */
+export function attachEVETranscriptMeta(
   message: unknown,
   meta: Record<string, unknown>,
 ): unknown {
@@ -140,14 +140,14 @@ export function attachOpenClawTranscriptMeta(
   }
   const record = message as Record<string, unknown>;
   const existing =
-    record["__openclaw"] &&
-    typeof record["__openclaw"] === "object" &&
-    !Array.isArray(record["__openclaw"])
-      ? (record["__openclaw"] as Record<string, unknown>)
+    record["__eve"] &&
+    typeof record["__eve"] === "object" &&
+    !Array.isArray(record["__eve"])
+      ? (record["__eve"] as Record<string, unknown>)
       : {};
   return {
     ...record,
-    __openclaw: {
+    __eve: {
       ...existing,
       ...meta,
     },
@@ -350,7 +350,7 @@ function buildOversizedTranscriptRecord(line: string): TailTranscriptRecord {
     message: {
       role,
       content: [{ type: "text", text: TRANSCRIPT_OVERSIZED_MESSAGE_PLACEHOLDER }],
-      __openclaw: { truncated: true, reason: "oversized" },
+      __eve: { truncated: true, reason: "oversized" },
     },
   };
   return { record };
@@ -706,7 +706,7 @@ export function readRecentSessionMessagesWithStats(
   const messages = readRecentSessionMessages(sessionId, storePath, sessionFile, opts, agentId);
   const firstSeq = Math.max(1, totalMessages - messages.length + 1);
   const messagesWithSeq = messages.map((message, index) =>
-    attachOpenClawTranscriptMeta(message, { seq: firstSeq + index }),
+    attachEVETranscriptMeta(message, { seq: firstSeq + index }),
   );
   return { messages: messagesWithSeq, totalMessages };
 }
@@ -796,7 +796,7 @@ export async function readRecentSessionMessagesWithStatsAsync(
   );
   const firstSeq = Math.max(1, totalMessages - messages.length + 1);
   const messagesWithSeq = messages.map((message, index) =>
-    attachOpenClawTranscriptMeta(message, { seq: firstSeq + index }),
+    attachEVETranscriptMeta(message, { seq: firstSeq + index }),
   );
   return { messages: messagesWithSeq, totalMessages, transcriptPath: filePath };
 }
@@ -849,7 +849,7 @@ function parsedSessionEntryToMessage(parsed: unknown, seq: number): unknown {
         : typeof entry.timestamp === "number"
           ? entry.timestamp
           : Number.NaN;
-    return attachOpenClawTranscriptMeta(entry.message, {
+    return attachEVETranscriptMeta(entry.message, {
       ...(typeof entry.id === "string" ? { id: entry.id } : {}),
       ...(Number.isFinite(recordTimestampMs) ? { recordTimestampMs } : {}),
       seq,
@@ -865,7 +865,7 @@ function parsedSessionEntryToMessage(parsed: unknown, seq: number): unknown {
       role: "system",
       content: [{ type: "text", text: "Compaction" }],
       timestamp,
-      __openclaw: {
+      __eve: {
         kind: "compaction",
         id: typeof entry.id === "string" ? entry.id : undefined,
         seq,
@@ -1380,7 +1380,7 @@ function extractTranscriptTokenEstimateFromLine(line: string): {
           ? parsed.model.trim()
           : undefined;
     const isDeliveryMirror =
-      role === "assistant" && modelProvider === "openclaw" && model === "delivery-mirror";
+      role === "assistant" && modelProvider === "eve" && model === "delivery-mirror";
     if (isDeliveryMirror) {
       return null;
     }
@@ -1437,7 +1437,7 @@ function extractUsageSnapshotFromTranscriptLine(
         : typeof parsed.model === "string"
           ? parsed.model.trim()
           : undefined;
-    const isDeliveryMirror = modelProvider === "openclaw" && model === "delivery-mirror";
+    const isDeliveryMirror = modelProvider === "eve" && model === "delivery-mirror";
     const hasMeaningfulUsage =
       hasNonzeroUsage(usage) ||
       typeof totalTokens === "number" ||

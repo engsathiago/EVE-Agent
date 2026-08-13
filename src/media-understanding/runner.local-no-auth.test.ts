@@ -6,7 +6,7 @@ import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import { CUSTOM_LOCAL_AUTH_MARKER } from "../agents/model-auth-markers.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { buildProviderRegistry, runCapability } from "./runner.js";
 import { withAudioFixture, withVideoFixture } from "./runner.test-utils.js";
@@ -29,7 +29,7 @@ vi.mock("../plugins/providers.js", async (importOriginal) => ({
 const AUTH_ENV = {
   LOCAL_AUDIO_API_KEY: undefined,
   REMOTE_AUDIO_API_KEY: undefined,
-  OPENCLAW_AGENT_DIR: undefined,
+  EVE_AGENT_DIR: undefined,
 } satisfies Record<string, string | undefined>;
 
 function createAudioProvider(
@@ -59,7 +59,7 @@ function createVideoProvider(
 }
 
 async function withIsolatedAgentDir<T>(run: (agentDir: string) => Promise<T>): Promise<T> {
-  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-local-audio-auth-"));
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-local-audio-auth-"));
   try {
     return await run(agentDir);
   } finally {
@@ -72,7 +72,7 @@ function createAudioCfg(params: {
   model: string;
   providerConfig?: Record<string, unknown>;
   entry?: Record<string, unknown>;
-}): OpenClawConfig {
+}): EVEConfig {
   return {
     ...(params.providerConfig
       ? {
@@ -93,10 +93,10 @@ function createAudioCfg(params: {
         },
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
-function createVideoCfg(params: { provider: string; model: string }): OpenClawConfig {
+function createVideoCfg(params: { provider: string; model: string }): EVEConfig {
   return {
     tools: {
       media: {
@@ -106,14 +106,14 @@ function createVideoCfg(params: { provider: string; model: string }): OpenClawCo
         },
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 }
 
 describe("runCapability local no-auth audio providers", () => {
   it("allows a local no-auth audio provider when configured as a local models provider", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
-        await withAudioFixture("openclaw-local-audio-configured", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-local-audio-configured", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
             text: `ok:${req.apiKey}`,
             model: req.model,
@@ -153,7 +153,7 @@ describe("runCapability local no-auth audio providers", () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
         await withAudioFixture(
-          "openclaw-local-audio-plugin-only",
+          "eve-local-audio-plugin-only",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
               text: "plugin local ok",
@@ -201,7 +201,7 @@ describe("runCapability local no-auth audio providers", () => {
   it("prefers resolver env credentials over plugin-only media no-auth", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync({ ...AUTH_ENV, OPENAI_API_KEY: "env-openai-audio-key" }, async () => {
-        await withAudioFixture("openclaw-openai-audio-env-key", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-openai-audio-env-key", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
             text: `env:${req.apiKey}`,
             model: req.model,
@@ -254,7 +254,7 @@ describe("runCapability local no-auth audio providers", () => {
           { filterExternalAuthProfiles: false, syncExternalCli: false },
         );
         await withAudioFixture(
-          "openclaw-openai-audio-oauth-env-key",
+          "eve-openai-audio-oauth-env-key",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
               text: `auth:${req.apiKey}`,
@@ -302,7 +302,7 @@ describe("runCapability local no-auth audio providers", () => {
           { filterExternalAuthProfiles: false, syncExternalCli: false },
         );
         await withAudioFixture(
-          "openclaw-local-audio-stored-profile",
+          "eve-local-audio-stored-profile",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
               text: `profile:${req.apiKey}`,
@@ -340,7 +340,7 @@ describe("runCapability local no-auth audio providers", () => {
   it("still rejects a remote audio provider without credentials", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
-        await withAudioFixture("openclaw-remote-audio-no-auth", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-remote-audio-no-auth", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async () => ({
             text: "should not run",
             model: "remote-whisper",
@@ -381,7 +381,7 @@ describe("runCapability local no-auth audio providers", () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
         await withAudioFixture(
-          "openclaw-local-audio-literal-key",
+          "eve-local-audio-literal-key",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
               text: `literal:${req.apiKey}`,
@@ -425,7 +425,7 @@ describe("runCapability local no-auth audio providers", () => {
   it("allows a media auth hook to provide an api key after normal auth misses", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
-        await withAudioFixture("openclaw-local-audio-hook-key", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-local-audio-hook-key", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
             text: `hook:${req.apiKey}`,
             model: req.model,
@@ -465,7 +465,7 @@ describe("runCapability local no-auth audio providers", () => {
   it("does not allow plugin-only media provider without explicit no-auth", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
-        await withAudioFixture("openclaw-local-audio-no-hook", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-local-audio-no-hook", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async () => ({
             text: "should not run",
             model: "whisper-local",
@@ -497,7 +497,7 @@ describe("runCapability local no-auth audio providers", () => {
   it("does not allow plugin-only media provider when no-auth hook returns null", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
-        await withAudioFixture("openclaw-local-audio-null-hook", async ({ ctx, media, cache }) => {
+        await withAudioFixture("eve-local-audio-null-hook", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async () => ({
             text: "should not run",
             model: "whisper-local",
@@ -532,7 +532,7 @@ describe("runCapability local no-auth audio providers", () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
         await withAudioFixture(
-          "openclaw-local-audio-plugin-missing-profile",
+          "eve-local-audio-plugin-missing-profile",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async () => ({
               text: "should not run",
@@ -576,7 +576,7 @@ describe("runCapability local no-auth audio providers", () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
         await withAudioFixture(
-          "openclaw-local-audio-missing-profile",
+          "eve-local-audio-missing-profile",
           async ({ ctx, media, cache }) => {
             const transcribeAudio = vi.fn(async () => ({
               text: "should not run",
@@ -625,7 +625,7 @@ describe("runCapability local no-auth audio providers", () => {
     await withIsolatedAgentDir(async (agentDir) => {
       await withEnvAsync(AUTH_ENV, async () => {
         await withVideoFixture(
-          "openclaw-local-video-plugin-only",
+          "eve-local-video-plugin-only",
           async ({ ctx, media, cache }) => {
             const describeVideo = vi.fn(async (req: VideoDescriptionRequest) => ({
               text: `video:${req.auth?.kind}`,

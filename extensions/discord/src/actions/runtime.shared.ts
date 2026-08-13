@@ -5,7 +5,7 @@ import {
   readPositiveIntegerParam,
   readStringParam,
 } from "../runtime-api.js";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import type {
   DiscordChannelCreate,
   DiscordChannelEdit,
@@ -34,10 +34,10 @@ function readDiscordBooleanParam(
 export function createDiscordActionOptions<
   T extends Record<string, unknown> = Record<string, never>,
 >(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   extra?: T;
-}): { cfg: OpenClawConfig; accountId?: string } & T {
+}): { cfg: EVEConfig; accountId?: string } & T {
   return {
     cfg: params.cfg,
     ...(params.accountId ? { accountId: params.accountId } : {}),

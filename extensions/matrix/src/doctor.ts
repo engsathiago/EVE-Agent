@@ -1,11 +1,11 @@
 // Matrix plugin module implements doctor behavior.
-import type { ChannelDoctorAdapter } from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ChannelDoctorAdapter } from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   detectPluginInstallPathIssue,
   formatPluginInstallPathIssue,
   removePluginFromConfig,
-} from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/runtime-doctor";
 import {
   legacyConfigRules as MATRIX_LEGACY_CONFIG_RULES,
   normalizeCompatibilityConfig as normalizeMatrixCompatibilityConfig,
@@ -20,12 +20,12 @@ import {
 } from "./matrix-migration.runtime.js";
 import { isRecord } from "./record-shared.js";
 
-function hasConfiguredMatrixChannel(cfg: OpenClawConfig): boolean {
+function hasConfiguredMatrixChannel(cfg: EVEConfig): boolean {
   const channels = cfg.channels as Record<string, unknown> | undefined;
   return isRecord(channels?.matrix);
 }
 
-function hasConfiguredMatrixPluginSurface(cfg: OpenClawConfig): boolean {
+function hasConfiguredMatrixPluginSurface(cfg: EVEConfig): boolean {
   return Boolean(
     cfg.plugins?.installs?.matrix ||
     cfg.plugins?.entries?.matrix ||
@@ -40,7 +40,7 @@ function hasConfiguredMatrixEnv(env: NodeJS.ProcessEnv): boolean {
   );
 }
 
-function configMayNeedMatrixDoctorSequence(cfg: OpenClawConfig, env: NodeJS.ProcessEnv): boolean {
+function configMayNeedMatrixDoctorSequence(cfg: EVEConfig, env: NodeJS.ProcessEnv): boolean {
   return (
     hasConfiguredMatrixChannel(cfg) ||
     hasConfiguredMatrixPluginSurface(cfg) ||
@@ -56,7 +56,7 @@ export function formatMatrixLegacyStatePreview(
     `- Legacy sync store: ${detection.legacyStoragePath} -> ${detection.targetStoragePath}`,
     `- Legacy crypto store: ${detection.legacyCryptoPath} -> ${detection.targetCryptoPath}`,
     ...(detection.selectionNote ? [`- ${detection.selectionNote}`] : []),
-    '- Run "openclaw doctor --fix" to migrate this Matrix state now.',
+    '- Run "eve doctor --fix" to migrate this Matrix state now.',
   ].join("\n");
 }
 
@@ -74,14 +74,14 @@ export function formatMatrixLegacyCryptoPreview(
         `- Legacy crypto store: ${plan.legacyCryptoPath}`,
         `- Recovery key state: Matrix SQLite state (imports ${plan.recoveryKeyPath} if present)`,
         `- Migration state: Matrix SQLite state (imports ${plan.statePath} if present)`,
-        '- Run "openclaw doctor --fix" to extract any saved backup key now. Backed-up room keys will restore automatically on next gateway start.',
+        '- Run "eve doctor --fix" to extract any saved backup key now. Backed-up room keys will restore automatically on next gateway start.',
       ].join("\n"),
     );
   }
   return notes;
 }
 
-export async function collectMatrixInstallPathWarnings(cfg: OpenClawConfig): Promise<string[]> {
+export async function collectMatrixInstallPathWarnings(cfg: EVEConfig): Promise<string[]> {
   const issue = await detectPluginInstallPathIssue({
     pluginId: "matrix",
     install: cfg.plugins?.installs?.matrix,
@@ -92,11 +92,11 @@ export async function collectMatrixInstallPathWarnings(cfg: OpenClawConfig): Pro
   return formatPluginInstallPathIssue({
     issue,
     pluginLabel: "Matrix",
-    defaultInstallCommand: "openclaw plugins install @openclaw/matrix",
+    defaultInstallCommand: "eve plugins install @eve/matrix",
   }).map((entry) => `- ${entry}`);
 }
 
-export async function cleanStaleMatrixPluginConfig(cfg: OpenClawConfig) {
+export async function cleanStaleMatrixPluginConfig(cfg: EVEConfig) {
   const issue = await detectPluginInstallPathIssue({
     pluginId: "matrix",
     install: cfg.plugins?.installs?.matrix,
@@ -130,7 +130,7 @@ export async function cleanStaleMatrixPluginConfig(cfg: OpenClawConfig) {
 }
 
 export async function applyMatrixDoctorRepair(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
 }): Promise<{ changes: string[]; warnings: string[] }> {
   const changes: string[] = [];
@@ -156,7 +156,7 @@ export async function applyMatrixDoctorRepair(params: {
         `- Failed creating a Matrix migration snapshot before repair: ${String(error)}`,
       );
       warnings.push(
-        '- Skipping Matrix migration changes for now. Resolve the snapshot failure, then rerun "openclaw doctor --fix".',
+        '- Skipping Matrix migration changes for now. Resolve the snapshot failure, then rerun "eve doctor --fix".',
       );
     }
   } else if (migrationStatus.pending) {
@@ -206,7 +206,7 @@ export async function applyMatrixDoctorRepair(params: {
 }
 
 export async function runMatrixDoctorSequence(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   shouldRepair: boolean;
 }): Promise<{ changeNotes: string[]; warningNotes: string[] }> {

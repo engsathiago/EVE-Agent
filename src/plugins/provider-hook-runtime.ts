@@ -2,13 +2,13 @@
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
+} from "@eve/model-catalog-core/provider-id";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveModelCatalogScope } from "../agents/model-catalog-scope.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { getLoadedRuntimePluginRegistry } from "./active-runtime-registry.js";
 import {
   PluginLruCache,
@@ -41,7 +41,7 @@ const PREPARED_PROVIDER_RUNTIME_SURFACES = ["channel"] as const;
 export type ProviderRuntimePluginLookupParams = {
   provider: string;
   modelId?: string | null;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   applyAutoEnable?: boolean;
@@ -195,7 +195,7 @@ function findProviderRuntimePluginInRegistry(params: {
 
 function hasConfiguredModelProvider(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
 }): boolean {
   return (
     findNormalizedProviderValue(params.config?.models?.providers, params.provider) !== undefined
@@ -203,7 +203,7 @@ function hasConfiguredModelProvider(params: {
 }
 
 export function resolveProviderPluginsForHooks(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   onlyPluginIds?: string[];
@@ -320,7 +320,7 @@ export function resolveLoadedProviderRuntimePlugin(
 export function resolveProviderHookPlugin(params: {
   provider: string;
   modelId?: string | null;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
 }): ProviderPlugin | undefined {
@@ -382,7 +382,7 @@ export function ensureProviderRuntimePluginHandle(
 
 export function prepareProviderExtraParams(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;
@@ -396,7 +396,7 @@ export function prepareProviderExtraParams(params: {
 
 export function resolveProviderExtraParamsForTransport(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;
@@ -410,7 +410,7 @@ export function resolveProviderExtraParamsForTransport(params: {
 
 export function resolveProviderAuthProfileId(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;
@@ -424,7 +424,7 @@ export function resolveProviderAuthProfileId(params: {
 
 export function resolveProviderFollowupFallbackRoute(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;
@@ -438,7 +438,7 @@ export function resolveProviderFollowupFallbackRoute(params: {
 
 export function wrapProviderStreamFn(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;
@@ -451,7 +451,7 @@ export function wrapProviderStreamFn(params: {
 
 export function wrapProviderSimpleCompletionStreamFn(params: {
   provider: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   runtimeHandle?: ProviderRuntimePluginHandle;

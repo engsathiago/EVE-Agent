@@ -1,8 +1,8 @@
 // Slack plugin module implements action runtime behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import { readBooleanParam } from "openclaw/plugin-sdk/boolean-param";
-import { isSingleUseReplyToMode } from "openclaw/plugin-sdk/reply-reference";
-import { resolveOpenProviderRuntimeGroupPolicy } from "openclaw/plugin-sdk/runtime-group-policy";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
+import { readBooleanParam } from "eve-agent/plugin-sdk/boolean-param";
+import { isSingleUseReplyToMode } from "eve-agent/plugin-sdk/reply-reference";
+import { resolveOpenProviderRuntimeGroupPolicy } from "eve-agent/plugin-sdk/runtime-group-policy";
 import type { ResolvedSlackAccount } from "./accounts.js";
 import { parseSlackBlocksInput } from "./blocks-input.js";
 import { resolveSlackChannelConfig } from "./monitor/channel-config.js";
@@ -14,7 +14,7 @@ import {
   readPositiveIntegerParam,
   readReactionParams,
   readStringParam,
-  type OpenClawConfig,
+  type EVEConfig,
   withNormalizedTimestamp,
 } from "./runtime-api.js";
 import { resolveSlackChannelId, slackContextTargetsMatch } from "./targets.js";
@@ -154,7 +154,7 @@ function isImageContentType(value: string | undefined): boolean {
 
 function assertSlackReadTargetAllowed(params: {
   account: ResolvedSlackAccount;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channelId: string;
 }) {
   const channels = params.account.config.channels;
@@ -190,7 +190,7 @@ function assertSlackReadTargetAllowed(params: {
 
 export async function handleSlackAction(
   params: Record<string, unknown>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   context?: SlackActionContext,
 ): Promise<AgentToolResult<unknown>> {
   const resolveChannelId = () =>

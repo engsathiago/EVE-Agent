@@ -114,7 +114,7 @@ prepare_validate_commit() {
   local subject
   subject=$(git log -1 --pretty=%s)
 
-  if echo "$subject" | rg -qi "(^|[[:space:]])openclaw#$pr_number([[:space:]]|$)|\\(#$pr_number\\)"; then
+  if echo "$subject" | rg -qi "(^|[[:space:]])eve#$pr_number([[:space:]]|$)|\\(#$pr_number\\)"; then
     echo "ERROR: prep commit subject should not include PR number metadata"
     exit 1
   fi
@@ -237,7 +237,7 @@ prepare_sync_head() {
   if ! git merge-base --is-ancestor origin/main HEAD; then
     git rebase origin/main
     rebased=true
-    if [ "${OPENCLAW_TESTBOX:-}" = "1" ]; then
+    if [ "${EVE_TESTBOX:-}" = "1" ]; then
       rm -f .local/gates.env .local/prep.env
       echo "Rebased head requires fresh exact-head hosted CI/Testbox evidence after push."
     else
@@ -285,7 +285,7 @@ prepare_sync_head() {
 - Verified the remote PR head tree matches the local prep head.
 EOF_PREP
 
-  if [ "$rebased" = "true" ] && [ "${OPENCLAW_TESTBOX:-}" = "1" ]; then
+  if [ "$rebased" = "true" ] && [ "${EVE_TESTBOX:-}" = "1" ]; then
     local prep_sync_tree
     prep_sync_tree=$(git rev-parse "${local_prep_head_sha}^{tree}")
     # Preserve the verified local lineage because GraphQL creates a remote

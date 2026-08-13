@@ -1,21 +1,21 @@
 // Xai tests cover index plugin behavior.
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import {
   registerProviderPlugin,
   registerSingleProviderPlugin,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
 import {
   clearLiveCatalogCacheForTests,
   type LiveModelCatalogFetchGuard,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+} from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const providerAuthRuntimeMocks = vi.hoisted(() => ({
   resolveApiKeyForProvider: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", () => providerAuthRuntimeMocks);
+vi.mock("eve-agent/plugin-sdk/provider-auth-runtime", () => providerAuthRuntimeMocks);
 
 import plugin from "./index.js";
 import { buildLiveXaiProvider } from "./provider-catalog.js";
@@ -46,7 +46,7 @@ function createProviderModel(overrides: {
   };
 }
 
-type XaiAutoEnableProbe = Parameters<OpenClawPluginApi["registerAutoEnableProbe"]>[0];
+type XaiAutoEnableProbe = Parameters<EVEPluginApi["registerAutoEnableProbe"]>[0];
 
 function registerXaiAutoEnableProbe(): XaiAutoEnableProbe {
   const probes: XaiAutoEnableProbe[] = [];

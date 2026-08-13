@@ -1,4 +1,4 @@
-// Bounded Response script supports OpenClaw repository automation.
+// Bounded Response script supports EVE repository automation.
 type BoundedResponseTextOptions = {
   createTooLargeError?: (message: string) => Error;
   formatTooLargeMessage?: (label: string, maxBytes: number) => string;

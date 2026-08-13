@@ -1,7 +1,7 @@
 // Line plugin module implements probe behavior.
 import { messagingApi } from "@line/bot-sdk";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { withTimeout } from "openclaw/plugin-sdk/text-utility-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { withTimeout } from "eve-agent/plugin-sdk/text-utility-runtime";
 import type { LineProbeResult } from "./types.js";
 
 export async function probeLineBot(

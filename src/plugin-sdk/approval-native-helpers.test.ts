@@ -11,13 +11,13 @@ import {
   nativeApprovalTargetsMatch,
   shouldSuppressLocalNativeExecApprovalPrompt,
 } from "./approval-native-helpers.js";
-import type { OpenClawConfig } from "./config-runtime.js";
+import type { EVEConfig } from "./config-runtime.js";
 
 const EMPTY_SESSION_CFG = {
   session: {
     store: ".artifacts/test/approval-native-helpers-empty-sessions.json",
   },
-} satisfies OpenClawConfig;
+} satisfies EVEConfig;
 
 function createMatrixRouteGates(options?: {
   enabledAccounts?: readonly string[];
@@ -94,7 +94,7 @@ describe("createNativeApprovalChannelRouteGates", () => {
           mode: "session",
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       gates.canApprovalPotentiallyRouteToChannel({
@@ -150,7 +150,7 @@ describe("createNativeApprovalChannelRouteGates", () => {
           sessionFilter: ["matrix:room"],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     expect(
       gates.isSessionApprovalEligible({
@@ -184,7 +184,7 @@ describe("createNativeApprovalChannelRouteGates", () => {
           targets: [{ channel: "matrix", to: "room-1" }],
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     const target = { channel: "matrix", to: "room-1", source: "target" } as const;
 
     expect(

@@ -24,7 +24,7 @@ import {
 const noopLogger = createNoopLogger();
 installCronTestHooks({ logger: noopLogger });
 const { makeStorePath } = createCronStoreHarness({
-  prefix: "openclaw-cron-runs-one-shot-",
+  prefix: "eve-cron-runs-one-shot-",
 });
 
 function expectCronRunSessionKey(value: unknown, jobId: string) {

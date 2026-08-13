@@ -1,5 +1,5 @@
 // Deepinfra tests cover memory embedding adapter plugin behavior.
-import { isMissingEmbeddingApiKeyError } from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
+import { isMissingEmbeddingApiKeyError } from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
 import { describe, expect, it } from "vitest";
 import { DEFAULT_DEEPINFRA_EMBEDDING_MODEL } from "./embedding-provider.js";
 import { deepinfraMemoryEmbeddingProviderAdapter } from "./memory-embedding-adapter.js";

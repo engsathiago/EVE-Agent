@@ -1,7 +1,7 @@
 // Qa Lab plugin module implements runtime tool fixture behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { readRuntimeToolCoverageMetadata } from "./runtime-tool-metadata.js";
 import { liveTurnTimeoutMs } from "./suite-runtime-agent-common.js";
 import { readRawQaSessionStore } from "./suite-runtime-agent-session.js";
@@ -540,9 +540,9 @@ function formatCodexNativeWorkspaceDetails(params: {
   failureRequest?: QaRuntimeToolFixtureRequest;
 }) {
   return [
-    `codex-native-workspace ${params.toolName}: OpenClaw dynamic exposure is intentionally omitted because Codex owns this workspace operation natively`,
+    `codex-native-workspace ${params.toolName}: EVE dynamic exposure is intentionally omitted because Codex owns this workspace operation natively`,
     params.reason ? `reason: ${params.reason}` : undefined,
-    `available OpenClaw dynamic tools: ${[...params.tools].toSorted().join(", ")}`,
+    `available EVE dynamic tools: ${[...params.tools].toSorted().join(", ")}`,
     params.happyRequest
       ? `${params.toolName} mock provider happy planned args (diagnostic only): ${formatPlannedToolArgs(params.happyRequest.plannedToolArgs)}`
       : undefined,
@@ -596,7 +596,7 @@ export async function runRuntimeToolFixture(
     config,
   });
   const dynamicExposureIntentionallyExcluded =
-    env.gateway.runtimeEnv.OPENCLAW_QA_FORCE_RUNTIME === "codex" &&
+    env.gateway.runtimeEnv.EVE_QA_FORCE_RUNTIME === "codex" &&
     metadata.expectedLayer === "codex-native-workspace";
   const expectedAvailable = readBoolean(config.expectedAvailable, true);
   if (!tools.has(toolName) && !dynamicExposureIntentionallyExcluded) {

@@ -58,7 +58,7 @@ afterEach(async () => {
 });
 
 async function makeTempHome(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-copilot-doctor-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-copilot-doctor-"));
   tempDirs.push(dir);
   return dir;
 }

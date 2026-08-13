@@ -1,7 +1,7 @@
 // Inspects local gateway processes for status and diagnostics.
 import { spawnSync } from "node:child_process";
 import fsSync from "node:fs";
-import { uniqueValues } from "@openclaw/normalization-core/string-normalization";
+import { uniqueValues } from "@eve/normalization-core/string-normalization";
 import { isGatewayArgv, parseProcCmdline } from "./gateway-process-argv.js";
 import { findGatewayPidsOnPortSync as findUnixGatewayPidsOnPortSync } from "./restart-stale-pids.js";
 import {
@@ -10,7 +10,7 @@ import {
 } from "./windows-port-pids.js";
 
 // Gateway process helpers verify argv before signaling or reporting listener
-// PIDs so stale port owners cannot be mistaken for OpenClaw.
+// PIDs so stale port owners cannot be mistaken for EVE.
 /** Read command argv for a PID using the current platform's process APIs. */
 export function readGatewayProcessArgsSync(pid: number): string[] | null {
   if (process.platform === "linux") {

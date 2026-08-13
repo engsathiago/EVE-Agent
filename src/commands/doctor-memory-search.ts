@@ -2,8 +2,8 @@ import fsSync from "node:fs";
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+} from "@eve/model-catalog-core/provider-id";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { note } from "../../packages/terminal-core/src/note.js";
 import {
   resolveAgentDir,
@@ -18,7 +18,7 @@ import {
   resolveUsableCustomProviderApiKey,
 } from "../agents/model-auth.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
   checkQmdBinaryAvailability,
@@ -139,7 +139,7 @@ function resolveSuggestedRemoteMemoryProvider(): string | undefined {
   )?.providerId;
 }
 
-function isOpenAICompatibleMemoryProvider(providerId: string, cfg: OpenClawConfig): boolean {
+function isOpenAICompatibleMemoryProvider(providerId: string, cfg: EVEConfig): boolean {
   const normalizedProviderId = normalizeProviderId(providerId);
   if (normalizedProviderId === OPENAI_COMPATIBLE_MEMORY_EMBEDDING_PROVIDER) {
     return true;
@@ -167,7 +167,7 @@ function isOpenAICompatibleMemoryProvider(providerId: string, cfg: OpenClawConfi
 
 function resolveOpenAICompatibleMemoryBaseUrl(
   providerId: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   remoteBaseUrl: string | undefined,
 ): string | undefined {
   return (
@@ -176,7 +176,7 @@ function resolveOpenAICompatibleMemoryBaseUrl(
   );
 }
 
-function isKeyOptionalMemoryProvider(providerId: string, cfg: OpenClawConfig): boolean {
+function isKeyOptionalMemoryProvider(providerId: string, cfg: EVEConfig): boolean {
   return (
     providerId === "local" ||
     providerId === "ollama" ||
@@ -186,7 +186,7 @@ function isKeyOptionalMemoryProvider(providerId: string, cfg: OpenClawConfig): b
 }
 
 async function resolveRuntimeMemoryAuditContext(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): Promise<RuntimeMemoryAuditContext | null> {
   const agentId = resolveDefaultAgentId(cfg);
   const result = await getActiveMemorySearchManager({
@@ -221,8 +221,8 @@ function buildMemoryRecallIssueNote(audit: ShortTermAuditSummary): string | null
   const issueLines = audit.issues.map((issue) => `- ${issue.message}`);
   const hasFixableIssue = audit.issues.some((issue) => issue.fixable);
   const guidance = hasFixableIssue
-    ? `Fix: ${formatCliCommand("openclaw doctor --fix")} or ${formatCliCommand("openclaw memory status --fix")}`
-    : `Verify: ${formatCliCommand("openclaw memory status --deep")}`;
+    ? `Fix: ${formatCliCommand("eve doctor --fix")} or ${formatCliCommand("eve memory status --fix")}`
+    : `Verify: ${formatCliCommand("eve memory status --deep")}`;
   return [
     "Memory recall artifacts need attention:",
     ...issueLines,
@@ -242,12 +242,12 @@ function buildDreamingArtifactIssueNote(audit: DreamingArtifactsAuditSummary): s
     ...issueLines,
     `Dream corpus: ${audit.sessionCorpusDir}`,
     hasFixableIssue
-      ? `Fix: ${formatCliCommand("openclaw doctor --fix")} or ${formatCliCommand("openclaw memory status --fix")}`
-      : `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+      ? `Fix: ${formatCliCommand("eve doctor --fix")} or ${formatCliCommand("eve memory status --fix")}`
+      : `Verify: ${formatCliCommand("eve memory status --deep")}`,
   ].join("\n");
 }
 
-export async function noteMemoryRecallHealth(cfg: OpenClawConfig): Promise<void> {
+export async function noteMemoryRecallHealth(cfg: EVEConfig): Promise<void> {
   try {
     const context = await resolveRuntimeMemoryAuditContext(cfg);
     const workspaceDir = context?.workspaceDir?.trim();
@@ -279,7 +279,7 @@ export async function noteMemoryRecallHealth(cfg: OpenClawConfig): Promise<void>
 }
 
 export async function maybeRepairMemoryRecallHealth(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prompter: DoctorPrompter;
 }): Promise<void> {
   await maybeRepairWorkspaceMemoryHealth(params);
@@ -322,7 +322,7 @@ export async function maybeRepairMemoryRecallHealth(params: {
             "Memory recall artifacts repaired:",
             repair.rewroteStore ? `- rewrote recall store${details ? ` (${details})` : ""}` : null,
             repair.removedStaleLock ? "- removed stale promotion lock" : null,
-            `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+            `Verify: ${formatCliCommand("eve memory status --deep")}`,
           ].filter(Boolean);
           note(lines.join("\n"), "Doctor changes");
         }
@@ -352,7 +352,7 @@ export async function maybeRepairMemoryRecallHealth(params: {
       dreamingRepair.archivedDreamsDiary ? "- archived dream diary" : null,
       dreamingRepair.archiveDir ? `- archive dir: ${dreamingRepair.archiveDir}` : null,
       ...dreamingRepair.warnings.map((warning) => `- warning: ${warning}`),
-      `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+      `Verify: ${formatCliCommand("eve memory status --deep")}`,
     ].filter(Boolean);
     note(lines.join("\n"), "Doctor changes");
   } catch (err) {
@@ -363,7 +363,7 @@ export async function maybeRepairMemoryRecallHealth(params: {
   }
 }
 
-function hasActiveAlternateMemoryPluginSlot(cfg: OpenClawConfig): boolean {
+function hasActiveAlternateMemoryPluginSlot(cfg: EVEConfig): boolean {
   const plugins = normalizePluginsConfig(cfg.plugins);
   if (!plugins.enabled) {
     return false;
@@ -390,12 +390,12 @@ function hasActiveAlternateMemoryPluginSlot(cfg: OpenClawConfig): boolean {
 
 /**
  * Check whether memory search has a usable embedding provider.
- * Runs as part of `openclaw doctor` — config-only checks where possible;
+ * Runs as part of `eve doctor` — config-only checks where possible;
  * may spawn a short-lived probe process when `memory.backend=qmd` to verify
  * the configured `qmd` binary is available.
  */
 export async function noteMemorySearchHealth(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   opts?: {
     gatewayMemoryProbe?: {
       checked: boolean;
@@ -454,10 +454,10 @@ export async function noteMemorySearchHealth(
             : "- Install the supported QMD package: npm install -g @tobilu/qmd (or bun install -g @tobilu/qmd)",
           workspaceProbeFailed
             ? "- Verify the resolved workspace path for the affected agent before retrying."
-            : `- Set an explicit binary path: ${formatCliCommand("openclaw config set memory.qmd.command /absolute/path/to/qmd")}`,
-          `- Or switch back to builtin memory: ${formatCliCommand("openclaw config set memory.backend builtin")}`,
+            : `- Set an explicit binary path: ${formatCliCommand("eve config set memory.qmd.command /absolute/path/to/qmd")}`,
+          `- Or switch back to builtin memory: ${formatCliCommand("eve config set memory.backend builtin")}`,
           "",
-          `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+          `Verify: ${formatCliCommand("eve memory status --deep")}`,
         ]
           .filter(Boolean)
           .join("\n"),
@@ -482,13 +482,13 @@ export async function noteMemorySearchHealth(
         detail ? `Gateway probe: ${detail}` : null,
         "",
         "Fix (pick one):",
-        `- Install the llama.cpp provider plugin: ${formatCliCommand("openclaw plugins install @openclaw/llama-cpp-provider")}`,
+        `- Install the llama.cpp provider plugin: ${formatCliCommand("eve plugins install @eve/llama-cpp-provider")}`,
         `- Set a local GGUF model path in config`,
         suggestedRemoteProvider
-          ? `- Switch to a remote provider: ${formatCliCommand(`openclaw config set agents.defaults.memorySearch.provider ${suggestedRemoteProvider}`)}`
+          ? `- Switch to a remote provider: ${formatCliCommand(`eve config set agents.defaults.memorySearch.provider ${suggestedRemoteProvider}`)}`
           : `- Switch to a remote embedding provider in config`,
         "",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("eve memory status --deep")}`,
       ]
         .filter(Boolean)
         .join("\n"),
@@ -507,9 +507,9 @@ export async function noteMemorySearchHealth(
         "Set agents.defaults.memorySearch.remote.baseUrl to the /v1 endpoint for your embeddings server.",
         "",
         "Fix:",
-        `- ${formatCliCommand("openclaw config set agents.defaults.memorySearch.remote.baseUrl http://127.0.0.1:1234/v1")}`,
+        `- ${formatCliCommand("eve config set agents.defaults.memorySearch.remote.baseUrl http://127.0.0.1:1234/v1")}`,
         "",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("eve memory status --deep")}`,
       ].join("\n"),
       "Memory search",
     );
@@ -523,9 +523,9 @@ export async function noteMemorySearchHealth(
         "Set agents.defaults.memorySearch.model to the embedding model id your server expects.",
         "",
         "Fix:",
-        `- ${formatCliCommand("openclaw config set agents.defaults.memorySearch.model text-embedding-bge-m3")}`,
+        `- ${formatCliCommand("eve config set agents.defaults.memorySearch.model text-embedding-bge-m3")}`,
         "",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("eve memory status --deep")}`,
       ].join("\n"),
       "Memory search",
     );
@@ -538,7 +538,7 @@ export async function noteMemorySearchHealth(
     }
     // When the probe was intentionally skipped (skipped: true / checked: false
     // due to probe:false path), we have no embedding status information — do
-    // not warn. A skipped probe means the user ran `openclaw doctor` without
+    // not warn. A skipped probe means the user ran `eve doctor` without
     // --deep; it does not mean embeddings are unavailable.
     // NOTE: a transport timeout also sets checked: false, but skipped stays
     // false/absent — a timeout is a real diagnostic signal and should fall
@@ -553,7 +553,7 @@ export async function noteMemorySearchHealth(
           ? `Memory search provider "${provider}" is configured, but the gateway reports embeddings are not ready.`
           : `Memory search provider "${provider}" is configured, but the gateway could not confirm embeddings are ready.`,
         gatewayProbeWarning,
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("eve memory status --deep")}`,
       ]
         .filter(Boolean)
         .join("\n"),
@@ -572,7 +572,7 @@ export async function noteMemorySearchHealth(
       [
         `Memory search provider is set to "${provider}" but the API key was not found in the CLI environment.`,
         "The running gateway reports memory embeddings are ready for the default agent.",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("eve memory status --deep")}`,
       ].join("\n"),
       "Memory search",
     );
@@ -589,10 +589,10 @@ export async function noteMemorySearchHealth(
       "",
       "Fix (pick one):",
       `- Set ${envVar} in your environment`,
-      `- Configure credentials: ${formatCliCommand("openclaw configure --section model")}`,
-      `- To disable: ${formatCliCommand("openclaw config set agents.defaults.memorySearch.enabled false")}`,
+      `- Configure credentials: ${formatCliCommand("eve configure --section model")}`,
+      `- To disable: ${formatCliCommand("eve config set agents.defaults.memorySearch.enabled false")}`,
       "",
-      `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+      `Verify: ${formatCliCommand("eve memory status --deep")}`,
     ].join("\n"),
     "Memory search",
   );
@@ -623,7 +623,7 @@ function hasLocalEmbeddings(local: { modelPath?: string }): boolean {
 
 async function hasApiKeyForProvider(
   provider: string,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentDir: string,
 ): Promise<boolean> {
   const metadata = resolveMemoryEmbeddingProviderDoctorMetadata(provider);

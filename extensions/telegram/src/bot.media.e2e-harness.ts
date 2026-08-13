@@ -2,9 +2,9 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resetInboundDedupe } from "openclaw/plugin-sdk/reply-runtime";
-import type { GetReplyOptions, MsgContext } from "openclaw/plugin-sdk/reply-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resetInboundDedupe } from "eve-agent/plugin-sdk/reply-runtime";
+import type { GetReplyOptions, MsgContext } from "eve-agent/plugin-sdk/reply-runtime";
 import { afterEach, beforeEach, vi, type Mock } from "vitest";
 import type { TelegramBotDeps } from "./bot-deps.js";
 import {
@@ -16,10 +16,10 @@ type TelegramBotRuntimeForTest = NonNullable<
   Parameters<typeof import("./bot.js").setTelegramBotRuntimeForTest>[0]
 >;
 type DispatchReplyWithBufferedBlockDispatcherFn =
-  typeof import("openclaw/plugin-sdk/reply-runtime").dispatchReplyWithBufferedBlockDispatcher;
+  typeof import("eve-agent/plugin-sdk/reply-runtime").dispatchReplyWithBufferedBlockDispatcher;
 type DispatchReplyHarnessParams = Parameters<DispatchReplyWithBufferedBlockDispatcherFn>[0];
 type ReadRemoteMediaBufferFn =
-  typeof import("openclaw/plugin-sdk/media-runtime").readRemoteMediaBuffer;
+  typeof import("eve-agent/plugin-sdk/media-runtime").readRemoteMediaBuffer;
 
 const useSpy: Mock = vi.fn();
 const middlewareUseSpy: Mock = vi.fn();
@@ -78,7 +78,7 @@ const saveMediaBufferSpy: Mock = vi.fn(defaultSaveMediaBuffer);
 let mediaHarnessStoreRoot: string | undefined;
 
 function ensureMediaHarnessStoreRoot(): string {
-  mediaHarnessStoreRoot ??= mkdtempSync(path.join(os.tmpdir(), "openclaw-telegram-media-e2e-"));
+  mediaHarnessStoreRoot ??= mkdtempSync(path.join(os.tmpdir(), "eve-telegram-media-e2e-"));
   return mediaHarnessStoreRoot;
 }
 
@@ -131,7 +131,7 @@ const throttlerSpy = vi.fn(() => "throttler");
 const defaultRuntimeConfig = (() =>
   ({
     channels: { telegram: { dmPolicy: "open", allowFrom: ["*"] } },
-  }) as OpenClawConfig) as TelegramBotDeps["getRuntimeConfig"];
+  }) as EVEConfig) as TelegramBotDeps["getRuntimeConfig"];
 
 type TopicNameStoreFactory = NonNullable<
   Parameters<typeof setTelegramTopicNameStoreFactoryForTest>[0]

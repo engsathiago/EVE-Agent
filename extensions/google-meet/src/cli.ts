@@ -4,12 +4,12 @@ import path from "node:path";
 import { createInterface } from "node:readline/promises";
 import { format } from "node:util";
 import type { Command } from "commander";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { callGatewayFromCli } from "openclaw/plugin-sdk/gateway-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { callGatewayFromCli } from "eve-agent/plugin-sdk/gateway-runtime";
 import {
   clampTimerTimeoutMs,
   parseStrictPositiveInteger,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   buildGoogleMeetCalendarDayWindow,
   findGoogleMeetCalendarEvent,
@@ -1437,7 +1437,7 @@ export function registerGoogleMeetCli(params: {
   const root = params.program
     .command("googlemeet")
     .description("Google Meet participant utilities")
-    .addHelpText("after", () => `\nDocs: https://docs.openclaw.ai/plugins/google-meet\n`);
+    .addHelpText("after", () => `\nDocs: https://docs.eve.ai/plugins/google-meet\n`);
 
   const auth = root.command("auth").description("Google Meet OAuth helpers");
 
@@ -1565,7 +1565,7 @@ export function registerGoogleMeetCli(params: {
           if (payload.joined && payload.join?.session?.id) {
             writeStdoutLine("joined: %s", payload.join.session.id);
           } else {
-            writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", payload.meetingUri);
+            writeStdoutLine("joined: no (run `eve googlemeet join %s`)", payload.meetingUri);
           }
           return;
         }
@@ -1612,7 +1612,7 @@ export function registerGoogleMeetCli(params: {
         if (join) {
           writeStdoutLine("joined: %s", join.session.id);
         } else {
-          writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", result.meetingUri);
+          writeStdoutLine("joined: no (run `eve googlemeet join %s`)", result.meetingUri);
         }
         return;
       }
@@ -1658,7 +1658,7 @@ export function registerGoogleMeetCli(params: {
       if (join) {
         writeStdoutLine("joined: %s", join.session.id);
       } else {
-        writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", result.meetingUri);
+        writeStdoutLine("joined: no (run `eve googlemeet join %s`)", result.meetingUri);
       }
     });
 

@@ -1,7 +1,7 @@
 // Gateway node catalog builder.
 // Merges paired devices, approved node records, and live websocket sessions.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { normalizeSortedUniqueTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { normalizeSortedUniqueTrimmedStringList } from "@eve/normalization-core/string-normalization";
 import { hasEffectivePairedDeviceRole, type PairedDevice } from "../infra/device-pairing.js";
 import {
   sameNodeApprovalSurfaceSet,

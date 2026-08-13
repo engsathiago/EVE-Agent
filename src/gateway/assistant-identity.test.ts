@@ -2,12 +2,12 @@
  * Assistant identity resolution tests for gateway-visible agents.
  */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { DEFAULT_ASSISTANT_IDENTITY, resolveAssistantIdentity } from "./assistant-identity.js";
 
 describe("resolveAssistantIdentity avatar normalization", () => {
   it("keeps ui.assistant identity authoritative for the default agent", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           name: "Main assistant",
@@ -26,7 +26,7 @@ describe("resolveAssistantIdentity avatar normalization", () => {
   });
 
   it("prefers non-default agent identity over global ui.assistant identity", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           name: "AI大管家",
@@ -45,7 +45,7 @@ describe("resolveAssistantIdentity avatar normalization", () => {
   });
 
   it("falls back to ui.assistant identity for non-default agents without their own identity", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           name: "Main assistant",
@@ -64,7 +64,7 @@ describe("resolveAssistantIdentity avatar normalization", () => {
   });
 
   it("drops sentence-like avatar placeholders", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           avatar: "workspace-relative path, http(s) URL, or data URI",
@@ -78,7 +78,7 @@ describe("resolveAssistantIdentity avatar normalization", () => {
   });
 
   it("keeps short text avatars", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           avatar: "PS",
@@ -90,20 +90,20 @@ describe("resolveAssistantIdentity avatar normalization", () => {
   });
 
   it("keeps path avatars", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
-          avatar: "avatars/openclaw.png",
+          avatar: "avatars/eve.png",
         },
       },
     };
 
-    expect(resolveAssistantIdentity({ cfg, workspaceDir: "" }).avatar).toBe("avatars/openclaw.png");
+    expect(resolveAssistantIdentity({ cfg, workspaceDir: "" }).avatar).toBe("avatars/eve.png");
   });
 
   it("preserves long image data URLs without truncating past 200 chars", () => {
     const dataUrl = `data:image/png;base64,${"A".repeat(50_000)}`;
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       ui: {
         assistant: {
           avatar: dataUrl,

@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   COMMAND_TIMEOUT_MS,
-  createOpenClawGatewaySpawnSpec,
+  createEVEGatewaySpawnSpec,
   readLogTail,
   readTelegramUserProofLogTailBytes,
   recordProbeVideo,
@@ -27,7 +27,7 @@ const tempDirs: string[] = [];
 const posixIt = process.platform === "win32" ? it.skip : it;
 
 function makeTempDir(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-telegram-proof-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-telegram-proof-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -85,8 +85,8 @@ describe("telegram user Crabbox proof log polling", () => {
     const fakePnpm = path.join(root, "pnpm.cjs");
     fs.writeFileSync(fakePnpm, "#!/usr/bin/env node\n", { mode: 0o755 });
 
-    const spec = createOpenClawGatewaySpawnSpec({
-      env: { ...process.env, OPENCLAW_TELEGRAM_PROOF_SENTINEL: "1" },
+    const spec = createEVEGatewaySpawnSpec({
+      env: { ...process.env, EVE_TELEGRAM_PROOF_SENTINEL: "1" },
       gatewayPort: 19042,
       nodeExecPath: "/opt/node/bin/node",
       npmExecPath: fakePnpm,
@@ -94,9 +94,9 @@ describe("telegram user Crabbox proof log polling", () => {
     });
 
     expect(spec.command).toBe("/opt/node/bin/node");
-    expect(spec.args).toEqual([fakePnpm, "openclaw", "gateway", "--port", "19042"]);
+    expect(spec.args).toEqual([fakePnpm, "eve", "gateway", "--port", "19042"]);
     expect(spec.options.cwd).toBe(root);
-    expect(spec.options.env?.OPENCLAW_TELEGRAM_PROOF_SENTINEL).toBe("1");
+    expect(spec.options.env?.EVE_TELEGRAM_PROOF_SENTINEL).toBe("1");
     expect(spec.options.shell).toBe(false);
   });
 
@@ -108,17 +108,17 @@ describe("telegram user Crabbox proof log polling", () => {
   it("rejects loose numeric log tail limits instead of parsing prefixes", () => {
     expect(() =>
       readTelegramUserProofLogTailBytes({
-        OPENCLAW_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "1e3",
+        EVE_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "1e3",
       }),
-    ).toThrow("invalid OPENCLAW_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: 1e3");
+    ).toThrow("invalid EVE_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: 1e3");
     expect(() =>
       readTelegramUserProofLogTailBytes({
-        OPENCLAW_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "1000bytes",
+        EVE_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "1000bytes",
       }),
-    ).toThrow("invalid OPENCLAW_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: 1000bytes");
+    ).toThrow("invalid EVE_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: 1000bytes");
     expect(
       readTelegramUserProofLogTailBytes({
-        OPENCLAW_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "4096",
+        EVE_TELEGRAM_USER_PROOF_LOG_TAIL_BYTES: "4096",
       }),
     ).toBe(4096);
   });
@@ -203,7 +203,7 @@ describe("telegram user Crabbox proof log polling", () => {
   });
 
   it("shell-quotes generated remote setup and chat literals", () => {
-    const payload = "name $(touch /tmp/openclaw-proof-injected) `touch /tmp/also-injected`";
+    const payload = "name $(touch /tmp/eve-proof-injected) `touch /tmp/also-injected`";
 
     expect(renderRemoteSetup({ tdlibSha256: payload, tdlibUrl: payload })).toContain(
       `tdlib_url='${payload}'`,
@@ -217,7 +217,7 @@ describe("telegram user Crabbox proof log polling", () => {
     fs.mkdirSync(publishDir);
     fs.writeFileSync(path.join(publishDir, "stale.txt"), "stale");
     fs.mkdirSync(path.join(outputDir, "publish-gif-only"));
-    fs.writeFileSync(path.join(outputDir, "session.json"), '{"sshKey":"/private/tmp/openclaw/key"}');
+    fs.writeFileSync(path.join(outputDir, "session.json"), '{"sshKey":"/private/tmp/eve/key"}');
     fs.writeFileSync(path.join(outputDir, "lease.json"), '{"token":"secret"}');
     fs.writeFileSync(path.join(outputDir, "status.json"), '{"ok":true}');
     fs.writeFileSync(path.join(outputDir, "probe.json"), '{"ok":true}');
@@ -259,7 +259,7 @@ describe("telegram user Crabbox proof log polling", () => {
       fakePython,
       `#!/usr/bin/env node
 import fs from "node:fs";
-fs.writeFileSync(process.env.OPENCLAW_TEST_ARGV_PATH, JSON.stringify(process.argv.slice(1)));
+fs.writeFileSync(process.env.EVE_TEST_ARGV_PATH, JSON.stringify(process.argv.slice(1)));
 `,
     );
     writeExecutable(
@@ -277,7 +277,7 @@ fs.writeFileSync(process.env.OPENCLAW_TEST_ARGV_PATH, JSON.stringify(process.arg
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_TEST_ARGV_PATH: argvPath,
+        EVE_TEST_ARGV_PATH: argvPath,
         PATH: `${root}${path.delimiter}${process.env.PATH ?? ""}`,
       },
     });

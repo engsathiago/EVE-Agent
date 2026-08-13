@@ -10,11 +10,11 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  closeOpenClawAgentDatabasesForTest,
-  openOpenClawAgentDatabase,
-} from "../state/openclaw-agent-db.js";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
-import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
+  closeEVEAgentDatabasesForTest,
+  openEVEAgentDatabase,
+} from "../state/eve-agent-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
+import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { resolveAgentDir } from "./agent-scope.js";
 import { loadPersistedAuthProfileStore } from "./auth-profiles/persisted.js";
@@ -66,14 +66,14 @@ async function withAgentDirEnv(prefix: string, run: (agentDir: string) => void |
     fs.mkdirSync(agentDir, { recursive: true });
     await withEnvAsync(
       {
-        OPENCLAW_STATE_DIR: root,
-        OPENCLAW_AGENT_DIR: agentDir,
+        EVE_STATE_DIR: root,
+        EVE_AGENT_DIR: agentDir,
       },
       async () => await run(agentDir),
     );
   } finally {
-    closeOpenClawAgentDatabasesForTest();
-    closeOpenClawStateDatabaseForTest();
+    closeEVEAgentDatabasesForTest();
+    closeEVEStateDatabaseForTest();
     fs.rmSync(root, { recursive: true, force: true });
   }
 }
@@ -90,7 +90,7 @@ describe("auth profile sqlite store", () => {
   });
 
   it("persists auth profiles and runtime scheduling state in the agent sqlite database", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-", (agentDir) => {
       saveAuthProfileStore(
         {
           ...apiKeyStore("sk-test"),
@@ -109,12 +109,12 @@ describe("auth profile sqlite store", () => {
       expect(loaded.usageStats?.["openai:default"]?.lastUsed).toBe(123);
       expect(fs.existsSync(path.join(agentDir, "auth-profiles.json"))).toBe(false);
       expect(fs.existsSync(path.join(agentDir, "auth-state.json"))).toBe(false);
-      expect(fs.existsSync(path.join(agentDir, "openclaw-agent.sqlite"))).toBe(true);
+      expect(fs.existsSync(path.join(agentDir, "eve-agent.sqlite"))).toBe(true);
     });
   });
 
   it("does not read legacy auth-profiles.json at runtime", async () => {
-    await withAgentDirEnv("openclaw-auth-no-json-fallback-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-no-json-fallback-", (agentDir) => {
       fs.writeFileSync(
         path.join(agentDir, "auth-profiles.json"),
         `${JSON.stringify(apiKeyStore("sk-json"))}\n`,
@@ -128,18 +128,18 @@ describe("auth profile sqlite store", () => {
   });
 
   it("does not create sqlite files for missing-store reads", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-no-create-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-no-create-", (agentDir) => {
       expect(loadPersistedAuthProfileStore(agentDir)).toBeNull();
-      expect(fs.existsSync(path.join(agentDir, "openclaw-agent.sqlite"))).toBe(false);
+      expect(fs.existsSync(path.join(agentDir, "eve-agent.sqlite"))).toBe(false);
     });
   });
 
   it("reads existing sqlite auth stores without registering shared state", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-readonly-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-readonly-", (agentDir) => {
       saveAuthProfileStore(apiKeyStore("sk-test"), agentDir);
-      closeOpenClawAgentDatabasesForTest();
-      closeOpenClawStateDatabaseForTest();
-      const stateDbPath = resolveOpenClawStateSqlitePath();
+      closeEVEAgentDatabasesForTest();
+      closeEVEStateDatabaseForTest();
+      const stateDbPath = resolveEVEStateSqlitePath();
       fs.rmSync(path.dirname(stateDbPath), { recursive: true, force: true });
 
       const loaded = loadPersistedAuthProfileStore(agentDir);
@@ -150,9 +150,9 @@ describe("auth profile sqlite store", () => {
   });
 
   it("waits for brief rollback-journal contention before reading persisted auth", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-contention-", async (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-contention-", async (agentDir) => {
       saveAuthProfileStore(apiKeyStore("sk-test"), agentDir);
-      closeOpenClawAgentDatabasesForTest();
+      closeEVEAgentDatabasesForTest();
 
       const databasePath = resolveAuthProfileDatabasePath(agentDir);
       const setup = new DatabaseSync(databasePath);
@@ -212,7 +212,7 @@ describe("auth profile sqlite store", () => {
   });
 
   it("uses the configured agent id for custom agentDir databases", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-custom-agent-", (envAgentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-custom-agent-", (envAgentDir) => {
       const customAgentDir = path.join(path.dirname(path.dirname(envAgentDir)), "custom-coder");
       const cfg = {
         agents: {
@@ -223,7 +223,7 @@ describe("auth profile sqlite store", () => {
 
       saveAuthProfileStore(apiKeyStore("sk-test"), agentDir);
 
-      const database = openOpenClawAgentDatabase({
+      const database = openEVEAgentDatabase({
         agentId: "coder",
         path: resolveAuthProfileDatabasePath(agentDir),
       });
@@ -232,7 +232,7 @@ describe("auth profile sqlite store", () => {
   });
 
   it("keeps SecretRef-backed credentials from persisting duplicate plaintext", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-secret-ref-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-secret-ref-", (agentDir) => {
       saveAuthProfileStore(
         {
           version: 1,
@@ -270,7 +270,7 @@ describe("auth profile sqlite store", () => {
   });
 
   it("recomputes runtime-only external auth overlays from the sqlite base store", async () => {
-    await withAgentDirEnv("openclaw-auth-sqlite-overlay-", (agentDir) => {
+    await withAgentDirEnv("eve-auth-sqlite-overlay-", (agentDir) => {
       saveAuthProfileStore(apiKeyStore("sk-test"), agentDir);
       mocks.resolveExternalCliAuthProfiles
         .mockReturnValueOnce([

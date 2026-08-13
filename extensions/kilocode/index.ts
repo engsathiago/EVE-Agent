@@ -1,7 +1,7 @@
-// Kilocode plugin entrypoint registers its OpenClaw integration.
-import { readConfiguredProviderCatalogEntries } from "openclaw/plugin-sdk/provider-catalog-shared";
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { PASSTHROUGH_GEMINI_REPLAY_HOOKS } from "openclaw/plugin-sdk/provider-model-shared";
+// Kilocode plugin entrypoint registers its EVE integration.
+import { readConfiguredProviderCatalogEntries } from "eve-agent/plugin-sdk/provider-catalog-shared";
+import { defineSingleProviderPluginEntry } from "eve-agent/plugin-sdk/provider-entry";
+import { PASSTHROUGH_GEMINI_REPLAY_HOOKS } from "eve-agent/plugin-sdk/provider-model-shared";
 import { applyKilocodeConfig, KILOCODE_DEFAULT_MODEL_REF } from "./onboard.js";
 import { buildKilocodeProvider, buildKilocodeProviderWithDiscovery } from "./provider-catalog.js";
 import { wrapKilocodeProviderStream } from "./stream.js";

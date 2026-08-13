@@ -1,5 +1,5 @@
 // ClawHub-backed plugin search command; queries installable plugin families and merges scores.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { theme } from "../../packages/terminal-core/src/theme.js";
 import {
   searchClawHubPackages,
@@ -9,7 +9,7 @@ import {
 import { formatErrorMessage } from "../infra/errors.js";
 import { defaultRuntime, writeRuntimeJson, type RuntimeEnv } from "../runtime.js";
 
-/** Options accepted by `openclaw plugins search`. */
+/** Options accepted by `eve plugins search`. */
 export type PluginsSearchOptions = {
   json?: boolean;
   limit?: number;
@@ -65,7 +65,7 @@ function formatPackageSearchLine(entry: ClawHubPackageSearchResult): string {
     pkg.latestVersion ? `v${pkg.latestVersion}` : undefined,
   ].filter(Boolean);
   const summary = pkg.summary ? theme.muted(` — ${pkg.summary}`) : "";
-  return `${pkg.name}  ${theme.muted(flags.join(" | "))}${summary}\n  ${theme.muted(`Install: openclaw plugins install clawhub:${pkg.name}`)}`;
+  return `${pkg.name}  ${theme.muted(flags.join(" | "))}${summary}\n  ${theme.muted(`Install: eve plugins install clawhub:${pkg.name}`)}`;
 }
 
 /** Search ClawHub for installable plugins and write JSON or terminal output. */
@@ -78,7 +78,7 @@ export async function runPluginsSearchCommand(
     Array.isArray(queryParts) ? queryParts.join(" ") : queryParts,
   );
   if (!query) {
-    runtime.error("Usage: openclaw plugins search <query>");
+    runtime.error("Usage: eve plugins search <query>");
     return runtime.exit(1);
   }
 

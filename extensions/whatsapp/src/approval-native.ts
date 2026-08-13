@@ -1,24 +1,24 @@
 // Whatsapp plugin module implements approval native behavior.
-import { createChannelApprovalCapability } from "openclaw/plugin-sdk/approval-delivery-runtime";
-import { createLazyChannelApprovalNativeRuntimeAdapter } from "openclaw/plugin-sdk/approval-handler-adapter-runtime";
-import type { ChannelApprovalNativeRuntimeAdapter } from "openclaw/plugin-sdk/approval-handler-runtime";
+import { createChannelApprovalCapability } from "eve-agent/plugin-sdk/approval-delivery-runtime";
+import { createLazyChannelApprovalNativeRuntimeAdapter } from "eve-agent/plugin-sdk/approval-handler-adapter-runtime";
+import type { ChannelApprovalNativeRuntimeAdapter } from "eve-agent/plugin-sdk/approval-handler-runtime";
 import {
   createChannelApproverDmTargetResolver,
   createChannelNativeOriginTargetResolver,
   createNativeApprovalChannelRouteGates,
   createNativeApprovalForwardingFallbackSuppressor,
-} from "openclaw/plugin-sdk/approval-native-runtime";
-import { buildApprovalReactionPromptPayloadForRequest } from "openclaw/plugin-sdk/approval-reaction-runtime";
+} from "eve-agent/plugin-sdk/approval-native-runtime";
+import { buildApprovalReactionPromptPayloadForRequest } from "eve-agent/plugin-sdk/approval-reaction-runtime";
 import type {
   ExecApprovalRequest,
   PluginApprovalRequest,
-} from "openclaw/plugin-sdk/approval-runtime";
-import type { ChannelApprovalCapability } from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/approval-runtime";
+import type { ChannelApprovalCapability } from "eve-agent/plugin-sdk/channel-contract";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   listWhatsAppAccountIds,
   resolveDefaultWhatsAppAccountId,
@@ -28,7 +28,7 @@ import { getWhatsAppApprovalApprovers, whatsappApprovalAuth } from "./approval-a
 import { isWhatsAppGroupJid, normalizeWhatsAppMessagingTarget } from "./normalize.js";
 
 type ApprovalRequest = ExecApprovalRequest | PluginApprovalRequest;
-type ApprovalForwardingConfig = NonNullable<NonNullable<OpenClawConfig["approvals"]>["exec"]>;
+type ApprovalForwardingConfig = NonNullable<NonNullable<EVEConfig["approvals"]>["exec"]>;
 type ApprovalForwardingMode = NonNullable<ApprovalForwardingConfig["mode"]>;
 type ChannelApprovalForwardTarget = Parameters<
   NonNullable<
@@ -44,7 +44,7 @@ type WhatsAppApprovalTarget = {
 const DEFAULT_APPROVAL_FORWARDING_MODE: ApprovalForwardingMode = "session";
 
 function isWhatsAppApprovalTransportEnabled(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): boolean {
   return resolveWhatsAppAccount({ cfg: params.cfg, accountId: params.accountId }).enabled;
@@ -122,7 +122,7 @@ const resolveWhatsAppOriginTargetBase = createChannelNativeOriginTargetResolver(
 });
 
 function resolveWhatsAppOriginTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   approvalKind?: "exec" | "plugin";
   request: ApprovalRequest;

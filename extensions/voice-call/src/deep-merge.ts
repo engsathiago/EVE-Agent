@@ -1,5 +1,5 @@
 // Voice Call plugin module implements deep merge behavior.
-import { isRecord as isPlainObject } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isRecord as isPlainObject } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 // Prototype-safe deep merge for config overrides that ignores undefined values.
 

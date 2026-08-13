@@ -1,6 +1,6 @@
 // Imessage plugin module implements runtime behavior.
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { createNonExitingRuntime, type RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { MonitorIMessageOpts } from "./types.js";
 
 export function resolveRuntime(opts: MonitorIMessageOpts): RuntimeEnv {

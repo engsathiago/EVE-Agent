@@ -12,7 +12,7 @@ import {
 
 const DEVICE_ID = "device-cli";
 const PUBLIC_KEY = "public-key-cli";
-const suiteRootTracker = createSuiteTempRootTracker({ prefix: "openclaw-device-pairing-churn-" });
+const suiteRootTracker = createSuiteTempRootTracker({ prefix: "eve-device-pairing-churn-" });
 
 function requireValue<T>(value: T | null | undefined, message: string): T {
   if (value == null) {
@@ -78,7 +78,7 @@ describe("device pairing requestId churn", () => {
     expect(readRepair.request.scopes).toEqual(["operator.read"]);
     expect((await listDevicePairing(baseDir)).pending).toHaveLength(1);
 
-    // `openclaw devices approve <requestId>` reconnects with the caller scopes
+    // `eve devices approve <requestId>` reconnects with the caller scopes
     // needed by the gateway. That reconnect supersedes the earlier repair request.
     const approveReconnect = await requestDevicePairing(
       {

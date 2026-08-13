@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", () => ({
   fetchWithSsrFGuard: async (params: {
     url: string;
     init?: RequestInit;

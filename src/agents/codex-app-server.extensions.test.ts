@@ -9,7 +9,7 @@ import {
 } from "../plugin-sdk/agent-harness.js";
 import { listAgentToolResultMiddlewares } from "../plugins/agent-tool-result-middleware.js";
 import { listCodexAppServerExtensionFactories } from "../plugins/codex-app-server-extension-factory.js";
-import { loadOpenClawPlugins } from "../plugins/loader.js";
+import { loadEVEPlugins } from "../plugins/loader.js";
 import {
   cleanupTempPluginTestEnvironment,
   createTempPluginDir,
@@ -17,8 +17,8 @@ import {
   writeTempPlugin,
 } from "./test-helpers/temp-plugin-extension-fixtures.js";
 
-const originalBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
-const originalDisableBundledPlugins = process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
+const originalBundledPluginsDir = process.env.EVE_BUNDLED_PLUGINS_DIR;
+const originalDisableBundledPlugins = process.env.EVE_DISABLE_BUNDLED_PLUGINS;
 const tempDirs: string[] = [];
 
 function findDiagnostic(
@@ -32,14 +32,14 @@ function findDiagnostic(
 }
 
 function createTempDir(): string {
-  return createTempPluginDir(tempDirs, "openclaw-codex-ext-");
+  return createTempPluginDir(tempDirs, "eve-codex-ext-");
 }
 
 function createBundledTempDir(): string {
   // Bundled-only extension points are tested from the dist-runtime shape because
   // production rejects equivalent registrations from arbitrary plugin paths.
-  delete process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
-  return createTempPluginDir(tempDirs, "openclaw-codex-ext-", {
+  delete process.env.EVE_DISABLE_BUNDLED_PLUGINS;
+  return createTempPluginDir(tempDirs, "eve-codex-ext-", {
     parentDir: path.join(process.cwd(), "dist-runtime", "extensions"),
   });
 }
@@ -56,7 +56,7 @@ afterEach(() => {
 describe("agent tool result middleware", () => {
   it("includes plugin-registered middleware and restores it from cache", async () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -87,16 +87,16 @@ describe("agent tool result middleware", () => {
       onlyPluginIds: ["tool-result-middleware"],
     };
 
-    loadOpenClawPlugins(options);
+    loadEVEPlugins(options);
     expect(listAgentToolResultMiddlewares("codex")).toHaveLength(1);
-    expect(listAgentToolResultMiddlewares("openclaw")).toHaveLength(0);
+    expect(listAgentToolResultMiddlewares("eve")).toHaveLength(0);
 
     resetActivePluginRegistryForTest();
     expect(listAgentToolResultMiddlewares("codex")).toHaveLength(0);
 
     // The second load proves manifest-backed discovery can restore middleware
     // after the active in-memory registry has been reset.
-    loadOpenClawPlugins(options);
+    loadEVEPlugins(options);
     const runner = createAgentToolResultMiddlewareRunner({ runtime: "codex" });
     const result = await runner.applyToolResultMiddleware({
       threadId: "thread-1",
@@ -112,7 +112,7 @@ describe("agent tool result middleware", () => {
 
   it("rejects middleware when the manifest omits the runtime contract", () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -120,7 +120,7 @@ describe("agent tool result middleware", () => {
       filename: "index.mjs",
       manifest: {
         contracts: {
-          agentToolResultMiddleware: ["openclaw"],
+          agentToolResultMiddleware: ["eve"],
         },
       },
       body: `export default { id: "tool-result-middleware", register(api) {
@@ -128,7 +128,7 @@ describe("agent tool result middleware", () => {
 } };`,
     });
 
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       onlyPluginIds: ["tool-result-middleware"],
       config: {
         plugins: {
@@ -152,7 +152,7 @@ describe("agent tool result middleware", () => {
 
   it("allows middleware from installed plugins when they declare the runtime contract", () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -171,7 +171,7 @@ describe("agent tool result middleware", () => {
 
     // Installed plugins can register Codex middleware only when explicitly
     // enabled and when their manifest declares the targeted runtime contract.
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       workspaceDir: tmp,
       onlyPluginIds: ["tool-result-middleware"],
       config: {
@@ -193,7 +193,7 @@ describe("agent tool result middleware", () => {
 
   it("merges runtimes when a plugin registers the same middleware function twice", () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -201,17 +201,17 @@ describe("agent tool result middleware", () => {
       filename: "index.mjs",
       manifest: {
         contracts: {
-          agentToolResultMiddleware: ["openclaw", "codex"],
+          agentToolResultMiddleware: ["eve", "codex"],
         },
       },
       body: `const middleware = () => undefined;
 export default { id: "tool-result-middleware", register(api) {
-  api.registerAgentToolResultMiddleware(middleware, { runtimes: ["openclaw"] });
+  api.registerAgentToolResultMiddleware(middleware, { runtimes: ["eve"] });
   api.registerAgentToolResultMiddleware(middleware, { runtimes: ["codex"] });
 } };`,
     });
 
-    loadOpenClawPlugins({
+    loadEVEPlugins({
       onlyPluginIds: ["tool-result-middleware"],
       config: {
         plugins: {
@@ -224,13 +224,13 @@ export default { id: "tool-result-middleware", register(api) {
       },
     });
 
-    expect(listAgentToolResultMiddlewares("openclaw")).toHaveLength(1);
+    expect(listAgentToolResultMiddlewares("eve")).toHaveLength(1);
     expect(listAgentToolResultMiddlewares("codex")).toHaveLength(1);
   });
 
   it("lazily loads bundled middleware owners from manifest contracts", async () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -282,7 +282,7 @@ export default { id: "tool-result-middleware", register(api) {
 
   it("lazily loads installed middleware owners from manifest contracts", async () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -328,7 +328,7 @@ export default { id: "tool-result-middleware", register(api) {
 
   it("does not lazily load installed middleware owners without explicit opt-in", async () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -371,7 +371,7 @@ export default { id: "tool-result-middleware", register(api) {
 
   it("does not treat auto-enabled runtime config as explicit middleware opt-in", async () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -427,7 +427,7 @@ export default { id: "tool-result-middleware", register(api) {
 
   it("forces full runtime load for setup-loaded installed middleware owners", async () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -457,7 +457,7 @@ export default { id: "tool-result-middleware", register(api) {
           name: "setup-channel-middleware",
           version: "0.0.0",
           type: "module",
-          openclaw: {
+          eve: {
             extensions: [path.basename(pluginFile)],
             setupEntry: "setup.mjs",
           },
@@ -486,7 +486,7 @@ export default { id: "tool-result-middleware", register(api) {
       },
     };
 
-    loadOpenClawPlugins({ config });
+    loadEVEPlugins({ config });
     expect(listAgentToolResultMiddlewares("codex")).toHaveLength(0);
     setRuntimeConfigSnapshot(config);
 
@@ -507,7 +507,7 @@ export default { id: "tool-result-middleware", register(api) {
   it("loads missing installed middleware when bundled middleware is already active", async () => {
     const bundledDir = createBundledTempDir();
     const installedDir = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = bundledDir;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = bundledDir;
 
     writeTempPlugin({
       dir: bundledDir,
@@ -542,7 +542,7 @@ export default { id: "tool-result-middleware", register(api) {
 } };`,
     });
 
-    loadOpenClawPlugins({
+    loadEVEPlugins({
       onlyPluginIds: ["bundled-tool-result-middleware"],
       config: {
         plugins: {
@@ -581,7 +581,7 @@ export default { id: "tool-result-middleware", register(api) {
 describe("Codex app-server extension factories", () => {
   it("includes plugin-registered Codex app-server extension factories and restores them from cache", async () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -614,7 +614,7 @@ describe("Codex app-server extension factories", () => {
       onlyPluginIds: ["codex-ext"],
     };
 
-    loadOpenClawPlugins(options);
+    loadEVEPlugins(options);
     expect(listCodexAppServerExtensionFactories()).toHaveLength(1);
 
     resetActivePluginRegistryForTest();
@@ -622,7 +622,7 @@ describe("Codex app-server extension factories", () => {
 
     // Factories are cached like middleware so app-server startup can recover
     // them after registry resets without reinterpreting arbitrary paths.
-    loadOpenClawPlugins(options);
+    loadEVEPlugins(options);
     const runner = createCodexAppServerToolResultExtensionRunner({});
     const result = await runner.applyToolResultExtensions({
       threadId: "thread-1",
@@ -638,7 +638,7 @@ describe("Codex app-server extension factories", () => {
 
   it("rejects Codex app-server extension factories from non-bundled plugins even when they declare the contract", () => {
     const tmp = createTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    process.env.EVE_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
 
     const pluginFile = writeTempPlugin({
       dir: tmp,
@@ -655,7 +655,7 @@ describe("Codex app-server extension factories", () => {
 
     // Embedded app-server hooks are core-facing: external plugin paths cannot
     // install factories even with a matching manifest contract.
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       workspaceDir: tmp,
       onlyPluginIds: ["codex-ext"],
       config: {
@@ -677,7 +677,7 @@ describe("Codex app-server extension factories", () => {
 
   it("rejects bundled plugins that omit the Codex app-server extension contract", () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -688,7 +688,7 @@ describe("Codex app-server extension factories", () => {
 } };`,
     });
 
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       onlyPluginIds: ["codex-ext"],
       config: {
         plugins: {
@@ -712,7 +712,7 @@ describe("Codex app-server extension factories", () => {
 
   it("rejects non-function Codex app-server extension factories from bundled plugins", () => {
     const tmp = createBundledTempDir();
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = tmp;
+    process.env.EVE_BUNDLED_PLUGINS_DIR = tmp;
 
     writeTempPlugin({
       dir: tmp,
@@ -728,7 +728,7 @@ describe("Codex app-server extension factories", () => {
 } };`,
     });
 
-    const registry = loadOpenClawPlugins({
+    const registry = loadEVEPlugins({
       onlyPluginIds: ["codex-ext"],
       config: {
         plugins: {

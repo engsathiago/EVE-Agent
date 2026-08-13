@@ -1,9 +1,9 @@
 // Doctor warnings and repairs for legacy OpenAI Codex model/provider routing.
 import fs from "node:fs";
-import { AGENT_MODEL_CONFIG_KEYS } from "@openclaw/model-catalog-core/configured-model-refs";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { asOptionalRecord as asMutableRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalLowercaseString as normalizeString } from "@openclaw/normalization-core/string-coerce";
+import { AGENT_MODEL_CONFIG_KEYS } from "@eve/model-catalog-core/configured-model-refs";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { asOptionalRecord as asMutableRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalLowercaseString as normalizeString } from "@eve/normalization-core/string-coerce";
 import { normalizeOptionalAgentRuntimeId } from "../../../agents/agent-runtime-id.js";
 import { resolveConfiguredProviderFallback } from "../../../agents/configured-provider-fallback.js";
 import { DEFAULT_MODEL, DEFAULT_PROVIDER } from "../../../agents/defaults.js";
@@ -15,7 +15,7 @@ import { loadSessionStore, updateSessionStore } from "../../../config/sessions/s
 import { resolveAllAgentSessionStoreTargetsSync } from "../../../config/sessions/targets.js";
 import type { SessionEntry } from "../../../config/sessions/types.js";
 import type { AgentRuntimePolicyConfig } from "../../../config/types.agents-shared.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { detectWindowsSpawnCommandInlineArgs } from "../../../plugin-sdk/windows-spawn.js";
 import { normalizeAgentId } from "../../../routing/session-key.js";
 
@@ -65,7 +65,7 @@ type SessionRouteRepairResult = {
   sessionKeys: string[];
 };
 type ConfigRouteRepairResult = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   changes: CodexRouteHit[];
   runtimePinChanges: string[];
   runtimePolicyChanges: string[];
@@ -236,7 +236,7 @@ function concreteRuntimeId(runtime: string | undefined): string | undefined {
 }
 
 function modelRefUsesCodexRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string | undefined;
   agentId?: string;
 }): boolean {
@@ -256,7 +256,7 @@ function modelRefUsesCodexRuntime(params: {
 }
 
 function resolveRuntimeModelRef(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   agentId?: string;
 }): string {
@@ -300,7 +300,7 @@ function resolveKnownCompatModelAliasRef(modelRef: string): string | undefined {
 }
 
 function resolveConfiguredModelAliasRef(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   agentId?: string;
 }): string | undefined {
@@ -320,7 +320,7 @@ function resolveConfiguredModelAliasRef(params: {
 }
 
 function resolveDefaultProviderForAliasContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
 }): string {
   const primaryModelRef =
@@ -354,7 +354,7 @@ function resolveDefaultProviderForAliasContext(params: {
 }
 
 function findAgentById(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string | undefined,
 ): MutableRecord | undefined {
   if (!agentId) {
@@ -392,7 +392,7 @@ function resolveAliasFromModelsMap(
 }
 
 function resolveConfiguredBareModelRef(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   agentId?: string;
 }): string | undefined {
@@ -454,7 +454,7 @@ function normalizeProviderModelRef(provider: string, modelId: string): string {
   return `${normalizedProvider}/${normalizedModelId}`;
 }
 
-function resolveImplicitDefaultAgentModelRef(cfg: OpenClawConfig): string {
+function resolveImplicitDefaultAgentModelRef(cfg: EVEConfig): string {
   const fallbackProvider = resolveConfiguredProviderFallback({
     cfg,
     defaultProvider: DEFAULT_PROVIDER,
@@ -465,7 +465,7 @@ function resolveImplicitDefaultAgentModelRef(cfg: OpenClawConfig): string {
 }
 
 function agentUsesCodexRuntimeForCompaction(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agent: unknown;
   agentId?: string;
   currentRuntime?: string;
@@ -483,7 +483,7 @@ function agentUsesCodexRuntimeForCompaction(params: {
 }
 
 function collectUnsupportedCodexCompactionOverridesForAgent(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agent: unknown;
   path: string;
   agentId?: string;
@@ -529,7 +529,7 @@ function collectUnsupportedCodexCompactionOverridesForAgent(params: {
 }
 
 function collectLegacyLosslessCompactionForAgent(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agent: unknown;
   path: string;
   agentId?: string;
@@ -601,7 +601,7 @@ function dedupeLegacyLosslessCompactionConfigs(
 }
 
 function collectLegacyLosslessCompactionConfigs(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): LegacyLosslessCompactionConfig[] {
   const defaults = params.cfg.agents?.defaults;
@@ -662,7 +662,7 @@ function dedupeUnsupportedCompactionOverrides(
 }
 
 function collectUnsupportedCodexCompactionOverrides(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): UnsupportedCodexCompactionOverride[] {
   const defaults = params.cfg.agents?.defaults;
@@ -709,7 +709,7 @@ function collectUnsupportedCodexCompactionOverrides(params: {
 }
 
 function getSharedDefaultCompactionOverrideConsumers(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): SharedDefaultCompactionOverrideConsumers {
   const consumers: SharedDefaultCompactionOverrideConsumers = { model: false, provider: false };
@@ -788,7 +788,7 @@ function getSharedDefaultCompactionOverrideConsumers(params: {
 }
 
 function sharedDefaultLosslessCompactionHasNonCodexConsumer(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): boolean {
   const defaults = params.cfg.agents?.defaults;
@@ -928,7 +928,7 @@ function collectAgentModelRefs(params: {
   }
 }
 
-function collectConfigModelRefs(cfg: OpenClawConfig): CodexRouteHit[] {
+function collectConfigModelRefs(cfg: EVEConfig): CodexRouteHit[] {
   const hits: CodexRouteHit[] = [];
   const defaults = cfg.agents?.defaults;
   const defaultsRuntime = readLegacyDefaultsRuntime(defaults);
@@ -1007,12 +1007,12 @@ function pluginIdListIncludes(value: unknown, pluginId: string): boolean {
   return Array.isArray(value) && value.some((entry) => normalizeString(entry) === pluginId);
 }
 
-function codexPluginAllowlistIsRestrictive(cfg: OpenClawConfig): boolean {
+function codexPluginAllowlistIsRestrictive(cfg: EVEConfig): boolean {
   const allow = cfg.plugins?.allow;
   return Array.isArray(allow) && allow.length > 0 && !pluginIdListIncludes(allow, "codex");
 }
 
-function isCodexPluginUnavailableByConfig(cfg: OpenClawConfig): boolean {
+function isCodexPluginUnavailableByConfig(cfg: EVEConfig): boolean {
   if (codexPluginIsBlockedOutsideEntry(cfg)) {
     return true;
   }
@@ -1022,7 +1022,7 @@ function isCodexPluginUnavailableByConfig(cfg: OpenClawConfig): boolean {
   return codexPluginAllowlistIsRestrictive(cfg);
 }
 
-function codexPluginIsBlockedOutsideEntry(cfg: OpenClawConfig): boolean {
+function codexPluginIsBlockedOutsideEntry(cfg: EVEConfig): boolean {
   if (cfg.plugins?.enabled === false) {
     return true;
   }
@@ -1074,7 +1074,7 @@ function hasAgentPrimaryModelConfig(agent: unknown): boolean {
 }
 
 function collectChannelAgentRuntimeModelRefs(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): Array<{ path: string; modelRef: string }> {
   const refs: Array<{ path: string; modelRef: string }> = [];
   const channelsModelByChannel = asMutableRecord(cfg.channels?.modelByChannel);
@@ -1094,7 +1094,7 @@ function collectChannelAgentRuntimeModelRefs(
   return refs;
 }
 
-function collectDisabledCodexPluginRouteHits(cfg: OpenClawConfig): DisabledCodexPluginRouteHit[] {
+function collectDisabledCodexPluginRouteHits(cfg: EVEConfig): DisabledCodexPluginRouteHit[] {
   if (!isCodexPluginUnavailableByConfig(cfg)) {
     return [];
   }
@@ -1195,7 +1195,7 @@ function collectDisabledCodexPluginRouteHits(cfg: OpenClawConfig): DisabledCodex
 
 /** Find Codex-routed model refs that require the Codex plugin while it is disabled. */
 export function collectDisabledCodexPluginRouteIssues(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): DisabledCodexPluginRouteIssue[] {
   const blockedOutsideEntry = codexPluginIsBlockedOutsideEntry(cfg);
   return collectDisabledCodexPluginRouteHits(cfg).map((hit) => ({
@@ -1207,9 +1207,9 @@ export function collectDisabledCodexPluginRouteIssues(
 }
 
 function enableCodexPluginForRequiredRoutes(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   routeHits: DisabledCodexPluginRouteHit[];
-}): { cfg: OpenClawConfig; changes: string[] } {
+}): { cfg: EVEConfig; changes: string[] } {
   if (params.routeHits.length === 0 || codexPluginIsBlockedOutsideEntry(params.cfg)) {
     return { cfg: params.cfg, changes: [] };
   }
@@ -1493,7 +1493,7 @@ function parseModelRef(modelRef: string): { provider: string; modelId: string } 
 }
 
 function resolveCurrentRuntimeIdForCanonicalModel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   agentId: string;
 }): string {
@@ -1550,7 +1550,7 @@ function setModelRuntimePolicy(params: {
 }
 
 function shieldExplicitListedAgentRefsFromDefaultPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   targetRuntimeId: string;
   changes: string[];
@@ -1580,8 +1580,8 @@ function shieldExplicitListedAgentRefsFromDefaultPolicy(params: {
 }
 
 function rewriteAgentModelRefs(params: {
-  cfg: OpenClawConfig;
-  preRepairCfg: OpenClawConfig;
+  cfg: EVEConfig;
+  preRepairCfg: EVEConfig;
   hits: CodexRouteHit[];
   agent: MutableRecord | undefined;
   path: string;
@@ -1816,7 +1816,7 @@ function readMutablePath(root: MutableRecord, pathLabel: string): MutableRecord 
 }
 
 function readCompactionOwnerForPath(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   ownerPath: string,
 ): MutableRecord | undefined {
   if (ownerPath === "agents.defaults") {
@@ -1841,7 +1841,7 @@ function readCompactionOwnerForPath(
 }
 
 function removeMigratedLosslessCompactionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   path: string;
   key: CompactionOverrideKey;
   changes: string[];
@@ -1882,7 +1882,7 @@ function legacyLosslessSummaryModels(hits: readonly LegacyLosslessCompactionConf
 }
 
 function preserveMigratedLosslessCodexRuntimePolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   hits: readonly LegacyLosslessCompactionConfig[];
   summaryModel: string | undefined;
   changes: string[];
@@ -1989,7 +1989,7 @@ function ensureLosslessLlmPolicy(params: {
 }
 
 function maybeMigrateLegacyLosslessCompactionConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): string[] {
   const root = params.cfg as MutableRecord;
@@ -2127,7 +2127,7 @@ function modelIdMatchesProviderModelEntry(params: {
 }
 
 function providerModelExplicitNonDefaultRuntimeId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   modelId: string;
 }): string | undefined {
@@ -2161,7 +2161,7 @@ function providerModelExplicitNonDefaultRuntimeId(params: {
 }
 
 function agentModelMapExactRuntimeIdForLegacyRef(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   legacyModelRef: string;
   agentId?: string;
 }): string | undefined {
@@ -2200,7 +2200,7 @@ function agentModelMapExactRuntimeIdForLegacyRef(params: {
 }
 
 function preRepairLegacyModelPolicyExplicitNonDefaultRuntimePin(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   legacyModelRef?: string;
   agentId?: string;
 }): PreRepairRuntimePin | undefined {
@@ -2240,14 +2240,14 @@ function preRepairLegacyModelPolicyExplicitNonDefaultRuntimePin(params: {
 }
 
 function ensureCodexRuntimePolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agent: MutableRecord;
   agentPath: string;
   agentId?: string;
   modelRef: string;
   legacyModelRef?: string;
   isDefaults?: boolean;
-  preRepairCfg?: OpenClawConfig;
+  preRepairCfg?: EVEConfig;
   changes: string[];
 }): void {
   const models = asMutableRecord(params.agent.models);
@@ -2312,7 +2312,7 @@ function ensureCodexRuntimePolicy(params: {
 }
 
 function canonicalOpenAIModelUsesCodexRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   modelRef: string;
   agentId?: string;
 }): boolean {
@@ -2339,7 +2339,7 @@ function canonicalOpenAIModelUsesCodexRuntime(params: {
 }
 
 function rewriteStringModelSlotIfCanonicalCodexRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   hits: CodexRouteHit[];
   container: MutableRecord | undefined;
@@ -2370,7 +2370,7 @@ function rewriteStringModelSlotIfCanonicalCodexRuntime(params: {
 }
 
 function rewriteModelConfigSlotIfCanonicalCodexRuntime(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   hits: CodexRouteHit[];
   container: MutableRecord | undefined;
@@ -2440,7 +2440,7 @@ function clearLegacyAgentRuntimePolicy(
   }
 }
 
-function clearConfigLegacyAgentRuntimePolicies(cfg: OpenClawConfig): string[] {
+function clearConfigLegacyAgentRuntimePolicies(cfg: EVEConfig): string[] {
   const changes: string[] = [];
   clearLegacyAgentRuntimePolicy(asMutableRecord(cfg.agents?.defaults), "agents.defaults", changes);
   const agents = Array.isArray(cfg.agents?.list) ? cfg.agents.list : [];
@@ -2466,7 +2466,7 @@ function isCompactionOnlyRouteHit(hit: CodexRouteHit): boolean {
 }
 
 function rewriteConfigModelRefsWithCompactionPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   preserveSharedDefaultCompactionOverrides: SharedDefaultCompactionOverrideConsumers;
   ignoreLegacyAgentRuntimePins?: boolean;
 }): ConfigRouteRepairResult {
@@ -2611,7 +2611,7 @@ function rewriteConfigModelRefsWithCompactionPolicy(params: {
   };
 }
 
-function configRepairWouldClearLegacyRuntimePins(params: { cfg: OpenClawConfig }): boolean {
+function configRepairWouldClearLegacyRuntimePins(params: { cfg: EVEConfig }): boolean {
   const dryRun = rewriteConfigModelRefsWithCompactionPolicy({
     cfg: params.cfg,
     preserveSharedDefaultCompactionOverrides: { model: true, provider: true },
@@ -2620,7 +2620,7 @@ function configRepairWouldClearLegacyRuntimePins(params: { cfg: OpenClawConfig }
   return dryRun.changes.some((hit) => !isCompactionOnlyRouteHit(hit));
 }
 
-function rewriteConfigModelRefs(params: { cfg: OpenClawConfig }): ConfigRouteRepairResult {
+function rewriteConfigModelRefs(params: { cfg: EVEConfig }): ConfigRouteRepairResult {
   const preserveSharedDefaultCompactionOverrides = getSharedDefaultCompactionOverrideConsumers({
     cfg: params.cfg,
     ignoreLegacyAgentRuntimePins: configRepairWouldClearLegacyRuntimePins(params),
@@ -2640,7 +2640,7 @@ function formatUnsupportedCompactionWarning(params: {
   fixHint: string;
 }): string {
   return [
-    "- Codex runtime uses native server-side compaction and ignores OpenClaw compaction summarizer overrides.",
+    "- Codex runtime uses native server-side compaction and ignores EVE compaction summarizer overrides.",
     ...params.hits.map(
       (hit) => `- ${hit.path}: ${hit.value} is ignored while this agent uses Codex runtime.`,
     ),
@@ -2671,7 +2671,7 @@ function formatLegacyLosslessCompactionWarning(params: {
     "- Legacy Lossless compaction config should use the Lossless context-engine slot for Codex.",
     ...configLines,
     params.canAutoFix
-      ? "- Run `openclaw doctor --fix`: it migrates legacy Lossless compaction config to the Lossless context-engine slot."
+      ? "- Run `eve doctor --fix`: it migrates legacy Lossless compaction config to the Lossless context-engine slot."
       : "- Move the Lossless config manually; doctor will not overwrite an existing non-Lossless context-engine slot or collapse conflicting per-agent summary models.",
   ].join("\n");
 }
@@ -2681,8 +2681,8 @@ function formatDisabledCodexPluginWarning(params: {
   blockedOutsideEntry: boolean;
 }): string {
   const fixHint = params.blockedOutsideEntry
-    ? "- Enable plugin loading and remove `codex` from plugins.deny, or set the affected OpenAI models to an OpenClaw runtime policy."
-    : "- Run `openclaw doctor --fix`: it enables plugins.entries.codex, or set the affected OpenAI models to an OpenClaw runtime policy.";
+    ? "- Enable plugin loading and remove `codex` from plugins.deny, or set the affected OpenAI models to an EVE runtime policy."
+    : "- Run `eve doctor --fix`: it enables plugins.entries.codex, or set the affected OpenAI models to an EVE runtime policy.";
   return [
     "- Codex runtime is selected, but the Codex plugin is disabled.",
     ...params.hits.map(
@@ -2693,7 +2693,7 @@ function formatDisabledCodexPluginWarning(params: {
   ].join("\n");
 }
 
-function collectCodexAppServerCommandWarnings(cfg: OpenClawConfig): string[] {
+function collectCodexAppServerCommandWarnings(cfg: EVEConfig): string[] {
   const plugins = asMutableRecord(cfg.plugins);
   const entries = asMutableRecord(plugins?.entries);
   const codex = asMutableRecord(entries?.codex);
@@ -2718,7 +2718,7 @@ function collectCodexAppServerCommandWarnings(cfg: OpenClawConfig): string[] {
 
 /** Collect doctor warnings for legacy Codex model refs, runtime pins, and compaction overrides. */
 export function collectCodexRouteWarnings(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
 }): string[] {
   const hits = collectConfigModelRefs(params.cfg);
@@ -2758,7 +2758,7 @@ export function collectCodexRouteWarnings(params: {
               hit.runtime ? `; current runtime is "${hit.runtime}"` : ""
             }.`,
         ),
-        "- Run `openclaw doctor --fix`: it rewrites configured model refs and stale sessions to `openai/*`, moves Codex intent to provider/model runtime policy, and clears old whole-agent runtime pins.",
+        "- Run `eve doctor --fix`: it rewrites configured model refs and stale sessions to `openai/*`, moves Codex intent to provider/model runtime policy, and clears old whole-agent runtime pins.",
       ].join("\n"),
     );
   }
@@ -2810,7 +2810,7 @@ export function collectCodexRouteWarnings(params: {
       formatUnsupportedCompactionWarning({
         hits: fixableHits,
         fixHint:
-          "- Run `openclaw doctor --fix`: it removes unsupported Codex compaction overrides.",
+          "- Run `eve doctor --fix`: it removes unsupported Codex compaction overrides.",
       }),
     );
   }
@@ -2819,11 +2819,11 @@ export function collectCodexRouteWarnings(params: {
 
 /** Rewrite legacy Codex config routes to OpenAI refs and explicit runtime policy when allowed. */
 export function maybeRepairCodexRoutes(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   shouldRepair: boolean;
   codexRuntimeReady?: boolean;
-}): { cfg: OpenClawConfig; warnings: string[]; changes: string[] } {
+}): { cfg: EVEConfig; warnings: string[]; changes: string[] } {
   const hits = collectConfigModelRefs(params.cfg);
   const disabledCodexPluginHits = collectDisabledCodexPluginRouteHits(params.cfg);
   const ignoreLegacyAgentRuntimePins = configRepairWouldClearLegacyRuntimePins(params);
@@ -2925,11 +2925,11 @@ function clearStaleSessionRuntimePins(entry: SessionEntry): boolean {
   const harnessRuntime = normalizeRuntimeString(entry.agentHarnessId);
   const overrideRuntime = normalizeRuntimeString(entry.agentRuntimeOverride);
   let changed = false;
-  if (entry.agentHarnessId !== undefined && harnessRuntime !== "openclaw") {
+  if (entry.agentHarnessId !== undefined && harnessRuntime !== "eve") {
     delete entry.agentHarnessId;
     changed = true;
   }
-  if (entry.agentRuntimeOverride !== undefined && overrideRuntime !== "openclaw") {
+  if (entry.agentRuntimeOverride !== undefined && overrideRuntime !== "eve") {
     delete entry.agentRuntimeOverride;
     changed = true;
   }
@@ -3023,7 +3023,7 @@ function scanCodexSessionStoreRoutes(store: Record<string, SessionEntry>): strin
 
 /** Scan or repair all configured agent session stores that still contain legacy Codex routes. */
 export async function maybeRepairCodexSessionRoutes(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   shouldRepair: boolean;
   codexRuntimeReady?: boolean;
@@ -3057,7 +3057,7 @@ export async function maybeRepairCodexSessionRoutes(params: {
               [
                 "- Legacy `openai-codex/*` session route state detected.",
                 `- Affected sessions: ${stale.length}.`,
-                "- Run `openclaw doctor --fix` to rewrite stale session model/provider pins across all agent session stores.",
+                "- Run `eve doctor --fix` to rewrite stale session model/provider pins across all agent session stores.",
               ].join("\n"),
             ]
           : [],

@@ -1,5 +1,5 @@
 // Discord plugin module implements agent components.handlers behavior.
-import { logError } from "openclaw/plugin-sdk/logging-core";
+import { logError } from "eve-agent/plugin-sdk/logging-core";
 import {
   resolveDiscordComponentEntryWithPersistence,
   resolveDiscordModalEntryWithPersistence,

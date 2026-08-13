@@ -1,6 +1,6 @@
 // Model override tests cover channel-level model selection and override precedence.
 import { beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "../plugins/runtime.js";
 import { createTestRegistry } from "../test-utils/channel-plugins.js";
 import { createSessionConversationTestRegistry } from "../test-utils/session-conversation-registry.js";
@@ -24,7 +24,7 @@ describe("resolveChannelModelOverride", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig,
+        } as unknown as EVEConfig,
         channel: "telegram",
         groupId: "-100123:topic:99",
       },
@@ -42,7 +42,7 @@ describe("resolveChannelModelOverride", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig,
+        } as unknown as EVEConfig,
         channel: "telegram",
         groupId: "-100123:topic:99",
       },
@@ -59,7 +59,7 @@ describe("resolveChannelModelOverride", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig,
+        } as unknown as EVEConfig,
         channel: "demo-thread",
         groupId: "999",
         parentSessionKey: "agent:main:demo-thread:channel:123:thread:456",
@@ -118,7 +118,7 @@ describe("resolveChannelModelOverride", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       channel: "channel-kind",
       groupId: "thread-123",
       groupChatType: "channel",
@@ -172,7 +172,7 @@ describe("resolveChannelModelOverride", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       channel: "scoped-chat",
       groupId: "unrelated",
       parentSessionKey: "agent:main:scoped-chat:group:room:topic:thread:sender:user",
@@ -192,7 +192,7 @@ describe("resolveChannelModelOverride", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       channel: "telegram",
       groupChatType: "direct",
     });
@@ -213,7 +213,7 @@ describe("resolveChannelModelOverride", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
       channel: "telegram",
       groupId: "-100123:topic:99",
       groupChannel: "#general",

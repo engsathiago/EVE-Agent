@@ -1,20 +1,20 @@
 // Github Copilot plugin module implements login behavior.
 import { intro, note, outro, spinner } from "@clack/prompts";
-import { stylePromptTitle } from "openclaw/plugin-sdk/cli-runtime";
-import { logConfigUpdated, updateConfig } from "openclaw/plugin-sdk/config-mutation";
+import { stylePromptTitle } from "eve-agent/plugin-sdk/cli-runtime";
+import { logConfigUpdated, updateConfig } from "eve-agent/plugin-sdk/config-mutation";
 import {
   resolveExpiresAtMsFromDurationMs,
   nonNegativeSecondsToSafeMilliseconds,
   positiveSecondsToSafeMilliseconds,
   resolveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   applyAuthProfileConfig,
   ensureAuthProfileStore,
   upsertAuthProfileWithLock,
-} from "openclaw/plugin-sdk/provider-auth";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/provider-auth";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
 
 const CLIENT_ID = "Iv1.b507a08c87ecfe98";
 const DEVICE_CODE_URL = "https://github.com/login/device/code";

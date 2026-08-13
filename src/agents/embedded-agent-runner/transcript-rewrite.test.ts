@@ -3,8 +3,8 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildSessionWriteLockModuleMock } from "../../test-utils/session-write-lock-module-mock.js";
 
@@ -305,7 +305,7 @@ describe("rewriteTranscriptEntriesInSessionManager", () => {
 
 describe("rewriteTranscriptEntriesInRuntimeTranscript", () => {
   it("does not create session metadata for missing runtime transcripts", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-transcript-rewrite-runtime-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-transcript-rewrite-runtime-"));
     const storePath = path.join(dir, "sessions.json");
     await fs.writeFile(storePath, "{}\n", "utf8");
 
@@ -324,7 +324,7 @@ describe("rewriteTranscriptEntriesInRuntimeTranscript", () => {
   });
 
   it("rewrites runtime transcripts through scoped session identity", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-transcript-rewrite-runtime-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-transcript-rewrite-runtime-"));
     const storePath = path.join(dir, "sessions.json");
     const sessionManager = SessionManager.create(dir, dir);
     const entryIds = appendSessionMessages(sessionManager, [

@@ -1,23 +1,23 @@
 // Whatsapp plugin module implements monitor behavior.
-import { resolveAccountEntry } from "openclaw/plugin-sdk/account-core";
-import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "openclaw/plugin-sdk/approval-handler-runtime";
-import { resolveInboundDebounceMs } from "openclaw/plugin-sdk/channel-inbound-debounce";
-import { registerChannelRuntimeContext } from "openclaw/plugin-sdk/channel-runtime-context";
-import { formatCliCommand } from "openclaw/plugin-sdk/cli-runtime";
-import { isControlCommandMessage } from "openclaw/plugin-sdk/command-detection";
-import { drainPendingDeliveries } from "openclaw/plugin-sdk/delivery-queue-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT } from "openclaw/plugin-sdk/reply-history";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { registerUnhandledRejectionHandler } from "openclaw/plugin-sdk/runtime-env";
-import { getChildLogger } from "openclaw/plugin-sdk/runtime-env";
+import { resolveAccountEntry } from "eve-agent/plugin-sdk/account-core";
+import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "eve-agent/plugin-sdk/approval-handler-runtime";
+import { resolveInboundDebounceMs } from "eve-agent/plugin-sdk/channel-inbound-debounce";
+import { registerChannelRuntimeContext } from "eve-agent/plugin-sdk/channel-runtime-context";
+import { formatCliCommand } from "eve-agent/plugin-sdk/cli-runtime";
+import { isControlCommandMessage } from "eve-agent/plugin-sdk/command-detection";
+import { drainPendingDeliveries } from "eve-agent/plugin-sdk/delivery-queue-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT } from "eve-agent/plugin-sdk/reply-history";
+import { resolveAgentRoute } from "eve-agent/plugin-sdk/routing";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { registerUnhandledRejectionHandler } from "eve-agent/plugin-sdk/runtime-env";
+import { getChildLogger } from "eve-agent/plugin-sdk/runtime-env";
 import {
   defaultRuntime,
   formatDurationPrecise,
   warn,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk/runtime-env";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/system-event-runtime";
+} from "eve-agent/plugin-sdk/runtime-env";
+import { enqueueSystemEvent } from "eve-agent/plugin-sdk/system-event-runtime";
 import { resolveWhatsAppAccount, resolveWhatsAppMediaMaxBytes } from "../accounts.js";
 import { WHATSAPP_AUTH_UNSTABLE_CODE, WhatsAppAuthUnstableError } from "../auth-store.js";
 import {
@@ -394,15 +394,15 @@ export async function monitorWebChannel(
             );
             if (setupDecision.healthState === "logged-out") {
               runtime.error(
-                `WhatsApp session logged out during setup. Run \`${formatCliCommand("openclaw channels login --channel whatsapp")}\` to relink.`,
+                `WhatsApp session logged out during setup. Run \`${formatCliCommand("eve channels login --channel whatsapp")}\` to relink.`,
               );
             } else if (setupDecision.healthState === "conflict") {
               runtime.error(
-                `WhatsApp Web connection closed during setup (status ${setupDecision.normalized.statusLabel}: session conflict). Resolve conflicting WhatsApp Web sessions, then restart the channel. To force a fresh QR, run \`${formatCliCommand("openclaw channels logout --channel whatsapp")}\` before \`${formatCliCommand("openclaw channels login --channel whatsapp")}\`. Stopping web monitoring.`,
+                `WhatsApp Web connection closed during setup (status ${setupDecision.normalized.statusLabel}: session conflict). Resolve conflicting WhatsApp Web sessions, then restart the channel. To force a fresh QR, run \`${formatCliCommand("eve channels logout --channel whatsapp")}\` before \`${formatCliCommand("eve channels login --channel whatsapp")}\`. Stopping web monitoring.`,
               );
             } else {
               runtime.error(
-                `WhatsApp Web connection closed during setup (status ${setupDecision.normalized.statusLabel}) after ${setupDecision.reconnectAttempts}/${reconnectPolicy.maxAttempts} attempts. Relink with \`${formatCliCommand("openclaw channels login --channel whatsapp")}\` if the issue persists.`,
+                `WhatsApp Web connection closed during setup (status ${setupDecision.normalized.statusLabel}) after ${setupDecision.reconnectAttempts}/${reconnectPolicy.maxAttempts} attempts. Relink with \`${formatCliCommand("eve channels login --channel whatsapp")}\` if the issue persists.`,
               );
             }
             await controller.shutdown();
@@ -617,7 +617,7 @@ export async function monitorWebChannel(
 
         if (decision.healthState === "logged-out") {
           runtime.error(
-            `WhatsApp session logged out. Run \`${formatCliCommand("openclaw channels login --channel whatsapp")}\` to relink.`,
+            `WhatsApp session logged out. Run \`${formatCliCommand("eve channels login --channel whatsapp")}\` to relink.`,
           );
         } else if (decision.healthState === "conflict") {
           reconnectLogger.warn(
@@ -629,7 +629,7 @@ export async function monitorWebChannel(
             "web reconnect: non-retryable close status; stopping monitor",
           );
           runtime.error(
-            `WhatsApp Web connection closed (status ${decision.normalized.statusLabel}: session conflict). Resolve conflicting WhatsApp Web sessions, then restart the channel. To force a fresh QR, run \`${formatCliCommand("openclaw channels logout --channel whatsapp")}\` before \`${formatCliCommand("openclaw channels login --channel whatsapp")}\`. Stopping web monitoring.`,
+            `WhatsApp Web connection closed (status ${decision.normalized.statusLabel}: session conflict). Resolve conflicting WhatsApp Web sessions, then restart the channel. To force a fresh QR, run \`${formatCliCommand("eve channels logout --channel whatsapp")}\` before \`${formatCliCommand("eve channels login --channel whatsapp")}\`. Stopping web monitoring.`,
           );
         } else {
           reconnectLogger.warn(

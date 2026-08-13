@@ -1,7 +1,7 @@
 /**
  * Applies final effective tool policy to embedded-agent runtime settings.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { getPluginToolMeta } from "../../plugins/tools.js";
 import {
   resolveEffectiveToolPolicy,
@@ -39,13 +39,13 @@ import type { AnyAgentTool } from "../tools/common.js";
  * detect drift on fields that have no session-bound counterpart.
  */
 type FinalEffectiveToolPolicyParams = {
-  // Tools appended to the core tool set after `createOpenClawCodingTools()`
+  // Tools appended to the core tool set after `createEVECodingTools()`
   // has already applied the shared tool-policy pipeline (e.g. bundled
   // MCP/LSP tools). Only these are filtered here; re-running the pipeline over
   // the already-filtered core tools would drop plugin tools whose WeakMap
   // metadata no longer survives core-tool wrapping/normalization.
   bundledTools: AnyAgentTool[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sandboxToolPolicy?: { allow?: string[]; deny?: string[] };
   sessionKey?: string;
   agentId?: string;
@@ -152,7 +152,7 @@ export function applyFinalEffectiveToolPolicy(
   // it's filtering, and this pass only sees the bundled MCP/LSP subset.
   // Normal core allowlist entries (e.g. `tools.allow: ["read", "exec"]`)
   // would look "unknown" relative to that reduced set even though they are
-  // valid core names already resolved by `createOpenClawCodingTools()` in
+  // valid core names already resolved by `createEVECodingTools()` in
   // the first pass — keeping those warnings on would pollute logs and evict
   // real diagnostics from the shared warning cache. Genuinely unknown
   // entries (typos) still surface through the `otherEntries` path in

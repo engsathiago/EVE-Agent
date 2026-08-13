@@ -58,7 +58,7 @@ private struct ExecApprovalPromptCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Exec approval required")
                     .font(.headline)
-                Text("OpenClaw opened from a notification. Review this exec request before continuing.")
+                Text("EVE opened from a notification. Review this exec request before continuing.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -145,7 +145,7 @@ private struct ExecApprovalPromptCard: View {
             .frame(maxWidth: .infinity)
         }
         .padding(18)
-        .proPanelSurface(tint: OpenClawBrand.accentHot, radius: 20, isProminent: true)
+        .proPanelSurface(tint: EVEBrand.accentHot, radius: 20, isProminent: true)
     }
 
     private func normalized(_ value: String?) -> String? {

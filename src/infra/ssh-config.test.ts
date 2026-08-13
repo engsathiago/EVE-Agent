@@ -18,7 +18,7 @@ function createMockSpawnChild() {
 }
 
 vi.mock("node:child_process", async () => {
-  const { mockNodeBuiltinModule } = await import("openclaw/plugin-sdk/test-node-mocks");
+  const { mockNodeBuiltinModule } = await import("eve-agent/plugin-sdk/test-node-mocks");
   const spawnLocal = vi.fn(() => {
     const { child, stdout } = createMockSpawnChild();
     process.nextTick(() => {

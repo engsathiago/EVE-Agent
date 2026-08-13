@@ -1,5 +1,5 @@
 /**
- * Standalone MCP server for OpenClaw Codex supervision.
+ * Standalone MCP server for EVE Codex supervision.
  *
  * Run via: node --import tsx extensions/codex-supervisor/src/mcp-serve.ts
  */

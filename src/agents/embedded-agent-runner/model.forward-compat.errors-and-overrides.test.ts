@@ -51,7 +51,7 @@ vi.mock("../model-suppression.js", () => ({
     ) {
       return undefined;
     }
-    return `Unknown model: ${provider}/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run \`openclaw models auth login --provider openai\` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.`;
+    return `Unknown model: ${provider}/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run \`eve models auth login --provider openai\` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.`;
   },
 }));
 
@@ -60,7 +60,7 @@ vi.mock("../agent-model-discovery.js", () => ({
   discoverModels: vi.fn(() => ({ find: vi.fn(() => null) })),
 }));
 
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { resetModelDiscoveryCacheForTest } from "./model-discovery-cache.js";
 import {
   expectResolvedForwardCompatFallbackResult,
@@ -92,7 +92,7 @@ function resolveModelForTest(
   provider: string,
   modelId: string,
   agentDir?: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ) {
   return resolveModel(provider, modelId, agentDir, cfg, {
     runtimeHooks: createRuntimeHooks(),
@@ -129,7 +129,7 @@ function resolveAnthropicModelWithProviderOverrides(overrides: Partial<ModelProv
         anthropic: overrides,
       },
     },
-  } as unknown as OpenClawConfig);
+  } as unknown as EVEConfig);
 }
 
 describe("resolveModel forward-compat errors and overrides", () => {
@@ -167,7 +167,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
 
     expect(result.model).toBeUndefined();
     expect(result.error).toBe(
-      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `openclaw models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
+      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `eve models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
     );
   });
 
@@ -182,13 +182,13 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
     expect(result.model).toBeUndefined();
     expect(result.error).toBe(
-      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `openclaw models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
+      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `eve models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
     );
   });
 
@@ -204,7 +204,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
     expect(result.error).toBeUndefined();
@@ -216,7 +216,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
   it("resolves suppressed openai gpt-5.3-codex-spark through model-scoped Codex runtime", () => {
     mockOpenAICodexTemplateModel(discoverModels);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           models: {
@@ -238,7 +238,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
   it("keeps model-scoped Codex runtime blocked for explicit OpenAI API-key provider config", () => {
     mockOpenAICodexTemplateModel(discoverModels);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       agents: {
         defaults: {
           models: {
@@ -316,7 +316,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
@@ -346,7 +346,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
@@ -370,7 +370,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
@@ -403,7 +403,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.3-codex-spark", "/tmp/agent", cfg);
 
@@ -448,12 +448,12 @@ describe("resolveModel forward-compat errors and overrides", () => {
 
     expect(result.model).toBeUndefined();
     expect(result.error).toBe(
-      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `openclaw models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
+      "Unknown model: openai/gpt-5.3-codex-spark. gpt-5.3-codex-spark is available only through ChatGPT/Codex OAuth. Run `eve models auth login --provider openai` and use openai/gpt-5.3-codex-spark with that OAuth profile; OpenAI API-key auth cannot use this model.",
     );
   });
 
   it("uses codex fallback even when openai provider is configured", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       models: {
         providers: {
           openai: {
@@ -462,7 +462,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expectResolvedForwardCompatFallbackResult({
       result: resolveModelForTest("openai", "gpt-5.4", "/tmp/agent", cfg),
@@ -477,7 +477,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
   it("uses codex fallback when inline model omits api (#39682)", () => {
     mockOpenAICodexTemplateModel(discoverModels);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       models: {
         providers: {
           openai: {
@@ -487,7 +487,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("openai", "gpt-5.4", "/tmp/agent", cfg);
     expect(result.error).toBeUndefined();
@@ -503,7 +503,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
   it("keeps openai gpt-5.4 responses overrides on the OpenAI API transport", () => {
     mockOpenAICodexTemplateModel(discoverModels);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       models: {
         providers: {
           openai: {
@@ -512,7 +512,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expectResolvedForwardCompatFallbackResult({
       result: resolveModelForTest("openai", "gpt-5.4", "/tmp/agent", cfg),
@@ -528,7 +528,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
   it("normalizes openai gpt-5.4 completions overrides to the OpenAI API transport", () => {
     mockOpenAICodexTemplateModel(discoverModels);
 
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       models: {
         providers: {
           openai: {
@@ -537,7 +537,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expectResolvedForwardCompatFallbackResult({
       result: resolveModelForTest("openai", "gpt-5.4", "/tmp/agent", cfg),
@@ -556,7 +556,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
     expect(result.model).toBeUndefined();
     expect(result.error).toContain("Unknown model: ollama/gemma3:4b");
     expect(result.error).toContain("OLLAMA_API_KEY");
-    expect(result.error).toContain("docs.openclaw.ai/providers/ollama");
+    expect(result.error).toContain("docs.eve.ai/providers/ollama");
   });
 
   it("includes auth hint for unknown vllm models", () => {
@@ -622,7 +622,7 @@ describe("resolveModel forward-compat errors and overrides", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const result = resolveModelForTest("kimi", "kimi-code", "/tmp/agent", cfg);
     expect(result.error).toBeUndefined();

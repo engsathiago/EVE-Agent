@@ -1,6 +1,6 @@
 // Stale subagent allowlist tests cover doctor warnings for obsolete subagent allowlists.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import {
   collectStaleSubagentAllowlistWarnings,
   maybeRepairStaleSubagentAllowlists,
@@ -26,7 +26,7 @@ describe("stale subagent allowlist doctor repair", () => {
           { id: "planner" },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(scanStaleSubagentAllowlistReferences(cfg)).toStrictEqual([
       {
@@ -42,7 +42,7 @@ describe("stale subagent allowlist doctor repair", () => {
     ]);
   });
 
-  it("keeps wildcard, configured OpenClaw agents, and configured ACP targets", () => {
+  it("keeps wildcard, configured EVE agents, and configured ACP targets", () => {
     const cfg = {
       acp: {
         defaultAgent: "claude",
@@ -63,7 +63,7 @@ describe("stale subagent allowlist doctor repair", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(scanStaleSubagentAllowlistReferences(cfg)).toStrictEqual([
       {
@@ -92,7 +92,7 @@ describe("stale subagent allowlist doctor repair", () => {
           { id: "planner" },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = maybeRepairStaleSubagentAllowlists(cfg);
 
@@ -113,12 +113,12 @@ describe("stale subagent allowlist doctor repair", () => {
           normalizedAgentId: "research",
         },
       ],
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "eve doctor --fix",
     });
 
     expect(warnings).toStrictEqual([
       '- agents.defaults.subagents.allowAgents: stale subagent target "research" is not in the configured agent registry.',
-      '- Run "openclaw doctor --fix" to remove stale subagent target ids, or add a configured agent or ACP target for each intended target.',
+      '- Run "eve doctor --fix" to remove stale subagent target ids, or add a configured agent or ACP target for each intended target.',
     ]);
   });
 });

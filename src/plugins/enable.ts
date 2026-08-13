@@ -1,7 +1,7 @@
 // Resolves plugin enablement state from config and channel context.
 import { normalizeChatChannelId } from "../channels/ids.js";
 import { ensurePluginAllowlisted } from "../config/plugins-allowlist.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { setPluginEnabledInConfig } from "./toggle-config.js";
 
 type PluginEnableOptions = {
@@ -10,7 +10,7 @@ type PluginEnableOptions = {
 
 /** Result of enabling a plugin in config. */
 export type PluginEnableResult = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   enabled: boolean;
   pluginId: string;
   reason?: string;
@@ -18,7 +18,7 @@ export type PluginEnableResult = {
 
 /** Enables a plugin in config unless global, denylist, or allowlist policy blocks it. */
 export function enablePluginInConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   pluginId: string,
   options: PluginEnableOptions = {},
 ): PluginEnableResult {
@@ -53,7 +53,7 @@ export function enablePluginInConfig(
  * it is the trust gesture that materializes its id in a restrictive allowlist.
  */
 export function enableExplicitlySelectedPluginInConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   pluginId: string,
   options: PluginEnableOptions = {},
 ): PluginEnableResult {

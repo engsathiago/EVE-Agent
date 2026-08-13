@@ -1,11 +1,11 @@
 // Command-time secret resolution through gateway/local secret stores for configured targets.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
 } from "../../packages/gateway-protocol/src/client-info.js";
 import { validateSecretsResolveResult } from "../../packages/gateway-protocol/src/index.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveSecretInputRef } from "../config/types.secrets.js";
 import { callGateway } from "../gateway/call.js";
 import { gatewaySecretInputPathCanWin } from "../gateway/credentials-secret-inputs.js";
@@ -32,7 +32,7 @@ import {
 } from "../secrets/target-registry.js";
 
 type ResolveCommandSecretsResult = {
-  resolvedConfig: OpenClawConfig;
+  resolvedConfig: EVEConfig;
   diagnostics: string[];
   targetStatesByPath: Record<string, CommandSecretTargetState>;
   hadUnresolvedTargets: boolean;
@@ -157,7 +157,7 @@ function targetsRuntimeWebPath(path: string): boolean {
 }
 
 function classifyRuntimeWebTargetPathState(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   path: string;
 }): "active" | "inactive" | "unknown" {
   if (params.path === "tools.web.search.apiKey") {
@@ -233,7 +233,7 @@ function classifyRuntimeWebTargetPathState(params: {
 }
 
 function describeInactiveRuntimeWebTargetPath(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   path: string;
 }): string | undefined {
   if (params.path === "tools.web.search.apiKey") {
@@ -325,7 +325,7 @@ function targetsRuntimeWebResolution(params: {
 }
 
 function collectConfiguredTargetRefPaths(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   targetIds: Set<string>;
   allowedPaths?: ReadonlySet<string>;
 }): Set<string> {
@@ -351,7 +351,7 @@ function collectConfiguredTargetRefPaths(params: {
 }
 
 function classifyConfiguredTargetRefs(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   configuredTargetRefPaths: Set<string>;
   forcedActivePaths?: ReadonlySet<string>;
   optionalActivePaths?: ReadonlySet<string>;
@@ -503,7 +503,7 @@ function resolveLocalResolutionPolicy(params: {
 }
 
 function collectActiveGatewayExecSecretRefCredentialPaths(
-  config: OpenClawConfig,
+  config: EVEConfig,
 ): SupportedGatewaySecretInputPath[] {
   const defaults = config.secrets?.defaults;
   return ALL_GATEWAY_SECRET_INPUT_PATHS.filter((path) => {
@@ -523,7 +523,7 @@ function collectActiveGatewayExecSecretRefCredentialPaths(
 }
 
 async function resolveCommandSecretRefsWithoutGateway(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   commandName: string;
   targetIds: Set<string>;
   preflightDiagnostics: string[];
@@ -552,7 +552,7 @@ async function resolveCommandSecretRefsWithoutGateway(params: {
 }
 
 async function callGatewaySecretsResolve(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   commandName: string;
   targetIds: Set<string>;
   allowedPaths?: ReadonlySet<string>;
@@ -606,7 +606,7 @@ function isDirectRuntimeWebTargetPath(path: string): boolean {
 }
 
 async function resolveCommandSecretRefsLocally(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   commandName: string;
   targetIds: Set<string>;
   preflightDiagnostics: string[];
@@ -804,7 +804,7 @@ function buildUnresolvedDiagnostics(
 }
 
 function scrubUnresolvedAssignments(
-  config: OpenClawConfig,
+  config: EVEConfig,
   unresolved: UnresolvedCommandSecretAssignment[],
 ): void {
   for (const entry of unresolved) {
@@ -829,8 +829,8 @@ function filterInactiveSurfaceDiagnostics(params: {
 
 async function resolveTargetSecretLocally(params: {
   target: DiscoveredConfigSecretTarget;
-  sourceConfig: OpenClawConfig;
-  resolvedConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
+  resolvedConfig: EVEConfig;
   env: NodeJS.ProcessEnv;
   cache: ReturnType<typeof createResolverContext>["cache"];
   activePaths: ReadonlySet<string>;
@@ -893,7 +893,7 @@ async function resolveTargetSecretLocally(params: {
 }
 
 export async function resolveCommandSecretRefsViaGateway(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   commandName: string;
   targetIds: Set<string>;
   mode?: CommandSecretResolutionModeInput;

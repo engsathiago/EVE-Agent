@@ -1,6 +1,6 @@
 // Msteams tests cover message handler.thread parent plugin behavior.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../runtime-api.js";
+import type { EVEConfig } from "../../runtime-api.js";
 import { resetThreadParentContextCachesForTest } from "../thread-parent-context.js";
 import "./message-handler-mock-support.test-support.js";
 import { getRuntimeApiMockState } from "./message-handler-mock-support.test-support.js";
@@ -76,9 +76,9 @@ describe("msteams thread parent context injection", () => {
     runtimeApiMockState.dispatchReplyFromConfigWithSettledDispatcher.mockClear();
   });
 
-  const cfg: OpenClawConfig = {
+  const cfg: EVEConfig = {
     channels: { msteams: { groupPolicy: "open" } },
-  } as OpenClawConfig;
+  } as EVEConfig;
 
   it("enqueues a Replying to @sender system event on the first thread reply", async () => {
     fetchChannelMessageMock.mockResolvedValueOnce({
@@ -157,7 +157,7 @@ describe("msteams thread parent context injection", () => {
           },
         },
       },
-    } as OpenClawConfig);
+    } as EVEConfig);
     const handler = createMSTeamsMessageHandler(deps);
 
     await handler({
@@ -196,7 +196,7 @@ describe("msteams thread parent context injection", () => {
     });
     const { deps, enqueueSystemEvent } = createMessageHandlerDeps({
       channels: { msteams: { allowFrom: ["*"] } },
-    } as OpenClawConfig);
+    } as EVEConfig);
     const handler = createMSTeamsMessageHandler(deps);
 
     await handler({

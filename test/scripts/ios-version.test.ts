@@ -34,7 +34,7 @@ describe("resolveIosVersion", () => {
   it("prints selected fields from the CLI", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: "# OpenClaw iOS Changelog\n\n## 2026.4.6\n\nStable notes.\n",
+      changelog: "# EVE iOS Changelog\n\n## 2026.4.6\n\nStable notes.\n",
     });
     const result = spawnSync(
       process.execPath,
@@ -75,7 +75,7 @@ describe("resolveIosVersion", () => {
   it("parses pinned release versions and derives Apple marketing fields", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: "# OpenClaw iOS Changelog\n\n## 2026.4.6\n\nStable notes.\n",
+      changelog: "# EVE iOS Changelog\n\n## 2026.4.6\n\nStable notes.\n",
     });
 
     expect(resolveIosVersion(rootDir)).toEqual({
@@ -92,7 +92,7 @@ describe("resolveIosVersion", () => {
   it("rejects semver-only versions", () => {
     const rootDir = writeIosFixture({
       version: "1.2.3",
-      changelog: "# OpenClaw iOS Changelog\n\n## Unreleased\n\nNotes.\n",
+      changelog: "# EVE iOS Changelog\n\n## Unreleased\n\nNotes.\n",
     });
 
     expect(() => resolveIosVersion(rootDir)).toThrow(
@@ -103,7 +103,7 @@ describe("resolveIosVersion", () => {
   it("rejects prerelease suffixes in the pinned iOS version file", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6-beta.1",
-      changelog: "# OpenClaw iOS Changelog\n\n## Unreleased\n\nNotes.\n",
+      changelog: "# EVE iOS Changelog\n\n## Unreleased\n\nNotes.\n",
     });
 
     expect(() => resolveIosVersion(rootDir)).toThrow(
@@ -151,7 +151,7 @@ describe("gateway version normalization", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
       packageVersion: "2026.4.7-beta.5",
-      changelog: "# OpenClaw iOS Changelog\n\n## Unreleased\n\nNotes.\n",
+      changelog: "# EVE iOS Changelog\n\n## Unreleased\n\nNotes.\n",
     });
 
     expect(resolveGatewayVersionForIosRelease(rootDir)).toEqual({
@@ -165,13 +165,13 @@ describe("renderIosVersionXcconfig", () => {
   it("renders checked-in defaults from the pinned iOS version", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.8",
-      changelog: "# OpenClaw iOS Changelog\n\n## 2026.4.8\n\nNotes.\n",
+      changelog: "# EVE iOS Changelog\n\n## 2026.4.8\n\nNotes.\n",
     });
     const version = resolveIosVersion(rootDir);
 
-    expect(renderIosVersionXcconfig(version)).toContain("OPENCLAW_IOS_VERSION = 2026.4.8");
-    expect(renderIosVersionXcconfig(version)).toContain("OPENCLAW_MARKETING_VERSION = 2026.4.8");
-    expect(renderIosVersionXcconfig(version)).toContain("OPENCLAW_BUILD_VERSION = 1");
+    expect(renderIosVersionXcconfig(version)).toContain("EVE_IOS_VERSION = 2026.4.8");
+    expect(renderIosVersionXcconfig(version)).toContain("EVE_MARKETING_VERSION = 2026.4.8");
+    expect(renderIosVersionXcconfig(version)).toContain("EVE_BUILD_VERSION = 1");
   });
 });
 
@@ -179,7 +179,7 @@ describe("release note extraction", () => {
   it("extracts exact pinned version sections first", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: `# OpenClaw iOS Changelog
+      changelog: `# EVE iOS Changelog
 
 ## Unreleased
 
@@ -199,7 +199,7 @@ Draft notes.
   it("falls back to Unreleased when the release section does not exist yet", () => {
     const rootDir = writeIosFixture({
       version: "2026.4.6",
-      changelog: `# OpenClaw iOS Changelog
+      changelog: `# EVE iOS Changelog
 
 ## Unreleased
 
@@ -218,7 +218,7 @@ Draft notes.
   it("extracts markdown bodies without the version heading", () => {
     expect(
       extractChangelogSection(
-        `# OpenClaw iOS Changelog\n\n## 2026.4.6 - 2026-04-06\n\nLine one.\n\n## 2026.4.5\n`,
+        `# EVE iOS Changelog\n\n## 2026.4.6 - 2026-04-06\n\nLine one.\n\n## 2026.4.5\n`,
         "2026.4.6",
       ),
     ).toBe("Line one.");

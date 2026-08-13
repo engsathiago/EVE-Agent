@@ -6,7 +6,7 @@ import type {
   AgentMessage,
   EmbeddedRunAttemptParams,
   EmbeddedRunAttemptResult,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import type { CodexSystemPromptReport } from "./attempt-context.js";
 import type { CodexAttemptTurnWatchTimeoutKind } from "./attempt-turn-watches.js";
 

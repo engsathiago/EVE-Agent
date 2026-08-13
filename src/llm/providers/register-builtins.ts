@@ -17,7 +17,11 @@ import type { GoogleVertexOptions } from "./google-vertex.js";
 import type { GoogleOptions } from "./google.js";
 import type { MistralOptions } from "./mistral.js";
 import type { OpenAICodexResponsesOptions } from "./openai-chatgpt-responses.js";
-import type { OpenAICompletionsOptions } from "./openai-completions.js";
+import {
+  streamOpenAICompletions as streamOpenAICompletionsImpl,
+  streamSimpleOpenAICompletions as streamSimpleOpenAICompletionsImpl,
+  type OpenAICompletionsOptions,
+} from "./openai-completions.js";
 import type { OpenAIResponsesOptions } from "./openai-responses.js";
 
 // Lazy built-in provider registration keeps the main LLM stream facade cheap to import.
@@ -69,11 +73,6 @@ interface OpenAICodexResponsesProviderModule {
     OpenAICodexResponsesOptions
   >;
   streamSimpleOpenAICodexResponses: StreamFunction<"openai-chatgpt-responses", SimpleStreamOptions>;
-}
-
-interface OpenAICompletionsProviderModule {
-  streamOpenAICompletions: StreamFunction<"openai-completions", OpenAICompletionsOptions>;
-  streamSimpleOpenAICompletions: StreamFunction<"openai-completions", SimpleStreamOptions>;
 }
 
 interface OpenAIResponsesProviderModule {
@@ -290,12 +289,9 @@ function loadOpenAICodexResponsesProviderModule(): Promise<
 function loadOpenAICompletionsProviderModule(): Promise<
   LazyProviderModule<"openai-completions", OpenAICompletionsOptions, SimpleStreamOptions>
 > {
-  openAICompletionsProviderModulePromise ||= import("./openai-completions.js").then((module) => {
-    const provider = module as OpenAICompletionsProviderModule;
-    return {
-      stream: provider.streamOpenAICompletions,
-      streamSimple: provider.streamSimpleOpenAICompletions,
-    };
+  openAICompletionsProviderModulePromise ||= Promise.resolve({
+    stream: streamOpenAICompletionsImpl,
+    streamSimple: streamSimpleOpenAICompletionsImpl,
   });
   return openAICompletionsProviderModulePromise;
 }

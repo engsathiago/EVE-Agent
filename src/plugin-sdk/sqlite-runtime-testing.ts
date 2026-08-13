@@ -1,10 +1,10 @@
 // Private local-only SQLite lifecycle helpers for first-party tests.
 
 export {
-  closeOpenClawAgentDatabasesForTest,
-  openOpenClawAgentDatabase,
-} from "../state/openclaw-agent-db.js";
+  closeEVEAgentDatabasesForTest,
+  openEVEAgentDatabase,
+} from "../state/eve-agent-db.js";
 export {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
+  closeEVEStateDatabaseForTest,
+  openEVEStateDatabase,
+} from "../state/eve-state-db.js";

@@ -68,7 +68,7 @@ async function expectPathMissing(targetPath: string): Promise<void> {
 describe("replayRecentUserAssistantMessages", () => {
   let root = "";
   beforeEach(async () => {
-    root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-replay-"));
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-replay-"));
   });
   afterEach(async () => {
     await fs.rm(root, { recursive: true, force: true });

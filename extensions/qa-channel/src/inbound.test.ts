@@ -1,5 +1,5 @@
 // Qa Channel tests cover inbound plugin behavior.
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
+import { createPluginRuntimeMock } from "eve-agent/plugin-sdk/channel-test-helpers";
 import { describe, expect, it, vi } from "vitest";
 import { setQaChannelRuntime } from "../api.js";
 import { handleQaInbound, isHttpMediaUrl } from "./inbound.js";
@@ -20,8 +20,8 @@ function createQaInboundParams(
       enabled: true,
       configured: true,
       baseUrl: "http://127.0.0.1:43123",
-      botUserId: "openclaw",
-      botDisplayName: "OpenClaw QA",
+      botUserId: "eve",
+      botDisplayName: "EVE QA",
       pollTimeoutMs: 250,
       config: {
         allowFrom: ["*"],
@@ -68,7 +68,7 @@ describe("isHttpMediaUrl", () => {
 describe("handleQaInbound", () => {
   it("marks group messages that match configured mention patterns", async () => {
     const runtime = createPluginRuntimeMock();
-    vi.mocked(runtime.channel.mentions.buildMentionRegexes).mockReturnValue([/\b@?openclaw\b/i]);
+    vi.mocked(runtime.channel.mentions.buildMentionRegexes).mockReturnValue([/\b@?eve\b/i]);
     setQaChannelRuntime(runtime);
 
     await handleQaInbound(
@@ -81,7 +81,7 @@ describe("handleQaInbound", () => {
           },
           senderId: "alice",
           senderName: "Alice",
-          text: "@openclaw ping",
+          text: "@eve ping",
         },
       }),
     );
@@ -175,7 +175,7 @@ describe("handleQaInbound", () => {
 
   it("skips configured group messages that miss mention activation", async () => {
     const runtime = createPluginRuntimeMock();
-    vi.mocked(runtime.channel.mentions.buildMentionRegexes).mockReturnValue([/\b@?openclaw\b/i]);
+    vi.mocked(runtime.channel.mentions.buildMentionRegexes).mockReturnValue([/\b@?eve\b/i]);
     setQaChannelRuntime(runtime);
 
     await handleQaInbound(

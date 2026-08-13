@@ -1,6 +1,6 @@
 // Codex tests cover native hook relay plugin behavior.
-import type { NativeHookRelayRegistrationHandle } from "openclaw/plugin-sdk/agent-harness-runtime";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import type { NativeHookRelayRegistrationHandle } from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { describe, expect, it } from "vitest";
 import {
   buildCodexNativeHookRelayConfig,
@@ -24,10 +24,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --timeout 6000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --timeout 6000",
               timeout: 7,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -38,10 +38,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event post_tool_use --timeout 6000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event post_tool_use --timeout 6000",
               timeout: 7,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -52,10 +52,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 6000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 6000",
               timeout: 7,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -66,10 +66,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event before_agent_finalize --timeout 6000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event before_agent_finalize --timeout 6000",
               timeout: 7,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -129,10 +129,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 4000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 4000",
               timeout: 5,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -164,10 +164,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --timeout 4000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --timeout 4000",
               timeout: 5,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -201,10 +201,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --pre-tool-use-unavailable noop --timeout 4000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event pre_tool_use --pre-tool-use-unavailable noop --timeout 4000",
               timeout: 5,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -239,10 +239,10 @@ describe("Codex native hook relay config", () => {
             {
               type: "command",
               command:
-                "openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 4000",
+                "eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event permission_request --timeout 4000",
               timeout: 5,
               async: false,
-              statusMessage: "OpenClaw native hook relay",
+              statusMessage: "EVE native hook relay",
             },
           ],
         },
@@ -319,7 +319,7 @@ function createRelay(options?: {
     expiresAtMs: Date.now() + 1000,
     shouldRelayEvent: (event) => !inactiveEvents.has(event),
     commandForEvent: (event, commandOptions) =>
-      `openclaw hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event ${event}${
+      `eve hooks relay --provider codex --relay-id relay-1 --generation generation-1 --event ${event}${
         event === "pre_tool_use" && inactiveEvents.has(event)
           ? " --pre-tool-use-unavailable noop"
           : ""

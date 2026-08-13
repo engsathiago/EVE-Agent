@@ -2,7 +2,7 @@
  * Cross-platform path and detection helpers for core/ modules.
  *
  * Provides home/data/media directory helpers, platform detection,
- * silk-wasm availability checks — all without importing `openclaw/plugin-sdk`.
+ * silk-wasm availability checks — all without importing `eve-agent/plugin-sdk`.
  * The temp-directory fallback is delegated to the PlatformAdapter.
  */
 
@@ -22,7 +22,7 @@ import { debugLog, debugWarn } from "./log.js";
  * 3. PlatformAdapter.getTempDir() as a last resort
  *
  * This is the *operating-system* home and intentionally ignores
- * `OPENCLAW_HOME`. QQ Bot still checks this tree for legacy state imports and
+ * `EVE_HOME`. QQ Bot still checks this tree for legacy state imports and
  * media-path remaps from older releases.
  */
 export function getHomeDir(): string {
@@ -44,23 +44,23 @@ export function getHomeDir(): string {
 }
 
 /**
- * Resolve the effective OpenClaw home directory.
+ * Resolve the effective EVE home directory.
  *
  * Mirrors the contract from core (`src/infra/home-dir.ts::resolveEffectiveHomeDir`)
- * so QQ Bot media roots live under the same tree the rest of OpenClaw treats as
+ * so QQ Bot media roots live under the same tree the rest of EVE treats as
  * `~`. The extension cannot import the core helper directly (it is a separate
- * package with `openclaw` as a peer dependency), so this re-implements the
+ * package with `eve` as a peer dependency), so this re-implements the
  * minimal contract:
  *
- * 1. `OPENCLAW_HOME` when set (with `~` / `~/...` expanded against the OS home).
+ * 1. `EVE_HOME` when set (with `~` / `~/...` expanded against the OS home).
  * 2. Otherwise fall back to {@link getHomeDir} so existing single-home
  *    deployments are unaffected.
  *
  * Empty / `"undefined"` / `"null"` strings are treated as unset to match how
  * core normalizes the variable.
  */
-function resolveOpenClawHome(): string {
-  const raw = process.env.OPENCLAW_HOME?.trim();
+function resolveEVEHome(): string {
+  const raw = process.env.EVE_HOME?.trim();
   if (!raw || raw === "undefined" || raw === "null") {
     return getHomeDir();
   }
@@ -77,16 +77,16 @@ function resolveOpenClawHome(): string {
 }
 
 /**
- * Return a legacy path under `~/.openclaw/qqbot` without creating it.
+ * Return a legacy path under `~/.eve/qqbot` without creating it.
  *
  * Current QQ Bot runtime state lives in plugin SQLite KV. This path remains for
  * legacy imports and media-path remaps from older releases.
  */
 export function getQQBotDataPath(...subPaths: string[]): string {
-  return path.join(getHomeDir(), ".openclaw", "qqbot", ...subPaths);
+  return path.join(getHomeDir(), ".eve", "qqbot", ...subPaths);
 }
 
-/** Return a path under `~/.openclaw/qqbot`, creating it on demand. */
+/** Return a path under `~/.eve/qqbot`, creating it on demand. */
 export function getQQBotDataDir(...subPaths: string[]): string {
   const dir = getQQBotDataPath(...subPaths);
   if (!fs.existsSync(dir)) {
@@ -96,19 +96,19 @@ export function getQQBotDataDir(...subPaths: string[]): string {
 }
 
 /**
- * Return a path under `<openclaw-home>/.openclaw/media/qqbot` without creating it.
+ * Return a path under `<eve-home>/.eve/media/qqbot` without creating it.
  *
- * Unlike `getQQBotDataPath`, this lives under OpenClaw's core media allowlist
+ * Unlike `getQQBotDataPath`, this lives under EVE's core media allowlist
  * so downloaded images and audio can be accessed by framework media tooling.
- * The base honors `OPENCLAW_HOME` (when set) so files written by agents into
- * the OpenClaw-managed media tree are reachable by this plugin even when
- * `HOME` and `OPENCLAW_HOME` differ (Docker, multi-user hosts). Fixes #83562.
+ * The base honors `EVE_HOME` (when set) so files written by agents into
+ * the EVE-managed media tree are reachable by this plugin even when
+ * `HOME` and `EVE_HOME` differ (Docker, multi-user hosts). Fixes #83562.
  */
 export function getQQBotMediaPath(...subPaths: string[]): string {
-  return path.join(resolveOpenClawHome(), ".openclaw", "media", "qqbot", ...subPaths);
+  return path.join(resolveEVEHome(), ".eve", "media", "qqbot", ...subPaths);
 }
 
-/** Return a path under `<openclaw-home>/.openclaw/media/qqbot`, creating it on demand. */
+/** Return a path under `<eve-home>/.eve/media/qqbot`, creating it on demand. */
 export function getQQBotMediaDir(...subPaths: string[]): string {
   const dir = getQQBotMediaPath(...subPaths);
   if (!fs.existsSync(dir)) {
@@ -118,18 +118,18 @@ export function getQQBotMediaDir(...subPaths: string[]): string {
 }
 
 /**
- * Return `<openclaw-home>/.openclaw/media`, OpenClaw's shared media root.
+ * Return `<eve-home>/.eve/media`, EVE's shared media root.
  *
  * This mirrors the directory that core's `buildMediaLocalRoots` exposes as an
- * allowlisted location (see `openclaw/src/media/local-roots.ts`). Using it as a
+ * allowlisted location (see `eve/src/media/local-roots.ts`). Using it as a
  * QQ Bot payload root lets the plugin trust framework-produced files that live
  * in sibling subdirectories such as `outbound/` (written by
  * `saveMediaBuffer(..., "outbound", ...)`) or `inbound/`, while still keeping
  * the check anchored to a single, well-known directory. Like
- * {@link getQQBotMediaPath}, the base honors `OPENCLAW_HOME`.
+ * {@link getQQBotMediaPath}, the base honors `EVE_HOME`.
  */
-function getOpenClawMediaDir(): string {
-  return path.join(resolveOpenClawHome(), ".openclaw", "media");
+function getEVEMediaDir(): string {
+  return path.join(resolveEVEHome(), ".eve", "media");
 }
 
 export function isWindows(): boolean {
@@ -238,16 +238,16 @@ export function resolveQQBotLocalMediaPath(p: string): string {
   }
 
   const osHomeDir = getHomeDir();
-  const openclawHomeDir = resolveOpenClawHome();
+  const eveHomeDir = resolveEVEHome();
   const mediaRoot = getQQBotMediaPath();
   const dataRoot = getQQBotDataPath();
-  // When OPENCLAW_HOME differs from HOME we have to consider workspace roots
+  // When EVE_HOME differs from HOME we have to consider workspace roots
   // under both trees: agents may be configured with `~`-relative paths (HOME)
-  // or with the OpenClaw-managed home tree. Deduplicate when they match.
+  // or with the EVE-managed home tree. Deduplicate when they match.
   const workspaceRoots = Array.from(
     new Set([
-      path.join(osHomeDir, ".openclaw", "workspace", "qqbot"),
-      path.join(openclawHomeDir, ".openclaw", "workspace", "qqbot"),
+      path.join(osHomeDir, ".eve", "workspace", "qqbot"),
+      path.join(eveHomeDir, ".eve", "workspace", "qqbot"),
     ]),
   );
   const candidateRoots = [
@@ -287,12 +287,12 @@ export function resolveQQBotPayloadLocalFilePath(p: string): string | null {
   }
 
   const canonicalCandidate = fs.realpathSync(resolvedCandidate);
-  // Trust both the QQ Bot-owned subdirectory and OpenClaw's shared `~/.openclaw/media`
+  // Trust both the QQ Bot-owned subdirectory and EVE's shared `~/.eve/media`
   // root. Core helpers like `saveMediaBuffer(..., "outbound", ...)` place framework
   // attachments under sibling directories (e.g. `media/outbound/`) that are already
   // part of the core media allowlist; we mirror that so auto-routed sends work
   // without leaving the plugin's trust boundary.
-  const allowedRoots = [getOpenClawMediaDir(), getQQBotMediaPath()];
+  const allowedRoots = [getEVEMediaDir(), getQQBotMediaPath()];
 
   for (const root of allowedRoots) {
     const resolvedRoot = path.resolve(root);

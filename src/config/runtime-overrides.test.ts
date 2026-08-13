@@ -7,7 +7,7 @@ import {
   setConfigOverride,
   unsetConfigOverride,
 } from "./runtime-overrides.js";
-import type { OpenClawConfig } from "./types.js";
+import type { EVEConfig } from "./types.js";
 
 describe("runtime overrides", () => {
   beforeEach(() => {
@@ -16,8 +16,8 @@ describe("runtime overrides", () => {
 
   it("sets and applies nested overrides", () => {
     const cfg = {
-      messages: { responsePrefix: "[openclaw]" },
-    } as OpenClawConfig;
+      messages: { responsePrefix: "[eve]" },
+    } as EVEConfig;
     setConfigOverride("messages.responsePrefix", "[debug]");
     const next = applyConfigOverrides(cfg);
     expect(next.messages?.responsePrefix).toBe("[debug]");
@@ -26,7 +26,7 @@ describe("runtime overrides", () => {
   it("merges object overrides without clobbering siblings", () => {
     const cfg = {
       channels: { whatsapp: { dmPolicy: "pairing", allowFrom: ["+1"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     setConfigOverride("channels.whatsapp.dmPolicy", "open");
     const next = applyConfigOverrides(cfg);
     expect(next.channels?.whatsapp?.dmPolicy).toBe("open");
@@ -51,7 +51,7 @@ describe("runtime overrides", () => {
   });
 
   it("blocks __proto__ keys inside override object values", () => {
-    const cfg = { commands: {} } as OpenClawConfig;
+    const cfg = { commands: {} } as EVEConfig;
     setConfigOverride("commands", JSON.parse('{"__proto__":{"bash":true}}'));
 
     const next = applyConfigOverrides(cfg);
@@ -60,7 +60,7 @@ describe("runtime overrides", () => {
   });
 
   it("blocks constructor/prototype keys inside override object values", () => {
-    const cfg = { commands: {} } as OpenClawConfig;
+    const cfg = { commands: {} } as EVEConfig;
     setConfigOverride("commands", JSON.parse('{"constructor":{"prototype":{"bash":true}}}'));
 
     const next = applyConfigOverrides(cfg);

@@ -1,7 +1,7 @@
 // Orchestrates reply agent execution, payload building, and delivery callbacks.
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   hasSessionAutoModelFallbackProvenance,
   hasConfiguredModelFallbacks,
@@ -21,7 +21,7 @@ import { resolveModelAuthMode } from "../../agents/model-auth.js";
 import { isCliProvider } from "../../agents/model-selection.js";
 import { deriveContextPromptTokens, hasNonzeroUsage, normalizeUsage } from "../../agents/usage.js";
 import { enqueueCommitmentExtraction } from "../../commitments/runtime.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import {
   resolveSessionPluginStatusLines,
   resolveSessionPluginTraceLines,
@@ -188,7 +188,7 @@ function buildSilentFallbackFailurePayload(params: {
 }
 
 function resolveSourceReplyPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionCtx: TemplateContext;
   sessionEntry?: SessionEntry;
   sessionKey: string;
@@ -215,7 +215,7 @@ function resolveSourceReplyPolicy(params: {
 }
 
 function resolveReplyRunDeliveryContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionCtx: TemplateContext;
   sessionEntry?: SessionEntry;
   sessionKey: string;
@@ -1062,7 +1062,7 @@ function buildPendingFinalDeliveryText(payloads: ReplyPayload[]): string {
 }
 
 function enqueueCommitmentExtractionForTurn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   commandBody: string;
   isHeartbeat: boolean;
   followupRun: FollowupRun;

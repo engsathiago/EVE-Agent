@@ -31,7 +31,7 @@ const mocks = vi.hoisted(() => ({
     }>
   >(async () => ({ messageId: "poll-1" })),
   getChannelPlugin: vi.fn(),
-  loadOpenClawPlugins: vi.fn(),
+  loadEVEPlugins: vi.fn(),
   applyPluginAutoEnable: vi.fn(),
   getRuntimeConfigSnapshot: vi.fn(),
   getRuntimeConfigSourceSnapshot: vi.fn(),
@@ -56,7 +56,7 @@ vi.mock("../../channels/plugins/message-action-dispatch.js", () => ({
   dispatchChannelMessageAction: mocks.dispatchChannelMessageAction,
 }));
 
-const TEST_AGENT_WORKSPACE = "/tmp/openclaw-test-workspace";
+const TEST_AGENT_WORKSPACE = "/tmp/eve-test-workspace";
 let sendHandlers: typeof import("./send.js").sendHandlers;
 
 function resolveAgentIdFromSessionKeyForTests(params: { sessionKey?: string }): string {
@@ -98,7 +98,7 @@ vi.mock("../../config/runtime-snapshot.js", async () => {
 });
 
 vi.mock("../../plugins/loader.js", () => ({
-  loadOpenClawPlugins: mocks.loadOpenClawPlugins,
+  loadEVEPlugins: mocks.loadEVEPlugins,
   resolveRuntimePluginRegistry: vi.fn(),
 }));
 
@@ -212,17 +212,17 @@ async function runMessageActionRequest(
   return { respond };
 }
 
-async function withTempOpenClawStateDir<T>(test: (stateDir: string) => Promise<T>): Promise<T> {
-  const previous = process.env.OPENCLAW_STATE_DIR;
+async function withTempEVEStateDir<T>(test: (stateDir: string) => Promise<T>): Promise<T> {
+  const previous = process.env.EVE_STATE_DIR;
   const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "gateway-send-state-"));
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  process.env.EVE_STATE_DIR = stateDir;
   try {
     return await test(stateDir);
   } finally {
     if (previous === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = previous;
+      process.env.EVE_STATE_DIR = previous;
     }
     await fs.rm(stateDir, { recursive: true, force: true });
   }
@@ -814,7 +814,7 @@ describe("gateway send mirroring", () => {
   it("materializes buffer-only gateway sends before outbound delivery", async () => {
     mockDeliverySuccess("m-buffer-media");
 
-    await withTempOpenClawStateDir(async () => {
+    await withTempEVEStateDir(async () => {
       const { respond } = await runSend({
         to: "+15551234567",
         mediaUrl: "buffer://message-send/attachment",
@@ -845,14 +845,14 @@ describe("gateway send mirroring", () => {
     const { respond } = await runSend({
       to: "channel:C1",
       message: "voice note",
-      mediaUrl: "file:///tmp/openclaw-voice.ogg",
+      mediaUrl: "file:///tmp/eve-voice.ogg",
       asVoice: true,
       channel: "slack",
       idempotencyKey: "idem-voice",
     });
 
     expect(deliveryCall()?.payloads?.[0]?.text).toBe("voice note");
-    expect(deliveryCall()?.payloads?.[0]?.mediaUrl).toBe("file:///tmp/openclaw-voice.ogg");
+    expect(deliveryCall()?.payloads?.[0]?.mediaUrl).toBe("file:///tmp/eve-voice.ogg");
     expect(deliveryCall()?.payloads?.[0]?.audioAsVoice).toBe(true);
     const response = firstRespondCall(respond);
     expect(response?.[0]).toBe(true);
@@ -2481,7 +2481,7 @@ describe("gateway send mirroring", () => {
       "send-test-message-action-buffer-materialize",
     );
 
-    await withTempOpenClawStateDir(async () => {
+    await withTempEVEStateDir(async () => {
       const { respond } = await runMessageActionRequest(
         {
           channel: "telegram",

@@ -48,7 +48,7 @@ describe("persisted auth profile boundary", () => {
           refresh: "refresh-token",
           expires: "later",
           oauthRef: {
-            source: "openclaw-credentials",
+            source: "eve-credentials",
             provider: "openai",
             id: "not-a-secret-id",
           },

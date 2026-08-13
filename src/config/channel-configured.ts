@@ -5,11 +5,11 @@ import {
   hasMeaningfulChannelConfigShallow,
   resolveChannelConfigRecord,
 } from "./channel-configured-shared.js";
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { EVEConfig } from "./types.eve.js";
 
 /** Resolves whether a channel has enough config, env, or plugin state to be considered setup. */
 export function isChannelConfigured(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   channelId: string,
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {

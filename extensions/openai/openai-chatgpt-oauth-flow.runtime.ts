@@ -9,8 +9,8 @@ import {
   parseOAuthAuthorizationInput,
   resolveOAuthTokenExpiresAt,
   resolveOAuthTokenLifetimeMs,
-} from "openclaw/plugin-sdk/provider-oauth-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/provider-oauth-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { resolveCodexAuthIdentity } from "./openai-chatgpt-auth-identity.js";
 import {
   createOAuthLoginCancelledError,
@@ -74,7 +74,7 @@ function loadNodeOAuthRuntime(): Promise<NodeOAuthRuntime> {
 }
 
 function resolveCallbackHost(env: NodeJS.ProcessEnv = process.env): string {
-  const host = env.OPENCLAW_OAUTH_CALLBACK_HOST?.trim() || DEFAULT_CALLBACK_HOST;
+  const host = env.EVE_OAUTH_CALLBACK_HOST?.trim() || DEFAULT_CALLBACK_HOST;
   if (!LOOPBACK_CALLBACK_HOSTS.has(host)) {
     throw new Error("OpenAI Codex OAuth callback host must be localhost, 127.0.0.1, or ::1");
   }
@@ -296,7 +296,7 @@ async function refreshAccessToken(
 }
 
 async function createAuthorizationFlow(
-  originator = "openclaw",
+  originator = "eve",
 ): Promise<{ verifier: string; redirectUri: string; state: string; url: string }> {
   const [{ verifier, challenge }, runtime] = await Promise.all([
     generatePKCE(),
@@ -415,7 +415,7 @@ function getAccountId(accessToken: string): string | null {
  * @param options.onManualCodeInput - Optional promise that resolves with user-pasted code.
  *                                    Races with browser callback - whichever completes first wins.
  *                                    Useful for showing paste input immediately alongside browser flow.
- * @param options.originator - OAuth originator parameter (defaults to "openclaw")
+ * @param options.originator - OAuth originator parameter (defaults to "eve")
  */
 export async function loginOpenAICodex(options: {
   onAuth: (info: { url: string; instructions?: string }) => void;

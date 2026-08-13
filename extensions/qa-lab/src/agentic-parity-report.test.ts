@@ -44,8 +44,8 @@ function makeRuntimeParitySummary(): QaRuntimeParitySuiteSummary {
           scenarioId: "approval-turn-tool-followthrough",
           drift: "none",
           cells: {
-            openclaw: {
-              runtime: "openclaw",
+            eve: {
+              runtime: "eve",
               transcriptBytes: '{"role":"assistant"}\n',
               toolCalls: [{ tool: "read_file", argsHash: "a", resultHash: "r" }],
               finalText: "done",
@@ -74,8 +74,8 @@ function makeRuntimeParitySummary(): QaRuntimeParitySuiteSummary {
           drift: "tool-call-shape",
           driftDetails: "tool call 1 differs",
           cells: {
-            openclaw: {
-              runtime: "openclaw",
+            eve: {
+              runtime: "eve",
               transcriptBytes: '{"role":"assistant"}\n',
               toolCalls: [{ tool: "read_file", argsHash: "a", resultHash: "r" }],
               finalText: "done",
@@ -104,7 +104,7 @@ function makeRuntimeParitySummary(): QaRuntimeParitySuiteSummary {
     run: {
       providerMode: "mock-openai",
       primaryModel: "openai/gpt-5.5",
-      runtimePair: ["openclaw", "codex"],
+      runtimePair: ["eve", "codex"],
     },
   };
 }
@@ -191,8 +191,8 @@ describe("qa agentic parity report", () => {
             scenarioId: "approval-turn-tool-followthrough",
             drift: "none",
             cells: {
-              openclaw: {
-                runtime: "openclaw",
+              eve: {
+                runtime: "eve",
                 transcriptBytes: '{"role":"assistant"}\n',
                 toolCalls: [],
                 finalText: "done",
@@ -850,7 +850,7 @@ status=done`,
     const report = renderQaAgenticParityMarkdownReport(comparison);
 
     expect(report).toContain(
-      "# OpenClaw Agentic Parity Report — openai/gpt-5.5 vs anthropic/claude-opus-4-8",
+      "# EVE Agentic Parity Report — openai/gpt-5.5 vs anthropic/claude-opus-4-8",
     );
     expect(report).toContain("| Completion rate | 100.0% | 100.0% |");
     expect(report).toContain("### Approval turn tool followthrough");
@@ -872,7 +872,7 @@ status=done`,
     });
     const report = renderQaAgenticParityMarkdownReport(comparison);
     expect(report).toContain(
-      "# OpenClaw Agentic Parity Report — openai/gpt-5.5-alt vs openai/gpt-5.5",
+      "# EVE Agentic Parity Report — openai/gpt-5.5-alt vs openai/gpt-5.5",
     );
   });
 
@@ -882,7 +882,7 @@ status=done`,
       comparedAt: "2026-05-10T00:00:00.000Z",
     });
 
-    expect(report.runtimePair).toEqual(["openclaw", "codex"]);
+    expect(report.runtimePair).toEqual(["eve", "codex"]);
     expect(report.pass).toBe(true);
     expect(report.driftCounts.none).toBe(1);
     expect(report.driftCounts["tool-call-shape"]).toBe(1);
@@ -938,7 +938,7 @@ status=done`,
     if (!scenario?.runtimeParity) {
       throw new Error("runtime parity fixture missing");
     }
-    scenario.runtimeParity.cells.openclaw.usage = {
+    scenario.runtimeParity.cells.eve.usage = {
       inputTokens: 0,
       outputTokens: 0,
       totalTokens: 0,
@@ -957,7 +957,7 @@ status=done`,
     expect(report.pass).toBe(false);
     expect(report.failedScenarios).toBe(1);
     expect(report.failures).toContain(
-      "Approval turn tool followthrough missing live assistant-message usage (openclaw=0, codex=0).",
+      "Approval turn tool followthrough missing live assistant-message usage (eve=0, codex=0).",
     );
     expect(report.scenarios[0]?.status).toBe("fail");
   });
@@ -973,7 +973,7 @@ status=done`,
         },
         run: {
           providerMode: "live-frontier",
-          runtimePair: ["openclaw", "codex"],
+          runtimePair: ["eve", "codex"],
         },
       },
       comparedAt: "2026-05-10T00:00:00.000Z",
@@ -991,7 +991,7 @@ status=done`,
       }),
     );
 
-    expect(report).toContain("# OpenClaw Runtime Parity Report — openclaw vs codex");
+    expect(report).toContain("# EVE Runtime Parity Report — eve vs codex");
     expect(report).toContain("| Tool-call-shape drift | 1 |");
     expect(report).toContain("### Compaction retry after mutating tool");
     expect(report).toContain("- drift: tool-call-shape");

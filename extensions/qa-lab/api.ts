@@ -52,7 +52,7 @@ export {
   renderQaMarkdownReport,
   type QaReportCheck,
   type QaReportScenario,
-} from "openclaw/plugin-sdk/qa-runtime";
+} from "eve-agent/plugin-sdk/qa-runtime";
 export {
   type QaScenarioDefinition,
   type QaScenarioResult,

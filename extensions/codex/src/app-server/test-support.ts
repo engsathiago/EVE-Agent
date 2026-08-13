@@ -4,7 +4,7 @@
  */
 import { EventEmitter } from "node:events";
 import { PassThrough, Writable } from "node:stream";
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { vi } from "vitest";
 import { CodexAppServerClient } from "./client.js";
 

@@ -3,17 +3,17 @@ import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-harness-runtime";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   initializeGlobalHookRunner,
   resetGlobalHookRunner,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { createMockPluginRegistry } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/hook-runtime";
+import { createMockPluginRegistry } from "eve-agent/plugin-sdk/plugin-test-runtime";
 import {
   castAgentMessage,
   makeAgentAssistantMessage,
   makeAgentUserMessage,
-} from "openclaw/plugin-sdk/test-fixtures";
+} from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   attachCopilotMirrorIdentity,
@@ -38,7 +38,7 @@ afterEach(async () => {
 });
 
 async function createTempSessionFile() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-copilot-mirror-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-copilot-mirror-"));
   tempDirs.push(dir);
   return path.join(dir, "session.jsonl");
 }
@@ -60,7 +60,7 @@ function parseJsonLines<T>(raw: string): T[] {
 }
 
 describe("mirrorCopilotTranscript", () => {
-  it("mirrors user, assistant, and tool result messages into the OpenClaw transcript", async () => {
+  it("mirrors user, assistant, and tool result messages into the EVE transcript", async () => {
     const sessionFile = await createTempSessionFile();
     const userMessage = makeAgentUserMessage({
       content: [{ type: "text", text: "hello" }],
@@ -108,7 +108,7 @@ describe("mirrorCopilotTranscript", () => {
   });
 
   it("creates the transcript directory on first mirror", async () => {
-    const root = await makeRoot("openclaw-copilot-mirror-missing-dir-");
+    const root = await makeRoot("eve-copilot-mirror-missing-dir-");
     const sessionFile = path.join(root, "nested", "sessions", "session.jsonl");
 
     await mirrorCopilotTranscript({
@@ -264,12 +264,12 @@ describe("mirrorCopilotTranscript", () => {
     await mirrorCopilotTranscript({
       sessionFile,
       messages: [tagged],
-      idempotencyScope: "copilot:openclaw-session-1",
+      idempotencyScope: "copilot:eve-session-1",
     });
 
     const raw = await fs.readFile(sessionFile, "utf8");
     expect(raw).toContain(
-      '"idempotencyKey":"copilot:openclaw-session-1:sdk-session-1:assistant:0"',
+      '"idempotencyKey":"copilot:eve-session-1:sdk-session-1:assistant:0"',
     );
     expect(raw).not.toContain(expectedFingerprint(baseMessage));
   });

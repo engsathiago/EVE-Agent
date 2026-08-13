@@ -1,5 +1,5 @@
 ---
-summary: "Adds Kilocode model provider support to OpenClaw."
+summary: "Adds Kilocode model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the kilocode plugin
 title: "Kilocode plugin"
@@ -7,12 +7,12 @@ title: "Kilocode plugin"
 
 # Kilocode plugin
 
-Adds Kilocode model provider support to OpenClaw.
+Adds Kilocode model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/kilocode-provider`
-- Install route: npm; ClawHub: `clawhub:@openclaw/kilocode-provider`
+- Package: `@eve/kilocode-provider`
+- Install route: npm; ClawHub: `clawhub:@eve/kilocode-provider`
 
 ## Surface
 

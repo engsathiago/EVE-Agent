@@ -1,6 +1,6 @@
 /** Collects core config secret refs during runtime preparation. */
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { MediaUnderstandingModelConfig } from "../config/types.tools.js";
 import {
   resolveConfiguredMediaEntryCapabilities,
@@ -109,7 +109,7 @@ function collectSkillAssignments(params: {
 }
 
 function collectAgentMemorySearchAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -194,7 +194,7 @@ function collectAgentMemorySearchAssignments(params: {
 }
 
 function collectTalkAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -254,7 +254,7 @@ function collectTalkProviderApiKeyAssignments(params: {
 }
 
 function collectGatewayAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -414,7 +414,7 @@ function collectProviderRequestAssignments(params: {
 }
 
 function collectMediaRequestAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -515,7 +515,7 @@ function collectMediaRequestAssignments(params: {
 }
 
 function collectMessagesTtsAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -532,7 +532,7 @@ function collectMessagesTtsAssignments(params: {
 }
 
 function collectAgentTtsAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -555,7 +555,7 @@ function collectAgentTtsAssignments(params: {
 }
 
 function collectCronAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -576,7 +576,7 @@ function collectCronAssignments(params: {
 }
 
 function collectSandboxSshAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {
@@ -664,7 +664,7 @@ function collectSandboxSshAssignments(params: {
 /** Collects SecretRef assignments from core-owned config surfaces. */
 /** Collects SecretRef assignments from core non-plugin config surfaces. */
 export function collectCoreConfigAssignments(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   defaults: SecretDefaults | undefined;
   context: ResolverContext;
 }): void {

@@ -1,6 +1,6 @@
 /** Prepares secrets runtime snapshots from config, auth stores, plugins, and env. */
 import { isDeepStrictEqual } from "node:util";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope-config.js";
 import {
   clearRuntimeAuthProfileStoreSnapshots,
@@ -8,7 +8,7 @@ import {
   loadAuthProfileStoreWithoutExternalProfiles,
 } from "../agents/auth-profiles.js";
 import type { AuthProfileStore } from "../agents/auth-profiles/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.js";
 import type { PluginOrigin } from "../plugins/plugin-origin.types.js";
@@ -55,7 +55,7 @@ function loadRuntimePrepareHelpers() {
 }
 
 async function resolveLoadablePluginOrigins(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   env: NodeJS.ProcessEnv;
   pluginMetadataSnapshot?: Pick<PluginMetadataSnapshot, "plugins">;
 }): Promise<ReadonlyMap<string, PluginOrigin>> {
@@ -75,7 +75,7 @@ async function resolveLoadablePluginOrigins(params: {
   return listPluginOriginsFromMetadataSnapshot(snapshot);
 }
 
-function hasConfiguredPluginEntries(config: OpenClawConfig): boolean {
+function hasConfiguredPluginEntries(config: EVEConfig): boolean {
   const entries = config.plugins?.entries;
   return (
     Boolean(entries) &&
@@ -85,7 +85,7 @@ function hasConfiguredPluginEntries(config: OpenClawConfig): boolean {
   );
 }
 
-function hasConfiguredChannelEntries(config: OpenClawConfig): boolean {
+function hasConfiguredChannelEntries(config: EVEConfig): boolean {
   const channels = config.channels;
   return (
     Boolean(channels) &&
@@ -95,7 +95,7 @@ function hasConfiguredChannelEntries(config: OpenClawConfig): boolean {
   );
 }
 
-function hasConfiguredPluginIntegrationSecretProviders(config: OpenClawConfig): boolean {
+function hasConfiguredPluginIntegrationSecretProviders(config: EVEConfig): boolean {
   const providers = config.secrets?.providers;
   if (!providers || typeof providers !== "object" || Array.isArray(providers)) {
     return false;
@@ -108,7 +108,7 @@ function hasConfiguredPluginIntegrationSecretProviders(config: OpenClawConfig): 
   );
 }
 
-function shouldLoadPluginMetadataForSecrets(config: OpenClawConfig): boolean {
+function shouldLoadPluginMetadataForSecrets(config: EVEConfig): boolean {
   return (
     hasConfiguredPluginEntries(config) ||
     hasConfiguredChannelEntries(config) ||
@@ -118,7 +118,7 @@ function shouldLoadPluginMetadataForSecrets(config: OpenClawConfig): boolean {
 
 /** Prepares a secrets runtime snapshot and records refresh context for later activation. */
 export async function prepareSecretsRuntimeSnapshot(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   agentDirs?: string[];
   includeAuthStoreRefs?: boolean;
@@ -266,7 +266,7 @@ export function activateSecretsRuntimeSnapshot(snapshot: PreparedSecretsRuntimeS
     } satisfies SecretsRuntimeRefreshContext);
   const coercePreflightSnapshot = (
     value: unknown,
-    sourceConfig: OpenClawConfig,
+    sourceConfig: EVEConfig,
   ): PreparedSecretsRuntimeSnapshot | null => {
     if (!value || typeof value !== "object") {
       return null;

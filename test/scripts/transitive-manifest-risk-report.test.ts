@@ -143,7 +143,7 @@ describe("transitive-manifest-risk-report", () => {
   it("documents JSON completeness and renders grouped Markdown summaries", async () => {
     const report = await createTransitiveManifestRiskReport({
       packageVersions: [
-        { packageName: "openclaw/plugin-sdk/llm", version: "0.74.0" },
+        { packageName: "eve-agent/plugin-sdk/llm", version: "0.74.0" },
         { packageName: "aaa-package", version: "1.0.0" },
         { packageName: "recent-package", version: "1.0.0" },
       ],
@@ -154,7 +154,7 @@ describe("transitive-manifest-risk-report", () => {
         publishedAt:
           packageName === "recent-package" ? "2026-05-11T23:00:00Z" : "2026-04-01T00:00:00Z",
         manifest:
-          packageName === "openclaw/plugin-sdk/llm"
+          packageName === "eve-agent/plugin-sdk/llm"
             ? {
                 dependencies: {
                   "@mistralai/mistralai": "^2.2.0",
@@ -189,7 +189,7 @@ describe("transitive-manifest-risk-report", () => {
     expect(markdown).toContain("## Complete Evidence");
     expect(markdown).toContain("The complete reported signal list is available in the JSON report");
     expect(markdown).toContain("## Published Package Manifests With Risk Findings");
-    expect(markdown).toContain("`openclaw/plugin-sdk/llm@0.74.0`: 1 manifest finding");
+    expect(markdown).toContain("`eve-agent/plugin-sdk/llm@0.74.0`: 1 manifest finding");
     expect(markdown).toContain("`aaa-package@1.0.0`: 1 manifest finding");
     expect(markdown).toContain("## Floating Dependency Targets");
     expect(markdown).toContain("`@mistralai/mistralai`: 1 declarations");

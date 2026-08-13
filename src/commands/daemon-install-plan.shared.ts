@@ -58,13 +58,13 @@ export function resolveDaemonNodeBinDir(nodePath?: string): string[] | undefined
   return [path.dirname(trimmed)];
 }
 
-function isOpenClawCommandBasename(basename: string, platform: NodeJS.Platform): boolean {
-  if (basename === "openclaw") {
+function isEVECommandBasename(basename: string, platform: NodeJS.Platform): boolean {
+  if (basename === "eve") {
     return true;
   }
   if (platform === "win32") {
     return (
-      basename === "openclaw.cmd" || basename === "openclaw.ps1" || basename === "openclaw.exe"
+      basename === "eve.cmd" || basename === "eve.ps1" || basename === "eve.exe"
     );
   }
   return false;
@@ -91,8 +91,8 @@ function addUniquePathDir(dirs: string[], dir: string | undefined): void {
   dirs.push(dir);
 }
 
-/** Resolve the OpenClaw CLI binary directory from argv/PATH for daemon PATH. */
-export function resolveDaemonOpenClawBinDir(
+/** Resolve the EVE CLI binary directory from argv/PATH for daemon PATH. */
+export function resolveDaemonEVEBinDir(
   params: {
     argv?: string[];
     env?: Record<string, string | undefined>;
@@ -112,7 +112,7 @@ export function resolveDaemonOpenClawBinDir(
   if (
     argv1 &&
     path.isAbsolute(argv1) &&
-    isOpenClawCommandBasename(path.basename(argv1), platform)
+    isEVECommandBasename(path.basename(argv1), platform)
   ) {
     addUniquePathDir(dirs, path.dirname(argv1));
   }
@@ -125,7 +125,7 @@ export function resolveDaemonOpenClawBinDir(
     if (!path.isAbsolute(segment)) {
       continue;
     }
-    const candidate = path.join(segment, platform === "win32" ? "openclaw.cmd" : "openclaw");
+    const candidate = path.join(segment, platform === "win32" ? "eve.cmd" : "eve");
     if (!existsSync(candidate)) {
       continue;
     }
@@ -139,7 +139,7 @@ export function resolveDaemonOpenClawBinDir(
   return dirs.length > 0 ? dirs : undefined;
 }
 
-/** Merge Node and OpenClaw binary directories for the daemon service PATH. */
+/** Merge Node and EVE binary directories for the daemon service PATH. */
 export function resolveDaemonServicePathDirs(params: {
   nodePath?: string;
   argv?: string[];
@@ -150,7 +150,7 @@ export function resolveDaemonServicePathDirs(params: {
   for (const dir of resolveDaemonNodeBinDir(params.nodePath) ?? []) {
     addUniquePathDir(dirs, dir);
   }
-  for (const dir of resolveDaemonOpenClawBinDir(params) ?? []) {
+  for (const dir of resolveDaemonEVEBinDir(params) ?? []) {
     addUniquePathDir(dirs, dir);
   }
   return dirs.length > 0 ? dirs : undefined;

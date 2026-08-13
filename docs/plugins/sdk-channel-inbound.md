@@ -13,9 +13,9 @@ Channel plugins should model receive paths with inbound and message nouns:
 platform event -> inbound facts/context -> agent reply -> message delivery
 ```
 
-Use `openclaw/plugin-sdk/channel-inbound` for inbound event normalization,
+Use `eve-agent/plugin-sdk/channel-inbound` for inbound event normalization,
 formatting, roots, and orchestration. Use
-`openclaw/plugin-sdk/channel-outbound` for native
+`eve-agent/plugin-sdk/channel-outbound` for native
 send, receipt, durable delivery, and live preview behavior.
 
 ## Core Helpers
@@ -25,7 +25,7 @@ import {
   buildChannelInboundEventContext,
   runChannelInboundEvent,
   dispatchChannelInboundReply,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
 ```
 
 - `buildChannelInboundEventContext(...)`: project normalized channel facts into

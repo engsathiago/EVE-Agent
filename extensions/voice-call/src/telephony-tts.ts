@@ -1,11 +1,11 @@
 // Voice Call plugin module implements telephony tts behavior.
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 import {
   parseTtsDirectives,
   type SpeechModelOverridePolicy,
   type SpeechProviderConfig,
   type TtsDirectiveOverrides,
-} from "openclaw/plugin-sdk/speech";
+} from "eve-agent/plugin-sdk/speech";
 import type { VoiceCallTtsConfig } from "./config.js";
 import type { CoreConfig } from "./core-bridge.js";
 import { deepMergeDefined } from "./deep-merge.js";

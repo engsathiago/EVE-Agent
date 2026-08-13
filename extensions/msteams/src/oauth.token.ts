@@ -1,7 +1,7 @@
 // Msteams plugin module implements oauth.token behavior.
-import { resolveExpiresAtMsFromDurationSeconds } from "openclaw/plugin-sdk/number-runtime";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { resolveExpiresAtMsFromDurationSeconds } from "eve-agent/plugin-sdk/number-runtime";
+import { readProviderJsonResponse } from "eve-agent/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { createMSTeamsHttpError } from "./http-error.js";
 import {
   MSTEAMS_DEFAULT_DELEGATED_SCOPES,

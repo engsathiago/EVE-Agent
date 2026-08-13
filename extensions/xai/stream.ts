@@ -1,12 +1,12 @@
 // Xai plugin module implements stream behavior.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import { streamSimple } from "openclaw/plugin-sdk/llm";
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
+import { streamSimple } from "eve-agent/plugin-sdk/llm";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   composeProviderStreamWrappers,
   createPlainTextToolCallCompatWrapper,
   createToolStreamWrapper,
-} from "openclaw/plugin-sdk/provider-stream-shared";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
 
 const XAI_FAST_MODEL_IDS = new Map<string, string>([
   ["grok-3", "grok-3-fast"],

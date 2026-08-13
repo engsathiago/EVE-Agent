@@ -1,13 +1,13 @@
 // Outbound target helpers resolve direct send targets, heartbeat destinations,
 // sender context, and session-route aware heartbeat refinements.
-import { mapAllowFromEntries } from "openclaw/plugin-sdk/channel-config-helpers";
+import { mapAllowFromEntries } from "eve-agent/plugin-sdk/channel-config-helpers";
 import { normalizeChatType, type ChatType } from "../../channels/chat-type.js";
 import type { ChannelOutboundTargetMode } from "../../channels/plugins/types.core.js";
 import type { ChannelPlugin } from "../../channels/plugins/types.plugin.js";
 import type { ChannelId } from "../../channels/plugins/types.public.js";
 import type { SessionEntry } from "../../config/sessions.js";
 import type { AgentDefaultsConfig } from "../../config/types.agent-defaults.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { normalizeAccountId } from "../../routing/session-key.js";
 import {
   deliveryContextFromSession,
@@ -68,7 +68,7 @@ export function resolveOutboundTarget(params: {
   to?: string;
   allowFrom?: string[];
   allowBootstrap?: boolean;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   accountId?: string | null;
   mode?: ChannelOutboundTargetMode;
 }): OutboundTargetResolution {
@@ -96,7 +96,7 @@ export function resolveOutboundTarget(params: {
 
 /** Resolves the heartbeat delivery destination from config, session state, and turn source. */
 export function resolveHeartbeatDeliveryTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   entry?: SessionEntry;
   heartbeat?: AgentDefaultsConfig["heartbeat"];
   turnSource?: DeliveryContext;
@@ -321,7 +321,7 @@ function buildNoHeartbeatDeliveryTarget(params: {
 
 /** Resolves heartbeat delivery and lets plugins refine the outbound session route. */
 export async function resolveHeartbeatDeliveryTargetWithSessionRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   entry?: SessionEntry;
   heartbeat?: AgentDefaultsConfig["heartbeat"];
@@ -453,7 +453,7 @@ function resolveHeartbeatDeliveryChatType(params: {
 }
 
 function shouldReuseHeartbeatRouteThreadId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: HeartbeatTarget;
   heartbeat?: AgentDefaultsConfig["heartbeat"];
   turnSource?: DeliveryContext;
@@ -514,7 +514,7 @@ function resolveHeartbeatSenderId(params: {
 
 /** Resolves the sender id/allow-list context used for heartbeat sends. */
 export function resolveHeartbeatSenderContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   entry?: SessionEntry;
   delivery: OutboundTarget;
 }): HeartbeatSenderContext {

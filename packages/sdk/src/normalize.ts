@@ -1,5 +1,5 @@
-// OpenClaw SDK helper module supports normalize behavior.
-import type { GatewayEvent, JsonObject, OpenClawEvent, OpenClawEventType } from "./types.js";
+// EVE SDK helper module supports normalize behavior.
+import type { GatewayEvent, JsonObject, EVEEvent, EVEEventType } from "./types.js";
 
 // Normalize raw Gateway events into stable SDK event types and common metadata.
 function asRecord(value: unknown): JsonObject {
@@ -48,7 +48,7 @@ function isLifecycleCancellation(data: JsonObject): boolean {
   );
 }
 
-function normalizeLifecycleEndEventType(data: JsonObject): OpenClawEventType {
+function normalizeLifecycleEndEventType(data: JsonObject): EVEEventType {
   const status = readLowerString(data.status);
   const stopReason = readLowerString(data.stopReason);
   const statusAlreadyTimeoutAttributed =
@@ -74,7 +74,7 @@ function normalizeLifecycleEndEventType(data: JsonObject): OpenClawEventType {
   return "run.completed";
 }
 
-function normalizeAgentEventType(payload: JsonObject): OpenClawEventType {
+function normalizeAgentEventType(payload: JsonObject): EVEEventType {
   const stream = readString(payload.stream);
   const data = asRecord(payload.data);
   const phase = readString(data.phase);
@@ -132,7 +132,7 @@ function normalizeAgentEventType(payload: JsonObject): OpenClawEventType {
   return "raw";
 }
 
-function normalizeNamedEventType(event: GatewayEvent): OpenClawEventType {
+function normalizeNamedEventType(event: GatewayEvent): EVEEventType {
   const payload = asRecord(event.payload);
   switch (event.event) {
     case "agent":
@@ -166,7 +166,7 @@ function normalizeNamedEventType(event: GatewayEvent): OpenClawEventType {
 }
 
 /** Normalize a raw Gateway event into the public SDK event shape. */
-export function normalizeGatewayEvent(event: GatewayEvent): OpenClawEvent {
+export function normalizeGatewayEvent(event: GatewayEvent): EVEEvent {
   const payload = asRecord(event.payload);
   const runId = readString(payload.runId);
   const sessionId = readString(payload.sessionId);

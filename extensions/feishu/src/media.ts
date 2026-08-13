@@ -3,17 +3,17 @@ import fs from "node:fs";
 import path from "node:path";
 import { Readable } from "node:stream";
 import type * as Lark from "@larksuiteoapi/node-sdk";
-import type { MessageReceipt } from "openclaw/plugin-sdk/channel-outbound";
-import { mediaKindFromMime } from "openclaw/plugin-sdk/media-mime";
-import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "openclaw/plugin-sdk/media-runtime";
-import { saveMediaBuffer, saveMediaStream, type SavedMedia } from "openclaw/plugin-sdk/media-store";
-import { readRegularFile, writeExternalFileWithinRoot } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { MessageReceipt } from "eve-agent/plugin-sdk/channel-outbound";
+import { mediaKindFromMime } from "eve-agent/plugin-sdk/media-mime";
+import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "eve-agent/plugin-sdk/media-runtime";
+import { saveMediaBuffer, saveMediaStream, type SavedMedia } from "eve-agent/plugin-sdk/media-store";
+import { readRegularFile, writeExternalFileWithinRoot } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
-  resolvePreferredOpenClawTmpDir,
+  resolvePreferredEVETmpDir,
   withTempWorkspace,
   withTempDownloadPath,
-} from "openclaw/plugin-sdk/temp-path";
+} from "eve-agent/plugin-sdk/temp-path";
 import type { ClawdbotConfig } from "../runtime-api.js";
 import { resolveFeishuRuntimeAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
@@ -337,7 +337,7 @@ async function saveMessageResourceWithType(params: {
   const meta = extractFeishuDownloadMetadata(response);
   const saved = await saveFeishuResponseMedia({
     response,
-    tmpDirPrefix: "openclaw-feishu-resource-",
+    tmpDirPrefix: "eve-feishu-resource-",
     errorPrefix: "Feishu message resource download failed",
     maxBytes: params.maxBytes,
     contentType: meta.contentType,
@@ -751,7 +751,7 @@ async function transcodeToFeishuVoiceOpus(params: {
   contentType?: string;
 }): Promise<{ buffer: Buffer; fileName: string; contentType: string }> {
   return await withTempWorkspace(
-    { rootDir: resolvePreferredOpenClawTmpDir(), prefix: "feishu-voice-" },
+    { rootDir: resolvePreferredEVETmpDir(), prefix: "feishu-voice-" },
     async (workspace) => {
       const ext = normalizeLowercaseStringOrEmpty(path.extname(params.fileName));
       const inputExt = ext && ext.length <= 12 ? ext : ".audio";

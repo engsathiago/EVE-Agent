@@ -1,5 +1,5 @@
 // Qqbot tests cover doctor migration behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import { legacyConfigRules, normalizeCompatibilityConfig } from "./doctor-contract.js";
 
@@ -38,7 +38,7 @@ describe("qqbot doctor contract", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = normalizeCompatibilityConfig({ cfg });
 
@@ -63,7 +63,7 @@ describe("qqbot doctor contract", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = normalizeCompatibilityConfig({ cfg });
 
@@ -84,7 +84,7 @@ describe("qqbot doctor contract", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = normalizeCompatibilityConfig({ cfg });
 

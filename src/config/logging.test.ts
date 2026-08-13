@@ -6,7 +6,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   createConfigIO: vi.fn().mockReturnValue({
-    configPath: "/tmp/openclaw-dev/openclaw.json",
+    configPath: "/tmp/eve-dev/eve.json",
   }),
 }));
 
@@ -29,18 +29,18 @@ beforeEach(() => {
 
 describe("config logging", () => {
   it("formats the live config path when no explicit path is provided", () => {
-    expect(formatConfigPath()).toBe("/tmp/openclaw-dev/openclaw.json");
+    expect(formatConfigPath()).toBe("/tmp/eve-dev/eve.json");
   });
 
   it("logs the live config path when no explicit path is provided", () => {
     const runtime = { log: vi.fn() };
     logConfigUpdated(runtime as never);
-    expect(runtime.log).toHaveBeenCalledWith("Updated config: /tmp/openclaw-dev/openclaw.json");
+    expect(runtime.log).toHaveBeenCalledWith("Updated config: /tmp/eve-dev/eve.json");
   });
 
   it("formats backup as an indented detail when present", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-config-log-"));
-    const configPath = path.join(dir, "openclaw.json");
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-config-log-"));
+    const configPath = path.join(dir, "eve.json");
     const backupPath = `${configPath}.bak`;
     fs.writeFileSync(backupPath, "{}", "utf8");
 

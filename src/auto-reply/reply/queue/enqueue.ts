@@ -1,5 +1,5 @@
 // Enqueues follow-up reply runs and schedules queue drains.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { normalizeChatType } from "../../../channels/chat-type.js";
 import { resolveGlobalDedupeCache } from "../../../infra/dedupe.js";
 import { channelRouteDedupeKey } from "../../../plugin-sdk/channel-route.js";
@@ -25,7 +25,7 @@ import {
  * Keep queued message-id dedupe shared across bundled chunks so redeliveries
  * are rejected no matter which chunk receives the enqueue call.
  */
-const RECENT_QUEUE_MESSAGE_IDS_KEY = Symbol.for("openclaw.recentQueueMessageIds");
+const RECENT_QUEUE_MESSAGE_IDS_KEY = Symbol.for("eve.recentQueueMessageIds");
 
 const RECENT_QUEUE_MESSAGE_IDS = resolveGlobalDedupeCache(RECENT_QUEUE_MESSAGE_IDS_KEY, {
   ttlMs: 5 * 60 * 1000,

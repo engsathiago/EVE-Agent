@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/irc",
+  "name": "@eve/irc",
   "version": "2026.6.8",
-  "description": "OpenClaw IRC channel plugin",
+  "description": "EVE IRC channel plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],

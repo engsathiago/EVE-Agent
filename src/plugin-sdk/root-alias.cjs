@@ -9,42 +9,42 @@ let monolithicSdk = null;
 let diagnosticEventsModule = null;
 const moduleLoaders = new Map();
 const pluginSdkSubpathsCache = new Map();
-const pluginSdkPackageNames = ["openclaw/plugin-sdk", "@openclaw/plugin-sdk"];
+const pluginSdkPackageNames = ["eve-agent/plugin-sdk", "@eve/plugin-sdk"];
 const pluginSdkSourceExtensions = [".ts", ".mts", ".js", ".mjs", ".cts", ".cjs"];
 const privateQaExcludedPluginSdkSubpaths = new Set(["ssrf-runtime-internal"]);
 const workspacePackageAliases = [
   {
-    name: "@openclaw/llm-core",
+    name: "@eve/llm-core",
     subpath: "",
     srcFile: "src/index.ts",
     distFile: "dist/index.mjs",
   },
   {
-    name: "@openclaw/llm-core",
+    name: "@eve/llm-core",
     subpath: "diagnostics",
     srcFile: "src/utils/diagnostics.ts",
     distFile: "dist/utils/diagnostics.mjs",
   },
   {
-    name: "@openclaw/llm-core",
+    name: "@eve/llm-core",
     subpath: "event-stream",
     srcFile: "src/utils/event-stream.ts",
     distFile: "dist/utils/event-stream.mjs",
   },
   {
-    name: "@openclaw/llm-core",
+    name: "@eve/llm-core",
     subpath: "types",
     srcFile: "src/types.ts",
     distFile: "dist/types.mjs",
   },
   {
-    name: "@openclaw/llm-core",
+    name: "@eve/llm-core",
     subpath: "validation",
     srcFile: "src/validation.ts",
     distFile: "dist/validation.mjs",
   },
 ];
-const DIAGNOSTIC_EVENTS_STATE_KEY = Symbol.for("openclaw.diagnosticEvents.state.v1");
+const DIAGNOSTIC_EVENTS_STATE_KEY = Symbol.for("eve.diagnosticEvents.state.v1");
 const isDistRootAlias = __filename.includes(
   `${path.sep}dist${path.sep}plugin-sdk${path.sep}root-alias.cjs`,
 );
@@ -55,7 +55,7 @@ const shouldPreferSourceGraph =
   !isDistRootAlias &&
   (process.env.NODE_ENV !== "production" ||
     Boolean(process.env.VITEST) ||
-    process.env.OPENCLAW_PLUGIN_SDK_SOURCE_IN_TESTS === "1");
+    process.env.EVE_PLUGIN_SDK_SOURCE_IN_TESTS === "1");
 
 function emptyPluginConfigSchema() {
   function error(message) {
@@ -268,7 +268,7 @@ function findDistChunkByPrefix(prefix) {
 
 function listPluginSdkExportedSubpaths() {
   const packageRoot = getPackageRoot();
-  const cacheKey = `${packageRoot}::privateQa=${process.env.OPENCLAW_ENABLE_PRIVATE_QA_CLI === "1" ? "1" : "0"}`;
+  const cacheKey = `${packageRoot}::privateQa=${process.env.EVE_ENABLE_PRIVATE_QA_CLI === "1" ? "1" : "0"}`;
   if (pluginSdkSubpathsCache.has(cacheKey)) {
     return pluginSdkSubpathsCache.get(cacheKey);
   }
@@ -291,7 +291,7 @@ function listPluginSdkExportedSubpaths() {
 }
 
 function listPrivateLocalOnlyPluginSdkSubpaths() {
-  if (process.env.OPENCLAW_ENABLE_PRIVATE_QA_CLI !== "1") {
+  if (process.env.EVE_ENABLE_PRIVATE_QA_CLI !== "1") {
     return [];
   }
   try {
@@ -350,7 +350,7 @@ function buildPluginSdkAliasMap(useDist) {
     }
   }
 
-  // Agent-core intentionally imports @openclaw/llm-core by package name so built
+  // Agent-core intentionally imports @eve/llm-core by package name so built
   // package entrypoints share constructor identity. In source-checkout live
   // tests, keep that package specifier on the same source graph instead of
   // falling through to pnpm's package export and requiring a prebuilt dist.
@@ -441,7 +441,7 @@ function resolvePluginSdkJitiFsCacheDir() {
   return path.join(
     resolveJitiFsCacheTmpDir(),
     "jiti",
-    "openclaw",
+    "eve",
     sanitizeJitiCachePathSegment(version),
     sanitizeJitiCachePathSegment(installMarker),
   );
@@ -462,7 +462,7 @@ function getModuleLoader(tryNative) {
     interopDefault: true,
     fsCache: resolvePluginSdkJitiFsCacheOption(),
     // Prefer Node's native sync ESM loader for built dist/plugin-sdk/*.js files
-    // so local plugins do not create a second transpiled OpenClaw core graph.
+    // so local plugins do not create a second transpiled EVE core graph.
     tryNative,
     extensions: [".ts", ".tsx", ".mts", ".cts", ".mtsx", ".ctsx", ".js", ".mjs", ".cjs", ".json"],
   });

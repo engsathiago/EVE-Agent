@@ -1,6 +1,6 @@
 /** Command-list assembly and config filtering for chat command registries. */
 import { isCommandFlagEnabled } from "../config/commands.flags.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SkillCommandSpec } from "../skills/types.js";
 import { getChatCommands } from "./commands-registry.data.js";
 import type { ChatCommandDefinition } from "./commands-registry.types.js";
@@ -40,7 +40,7 @@ export function listChatCommands(params?: {
 }
 
 /** Applies config feature flags to command keys that can be operator-disabled. */
-export function isCommandEnabled(cfg: OpenClawConfig, commandKey: string): boolean {
+export function isCommandEnabled(cfg: EVEConfig, commandKey: string): boolean {
   if (commandKey === "config") {
     return isCommandFlagEnabled(cfg, "config");
   }
@@ -61,7 +61,7 @@ export function isCommandEnabled(cfg: OpenClawConfig, commandKey: string): boole
 
 /** Lists commands visible for a specific config, preserving dynamic skill commands. */
 export function listChatCommandsForConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   params?: { skillCommands?: SkillCommandSpec[] },
 ): ChatCommandDefinition[] {
   const base = getChatCommands().filter((command) => isCommandEnabled(cfg, command.key));

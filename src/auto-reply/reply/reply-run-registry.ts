@@ -1,5 +1,5 @@
 // Tracks active reply runs so stop, queue, and status commands can coordinate.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { createAgentRunRestartAbortError } from "../../agents/run-termination.js";
 import {
   markDiagnosticEmbeddedRunEnded,
@@ -125,7 +125,7 @@ type ReplyRunState = {
   followupAdmissionBarriersByKey: Map<string, ReplyRunFollowupAdmissionBarrier>;
 };
 
-const REPLY_RUN_STATE_KEY = Symbol.for("openclaw.replyRunRegistry");
+const REPLY_RUN_STATE_KEY = Symbol.for("eve.replyRunRegistry");
 
 const replyRunState = resolveGlobalSingleton<ReplyRunState>(REPLY_RUN_STATE_KEY, () => ({
   activeRunsByKey: new Map<string, ReplyOperation>(),

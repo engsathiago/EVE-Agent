@@ -1,7 +1,7 @@
 // Channel setup prompt tests cover prompt choices and validation.
 import { describe, expect, it, vi } from "vitest";
 import type { ChannelSetupDmPolicy } from "../commands/channel-setup/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import type { WizardPrompter } from "../wizard/prompts.js";
 import { maybeConfigureDmPolicies } from "./channel-setup.prompts.js";
@@ -21,10 +21,10 @@ describe("maybeConfigureDmPolicies", () => {
       policyKey: "channels.telegram.dmPolicy",
       allowFromKey: "channels.telegram.allowFrom",
       getCurrent: () => "pairing",
-      setPolicy: (cfg: OpenClawConfig) => cfg,
+      setPolicy: (cfg: EVEConfig) => cfg,
     };
 
-    await withEnvAsync({ OPENCLAW_LOCALE: "zh-CN" }, async () => {
+    await withEnvAsync({ EVE_LOCALE: "zh-CN" }, async () => {
       await maybeConfigureDmPolicies({
         cfg: {},
         selection: ["telegram" as never],

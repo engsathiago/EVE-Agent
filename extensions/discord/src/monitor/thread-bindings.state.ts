@@ -2,13 +2,13 @@
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { normalizeAccountId, resolveAgentIdFromSessionKey } from "openclaw/plugin-sdk/routing";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeAccountId, resolveAgentIdFromSessionKey } from "eve-agent/plugin-sdk/routing";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   normalizeOptionalStringifiedId,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { getDiscordRuntime } from "../runtime.js";
 import {
   RECENT_UNBOUND_WEBHOOK_ECHO_WINDOW_MS,
@@ -35,7 +35,7 @@ type ThreadBindingsGlobalState = {
 // Plugin hooks can load this module through a separate runtime path while core
 // imports it via ESM. Store mutable state on globalThis so both paths share one
 // registry.
-const THREAD_BINDINGS_STATE_KEY = Symbol.for("openclaw.discordThreadBindingsState");
+const THREAD_BINDINGS_STATE_KEY = Symbol.for("eve.discordThreadBindingsState");
 let threadBindingsState: ThreadBindingsGlobalState | undefined;
 
 function createThreadBindingsGlobalState(): ThreadBindingsGlobalState {

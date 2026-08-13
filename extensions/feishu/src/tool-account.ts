@@ -1,7 +1,7 @@
 // Feishu plugin module implements tool account behavior.
 import type * as Lark from "@larksuiteoapi/node-sdk";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import type { OpenClawPluginApi } from "../runtime-api.js";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { EVEPluginApi } from "../runtime-api.js";
 import {
   listFeishuAccountIds,
   resolveFeishuAccount,
@@ -19,7 +19,7 @@ type FeishuToolRequirement = {
 };
 
 function resolveImplicitToolAccountId(params: {
-  api: Pick<OpenClawPluginApi, "config">;
+  api: Pick<EVEPluginApi, "config">;
   executeParams?: AccountAwareParams;
   defaultAccountId?: string;
   requiredTool?: FeishuToolRequirement;
@@ -68,7 +68,7 @@ function resolveImplicitToolAccountId(params: {
 }
 
 export function resolveFeishuToolAccount(params: {
-  api: Pick<OpenClawPluginApi, "config">;
+  api: Pick<EVEPluginApi, "config">;
   executeParams?: AccountAwareParams;
   defaultAccountId?: string;
   requiredTool?: FeishuToolRequirement;
@@ -92,7 +92,7 @@ export function resolveFeishuToolAccount(params: {
 }
 
 export function createFeishuToolClient(params: {
-  api: Pick<OpenClawPluginApi, "config">;
+  api: Pick<EVEPluginApi, "config">;
   executeParams?: AccountAwareParams;
   defaultAccountId?: string;
   requiredTool?: FeishuToolRequirement;

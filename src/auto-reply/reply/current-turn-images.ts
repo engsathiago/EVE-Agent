@@ -1,7 +1,7 @@
 // Tracks image attachments that belong to the current reply turn.
-import { mimeTypeFromFilePath } from "@openclaw/media-core/mime";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { mimeTypeFromFilePath } from "@eve/media-core/mime";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import type { ImageContent } from "../../llm/types.js";
@@ -91,7 +91,7 @@ function createUndescribedImageContext(
 /** Resolves current-turn image attachments that were not already described by media understanding. */
 export async function resolveCurrentTurnImages(params: {
   ctx: MsgContext;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   images?: ImageContent[];
   imageOrder?: PromptImageOrderEntry[];
 }): Promise<{
@@ -130,7 +130,7 @@ export async function resolveCurrentTurnImages(params: {
     );
     if (images.length < undescribedImageAttachments.length) {
       logVerbose(
-        `agent-runner: native OpenClaw media resolution produced ${images.length}/${undescribedImageAttachments.length} current image attachment(s); falling back to prompt image refs`,
+        `agent-runner: native EVE media resolution produced ${images.length}/${undescribedImageAttachments.length} current image attachment(s); falling back to prompt image refs`,
       );
       return { images: params.images, imageOrder: params.imageOrder };
     }

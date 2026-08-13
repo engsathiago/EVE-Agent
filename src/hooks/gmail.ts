@@ -1,8 +1,8 @@
 // Gmail hook helpers manage Gmail OAuth setup and watcher launch state.
 import { randomBytes } from "node:crypto";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import {
-  type OpenClawConfig,
+  type EVEConfig,
   DEFAULT_GATEWAY_PORT,
   type HooksGmailTailscaleMode,
   resolveGatewayPort,
@@ -108,7 +108,7 @@ export function buildDefaultHookUrl(
 }
 
 export function resolveGmailHookRuntimeConfig(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   overrides: GmailHookOverrides,
 ): { ok: true; value: GmailHookRuntimeConfig } | { ok: false; error: string } {
   const hooks = cfg.hooks;

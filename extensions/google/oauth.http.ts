@@ -2,8 +2,8 @@
 import {
   shouldUseEnvHttpProxyForUrl,
   withTrustedEnvProxyGuardedFetchMode,
-} from "openclaw/plugin-sdk/fetch-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/fetch-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { DEFAULT_FETCH_TIMEOUT_MS } from "./oauth.shared.js";
 
 export async function fetchWithTimeout(

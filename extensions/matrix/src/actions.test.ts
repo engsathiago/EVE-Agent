@@ -21,7 +21,7 @@ const runtimeStub = {
     resizeToJpeg: async () => Buffer.from(""),
   },
   state: {
-    resolveStateDir: () => "/tmp/openclaw-matrix-test",
+    resolveStateDir: () => "/tmp/eve-matrix-test",
   },
   channel: {
     text: {

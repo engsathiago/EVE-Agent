@@ -41,7 +41,7 @@ function createMediaFailureHarness() {
       channel: "matrix",
       matchedBy: "binding.account",
     }),
-    resolveStorePath: () => "/tmp/openclaw-test-session.json",
+    resolveStorePath: () => "/tmp/eve-test-session.json",
     readSessionUpdatedAt: () => 123,
     getRoomInfo: async () => ({
       name: "Media Room",

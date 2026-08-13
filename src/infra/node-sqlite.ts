@@ -1,4 +1,4 @@
-// Loads node:sqlite with OpenClaw warning handling.
+// Loads node:sqlite with EVE warning handling.
 import { createRequire } from "node:module";
 import { formatErrorMessage } from "./errors.js";
 import { installProcessWarningFilter } from "./warning-filter.js";

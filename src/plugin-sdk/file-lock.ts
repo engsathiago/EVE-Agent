@@ -51,7 +51,7 @@ export type FileLockStaleError = Error & {
   lockPath: string;
 };
 
-const FILE_LOCK_MANAGER_KEY = "openclaw.plugin-sdk.file-lock";
+const FILE_LOCK_MANAGER_KEY = "eve.plugin-sdk.file-lock";
 
 async function shouldReclaimPluginLock(params: {
   lockPath: string;

@@ -4,7 +4,7 @@ import {
   type ChannelSetupAdapter,
   migrateBaseNameToDefaultAccount,
   normalizeAccountId,
-} from "openclaw/plugin-sdk/setup";
+} from "eve-agent/plugin-sdk/setup";
 
 const channel = "whatsapp" as const;
 

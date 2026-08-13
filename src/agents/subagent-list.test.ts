@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { updateSessionStore } from "../config/sessions/store.js";
 import { buildSubagentList } from "./subagent-list.js";
 import {
@@ -18,7 +18,7 @@ const STALE_UNENDED_SUBAGENT_RUN_MS = 2 * 60 * 60 * 1_000;
 let testWorkspaceDir = os.tmpdir();
 
 beforeAll(async () => {
-  testWorkspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-subagent-list-"));
+  testWorkspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-subagent-list-"));
 });
 
 afterAll(async () => {
@@ -39,7 +39,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const list = buildSubagentList({
       cfg,
       runs: [],
@@ -67,7 +67,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const list = buildSubagentList({
       cfg,
       runs: [run],
@@ -98,7 +98,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const list = buildSubagentList({
       cfg,
@@ -140,7 +140,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const list = buildSubagentList({
       cfg,
       runs: [orchestratorRun],
@@ -183,7 +183,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const list = buildSubagentList({
       cfg,
@@ -222,7 +222,7 @@ describe("buildSubagentList", () => {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
       session: { store: storePath },
-    } as OpenClawConfig;
+    } as EVEConfig;
     // Prompt/cache usage is separate from visible IO so operators can spot
     // cache-heavy sessions without misreading it as assistant output.
     const list = buildSubagentList({
@@ -253,7 +253,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const list = buildSubagentList({
       cfg,
@@ -296,7 +296,7 @@ describe("buildSubagentList", () => {
     const cfg = {
       commands: { text: true },
       channels: { whatsapp: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const list = buildSubagentList({
       cfg,

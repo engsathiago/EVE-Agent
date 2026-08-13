@@ -33,7 +33,7 @@ describe("build diffs viewer runtime", () => {
       }),
     ).toEqual({
       path: "pierre-diffs-parse-decorations-side-effect",
-      namespace: "openclaw-diffs-empty-side-effect",
+      namespace: "eve-diffs-empty-side-effect",
       sideEffects: true,
     });
     expect(

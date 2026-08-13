@@ -2,12 +2,12 @@
 import {
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as stickerCache from "./sticker-cache-store.js";
 
-vi.mock("openclaw/plugin-sdk/state-paths", () => ({
-  resolveStateDir: () => "/tmp/openclaw-test-sticker-cache",
+vi.mock("eve-agent/plugin-sdk/state-paths", () => ({
+  resolveStateDir: () => "/tmp/eve-test-sticker-cache",
 }));
 
 describe("sticker-cache", () => {

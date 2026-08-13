@@ -1,5 +1,5 @@
-// Together plugin entrypoint registers its OpenClaw integration.
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
+// Together plugin entrypoint registers its EVE integration.
+import { defineSingleProviderPluginEntry } from "eve-agent/plugin-sdk/provider-entry";
 import { applyTogetherConfig, TOGETHER_DEFAULT_MODEL_REF } from "./onboard.js";
 import { buildTogetherProvider } from "./provider-catalog.js";
 import { buildTogetherVideoGenerationProvider } from "./video-generation-provider.js";

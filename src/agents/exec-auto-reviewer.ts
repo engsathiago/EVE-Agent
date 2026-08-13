@@ -4,11 +4,11 @@
  * This wraps a small reviewer prompt around pending exec requests and converts
  * the model response into conservative allow-once or ask decisions.
  */
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { z } from "zod";
 import type { AgentModelConfig } from "../config/types.agents-shared.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
   defaultExecAutoReviewer,
@@ -234,7 +234,7 @@ async function raceWithReviewerTimeout<T>(
 
 /** Creates an exec auto-reviewer that uses a configured model when available. */
 export function createModelExecAutoReviewer(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentId?: string;
   reviewer?: ExecReviewerConfig;
   deps?: ExecReviewerDeps;

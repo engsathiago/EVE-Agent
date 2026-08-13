@@ -2,9 +2,9 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { resolveUserTimezone } from "../../agents/date-time.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { buildChannelSummary } from "../../infra/channel-summary.js";
 import {
   formatUtcTimestamp,
@@ -60,7 +60,7 @@ function compactSystemEvent(line: string): string | null {
   return trimmed;
 }
 
-function resolveSystemEventTimezone(cfg: OpenClawConfig) {
+function resolveSystemEventTimezone(cfg: EVEConfig) {
   const raw = normalizeOptionalString(cfg.agents?.defaults?.envelopeTimezone);
   if (!raw) {
     return { mode: "local" as const };
@@ -82,7 +82,7 @@ function resolveSystemEventTimezone(cfg: OpenClawConfig) {
   return explicit ? { mode: "iana" as const, timeZone: explicit } : { mode: "local" as const };
 }
 
-function formatSystemEventTimestamp(ts: number, cfg: OpenClawConfig) {
+function formatSystemEventTimestamp(ts: number, cfg: EVEConfig) {
   const date = new Date(ts);
   if (Number.isNaN(date.getTime())) {
     return "unknown-time";
@@ -101,7 +101,7 @@ function formatSystemEventTimestamp(ts: number, cfg: OpenClawConfig) {
 
 /** Drain queued system events, format as `System:` lines, return the block text (or undefined). */
 export async function drainFormattedSystemEvents(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   isMainSession: boolean;
   isNewSession: boolean;

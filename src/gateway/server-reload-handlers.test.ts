@@ -3,7 +3,7 @@
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ConfigWriteNotification } from "../config/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { consumeGatewaySigusr1RestartIntent } from "../infra/restart.js";
 import {
   pinActivePluginChannelRegistry,
@@ -25,7 +25,7 @@ import {
 } from "./server-reload-handlers.js";
 
 type GmailWatcherRestartParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   log: {
     info: (msg: string) => void;
     warn: (msg: string) => void;
@@ -55,13 +55,13 @@ const hoisted = vi.hoisted(() => ({
   activeEmbeddedRunSessionIds: [] as string[],
   activeEmbeddedRunSessionKeys: [] as string[],
   markRestartAbortedMainSessions: vi.fn(async (_params: unknown) => ({ marked: 1, skipped: 0 })),
-  runtimeConfig: { value: { session: { store: "/tmp/active-sessions.json" } } as OpenClawConfig },
+  runtimeConfig: { value: { session: { store: "/tmp/active-sessions.json" } } as EVEConfig },
   reloadEvents: [] as string[],
-  loadModelCatalog: vi.fn(async (_params: { config: OpenClawConfig }) => []),
+  loadModelCatalog: vi.fn(async (_params: { config: EVEConfig }) => []),
   resetModelCatalogCache: vi.fn(() => {}),
-  refreshContextWindowCache: vi.fn(async (_cfg: OpenClawConfig) => {}),
+  refreshContextWindowCache: vi.fn(async (_cfg: EVEConfig) => {}),
   clearCurrentProviderAuthState: vi.fn(() => {}),
-  warmCurrentProviderAuthStateOffMainThread: vi.fn(async (_cfg: OpenClawConfig) => {}),
+  warmCurrentProviderAuthStateOffMainThread: vi.fn(async (_cfg: EVEConfig) => {}),
   disposeAllSessionMcpRuntimes: vi.fn(async () => {}),
 }));
 
@@ -119,7 +119,7 @@ vi.mock("../config/config.js", () => ({
 }));
 
 vi.mock("../agents/model-catalog.js", () => ({
-  loadModelCatalog: (params: { config: OpenClawConfig }) => {
+  loadModelCatalog: (params: { config: EVEConfig }) => {
     hoisted.reloadEvents.push("load-model-catalog");
     return hoisted.loadModelCatalog(params);
   },
@@ -130,7 +130,7 @@ vi.mock("../agents/model-catalog.js", () => ({
 }));
 
 vi.mock("../agents/context.js", () => ({
-  refreshContextWindowCache: async (cfg: OpenClawConfig) => {
+  refreshContextWindowCache: async (cfg: EVEConfig) => {
     hoisted.reloadEvents.push("refresh-context-window");
     await hoisted.refreshContextWindowCache(cfg);
   },
@@ -141,7 +141,7 @@ vi.mock("../agents/model-provider-auth.js", () => ({
     hoisted.reloadEvents.push("clear-provider-auth");
     hoisted.clearCurrentProviderAuthState();
   },
-  warmCurrentProviderAuthStateOffMainThread: async (cfg: OpenClawConfig) => {
+  warmCurrentProviderAuthStateOffMainThread: async (cfg: EVEConfig) => {
     hoisted.reloadEvents.push("warm-provider-auth");
     await hoisted.warmCurrentProviderAuthStateOffMainThread(cfg);
   },
@@ -248,7 +248,7 @@ describe("gateway hot reload model state", () => {
       createHealthMonitor: () => null,
     });
 
-    const nextConfig = { plugins: { enabled: true } } as OpenClawConfig;
+    const nextConfig = { plugins: { enabled: true } } as EVEConfig;
     await applyHotReload(
       {
         changedPaths: ["plugins.enabled"],
@@ -287,7 +287,7 @@ describe("gateway hot reload model state", () => {
 
   it("disposes cached MCP runtimes on MCP config hot reloads", async () => {
     const { applyHotReload } = createReloadHandlersForTest();
-    const nextConfig = { mcp: { servers: {} } } as OpenClawConfig;
+    const nextConfig = { mcp: { servers: {} } } as EVEConfig;
 
     await applyHotReload(
       {
@@ -316,7 +316,7 @@ describe("gateway hot reload model state", () => {
     const { applyHotReload } = createReloadHandlersForTest();
     const nextConfig = {
       agents: { defaults: { workspace: "/tmp/next-workspace" } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await applyHotReload(
       {
@@ -355,8 +355,8 @@ describe("gateway hot reload model state", () => {
     },
   ])("refreshes context metadata when a workspace change $label", async (testCase) => {
     const { applyHotReload } = createReloadHandlersForTest();
-    const previousConfig = testCase.previousConfig as OpenClawConfig;
-    const nextConfig = testCase.nextConfig as OpenClawConfig;
+    const previousConfig = testCase.previousConfig as EVEConfig;
+    const nextConfig = testCase.nextConfig as EVEConfig;
     const changedPaths = diffConfigPaths(previousConfig, nextConfig);
     expect(changedPaths).toEqual([testCase.expectedPath]);
 
@@ -368,10 +368,10 @@ describe("gateway hot reload model state", () => {
 
 describe("gateway restart deferral preflight", () => {
   it("defers channel hot reload until active embedded work drains", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const startChannel = vi.fn(async () => {});
     const stopChannel = vi.fn(async () => {});
     const logReload = { info: vi.fn(), warn: vi.fn() };
@@ -442,14 +442,14 @@ describe("gateway restart deferral preflight", () => {
       vi.useRealTimers();
       await reloadPromise.catch(() => {});
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 
@@ -458,10 +458,10 @@ describe("gateway restart deferral preflight", () => {
   });
 
   it("forces channel hot reload after the configured deferral timeout", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const startChannel = vi.fn(async () => {});
     const stopChannel = vi.fn(async () => {});
     const logReload = { info: vi.fn(), warn: vi.fn() };
@@ -530,14 +530,14 @@ describe("gateway restart deferral preflight", () => {
       vi.useRealTimers();
       await reloadPromise.catch(() => {});
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 
@@ -549,10 +549,10 @@ describe("gateway restart deferral preflight", () => {
   });
 
   it("uses the default channel reload deferral timeout when config omits deferralTimeoutMs", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const startChannel = vi.fn(async () => {});
     const stopChannel = vi.fn(async () => {});
     const logReload = { info: vi.fn(), warn: vi.fn() };
@@ -621,14 +621,14 @@ describe("gateway restart deferral preflight", () => {
       vi.useRealTimers();
       await reloadPromise.catch(() => {});
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 
@@ -640,10 +640,10 @@ describe("gateway restart deferral preflight", () => {
   });
 
   it("waits indefinitely for channel hot reload when deferral timeout is 0", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const startChannel = vi.fn(async () => {});
     const stopChannel = vi.fn(async () => {});
     const logReload = { info: vi.fn(), warn: vi.fn() };
@@ -717,14 +717,14 @@ describe("gateway restart deferral preflight", () => {
       vi.useRealTimers();
       await reloadPromise.catch(() => {});
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 
@@ -888,22 +888,22 @@ describe("gateway channel hot reload handlers", () => {
   }
 
   async function withChannelReloadsEnabled(run: () => Promise<void>) {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     try {
       await run();
     } finally {
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
   }
@@ -1076,7 +1076,7 @@ describe("gateway Gmail hot reload handlers", () => {
     };
   }
 
-  function createGmailConfig(account: string): OpenClawConfig {
+  function createGmailConfig(account: string): EVEConfig {
     return {
       gateway: { reload: { debounceMs: 0 } },
       hooks: { enabled: true, gmail: { account } },
@@ -1213,7 +1213,7 @@ describe("gateway Gmail hot reload handlers", () => {
     const initialConfig = createGmailConfig("old@example.com");
     const nextConfig = createGmailConfig("next@example.com");
     const readSnapshot = vi.fn(async () => ({
-      path: "/tmp/openclaw.json",
+      path: "/tmp/eve.json",
       exists: true,
       raw: "{}",
       parsed: {},
@@ -1232,7 +1232,7 @@ describe("gateway Gmail hot reload handlers", () => {
       initialConfig,
       initialCompareConfig: initialConfig,
       initialInternalWriteHash: null,
-      watchPath: "/tmp/openclaw.json",
+      watchPath: "/tmp/eve.json",
       readSnapshot: readSnapshot as never,
       promoteSnapshot: vi.fn(async () => true) as never,
       subscribeToWrites: ((listener: (event: ConfigWriteNotification) => void) => {
@@ -1270,7 +1270,7 @@ describe("gateway Gmail hot reload handlers", () => {
       logCron: { error: vi.fn() },
       logReload: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
       channelManager: {} as never,
-      activateRuntimeSecrets: vi.fn(async (config: OpenClawConfig) => ({
+      activateRuntimeSecrets: vi.fn(async (config: EVEConfig) => ({
         sourceConfig: config,
         config,
         authStores: [],
@@ -1287,7 +1287,7 @@ describe("gateway Gmail hot reload handlers", () => {
     }
 
     registeredWriteListener({
-      configPath: "/tmp/openclaw.json",
+      configPath: "/tmp/eve.json",
       sourceConfig: nextConfig,
       runtimeConfig: nextConfig,
       persistedHash: "hash-next",
@@ -1310,7 +1310,7 @@ describe("gateway Gmail hot reload handlers", () => {
       current: null,
     };
     const initialConfig = createGmailConfig("old@example.com");
-    const nextConfig: OpenClawConfig = {
+    const nextConfig: EVEConfig = {
       ...createGmailConfig("next@example.com"),
       models: { providers: {} },
     };
@@ -1328,9 +1328,9 @@ describe("gateway Gmail hot reload handlers", () => {
       initialConfig,
       initialCompareConfig: initialConfig,
       initialInternalWriteHash: null,
-      watchPath: "/tmp/openclaw.json",
+      watchPath: "/tmp/eve.json",
       readSnapshot: vi.fn(async () => ({
-        path: "/tmp/openclaw.json",
+        path: "/tmp/eve.json",
         exists: true,
         raw: "{}",
         parsed: {},
@@ -1380,7 +1380,7 @@ describe("gateway Gmail hot reload handlers", () => {
       logCron: { error: vi.fn() },
       logReload,
       channelManager: {} as never,
-      activateRuntimeSecrets: vi.fn(async (config: OpenClawConfig) => ({
+      activateRuntimeSecrets: vi.fn(async (config: EVEConfig) => ({
         sourceConfig: config,
         config,
         authStores: [],
@@ -1397,7 +1397,7 @@ describe("gateway Gmail hot reload handlers", () => {
     }
 
     registeredWriteListener({
-      configPath: "/tmp/openclaw.json",
+      configPath: "/tmp/eve.json",
       sourceConfig: nextConfig,
       runtimeConfig: nextConfig,
       persistedHash: "hash-next",
@@ -1433,9 +1433,9 @@ describe("gateway Gmail hot reload handlers", () => {
       initialConfig,
       initialCompareConfig: initialConfig,
       initialInternalWriteHash: null,
-      watchPath: "/tmp/openclaw.json",
+      watchPath: "/tmp/eve.json",
       readSnapshot: vi.fn(async () => ({
-        path: "/tmp/openclaw.json",
+        path: "/tmp/eve.json",
         exists: true,
         raw: "{}",
         parsed: {},
@@ -1485,7 +1485,7 @@ describe("gateway Gmail hot reload handlers", () => {
       logCron: { error: vi.fn() },
       logReload: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
       channelManager: {} as never,
-      activateRuntimeSecrets: vi.fn(async (config: OpenClawConfig) => {
+      activateRuntimeSecrets: vi.fn(async (config: EVEConfig) => {
         secretsEntered?.();
         await releaseSecretsPromise;
         return {
@@ -1506,7 +1506,7 @@ describe("gateway Gmail hot reload handlers", () => {
     }
 
     registeredWriteListener({
-      configPath: "/tmp/openclaw.json",
+      configPath: "/tmp/eve.json",
       sourceConfig: nextConfig,
       runtimeConfig: nextConfig,
       persistedHash: "hash-next",
@@ -1531,10 +1531,10 @@ describe("gateway Gmail hot reload handlers", () => {
 
 describe("gateway plugin hot reload handlers", () => {
   it("rolls back stopped channels when plugin pre-replace stop fails", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const cron = { start: vi.fn(async () => {}), stop: vi.fn() };
     const heartbeatRunner = {
       stop: vi.fn(),
@@ -1613,14 +1613,14 @@ describe("gateway plugin hot reload handlers", () => {
       ).rejects.toThrow("failed to stop channels before plugin reload: discord");
     } finally {
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 
@@ -1640,10 +1640,10 @@ describe("gateway plugin hot reload handlers", () => {
   });
 
   it("stops removed channel plugins from broad activation before swapping plugin runtime", async () => {
-    const previousSkipChannels = process.env.OPENCLAW_SKIP_CHANNELS;
-    const previousSkipProviders = process.env.OPENCLAW_SKIP_PROVIDERS;
-    delete process.env.OPENCLAW_SKIP_CHANNELS;
-    delete process.env.OPENCLAW_SKIP_PROVIDERS;
+    const previousSkipChannels = process.env.EVE_SKIP_CHANNELS;
+    const previousSkipProviders = process.env.EVE_SKIP_PROVIDERS;
+    delete process.env.EVE_SKIP_CHANNELS;
+    delete process.env.EVE_SKIP_PROVIDERS;
     const cron = { start: vi.fn(async () => {}), stop: vi.fn() };
     const heartbeatRunner = {
       stop: vi.fn(),
@@ -1714,14 +1714,14 @@ describe("gateway plugin hot reload handlers", () => {
       );
     } finally {
       if (previousSkipChannels === undefined) {
-        delete process.env.OPENCLAW_SKIP_CHANNELS;
+        delete process.env.EVE_SKIP_CHANNELS;
       } else {
-        process.env.OPENCLAW_SKIP_CHANNELS = previousSkipChannels;
+        process.env.EVE_SKIP_CHANNELS = previousSkipChannels;
       }
       if (previousSkipProviders === undefined) {
-        delete process.env.OPENCLAW_SKIP_PROVIDERS;
+        delete process.env.EVE_SKIP_PROVIDERS;
       } else {
-        process.env.OPENCLAW_SKIP_PROVIDERS = previousSkipProviders;
+        process.env.EVE_SKIP_PROVIDERS = previousSkipProviders;
       }
     }
 

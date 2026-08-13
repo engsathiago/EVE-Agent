@@ -112,7 +112,7 @@ describe("scripts/ui windows spawn behavior", () => {
   });
 
   it("routes Windows Corepack pnpm entrypoints through node", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-pnpm-runner-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-pnpm-runner-"));
     const npmExecPath = path.join(tempDir, "pnpm.mjs");
     fs.writeFileSync(npmExecPath, "console.log('pnpm');\n");
 
@@ -170,8 +170,8 @@ describe("scripts/ui windows spawn behavior", () => {
   });
 
   it("detects direct execution through a junctioned script path", () => {
-    const realScriptPath = path.resolve("repo/openclaw/scripts/ui.js");
-    const junctionScriptPath = path.resolve("linked/openclaw/scripts/ui.js");
+    const realScriptPath = path.resolve("repo/eve/scripts/ui.js");
+    const junctionScriptPath = path.resolve("linked/eve/scripts/ui.js");
     const realpath = (entry: string) => (entry === junctionScriptPath ? realScriptPath : entry);
 
     expect(isDirectScriptExecution(junctionScriptPath, realScriptPath, realpath)).toBe(true);
@@ -183,7 +183,7 @@ describe("scripts/ui windows spawn behavior", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_BUILD_ALL_NO_PNPM: "1",
+        EVE_BUILD_ALL_NO_PNPM: "1",
         PATH: "",
       },
     });
@@ -197,7 +197,7 @@ describe("scripts/ui windows spawn behavior", () => {
   it.runIf(process.platform !== "win32").each(["SIGTERM", "SIGHUP"] as const)(
     "terminates the pnpm child on wrapper %s",
     async (signal) => {
-      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ui-wrapper-signals-"));
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ui-wrapper-signals-"));
       const runnerPath = path.join(tempDir, "pnpm.mjs");
       const readyFile = path.join(tempDir, "ready");
       const signaledFile = path.join(tempDir, "signaled");
@@ -247,7 +247,7 @@ describe("scripts/ui windows spawn behavior", () => {
   it.runIf(process.platform !== "win32")(
     "cleans pnpm descendants before forwarding wrapper SIGTERM",
     async () => {
-      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-ui-wrapper-tree-"));
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-ui-wrapper-tree-"));
       const runnerPath = path.join(tempDir, "pnpm.mjs");
       const readyFile = path.join(tempDir, "ready");
       const descendantPidFile = path.join(tempDir, "descendant.pid");

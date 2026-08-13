@@ -3,7 +3,7 @@
  * 凭证暂存与恢复。
  *
  * Solves the "hot-upgrade interrupted, appId/secret vanished from
- * openclaw.json" failure mode.
+ * eve.json" failure mode.
  *
  * Mechanics:
  *   - After each successful gateway start we snapshot the currently
@@ -23,7 +23,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { loadJsonFile } from "openclaw/plugin-sdk/json-store";
+import { loadJsonFile } from "eve-agent/plugin-sdk/json-store";
 import { getCredentialBackupFile, getLegacyCredentialBackupFile } from "../utils/data-paths.js";
 import { getQQBotDataPath } from "../utils/platform.js";
 import { buildQQBotStateKey, openQQBotSyncKeyedStore } from "../utils/sqlite-state.js";

@@ -1,12 +1,12 @@
-# OpenClaw Arcee AI Provider
+# EVE Arcee AI Provider
 
-Official OpenClaw provider plugin for Arcee AI.
+Official EVE provider plugin for Arcee AI.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/arcee-provider
-openclaw gateway restart
+eve plugins install @eve/arcee-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/arcee> for setup and configuration.
+See <https://docs.eve.ai/providers/arcee> for setup and configuration.

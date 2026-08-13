@@ -35,8 +35,8 @@ describe("evidence summary", () => {
       ],
       channelId: "qa-channel",
       env: {
-        OPENCLAW_QA_CHANNEL_DRIVER: "local-shim",
-        OPENCLAW_QA_REF: "abc123",
+        EVE_QA_CHANNEL_DRIVER: "local-shim",
+        EVE_QA_REF: "abc123",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:00:00.000Z",
       primaryModel: "mock-openai/gpt-5.5",
@@ -130,7 +130,7 @@ describe("evidence summary", () => {
         { kind: "report", path: "telegram-qa-report.md" },
       ],
       env: {
-        OPENCLAW_QA_RUNNER: "crabbox",
+        EVE_QA_RUNNER: "crabbox",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:05:00.000Z",
       primaryModel: "openai/gpt-5.5",
@@ -254,7 +254,7 @@ describe("evidence summary", () => {
         { kind: "runner-result", path: "vitest-results/runtime-boundary.vitest.json" },
       ],
       env: {
-        OPENCLAW_QA_REF: "abc123",
+        EVE_QA_REF: "abc123",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:06:00.000Z",
       primaryModel: "mock-openai/gpt-5.5",
@@ -430,7 +430,7 @@ describe("evidence summary", () => {
       ],
       channelId: "qa-channel",
       env: {
-        OPENCLAW_QA_PROFILE: "experimental-profile",
+        EVE_QA_PROFILE: "experimental-profile",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:09:00.000Z",
       primaryModel: "mock-openai/gpt-5.5",
@@ -518,7 +518,7 @@ describe("evidence summary", () => {
       generatedAt: "2026-06-07T12:15:00.000Z",
       packageSource: {
         kind: "packed-tarball",
-        spec: "/tmp/openclaw.tgz",
+        spec: "/tmp/eve.tgz",
         sha: "abc123",
       },
       primaryModel: "openai/gpt-5.5",
@@ -537,7 +537,7 @@ describe("evidence summary", () => {
 
     expect(evidence.entries[0]?.execution?.packageSource).toEqual({
       kind: "packed-tarball",
-      spec: "/tmp/openclaw.tgz",
+      spec: "/tmp/eve.tgz",
       sha: "abc123",
     });
   });
@@ -546,9 +546,9 @@ describe("evidence summary", () => {
     const evidence = buildLiveTransportEvidenceSummary({
       artifactPaths: [{ kind: "summary", path: QA_EVIDENCE_FILENAME }],
       env: {
-        OPENCLAW_QA_PACKAGE_SOURCE: "openclaw@beta",
-        OPENCLAW_QA_PACKAGE_SOURCE_KIND: "npm-package",
-        OPENCLAW_QA_PACKAGE_SOURCE_SHA: "def456",
+        EVE_QA_PACKAGE_SOURCE: "eve@beta",
+        EVE_QA_PACKAGE_SOURCE_KIND: "npm-package",
+        EVE_QA_PACKAGE_SOURCE_SHA: "def456",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:15:00.000Z",
       primaryModel: "openai/gpt-5.5",
@@ -567,7 +567,7 @@ describe("evidence summary", () => {
 
     expect(evidence.entries[0]?.execution?.packageSource).toEqual({
       kind: "npm-package",
-      spec: "openclaw@beta",
+      spec: "eve@beta",
       sha: "def456",
     });
   });
@@ -576,7 +576,7 @@ describe("evidence summary", () => {
     const evidence = buildLiveTransportEvidenceSummary({
       artifactPaths: [{ kind: "summary", path: QA_EVIDENCE_FILENAME }],
       env: {
-        OPENCLAW_NPM_TELEGRAM_INSTALL_SOURCE: "openclaw@beta",
+        EVE_NPM_TELEGRAM_INSTALL_SOURCE: "eve@beta",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:16:00.000Z",
       primaryModel: "openai/gpt-5.5",

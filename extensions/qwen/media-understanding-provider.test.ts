@@ -2,7 +2,7 @@
 import {
   createRequestCaptureJsonFetch,
   installPinnedHostnameTestHooks,
-} from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/test-env";
 import { describe, expect, it } from "vitest";
 import { describeQwenVideo } from "./media-understanding-provider.js";
 

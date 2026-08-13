@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import EVEProtocol
 import SwiftUI
 
 struct RootTabsPhoneControlHub: View {
@@ -14,7 +14,7 @@ struct RootTabsPhoneControlHub: View {
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
             ZStack {
-                OpenClawProBackground()
+                EVEProBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: self.isCompactHeight ? 10 : 16) {
                         self.headerCard
@@ -43,9 +43,9 @@ struct RootTabsPhoneControlHub: View {
     @ViewBuilder
     private var headerCard: some View {
         if self.isCompactHeight {
-            ProCard(padding: 8, radius: OpenClawProMetric.cardRadius) {
+            ProCard(padding: 8, radius: EVEProMetric.cardRadius) {
                 HStack(spacing: 12) {
-                    OpenClawProMark(size: 24, shadowRadius: 3)
+                    EVEProMark(size: 24, shadowRadius: 3)
                     VStack(alignment: .leading, spacing: 3) {
                         Text(self.sidebarActiveAgentTitle)
                             .font(.subheadline.weight(.semibold))
@@ -60,12 +60,12 @@ struct RootTabsPhoneControlHub: View {
                     ProValuePill(value: self.gatewayStateText, color: self.gatewayStateColor)
                 }
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         } else {
-            ProCard(radius: OpenClawProMetric.cardRadius) {
+            ProCard(radius: EVEProMetric.cardRadius) {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 12) {
-                        OpenClawProMark(size: 32, shadowRadius: 4)
+                        EVEProMark(size: 32, shadowRadius: 4)
                         VStack(alignment: .leading, spacing: 3) {
                             Text(self.sidebarActiveAgentTitle)
                                 .font(.headline)
@@ -83,7 +83,7 @@ struct RootTabsPhoneControlHub: View {
                     self.gatewayActionRow
                 }
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         }
     }
 
@@ -106,7 +106,7 @@ struct RootTabsPhoneControlHub: View {
                 Spacer(minLength: 8)
                 Text(self.gatewayActionTitle)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(OpenClawBrand.accent)
+                    .foregroundStyle(EVEBrand.accent)
                 Image(systemName: "chevron.right")
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(.secondary)
@@ -122,7 +122,7 @@ struct RootTabsPhoneControlHub: View {
     private func groupSection(_ group: RootTabs.SidebarGroup) -> some View {
         VStack(alignment: .leading, spacing: self.isCompactHeight ? 6 : 8) {
             ProSectionHeader(title: group.title.capitalized)
-            ProCard(padding: 0, radius: OpenClawProMetric.cardRadius) {
+            ProCard(padding: 0, radius: EVEProMetric.cardRadius) {
                 VStack(spacing: 0) {
                     ForEach(Array(group.destinations.enumerated()), id: \.element.id) { index, destination in
                         if index > 0 {
@@ -133,7 +133,7 @@ struct RootTabsPhoneControlHub: View {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     @ViewBuilder
@@ -178,17 +178,17 @@ struct RootTabsPhoneControlHub: View {
     }
 
     private var versionFooter: some View {
-        ProCard(radius: OpenClawProMetric.cardRadius) {
+        ProCard(radius: EVEProMetric.cardRadius) {
             HStack {
                 Spacer()
-                Text("v\(DeviceInfoHelper.openClawVersionString())")
+                Text("v\(DeviceInfoHelper.eveVersionString())")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                 Spacer()
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     @ViewBuilder
@@ -246,7 +246,7 @@ struct RootTabsPhoneControlHub: View {
                 headerTitle: "Cron Jobs",
                 openSettings: { self.openRootDestination(.gateway) })
         case .docs:
-            OpenClawDocsScreen(
+            EVEDocsScreen(
                 headerLeadingAction: self.phoneDetailBackAction,
                 gatewayAction: { self.openRootDestination(.gateway) })
         case .settings:
@@ -254,11 +254,11 @@ struct RootTabsPhoneControlHub: View {
         }
     }
 
-    private var phoneDetailBackAction: OpenClawSidebarHeaderAction {
-        OpenClawSidebarHeaderAction(
+    private var phoneDetailBackAction: EVESidebarHeaderAction {
+        EVESidebarHeaderAction(
             systemName: "chevron.left",
             accessibilityLabel: "Back to Control",
-            accessibilityIdentifier: "OpenClawPhoneDetailBackButton",
+            accessibilityIdentifier: "EVEPhoneDetailBackButton",
             action: { self.popPhoneDetail() })
     }
 
@@ -308,11 +308,11 @@ struct RootTabsPhoneControlHub: View {
     private var gatewayStateColor: Color {
         switch GatewayStatusBuilder.build(appModel: self.appModel) {
         case .connected:
-            OpenClawBrand.ok
+            EVEBrand.ok
         case .connecting:
-            OpenClawBrand.accent
+            EVEBrand.accent
         case .error:
-            OpenClawBrand.warn
+            EVEBrand.warn
         case .disconnected:
             .secondary
         }
@@ -346,13 +346,13 @@ struct RootTabsPhoneControlHub: View {
     private func color(for destination: RootTabs.SidebarDestination) -> Color {
         switch destination {
         case .chat, .talk, .overview, .gateway:
-            OpenClawBrand.accent
+            EVEBrand.accent
         case .instances:
             Color.secondary
         case .activity, .usage, .docs:
-            OpenClawBrand.accentHot
+            EVEBrand.accentHot
         case .agents, .workboard, .skillWorkshop, .sessions, .dreaming, .cron, .settings:
-            OpenClawBrand.ok
+            EVEBrand.ok
         }
     }
 

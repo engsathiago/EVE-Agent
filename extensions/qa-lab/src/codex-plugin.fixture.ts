@@ -9,7 +9,7 @@ export const CODEX_PLUGIN_ID = "codex";
 
 export const CODEX_PLUGIN_LIFECYCLE_MESSAGES = Object.freeze({
   missingPlugin:
-    'Codex plugin is required for Codex runtime. Run "openclaw doctor --fix" to install @openclaw/codex, then retry.',
+    'Codex plugin is required for Codex runtime. Run "eve doctor --fix" to install @eve/codex, then retry.',
 });
 
 export type CodexPluginFixtureVersion = "missing" | "current" | "head" | (string & {});
@@ -31,9 +31,9 @@ export type CodexPluginLifecycleResult = {
 };
 
 type CodexPluginPackageJson = {
-  name: "@openclaw/codex";
+  name: "@eve/codex";
   version: string;
-  openclaw: {
+  eve: {
     install: {
       minHostVersion: string;
     };
@@ -68,9 +68,9 @@ function resolveFixtureVersion(version: CodexPluginFixtureVersion): string {
 
 function buildPackageJson(version: string): CodexPluginPackageJson {
   return {
-    name: "@openclaw/codex",
+    name: "@eve/codex",
     version,
-    openclaw: {
+    eve: {
       install: {
         minHostVersion: `>=${version === CODEX_PLUGIN_HEAD_VERSION ? CODEX_PLUGIN_CURRENT_VERSION : version}`,
       },
@@ -112,11 +112,11 @@ function compareVersions(left: string | undefined, right: string): number {
 }
 
 function formatPinnedOldRemediation(pluginVersion: string, hostVersion: string) {
-  return `Codex plugin version ${pluginVersion} is older than OpenClaw ${hostVersion}. Run "openclaw plugins update codex" or unpin codex, then rerun "openclaw doctor --fix".`;
+  return `Codex plugin version ${pluginVersion} is older than EVE ${hostVersion}. Run "eve plugins update codex" or unpin codex, then rerun "eve doctor --fix".`;
 }
 
 function formatPinnedNewRemediation(pluginVersion: string, hostVersion: string) {
-  return `Codex plugin version ${pluginVersion} requires a newer OpenClaw host than ${hostVersion}. Upgrade OpenClaw or install a codex plugin version pinned to ${hostVersion}.`;
+  return `Codex plugin version ${pluginVersion} requires a newer EVE host than ${hostVersion}. Upgrade EVE or install a codex plugin version pinned to ${hostVersion}.`;
 }
 
 function collectStaleLegacyRuntimePins(config: unknown): string[] {
@@ -131,7 +131,7 @@ function collectStaleLegacyRuntimePins(config: unknown): string[] {
   };
   const markers = new Set<string>();
   const collectRuntimePin = (value: unknown) => {
-    if (value === "openclaw") {
+    if (value === "eve") {
       markers.add(`agentRuntime.id=${value}`);
     }
   };
@@ -160,7 +160,7 @@ export async function seedCodexPluginAt(
     "utf8",
   );
   await fs.writeFile(
-    path.join(targetDir, "openclaw.plugin.json"),
+    path.join(targetDir, "eve.plugin.json"),
     `${JSON.stringify({ id: CODEX_PLUGIN_ID, name: "Codex" }, null, 2)}\n`,
     "utf8",
   );

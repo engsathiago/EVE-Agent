@@ -3,8 +3,8 @@
  *
  * Keeps aliases, groups, profile expansion, and prefix matching consistent across allow/deny paths.
  */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import {
   CORE_TOOL_GROUPS,
   resolveCoreToolProfilePolicy,

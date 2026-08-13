@@ -45,7 +45,7 @@ export const pluginContractPatterns = ["src/plugins/contracts/**/*.test.ts"];
 export function loadContractsIncludePatternsFromEnv(
   env: Record<string, string | undefined> = process.env,
 ): string[] | null {
-  return loadPatternListFromEnv("OPENCLAW_VITEST_INCLUDE_FILE", env);
+  return loadPatternListFromEnv("EVE_VITEST_INCLUDE_FILE", env);
 }
 
 function narrowContractIncludePatterns(

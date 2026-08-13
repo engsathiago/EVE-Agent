@@ -33,7 +33,7 @@ describe("runEmbeddedAttempt cwd/workspace split", () => {
     // Bootstrap still reads the agent workspace, while coding tools execute in
     // the task repo cwd when a subagent targets a separate checkout.
     const bootstrap = createContextEngineBootstrapAndAssemble();
-    const taskRepo = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-task-repo-"));
+    const taskRepo = await fs.mkdtemp(path.join(os.tmpdir(), "eve-task-repo-"));
     tempPaths.push(taskRepo);
 
     await createContextEngineAttemptRunner({
@@ -52,7 +52,7 @@ describe("runEmbeddedAttempt cwd/workspace split", () => {
     expect(bootstrapCall?.workspaceDir).not.toBe("/tmp/task-repo");
     expect(bootstrapCall?.agentId).toBe("main");
 
-    const toolsCall = hoisted.createOpenClawCodingToolsMock.mock.calls[0]?.[0] as
+    const toolsCall = hoisted.createEVECodingToolsMock.mock.calls[0]?.[0] as
       | { cwd?: string; workspaceDir?: string; spawnWorkspaceDir?: string }
       | undefined;
     expect(toolsCall?.cwd).toBe(taskRepo);
@@ -77,7 +77,7 @@ describe("runEmbeddedAttempt cwd/workspace split", () => {
       },
     });
 
-    const toolsCall = hoisted.createOpenClawCodingToolsMock.mock.calls[0]?.[0] as
+    const toolsCall = hoisted.createEVECodingToolsMock.mock.calls[0]?.[0] as
       | { currentChannelId?: string; currentMessagingTarget?: string }
       | undefined;
     expect(toolsCall).toMatchObject({
@@ -92,7 +92,7 @@ describe("runEmbeddedAttempt cwd/workspace split", () => {
     hoisted.resolveSandboxContextMock.mockResolvedValueOnce({
       enabled: true,
       workspaceAccess: "ro",
-      workspaceDir: "/tmp/openclaw-sandbox-copy",
+      workspaceDir: "/tmp/eve-sandbox-copy",
     });
 
     await expect(
@@ -105,6 +105,6 @@ describe("runEmbeddedAttempt cwd/workspace split", () => {
         },
       }),
     ).rejects.toThrow("cwd override is not supported");
-    expect(hoisted.createOpenClawCodingToolsMock).not.toHaveBeenCalled();
+    expect(hoisted.createEVECodingToolsMock).not.toHaveBeenCalled();
   });
 });

@@ -2,12 +2,12 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createSlackWebClient, createSlackWriteClient } from "@openclaw/slack/api.js";
+import { createSlackWebClient, createSlackWriteClient } from "@eve/slack/api.js";
 import type { WebClient } from "@slack/web-api";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { z } from "zod";
 import { QA_EVIDENCE_FILENAME, buildLiveTransportEvidenceSummary } from "../../evidence-summary.js";
 import { startQaGatewayChild } from "../../gateway-child.js";
@@ -239,17 +239,17 @@ export type SlackQaRunResult = {
 type SlackCredentialLease = Awaited<ReturnType<typeof acquireQaCredentialLease<SlackQaRuntimeEnv>>>;
 type SlackCredentialHeartbeat = ReturnType<typeof startQaCredentialLeaseHeartbeat>;
 
-const SLACK_QA_CAPTURE_CONTENT_ENV = "OPENCLAW_QA_SLACK_CAPTURE_CONTENT";
-const SLACK_QA_APPROVAL_CHECKPOINT_DIR_ENV = "OPENCLAW_QA_SLACK_APPROVAL_CHECKPOINT_DIR";
+const SLACK_QA_CAPTURE_CONTENT_ENV = "EVE_QA_SLACK_CAPTURE_CONTENT";
+const SLACK_QA_APPROVAL_CHECKPOINT_DIR_ENV = "EVE_QA_SLACK_APPROVAL_CHECKPOINT_DIR";
 const SLACK_QA_APPROVAL_CHECKPOINT_TIMEOUT_MS_ENV =
-  "OPENCLAW_QA_SLACK_APPROVAL_CHECKPOINT_TIMEOUT_MS";
-const QA_REDACT_PUBLIC_METADATA_ENV = "OPENCLAW_QA_REDACT_PUBLIC_METADATA";
+  "EVE_QA_SLACK_APPROVAL_CHECKPOINT_TIMEOUT_MS";
+const QA_REDACT_PUBLIC_METADATA_ENV = "EVE_QA_REDACT_PUBLIC_METADATA";
 const SLACK_QA_WEB_API_TIMEOUT_MS = 45_000;
 const SLACK_QA_ENV_KEYS = [
-  "OPENCLAW_QA_SLACK_CHANNEL_ID",
-  "OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN",
-  "OPENCLAW_QA_SLACK_SUT_BOT_TOKEN",
-  "OPENCLAW_QA_SLACK_SUT_APP_TOKEN",
+  "EVE_QA_SLACK_CHANNEL_ID",
+  "EVE_QA_SLACK_DRIVER_BOT_TOKEN",
+  "EVE_QA_SLACK_SUT_BOT_TOKEN",
+  "EVE_QA_SLACK_SUT_APP_TOKEN",
 ] as const;
 
 const slackQaCredentialPayloadSchema = z.object({
@@ -326,8 +326,8 @@ const SLACK_QA_SCENARIOS: SlackQaScenarioDefinition[] = [
     title: "Slack non-allowlisted sender does not trigger",
     timeoutMs: 8_000,
     configOverrides: {
-      allowFrom: ["U_OPENCLAW_QA_NEVER_ALLOWED"],
-      users: ["U_OPENCLAW_QA_NEVER_ALLOWED"],
+      allowFrom: ["U_EVE_QA_NEVER_ALLOWED"],
+      users: ["U_EVE_QA_NEVER_ALLOWED"],
     },
     buildRun: (sutUserId) => {
       const token = `SLACK_QA_BLOCK_${randomUUID().slice(0, 8).toUpperCase()}`;
@@ -526,12 +526,12 @@ function validateSlackQaRuntimeEnv(runtimeEnv: SlackQaRuntimeEnv, label: string)
 
 function resolveSlackQaRuntimeEnv(env: NodeJS.ProcessEnv = process.env): SlackQaRuntimeEnv {
   const runtimeEnv = {
-    channelId: resolveEnvValue(env, "OPENCLAW_QA_SLACK_CHANNEL_ID"),
-    driverBotToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN"),
-    sutBotToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_SUT_BOT_TOKEN"),
-    sutAppToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_SUT_APP_TOKEN"),
+    channelId: resolveEnvValue(env, "EVE_QA_SLACK_CHANNEL_ID"),
+    driverBotToken: resolveEnvValue(env, "EVE_QA_SLACK_DRIVER_BOT_TOKEN"),
+    sutBotToken: resolveEnvValue(env, "EVE_QA_SLACK_SUT_BOT_TOKEN"),
+    sutAppToken: resolveEnvValue(env, "EVE_QA_SLACK_SUT_APP_TOKEN"),
   };
-  return validateSlackQaRuntimeEnv(runtimeEnv, "OPENCLAW_QA_SLACK");
+  return validateSlackQaRuntimeEnv(runtimeEnv, "EVE_QA_SLACK");
 }
 
 function parseSlackQaCredentialPayload(payload: unknown): SlackQaRuntimeEnv {
@@ -554,7 +554,7 @@ function findScenario(ids?: string[]) {
 }
 
 function buildSlackQaConfig(
-  baseCfg: OpenClawConfig,
+  baseCfg: EVEConfig,
   params: {
     channelId: string;
     driverBotUserId: string;
@@ -563,7 +563,7 @@ function buildSlackQaConfig(
     sutAppToken: string;
     sutBotToken: string;
   },
-): OpenClawConfig {
+): EVEConfig {
   const pluginAllow = uniqueStrings([...(baseCfg.plugins?.allow ?? []), "slack"]);
   const approvalOverrides = params.overrides?.approvals;
   const approvalForwardingConfig =
@@ -1568,7 +1568,7 @@ function resolveSlackChannelReadySince(params: {
 }
 
 function resolveSlackQaReadyTimeoutMs(env: NodeJS.ProcessEnv = process.env) {
-  const raw = env.OPENCLAW_QA_TRANSPORT_READY_TIMEOUT_MS;
+  const raw = env.EVE_QA_TRANSPORT_READY_TIMEOUT_MS;
   if (!raw) {
     return SLACK_QA_DEFAULT_READY_TIMEOUT_MS;
   }

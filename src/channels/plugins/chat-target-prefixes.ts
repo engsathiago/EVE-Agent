@@ -6,8 +6,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { parseStrictInteger } from "../../infra/parse-finite-number.js";
 
 /**

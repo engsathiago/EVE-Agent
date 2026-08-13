@@ -3,4 +3,4 @@ export {
   renderQrPngBase64,
   renderQrPngDataUrl,
   writeQrPngTempFile,
-} from "openclaw/plugin-sdk/media-runtime";
+} from "eve-agent/plugin-sdk/media-runtime";

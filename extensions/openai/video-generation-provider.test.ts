@@ -5,8 +5,8 @@ import path from "node:path";
 import {
   getProviderHttpMocks,
   installProviderHttpMockCleanup,
-} from "openclaw/plugin-sdk/provider-http-test-mocks";
-import { expectExplicitVideoGenerationCapabilities } from "openclaw/plugin-sdk/provider-test-contracts";
+} from "eve-agent/plugin-sdk/provider-http-test-mocks";
+import { expectExplicitVideoGenerationCapabilities } from "eve-agent/plugin-sdk/provider-test-contracts";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 const {
@@ -120,7 +120,7 @@ describe("openai video generation provider", () => {
   });
 
   it("does not advertise video generation for OAuth-only OpenAI profiles", () => {
-    const agentDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-openai-video-auth-"));
+    const agentDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-openai-video-auth-"));
     const previousOpenAIKey = process.env.OPENAI_API_KEY;
     delete process.env.OPENAI_API_KEY;
     try {

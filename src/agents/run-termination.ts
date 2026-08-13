@@ -10,7 +10,7 @@ const AGENT_RUN_ABORTED_STOP_REASON = "aborted" as const;
 export const AGENT_RUN_ABORTED_ERROR = "agent run aborted" as const;
 export const AGENT_RUN_RESTART_ABORT_STOP_REASON = "restart" as const;
 
-const AGENT_RUN_RESTART_ABORT_ERROR_CODE = "OPENCLAW_RESTART_ABORT";
+const AGENT_RUN_RESTART_ABORT_ERROR_CODE = "EVE_RESTART_ABORT";
 
 export function createAgentRunRestartAbortError(): Error {
   const error = new Error("agent run aborted for restart") as Error & { code: string };

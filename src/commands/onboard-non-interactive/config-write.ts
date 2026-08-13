@@ -11,17 +11,17 @@ import {
   unchangedPendingPluginInstallRecordIds,
 } from "../../cli/plugins-install-record-commit.js";
 import { replaceConfigFile } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 
 /** Commits a non-interactive onboard config update with pending plugin records handled first. */
 export async function commitNonInteractiveOnboardConfig(params: {
-  nextConfig: OpenClawConfig;
-  baseConfig: OpenClawConfig;
+  nextConfig: EVEConfig;
+  baseConfig: EVEConfig;
   baseHash?: string;
   reset?: boolean;
-}): Promise<OpenClawConfig> {
+}): Promise<EVEConfig> {
   // Ordinary onboard reruns must preserve existing agents.list / bindings.
-  // Only explicit --reset may allow a config size drop; see openclaw#84692.
+  // Only explicit --reset may allow a config size drop; see eve#84692.
   const allowConfigSizeDrop = params.reset === true;
   let writeBaseHash = params.baseHash;
   let nextConfig = params.nextConfig;

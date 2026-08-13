@@ -48,7 +48,7 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns empty array when space is sufficient", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 10 * 1024 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toEqual([]);
   });
@@ -56,18 +56,18 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns warning lines when space is low (below 500 MB)", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 300 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toHaveLength(2);
     expect(warnings[0]).toContain("Low disk space");
     expect(warnings[0]).toContain("300 MB");
-    expect(warnings[0]).toContain("~/.openclaw");
+    expect(warnings[0]).toContain("~/.eve");
   });
 
   it("returns critical lines when space is very low (below 100 MB)", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 50 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toHaveLength(3);
     expect(warnings[0]).toContain("CRITICAL");
@@ -77,7 +77,7 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns critical at exactly 0 bytes", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 0,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toHaveLength(3);
     expect(warnings[0]).toContain("CRITICAL");
@@ -86,7 +86,7 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns empty at exactly 500 MB (boundary)", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 500 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toEqual([]);
   });
@@ -94,7 +94,7 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns warning at 499 MB (just below boundary)", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 499 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toHaveLength(2);
     expect(warnings[0]).toContain("Low disk space");
@@ -103,7 +103,7 @@ describe("buildDiskSpaceWarnings", () => {
   it("returns critical at exactly 99 MB (just below critical)", () => {
     const warnings = buildDiskSpaceWarnings({
       availableBytes: 99 * 1024 * 1024,
-      displayStateDir: "~/.openclaw",
+      displayStateDir: "~/.eve",
     });
     expect(warnings).toHaveLength(3);
     expect(warnings[0]).toContain("CRITICAL");

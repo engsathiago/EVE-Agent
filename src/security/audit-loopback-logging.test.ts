@@ -1,6 +1,6 @@
 // Covers loopback logging exposure audit findings.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { collectGatewayConfigFindings, collectLoggingFindings } from "./audit.js";
 
@@ -24,7 +24,7 @@ describe("security audit loopback and logging findings", () => {
   it("evaluates loopback control UI and logging exposure findings", async () => {
     await Promise.all([
       (async () => {
-        const cfg: OpenClawConfig = {
+        const cfg: EVEConfig = {
           gateway: {
             bind: "loopback",
             controlUi: { enabled: true },
@@ -40,11 +40,11 @@ describe("security audit loopback and logging findings", () => {
       })(),
       withEnvAsync(
         {
-          OPENCLAW_GATEWAY_TOKEN: undefined,
-          OPENCLAW_GATEWAY_PASSWORD: undefined,
+          EVE_GATEWAY_TOKEN: undefined,
+          EVE_GATEWAY_PASSWORD: undefined,
         },
         async () => {
-          const cfg: OpenClawConfig = {
+          const cfg: EVEConfig = {
             gateway: {
               bind: "loopback",
               controlUi: { enabled: true },
@@ -61,7 +61,7 @@ describe("security audit loopback and logging findings", () => {
         },
       ),
       (async () => {
-        const cfg: OpenClawConfig = {
+        const cfg: EVEConfig = {
           logging: { redactSensitive: "off" },
         };
         expect(hasLoggingFinding("logging.redact_off", "warn", collectLoggingFindings(cfg))).toBe(

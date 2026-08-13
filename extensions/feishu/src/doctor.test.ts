@@ -2,22 +2,22 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { loadSessionStore } from "openclaw/plugin-sdk/session-store-runtime";
+import { loadSessionStore } from "eve-agent/plugin-sdk/session-store-runtime";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { isFeishuSessionStoreKey, runFeishuDoctorSequence } from "./doctor.js";
 
 type EnvSnapshot = {
   HOME?: string;
-  OPENCLAW_HOME?: string;
-  OPENCLAW_STATE_DIR?: string;
+  EVE_HOME?: string;
+  EVE_STATE_DIR?: string;
 };
 
 function captureEnv(): EnvSnapshot {
   return {
     HOME: process.env.HOME,
-    OPENCLAW_HOME: process.env.OPENCLAW_HOME,
-    OPENCLAW_STATE_DIR: process.env.OPENCLAW_STATE_DIR,
+    EVE_HOME: process.env.EVE_HOME,
+    EVE_STATE_DIR: process.env.EVE_STATE_DIR,
   };
 }
 
@@ -32,7 +32,7 @@ function restoreEnv(snapshot: EnvSnapshot) {
   }
 }
 
-function feishuConfig(): OpenClawConfig {
+function feishuConfig(): EVEConfig {
   return {
     channels: {
       feishu: {
@@ -40,13 +40,13 @@ function feishuConfig(): OpenClawConfig {
         appSecret: "secret_xxx",
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function stateDir(): string {
-  const dir = process.env.OPENCLAW_STATE_DIR;
+  const dir = process.env.EVE_STATE_DIR;
   if (!dir) {
-    throw new Error("OPENCLAW_STATE_DIR is not set");
+    throw new Error("EVE_STATE_DIR is not set");
   }
   return dir;
 }
@@ -106,11 +106,11 @@ describe("Feishu doctor state repair", () => {
 
   beforeEach(() => {
     envSnapshot = captureEnv();
-    tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-feishu-doctor-"));
+    tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-feishu-doctor-"));
     process.env.HOME = tempHome;
-    process.env.OPENCLAW_HOME = tempHome;
-    process.env.OPENCLAW_STATE_DIR = path.join(tempHome, ".openclaw");
-    fs.mkdirSync(process.env.OPENCLAW_STATE_DIR, { recursive: true, mode: 0o700 });
+    process.env.EVE_HOME = tempHome;
+    process.env.EVE_STATE_DIR = path.join(tempHome, ".eve");
+    fs.mkdirSync(process.env.EVE_STATE_DIR, { recursive: true, mode: 0o700 });
   });
 
   afterEach(() => {
@@ -170,7 +170,7 @@ describe("Feishu doctor state repair", () => {
       cfg: {
         ...feishuConfig(),
         session: { store: customStorePath },
-      } as OpenClawConfig,
+      } as EVEConfig,
       env: process.env,
       shouldRepair: false,
     });
@@ -218,7 +218,7 @@ describe("Feishu doctor state repair", () => {
     expect(result.changeNotes).toEqual([]);
     expect(result.warningNotes.join("\n")).toContain("Feishu local channel state may need repair");
     expect(result.warningNotes.join("\n")).toContain("preserving Feishu App ID/secret config");
-    expect(result.warningNotes.join("\n")).toContain("openclaw doctor --fix");
+    expect(result.warningNotes.join("\n")).toContain("eve doctor --fix");
   });
 
   it("rebuilds corrupt Feishu state without deleting healthy Feishu sessions", async () => {

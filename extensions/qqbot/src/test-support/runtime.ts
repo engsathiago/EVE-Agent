@@ -1,17 +1,17 @@
 // Qqbot plugin module implements runtime behavior.
-import type { PluginRuntime } from "openclaw/plugin-sdk/core";
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/core";
+import type { OpenKeyedStoreOptions } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { resetQQBotRuntimeForTest, setQQBotRuntime } from "../bridge/runtime.js";
 
 function stateEnv(stateDir: string, env?: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return {
     ...(env ?? process.env),
-    OPENCLAW_STATE_DIR: stateDir,
+    EVE_STATE_DIR: stateDir,
   };
 }
 

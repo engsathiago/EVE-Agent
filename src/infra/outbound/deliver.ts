@@ -22,7 +22,7 @@ import type {
 } from "../../channels/plugins/types.adapters.js";
 import { resolveMirroredTranscriptText } from "../../config/sessions/transcript-mirror.js";
 import type { ReplyToMode } from "../../config/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { fireAndForgetHook } from "../../hooks/fire-and-forget.js";
 import { createInternalHookEvent, triggerInternalHook } from "../../hooks/internal-hooks.js";
 import {
@@ -48,6 +48,7 @@ import {
 } from "../diagnostic-events.js";
 import { formatErrorMessage } from "../errors.js";
 import { throwIfAborted } from "./abort.js";
+import { bootstrapOutboundChannelPlugin } from "./channel-bootstrap.runtime.js";
 import { resolveOutboundChannelMessageAdapter } from "./channel-resolution.js";
 import {
   OutboundDeliveryError,
@@ -134,15 +135,6 @@ async function loadTranscriptRuntime() {
   return await transcriptRuntimePromise;
 }
 
-let channelBootstrapRuntimePromise:
-  | Promise<typeof import("./channel-bootstrap.runtime.js")>
-  | undefined;
-
-async function loadChannelBootstrapRuntime() {
-  channelBootstrapRuntimePromise ??= import("./channel-bootstrap.runtime.js");
-  return await channelBootstrapRuntimePromise;
-}
-
 type ChannelHandler = {
   chunker: ChannelOutboundAdapter["chunker"] | null;
   chunkerMode?: "text" | "markdown";
@@ -195,7 +187,7 @@ type ChannelHandler = {
 type ChannelMessageLifecycleContext = ChannelMessageSendAttemptContext;
 
 type ChannelHandlerParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: Exclude<OutboundChannel, "none">;
   to: string;
   accountId?: string;
@@ -215,7 +207,7 @@ type ChannelHandlerParams = {
 
 // Channel docking: outbound delivery delegates to plugin.outbound adapters.
 async function resolveChannelOutboundDirectiveOptions(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: Exclude<OutboundChannel, "none">;
 }): Promise<{ extractMarkdownImages?: boolean }> {
   const outbound = await loadBootstrappedOutboundAdapter(params);
@@ -235,12 +227,11 @@ async function createChannelHandler(params: ChannelHandlerParams): Promise<Chann
 }
 
 async function loadBootstrappedOutboundAdapter(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: Exclude<OutboundChannel, "none">;
 }): Promise<ChannelOutboundAdapter | undefined> {
   let outbound = await loadChannelOutboundAdapter(params.channel);
   if (!outbound) {
-    const { bootstrapOutboundChannelPlugin } = await loadChannelBootstrapRuntime();
     bootstrapOutboundChannelPlugin({
       channel: params.channel,
       cfg: params.cfg,
@@ -303,7 +294,7 @@ async function runChannelMessageSendWithLifecycle<
 }
 
 export async function resolveOutboundDurableFinalDeliverySupport(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: Exclude<OutboundChannel, "none">;
   requirements?: DurableFinalDeliveryRequirements;
 }): Promise<OutboundDurableDeliverySupport> {
@@ -633,7 +624,7 @@ async function markQueuedPlatformOutcomeUnknown(params: {
 }
 
 type DeliverOutboundPayloadsCoreParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel: Exclude<OutboundChannel, "none">;
   to: string;
   accountId?: string;

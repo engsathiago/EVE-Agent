@@ -2,12 +2,12 @@
 import {
   parseAgentSessionKey,
   type MemoryCitationsMode,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/memory-core-host-runtime-core";
-import type { MemorySearchResult } from "openclaw/plugin-sdk/memory-core-host-runtime-files";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/memory-core-host-runtime-core";
+import type { MemorySearchResult } from "eve-agent/plugin-sdk/memory-core-host-runtime-files";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
-export function resolveMemoryCitationsMode(cfg: OpenClawConfig): MemoryCitationsMode {
+export function resolveMemoryCitationsMode(cfg: EVEConfig): MemoryCitationsMode {
   const mode = cfg.memory?.citations;
   if (mode === "on" || mode === "off" || mode === "auto") {
     return mode;

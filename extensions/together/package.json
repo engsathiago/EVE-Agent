@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/together-provider",
+  "name": "@eve/together-provider",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Together provider plugin",
+  "description": "EVE Together provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ]

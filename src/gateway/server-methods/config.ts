@@ -5,9 +5,9 @@ import { isDeepStrictEqual } from "node:util";
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "@openclaw/normalization-core/number-coercion";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/number-coercion";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import {
   ErrorCodes,
   errorShape,
@@ -38,7 +38,7 @@ import {
 } from "../../config/redact-snapshot.js";
 import { loadGatewayRuntimeConfigSchema } from "../../config/runtime-schema.js";
 import { lookupConfigSchema, type ConfigSchemaResponse } from "../../config/schema.js";
-import type { ConfigValidationIssue, OpenClawConfig } from "../../config/types.openclaw.js";
+import type { ConfigValidationIssue, EVEConfig } from "../../config/types.eve.js";
 import {
   validateConfigObjectRawWithPlugins,
   validateConfigObjectWithPlugins,
@@ -293,7 +293,7 @@ function collectDestructiveIdKeyedArrayEntryPatchPaths(params: {
 }
 
 function rejectDestructiveArrayPatchWithoutIntent(params: {
-  currentConfig: OpenClawConfig;
+  currentConfig: EVEConfig;
   mergedConfig: unknown;
   patch: unknown;
   replacePaths: Set<string>;
@@ -469,7 +469,7 @@ function parseValidateConfigFromRawOrRespond(
   requestName: string,
   snapshot: Awaited<ReturnType<typeof readConfigFileSnapshot>>,
   respond: RespondFn,
-): { config: OpenClawConfig; writeConfig: OpenClawConfig; schema: ConfigSchemaResponse } | null {
+): { config: EVEConfig; writeConfig: EVEConfig; schema: ConfigSchemaResponse } | null {
   const rawValue = parseRawConfigOrRespond(params, requestName, respond);
   if (!rawValue) {
     return null;
@@ -528,7 +528,7 @@ function parseValidateConfigFromRawOrRespond(
   }
   return {
     config: validated.config,
-    writeConfig: validationCandidate as OpenClawConfig,
+    writeConfig: validationCandidate as EVEConfig,
     schema,
   };
 }
@@ -548,7 +548,7 @@ function summarizeConfigValidationIssues(issues: ReadonlyArray<ConfigValidationI
 }
 
 async function ensureResolvableSecretRefsOrRespond(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   respond: RespondFn;
 }): Promise<PreparedSecretsRuntimeSnapshot | null> {
   try {
@@ -622,8 +622,8 @@ async function respondWithConfigRestartWrite(params: {
 }
 
 function shouldDisconnectSharedAuthClientsForConfigWrite(params: {
-  prevConfig: OpenClawConfig;
-  nextConfig: OpenClawConfig;
+  prevConfig: EVEConfig;
+  nextConfig: EVEConfig;
   preparedSecretsSnapshot: PreparedSecretsRuntimeSnapshot;
 }): boolean {
   return (
@@ -637,7 +637,7 @@ function shouldDisconnectSharedAuthClientsForConfigWrite(params: {
 
 function respondConfigPatchNoop(params: {
   snapshot: Awaited<ReturnType<typeof readConfigFileSnapshot>>;
-  config: OpenClawConfig;
+  config: EVEConfig;
   uiHints: ConfigRedactionHints;
   actor: ReturnType<typeof resolveControlPlaneActor>;
   context: GatewayRequestContext | undefined;

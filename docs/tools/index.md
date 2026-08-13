@@ -1,8 +1,8 @@
 ---
 doc-schema-version: 1
-summary: "OpenClaw tools, skills, and plugins overview: what agents can call and how to extend them"
+summary: "EVE tools, skills, and plugins overview: what agents can call and how to extend them"
 read_when:
-  - You want to understand what tools OpenClaw provides
+  - You want to understand what tools EVE provides
   - You are deciding between built-in tools, skills, and plugins
   - You need the right docs entry point for tool policy, automation, or agent coordination
 title: "Overview"
@@ -29,7 +29,7 @@ only when the agent should see fewer tools or needs explicit host access.
 | Add a new integration or runtime surface    | [Plugins](#extend-capabilities)                | [Plugins](/tools/plugin) and [Build plugins](/plugins/building-plugins)                                         |
 | Run work later or in the background         | [Automation](/automation)                      | [Automation overview](/automation)                                                                              |
 | Coordinate multiple agents or harnesses     | [Sub-agents](/tools/subagents)                 | [ACP agents](/tools/acp-agents) and [Agent send](/tools/agent-send)                                             |
-| Search a large OpenClaw tool catalog        | [Tool Search](/tools/tool-search)              | [Tool Search](/tools/tool-search)                                                                               |
+| Search a large EVE tool catalog        | [Tool Search](/tools/tool-search)              | [Tool Search](/tools/tool-search)                                                                               |
 
 ## Choose tools, skills, or plugins
 
@@ -52,14 +52,14 @@ only when the agent should see fewer tools or needs explicit host access.
     skill when the agent already has the tools it needs, but needs a repeatable
     workflow, review rubric, command sequence, or operating constraint.
 
-    Skills can live in a workspace, shared skill directory, managed OpenClaw
+    Skills can live in a workspace, shared skill directory, managed EVE
     skill root, or plugin package.
 
     [Skills](/tools/skills) | [Skill Workshop](/tools/skill-workshop) | [Creating skills](/tools/creating-skills) | [Skills config](/tools/skills-config)
 
   </Step>
 
-  <Step title="Use a plugin when OpenClaw needs a new capability">
+  <Step title="Use a plugin when EVE needs a new capability">
     A plugin can add tools, skills, channels, model providers, speech, realtime
     voice, media generation, web search, web fetch, hooks, and other runtime
     capabilities. Use a plugin when the capability has code, credentials,
@@ -89,10 +89,10 @@ semantics, use [Tools and custom providers](/gateway/config-tools).
 | Automation              | Schedule work or respond to background events                                 | `cron`, `heartbeat_respond`                                          | [Automation](/automation)                                                                   |
 | Gateway and nodes       | Inspect Gateway state or paired target devices                                | `gateway`, `nodes`                                                   | [Gateway configuration](/gateway/configuration), [Nodes](/nodes)                            |
 | Media                   | Analyze, generate, or speak media                                             | `image`, `image_generate`, `music_generate`, `video_generate`, `tts` | [Media overview](/tools/media-overview)                                                     |
-| Large OpenClaw catalogs | Search and call many eligible tools without sending every schema to the model | `tool_search_code`, `tool_search`, `tool_describe`                   | [Tool Search](/tools/tool-search)                                                           |
+| Large EVE catalogs | Search and call many eligible tools without sending every schema to the model | `tool_search_code`, `tool_search`, `tool_describe`                   | [Tool Search](/tools/tool-search)                                                           |
 
 <Note>
-Tool Search is an experimental OpenClaw agent surface. Codex harness runs use
+Tool Search is an experimental EVE agent surface. Codex harness runs use
 Codex-native code mode, native tool search, deferred dynamic tools, and nested
 tool calls instead of `tools.toolSearch`.
 </Note>
@@ -136,7 +136,7 @@ restrictions, sandbox rules, channel/runtime policy, or plugin availability.
 
 ## Extend capabilities
 
-Choose the extension path by the job you need OpenClaw to do:
+Choose the extension path by the job you need EVE to do:
 
 - Install or manage an existing plugin with [Plugins](/tools/plugin).
 - Build a new integration, provider, channel, tool, or hook with
@@ -161,7 +161,7 @@ current turn:
    [Plugins](/tools/plugin).
 5. For delegated runs, check per-agent restrictions in
    [Per-agent sandbox and tool restrictions](/tools/multi-agent-sandbox-tools).
-6. For large OpenClaw catalogs, confirm whether the run uses direct tool exposure or
+6. For large EVE catalogs, confirm whether the run uses direct tool exposure or
    [Tool Search](/tools/tool-search).
 
 ## Related
@@ -173,4 +173,4 @@ current turn:
 - [Plugin SDK](/plugins/sdk-overview) for plugin author reference
 - [Skills](/tools/skills) for skill load order, gating, and config
 - [Skill Workshop](/tools/skill-workshop) for generated and reviewed skill creation
-- [Tool Search](/tools/tool-search) for compact OpenClaw tool catalog discovery
+- [Tool Search](/tools/tool-search) for compact EVE tool catalog discovery

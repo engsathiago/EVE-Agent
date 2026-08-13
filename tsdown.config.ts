@@ -39,7 +39,7 @@ const env = {
   NODE_ENV: "production",
 };
 const OUTPUT_SOURCE_MAPS = process.env.OUTPUT_SOURCE_MAPS === "1";
-const RUN_NODE_SKIP_DTS_BUILD = process.env.OPENCLAW_RUN_NODE_SKIP_DTS_BUILD === "1";
+const RUN_NODE_SKIP_DTS_BUILD = process.env.EVE_RUN_NODE_SKIP_DTS_BUILD === "1";
 
 const SUPPRESSED_EVAL_WARNING_PATHS = [
   "@protobufjs/inquire/index.js",
@@ -76,7 +76,7 @@ function matchesExternalOption(
 }
 
 function buildInputOptions(options: InputOptionsArg): InputOptionsReturn {
-  if (process.env.OPENCLAW_BUILD_VERBOSE === "1") {
+  if (process.env.EVE_BUILD_VERBOSE === "1") {
     return undefined;
   }
 
@@ -156,7 +156,7 @@ function nodeWorkspacePackageBuildConfig(config: UserConfig): UserConfig {
 }
 
 const bundledPluginBuildEntries = collectBundledPluginBuildEntries();
-const shouldBuildPrivateQaEntries = process.env.OPENCLAW_BUILD_PRIVATE_QA === "1";
+const shouldBuildPrivateQaEntries = process.env.EVE_BUILD_PRIVATE_QA === "1";
 const productionPluginSdkEntrypoints = shouldBuildPrivateQaEntries
   ? pluginSdkEntrypoints
   : publicPluginSdkEntrypoints;
@@ -218,12 +218,12 @@ function shouldAlwaysBundleDependency(id: string): boolean {
   return (
     id === "@openclaw/fs-safe" ||
     id.startsWith("@openclaw/fs-safe/") ||
-    id === "@openclaw/normalization-core" ||
-    id.startsWith("@openclaw/normalization-core/") ||
-    id === "@openclaw/media-core" ||
-    id.startsWith("@openclaw/media-core/") ||
-    id === "@openclaw/acp-core" ||
-    id.startsWith("@openclaw/acp-core/") ||
+    id === "@eve/normalization-core" ||
+    id.startsWith("@eve/normalization-core/") ||
+    id === "@eve/media-core" ||
+    id.startsWith("@eve/media-core/") ||
+    id === "@eve/acp-core" ||
+    id.startsWith("@eve/acp-core/") ||
     id === "zod" ||
     id.startsWith("zod/")
   );
@@ -564,11 +564,11 @@ function buildLlmRuntimeDistEntries(): Record<string, string> {
 
 function shouldExternalizeAgentCoreDependency(id: string): boolean {
   return (
-    id === "@openclaw/llm-core" ||
-    id.startsWith("@openclaw/llm-core/") ||
+    id === "@eve/llm-core" ||
+    id.startsWith("@eve/llm-core/") ||
     id === "ignore" ||
-    id === "openclaw" ||
-    id.startsWith("openclaw/") ||
+    id === "eve" ||
+    id.startsWith("eve/") ||
     id === "typebox" ||
     id.startsWith("typebox/") ||
     id === "yaml" ||
@@ -584,8 +584,8 @@ function shouldExternalizeGatewayClientDependency(id: string): boolean {
   return (
     id === "ws" ||
     id.startsWith("ws/") ||
-    id === "@openclaw/gateway-protocol" ||
-    id.startsWith("@openclaw/gateway-protocol/")
+    id === "@eve/gateway-protocol" ||
+    id.startsWith("@eve/gateway-protocol/")
   );
 }
 
@@ -594,7 +594,7 @@ function shouldExternalizeNetPolicyDependency(id: string): boolean {
 }
 
 function shouldExternalizeSpeechCoreDependency(id: string): boolean {
-  return id === "openclaw" || id.startsWith("openclaw/");
+  return id === "eve" || id.startsWith("eve/");
 }
 
 function shouldExternalizeLlmCoreDependency(id: string): boolean {
@@ -602,7 +602,7 @@ function shouldExternalizeLlmCoreDependency(id: string): boolean {
 }
 
 function shouldExternalizeLlmRuntimeDependency(id: string): boolean {
-  return id === "@openclaw/llm-core" || id.startsWith("@openclaw/llm-core/");
+  return id === "@eve/llm-core" || id.startsWith("@eve/llm-core/");
 }
 
 function shouldExternalizeMarkdownCoreDependency(id: string): boolean {

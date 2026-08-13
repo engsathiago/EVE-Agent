@@ -13,16 +13,16 @@ import {
 import { approveNodePairing, requestNodePairing } from "../../infra/node-pairing.js";
 import { resolvePairingPaths } from "../../infra/pairing-files.js";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../../test-utils/eve-test-state.js";
 import { nodeHandlers } from "./nodes.js";
 import type { GatewayRequestHandlerOptions } from "./types.js";
 
-const createdStates: OpenClawTestState[] = [];
+const createdStates: EVETestState[] = [];
 
-async function createState(label: string): Promise<OpenClawTestState> {
-  const state = await createOpenClawTestState({ label, layout: "state-only" });
+async function createState(label: string): Promise<EVETestState> {
+  const state = await createEVETestState({ label, layout: "state-only" });
   createdStates.push(state);
   return state;
 }
@@ -104,7 +104,7 @@ async function pairAndroidNodeDevice(stateDir: string, nodeId: string): Promise<
       displayName: "Galaxy A54 5G",
       platform: "android",
       deviceFamily: "Android",
-      clientId: "openclaw-android",
+      clientId: "eve-android",
       clientMode: "node",
       role: "node",
       roles: ["node"],
@@ -128,7 +128,7 @@ async function pairMixedRoleAndroidDevice(stateDir: string, nodeId: string): Pro
       displayName: "Galaxy A54 5G",
       platform: "android",
       deviceFamily: "Android",
-      clientId: "openclaw-android",
+      clientId: "eve-android",
       clientMode: "node",
       role: "operator",
       roles: ["operator", "node"],
@@ -150,7 +150,7 @@ async function pairLegacyNode(stateDir: string, nodeId: string): Promise<void> {
       nodeId,
       platform: "android",
       deviceFamily: "Android",
-      clientId: "openclaw-android",
+      clientId: "eve-android",
       clientMode: "node",
       displayName: "Galaxy A54 5G",
     },

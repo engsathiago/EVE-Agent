@@ -1,11 +1,11 @@
-# OpenClaw Discord
+# EVE Discord
 
-Official OpenClaw channel plugin for Discord servers, channels, DMs, slash commands, and app events.
+Official EVE channel plugin for Discord servers, channels, DMs, slash commands, and app events.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/discord
+eve plugin add @eve/discord
 ```
 
-Configure a Discord bot token and the channels or servers OpenClaw should handle. The plugin lets OpenClaw agents receive Discord messages and respond through the configured Discord app.
+Configure a Discord bot token and the channels or servers EVE should handle. The plugin lets EVE agents receive Discord messages and respond through the configured Discord app.

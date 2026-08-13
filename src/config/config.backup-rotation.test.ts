@@ -14,7 +14,7 @@ import {
   resolveConfigPathFromTempState,
 } from "./config.backup-rotation.test-helpers.js";
 import { withTempHome } from "./test-helpers.js";
-import type { OpenClawConfig } from "./types.js";
+import type { EVEConfig } from "./types.js";
 
 async function expectRegularFile(filePath: string): Promise<void> {
   expect((await fs.stat(filePath)).isFile()).toBe(true);
@@ -34,10 +34,10 @@ describe("config backup rotation", () => {
   it("keeps a 5-deep backup ring for config writes", async () => {
     await withTempHome(async () => {
       const configPath = resolveConfigPathFromTempState();
-      const buildConfig = (version: number): OpenClawConfig =>
+      const buildConfig = (version: number): EVEConfig =>
         ({
           agents: { list: [{ id: `v${version}` }] },
-        }) as OpenClawConfig;
+        }) as EVEConfig;
 
       const writeVersion = async (version: number) => {
         const json = JSON.stringify(buildConfig(version), null, 2).trimEnd().concat("\n");

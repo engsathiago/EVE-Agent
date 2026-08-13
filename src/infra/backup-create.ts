@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
-import { resolveDateTimestampMs } from "@openclaw/normalization-core/number-coercion";
+import { resolveDateTimestampMs } from "@eve/normalization-core/number-coercion";
 import { loadSqliteVecExtension } from "../../packages/memory-host-sdk/src/engine-storage.js";
 import {
   buildBackupArchiveBasename,
@@ -15,7 +15,7 @@ import {
   resolveBackupPlanFromDisk,
 } from "../commands/backup-shared.js";
 import { isPathWithin } from "../commands/cleanup-utils.js";
-import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
+import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { resolveHomeDir, resolveUserPath } from "../utils.js";
 import { resolveRuntimeServiceVersion } from "../version.js";
 import { isVolatileBackupPath } from "./backup-volatile-filter.js";
@@ -633,9 +633,9 @@ async function createStateSqliteBackupPlan(params: {
   // tempDir outside stateDir, and this ordering prevents future overlap from
   // making backup discover one of its own staged SQLite files.
   const globalStateSqlitePath = path.resolve(
-    resolveOpenClawStateSqlitePath({
+    resolveEVEStateSqlitePath({
       ...process.env,
-      OPENCLAW_STATE_DIR: params.stateDir,
+      EVE_STATE_DIR: params.stateDir,
     }),
   );
   const discovery = await listStateSqlitePaths({
@@ -657,7 +657,7 @@ async function createStateSqliteBackupPlan(params: {
       allowExtension: true,
       readOnly: true,
     });
-    const sourcePath = path.join(params.tempDir, `openclaw-state-db-${snapshots.length}.sqlite`);
+    const sourcePath = path.join(params.tempDir, `eve-state-db-${snapshots.length}.sqlite`);
     try {
       source.exec("PRAGMA busy_timeout = 30000;");
       // VACUUM INTO removes deleted-page remnants before the snapshot enters
@@ -708,8 +708,8 @@ export async function createBackupArchive(
   if (plan.included.length === 0) {
     throw new Error(
       onlyConfig
-        ? "No OpenClaw config file was found to back up."
-        : "No local OpenClaw state was found to back up.",
+        ? "No EVE config file was found to back up."
+        : "No local EVE state was found to back up.",
     );
   }
 
@@ -748,7 +748,7 @@ export async function createBackupArchive(
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
   const tempRoot = await chooseBackupTempRoot({ assets: result.assets, outputPath });
   await fs.mkdir(tempRoot, { recursive: true });
-  const tempDir = await fs.mkdtemp(path.join(tempRoot, "openclaw-backup-"));
+  const tempDir = await fs.mkdtemp(path.join(tempRoot, "eve-backup-"));
   const manifestPath = path.join(tempDir, "manifest.json");
   const tempArchivePath = buildTempArchivePath(outputPath);
   const stateAsset = result.assets.find((asset) => asset.kind === "state");

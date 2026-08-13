@@ -36,8 +36,8 @@ describe("createTeamsReplyStreamController", () => {
     expect(stream.emit).toHaveBeenCalledWith("hello");
   });
 
-  it("emits only the delta when openclaw sends cumulative text on each chunk", () => {
-    // openclaw's reply pipeline calls onPartialReply with the cumulative
+  it("emits only the delta when eve sends cumulative text on each chunk", () => {
+    // eve's reply pipeline calls onPartialReply with the cumulative
     // text-so-far on every chunk. The SDK's HttpStream APPENDS each emit() to
     // its internal text buffer (this.text += activity.text). Without delta
     // conversion, the SDK accumulates "chunk1 + chunk2 + chunk3" and the user

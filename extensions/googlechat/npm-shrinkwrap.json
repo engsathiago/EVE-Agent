@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/googlechat",
+  "name": "@eve/googlechat",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/googlechat",
+      "name": "@eve/googlechat",
       "version": "2026.6.8",
       "dependencies": {
         "gaxios": "7.1.4",
@@ -13,10 +13,10 @@
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

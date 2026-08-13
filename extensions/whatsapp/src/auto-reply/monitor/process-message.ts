@@ -3,12 +3,12 @@ import {
   logAckFailure,
   removeAckReactionHandleAfterReply,
   type AckReactionHandle,
-} from "openclaw/plugin-sdk/channel-feedback";
+} from "eve-agent/plugin-sdk/channel-feedback";
 import {
   runChannelInboundEvent,
   type CommandTurnContext,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { recordInboundSession } from "eve-agent/plugin-sdk/conversation-runtime";
 import {
   createInternalHookEvent,
   deriveInboundMessageHookContext,
@@ -17,9 +17,9 @@ import {
   toPluginMessageContext,
   toPluginMessageReceivedEvent,
   triggerInternalHook,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { getGlobalHookRunner } from "openclaw/plugin-sdk/plugin-runtime";
-import { resolveBatchedReplyThreadingPolicy } from "openclaw/plugin-sdk/reply-reference";
+} from "eve-agent/plugin-sdk/hook-runtime";
+import { getGlobalHookRunner } from "eve-agent/plugin-sdk/plugin-runtime";
+import { resolveBatchedReplyThreadingPolicy } from "eve-agent/plugin-sdk/reply-reference";
 import { getPrimaryIdentityId, getSelfIdentity, getSenderIdentity } from "../../identity.js";
 import {
   resolveWhatsAppCommandAuthorized,

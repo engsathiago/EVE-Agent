@@ -3,7 +3,7 @@
  * plugin-owned apps for native Codex turns.
  */
 import crypto from "node:crypto";
-import { embeddedAgentLog } from "openclaw/plugin-sdk/agent-harness-runtime";
+import { embeddedAgentLog } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   defaultCodexAppInventoryCache,
   serializeCodexAppInventoryError,

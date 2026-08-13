@@ -1,11 +1,11 @@
-# OpenClaw QQ Bot
+# EVE QQ Bot
 
-Official OpenClaw channel plugin for QQ Bot group and direct-message workflows.
+Official EVE channel plugin for QQ Bot group and direct-message workflows.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/qqbot
+eve plugin add @eve/qqbot
 ```
 
-Configure QQ Bot credentials in OpenClaw, then connect the bot to the groups or direct-message contexts where agents should operate.
+Configure QQ Bot credentials in EVE, then connect the bot to the groups or direct-message contexts where agents should operate.

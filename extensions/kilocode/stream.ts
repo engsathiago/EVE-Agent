@@ -1,10 +1,10 @@
 // Kilocode plugin module implements stream behavior.
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
-import { resolveProviderRequestHeaders } from "openclaw/plugin-sdk/provider-http";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
+import { resolveProviderRequestHeaders } from "eve-agent/plugin-sdk/provider-http";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 const KILOCODE_FEATURE_HEADER = "X-KILOCODE-FEATURE";
-const KILOCODE_FEATURE_DEFAULT = "openclaw";
+const KILOCODE_FEATURE_DEFAULT = "eve";
 const KILOCODE_FEATURE_ENV_VAR = "KILOCODE_FEATURE";
 
 type ThinkLevel = NonNullable<ProviderWrapStreamFnContext["thinkingLevel"]>;

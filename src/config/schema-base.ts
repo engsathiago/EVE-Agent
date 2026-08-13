@@ -1,5 +1,5 @@
 // Builds base config schema metadata shared across generated config surfaces.
-import { isSensitiveUrlConfigPath } from "@openclaw/net-policy/redact-sensitive-url";
+import { isSensitiveUrlConfigPath } from "@eve/net-policy/redact-sensitive-url";
 import { VERSION } from "../version.js";
 import { FIELD_HELP } from "./schema.help.js";
 import type { ConfigUiHints } from "./schema.hints.js";
@@ -12,7 +12,7 @@ import {
 import { FIELD_LABELS } from "./schema.labels.js";
 import { asSchemaObject, cloneSchema } from "./schema.shared.js";
 import { applyDerivedTags } from "./schema.tags.js";
-import { OpenClawSchema } from "./zod-schema.js";
+import { EVESchema } from "./zod-schema.js";
 
 type ConfigSchema = Record<string, unknown>;
 
@@ -230,19 +230,19 @@ function computeBaseConfigSchemaStablePayload(): BaseConfigSchemaStablePayload {
       version: baseConfigSchemaStablePayload.version,
     };
   }
-  const schema = OpenClawSchema.toJSONSchema({
+  const schema = EVESchema.toJSONSchema({
     io: "input",
     target: "draft-07",
     unrepresentable: "any",
   });
-  schema.title = "OpenClawConfig";
+  schema.title = "EVEConfig";
   const schemaRoot = asJsonSchemaObject(schema);
   if (schemaRoot) {
     applyFieldDocumentation(schemaRoot, buildFieldDocumentation());
   }
-  const baseHints = mapSensitivePaths(OpenClawSchema, "", buildBaseHints());
+  const baseHints = mapSensitivePaths(EVESchema, "", buildBaseHints());
   const sensitiveUrlPaths = collectMatchingSchemaPaths(
-    OpenClawSchema,
+    EVESchema,
     "",
     isSensitiveUrlConfigPath,
   );

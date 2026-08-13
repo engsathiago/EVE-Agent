@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/signal",
+  "name": "@eve/signal",
   "version": "2026.6.8",
   "private": true,
-  "description": "OpenClaw Signal channel plugin",
+  "description": "EVE Signal channel plugin",
   "type": "module",
   "dependencies": {
     "ws": "8.21.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],

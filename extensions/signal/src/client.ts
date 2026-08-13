@@ -2,9 +2,9 @@
 import { Buffer } from "node:buffer";
 import http, { type ClientRequest, type IncomingMessage } from "node:http";
 import https from "node:https";
-import { generateSecureUuid } from "openclaw/plugin-sdk/core";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { resolveTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { generateSecureUuid } from "eve-agent/plugin-sdk/core";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 
 export type SignalRpcOptions = {
   baseUrl: string;

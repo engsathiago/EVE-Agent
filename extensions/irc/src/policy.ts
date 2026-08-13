@@ -1,5 +1,5 @@
 // Irc plugin module implements policy behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { IrcChannelConfig } from "./types.js";
 
 export type IrcGroupMatch = {

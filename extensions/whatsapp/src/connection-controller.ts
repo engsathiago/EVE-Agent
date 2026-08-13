@@ -1,7 +1,7 @@
 // Whatsapp plugin module implements connection controller behavior.
 import type { WASocket } from "baileys";
-import { info } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import { info } from "eve-agent/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import {
   registerWhatsAppConnectionController,
   unregisterWhatsAppConnectionController,
@@ -31,7 +31,7 @@ const WHATSAPP_LOGIN_RESTART_MESSAGE =
 const WHATSAPP_LOGIN_TIMEOUT_RESTART_MESSAGE =
   "WhatsApp connection timed out before login; retrying with a fresh socket…";
 const WHATSAPP_LOGGED_OUT_RELINK_MESSAGE =
-  "WhatsApp reported the session is logged out. Cleared cached web session; please rerun openclaw channels login and scan the QR again.";
+  "WhatsApp reported the session is logged out. Cleared cached web session; please rerun eve channels login and scan the QR again.";
 const WHATSAPP_LOGIN_AUTH_UNSTABLE_MESSAGE =
   "WhatsApp connected, but saving the linked credentials has not settled on disk yet. Retry login in a moment.";
 const WHATSAPP_LOGIN_AUTH_NOT_PERSISTED_MESSAGE =
@@ -178,7 +178,7 @@ export function closeWaSocket(
 ): void {
   try {
     if (typeof sock?.end === "function") {
-      sock.end(new Error("OpenClaw WhatsApp socket close"));
+      sock.end(new Error("EVE WhatsApp socket close"));
       return;
     }
     sock?.ws?.close?.();

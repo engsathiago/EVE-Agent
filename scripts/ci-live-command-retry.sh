@@ -1,34 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-command="${OPENCLAW_LIVE_COMMAND:-}"
+command="${EVE_LIVE_COMMAND:-}"
 if [[ -z "$command" && "$#" -gt 0 ]]; then
   command="$*"
 fi
 
 if [[ -z "$command" ]]; then
-  echo "Usage: OPENCLAW_LIVE_COMMAND='<command>' $0" >&2
+  echo "Usage: EVE_LIVE_COMMAND='<command>' $0" >&2
   exit 64
 fi
 
-attempts="${OPENCLAW_LIVE_COMMAND_ATTEMPTS:-2}"
-delay_seconds="${OPENCLAW_LIVE_COMMAND_RETRY_DELAY_SECONDS:-10}"
-rate_limit_delay_seconds="${OPENCLAW_LIVE_COMMAND_RATE_LIMIT_RETRY_DELAY_SECONDS:-60}"
-retry_pattern="${OPENCLAW_LIVE_COMMAND_RETRY_PATTERN:-ECONNRESET|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|fetch failed|TLS connection|socket hang up|UND_ERR|gateway request timeout|model idle timeout|did not produce a response before the model idle timeout|\\b429\\b|\\b529\\b}"
-rate_limit_pattern="${OPENCLAW_LIVE_COMMAND_RATE_LIMIT_PATTERN:-Rate limit reached|rate.?limit|tokens per min|requests per min|\\bTPM\\b|\\bRPM\\b}"
+attempts="${EVE_LIVE_COMMAND_ATTEMPTS:-2}"
+delay_seconds="${EVE_LIVE_COMMAND_RETRY_DELAY_SECONDS:-10}"
+rate_limit_delay_seconds="${EVE_LIVE_COMMAND_RATE_LIMIT_RETRY_DELAY_SECONDS:-60}"
+retry_pattern="${EVE_LIVE_COMMAND_RETRY_PATTERN:-ECONNRESET|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|fetch failed|TLS connection|socket hang up|UND_ERR|gateway request timeout|model idle timeout|did not produce a response before the model idle timeout|\\b429\\b|\\b529\\b}"
+rate_limit_pattern="${EVE_LIVE_COMMAND_RATE_LIMIT_PATTERN:-Rate limit reached|rate.?limit|tokens per min|requests per min|\\bTPM\\b|\\bRPM\\b}"
 
 if ! [[ "$attempts" =~ ^[1-9][0-9]*$ ]]; then
-  echo "OPENCLAW_LIVE_COMMAND_ATTEMPTS must be a positive integer, got: $attempts" >&2
+  echo "EVE_LIVE_COMMAND_ATTEMPTS must be a positive integer, got: $attempts" >&2
   exit 64
 fi
 
 if ! [[ "$delay_seconds" =~ ^[0-9]+$ ]]; then
-  echo "OPENCLAW_LIVE_COMMAND_RETRY_DELAY_SECONDS must be a non-negative integer, got: $delay_seconds" >&2
+  echo "EVE_LIVE_COMMAND_RETRY_DELAY_SECONDS must be a non-negative integer, got: $delay_seconds" >&2
   exit 64
 fi
 
 if ! [[ "$rate_limit_delay_seconds" =~ ^[0-9]+$ ]]; then
-  echo "OPENCLAW_LIVE_COMMAND_RATE_LIMIT_RETRY_DELAY_SECONDS must be a non-negative integer, got: $rate_limit_delay_seconds" >&2
+  echo "EVE_LIVE_COMMAND_RATE_LIMIT_RETRY_DELAY_SECONDS must be a non-negative integer, got: $rate_limit_delay_seconds" >&2
   exit 64
 fi
 

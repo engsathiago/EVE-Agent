@@ -1,4 +1,4 @@
-// OpenAI-compatible `/v1/models` HTTP route backed by configured OpenClaw agents.
+// OpenAI-compatible `/v1/models` HTTP route backed by configured EVE agents.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { listAgentIds, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { getRuntimeConfig } from "../config/io.js";
@@ -11,8 +11,8 @@ import {
   sendMissingScopeForbidden,
 } from "./http-common.js";
 import {
-  OPENCLAW_DEFAULT_MODEL_ID,
-  OPENCLAW_MODEL_ID,
+  EVE_DEFAULT_MODEL_ID,
+  EVE_MODEL_ID,
   authorizeGatewayHttpRequestOrReply,
   type AuthorizedGatewayHttpRequest,
   resolveAgentIdFromModel,
@@ -40,7 +40,7 @@ function toOpenAiModel(id: string): OpenAiModelObject {
     id,
     object: "model",
     created: 0,
-    owned_by: "openclaw",
+    owned_by: "eve",
     permission: [],
   };
 }
@@ -63,10 +63,10 @@ async function authorizeRequest(
 function loadAgentModelIds(): string[] {
   const cfg = getRuntimeConfig();
   const defaultAgentId = resolveDefaultAgentId(cfg);
-  const ids = new Set<string>([OPENCLAW_MODEL_ID, OPENCLAW_DEFAULT_MODEL_ID]);
-  ids.add(`openclaw/${defaultAgentId}`);
+  const ids = new Set<string>([EVE_MODEL_ID, EVE_DEFAULT_MODEL_ID]);
+  ids.add(`eve/${defaultAgentId}`);
   for (const agentId of listAgentIds(cfg)) {
-    ids.add(`openclaw/${agentId}`);
+    ids.add(`eve/${agentId}`);
   }
   return Array.from(ids);
 }
@@ -126,7 +126,7 @@ export async function handleOpenAiModelsHttpRequest(
     return true;
   }
 
-  if (decodedId !== OPENCLAW_MODEL_ID && !resolveAgentIdFromModel(decodedId)) {
+  if (decodedId !== EVE_MODEL_ID && !resolveAgentIdFromModel(decodedId)) {
     sendInvalidRequest(res, "Invalid model id.");
     return true;
   }

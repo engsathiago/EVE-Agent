@@ -1,7 +1,7 @@
 // Console logging helpers format and write messages to console streams.
 import util from "node:util";
 import { stripAnsi } from "../../packages/terminal-core/src/ansi.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { isVerbose } from "../global-state.js";
 import { readLoggingConfig, shouldSkipMutatingLoggingConfigRead } from "./config.js";
 import { resolveEnvLogLevelOverride } from "./env-log-level.js";
@@ -19,7 +19,7 @@ type ConsoleSettings = {
 };
 export type ConsoleLoggerSettings = ConsoleSettings;
 
-type ConsoleConfigLoader = () => OpenClawConfig["logging"] | undefined;
+type ConsoleConfigLoader = () => EVEConfig["logging"] | undefined;
 const loadConfigFallbackDefault: ConsoleConfigLoader = () => undefined;
 let loadConfigFallback: ConsoleConfigLoader = loadConfigFallbackDefault;
 
@@ -31,7 +31,7 @@ function normalizeConsoleLevel(level?: string): LogLevel {
   if (isVerbose()) {
     return "debug";
   }
-  if (!level && process.env.VITEST === "true" && process.env.OPENCLAW_TEST_CONSOLE !== "1") {
+  if (!level && process.env.VITEST === "true" && process.env.EVE_TEST_CONSOLE !== "1") {
     return "silent";
   }
   return normalizeLogLevel(level, "info");
@@ -53,7 +53,7 @@ function resolveConsoleSettings(): ConsoleSettings {
   // Skip config-file and full config fallback reads in this fast path.
   if (
     process.env.VITEST === "true" &&
-    process.env.OPENCLAW_TEST_CONSOLE !== "1" &&
+    process.env.EVE_TEST_CONSOLE !== "1" &&
     !isVerbose() &&
     !envLevel &&
     !loggingState.overrideSettings
@@ -61,7 +61,7 @@ function resolveConsoleSettings(): ConsoleSettings {
     return { level: "silent", style: normalizeConsoleStyle(undefined) };
   }
 
-  let cfg: OpenClawConfig["logging"] | undefined =
+  let cfg: EVEConfig["logging"] | undefined =
     (loggingState.overrideSettings as LoggerSettings | null) ?? readLoggingConfig();
   if (!cfg && !shouldSkipMutatingLoggingConfigRead()) {
     if (loggingState.resolvingConsoleSettings) {

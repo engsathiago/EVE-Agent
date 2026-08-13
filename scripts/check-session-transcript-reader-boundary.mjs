@@ -23,7 +23,7 @@ const legacyTranscriptReaderModules = new Set([
 ]);
 
 const transcriptReaderNames = new Set([
-  "attachOpenClawTranscriptMeta",
+  "attachEVETranscriptMeta",
   "capArrayByJsonBytes",
   "readFirstUserMessageFromTranscript",
   "readLatestRecentSessionUsageFromTranscriptAsync",

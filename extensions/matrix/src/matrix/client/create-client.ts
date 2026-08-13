@@ -1,11 +1,11 @@
 // Matrix plugin module implements create client behavior.
 import fs from "node:fs";
-import type { PinnedDispatcherPolicy } from "openclaw/plugin-sdk/ssrf-dispatcher";
+import type { PinnedDispatcherPolicy } from "eve-agent/plugin-sdk/ssrf-dispatcher";
 import {
   ssrfPolicyFromDangerouslyAllowPrivateNetwork,
   type SsrFPolicy,
-} from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { MatrixClient } from "../sdk.js";
 import { resolveValidatedMatrixHomeserverUrl } from "./config.js";
 import {
@@ -84,7 +84,7 @@ export async function createMatrixClient(params: {
   }
 
   const cryptoDatabasePrefix = storagePaths
-    ? `openclaw-matrix-${storagePaths.accountKey}-${storagePaths.tokenHash}`
+    ? `eve-matrix-${storagePaths.accountKey}-${storagePaths.tokenHash}`
     : undefined;
 
   return new MatrixClient(homeserver, params.accessToken, {

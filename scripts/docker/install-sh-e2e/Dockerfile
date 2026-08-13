@@ -2,8 +2,8 @@
 
 FROM node:24-bookworm-slim@sha256:242549cd46785b480c832479a730f4f2a20865d61ea2e404fdb2a5c3d3b73ecf
 
-RUN --mount=type=cache,id=openclaw-install-sh-e2e-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=openclaw-install-sh-e2e-apt-lists,target=/var/lib/apt,sharing=locked \
+RUN --mount=type=cache,id=eve-install-sh-e2e-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=eve-install-sh-e2e-apt-lists,target=/var/lib/apt,sharing=locked \
   apt-get update \
   && apt-get install -y --no-install-recommends \
     bash \
@@ -12,9 +12,9 @@ RUN --mount=type=cache,id=openclaw-install-sh-e2e-apt-cache,target=/var/cache/ap
     git
 
 COPY install-sh-common/version-parse.sh /usr/local/install-sh-common/version-parse.sh
-COPY --chmod=755 install-sh-e2e/run.sh /usr/local/bin/openclaw-install-e2e
+COPY --chmod=755 install-sh-e2e/run.sh /usr/local/bin/eve-install-e2e
 
 RUN useradd --create-home --shell /bin/bash appuser
 USER appuser
 
-ENTRYPOINT ["/usr/local/bin/openclaw-install-e2e"]
+ENTRYPOINT ["/usr/local/bin/eve-install-e2e"]

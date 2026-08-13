@@ -1,5 +1,5 @@
 // Whatsapp plugin module implements active listener behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveDefaultWhatsAppAccountId } from "./account-ids.js";
 import { getRegisteredWhatsAppConnectionController } from "./connection-controller-registry.js";
 import type { ActiveWebListener } from "./inbound/types.js";
@@ -7,7 +7,7 @@ import type { ActiveWebListener } from "./inbound/types.js";
 export type { ActiveWebListener, ActiveWebSendOptions } from "./inbound/types.js";
 
 export function resolveWebAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): string {
   return (params.accountId ?? "").trim() || resolveDefaultWhatsAppAccountId(params.cfg);

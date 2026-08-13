@@ -3,7 +3,7 @@
  * Resolves usable access tokens, refreshes expired credentials under global
  * locks, adopts safer main-store credentials, and mirrors refreshed tokens.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { normalizeSecretInputString } from "../../config/types.secrets.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import { withFileLock } from "../../infra/file-lock.js";
@@ -42,7 +42,7 @@ export type OAuthManagerAdapter = {
   buildApiKey: (
     provider: string,
     credentials: OAuthCredential,
-    context: { cfg?: OpenClawConfig; agentDir?: string },
+    context: { cfg?: EVEConfig; agentDir?: string },
   ) => Promise<string>;
   refreshCredential: (credential: OAuthCredential) => Promise<OAuthCredentials | null>;
   readBootstrapCredential: (params: {
@@ -467,7 +467,7 @@ export function createOAuthManager(adapter: OAuthManagerAdapter) {
     profileId: string;
     provider: string;
     agentDir?: string;
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     forceRefresh?: boolean;
     attemptedCredentials?: OAuthCredential[];
   }): Promise<ResolvedOAuthAccess | null> {
@@ -648,7 +648,7 @@ export function createOAuthManager(adapter: OAuthManagerAdapter) {
     profileId: string;
     provider: string;
     agentDir?: string;
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     forceRefresh?: boolean;
     attemptedCredentials?: OAuthCredential[];
   }): Promise<ResolvedOAuthAccess | null> {
@@ -675,7 +675,7 @@ export function createOAuthManager(adapter: OAuthManagerAdapter) {
     profileId: string;
     credential: OAuthCredential;
     agentDir?: string;
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     forceRefresh?: boolean;
   }): Promise<ResolvedOAuthAccess | null> {
     const adoptedCredential =

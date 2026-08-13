@@ -4,7 +4,7 @@
  */
 
 export * from "../agents/agent-scope.js";
-export { resolveOpenClawAgentDir } from "./agent-dir-compat.js";
+export { resolveEVEAgentDir } from "./agent-dir-compat.js";
 export * from "../agents/current-time.js";
 export * from "../agents/date-time.js";
 export * from "../agents/defaults.js";

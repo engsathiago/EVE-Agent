@@ -1,8 +1,8 @@
 // Xai setup module handles plugin onboarding behavior.
 import {
   createModelCatalogPresetAppliers,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+  type EVEConfig,
+} from "eve-agent/plugin-sdk/provider-onboard";
 import { XAI_BASE_URL, XAI_DEFAULT_MODEL_ID } from "./model-definitions.js";
 import { buildXaiCatalogModels, isRetiredXaiBuiltinModelId } from "./model-definitions.js";
 
@@ -12,7 +12,7 @@ const xaiPresetAppliers = createModelCatalogPresetAppliers<
   ["openai-completions" | "openai-responses"]
 >({
   primaryModelRef: XAI_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig, api) => ({
+  resolveParams: (_cfg: EVEConfig, api) => ({
     providerId: "xai",
     api,
     baseUrl: XAI_BASE_URL,
@@ -21,7 +21,7 @@ const xaiPresetAppliers = createModelCatalogPresetAppliers<
   }),
 });
 
-function pruneRetiredXaiBuiltinModels(cfg: OpenClawConfig): OpenClawConfig {
+function pruneRetiredXaiBuiltinModels(cfg: EVEConfig): EVEConfig {
   const provider = cfg.models?.providers?.xai;
   if (!provider || !Array.isArray(provider.models)) {
     return cfg;
@@ -45,13 +45,13 @@ function pruneRetiredXaiBuiltinModels(cfg: OpenClawConfig): OpenClawConfig {
   };
 }
 
-export function applyXaiProviderConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyXaiProviderConfig(cfg: EVEConfig): EVEConfig {
   return xaiPresetAppliers.applyProviderConfig(
     pruneRetiredXaiBuiltinModels(cfg),
     "openai-responses",
   );
 }
 
-export function applyXaiConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyXaiConfig(cfg: EVEConfig): EVEConfig {
   return xaiPresetAppliers.applyConfig(pruneRetiredXaiBuiltinModels(cfg), "openai-responses");
 }

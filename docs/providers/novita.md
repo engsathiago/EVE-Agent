@@ -1,13 +1,13 @@
 ---
-summary: "Use NovitaAI's OpenAI-compatible API with OpenClaw"
+summary: "Use NovitaAI's OpenAI-compatible API with EVE"
 read_when:
-  - You want to run OpenClaw with NovitaAI models
+  - You want to run EVE with NovitaAI models
   - You need the Novita provider id, key, or endpoint
 title: "NovitaAI"
 ---
 
 NovitaAI is a hosted AI infrastructure provider with an OpenAI-compatible model
-API. In OpenClaw it is a bundled model provider, so the provider id is
+API. In EVE it is a bundled model provider, so the provider id is
 `novita`, credentials go through the normal model auth flow, and model refs look
 like `novita/deepseek/deepseek-v3-0324`.
 
@@ -16,7 +16,7 @@ routes without running your own inference server. The bundled catalog focuses on
 chat models that are practical for agent turns, including DeepSeek, Moonshot,
 MiniMax, GLM, and Qwen routes exposed by Novita.
 
-This provider uses Novita's OpenAI-compatible endpoint. OpenClaw handles
+This provider uses Novita's OpenAI-compatible endpoint. EVE handles
 provider registration, auth, aliases, model ref normalization, and base URL
 selection; Novita controls live model availability, account permissions,
 pricing, and rate limits.
@@ -26,7 +26,7 @@ pricing, and rate limits.
 Create an API key at [novita.ai/settings/key-management](https://novita.ai/settings/key-management), then run:
 
 ```bash
-openclaw onboard --auth-choice novita-api-key
+eve onboard --auth-choice novita-api-key
 ```
 
 Or set:
@@ -68,21 +68,21 @@ The bundled catalog seeds commonly available NovitaAI route ids, including:
 - `novita/deepseek/deepseek-r1-0528`
 - `novita/qwen/qwen3-235b-a22b-fp8`
 
-The catalog is a starting point for OpenClaw model selection. Your account,
+The catalog is a starting point for EVE model selection. Your account,
 region, or Novita's current catalog may add, remove, or restrict routes. Check
 the provider from the CLI before setting a long-lived default:
 
 ```bash
-openclaw models list --provider novita
+eve models list --provider novita
 ```
 
 ## Troubleshooting
 
 - `401` or `403`: verify the key in Novita's key management page and re-run
-  `openclaw onboard --auth-choice novita-api-key` if the stored profile is
+  `eve onboard --auth-choice novita-api-key` if the stored profile is
   stale.
 - Unknown model errors: use the exact `novita/<route-id>` returned by
-  `openclaw models list --provider novita`.
+  `eve models list --provider novita`.
 - Slow or failed routes: try another Novita model route or set Novita as a
   fallback provider for workloads that can tolerate provider-specific variance.
 

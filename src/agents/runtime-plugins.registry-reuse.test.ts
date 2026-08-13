@@ -6,7 +6,7 @@ import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "../plug
 
 const mocks = vi.hoisted(() => ({
   getCurrentPluginMetadataSnapshot: vi.fn(),
-  loadOpenClawPlugins: vi.fn<typeof import("../plugins/loader.js").loadOpenClawPlugins>(),
+  loadEVEPlugins: vi.fn<typeof import("../plugins/loader.js").loadEVEPlugins>(),
 }));
 
 vi.mock("../plugins/current-plugin-metadata-snapshot.js", () => ({
@@ -17,8 +17,8 @@ vi.mock("../plugins/loader.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../plugins/loader.js")>();
   return {
     ...actual,
-    loadOpenClawPlugins: (...args: Parameters<typeof mocks.loadOpenClawPlugins>) =>
-      mocks.loadOpenClawPlugins(...args),
+    loadEVEPlugins: (...args: Parameters<typeof mocks.loadEVEPlugins>) =>
+      mocks.loadEVEPlugins(...args),
   };
 });
 
@@ -39,7 +39,7 @@ function createRegistryWithPlugin(pluginId: string): PluginRegistry {
 
 beforeEach(() => {
   mocks.getCurrentPluginMetadataSnapshot.mockReset();
-  mocks.loadOpenClawPlugins.mockReset();
+  mocks.loadEVEPlugins.mockReset();
 });
 
 afterEach(() => {
@@ -72,7 +72,7 @@ describe("ensureRuntimePluginsLoaded registry reuse", () => {
         pluginIds: ["telegram"],
       },
     });
-    mocks.loadOpenClawPlugins.mockImplementation(() => {
+    mocks.loadEVEPlugins.mockImplementation(() => {
       throw new Error("dispatch should reuse the active gateway startup registry");
     });
 
@@ -85,6 +85,6 @@ describe("ensureRuntimePluginsLoaded registry reuse", () => {
       config,
       workspaceDir: "/tmp/workspace",
     });
-    expect(mocks.loadOpenClawPlugins).not.toHaveBeenCalled();
+    expect(mocks.loadEVEPlugins).not.toHaveBeenCalled();
   });
 });

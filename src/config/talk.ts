@@ -2,7 +2,7 @@
 import {
   normalizeFastMode,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { normalizeThinkLevel } from "../auto-reply/thinking.js";
 import { isRecord } from "../utils.js";
 import type {
@@ -12,7 +12,7 @@ import type {
   TalkProviderConfig,
   TalkRealtimeConfig,
 } from "./types.gateway.js";
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { EVEConfig } from "./types.eve.js";
 import { coerceSecretRef } from "./types.secrets.js";
 
 function normalizeTalkSecretInput(value: unknown): TalkProviderConfig["apiKey"] | undefined {
@@ -219,7 +219,7 @@ export function normalizeTalkSection(value: TalkConfig | undefined): TalkConfig 
 }
 
 /** Return a config copy with `talk` normalized when a valid Talk section is present. */
-export function normalizeTalkConfig(config: OpenClawConfig): OpenClawConfig {
+export function normalizeTalkConfig(config: EVEConfig): EVEConfig {
   if (!config.talk) {
     return config;
   }

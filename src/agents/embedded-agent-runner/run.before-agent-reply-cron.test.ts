@@ -69,7 +69,7 @@ describe("runEmbeddedAgent cron before_agent_reply seam", () => {
       ...overflowBaseRunParams,
       trigger: "cron",
       jobId: "cron-job-123",
-      prompt: "__openclaw_memory_core_short_term_promotion_dream__",
+      prompt: "__eve_memory_core_short_term_promotion_dream__",
       onExecutionPhase,
     });
 
@@ -79,7 +79,7 @@ describe("runEmbeddedAgent cron before_agent_reply seam", () => {
     );
     const [hookPayload, hookContext] = firstBeforeAgentReplyCall();
     expect(hookPayload).toEqual({
-      cleanedBody: "__openclaw_memory_core_short_term_promotion_dream__",
+      cleanedBody: "__eve_memory_core_short_term_promotion_dream__",
     });
     expect(hookContext?.jobId).toBe("cron-job-123");
     expect(hookContext?.agentId).toBe("main");

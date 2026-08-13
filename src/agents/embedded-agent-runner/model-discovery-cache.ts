@@ -3,7 +3,7 @@
  */
 import { statSync } from "node:fs";
 import path from "node:path";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
 import {
   resolveRuntimeExternalAuthProviderRefs,
@@ -29,7 +29,7 @@ type DiscoveryStores = {
 
 type DiscoverCachedAgentStoresOptions = {
   agentDir: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   inheritedAuthDir?: string;
   workspaceDir?: string;
 };
@@ -58,8 +58,8 @@ function normalizeCacheDir(dirname: string | undefined): string | undefined {
 
 function authFingerprint(agentDir: string): object {
   return {
-    authProfilesSqlite: fileFingerprint(path.join(agentDir, "openclaw-agent.sqlite")),
-    authProfilesSqliteWal: fileFingerprint(path.join(agentDir, "openclaw-agent.sqlite-wal")),
+    authProfilesSqlite: fileFingerprint(path.join(agentDir, "eve-agent.sqlite")),
+    authProfilesSqliteWal: fileFingerprint(path.join(agentDir, "eve-agent.sqlite-wal")),
   };
 }
 

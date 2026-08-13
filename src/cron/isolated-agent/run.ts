@@ -1,5 +1,5 @@
 /** Orchestrates isolated cron agent turn setup, execution, delivery, and cleanup. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { retireSessionMcpRuntime } from "../../agents/agent-bundle-mcp-tools.js";
 import { hasAnyAuthProfileStoreSource } from "../../agents/auth-profiles/source-check.js";
 import { resolveAgentHarnessPolicy } from "../../agents/harness/policy.js";
@@ -15,7 +15,7 @@ import {
 } from "../../config/config.js";
 import { resolveAgentModelPrimaryValue } from "../../config/model-input.js";
 import type { AgentDefaultsConfig } from "../../config/types.agent-defaults.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   assertAgentRunLifecycleGenerationCurrent,
   claimAgentRunContext,
@@ -167,7 +167,7 @@ async function loadRuntimePlugins() {
   return await runtimePluginsLoader.load();
 }
 
-function hasConfiguredAuthProfiles(cfg: OpenClawConfig): boolean {
+function hasConfiguredAuthProfiles(cfg: EVEConfig): boolean {
   return (
     Boolean(cfg.auth?.profiles && Object.keys(cfg.auth.profiles).length > 0) ||
     Boolean(cfg.auth?.order && Object.keys(cfg.auth.order).length > 0)
@@ -374,7 +374,7 @@ function canPromptForMessageTool(params: {
 
 /** Exported for #91613 keyless-inherited delivery-context regression coverage. */
 export async function resolveCronDeliveryContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   job: CronJob;
   agentId: string;
 }) {
@@ -468,7 +468,7 @@ async function loadUsageFormatRuntime() {
 }
 
 type RunCronAgentTurnParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   deps: CliDeps;
   job: CronJob;
   message: string;
@@ -495,7 +495,7 @@ type WithRunSession = (
 
 type PreparedCronRunContext = {
   input: RunCronAgentTurnParams;
-  cfgWithAgentDefaults: OpenClawConfig;
+  cfgWithAgentDefaults: EVEConfig;
   agentId: string;
   agentCfg: AgentDefaultsConfig;
   agentDir: string;
@@ -535,7 +535,7 @@ type CronPreparationResult =
   | { ok: true; context: PreparedCronRunContext }
   | { ok: false; result: RunCronAgentTurnResult };
 
-function resolveCronActiveRuntimeConfig(cfg: OpenClawConfig): OpenClawConfig {
+function resolveCronActiveRuntimeConfig(cfg: EVEConfig): EVEConfig {
   const runtimeConfig = getRuntimeConfigSnapshot();
   const runtimeSourceConfig = getRuntimeConfigSourceSnapshot();
   if (!runtimeConfig || !runtimeSourceConfig) {
@@ -575,7 +575,7 @@ async function prepareCronRunContext(params: {
     defaults: runtimeCfg.agents?.defaults,
     agentConfigOverride,
   });
-  const cfgWithAgentDefaults: OpenClawConfig = {
+  const cfgWithAgentDefaults: EVEConfig = {
     ...runtimeCfg,
     agents: Object.assign({}, runtimeCfg.agents, { defaults: agentCfg }),
   };
@@ -1368,7 +1368,7 @@ async function disposeCronRunContext(params: {
 
 /** Runs one isolated cron agent turn, including setup, execution, delivery, and persistence. */
 export async function runCronIsolatedAgentTurn(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   deps: CliDeps;
   job: CronJob;
   message: string;
@@ -1386,7 +1386,7 @@ export async function runCronIsolatedAgentTurn(params: {
   const isAborted = () => abortSignal?.aborted === true;
   const abortReason = () =>
     resolveCronAbortReasonText(abortSignal?.reason) ?? "cron: job execution timed out";
-  const isFastTestEnv = process.env.OPENCLAW_TEST_FAST === "1";
+  const isFastTestEnv = process.env.EVE_TEST_FAST === "1";
   const prepared = await prepareCronRunContext({ input: params, isFastTestEnv });
   if (!prepared.ok) {
     return prepared.result;

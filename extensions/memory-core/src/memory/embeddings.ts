@@ -4,14 +4,14 @@ import {
   type EmbeddingProviderAdapter,
   type EmbeddingProvider as GenericEmbeddingProvider,
   type EmbeddingProviderRuntime as GenericEmbeddingProviderRuntime,
-} from "openclaw/plugin-sdk/embedding-providers";
+} from "eve-agent/plugin-sdk/embedding-providers";
 import {
   getMemoryEmbeddingProvider as getLegacyMemoryEmbeddingProvider,
   type MemoryEmbeddingProvider,
   type MemoryEmbeddingProviderAdapter,
   type MemoryEmbeddingProviderCreateOptions,
   type MemoryEmbeddingProviderRuntime,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
 import { formatErrorMessage } from "../dreaming-shared.js";
 
 export type EmbeddingProvider = MemoryEmbeddingProvider;
@@ -42,8 +42,8 @@ function createMissingLlamaCppProviderError(): Error {
     [
       "Unknown memory embedding provider: local.",
       "Local GGUF embeddings are provided by the official llama.cpp provider plugin.",
-      "Install it with: openclaw plugins install @openclaw/llama-cpp-provider",
-      "Then restart OpenClaw and retry: openclaw memory status --deep",
+      "Install it with: eve plugins install @eve/llama-cpp-provider",
+      "Then restart EVE and retry: eve memory status --deep",
     ].join("\n"),
   );
 }

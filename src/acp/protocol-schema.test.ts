@@ -41,7 +41,7 @@ const fixtures: SchemaFixture[] = [
     name: "session/new",
     schema: zNewSessionRequest,
     valid: {
-      cwd: "/tmp/openclaw",
+      cwd: "/tmp/eve",
       mcpServers: [],
     },
     invalid: {
@@ -82,11 +82,11 @@ const fixtures: SchemaFixture[] = [
     name: "session/list",
     schema: zListSessionsRequest,
     valid: {
-      cwd: "/tmp/openclaw",
+      cwd: "/tmp/eve",
       cursor: null,
     },
     invalid: {
-      cwd: "/tmp/openclaw",
+      cwd: "/tmp/eve",
       cursor: 123,
     },
   },
@@ -95,7 +95,7 @@ const fixtures: SchemaFixture[] = [
     schema: zLoadSessionRequest,
     valid: {
       sessionId: "agent:main:work",
-      cwd: "/tmp/openclaw",
+      cwd: "/tmp/eve",
       mcpServers: [],
     },
     invalid: {
@@ -108,7 +108,7 @@ const fixtures: SchemaFixture[] = [
     schema: zResumeSessionRequest,
     valid: {
       sessionId: "agent:main:work",
-      cwd: "/tmp/openclaw",
+      cwd: "/tmp/eve",
       mcpServers: [],
     },
     invalid: {

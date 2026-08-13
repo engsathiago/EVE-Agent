@@ -175,7 +175,7 @@ describe("createEmbeddedLobsterRunner", () => {
   });
 
   it("detects workflow files and parses argsJson", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-lobster-runner-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-lobster-runner-"));
     const workflowPath = path.join(tempDir, "workflow.lobster");
     await fs.writeFile(workflowPath, "steps: []\n", "utf8");
 
@@ -218,7 +218,7 @@ describe("createEmbeddedLobsterRunner", () => {
   });
 
   it("detects existing workflow file paths that contain spaces", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-lobster-runner-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-lobster-runner-"));
     const workflowPath = path.join(tempDir, "daily inbox.lobster");
     await fs.writeFile(workflowPath, "steps: []\n", "utf8");
 
@@ -262,7 +262,7 @@ describe("createEmbeddedLobsterRunner", () => {
     ["missing.lobster", "missing.lobster"],
     ["nested/missing.yaml", path.join("nested", "missing.yaml")],
   ])("surfaces missing workflow path errors for %s", async (pipeline, expectedRelativePath) => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-lobster-runner-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-lobster-runner-"));
 
     try {
       const runtime = {
@@ -292,7 +292,7 @@ describe("createEmbeddedLobsterRunner", () => {
   });
 
   it("returns a parse error when workflow args are invalid JSON", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-lobster-runner-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-lobster-runner-"));
     const workflowPath = path.join(tempDir, "workflow.lobster");
     await fs.writeFile(workflowPath, "steps: []\n", "utf8");
 
@@ -377,7 +377,7 @@ describe("createEmbeddedLobsterRunner", () => {
         timeoutMs: 2000,
         maxStdoutBytes: 4096,
       }),
-    ).rejects.toThrow("Lobster input requests are not supported by the OpenClaw Lobster tool yet");
+    ).rejects.toThrow("Lobster input requests are not supported by the EVE Lobster tool yet");
   });
 
   it("routes resume through the embedded runtime", async () => {
@@ -541,7 +541,7 @@ describe("createEmbeddedLobsterRunner", () => {
   });
 
   it("falls back to the installed package core file when the core export is unavailable", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-lobster-package-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-lobster-package-"));
     const packageRoot = path.join(tempDir, "node_modules", "@clawdbot", "lobster");
     const packageEntryPath = path.join(packageRoot, "dist", "src", "sdk", "index.js");
     const packageCorePath = path.join(packageRoot, "dist", "src", "core", "index.js");

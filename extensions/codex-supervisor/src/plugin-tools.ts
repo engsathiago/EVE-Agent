@@ -1,8 +1,8 @@
 /**
- * OpenClaw agent-tool definitions for Codex Supervisor endpoint and session
+ * EVE agent-tool definitions for Codex Supervisor endpoint and session
  * controls.
  */
-import { jsonResult, readStringParam, type AnyAgentTool } from "openclaw/plugin-sdk/core";
+import { jsonResult, readStringParam, type AnyAgentTool } from "eve-agent/plugin-sdk/core";
 import { Type } from "typebox";
 import {
   redactCodexSupervisorEndpoint,
@@ -58,7 +58,7 @@ export type CodexSupervisorToolPolicy = {
   allowWriteControls: boolean;
 };
 
-/** Dependencies needed to build OpenClaw agent tools. */
+/** Dependencies needed to build EVE agent tools. */
 export type CodexSupervisorToolOptions = {
   supervisor: CodexSupervisor;
   policy: CodexSupervisorToolPolicy;
@@ -112,7 +112,7 @@ function requireWriteAccess(policy: CodexSupervisorToolPolicy): void {
 }
 
 /**
- * Creates the OpenClaw tools that expose Codex endpoint health and session
+ * Creates the EVE tools that expose Codex endpoint health and session
  * controls.
  */
 export function createCodexSupervisorTools({
@@ -141,7 +141,7 @@ export function createCodexSupervisorTools({
     {
       name: "codex_sessions_list",
       label: "Codex Sessions List",
-      description: "List Codex sessions visible to the OpenClaw supervisor.",
+      description: "List Codex sessions visible to the EVE supervisor.",
       parameters: SessionsListParamsSchema,
       execute: async (_toolCallId, rawParams) => {
         const params = asRecord(rawParams);

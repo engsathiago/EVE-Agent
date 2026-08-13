@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements self check behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { renderQaMarkdownReport } from "openclaw/plugin-sdk/qa-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { renderQaMarkdownReport } from "eve-agent/plugin-sdk/qa-runtime";
 import type { QaBusState } from "./bus-state.js";
 import { createQaTransportAdapter, type QaTransportId } from "./qa-transport-registry.js";
 import { runQaScenario, type QaScenarioResult } from "./scenario.js";
@@ -32,7 +32,7 @@ export function resolveQaSelfCheckOutputPath(params?: { outputPath?: string; rep
 
 export async function runQaSelfCheckAgainstState(params: {
   state: QaBusState;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   transportId?: QaTransportId;
   outputPath?: string;
   repoRoot?: string;
@@ -78,7 +78,7 @@ export async function runQaSelfCheckAgainstState(params: {
     }
   });
   const report = renderQaMarkdownReport({
-    title: "OpenClaw QA E2E Self-Check",
+    title: "EVE QA E2E Self-Check",
     startedAt,
     finishedAt,
     checks,

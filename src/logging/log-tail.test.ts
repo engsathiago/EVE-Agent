@@ -36,8 +36,8 @@ describe("readConfiguredLogTail", () => {
 
   it("applies redaction once per request across all returned lines", async () => {
     const { readConfiguredLogTail } = await import("./log-tail.js");
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-log-tail-"));
-    const file = path.join(tempDir, "openclaw-2026-01-22.log");
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-log-tail-"));
+    const file = path.join(tempDir, "eve-2026-01-22.log");
 
     await fs.writeFile(file, "custom-secret-abcdefghijklmnopqrstuvwxyz\nsecond line\n");
     setLoggerOverride({ file });

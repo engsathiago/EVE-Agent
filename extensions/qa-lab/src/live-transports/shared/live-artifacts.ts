@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements live artifacts behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 
 const REDACTED_QA_LIVE_LANE_ISSUE_DETAILS =
-  "details redacted (OPENCLAW_QA_REDACT_PUBLIC_METADATA=1)";
+  "details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)";
 
 export function redactQaLiveLaneDetails() {
   return REDACTED_QA_LIVE_LANE_ISSUE_DETAILS;

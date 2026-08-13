@@ -8,7 +8,7 @@ afterEach(() => {
 
 describe("runtime web channel plugin", () => {
   it("resolves the default auth dir through the light runtime on each call", async () => {
-    let authDir = "/tmp/openclaw-default-auth";
+    let authDir = "/tmp/eve-default-auth";
     const resolveDefaultWebAuthDir = vi.fn(() => authDir);
 
     vi.doMock("./runtime-plugin-boundary.js", () => ({
@@ -22,15 +22,15 @@ describe("runtime web channel plugin", () => {
 
     const { resolveWebChannelAuthDir } = await import("./runtime-web-channel-plugin.js");
 
-    expect(resolveWebChannelAuthDir()).toBe("/tmp/openclaw-default-auth");
-    authDir = "/tmp/openclaw-profile-auth";
-    expect(resolveWebChannelAuthDir()).toBe("/tmp/openclaw-profile-auth");
+    expect(resolveWebChannelAuthDir()).toBe("/tmp/eve-default-auth");
+    authDir = "/tmp/eve-profile-auth";
+    expect(resolveWebChannelAuthDir()).toBe("/tmp/eve-profile-auth");
     expect(resolveDefaultWebAuthDir).toHaveBeenCalledTimes(2);
   });
 
   it("falls back to the older WhatsApp light runtime auth dir export", async () => {
     vi.doMock("./runtime-plugin-boundary.js", () => ({
-      loadPluginBoundaryModule: () => ({ WA_WEB_AUTH_DIR: "/tmp/openclaw-legacy-auth" }),
+      loadPluginBoundaryModule: () => ({ WA_WEB_AUTH_DIR: "/tmp/eve-legacy-auth" }),
       resolvePluginRuntimeModulePath: () => "/tmp/light-runtime-api.js",
       resolvePluginRuntimeRecordByEntryBaseNames: () => ({
         origin: "external",
@@ -40,13 +40,13 @@ describe("runtime web channel plugin", () => {
 
     const { resolveWebChannelAuthDir } = await import("./runtime-web-channel-plugin.js");
 
-    expect(resolveWebChannelAuthDir()).toBe("/tmp/openclaw-legacy-auth");
+    expect(resolveWebChannelAuthDir()).toBe("/tmp/eve-legacy-auth");
   });
 
   it("rejects non-string legacy auth dir exports", async () => {
     vi.doMock("./runtime-plugin-boundary.js", () => ({
       loadPluginBoundaryModule: () => ({
-        WA_WEB_AUTH_DIR: Object("/tmp/openclaw-string-object-auth"),
+        WA_WEB_AUTH_DIR: Object("/tmp/eve-string-object-auth"),
       }),
       resolvePluginRuntimeModulePath: () => "/tmp/light-runtime-api.js",
       resolvePluginRuntimeRecordByEntryBaseNames: () => ({

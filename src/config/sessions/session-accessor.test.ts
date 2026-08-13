@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SessionManager } from "../../agents/sessions/session-manager.js";
 import { onSessionTranscriptUpdate } from "../../sessions/transcript-events.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import type { EVEConfig } from "../types.eve.js";
 import {
   applyRestartRecoveryLifecycle,
   appendTranscriptMessage,
@@ -42,7 +42,7 @@ describe("session accessor file-backed seam", () => {
   let transcriptPath: string;
 
   beforeEach(() => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-accessor-"));
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-accessor-"));
     storePath = path.join(tempDir, "sessions.json");
     transcriptPath = path.join(tempDir, "session.jsonl");
   });
@@ -98,7 +98,7 @@ describe("session accessor file-backed seam", () => {
           { id: "ops", workspace: path.join(tempDir, "ops") },
         ],
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     const now = Date.now();
     fs.writeFileSync(
       storePath,

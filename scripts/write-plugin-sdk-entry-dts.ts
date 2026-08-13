@@ -1,4 +1,4 @@
-// Write Plugin Sdk Entry Dts script supports OpenClaw repository automation.
+// Write Plugin Sdk Entry Dts script supports EVE repository automation.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -46,12 +46,12 @@ const RUNTIME_SHIMS: Partial<Record<string, string>> = {
 
 function isBareImportSpecifier(id: string): boolean {
   if (
-    id === "@openclaw/llm-core" ||
-    id.startsWith("@openclaw/llm-core/") ||
-    id === "@openclaw/model-catalog-core/model-catalog-types" ||
-    id.startsWith("@openclaw/normalization-core/") ||
-    id.startsWith("@openclaw/media-core/") ||
-    id.startsWith("@openclaw/acp-core/")
+    id === "@eve/llm-core" ||
+    id.startsWith("@eve/llm-core/") ||
+    id === "@eve/model-catalog-core/model-catalog-types" ||
+    id.startsWith("@eve/normalization-core/") ||
+    id.startsWith("@eve/media-core/") ||
+    id.startsWith("@eve/acp-core/")
   ) {
     return false;
   }
@@ -81,8 +81,8 @@ function copyFlatDeclarations(fromDir: string, toDir: string): void {
 }
 
 const distPluginSdkDir = path.join(process.cwd(), "dist/plugin-sdk");
-const flatDeclarationTempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-sdk-dts-"));
-const shouldBuildPrivateQaEntries = process.env.OPENCLAW_BUILD_PRIVATE_QA === "1";
+const flatDeclarationTempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-sdk-dts-"));
+const shouldBuildPrivateQaEntries = process.env.EVE_BUILD_PRIVATE_QA === "1";
 const flatDeclarationEntrypoints = shouldBuildPrivateQaEntries
   ? pluginSdkEntrypoints
   : publicPluginSdkEntrypoints;

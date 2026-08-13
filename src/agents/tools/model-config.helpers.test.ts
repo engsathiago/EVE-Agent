@@ -1,7 +1,7 @@
 // Model config helper tests cover provider auth detection across config and
 // stored agent auth profiles for reusable media tools.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import type { AuthProfileCredential, AuthProfileStore } from "../auth-profiles/types.js";
 import {
   hasDirectProviderApiKeyAuthForTool,
@@ -13,7 +13,7 @@ vi.mock("../auth-profiles/external-cli-sync.js", () => ({
   resolveExternalCliAuthProfiles: () => [],
 }));
 
-const AGENT_DIR = "/tmp/openclaw-model-config-helper";
+const AGENT_DIR = "/tmp/eve-model-config-helper";
 const MODEL = "gpt-5.5";
 
 type Decision = ReturnType<typeof resolveOpenAiImageMediaCandidate>;
@@ -27,7 +27,7 @@ const codexSubstitute = {
 const openAiKeep = { kind: "keep", ref: `openai/${MODEL}` } satisfies Decision;
 const drop = { kind: "drop" } satisfies Decision;
 
-const openAiRefCfg: OpenClawConfig = {
+const openAiRefCfg: EVEConfig = {
   models: {
     providers: {
       openai: {
@@ -99,7 +99,7 @@ describe("hasProviderAuthForTool", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(hasProviderAuthForTool({ provider: "hatchery", cfg })).toBe(true);
   });
@@ -170,7 +170,7 @@ describe("resolveOpenAiImageMediaCandidate", () => {
   });
 
   it("honors auth order when choosing between direct OpenAI and Codex media", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       auth: {
         order: {
           openai: ["openai:chatgpt"],
@@ -187,7 +187,7 @@ describe("resolveOpenAiImageMediaCandidate", () => {
   });
 
   it("drops Codex media when auth order excludes subscription-style auth", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: EVEConfig = {
       auth: {
         order: {
           openai: ["openai:api-key"],

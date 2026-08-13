@@ -10,7 +10,7 @@ import {
 import { mutateConfigFileWithRetry } from "../../config/config.js";
 import { resolveSessionTranscriptsDirForAgent } from "../../config/sessions.js";
 import type { IdentityConfig } from "../../config/types.base.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 
 export type AgentDeleteMutationResult = {
   workspaceDir: string;
@@ -35,7 +35,7 @@ export class AgentConfigPreconditionError extends Error {
 }
 
 /** Checks the current config snapshot for a concrete agent entry. */
-export function isConfiguredAgent(cfg: OpenClawConfig, agentId: string): boolean {
+export function isConfiguredAgent(cfg: EVEConfig, agentId: string): boolean {
   return findAgentEntryIndex(listAgentEntries(cfg), agentId) >= 0;
 }
 
@@ -95,7 +95,7 @@ export async function updateAgentConfigEntry(params: {
 
 /** Removes an agent entry and returns filesystem roots the caller should clean up. */
 export async function deleteAgentConfigEntry(params: { agentId: string }): Promise<{
-  nextConfig: OpenClawConfig;
+  nextConfig: EVEConfig;
   result: AgentDeleteMutationResult | undefined;
 }> {
   const committed = await mutateConfigFileWithRetry<AgentDeleteMutationResult>({

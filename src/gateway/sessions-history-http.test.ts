@@ -3,7 +3,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AssistantMessage } from "openclaw/plugin-sdk/llm";
+import type { AssistantMessage } from "eve-agent/plugin-sdk/llm";
 import { afterEach, describe, expect, test } from "vitest";
 import { writeSessionStoreForTestAsync } from "../config/sessions/test-helpers.js";
 import {
@@ -24,7 +24,7 @@ import {
 installGatewayTestHooks();
 
 const AUTH_HEADER = { Authorization: "Bearer test-gateway-token-1234567890" };
-const READ_SCOPE_HEADER = { "x-openclaw-scopes": "operator.read" };
+const READ_SCOPE_HEADER = { "x-eve-scopes": "operator.read" };
 const cleanupDirs: string[] = [];
 
 afterEach(async () => {
@@ -34,7 +34,7 @@ afterEach(async () => {
 });
 
 async function createSessionStoreFile(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-history-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-history-"));
   cleanupDirs.push(dir);
   const storePath = path.join(dir, "sessions.json");
   testState.sessionStorePath = storePath;
@@ -123,7 +123,7 @@ function makeDeliveryMirrorAssistantMessage(
 ): AssistantMessage {
   return makeTranscriptAssistantMessage({
     ...params,
-    provider: "openclaw",
+    provider: "eve",
     model: "delivery-mirror",
   });
 }
@@ -204,7 +204,7 @@ async function withGatewayHarness<T>(
 
 type SessionHistoryMessage = {
   content?: Array<{ text?: string }>;
-  __openclaw?: { id?: string; seq?: number };
+  __eve?: { id?: string; seq?: number };
 };
 
 type SessionHistoryBody = {
@@ -271,7 +271,7 @@ type SessionHistorySseStream = {
   streamState: { buffer: string };
 };
 
-function expectOpenClawMetadata(
+function expectEVEMetadata(
   metadata: { id?: string; seq?: number } | undefined,
   expected: { id?: string; seq: number },
 ) {
@@ -345,9 +345,9 @@ async function expectMessageEventMatch(
   ).toBe(params.text);
   expect((event.data as { messageSeq?: number }).messageSeq).toBe(params.seq);
   if (params.id !== undefined) {
-    expectOpenClawMetadata(
-      (event.data as { message?: { __openclaw?: { id?: string; seq?: number } } }).message?.[
-        "__openclaw"
+    expectEVEMetadata(
+      (event.data as { message?: { __eve?: { id?: string; seq?: number } } }).message?.[
+        "__eve"
       ],
       {
         id: params.id,
@@ -383,7 +383,7 @@ describe("session history HTTP endpoints", () => {
       expect(body.sessionKey).toBe("agent:main:main");
       expect(body.messages).toHaveLength(1);
       expect(body.messages?.[0]?.content?.[0]?.text).toBe("hello from history");
-      expectOpenClawMetadata(body.messages?.[0]?.["__openclaw"], {
+      expectEVEMetadata(body.messages?.[0]?.["__eve"], {
         seq: 1,
       });
     });
@@ -422,7 +422,7 @@ describe("session history HTTP endpoints", () => {
       ]);
       expect(body.hasMore).toBe(true);
       expect(body.nextCursor).toBe("2");
-      expectOpenClawMetadata(body.messages?.[0]?.["__openclaw"], {
+      expectEVEMetadata(body.messages?.[0]?.["__eve"], {
         seq: 2,
       });
     });
@@ -582,7 +582,7 @@ describe("session history HTTP endpoints", () => {
         "second message",
         "third message",
       ]);
-      expect(firstBody.messages?.map((message) => message["__openclaw"]?.seq)).toEqual([2, 3]);
+      expect(firstBody.messages?.map((message) => message["__eve"]?.seq)).toEqual([2, 3]);
       expect(firstBody.hasMore).toBe(true);
       expect(firstBody.nextCursor).toBe("2");
 
@@ -594,7 +594,7 @@ describe("session history HTTP endpoints", () => {
       expect(secondBody.items?.map((message) => message.content?.[0]?.text)).toEqual([
         "first message",
       ]);
-      expect(secondBody.messages?.map((message) => message["__openclaw"]?.seq)).toEqual([1]);
+      expect(secondBody.messages?.map((message) => message["__eve"]?.seq)).toEqual([1]);
       expect(secondBody.hasMore).toBe(false);
       expect(secondBody.nextCursor).toBeUndefined();
     });
@@ -618,11 +618,11 @@ describe("session history HTTP endpoints", () => {
       const nextData = nextEvent.data as {
         messages?: Array<{
           content?: Array<{ text?: string }>;
-          __openclaw?: { id?: string; seq?: number };
+          __eve?: { id?: string; seq?: number };
         }>;
       };
       expect(nextData.messages?.[0]?.content?.[0]?.text).toBe("third message");
-      expectOpenClawMetadata(nextData.messages?.[0]?.["__openclaw"], {
+      expectEVEMetadata(nextData.messages?.[0]?.["__eve"], {
         id: thirdMessageId,
         seq: 3,
       });
@@ -647,10 +647,10 @@ describe("session history HTTP endpoints", () => {
       const refreshEvent = await readSseEvent(stream.reader, stream.streamState);
       expect(refreshEvent.event).toBe("history");
       const refreshData = refreshEvent.data as {
-        messages?: Array<{ content?: Array<{ text?: string }>; __openclaw?: { seq?: number } }>;
+        messages?: Array<{ content?: Array<{ text?: string }>; __eve?: { seq?: number } }>;
       };
       expect(refreshData.messages?.[0]?.content?.[0]?.text).toBe("second message");
-      expect(refreshData.messages?.[0]?.["__openclaw"]?.seq).toBe(2);
+      expect(refreshData.messages?.[0]?.["__eve"]?.seq).toBe(2);
 
       await stream.reader.cancel();
     });
@@ -706,13 +706,13 @@ describe("session history HTTP endpoints", () => {
         sessionKey?: string;
         messages?: Array<{
           content?: Array<{ text?: string }>;
-          __openclaw?: { id?: string; seq?: number };
+          __eve?: { id?: string; seq?: number };
         }>;
       };
       expect(body.sessionKey).toBe("agent:main:main");
       expect(body.messages).toHaveLength(1);
       expect(body.messages?.[0]?.content?.[0]?.text).toBe("Done.");
-      expectOpenClawMetadata(body.messages?.[0]?.["__openclaw"], {
+      expectEVEMetadata(body.messages?.[0]?.["__eve"], {
         id: visibleMessageId,
         seq: 2,
       });

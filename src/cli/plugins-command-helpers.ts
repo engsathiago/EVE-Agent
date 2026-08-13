@@ -1,7 +1,7 @@
 // Shared plugin CLI helpers for install logging, file specs, hooks, and slot selection.
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { theme } from "../../packages/terminal-core/src/theme.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginKind } from "../plugins/plugin-kind.types.js";
 import { loadPluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.js";
 import { applyExclusiveSlotSelection } from "../plugins/slots.js";
@@ -40,7 +40,7 @@ function mergeRuntimeKinds(
   };
 }
 
-function loadRuntimeKindReportForPlugins(config: OpenClawConfig, pluginIds: readonly string[]) {
+function loadRuntimeKindReportForPlugins(config: EVEConfig, pluginIds: readonly string[]) {
   return buildPluginDiagnosticsReport({
     config,
     onlyPluginIds: [...pluginIds],
@@ -48,7 +48,7 @@ function loadRuntimeKindReportForPlugins(config: OpenClawConfig, pluginIds: read
 }
 
 function buildSlotSelectionRegistry(
-  config: OpenClawConfig,
+  config: EVEConfig,
   pluginId: string,
 ): SlotSelectionRegistry {
   const plugins = loadPluginMetadataSnapshot({
@@ -90,9 +90,9 @@ export function resolveFileNpmSpecToLocalPath(
 }
 
 export function applySlotSelectionForPlugin(
-  config: OpenClawConfig,
+  config: EVEConfig,
   pluginId: string,
-): { config: OpenClawConfig; warnings: string[] } {
+): { config: EVEConfig; warnings: string[] } {
   // Static metadata is preferred; runtime diagnostics fill in kind for older manifests.
   const report = buildSlotSelectionRegistry(config, pluginId);
   const plugin = report.plugins.find((entry) => entry.id === pluginId);
@@ -142,9 +142,9 @@ export function createHookPackInstallLogger(runtime: RuntimeEnv = defaultRuntime
 }
 
 export function enableInternalHookEntries(
-  config: OpenClawConfig,
+  config: EVEConfig,
   hookNames: string[],
-): OpenClawConfig {
+): EVEConfig {
   const entries = { ...config.hooks?.internal?.entries } as Record<string, HookInternalEntryLike>;
 
   for (const hookName of hookNames) {
@@ -174,7 +174,7 @@ export function formatPluginInstallWithHookFallbackError(
   const formattedPluginError = formatPluginInstallAttemptError(pluginError);
   const formattedHookError = formatPluginInstallAttemptError(hookError);
   if (/plugin already exists: .+ \(delete it first\)/.test(pluginError)) {
-    return `${formattedPluginError}\nUse \`openclaw plugins update <id-or-npm-spec>\` to upgrade the tracked plugin, or rerun install with \`--force\` to replace it.`;
+    return `${formattedPluginError}\nUse \`eve plugins update <id-or-npm-spec>\` to upgrade the tracked plugin, or rerun install with \`--force\` to replace it.`;
   }
   if (
     pluginError.startsWith("Invalid extensions directory:") ||

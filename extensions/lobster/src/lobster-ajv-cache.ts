@@ -3,8 +3,8 @@ import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 
-const installedSymbol = Symbol.for("openclaw.lobster.ajv-compile-cache.installed");
-const cacheSymbol = Symbol.for("openclaw.lobster.ajv-compile-cache.entries");
+const installedSymbol = Symbol.for("eve.lobster.ajv-compile-cache.installed");
+const cacheSymbol = Symbol.for("eve.lobster.ajv-compile-cache.entries");
 const maxEntries = 512;
 
 type ValidateFunction = (value: unknown) => boolean;

@@ -3,8 +3,8 @@ import "fake-indexeddb/auto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { resetFileLockStateForTest } from "openclaw/plugin-sdk/file-lock";
-import { resetPluginStateStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
+import { resetFileLockStateForTest } from "eve-agent/plugin-sdk/file-lock";
+import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getMatrixRuntime } from "../../runtime.js";
 import { installMatrixTestRuntime } from "../../test-runtime.js";
@@ -16,8 +16,8 @@ import {
 } from "./idb-persistence.test-helpers.js";
 import { LogService } from "./logger.js";
 
-const DATABASE_PREFIX = "openclaw-matrix-persistence-test";
-const OTHER_DATABASE_PREFIX = "openclaw-matrix-persistence-other-test";
+const DATABASE_PREFIX = "eve-matrix-persistence-test";
+const OTHER_DATABASE_PREFIX = "eve-matrix-persistence-other-test";
 const cryptoDatabaseName = `${DATABASE_PREFIX}::matrix-sdk-crypto`;
 const otherCryptoDatabaseName = `${OTHER_DATABASE_PREFIX}::matrix-sdk-crypto`;
 

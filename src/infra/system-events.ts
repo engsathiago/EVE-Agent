@@ -5,7 +5,7 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { channelRouteDedupeKey } from "../plugin-sdk/channel-route.js";
 import { sanitizeInboundSystemTags } from "../security/system-tags.js";
 import { resolveGlobalMap } from "../shared/global-singleton.js";
@@ -29,7 +29,7 @@ type SessionQueue = {
   lastContextKey: string | null;
 };
 
-const SYSTEM_EVENT_QUEUES_KEY = Symbol.for("openclaw.systemEvents.queues");
+const SYSTEM_EVENT_QUEUES_KEY = Symbol.for("eve.systemEvents.queues");
 
 const queues = resolveGlobalMap<string, SessionQueue>(SYSTEM_EVENT_QUEUES_KEY);
 

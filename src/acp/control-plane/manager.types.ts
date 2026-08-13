@@ -7,14 +7,14 @@ import type {
   AcpRuntimePromptMode,
   AcpRuntimeSessionMode,
   AcpRuntimeStatus,
-} from "@openclaw/acp-core/runtime/types";
+} from "@eve/acp-core/runtime/types";
 import type {
   SessionAcpIdentity,
   AcpSessionRuntimeOptions,
   SessionAcpMeta,
   SessionEntry,
 } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { AcpRuntimeError } from "../runtime/errors.js";
 import { getAcpRuntimeBackend, requireAcpRuntimeBackend } from "../runtime/registry.js";
 import {
@@ -42,7 +42,7 @@ export type AcpSessionResolution =
 
 /** Input required to create or resume an ACP runtime session. */
 export type AcpInitializeSessionInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   agent: string;
   mode: AcpRuntimeSessionMode;
@@ -59,7 +59,7 @@ export type AcpTurnAttachment = {
 
 /** Input for one ACP prompt turn routed through the manager. */
 export type AcpRunTurnInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   text: string;
   attachments?: AcpTurnAttachment[];
@@ -77,7 +77,7 @@ type AcpTurnLifecycleEvent = {
 
 /** Input for closing, resetting, or cleaning up an ACP session. */
 export type AcpCloseSessionInput = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   reason: string;
   discardPersistentState?: boolean;
@@ -155,7 +155,7 @@ export type AcpSessionManagerDeps = {
 };
 
 export type WriteManagerSessionMeta = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   mutate: (
     current: SessionAcpMeta | undefined,
@@ -167,18 +167,18 @@ export type WriteManagerSessionMeta = (params: {
 }) => Promise<SessionEntry | null>;
 
 export type ResolveManagerSession = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
 }) => AcpSessionResolution;
 
 export type EnsureManagerRuntimeHandle = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   meta: SessionAcpMeta;
 }) => Promise<{ runtime: AcpRuntime; handle: AcpRuntimeHandle; meta: SessionAcpMeta }>;
 
 export type ReconcileManagerRuntimeSessionIdentifiers = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   runtime: AcpRuntime;
   handle: AcpRuntimeHandle;
@@ -192,7 +192,7 @@ export type ReconcileManagerRuntimeSessionIdentifiers = (params: {
 }>;
 
 export type SetManagerSessionState = (params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   state: SessionAcpMeta["state"];
   lastError?: string;

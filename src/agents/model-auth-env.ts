@@ -3,9 +3,9 @@
  */
 import fs from "node:fs";
 import os from "node:os";
-import { normalizeProviderIdForAuth } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalString as normalizeOptionalPathInput } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeProviderIdForAuth } from "@eve/model-catalog-core/provider-id";
+import { normalizeOptionalString as normalizeOptionalPathInput } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import { getShellEnvAppliedKeys } from "../infra/shell-env.js";
 import { resolvePluginSetupProvider } from "../plugins/setup-registry.js";
 import type { ProviderAuthEvidence } from "../secrets/provider-env-vars.js";
@@ -21,7 +21,7 @@ export type EnvApiKeyResult = {
 };
 
 export type EnvApiKeyLookupOptions = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   aliasMap?: Readonly<Record<string, string>>;
   candidateMap?: Readonly<Record<string, readonly string[]>>;

@@ -1,5 +1,5 @@
 // Msteams helper module supports conversation store helpers behavior.
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type {
   MSTeamsConversationStoreEntry,
   StoredConversationReference,

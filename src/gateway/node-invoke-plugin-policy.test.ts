@@ -7,7 +7,7 @@ import {
   type PluginApprovalRequestPayload,
 } from "../infra/plugin-approvals.js";
 import type { PluginRegistry } from "../plugins/registry-types.js";
-import type { OpenClawPluginNodeInvokePolicyContext } from "../plugins/types.js";
+import type { EVEPluginNodeInvokePolicyContext } from "../plugins/types.js";
 import { ExecApprovalManager } from "./exec-approval-manager.js";
 import { applyPluginNodeInvokePolicy } from "./node-invoke-plugin-policy.js";
 import type { NodeSession } from "./node-registry.js";
@@ -122,7 +122,7 @@ function createDemoPolicy(handle: NodeInvokePolicyHandler): NodeInvokePolicyRegi
 function createApprovalRequestPolicy(params?: {
   timeoutMs?: number;
 }): NodeInvokePolicyRegistration {
-  return createDemoPolicy(async (ctx: OpenClawPluginNodeInvokePolicyContext) => {
+  return createDemoPolicy(async (ctx: EVEPluginNodeInvokePolicyContext) => {
     const approval = await ctx.approvals?.request({
       title: "Sensitive action",
       description: "Needs approval",
@@ -211,7 +211,7 @@ describe("applyPluginNodeInvokePolicy", () => {
 
   it("uses a matching plugin policy when one is registered", async () => {
     setDangerousDemoCommandRegistry([
-      createDemoPolicy((ctx: OpenClawPluginNodeInvokePolicyContext) => ctx.invokeNode()),
+      createDemoPolicy((ctx: EVEPluginNodeInvokePolicyContext) => ctx.invokeNode()),
     ]);
     const { context, invoke } = createContext();
 

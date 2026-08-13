@@ -19,17 +19,17 @@ describe("session transcript reader facade", () => {
   let originalStateDir: string | undefined;
 
   beforeEach(() => {
-    originalStateDir = process.env.OPENCLAW_STATE_DIR;
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-transcript-readers-"));
+    originalStateDir = process.env.EVE_STATE_DIR;
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-transcript-readers-"));
     storePath = path.join(tempDir, "sessions.json");
-    process.env.OPENCLAW_STATE_DIR = tempDir;
+    process.env.EVE_STATE_DIR = tempDir;
   });
 
   afterEach(() => {
     if (originalStateDir === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = originalStateDir;
+      process.env.EVE_STATE_DIR = originalStateDir;
     }
     fs.rmSync(tempDir, { recursive: true, force: true });
   });

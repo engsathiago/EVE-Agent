@@ -28,9 +28,9 @@ cleanup() {
 }
 trap cleanup EXIT
 
-openclaw_live_stage_source_tree "$tmp_dir"
-openclaw_live_stage_node_modules "$tmp_dir"
-openclaw_live_link_runtime_tree "$tmp_dir"
+eve_live_stage_source_tree "$tmp_dir"
+eve_live_stage_node_modules "$tmp_dir"
+eve_live_link_runtime_tree "$tmp_dir"
 
 cd "$tmp_dir"
 tsx scripts/repro/code-mode-namespace-live.ts

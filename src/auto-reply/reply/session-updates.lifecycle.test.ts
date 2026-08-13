@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { loadSessionStore, type SessionEntry } from "../../config/sessions.js";
 import type { HookRunner } from "../../plugins/hooks.js";
 
@@ -17,7 +17,7 @@ let incrementCompactionCount: typeof import("./session-updates.js").incrementCom
 const tempDirs: string[] = [];
 
 async function createFixture() {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-session-updates-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-session-updates-"));
   tempDirs.push(root);
   const storePath = path.join(root, "sessions.json");
   const sessionKey = "agent:main:forum:direct:compaction";
@@ -75,7 +75,7 @@ describe("session-updates lifecycle hooks", () => {
 
   it("emits compaction lifecycle hooks when newSessionId replaces the session", async () => {
     const { storePath, sessionKey, sessionStore, entry, transcriptPath } = await createFixture();
-    const cfg = { session: { store: storePath } } as OpenClawConfig;
+    const cfg = { session: { store: storePath } } as EVEConfig;
 
     await incrementCompactionCount({
       cfg,

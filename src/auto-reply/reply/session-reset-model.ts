@@ -1,6 +1,6 @@
 /** Applies model override tokens embedded in reset/new command text. */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { ModelCatalogEntry } from "../../agents/model-catalog.types.js";
 import {
   buildAllowedModelSetWithFallbacks,
@@ -8,7 +8,7 @@ import {
 } from "../../agents/model-selection-shared.js";
 import { resolveAgentModelFallbackValues } from "../../config/model-input.js";
 import type { SessionEntry } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { applyModelOverrideToSessionEntry } from "../../sessions/model-overrides.js";
 import type { MsgContext, TemplateContext } from "../templating.js";
 import {
@@ -35,13 +35,13 @@ function splitBody(body: string) {
   };
 }
 
-async function loadResetModelCatalog(cfg: OpenClawConfig): Promise<ModelCatalogEntry[]> {
+async function loadResetModelCatalog(cfg: EVEConfig): Promise<ModelCatalogEntry[]> {
   const { loadModelCatalog } = await import("../../agents/model-catalog.js");
   return loadModelCatalog({ config: cfg });
 }
 
 async function resolveResetFallbackModels(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
 }): Promise<string[]> {
   if (params.agentId) {
@@ -55,7 +55,7 @@ async function resolveResetFallbackModels(params: {
 }
 
 async function buildResetAllowedModelKeys(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   catalog: ModelCatalogEntry[];
   defaultProvider: string;
   defaultModel?: string;
@@ -139,7 +139,7 @@ function applySelectionToSession(params: {
 /** Applies a model override embedded in a reset command body. */
 /** Applies a valid reset model override to session state and returns the cleaned body. */
 export async function applyResetModelOverride(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   resetTriggered: boolean;
   bodyStripped?: string;

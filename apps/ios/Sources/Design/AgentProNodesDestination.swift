@@ -1,9 +1,9 @@
-import OpenClawProtocol
+import EVEProtocol
 import SwiftUI
 import UIKit
 
 struct AgentProNodesDestination: View {
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
     let overview: AgentOverviewSnapshot?
     let gatewayConnected: Bool
     let agentCount: Int
@@ -14,7 +14,7 @@ struct AgentProNodesDestination: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     self.header
@@ -27,7 +27,7 @@ struct AgentProNodesDestination: View {
             .refreshable {
                 await self.refresh()
             }
-            .safeAreaPadding(.bottom, OpenClawProMetric.bottomScrollInset)
+            .safeAreaPadding(.bottom, EVEProMetric.bottomScrollInset)
         }
         .navigationTitle("Instances")
         .navigationBarTitleDisplayMode(.inline)
@@ -36,17 +36,17 @@ struct AgentProNodesDestination: View {
     @ViewBuilder
     private var header: some View {
         if let headerLeadingAction {
-            OpenClawAdaptiveHeaderRow(
+            EVEAdaptiveHeaderRow(
                 title: "Instances",
                 subtitle: self.instancesDetail,
                 titleFont: .title3.weight(.semibold),
                 subtitleFont: .callout)
             {
-                OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                EVESidebarHeaderLeadingSlot(action: headerLeadingAction)
             } accessory: {
                 EmptyView()
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         }
     }
 
@@ -65,7 +65,7 @@ struct AgentProNodesDestination: View {
                 ProValuePill(value: self.instancesValue, color: self.instancesColor)
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var totalsCard: some View {
@@ -84,7 +84,7 @@ struct AgentProNodesDestination: View {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var nodesList: some View {
@@ -116,7 +116,7 @@ struct AgentProNodesDestination: View {
                     }
                 }
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         }
     }
 
@@ -165,7 +165,7 @@ struct AgentProNodesDestination: View {
 
     private func nodeDetail(_ entry: PresenceEntry) -> some View {
         ZStack {
-            OpenClawProBackground()
+            EVEProBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     ProCard {
@@ -182,7 +182,7 @@ struct AgentProNodesDestination: View {
                             ProValuePill(value: Self.presenceState(entry), color: Self.presenceColor(entry))
                         }
                     }
-                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                    .padding(.horizontal, EVEProMetric.pagePadding)
 
                     ProCard {
                         VStack(spacing: 0) {
@@ -201,7 +201,7 @@ struct AgentProNodesDestination: View {
                             self.nodeDetailRow("Mode", value: entry.mode)
                         }
                     }
-                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                    .padding(.horizontal, EVEProMetric.pagePadding)
 
                     self.nodeListCard(title: "Scopes", values: entry.scopes ?? [])
                     self.nodeListCard(title: "Roles", values: entry.roles ?? [])
@@ -209,7 +209,7 @@ struct AgentProNodesDestination: View {
                 }
                 .padding(.vertical, 18)
             }
-            .safeAreaPadding(.bottom, OpenClawProMetric.bottomScrollInset)
+            .safeAreaPadding(.bottom, EVEProMetric.bottomScrollInset)
         }
         .navigationTitle(Self.presenceLabel(entry) ?? "Instance")
         .navigationBarTitleDisplayMode(.inline)
@@ -257,7 +257,7 @@ struct AgentProNodesDestination: View {
                     }
                 }
             }
-            .padding(.horizontal, OpenClawProMetric.pagePadding)
+            .padding(.horizontal, EVEProMetric.pagePadding)
         }
     }
 
@@ -342,7 +342,7 @@ struct AgentProNodesDestination: View {
     }
 
     private static func presenceColor(_ entry: PresenceEntry) -> Color {
-        self.normalized(entry.reason) == nil ? OpenClawBrand.accent : OpenClawBrand.warn
+        self.normalized(entry.reason) == nil ? EVEBrand.accent : EVEBrand.warn
     }
 
     private static func normalized(_ value: String?) -> String? {

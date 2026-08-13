@@ -27,7 +27,7 @@ describe("resolvePythonExecutablePath", () => {
   itUnix(
     "resolves a working python path and caches the result",
     async () => {
-      const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-python-"));
+      const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "eve-python-"));
       try {
         const realPython = path.join(tmp, "python-real");
         await fs.writeFile(realPython, "#!/bin/sh\nexit 0\n", "utf-8");
@@ -69,7 +69,7 @@ describe("runGcloud", () => {
   itUnix(
     "overrides an inherited CLOUDSDK_PYTHON value with a resolved interpreter",
     async () => {
-      const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gcloud-python-"));
+      const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gcloud-python-"));
       try {
         const realPython = path.join(tmp, "python-real");
         await fs.writeFile(realPython, "#!/bin/sh\nexit 0\n", "utf-8");

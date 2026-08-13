@@ -2,8 +2,8 @@
 import {
   positiveSecondsToSafeMilliseconds,
   resolveExpiresAtMsFromDurationSeconds,
-} from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
 import { resolveCodexAccessTokenExpiry } from "./openai-chatgpt-auth-identity.js";
 import { trimNonEmptyString } from "./openai-chatgpt-shared.js";
 
@@ -17,12 +17,12 @@ const OPENAI_CODEX_DEVICE_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 const OPENAI_CODEX_DEVICE_JSON_BODY_LIMIT_BYTES = 256 * 1024;
 
 function resolveOpenAICodexDeviceCodeHeaders(contentType: string): Record<string, string> {
-  const version = process.env.OPENCLAW_VERSION?.trim();
+  const version = process.env.EVE_VERSION?.trim();
   return {
     "Content-Type": contentType,
-    originator: "openclaw",
+    originator: "eve",
     ...(version ? { version } : {}),
-    "User-Agent": version ? `openclaw/${version}` : "openclaw",
+    "User-Agent": version ? `eve/${version}` : "eve",
   };
 }
 

@@ -5,7 +5,7 @@ import {
   GPT5_BEHAVIOR_CONTRACT,
   GPT5_HEARTBEAT_PROMPT_OVERLAY,
   resolveGpt5SystemPromptContribution,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 
 /** GPT-5 behavior contract re-exported under the Codex provider namespace. */
 export const CODEX_GPT5_BEHAVIOR_CONTRACT = GPT5_BEHAVIOR_CONTRACT;

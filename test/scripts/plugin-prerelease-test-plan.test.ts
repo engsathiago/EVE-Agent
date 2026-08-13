@@ -105,7 +105,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     );
 
     expect(lane).toEqual({
-      command: "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-plugin",
+      command: "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-plugin",
       e2eImageKind: "functional",
       live: false,
       name: "kitchen-sink-plugin",
@@ -115,15 +115,15 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       stateScenario: "empty",
       weight: 3,
     });
-    expect(script).toContain("npm:@openclaw/kitchen-sink@latest");
+    expect(script).toContain("npm:@eve/kitchen-sink@latest");
     expect(script).toContain("npm-latest-conformance");
     expect(script).toContain("npm-latest-adversarial");
-    expect(script).toContain("npm:@openclaw/kitchen-sink@beta");
-    expect(script).toContain("clawhub:@openclaw/kitchen-sink@latest");
-    expect(script).toContain("clawhub:@openclaw/kitchen-sink@beta");
-    expect(script).toContain("OPENCLAW_KITCHEN_SINK_PLUGIN_MAX_MEMORY_MIB");
+    expect(script).toContain("npm:@eve/kitchen-sink@beta");
+    expect(script).toContain("clawhub:@eve/kitchen-sink@latest");
+    expect(script).toContain("clawhub:@eve/kitchen-sink@beta");
+    expect(script).toContain("EVE_KITCHEN_SINK_PLUGIN_MAX_MEMORY_MIB");
     expect(script).toContain(
-      "npm-to-clawhub|clawhub:@openclaw/kitchen-sink@latest|openclaw-kitchen-sink-fixture|clawhub|success|basic||${KITCHEN_SINK_NPM_SPEC}",
+      "npm-to-clawhub|clawhub:@eve/kitchen-sink@latest|eve-kitchen-sink-fixture|clawhub|success|basic||${KITCHEN_SINK_NPM_SPEC}",
     );
     expect(script).toContain("scripts/e2e/lib/kitchen-sink-plugin/sweep.sh");
     expect(sweepScript).toContain('plugins install "$KITCHEN_SINK_SPEC"');
@@ -131,7 +131,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     expect(sweepScript).toContain("assert-cutover-preinstalled");
     expect(sweepScript).toContain('install_args+=("--force")');
     expect(sweepScript).toContain("KITCHEN_SINK_PERSONALITY");
-    expect(sweepScript).toContain("OPENCLAW_KITCHEN_SINK_PERSONALITY");
+    expect(sweepScript).toContain("EVE_KITCHEN_SINK_PERSONALITY");
     expect(sweepScript).toContain('plugins uninstall "$KITCHEN_SINK_SPEC" --force');
     const successScenario = sweepScript.slice(
       sweepScript.indexOf("run_success_scenario()"),
@@ -159,7 +159,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     );
     expect(assertionsScript).toContain("!INVALID_PROBE_DIAGNOSTIC_SURFACE_MODES.has(surfaceMode)");
     expect(readFileSync("scripts/e2e/lib/clawhub-fixture-server.cjs", "utf8")).toContain(
-      'from "openclaw/plugin-sdk/plugin-entry"',
+      'from "eve-agent/plugin-sdk/plugin-entry"',
     );
     expect(readFileSync("scripts/e2e/lib/clawhub-fixture-server.cjs", "utf8")).toContain(
       "X-ClawHub-Artifact-Sha256",
@@ -175,7 +175,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     const walkScript = readFileSync("scripts/e2e/kitchen-sink-rpc-walk.mjs", "utf8");
 
     expect(lane).toMatchObject({
-      command: "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-rpc",
+      command: "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-rpc",
       e2eImageKind: "functional",
       live: false,
       name: "kitchen-sink-rpc",
@@ -186,8 +186,8 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       timeoutMs: 1_500_000,
       weight: 3,
     });
-    expect(script).toContain("OPENCLAW_ENTRY=/app/openclaw.mjs");
-    expect(script).toContain("OPENCLAW_KITCHEN_SINK_COMMAND_MAX_RSS_MIB");
+    expect(script).toContain("EVE_ENTRY=/app/eve.mjs");
+    expect(script).toContain("EVE_KITCHEN_SINK_COMMAND_MAX_RSS_MIB");
     expect(script).toContain("docker_e2e_sample_stats_until_exit");
     expect(script).toContain("scripts/e2e/lib/docker-stats/assert-resource-ceiling.mjs");
     expect(script).toContain("node scripts/e2e/kitchen-sink-rpc-walk.mjs");
@@ -197,7 +197,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     expect(walkScript).toContain("tts.providers");
     expect(walkScript).toContain("plugins.uiDescriptors");
     expect(walkScript).toContain("loadCallGatewayModule(options.runner)");
-    expect(walkScript).toContain("usesBuiltOpenClawEntry(runner)");
+    expect(walkScript).toContain("usesBuiltEVEEntry(runner)");
     expect(walkScript).toContain('"gateway"');
     expect(walkScript).toContain('"call"');
     expect(walkScript).not.toContain("src/gateway/call.ts");
@@ -213,7 +213,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     const prereleasePlan = createPluginPrereleaseTestPlan();
 
     expect(lane).toEqual({
-      command: "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins",
+      command: "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins",
       e2eImageKind: "functional",
       live: false,
       name: "plugins",
@@ -227,9 +227,9 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     expect(sweepScript).toContain("run_plugins_clawhub_scenario");
     expect(clawhubScript).toContain('plugins install "$CLAWHUB_PLUGIN_SPEC"');
     expect(assertionsScript).toContain("assertClawHubExternalInstallContract");
-    expect(assertionsScript).toContain('node_modules", "openclaw');
+    expect(assertionsScript).toContain('node_modules", "eve');
     expect(fixtureServer).toContain('"is-number": "7.0.0"');
-    expect(fixtureServer).toContain('openclaw: ">=2026.4.11"');
+    expect(fixtureServer).toContain('eve: ">=2026.4.11"');
     expect(fixtureServer).toContain("/versions/${fixture.version}/artifact");
   });
 
@@ -328,33 +328,33 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       type: "boolean",
     });
     expect(manifestEnv).toEqual({
-      OPENCLAW_CI_CHECKOUT_REVISION: "${{ steps.checkout_ref.outputs.sha }}",
-      OPENCLAW_CI_DOCS_CHANGED:
+      EVE_CI_CHECKOUT_REVISION: "${{ steps.checkout_ref.outputs.sha }}",
+      EVE_CI_DOCS_CHANGED:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.docs_scope.outputs.docs_changed }}",
-      OPENCLAW_CI_DOCS_ONLY:
+      EVE_CI_DOCS_ONLY:
         "${{ github.event_name == 'workflow_dispatch' && 'false' || steps.docs_scope.outputs.docs_only }}",
-      OPENCLAW_CI_EVENT_NAME: "${{ github.event_name }}",
-      OPENCLAW_CI_REPOSITORY: "${{ github.repository }}",
-      OPENCLAW_CI_RUN_ANDROID:
+      EVE_CI_EVENT_NAME: "${{ github.event_name }}",
+      EVE_CI_REPOSITORY: "${{ github.repository }}",
+      EVE_CI_RUN_ANDROID:
         "${{ github.event_name == 'workflow_dispatch' && (inputs.release_gate || inputs.include_android) && 'true' || steps.changed_scope.outputs.run_android || 'false' }}",
-      OPENCLAW_CI_RUN_CONTROL_UI_I18N:
+      EVE_CI_RUN_CONTROL_UI_I18N:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.changed_scope.outputs.run_control_ui_i18n || 'false' }}",
-      OPENCLAW_CI_RUN_MACOS:
+      EVE_CI_RUN_MACOS:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.changed_scope.outputs.run_macos || 'false' }}",
-      OPENCLAW_CI_RUN_NODE:
+      EVE_CI_RUN_NODE:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.changed_scope.outputs.run_node || 'false' }}",
-      OPENCLAW_CI_RUN_NODE_FAST_CI_ROUTING:
+      EVE_CI_RUN_NODE_FAST_CI_ROUTING:
         "${{ github.event_name == 'workflow_dispatch' && 'false' || steps.changed_scope.outputs.run_node_fast_ci_routing || 'false' }}",
-      OPENCLAW_CI_RUN_NODE_FAST_ONLY:
+      EVE_CI_RUN_NODE_FAST_ONLY:
         "${{ github.event_name == 'workflow_dispatch' && 'false' || steps.changed_scope.outputs.run_node_fast_only || 'false' }}",
-      OPENCLAW_CI_RUN_NODE_FAST_PLUGIN_CONTRACTS:
+      EVE_CI_RUN_NODE_FAST_PLUGIN_CONTRACTS:
         "${{ github.event_name == 'workflow_dispatch' && 'false' || steps.changed_scope.outputs.run_node_fast_plugin_contracts || 'false' }}",
-      OPENCLAW_CI_RUN_SKILLS_PYTHON:
+      EVE_CI_RUN_SKILLS_PYTHON:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.changed_scope.outputs.run_skills_python || 'false' }}",
-      OPENCLAW_CI_RUN_WINDOWS:
+      EVE_CI_RUN_WINDOWS:
         "${{ github.event_name == 'workflow_dispatch' && 'true' || steps.changed_scope.outputs.run_windows || 'false' }}",
     });
-    expect(manifestEnv).not.toHaveProperty("OPENCLAW_CI_FULL_RELEASE_VALIDATION");
+    expect(manifestEnv).not.toHaveProperty("EVE_CI_FULL_RELEASE_VALIDATION");
     expect(manifestScript).toContain("includeReleaseOnlyPluginShards: false");
     expect(manifestScript).not.toContain("plugin-prerelease-test-plan.mjs");
     expect(
@@ -447,12 +447,12 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       (step) => step.name === "Run plugin inspector advisory sweep",
     );
     expect(inspectorRun.env).toEqual({
-      OPENCLAW_PLUGIN_INSPECTOR_ROOT: ".artifacts/plugin-inspector",
-      OPENCLAW_PLUGIN_INSPECTOR_VERSION: "0.3.10",
+      EVE_PLUGIN_INSPECTOR_ROOT: ".artifacts/plugin-inspector",
+      EVE_PLUGIN_INSPECTOR_VERSION: "0.3.10",
     });
     expect(inspectorRun.run).toContain("extensions/");
     expect(inspectorRun.run).toContain(
-      'npm exec --yes "@openclaw/plugin-inspector@${OPENCLAW_PLUGIN_INSPECTOR_VERSION}" -- ci',
+      'npm exec --yes "@eve/plugin-inspector@${EVE_PLUGIN_INSPECTOR_VERSION}" -- ci',
     );
     expect(inspectorRun.run).toContain("This job is informational");
     expect(
@@ -480,7 +480,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
         packages: "write",
         "pull-requests": "read",
       },
-      uses: "./.github/workflows/openclaw-live-and-e2e-checks-reusable.yml",
+      uses: "./.github/workflows/eve-live-and-e2e-checks-reusable.yml",
       with: {
         docker_lanes: "${{ needs.preflight.outputs.plugin_prerelease_docker_lanes }}",
         include_live_suites: false,
@@ -508,13 +508,13 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
 
   it("keeps release-check reruns independent while cancelling superseded umbrella runs", () => {
     const releaseChecksWorkflow = parse(
-      readFileSync(".github/workflows/openclaw-release-checks.yml", "utf8"),
+      readFileSync(".github/workflows/eve-release-checks.yml", "utf8"),
     );
     const fullReleaseWorkflow = readFullReleaseValidationWorkflow();
 
     expect(releaseChecksWorkflow.concurrency).toEqual({
       group:
-        "openclaw-release-checks-${{ inputs.expected_sha || inputs.ref }}-${{ inputs.rerun_group }}",
+        "eve-release-checks-${{ inputs.expected_sha || inputs.ref }}-${{ inputs.rerun_group }}",
       "cancel-in-progress": "${{ startsWith(github.ref, 'refs/heads/tideclaw/alpha/') }}",
     });
     expect(fullReleaseWorkflow.concurrency).toEqual({
@@ -559,7 +559,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     expect(dockerPreflightStep?.run).toContain("--target runtime-assets");
     expect(dockerPreflightStep?.run).toContain("timeout --kill-after=30s 15m docker build");
     expect(dockerPreflightStep?.run).toContain(
-      '--build-arg OPENCLAW_EXTENSIONS="diagnostics-otel,codex"',
+      '--build-arg EVE_EXTENSIONS="diagnostics-otel,codex"',
     );
     expect(
       fullReleaseWorkflow.jobs.docker_runtime_assets_preflight.steps.some(
@@ -583,7 +583,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
 
   it("keeps runtime tool coverage blocking in release checks", () => {
     const releaseChecksSource = readFileSync(
-      ".github/workflows/openclaw-release-checks.yml",
+      ".github/workflows/eve-release-checks.yml",
       "utf8",
     );
     const releaseChecksWorkflow = parse(releaseChecksSource);
@@ -598,7 +598,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       expect.arrayContaining([
         expect.objectContaining({
           name: "Enforce standard runtime tool coverage",
-          run: expect.stringContaining("pnpm openclaw qa coverage"),
+          run: expect.stringContaining("pnpm eve qa coverage"),
         }),
       ]),
     );
@@ -634,7 +634,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
     );
 
     expect(output).toContain("provider-openai: present (OPENAI_API_KEY, OPENAI_BASE_URL)");
-    expect(output).toContain("channel-discord: present (DISCORD_TOKEN, OPENCLAW_DISCORD_TOKEN)");
+    expect(output).toContain("channel-discord: present (DISCORD_TOKEN, EVE_DISCORD_TOKEN)");
     expect(output).not.toContain("openai-token-should-not-print");
     expect(output).not.toContain("discord-token-should-not-print");
   });

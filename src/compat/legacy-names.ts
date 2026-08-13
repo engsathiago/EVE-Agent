@@ -1,6 +1,6 @@
-// Product/package naming constants that bridge current OpenClaw manifests with
+// Product/package naming constants that bridge current EVE manifests with
 // legacy Clawdbot keys still seen in older configs and packages.
-export const PROJECT_NAME = "openclaw" as const;
+export const PROJECT_NAME = "eve" as const;
 
 const LEGACY_PROJECT_NAMES = ["clawdbot"] as const;
 
@@ -9,4 +9,4 @@ export const MANIFEST_KEY = PROJECT_NAME;
 /** Manifest keys accepted only for legacy compatibility. */
 export const LEGACY_MANIFEST_KEYS = LEGACY_PROJECT_NAMES;
 
-export const MACOS_APP_SOURCES_DIR = "apps/macos/Sources/OpenClaw" as const;
+export const MACOS_APP_SOURCES_DIR = "apps/macos/Sources/EVE" as const;

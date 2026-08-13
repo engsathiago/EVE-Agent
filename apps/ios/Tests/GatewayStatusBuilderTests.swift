@@ -1,6 +1,6 @@
-import OpenClawKit
+import EVEKit
 import Testing
-@testable import OpenClaw
+@testable import EVE
 
 @Suite struct GatewayStatusBuilderTests {
     @Test func pausedProblemKeepsErrorStatus() {

@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   resetGatewayModelPricingCacheForTest,
   setGatewayModelPricingForTest,
@@ -49,11 +49,11 @@ describe("usage-format", () => {
   let stateDir: string;
 
   beforeEach(async () => {
-    envSnapshot = captureEnv(["OPENCLAW_AGENT_DIR", "OPENCLAW_STATE_DIR"]);
-    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-usage-format-"));
+    envSnapshot = captureEnv(["EVE_AGENT_DIR", "EVE_STATE_DIR"]);
+    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-usage-format-"));
     agentDir = path.join(stateDir, "agents", "main", "agent");
-    process.env.OPENCLAW_STATE_DIR = stateDir;
-    delete process.env.OPENCLAW_AGENT_DIR;
+    process.env.EVE_STATE_DIR = stateDir;
+    delete process.env.EVE_AGENT_DIR;
     await fs.mkdir(agentDir, { recursive: true });
     resetUsageFormatCachesForTest();
     resetGatewayModelPricingCacheForTest();
@@ -96,7 +96,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const cost = resolveModelCostConfig({
       provider: "test",
@@ -135,7 +135,7 @@ describe("usage-format", () => {
     ).toBeUndefined();
   });
 
-  it("prefers models.json pricing over openclaw config and cached pricing", async () => {
+  it("prefers models.json pricing over eve config and cached pricing", async () => {
     const config = {
       models: {
         providers: {
@@ -149,7 +149,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     await fs.writeFile(
       path.join(agentDir, "models.json"),
@@ -194,7 +194,7 @@ describe("usage-format", () => {
     });
   });
 
-  it("falls back to openclaw config pricing when models.json is absent", () => {
+  it("falls back to eve config pricing when models.json is absent", () => {
     const config = {
       models: {
         providers: {
@@ -208,7 +208,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     setGatewayModelPricingForTest([
       {
@@ -268,7 +268,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -303,7 +303,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -334,7 +334,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -368,7 +368,7 @@ describe("usage-format", () => {
           "demo-structural": { models },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -411,7 +411,7 @@ describe("usage-format", () => {
           "demo-replaced-cost": { models: [model] },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -454,7 +454,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -489,7 +489,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     expect(
       resolveModelCostConfig({
@@ -554,7 +554,7 @@ describe("usage-format", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const before = resolveModelCostConfigFingerprint(config);
     metadataOnlyModel.cost = { input: 9, output: 8, cacheRead: 7, cacheWrite: 6 };

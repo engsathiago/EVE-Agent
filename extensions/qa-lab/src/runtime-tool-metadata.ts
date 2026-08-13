@@ -3,23 +3,23 @@ import {
   asBoolean as readBoolean,
   isRecord,
   normalizeOptionalString as readString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { QaRuntimeParityTier, QaSeedScenarioWithSource } from "./scenario-catalog.js";
 
 export type QaRuntimeToolBucket =
   | "codex-native-workspace"
-  | "openclaw-dynamic-integration"
+  | "eve-dynamic-integration"
   | "optional-profile-or-plugin";
 
 export type QaRuntimeToolExpectedLayer =
   | "codex-native-workspace"
-  | "openclaw-dynamic"
+  | "eve-dynamic"
   | "profile-or-plugin";
 
 export type QaRuntimeCapabilityLayer =
   | "codex-native-workspace"
-  | "openclaw-dynamic-direct"
-  | "openclaw-dynamic-searchable"
+  | "eve-dynamic-direct"
+  | "eve-dynamic-searchable"
   | "optional-profile-or-plugin"
   | "structural-text";
 
@@ -39,33 +39,33 @@ export type QaRuntimeToolCoverageMetadata = {
 
 export const QA_RUNTIME_TOOL_BUCKETS: readonly QaRuntimeToolBucket[] = [
   "codex-native-workspace",
-  "openclaw-dynamic-integration",
+  "eve-dynamic-integration",
   "optional-profile-or-plugin",
 ] as const;
 
 export const QA_RUNTIME_TOOL_EXPECTED_LAYERS: readonly QaRuntimeToolExpectedLayer[] = [
   "codex-native-workspace",
-  "openclaw-dynamic",
+  "eve-dynamic",
   "profile-or-plugin",
 ] as const;
 
 export const QA_RUNTIME_CAPABILITY_LAYERS: readonly QaRuntimeCapabilityLayer[] = [
   "codex-native-workspace",
-  "openclaw-dynamic-direct",
-  "openclaw-dynamic-searchable",
+  "eve-dynamic-direct",
+  "eve-dynamic-searchable",
   "optional-profile-or-plugin",
   "structural-text",
 ] as const;
 
 const DEFAULT_LAYER_BY_BUCKET: Record<QaRuntimeToolBucket, QaRuntimeToolExpectedLayer> = {
   "codex-native-workspace": "codex-native-workspace",
-  "openclaw-dynamic-integration": "openclaw-dynamic",
+  "eve-dynamic-integration": "eve-dynamic",
   "optional-profile-or-plugin": "profile-or-plugin",
 };
 
 const DEFAULT_CAPABILITY_LAYER_BY_BUCKET: Record<QaRuntimeToolBucket, QaRuntimeCapabilityLayer> = {
   "codex-native-workspace": "codex-native-workspace",
-  "openclaw-dynamic-integration": "openclaw-dynamic-searchable",
+  "eve-dynamic-integration": "eve-dynamic-searchable",
   "optional-profile-or-plugin": "optional-profile-or-plugin",
 };
 
@@ -106,7 +106,7 @@ function inferRuntimeToolBucket(params: {
   if (params.runtimeParityTier === "optional" || params.config?.expectedAvailable === false) {
     return "optional-profile-or-plugin";
   }
-  return "openclaw-dynamic-integration";
+  return "eve-dynamic-integration";
 }
 
 export function readRuntimeToolCoverageMetadata(params: {
@@ -137,7 +137,7 @@ export function readRuntimeToolCoverageMetadata(params: {
   const capabilityLayer = capabilityLayerInput
     ? (capabilityLayerInput as QaRuntimeCapabilityLayer)
     : DEFAULT_CAPABILITY_LAYER_BY_BUCKET[bucket];
-  const explicitSearchableDynamic = capabilityLayerInput === "openclaw-dynamic-searchable";
+  const explicitSearchableDynamic = capabilityLayerInput === "eve-dynamic-searchable";
   const required =
     readBoolean(toolCoverage?.required) ??
     (bucket !== "optional-profile-or-plugin" && !explicitSearchableDynamic);

@@ -58,8 +58,8 @@ import {
 import { createTempDirHarness } from "./temp-dir.test-helper.js";
 
 const { cleanup, makeTempDir } = createTempDirHarness();
-const repoRoot = "/repo/openclaw";
-const gatewayTempRoot = "/tmp/openclaw-qa-runtime";
+const repoRoot = "/repo/eve";
+const gatewayTempRoot = "/tmp/eve-qa-runtime";
 
 afterEach(cleanup);
 
@@ -143,7 +143,7 @@ describe("qa suite runtime agent tools helpers", () => {
             tempRoot: gatewayTempRoot,
             runtimeEnv: {
               PATH: "/usr/bin",
-              OPENCLAW_KEY: "1",
+              EVE_KEY: "1",
               EMPTY: undefined,
             },
           },
@@ -167,7 +167,7 @@ describe("qa suite runtime agent tools helpers", () => {
       cwd: repoRoot,
       env: {
         PATH: "/usr/bin",
-        OPENCLAW_KEY: "1",
+        EVE_KEY: "1",
       },
     });
     expect(stderrOnMock).toHaveBeenCalledWith("data", expect.any(Function));
@@ -253,7 +253,7 @@ describe("qa suite runtime agent tools helpers", () => {
         | ((chunk: unknown) => void)
         | undefined;
       stderrListener?.(
-        Buffer.from("Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@openclaw/example'\n"),
+        Buffer.from("Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@eve/example'\n"),
       );
       throw new Error("MCP error -32000: Connection closed");
     });
@@ -276,7 +276,7 @@ describe("qa suite runtime agent tools helpers", () => {
     const message = error instanceof Error ? error.message : String(error);
     expect(message).toContain("MCP error -32000: Connection closed");
     expect(message).toContain("MCP stderr tail:");
-    expect(message).toContain("Cannot find package '@openclaw/example'");
+    expect(message).toContain("Cannot find package '@eve/example'");
     expect(closeMock).toHaveBeenCalled();
   });
 });

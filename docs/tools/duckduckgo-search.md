@@ -7,7 +7,7 @@ read_when:
 title: "DuckDuckGo search"
 ---
 
-OpenClaw supports DuckDuckGo as a **key-free** `web_search` provider. No API
+EVE supports DuckDuckGo as a **key-free** `web_search` provider. No API
 key or account is required.
 
 <Warning>
@@ -23,7 +23,7 @@ No API key needed - just set DuckDuckGo as your provider:
 <Steps>
   <Step title="Configure">
     ```bash
-    openclaw configure --section web
+    eve configure --section web
     # Select "duckduckgo" as the provider
     ```
   </Step>
@@ -93,7 +93,7 @@ parameters override config values per-query.
   under heavy or automated use
 - **HTML parsing** - results depend on page structure, which can change without
   notice
-- **Explicit selection** - OpenClaw does not choose DuckDuckGo automatically
+- **Explicit selection** - EVE does not choose DuckDuckGo automatically
   when no API-backed provider is configured
 - **SafeSearch defaults to moderate** when not configured
 

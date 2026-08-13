@@ -1,5 +1,5 @@
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   lookupCachedContextTokens,
   lookupCachedContextWindow,
@@ -19,8 +19,8 @@ export type ModelsConfig = {
 };
 
 export type ContextTokenResolutionParams = {
-  cfg?: OpenClawConfig;
-  sourceCfg?: OpenClawConfig | null;
+  cfg?: EVEConfig;
+  sourceCfg?: EVEConfig | null;
   provider?: string;
   model?: string;
   contextTokensOverride?: number;
@@ -72,7 +72,7 @@ function resolveProviderModelRef(params: {
 }
 
 function resolveConfiguredProviderContextTokens(
-  cfg: OpenClawConfig | null | undefined,
+  cfg: EVEConfig | null | undefined,
   provider: string,
   model: string,
 ): ConfiguredContextTokens | undefined {

@@ -150,8 +150,8 @@ describe("cli program (nodes media)", () => {
       }
     }
     expect(mediaPaths).toHaveLength(2);
-    expect(mediaPaths[0]).toContain("openclaw-camera-snap-");
-    expect(mediaPaths[1]).toContain("openclaw-camera-snap-");
+    expect(mediaPaths[0]).toContain("eve-camera-snap-");
+    expect(mediaPaths[1]).toContain("eve-camera-snap-");
 
     try {
       // Content bytes are covered by single-output camera/file tests; here we
@@ -185,7 +185,7 @@ describe("cli program (nodes media)", () => {
     expect(invoke.commandParams.format).toBe("mp4");
 
     await expectLoggedSingleMediaFile({
-      expectedPathPattern: /openclaw-camera-clip-front-.*\.mp4$/,
+      expectedPathPattern: /eve-camera-clip-front-.*\.mp4$/,
     });
   });
 
@@ -328,7 +328,7 @@ describe("cli program (nodes media)", () => {
           height: 480,
         },
         argv: ["nodes", "camera", "snap", "--node", "ios-node", "--facing", "front"],
-        expectedPathPattern: /openclaw-camera-snap-front-.*\.jpg$/,
+        expectedPathPattern: /eve-camera-snap-front-.*\.jpg$/,
       },
       {
         label: "runs nodes camera clip with url payload",
@@ -340,7 +340,7 @@ describe("cli program (nodes media)", () => {
           hasAudio: true,
         },
         argv: ["nodes", "camera", "clip", "--node", "ios-node", "--duration", "5000"],
-        expectedPathPattern: /openclaw-camera-clip-front-.*\.mp4$/,
+        expectedPathPattern: /eve-camera-clip-front-.*\.mp4$/,
       },
     ])("$label", async ({ command, payload, argv, expectedPathPattern }) => {
       await runAndExpectUrlPayloadMediaFile({

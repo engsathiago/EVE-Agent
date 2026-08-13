@@ -1,8 +1,8 @@
 /**
- * Converts authorized ClickClack messages into OpenClaw agent/model replies and
+ * Converts authorized ClickClack messages into EVE agent/model replies and
  * routes resulting outbound text back to ClickClack.
  */
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveClickClackInboundAccess, type ClickClackInboundAccess } from "./access.js";
 import { sendClickClackText } from "./outbound.js";
 import { getClickClackRuntime } from "./runtime.js";
@@ -12,7 +12,7 @@ import type { ClickClackMessage, CoreConfig, ResolvedClickClackAccount } from ".
 const CHANNEL_ID = "clickclack" as const;
 
 function resolveAccountAgentRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: ResolvedClickClackAccount;
   target: string;
   isDirect: boolean;
@@ -48,7 +48,7 @@ function resolveAccountAgentRoute(params: {
 
 async function dispatchModelReply(params: {
   account: ResolvedClickClackAccount;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   message: ClickClackMessage;
   route: { agentId: string };
   target: string;
@@ -110,7 +110,7 @@ export async function handleClickClackInbound(params: {
       : { chatType: "group", kind: "channel", id: message.channel_id ?? "" },
   );
   const route = resolveAccountAgentRoute({
-    cfg: params.config as OpenClawConfig,
+    cfg: params.config as EVEConfig,
     account: params.account,
     target,
     isDirect,
@@ -118,7 +118,7 @@ export async function handleClickClackInbound(params: {
   if (params.account.replyMode === "model") {
     await dispatchModelReply({
       account: params.account,
-      cfg: params.config as OpenClawConfig,
+      cfg: params.config as EVEConfig,
       message,
       route,
       target,
@@ -139,7 +139,7 @@ export async function handleClickClackInbound(params: {
     from: senderName,
     timestamp: new Date(message.created_at),
     previousTimestamp,
-    envelope: runtime.channel.reply.resolveEnvelopeFormatOptions(params.config as OpenClawConfig),
+    envelope: runtime.channel.reply.resolveEnvelopeFormatOptions(params.config as EVEConfig),
     body: message.body,
   });
   const storePath = runtime.channel.session.resolveStorePath(params.config.session?.store, {
@@ -174,7 +174,7 @@ export async function handleClickClackInbound(params: {
     CommandAuthorized: access.commandAuthorized,
   });
   await runtime.channel.inbound.dispatchReply({
-    cfg: params.config as OpenClawConfig,
+    cfg: params.config as EVEConfig,
     channel: CHANNEL_ID,
     accountId: params.account.accountId,
     agentId: route.agentId,

@@ -9,7 +9,7 @@ title: "Coming from BlueBubbles"
 
 The bundled `imessage` plugin now reaches the same private API surface as BlueBubbles (`react`, `edit`, `unsend`, `reply`, `sendWithEffect`, group management, attachments) by driving [`steipete/imsg`](https://github.com/steipete/imsg) over JSON-RPC. If you already run a Mac with `imsg` installed, you can drop the BlueBubbles server and let the plugin talk to Messages.app directly.
 
-BlueBubbles support was removed. OpenClaw supports iMessage through `imsg` only. This guide is for migrating old `channels.bluebubbles` configs to `channels.imessage`; there is no other supported migration path.
+BlueBubbles support was removed. EVE supports iMessage through `imsg` only. This guide is for migrating old `channels.bluebubbles` configs to `channels.imessage`; there is no other supported migration path.
 
 <Note>
 For the short announcement and operator summary, see [BlueBubbles removal and the imsg iMessage path](/announcements/bluebubbles-imessage).
@@ -23,7 +23,7 @@ Use this checklist when you already know your old BlueBubbles config and want th
 2. Copy behavior keys from `channels.bluebubbles` to `channels.imessage`: `dmPolicy`, `allowFrom`, `groupPolicy`, `groupAllowFrom`, `groups`, `includeAttachments`, `attachmentRoots`, `mediaMaxMb`, `textChunkLimit`, `coalesceSameSenderDms`, and `actions`.
 3. Drop transport keys that no longer exist: `serverUrl`, `password`, webhook URLs, and BlueBubbles server setup.
 4. If the Gateway is not running on the Messages Mac, set `channels.imessage.cliPath` to an SSH wrapper and set `remoteHost` for remote attachment fetches.
-5. With the Gateway stopped, enable `channels.imessage`, then run `openclaw channels status --probe --channel imessage`.
+5. With the Gateway stopped, enable `channels.imessage`, then run `eve channels status --probe --channel imessage`.
 6. Test one DM, one allowed group, attachments if enabled, and every private API action you expect the agent to use.
 7. Delete the BlueBubbles server and old `channels.bluebubbles` config after the iMessage path is verified.
 
@@ -35,13 +35,13 @@ Use this checklist when you already know your old BlueBubbles config and want th
 
 ## What imsg does
 
-`imsg` is a local macOS CLI for Messages. OpenClaw starts `imsg rpc` as a child process and talks JSON-RPC over stdin/stdout. There is no HTTP server, webhook URL, background daemon, launch agent, or port to expose.
+`imsg` is a local macOS CLI for Messages. EVE starts `imsg rpc` as a child process and talks JSON-RPC over stdin/stdout. There is no HTTP server, webhook URL, background daemon, launch agent, or port to expose.
 
 - Reads come from `~/Library/Messages/chat.db` using a read-only SQLite handle.
 - Live inbound messages come from `imsg watch` / `watch.subscribe`, which follows `chat.db` filesystem events with a polling fallback.
 - Sends use Messages.app automation for normal text and file sends.
 - Advanced actions use `imsg launch` to inject the `imsg` helper into Messages.app. That is what unlocks read receipts, typing indicators, rich sends, edit, unsend, threaded reply, tapbacks, and group management.
-- Linux builds can inspect a copied `chat.db`, but cannot send, watch the live Mac database, or drive Messages.app. For OpenClaw iMessage, run `imsg` on the signed-in Mac or through an SSH wrapper to that Mac.
+- Linux builds can inspect a copied `chat.db`, but cannot send, watch the live Mac database, or drive Messages.app. For EVE iMessage, run `imsg` on the signed-in Mac or through an SSH wrapper to that Mac.
 
 ## Before you start
 
@@ -55,17 +55,17 @@ Use this checklist when you already know your old BlueBubbles config and want th
 
    If `imsg chats` fails with `unable to open database file`, empty output, or `authorization denied`, grant Full Disk Access to the terminal, editor, Node process, Gateway service, or SSH parent process that launches `imsg`, then reopen that parent process.
 
-2. Verify the read, watch, send, and RPC surfaces before changing OpenClaw config:
+2. Verify the read, watch, send, and RPC surfaces before changing EVE config:
 
    ```bash
    imsg chats --limit 10 --json | jq -s
    imsg history --chat-id 42 --limit 10 --attachments --json | jq -s
    imsg watch --chat-id 42 --reactions --json
-   imsg send --chat-id 42 --text "OpenClaw imsg test"
+   imsg send --chat-id 42 --text "EVE imsg test"
    imsg rpc --help
    ```
 
-   Replace `42` with a real chat id from `imsg chats`. Sending requires Automation permission for Messages.app. If OpenClaw will run through SSH, run these commands through the same SSH wrapper or user context that OpenClaw will use. If reads/probes work but sends fail with AppleEvents `-1743`, check whether Automation landed on `/usr/libexec/sshd-keygen-wrapper`; see [SSH wrapper sends fail with AppleEvents -1743](/channels/imessage#ssh-wrapper-sends-fail-with-appleevents-1743).
+   Replace `42` with a real chat id from `imsg chats`. Sending requires Automation permission for Messages.app. If EVE will run through SSH, run these commands through the same SSH wrapper or user context that EVE will use. If reads/probes work but sends fail with AppleEvents `-1743`, check whether Automation landed on `/usr/libexec/sshd-keygen-wrapper`; see [SSH wrapper sends fail with AppleEvents -1743](/channels/imessage#ssh-wrapper-sends-fail-with-appleevents-1743).
 
 3. Enable the private API bridge when you need advanced actions:
 
@@ -76,10 +76,10 @@ Use this checklist when you already know your old BlueBubbles config and want th
 
    `imsg launch` requires SIP to be disabled. Basic send, history, and watch work without `imsg launch`; advanced actions do not.
 
-4. After you add an enabled `channels.imessage` config, verify the bridge through OpenClaw:
+4. After you add an enabled `channels.imessage` config, verify the bridge through EVE:
 
    ```bash
-   openclaw channels status --probe
+   eve channels status --probe
    ```
 
    You want `imessage.privateApi.available: true`. If it reports `false`, fix that first — see [Capability detection](/channels/imessage#private-api-actions). `channels status --probe` only probes configured, enabled accounts.
@@ -87,7 +87,7 @@ Use this checklist when you already know your old BlueBubbles config and want th
 5. Snapshot your config:
 
    ```bash
-   cp ~/.openclaw/openclaw.json5 ~/.openclaw/openclaw.json5.bak
+   cp ~/.eve/eve.json5 ~/.eve/eve.json5.bak
    ```
 
 ## Config translation
@@ -192,12 +192,12 @@ If the gateway logs `imessage: dropping group message from chat_id=<id>` or the 
 2. **Probe before traffic matters** — stop the Gateway, temporarily enable the iMessage block, and confirm iMessage reports healthy from the CLI:
 
    ```bash
-   openclaw gateway stop
+   eve gateway stop
    # edit config: channels.imessage.enabled = true
-   openclaw channels status --probe --channel imessage   # expect imessage.privateApi.available: true
+   eve channels status --probe --channel imessage   # expect imessage.privateApi.available: true
    ```
 
-   `channels status --probe` only probes configured, enabled accounts. Do not restart the Gateway with both BlueBubbles and iMessage enabled unless you intentionally want both channel monitors running. If you are not cutting over immediately, set `channels.imessage.enabled` back to `false` before restarting the Gateway. Use the direct `imsg` commands in [Before you start](#before-you-start) to validate the Mac before enabling OpenClaw traffic.
+   `channels status --probe` only probes configured, enabled accounts. Do not restart the Gateway with both BlueBubbles and iMessage enabled unless you intentionally want both channel monitors running. If you are not cutting over immediately, set `channels.imessage.enabled` back to `false` before restarting the Gateway. Use the direct `imsg` commands in [Before you start](#before-you-start) to validate the Mac before enabling EVE traffic.
 
 3. **Cut over.** Once the enabled iMessage account reports healthy, remove the BlueBubbles config and keep iMessage enabled:
 
@@ -217,7 +217,7 @@ If the gateway logs `imessage: dropping group message from chat_id=<id>` or the 
 
 6. **Verify the action surface** — from a paired DM, ask the agent to react, edit, unsend, reply, send a photo, and (in a group) rename the group / add or remove a participant. Each action should land natively in Messages.app. If any throws "iMessage `<action>` requires the imsg private API bridge", run `imsg launch` again and refresh `channels status --probe`.
 
-7. **Remove the BlueBubbles server and config** once iMessage DMs, groups, and actions are verified. OpenClaw will not use `channels.bluebubbles`.
+7. **Remove the BlueBubbles server and config** once iMessage DMs, groups, and actions are verified. EVE will not use `channels.bluebubbles`.
 
 ## Action parity at a glance
 
@@ -225,10 +225,10 @@ If the gateway logs `imessage: dropping group message from chat_id=<id>` or the 
 | --------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------- |
 | Send text / SMS fallback                            | ✅                                  | ✅                                                                            |
 | Send media (photo, video, file, voice)              | ✅                                  | ✅                                                                            |
-| Threaded reply (`reply_to_guid`)                    | ✅                                  | ✅ (closes [#51892](https://github.com/openclaw/openclaw/issues/51892))       |
+| Threaded reply (`reply_to_guid`)                    | ✅                                  | ✅ (closes [#51892](https://github.com/engsathiago/eve-agent/issues/51892))       |
 | Tapback (`react`)                                   | ✅                                  | ✅                                                                            |
 | Edit / unsend (macOS 13+ recipients)                | ✅                                  | ✅                                                                            |
-| Send with screen effect                             | ✅                                  | ✅ (closes part of [#9394](https://github.com/openclaw/openclaw/issues/9394)) |
+| Send with screen effect                             | ✅                                  | ✅ (closes part of [#9394](https://github.com/engsathiago/eve-agent/issues/9394)) |
 | Rich text bold / italic / underline / strikethrough | ✅                                  | ✅ (typed-run formatting via attributedBody)                                  |
 | Rename group / set group icon                       | ✅                                  | ✅                                                                            |
 | Add / remove participant, leave group               | ✅                                  | ✅                                                                            |
@@ -248,7 +248,7 @@ iMessage recovers messages missed while the gateway was down: on startup it repl
 
 There is no supported BlueBubbles runtime to switch back to. If iMessage verification fails, set `channels.imessage.enabled: false`, restart the Gateway, fix the `imsg` blocker, and retry the cutover.
 
-The reply cache lives in SQLite plugin state. `openclaw doctor --fix` imports and archives the old `imessage/reply-cache.jsonl` sidecar when present.
+The reply cache lives in SQLite plugin state. `eve doctor --fix` imports and archives the old `imessage/reply-cache.jsonl` sidecar when present.
 
 ## Related
 

@@ -1,7 +1,7 @@
 // Tests execution approval policy matching and persistence.
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { DEFAULT_AGENT_ID } from "../routing/session-key.js";
 import {
   makeMockCommandResolution,
@@ -105,7 +105,7 @@ function expectMalformedAgentAskUsesDefaults(agentAsk: unknown): void {
   expectFields(summary.ask, {
     requested: "off",
     host: "always",
-    hostSource: "~/.openclaw/exec-approvals.json defaults.ask",
+    hostSource: "~/.eve/exec-approvals.json defaults.ask",
     effective: "always",
     note: "more aggressive ask wins",
   });
@@ -439,19 +439,19 @@ describe("exec approvals policy helpers", () => {
       requested: "full",
       host: "allowlist",
       effective: "allowlist",
-      hostSource: "~/.openclaw/exec-approvals.json defaults.security",
+      hostSource: "~/.eve/exec-approvals.json defaults.security",
       note: "stricter host security wins",
     });
     expectFields(summary.ask, {
       requested: "off",
       host: "always",
       effective: "always",
-      hostSource: "~/.openclaw/exec-approvals.json defaults.ask",
+      hostSource: "~/.eve/exec-approvals.json defaults.ask",
       note: "more aggressive ask wins",
     });
     expect(summary.askFallback).toEqual({
       effective: "deny",
-      source: "~/.openclaw/exec-approvals.json defaults.askFallback",
+      source: "~/.eve/exec-approvals.json defaults.askFallback",
     });
   });
 
@@ -602,10 +602,10 @@ describe("exec approvals policy helpers", () => {
     });
   });
 
-  it("uses OPENCLAW_STATE_DIR when reporting default host sources", () => {
-    const originalOpenClawStateDir = process.env.OPENCLAW_STATE_DIR;
-    const stateDir = path.join(process.cwd(), ".tmp-openclaw-state");
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+  it("uses EVE_STATE_DIR when reporting default host sources", () => {
+    const originalEVEStateDir = process.env.EVE_STATE_DIR;
+    const stateDir = path.join(process.cwd(), ".tmp-eve-state");
+    process.env.EVE_STATE_DIR = stateDir;
     try {
       const summary = summarizeExecPolicyScopeSnapshot({
         approvals: {
@@ -625,10 +625,10 @@ describe("exec approvals policy helpers", () => {
         `${path.join(stateDir, "exec-approvals.json")} defaults.security`,
       );
     } finally {
-      if (originalOpenClawStateDir === undefined) {
-        delete process.env.OPENCLAW_STATE_DIR;
+      if (originalEVEStateDir === undefined) {
+        delete process.env.EVE_STATE_DIR;
       } else {
-        process.env.OPENCLAW_STATE_DIR = originalOpenClawStateDir;
+        process.env.EVE_STATE_DIR = originalEVEStateDir;
       }
     }
   });
@@ -676,7 +676,7 @@ describe("exec approvals policy helpers", () => {
 
     expect(summary.askFallback).toEqual({
       effective: "allowlist",
-      source: "~/.openclaw/exec-approvals.json defaults.askFallback",
+      source: "~/.eve/exec-approvals.json defaults.askFallback",
     });
   });
 
@@ -720,15 +720,15 @@ describe("exec approvals policy helpers", () => {
 
     expectFields(summary.security, {
       host: "allowlist",
-      hostSource: "~/.openclaw/exec-approvals.json agents.*.security",
+      hostSource: "~/.eve/exec-approvals.json agents.*.security",
     });
     expectFields(summary.ask, {
       host: "always",
-      hostSource: "~/.openclaw/exec-approvals.json agents.*.ask",
+      hostSource: "~/.eve/exec-approvals.json agents.*.ask",
     });
     expect(summary.askFallback).toEqual({
       effective: "deny",
-      source: "~/.openclaw/exec-approvals.json agents.*.askFallback",
+      source: "~/.eve/exec-approvals.json agents.*.askFallback",
     });
   });
 
@@ -766,7 +766,7 @@ describe("exec approvals policy helpers", () => {
     });
   });
 
-  it("reports askFallback from the OpenClaw default when approvals omit it", () => {
+  it("reports askFallback from the EVE default when approvals omit it", () => {
     const summary = summarizeExecPolicyScopeSnapshot({
       approvals: {
         version: 1,
@@ -778,7 +778,7 @@ describe("exec approvals policy helpers", () => {
 
     expect(summary.askFallback).toEqual({
       effective: "deny",
-      source: "OpenClaw default (deny)",
+      source: "EVE default (deny)",
     });
   });
 
@@ -794,7 +794,7 @@ describe("exec approvals policy helpers", () => {
         agents: {
           list: [{ id: "runner" }],
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       approvals: {
         version: 1,
         agents: {
@@ -836,7 +836,7 @@ describe("exec approvals policy helpers", () => {
             ask: "off",
           },
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       approvals: {
         version: 1,
         agents: {
@@ -851,11 +851,11 @@ describe("exec approvals policy helpers", () => {
     expect(snapshots.map((snapshot) => snapshot.scopeLabel)).toEqual(["tools.exec"]);
     expectFields(snapshots[0]?.security, {
       host: "allowlist",
-      hostSource: "~/.openclaw/exec-approvals.json agents.main.security",
+      hostSource: "~/.eve/exec-approvals.json agents.main.security",
     });
     expectFields(snapshots[0]?.ask, {
       host: "always",
-      hostSource: "~/.openclaw/exec-approvals.json agents.main.ask",
+      hostSource: "~/.eve/exec-approvals.json agents.main.ask",
     });
   });
 
@@ -880,7 +880,7 @@ describe("exec approvals policy helpers", () => {
             },
           ],
         },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       approvals: {
         version: 1,
       },

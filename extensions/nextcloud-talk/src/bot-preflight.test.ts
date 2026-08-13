@@ -45,7 +45,7 @@ function mockBotAdmin(features: number | string): void {
           data: [
             {
               id: 7,
-              name: "OpenClaw",
+              name: "EVE",
               url: "https://bot.example.com/nextcloud-talk-webhook",
               features,
             },
@@ -75,9 +75,9 @@ describe("probeNextcloudTalkBotResponseFeature", () => {
       ok: true,
       code: "ok",
       botId: "7",
-      botName: "OpenClaw",
+      botName: "EVE",
       features: 11,
-      message: 'Nextcloud Talk bot "OpenClaw" has the response feature.',
+      message: 'Nextcloud Talk bot "EVE" has the response feature.',
     });
   });
 
@@ -88,9 +88,9 @@ describe("probeNextcloudTalkBotResponseFeature", () => {
       ok: true,
       code: "ok",
       botId: "7",
-      botName: "OpenClaw",
+      botName: "EVE",
       features: 11,
-      message: 'Nextcloud Talk bot "OpenClaw" has the response feature.',
+      message: 'Nextcloud Talk bot "EVE" has the response feature.',
     });
   });
 
@@ -101,10 +101,10 @@ describe("probeNextcloudTalkBotResponseFeature", () => {
       ok: false,
       code: "missing_response_feature",
       botId: "7",
-      botName: "OpenClaw",
+      botName: "EVE",
       features: 9,
       message:
-        'Nextcloud Talk bot "OpenClaw" (7) is missing the response feature (features=9); outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
+        'Nextcloud Talk bot "EVE" (7) is missing the response feature (features=9); outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
     });
   });
 
@@ -115,9 +115,9 @@ describe("probeNextcloudTalkBotResponseFeature", () => {
       ok: false,
       code: "missing_response_feature",
       botId: "7",
-      botName: "OpenClaw",
+      botName: "EVE",
       message:
-        'Nextcloud Talk bot "OpenClaw" (7) is missing the response feature; outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
+        'Nextcloud Talk bot "EVE" (7) is missing the response feature; outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
     });
   });
 
@@ -128,9 +128,9 @@ describe("probeNextcloudTalkBotResponseFeature", () => {
       ok: false,
       code: "missing_response_feature",
       botId: "7",
-      botName: "OpenClaw",
+      botName: "EVE",
       message:
-        'Nextcloud Talk bot "OpenClaw" (7) is missing the response feature; outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
+        'Nextcloud Talk bot "EVE" (7) is missing the response feature; outbound replies will fail. Run ./occ talk:bot:state --feature webhook --feature response --feature reaction 7 1 or reinstall the bot with --feature response.',
     });
   });
 

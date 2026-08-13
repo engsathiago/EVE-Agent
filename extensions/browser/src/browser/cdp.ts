@@ -4,7 +4,7 @@
  * Provides screenshots, target creation, JavaScript evaluation, ARIA/role
  * snapshots, DOM text, and selector lookup on top of the CDP socket helpers.
  */
-import { resolveIntegerOption } from "openclaw/plugin-sdk/number-runtime";
+import { resolveIntegerOption } from "eve-agent/plugin-sdk/number-runtime";
 import type { SsrFPolicy } from "../infra/net/ssrf.js";
 import {
   appendCdpPath,
@@ -581,7 +581,7 @@ async function findCursorInteractiveElements(
   send: CdpSendFn,
   sessionId?: string,
 ): Promise<Map<number, CursorInteractiveInfo>> {
-  const attr = "data-openclaw-cdp-ci";
+  const attr = "data-eve-cdp-ci";
   const evaluated = (await send(
     "Runtime.evaluate",
     {

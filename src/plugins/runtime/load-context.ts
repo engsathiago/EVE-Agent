@@ -2,7 +2,7 @@
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../../agents/agent-scope.js";
 import { getRuntimeConfig } from "../../config/config.js";
 import { applyPluginAutoEnable } from "../../config/plugin-auto-enable.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { PluginInstallRecord } from "../../config/types.plugins.js";
 import { createSubsystemLogger } from "../../logging.js";
 import { resolvePluginActivationSourceConfig } from "../activation-source-config.js";
@@ -21,9 +21,9 @@ const log = createSubsystemLogger("plugins");
 
 /** Resolved plugin runtime load context shared by runtime loader callers. */
 export type PluginRuntimeLoadContext = {
-  rawConfig: OpenClawConfig;
-  config: OpenClawConfig;
-  activationSourceConfig: OpenClawConfig;
+  rawConfig: EVEConfig;
+  config: EVEConfig;
+  activationSourceConfig: EVEConfig;
   autoEnabledReasons: Readonly<Record<string, string[]>>;
   workspaceDir: string | undefined;
   env: NodeJS.ProcessEnv;
@@ -47,8 +47,8 @@ export type PluginRuntimeResolvedLoadValues = Pick<
 
 /** Options accepted while resolving plugin runtime load context. */
 export type PluginRuntimeLoadContextOptions = {
-  config?: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config?: EVEConfig;
+  activationSourceConfig?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   workspaceDir?: string;
   logger?: PluginLogger;

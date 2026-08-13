@@ -1,4 +1,4 @@
-// Plugin Clawhub Release script supports OpenClaw repository automation.
+// Plugin Clawhub Release script supports EVE repository automation.
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { validateExternalCodePluginPackageJson } from "../../packages/plugin-package-contract/src/index.ts";
@@ -24,7 +24,7 @@ type PluginPackageJson = {
   name?: string;
   version?: string;
   private?: boolean;
-  openclaw?: {
+  eve?: {
     extensions?: string[];
     install?: {
       npmSpec?: string;
@@ -34,7 +34,7 @@ type PluginPackageJson = {
       minGatewayVersion?: string;
     };
     build?: {
-      openclawVersion?: string;
+      eveVersion?: string;
       pluginSdkVersion?: string;
     };
     release?: {
@@ -91,8 +91,8 @@ const CLAWHUB_REQUEST_TIMEOUT_MS = 30_000;
 const CLAWHUB_RESPONSE_BODY_MAX_BYTES = 64 * 1024;
 const CLAWHUB_RATE_LIMIT_RETRY_DELAYS_MS = [1_000, 3_000, 10_000] as const;
 const CLAWHUB_MAX_RETRY_AFTER_MS = 60_000;
-const OPENCLAW_PLUGIN_CLAWHUB_REPOSITORY = "openclaw/openclaw";
-const OPENCLAW_PLUGIN_CLAWHUB_WORKFLOW_FILENAME = "plugin-clawhub-release.yml";
+const EVE_PLUGIN_CLAWHUB_REPOSITORY = "eve/eve";
+const EVE_PLUGIN_CLAWHUB_WORKFLOW_FILENAME = "plugin-clawhub-release.yml";
 const SAFE_EXTENSION_ID_RE = /^[a-z0-9][a-z0-9._-]*$/;
 const CLAWHUB_SHARED_RELEASE_INPUT_PATHS = [
   ".github/workflows/plugin-clawhub-release.yml",
@@ -104,7 +104,7 @@ const CLAWHUB_SHARED_RELEASE_INPUT_PATHS = [
   "scripts/lib/npm-publish-plan.mjs",
   "scripts/lib/plugin-npm-release.ts",
   "scripts/lib/plugin-clawhub-release.ts",
-  "scripts/openclaw-npm-release-check.ts",
+  "scripts/eve-npm-release-check.ts",
   "scripts/plugin-clawhub-publish.sh",
   "scripts/plugin-clawhub-release-check.ts",
   "scripts/plugin-clawhub-release-plan.ts",
@@ -205,7 +205,7 @@ export function collectClawHubPublishablePluginPackages(
     if (hasSelectedPackageNames && !selectedPackageNames.has(packageName)) {
       continue;
     }
-    if (packageJson.openclaw?.release?.publishToClawHub !== true) {
+    if (packageJson.eve?.release?.publishToClawHub !== true) {
       continue;
     }
     if (!SAFE_EXTENSION_ID_RE.test(extensionId)) {
@@ -383,7 +383,7 @@ export function collectClawHubVersionGateErrors(params: {
       ref: params.gitRange.baseRef,
       packageDir: plugin.packageDir,
     });
-    if (baseManifest?.openclaw?.release?.publishToClawHub !== true) {
+    if (baseManifest?.eve?.release?.publishToClawHub !== true) {
       continue;
     }
     const baseVersion =
@@ -519,7 +519,7 @@ async function hasClawHubTrustedPublisher(
           });
         }
 
-        return isOpenClawPluginTrustedPublisher(trustedPublisherDetail.trustedPublisher);
+        return isEVEPluginTrustedPublisher(trustedPublisherDetail.trustedPublisher);
       }
     } finally {
       request.clearTimeout();
@@ -557,14 +557,14 @@ async function delay(ms: number): Promise<void> {
   });
 }
 
-function isOpenClawPluginTrustedPublisher(value: unknown): boolean {
+function isEVEPluginTrustedPublisher(value: unknown): boolean {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return false;
   }
   const trustedPublisher = value as ClawHubTrustedPublisherConfig;
   return (
-    trustedPublisher.repository === OPENCLAW_PLUGIN_CLAWHUB_REPOSITORY &&
-    trustedPublisher.workflowFilename === OPENCLAW_PLUGIN_CLAWHUB_WORKFLOW_FILENAME &&
+    trustedPublisher.repository === EVE_PLUGIN_CLAWHUB_REPOSITORY &&
+    trustedPublisher.workflowFilename === EVE_PLUGIN_CLAWHUB_WORKFLOW_FILENAME &&
     trustedPublisher.environment == null
   );
 }

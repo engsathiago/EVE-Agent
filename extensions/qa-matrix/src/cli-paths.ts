@@ -1,6 +1,6 @@
 // Qa Matrix plugin module implements cli paths behavior.
 import path from "node:path";
-import { assertNoSymlinkParents, pathScope } from "openclaw/plugin-sdk/security-runtime";
+import { assertNoSymlinkParents, pathScope } from "eve-agent/plugin-sdk/security-runtime";
 
 export function resolveRepoRelativeOutputDir(repoRoot: string, outputDir?: string) {
   if (!outputDir) {

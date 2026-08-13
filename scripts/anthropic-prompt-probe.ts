@@ -1,11 +1,11 @@
-// Anthropic Prompt Probe script supports OpenClaw repository automation.
+// Anthropic Prompt Probe script supports EVE repository automation.
 import { spawn } from "node:child_process";
 // Live prompt probe for Anthropic setup-token and Claude CLI prompt-path debugging.
 // Usage:
-// OPENCLAW_PROMPT_TRANSPORT=direct|gateway
-// OPENCLAW_PROMPT_MODE=extra
-// OPENCLAW_PROMPT_TEXT='...'
-// OPENCLAW_PROMPT_CAPTURE=1
+// EVE_PROMPT_TRANSPORT=direct|gateway
+// EVE_PROMPT_MODE=extra
+// EVE_PROMPT_TEXT='...'
+// EVE_PROMPT_CAPTURE=1
 // pnpm probe:anthropic:prompt
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
@@ -27,39 +27,39 @@ import {
   redactForDevToolLog,
 } from "./lib/dev-tooling-safety.ts";
 
-const TRANSPORT = process.env.OPENCLAW_PROMPT_TRANSPORT?.trim() === "direct" ? "direct" : "gateway";
+const TRANSPORT = process.env.EVE_PROMPT_TRANSPORT?.trim() === "direct" ? "direct" : "gateway";
 const GATEWAY_PROMPT_MODE = "extra";
-const PROMPT_TEXT = process.env.OPENCLAW_PROMPT_TEXT?.trim() ?? "";
-const PROMPT_LIST_JSON = process.env.OPENCLAW_PROMPT_LIST_JSON?.trim() ?? "";
-const USER_PROMPT = process.env.OPENCLAW_USER_PROMPT?.trim() || "is clawd here?";
+const PROMPT_TEXT = process.env.EVE_PROMPT_TEXT?.trim() ?? "";
+const PROMPT_LIST_JSON = process.env.EVE_PROMPT_LIST_JSON?.trim() ?? "";
+const USER_PROMPT = process.env.EVE_USER_PROMPT?.trim() || "is clawd here?";
 const ENABLE_CAPTURE = parseBooleanEnv({
   fallback: false,
-  name: "OPENCLAW_PROMPT_CAPTURE",
-  raw: process.env.OPENCLAW_PROMPT_CAPTURE,
+  name: "EVE_PROMPT_CAPTURE",
+  raw: process.env.EVE_PROMPT_CAPTURE,
 });
 const INCLUDE_RAW = parseBooleanEnv({
   fallback: false,
-  name: "OPENCLAW_PROMPT_INCLUDE_RAW",
-  raw: process.env.OPENCLAW_PROMPT_INCLUDE_RAW,
+  name: "EVE_PROMPT_INCLUDE_RAW",
+  raw: process.env.EVE_PROMPT_INCLUDE_RAW,
 });
 const KEEP_TMP = parseBooleanEnv({
   fallback: false,
-  name: "OPENCLAW_PROMPT_KEEP_TMP",
-  raw: process.env.OPENCLAW_PROMPT_KEEP_TMP,
+  name: "EVE_PROMPT_KEEP_TMP",
+  raw: process.env.EVE_PROMPT_KEEP_TMP,
 });
 const CLAUDE_BIN = process.env.CLAUDE_BIN?.trim() || "claude";
-const NODE_BIN = process.env.OPENCLAW_NODE_BIN?.trim() || process.execPath;
+const NODE_BIN = process.env.EVE_NODE_BIN?.trim() || process.execPath;
 const TIMEOUT_MS = parseStrictIntegerOption({
   fallback: 45_000,
-  label: "OPENCLAW_PROMPT_TIMEOUT_MS",
+  label: "EVE_PROMPT_TIMEOUT_MS",
   min: 1,
-  raw: process.env.OPENCLAW_PROMPT_TIMEOUT_MS,
+  raw: process.env.EVE_PROMPT_TIMEOUT_MS,
 });
 const GATEWAY_TIMEOUT_MS = parseStrictIntegerOption({
   fallback: 120_000,
-  label: "OPENCLAW_PROMPT_GATEWAY_TIMEOUT_MS",
+  label: "EVE_PROMPT_GATEWAY_TIMEOUT_MS",
   min: 1,
-  raw: process.env.OPENCLAW_PROMPT_GATEWAY_TIMEOUT_MS,
+  raw: process.env.EVE_PROMPT_GATEWAY_TIMEOUT_MS,
 });
 const GATEWAY_PARENT_SIGNAL_EXIT_CODES = new Map<NodeJS.Signals, number>([
   ["SIGHUP", 129],
@@ -68,14 +68,14 @@ const GATEWAY_PARENT_SIGNAL_EXIT_CODES = new Map<NodeJS.Signals, number>([
 ]);
 const CAPTURE_PROXY_MAX_BODY_BYTES = parseStrictIntegerOption({
   fallback: 2 * 1024 * 1024,
-  label: "OPENCLAW_PROMPT_CAPTURE_MAX_BODY_BYTES",
+  label: "EVE_PROMPT_CAPTURE_MAX_BODY_BYTES",
   min: 1,
-  raw: process.env.OPENCLAW_PROMPT_CAPTURE_MAX_BODY_BYTES,
+  raw: process.env.EVE_PROMPT_CAPTURE_MAX_BODY_BYTES,
 });
 const GATEWAY_LOG_TAIL_BYTES = 256 * 1024;
-const SETUP_TOKEN_RAW = process.env.OPENCLAW_LIVE_SETUP_TOKEN?.trim() ?? "";
-const SETUP_TOKEN_VALUE = process.env.OPENCLAW_LIVE_SETUP_TOKEN_VALUE?.trim() ?? "";
-const SETUP_TOKEN_PROFILE = process.env.OPENCLAW_LIVE_SETUP_TOKEN_PROFILE?.trim() ?? "";
+const SETUP_TOKEN_RAW = process.env.EVE_LIVE_SETUP_TOKEN?.trim() ?? "";
+const SETUP_TOKEN_VALUE = process.env.EVE_LIVE_SETUP_TOKEN_VALUE?.trim() ?? "";
+const SETUP_TOKEN_PROFILE = process.env.EVE_LIVE_SETUP_TOKEN_PROFILE?.trim() ?? "";
 const DIRECT_CLAUDE_ARGS = ["-p", "--append-system-prompt"];
 
 type CaptureSummary = {
@@ -277,7 +277,7 @@ function resolveSetupTokenSource(): TokenSource {
   const match = pickSetupTokenProfile(candidates);
   if (!match) {
     throw new Error(
-      "no Anthropics setup-token profile found; set OPENCLAW_LIVE_SETUP_TOKEN_VALUE or OPENCLAW_LIVE_SETUP_TOKEN_PROFILE",
+      "no Anthropics setup-token profile found; set EVE_LIVE_SETUP_TOKEN_VALUE or EVE_LIVE_SETUP_TOKEN_PROFILE",
     );
   }
   return { profileId: match.id, token: validateSetupToken(match.token) };
@@ -456,7 +456,7 @@ async function getFreePort(): Promise<number> {
 }
 
 async function runDirectPrompt(prompt: string): Promise<PromptResult> {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-direct-prompt-probe-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-direct-prompt-probe-"));
   const proxyPort = ENABLE_CAPTURE ? await getFreePort() : undefined;
   const proxy =
     ENABLE_CAPTURE && proxyPort
@@ -545,23 +545,23 @@ async function startGatewayProcess(params: {
   const logFile = await fs.open(params.logPath, "a");
   const child = spawn(
     NODE_BIN,
-    ["openclaw.mjs", "gateway", "--port", String(params.port), "--bind", "loopback", "--force"],
+    ["eve.mjs", "gateway", "--port", String(params.port), "--bind", "loopback", "--force"],
     {
       cwd: process.cwd(),
       env: {
         ...process.env,
-        OPENCLAW_CONFIG_PATH: params.configPath,
-        OPENCLAW_STATE_DIR: params.stateDir,
-        OPENCLAW_AGENT_DIR: params.agentDir,
-        OPENCLAW_GATEWAY_TOKEN: params.gatewayToken,
-        OPENCLAW_SKIP_CHANNELS: "1",
-        OPENCLAW_SKIP_GMAIL_WATCHER: "1",
-        OPENCLAW_SKIP_CANVAS_HOST: "1",
-        OPENCLAW_SKIP_BROWSER_CONTROL_SERVER: "1",
-        OPENCLAW_DISABLE_BONJOUR: "1",
-        OPENCLAW_SKIP_CRON: "1",
-        OPENCLAW_TEST_MINIMAL_GATEWAY: "1",
-        OPENCLAW_BUNDLED_PLUGINS_DIR: params.bundledPluginsDir,
+        EVE_CONFIG_PATH: params.configPath,
+        EVE_STATE_DIR: params.stateDir,
+        EVE_AGENT_DIR: params.agentDir,
+        EVE_GATEWAY_TOKEN: params.gatewayToken,
+        EVE_SKIP_CHANNELS: "1",
+        EVE_SKIP_GMAIL_WATCHER: "1",
+        EVE_SKIP_CANVAS_HOST: "1",
+        EVE_SKIP_BROWSER_CONTROL_SERVER: "1",
+        EVE_DISABLE_BONJOUR: "1",
+        EVE_SKIP_CRON: "1",
+        EVE_TEST_MINIMAL_GATEWAY: "1",
+        EVE_BUNDLED_PLUGINS_DIR: params.bundledPluginsDir,
         ANTHROPIC_API_KEY: "",
         ANTHROPIC_API_KEY_OLD: "",
       },
@@ -777,11 +777,11 @@ async function readLogTail(logPath: string, maxBytes = GATEWAY_LOG_TAIL_BYTES): 
 
 async function runGatewayPrompt(prompt: string): Promise<PromptResult> {
   const tokenSource = resolveSetupTokenSource();
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gateway-prompt-probe-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gateway-prompt-probe-"));
   const stateDir = path.join(tmpDir, "state");
   const agentDir = path.join(stateDir, "agents", "main", "agent");
   const bundledPluginsDir = path.join(tmpDir, "bundled-plugins-empty");
-  const configPath = path.join(tmpDir, "openclaw.json");
+  const configPath = path.join(tmpDir, "eve.json");
   const logPath = path.join(tmpDir, "gateway.log");
   const gatewayToken = `gw-${randomUUID()}`;
   const port = await getFreePort();
@@ -932,7 +932,7 @@ async function runGatewayPrompt(prompt: string): Promise<PromptResult> {
 
 async function main() {
   if (!PROMPT_TEXT && !PROMPT_LIST_JSON) {
-    throw new Error("missing OPENCLAW_PROMPT_TEXT or OPENCLAW_PROMPT_LIST_JSON");
+    throw new Error("missing EVE_PROMPT_TEXT or EVE_PROMPT_LIST_JSON");
   }
   const prompts = PROMPT_LIST_JSON ? (JSON.parse(PROMPT_LIST_JSON) as string[]) : [PROMPT_TEXT];
   const results: PromptResult[] = [];

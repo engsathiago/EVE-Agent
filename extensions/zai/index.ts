@@ -1,4 +1,4 @@
-// Zai plugin entrypoint registers its OpenClaw integration.
+// Zai plugin entrypoint registers its EVE integration.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -10,7 +10,7 @@ import {
   type ProviderResolveDynamicModelContext,
   type ProviderRuntimeModel,
   type ProviderWrapStreamFnContext,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   applyAuthProfileConfig,
   buildApiKeyCredential,
@@ -20,18 +20,18 @@ import {
   type SecretInput,
   upsertAuthProfileWithLock,
   validateApiKeyInput,
-} from "openclaw/plugin-sdk/provider-auth-api-key";
+} from "eve-agent/plugin-sdk/provider-auth-api-key";
 import {
   buildProviderReplayFamilyHooks,
   normalizeModelCompat,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   createPayloadPatchStreamWrapper,
   createToolStreamWrapper,
   defaultToolStreamExtraParams,
-} from "openclaw/plugin-sdk/provider-stream-shared";
-import { fetchZaiUsage } from "openclaw/plugin-sdk/provider-usage";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
+import { fetchZaiUsage } from "eve-agent/plugin-sdk/provider-usage";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { detectZaiEndpoint, type ZaiEndpointId } from "./detect.js";
 import { zaiMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import { buildZaiModelDefinition, resolveZaiBaseUrl } from "./model-definitions.js";

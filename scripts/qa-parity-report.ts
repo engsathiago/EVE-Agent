@@ -1,4 +1,4 @@
-// Qa Parity Report script supports OpenClaw repository automation.
+// Qa Parity Report script supports EVE repository automation.
 import { runQaParityReportCommand } from "../extensions/qa-lab/src/cli.runtime.ts";
 import { booleanFlag, parseFlagArgs, stringFlag } from "./lib/arg-utils.mjs";
 
@@ -34,7 +34,7 @@ function parseArgs(args: string[]): Options {
         if (arg !== "--help" && arg !== "-h") {
           throw new Error(`Unknown qa parity-report option: ${arg}`);
         }
-        process.stdout.write(`Usage: openclaw qa parity-report [options]
+        process.stdout.write(`Usage: eve qa parity-report [options]
 
 Options:
   --candidate-summary <path>  Candidate qa-suite-summary.json path

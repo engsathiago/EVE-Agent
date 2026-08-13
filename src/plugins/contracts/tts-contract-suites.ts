@@ -1,22 +1,22 @@
 // TTS contract suites provide reusable text-to-speech plugin contract assertions.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   createEmptyPluginRegistry,
   pluginRegistrationContractRegistry,
   setActivePluginRegistry,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import type { ResolvedTtsConfig, SpeechProviderPlugin } from "openclaw/plugin-sdk/speech-core";
-import { withEnv, withEnvAsync } from "openclaw/plugin-sdk/test-env";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+import type { ResolvedTtsConfig, SpeechProviderPlugin } from "eve-agent/plugin-sdk/speech-core";
+import { withEnv, withEnvAsync } from "eve-agent/plugin-sdk/test-env";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AssistantMessage, Model } from "../../llm/types.js";
 import { resolveWorkspacePackagePublicModuleUrl } from "../../plugin-sdk/test-helpers/public-surface-loader.js";
 
-type TtsRuntimeModule = typeof import("openclaw/plugin-sdk/tts-runtime");
-type TtsCoreModule = typeof import("openclaw/plugin-sdk/speech-core");
+type TtsRuntimeModule = typeof import("eve-agent/plugin-sdk/tts-runtime");
+type TtsCoreModule = typeof import("eve-agent/plugin-sdk/speech-core");
 type SummarizeTextDeps = NonNullable<Parameters<TtsCoreModule["summarizeText"]>[1]>;
 
 const speechCoreRuntimeApiModuleId = resolveWorkspacePackagePublicModuleUrl({
-  packageName: "@openclaw/speech-core",
+  packageName: "@eve/speech-core",
   artifactBasename: "runtime-api.js",
 });
 
@@ -24,7 +24,7 @@ let ttsRuntime: TtsRuntimeModule;
 let ttsRuntimePromise: Promise<TtsRuntimeModule> | null = null;
 let ttsRuntimeInitialized = false;
 let ttsCorePromise: Promise<TtsCoreModule> | null = null;
-let completeSimple: typeof import("openclaw/plugin-sdk/llm").completeSimple;
+let completeSimple: typeof import("eve-agent/plugin-sdk/llm").completeSimple;
 let prepareSimpleCompletionModelMock: SummarizeTextDeps["prepareSimpleCompletionModel"];
 let requireApiKeyMock: SummarizeTextDeps["requireApiKey"];
 let summarizeTextCore: TtsCoreModule["summarizeText"];
@@ -68,7 +68,7 @@ async function withIsolatedSpeechProviderEnvAsync<T>(
   return await withEnvAsync(isolatedSpeechProviderEnv(overrides), fn);
 }
 
-vi.mock("openclaw/plugin-sdk/llm", () => {
+vi.mock("eve-agent/plugin-sdk/llm", () => {
   const getApiProvider = vi.fn(() => undefined);
   return {
     completeSimple: vi.fn(),
@@ -99,12 +99,12 @@ function createResolvedModel(provider: string, modelId: string) {
   };
 }
 
-function asLegacyTtsConfig(value: unknown): OpenClawConfig {
-  return value as OpenClawConfig;
+function asLegacyTtsConfig(value: unknown): EVEConfig {
+  return value as EVEConfig;
 }
 
-function asLegacyOpenClawConfig(value: Record<string, unknown>): OpenClawConfig {
-  return value as unknown as OpenClawConfig;
+function asLegacyEVEConfig(value: Record<string, unknown>): EVEConfig {
+  return value as unknown as EVEConfig;
 }
 
 function mockCallAt(mock: { mock: { calls: Array<Array<unknown>> } }, index: number): unknown[] {
@@ -147,7 +147,7 @@ function createSummarizeTextDeps() {
   };
 }
 
-function createOpenAiTelephonyCfg(model: "tts-1" | "gpt-4o-mini-tts"): OpenClawConfig {
+function createOpenAiTelephonyCfg(model: "tts-1" | "gpt-4o-mini-tts"): EVEConfig {
   return asLegacyTtsConfig({
     messages: {
       tts: {
@@ -419,7 +419,7 @@ async function loadTtsRuntime(): Promise<TtsRuntimeModule> {
 }
 
 async function loadTtsCore(): Promise<TtsCoreModule> {
-  ttsCorePromise ??= import("openclaw/plugin-sdk/speech-core");
+  ttsCorePromise ??= import("eve-agent/plugin-sdk/speech-core");
   return await ttsCorePromise;
 }
 
@@ -463,7 +463,7 @@ function setupTestSpeechProviderRegistry() {
   setActivePluginRegistry(registry);
 }
 
-function createResolvedSummarizationConfig(cfg: OpenClawConfig): ResolvedTtsConfig {
+function createResolvedSummarizationConfig(cfg: EVEConfig): ResolvedTtsConfig {
   const rawConfig =
     typeof cfg.messages?.tts === "object" && cfg.messages?.tts !== null ? cfg.messages.tts : {};
   return {
@@ -495,7 +495,7 @@ function createResolvedSummarizationConfig(cfg: OpenClawConfig): ResolvedTtsConf
 
 async function setupSummarizationMocks() {
   ({ summarizeText: summarizeTextCore } = await loadTtsCore());
-  ({ completeSimple } = await import("openclaw/plugin-sdk/llm"));
+  ({ completeSimple } = await import("eve-agent/plugin-sdk/llm"));
   prepareSimpleCompletionModelMock = createPrepareSimpleCompletionModelMock();
   requireApiKeyMock = vi.fn() as SummarizeTextDeps["requireApiKey"];
   vi.mocked(completeSimple).mockResolvedValue(
@@ -520,7 +520,7 @@ export function describeTtsConfigContract() {
     beforeEach(setupTtsContractTest);
 
     describe("resolveEdgeOutputFormat", () => {
-      const baseCfg: OpenClawConfig = {
+      const baseCfg: EVEConfig = {
         agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
         messages: { tts: {} },
       };
@@ -540,7 +540,7 @@ export function describeTtsConfigContract() {
                 edge: { outputFormat: "audio-24khz-96kbitrate-mono-mp3" },
               },
             },
-          } as unknown as OpenClawConfig,
+          } as unknown as EVEConfig,
           expected: "audio-24khz-96kbitrate-mono-mp3",
         },
       ] as const)("$name", ({ cfg, expected, name }) => {
@@ -704,7 +704,7 @@ export function describeTtsConfigContract() {
             GOOGLE_API_KEY: undefined,
           },
           () => {
-            const cfg = asLegacyOpenClawConfig({
+            const cfg = asLegacyEVEConfig({
               agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
               models: {
                 providers: {
@@ -735,7 +735,7 @@ export function describeTtsConfigContract() {
     describe("resolveTtsConfig provider normalization", () => {
       it("normalizes legacy edge provider ids to microsoft", () => {
         const config = resolveTtsConfig(
-          asLegacyOpenClawConfig({
+          asLegacyEVEConfig({
             agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
             messages: {
               tts: {
@@ -756,7 +756,7 @@ export function describeTtsConfigContract() {
     });
 
     describe("resolveTtsConfig – openai.baseUrl", () => {
-      const baseCfg: OpenClawConfig = {
+      const baseCfg: EVEConfig = {
         agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
         messages: { tts: {} },
       };
@@ -781,7 +781,7 @@ export function describeTtsConfigContract() {
             messages: {
               tts: { ...baseCfg.messages!.tts, openai: { baseUrl: "http://my-server:9000/v1" } },
             },
-          } as unknown as OpenClawConfig,
+          } as unknown as EVEConfig,
           env: { OPENAI_TTS_BASE_URL: "http://localhost:8880/v1" },
           expected: "http://my-server:9000/v1",
         },
@@ -795,7 +795,7 @@ export function describeTtsConfigContract() {
                 openai: { baseUrl: "http://my-server:9000/v1///" },
               },
             },
-          } as unknown as OpenClawConfig,
+          } as unknown as EVEConfig,
           env: { OPENAI_TTS_BASE_URL: undefined },
           expected: "http://my-server:9000/v1",
         },
@@ -837,7 +837,7 @@ export function describeTtsSummarizationContract() {
   describe("tts summarization contract", () => {
     beforeEach(setupTtsSummarizationTest);
 
-    const baseCfg: OpenClawConfig = {
+    const baseCfg: EVEConfig = {
       agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
       messages: { tts: {} },
     };
@@ -845,7 +845,7 @@ export function describeTtsSummarizationContract() {
     async function runSummarizeText(params?: {
       text?: string;
       targetLength?: number;
-      cfg?: OpenClawConfig;
+      cfg?: EVEConfig;
     }) {
       const cfg = params?.cfg ?? baseCfg;
       const config = createResolvedSummarizationConfig(cfg);
@@ -896,7 +896,7 @@ export function describeTtsSummarizationContract() {
     });
 
     it("uses summaryModel override when configured", async () => {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         agents: { defaults: { model: { primary: "anthropic/claude-opus-4-5" } } },
         messages: { tts: { summaryModel: "openai/gpt-4.1-mini" } },
       };
@@ -1219,7 +1219,7 @@ export function describeTtsAutoApplyContract() {
     beforeAll(setupTtsRuntime);
     beforeEach(setupTtsContractTest);
 
-    const baseCfg: OpenClawConfig = asLegacyOpenClawConfig({
+    const baseCfg: EVEConfig = asLegacyEVEConfig({
       agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
       messages: {
         tts: {
@@ -1235,16 +1235,16 @@ export function describeTtsAutoApplyContract() {
     const withMockedAutoTtsFetch = async (
       run: (fetchMock: ReturnType<typeof vi.fn>) => Promise<void>,
     ) => {
-      const prevPrefs = process.env.OPENCLAW_TTS_PREFS;
-      process.env.OPENCLAW_TTS_PREFS = `/tmp/tts-test-${Date.now()}.json`;
+      const prevPrefs = process.env.EVE_TTS_PREFS;
+      process.env.EVE_TTS_PREFS = `/tmp/tts-test-${Date.now()}.json`;
       try {
         await withMockedSpeechFetch(run, 1);
       } finally {
-        process.env.OPENCLAW_TTS_PREFS = prevPrefs;
+        process.env.EVE_TTS_PREFS = prevPrefs;
       }
     };
 
-    const taggedCfg: OpenClawConfig = {
+    const taggedCfg: EVEConfig = {
       ...baseCfg,
       messages: {
         ...baseCfg.messages!,
@@ -1253,7 +1253,7 @@ export function describeTtsAutoApplyContract() {
     };
 
     async function expectAutoTtsOutcome(params: {
-      cfg: OpenClawConfig;
+      cfg: EVEConfig;
       payload: { text: string };
       inboundAudio?: boolean;
       expectedFetchCalls: number;

@@ -1,9 +1,9 @@
 // Imessage tests cover status plugin behavior.
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import { createPluginSetupWizardStatus } from "openclaw/plugin-sdk/plugin-test-runtime";
-import * as processRuntime from "openclaw/plugin-sdk/process-runtime";
-import * as setupRuntime from "openclaw/plugin-sdk/setup";
+import { createPluginSetupWizardStatus } from "eve-agent/plugin-sdk/plugin-test-runtime";
+import * as processRuntime from "eve-agent/plugin-sdk/process-runtime";
+import * as setupRuntime from "eve-agent/plugin-sdk/setup";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveIMessageAccount } from "./accounts.js";
 import * as channelRuntimeModule from "./channel.runtime.js";

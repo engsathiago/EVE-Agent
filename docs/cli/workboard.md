@@ -1,5 +1,5 @@
 ---
-summary: "CLI reference for `openclaw workboard` cards, dispatch, and worker runs"
+summary: "CLI reference for `eve workboard` cards, dispatch, and worker runs"
 read_when:
   - You want to inspect or create Workboard cards from the terminal
   - You want to dispatch Workboard worker runs from the CLI
@@ -7,7 +7,7 @@ read_when:
 title: "Workboard CLI"
 ---
 
-`openclaw workboard` is the terminal surface for the bundled
+`eve workboard` is the terminal surface for the bundled
 [Workboard plugin](/plugins/workboard). It lets an operator list cards, create a
 card, inspect one card, and ask the running Gateway to dispatch ready work into
 subagent worker runs.
@@ -15,17 +15,17 @@ subagent worker runs.
 Enable the plugin before using the command:
 
 ```bash
-openclaw plugins enable workboard
-openclaw gateway restart
+eve plugins enable workboard
+eve gateway restart
 ```
 
 ## Usage
 
 ```bash
-openclaw workboard list [--board <id>] [--status <status>] [--json]
-openclaw workboard create <title...> [--notes <text>] [--status <status>] [--priority <priority>] [--agent <id>] [--board <id>] [--labels <items>] [--json]
-openclaw workboard show <id> [--json]
-openclaw workboard dispatch [--url <url>] [--token <token>] [--timeout <ms>] [--json]
+eve workboard list [--board <id>] [--status <status>] [--json]
+eve workboard create <title...> [--notes <text>] [--status <status>] [--priority <priority>] [--agent <id>] [--board <id>] [--labels <items>] [--json]
+eve workboard show <id> [--json]
+eve workboard dispatch [--url <url>] [--token <token>] [--timeout <ms>] [--json]
 ```
 
 The command reads and writes the same plugin-owned SQLite database used by the
@@ -35,9 +35,9 @@ unambiguous prefix when a command accepts a card id.
 ## `list`
 
 ```bash
-openclaw workboard list
-openclaw workboard list --board default --status ready
-openclaw workboard list --json
+eve workboard list
+eve workboard list --board default --status ready
+eve workboard list --json
 ```
 
 Text output is compact:
@@ -59,8 +59,8 @@ Flags:
 ## `create`
 
 ```bash
-openclaw workboard create "Fix stale worker heartbeat" --priority high --labels bug,workboard
-openclaw workboard create "Write Workboard docs" --status ready --agent docs-agent --board docs --notes "Cover CLI, slash command, dispatch, and SQLite state."
+eve workboard create "Fix stale worker heartbeat" --priority high --labels bug,workboard
+eve workboard create "Write Workboard docs" --status ready --agent docs-agent --board docs --notes "Cover CLI, slash command, dispatch, and SQLite state."
 ```
 
 Flags:
@@ -81,8 +81,8 @@ visible in the Control UI Workboard tab and to Workboard tools.
 ## `show`
 
 ```bash
-openclaw workboard show 7f4a2c10
-openclaw workboard show 7f4a2c10 --json
+eve workboard show 7f4a2c10
+eve workboard show 7f4a2c10 --json
 ```
 
 Text output prints the compact card line and notes. JSON output returns the full
@@ -92,9 +92,9 @@ artifacts, worker logs, protocol state, diagnostics, and automation metadata.
 ## `dispatch`
 
 ```bash
-openclaw workboard dispatch
-openclaw workboard dispatch --json
-openclaw workboard dispatch --url http://127.0.0.1:18789 --token "$OPENCLAW_GATEWAY_TOKEN"
+eve workboard dispatch
+eve workboard dispatch --json
+eve workboard dispatch --url http://127.0.0.1:18789 --token "$EVE_GATEWAY_TOKEN"
 ```
 
 `dispatch` first calls the running Gateway RPC method
@@ -179,9 +179,9 @@ The CLI dispatch path calls Gateway RPC with `operator.read` and
 `operator.write` scopes. A read-only Gateway token can inspect Workboard data
 through read methods, but it cannot create cards or dispatch workers.
 
-Local `list`, `create`, and `show` commands operate on the local OpenClaw state
+Local `list`, `create`, and `show` commands operate on the local EVE state
 directory used by the current profile. Use `--dev` or `--profile <name>` on the
-top-level `openclaw` command when you need a different state root.
+top-level `eve` command when you need a different state root.
 
 ## Troubleshooting
 
@@ -190,7 +190,7 @@ top-level `openclaw` command when you need a different state root.
 Confirm the plugin is enabled for the same profile and state root:
 
 ```bash
-openclaw plugins inspect workboard --runtime --json
+eve plugins inspect workboard --runtime --json
 ```
 
 If the dashboard shows cards but the CLI does not, check that both commands use
@@ -201,11 +201,11 @@ the same `--dev` or `--profile` setting.
 Start or restart the Gateway:
 
 ```bash
-openclaw gateway restart
-openclaw gateway status --deep
+eve gateway restart
+eve gateway status --deep
 ```
 
-Then retry `openclaw workboard dispatch`. Data-only fallback is useful for local
+Then retry `eve workboard dispatch`. Data-only fallback is useful for local
 state cleanup, but worker runs need a live Gateway.
 
 ### Dispatch Starts Nothing
@@ -213,7 +213,7 @@ state cleanup, but worker runs need a live Gateway.
 Check for at least one `ready` card without an active claim:
 
 ```bash
-openclaw workboard list --status ready
+eve workboard list --status ready
 ```
 
 Cards can also be skipped when the same owner already has running or review

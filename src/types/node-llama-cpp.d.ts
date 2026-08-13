@@ -29,7 +29,7 @@ declare module "node-llama-cpp" {
     signal?: AbortSignal;
   };
 
-  /** Top-level llama.cpp runtime subset used by OpenClaw. */
+  /** Top-level llama.cpp runtime subset used by EVE. */
   export type Llama = {
     loadModel: (params: { modelPath: string; loadSignal?: AbortSignal }) => Promise<LlamaModel>;
     dispose?: () => Promise<void> | void;

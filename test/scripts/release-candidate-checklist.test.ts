@@ -36,16 +36,16 @@ describe("release candidate checklist", () => {
   });
 
   it("runs Parallels against the exact prepared candidate tarball", () => {
-    expect(candidateParallelsArgs(".artifacts/preflight/openclaw.tgz")).toEqual([
+    expect(candidateParallelsArgs(".artifacts/preflight/eve.tgz")).toEqual([
       "test:parallels:npm-update",
       "--",
       "--target-tarball",
-      ".artifacts/preflight/openclaw.tgz",
+      ".artifacts/preflight/eve.tgz",
       "--json",
     ]);
     expect(
       candidateParallelsShellCommand(
-        ".artifacts/preflight/openclaw candidate.tgz",
+        ".artifacts/preflight/eve candidate.tgz",
         "/opt/homebrew/bin/gtimeout",
       ),
     ).toContain(
@@ -53,10 +53,10 @@ describe("release candidate checklist", () => {
     );
     expect(
       candidateParallelsShellCommand(
-        ".artifacts/preflight/openclaw candidate.tgz",
+        ".artifacts/preflight/eve candidate.tgz",
         "/opt/homebrew/bin/gtimeout",
       ),
-    ).toContain("'--target-tarball' '.artifacts/preflight/openclaw candidate.tgz'");
+    ).toContain("'--target-tarball' '.artifacts/preflight/eve candidate.tgz'");
   });
 
   it("requires run ids when dispatch is disabled", () => {
@@ -184,25 +184,25 @@ describe("release candidate checklist", () => {
       ]),
       workflowRef: "release/2026.5.14",
       windowsNodeInstallerDigests: JSON.stringify({
-        "OpenClawCompanion-Setup-x64.exe": `sha256:${"a".repeat(64)}`,
-        "OpenClawCompanion-Setup-arm64.exe": `sha256:${"b".repeat(64)}`,
+        "EVECompanion-Setup-x64.exe": `sha256:${"a".repeat(64)}`,
+        "EVECompanion-Setup-arm64.exe": `sha256:${"b".repeat(64)}`,
       }),
     };
 
     expect(buildPublishCommand(options)).toContain("'windows_node_tag=v0.6.3'");
     expect(buildPublishCommand(options)).toContain(
-      `'windows_node_installer_digests={"OpenClawCompanion-Setup-x64.exe":"sha256:${"a".repeat(64)}","OpenClawCompanion-Setup-arm64.exe":"sha256:${"b".repeat(64)}"}'`,
+      `'windows_node_installer_digests={"EVECompanion-Setup-x64.exe":"sha256:${"a".repeat(64)}","EVECompanion-Setup-arm64.exe":"sha256:${"b".repeat(64)}"}'`,
     );
   });
 
   it("validates the stable Windows source release and immutable installer digests", async () => {
     const assets = [
       {
-        name: "OpenClawCompanion-Setup-x64.exe",
+        name: "EVECompanion-Setup-x64.exe",
         digest: `sha256:${"a".repeat(64)}`,
       },
       {
-        name: "OpenClawCompanion-Setup-arm64.exe",
+        name: "EVECompanion-Setup-arm64.exe",
         digest: `sha256:${"b".repeat(64)}`,
       },
     ];
@@ -211,7 +211,7 @@ describe("release candidate checklist", () => {
         tag_name: "v0.6.3",
         draft: false,
         prerelease: false,
-        html_url: "https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.6.3",
+        html_url: "https://github.com/engsathiago/eve-agent-windows-node/releases/tag/v0.6.3",
         assets,
       });
     });
@@ -224,7 +224,7 @@ describe("release candidate checklist", () => {
       }),
     ).resolves.toEqual({
       tag: "v0.6.3",
-      url: "https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.6.3",
+      url: "https://github.com/engsathiago/eve-agent-windows-node/releases/tag/v0.6.3",
       assets,
     });
   });
@@ -235,35 +235,35 @@ describe("release candidate checklist", () => {
     [{ tag_name: "v0.6.4" }, "Windows source release tag mismatch: expected v0.6.3, got v0.6.4"],
     [
       { assets: [] },
-      "must contain exactly one required asset OpenClawCompanion-Setup-x64.exe; found 0",
+      "must contain exactly one required asset EVECompanion-Setup-x64.exe; found 0",
     ],
     [
       {
         assets: [
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "EVECompanion-Setup-x64.exe",
             digest: `sha256:${"a".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "EVECompanion-Setup-x64.exe",
             digest: `sha256:${"c".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-arm64.exe",
+            name: "EVECompanion-Setup-arm64.exe",
             digest: `sha256:${"b".repeat(64)}`,
           },
         ],
       },
-      "must contain exactly one required asset OpenClawCompanion-Setup-x64.exe; found 2",
+      "must contain exactly one required asset EVECompanion-Setup-x64.exe; found 2",
     ],
     [
       {
         assets: [
-          { name: "OpenClawCompanion-Setup-x64.exe", digest: "" },
-          { name: "OpenClawCompanion-Setup-arm64.exe", digest: `sha256:${"b".repeat(64)}` },
+          { name: "EVECompanion-Setup-x64.exe", digest: "" },
+          { name: "EVECompanion-Setup-arm64.exe", digest: `sha256:${"b".repeat(64)}` },
         ],
       },
-      "asset OpenClawCompanion-Setup-x64.exe is missing its SHA-256 digest",
+      "asset EVECompanion-Setup-x64.exe is missing its SHA-256 digest",
     ],
   ])("rejects an invalid stable Windows source release", async (override, message) => {
     const fetchImpl = vi.fn(async () => {
@@ -271,14 +271,14 @@ describe("release candidate checklist", () => {
         tag_name: "v0.6.3",
         draft: false,
         prerelease: false,
-        html_url: "https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.6.3",
+        html_url: "https://github.com/engsathiago/eve-agent-windows-node/releases/tag/v0.6.3",
         assets: [
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "EVECompanion-Setup-x64.exe",
             digest: `sha256:${"a".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-arm64.exe",
+            name: "EVECompanion-Setup-arm64.exe",
             digest: `sha256:${"b".repeat(64)}`,
           },
         ],
@@ -329,15 +329,15 @@ describe("release candidate checklist", () => {
         "--plugin-publish-scope",
         "selected",
         "--plugins",
-        "@openclaw/diffs",
+        "@eve/diffs",
       ]),
-    ).toThrow("release candidates publish OpenClaw with --plugin-publish-scope all-publishable");
+    ).toThrow("release candidates publish EVE with --plugin-publish-scope all-publishable");
   });
 
   it("extracts a workflow run id from gh dispatch output", () => {
     expect(
       parseRunIdFromDispatchOutput(
-        "https://github.com/openclaw/openclaw/actions/runs/25922042055\n",
+        "https://github.com/engsathiago/eve-agent/actions/runs/25922042055\n",
       ),
     ).toBe("25922042055");
   });
@@ -354,11 +354,11 @@ describe("release candidate checklist", () => {
   it("falls back to a single compatible artifact from the same run", () => {
     expect(
       resolveArtifactName(
-        [{ name: "openclaw-npm-preflight-dba00", expired: false }],
-        "openclaw-npm-preflight-v2026.5.16-beta.2",
-        "openclaw-npm-preflight-",
+        [{ name: "eve-npm-preflight-dba00", expired: false }],
+        "eve-npm-preflight-v2026.5.16-beta.2",
+        "eve-npm-preflight-",
       ),
-    ).toBe("openclaw-npm-preflight-dba00");
+    ).toBe("eve-npm-preflight-dba00");
   });
 
   it("bounds GitHub API requests with a timeout signal", async () => {
@@ -373,14 +373,14 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/eve/eve/actions/runs", {
         fetchImpl,
         timeoutMs: 1234,
         token: "test-token",
       }),
     ).resolves.toEqual({ workflow_runs: [] });
     expect(fetchImpl).toHaveBeenCalledWith(
-      "https://api.github.com/repos/openclaw/openclaw/actions/runs",
+      "https://api.github.com/repos/eve/eve/actions/runs",
       expect.objectContaining({
         signal: expect.any(AbortSignal),
       }),
@@ -396,14 +396,14 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/eve/eve/actions/runs", {
         fetchImpl,
         maxBodyBytes: 64,
         timeoutMs: 1234,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/openclaw/openclaw/actions/runs response body exceeded 64 bytes",
+      "GitHub API repos/eve/eve/actions/runs response body exceeded 64 bytes",
     );
   });
 
@@ -415,12 +415,12 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/eve/eve/actions/runs", {
         fetchImpl,
         timeoutMs: 25,
         token: "test-token",
       }),
-    ).rejects.toThrow("GitHub API repos/openclaw/openclaw/actions/runs timed out after 25ms");
+    ).rejects.toThrow("GitHub API repos/eve/eve/actions/runs timed out after 25ms");
   });
 
   it("includes the GitHub API path when a request times out", async () => {
@@ -429,13 +429,13 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs/123/jobs", {
+      githubApi("repos/eve/eve/actions/runs/123/jobs", {
         fetchImpl,
         timeoutMs: 5,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/openclaw/openclaw/actions/runs/123/jobs timed out after 5ms",
+      "GitHub API repos/eve/eve/actions/runs/123/jobs timed out after 5ms",
     );
   });
 });

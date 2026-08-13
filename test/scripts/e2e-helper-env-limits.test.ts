@@ -119,7 +119,7 @@ describe("e2e helper numeric env limits", () => {
   });
 
   it("rejects oversized ClickClack fixture request bodies", async () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-clickclack-fixture-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-clickclack-fixture-"));
     const port = await allocatePort();
     const child = spawn(process.execPath, [clickclackFixturePath], {
       env: {
@@ -163,11 +163,11 @@ describe("e2e helper numeric env limits", () => {
 
   it("rejects loose Open WebUI HTTP probe timeouts", () => {
     const result = runScript(httpProbePath, ["http://127.0.0.1:9"], {
-      OPENCLAW_HTTP_PROBE_TIMEOUT_MS: "8000ms",
+      EVE_HTTP_PROBE_TIMEOUT_MS: "8000ms",
     });
 
     expect(result.status).not.toBe(0);
-    expect(result.stderr).toContain("invalid OPENCLAW_HTTP_PROBE_TIMEOUT_MS: 8000ms");
+    expect(result.stderr).toContain("invalid EVE_HTTP_PROBE_TIMEOUT_MS: 8000ms");
   });
 
   it("rejects loose Open WebUI HTTP probe expected statuses", () => {
@@ -186,7 +186,7 @@ describe("e2e helper numeric env limits", () => {
     const url = await listen(server);
     try {
       const result = await runScriptAsync(httpProbePath, [url, "204"], {
-        OPENCLAW_HTTP_PROBE_TIMEOUT_MS: "500",
+        EVE_HTTP_PROBE_TIMEOUT_MS: "500",
       });
 
       expect(result.status).toBe(0);
@@ -202,7 +202,7 @@ describe("e2e helper numeric env limits", () => {
     const url = await listen(server);
     try {
       const result = await runScriptAsync(httpProbePath, [url, "lt500"], {
-        OPENCLAW_HTTP_PROBE_TIMEOUT_MS: "500",
+        EVE_HTTP_PROBE_TIMEOUT_MS: "500",
       });
 
       expect(result.status).toBe(0);

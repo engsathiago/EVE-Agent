@@ -1,9 +1,9 @@
 // Googlechat plugin module implements group policy behavior.
-import { resolveChannelGroupRequireMention } from "openclaw/plugin-sdk/channel-policy";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+import { resolveChannelGroupRequireMention } from "eve-agent/plugin-sdk/channel-policy";
+import type { EVEConfig } from "eve-agent/plugin-sdk/core";
 
 type GoogleChatGroupContext = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   groupId?: string | null;
 };

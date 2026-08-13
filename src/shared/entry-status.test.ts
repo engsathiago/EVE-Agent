@@ -21,18 +21,18 @@ describe("shared/entry-status", () => {
       always: false,
       metadata: {
         emoji: "🦀",
-        homepage: "https://openclaw.ai",
+        homepage: "https://eve.ai",
         requires: {
           bins: ["bun"],
           anyBins: ["ffmpeg", "sox"],
-          env: ["OPENCLAW_TOKEN"],
+          env: ["EVE_TOKEN"],
           config: ["gateway.bind"],
         },
         os: ["darwin"],
       },
       frontmatter: {
         emoji: "🙂",
-        homepage: "https://docs.openclaw.ai",
+        homepage: "https://docs.eve.ai",
       },
       hasLocalBin: (bin) => bin === "bun",
       localPlatform: "linux",
@@ -45,18 +45,18 @@ describe("shared/entry-status", () => {
 
     expect(result).toEqual({
       emoji: "🦀",
-      homepage: "https://openclaw.ai",
+      homepage: "https://eve.ai",
       required: {
         bins: ["bun"],
         anyBins: ["ffmpeg", "sox"],
-        env: ["OPENCLAW_TOKEN"],
+        env: ["EVE_TOKEN"],
         config: ["gateway.bind"],
         os: ["darwin"],
       },
       missing: {
         bins: [],
         anyBins: [],
-        env: ["OPENCLAW_TOKEN"],
+        env: ["EVE_TOKEN"],
         config: [],
         os: ["darwin"],
       },
@@ -94,7 +94,7 @@ describe("shared/entry-status", () => {
           },
         },
         frontmatter: {
-          website: " https://docs.openclaw.ai ",
+          website: " https://docs.eve.ai ",
           emoji: "🙂",
         },
       },
@@ -105,7 +105,7 @@ describe("shared/entry-status", () => {
 
     expect(result).toEqual({
       emoji: "🙂",
-      homepage: "https://docs.openclaw.ai",
+      homepage: "https://docs.eve.ai",
       required: {
         bins: ["missing-bin"],
         anyBins: [],

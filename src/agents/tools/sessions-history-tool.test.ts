@@ -18,7 +18,7 @@ function useLoggingConfig(name: string, logging: Record<string, unknown>): void 
   }
   const configPath = path.join(tempDir, name);
   fs.writeFileSync(configPath, `${JSON.stringify({ logging })}\n`, "utf8");
-  process.env.OPENCLAW_CONFIG_PATH = configPath;
+  process.env.EVE_CONFIG_PATH = configPath;
 }
 
 function createHistoryToolWithMessage(content: string) {
@@ -42,17 +42,17 @@ function createHistoryToolWithMessage(content: string) {
 
 describe("sessions_history redaction", () => {
   beforeAll(async () => {
-    previousConfigPath = process.env.OPENCLAW_CONFIG_PATH;
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sessions-history-redact-"));
+    previousConfigPath = process.env.EVE_CONFIG_PATH;
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-sessions-history-redact-"));
     useLoggingConfig("redaction-off.json", { redactSensitive: "off" });
     ({ createSessionsHistoryTool } = await import("./sessions-history-tool.js"));
   });
 
   afterAll(() => {
     if (previousConfigPath === undefined) {
-      delete process.env.OPENCLAW_CONFIG_PATH;
+      delete process.env.EVE_CONFIG_PATH;
     } else {
-      process.env.OPENCLAW_CONFIG_PATH = previousConfigPath;
+      process.env.EVE_CONFIG_PATH = previousConfigPath;
     }
     if (tempDir) {
       fs.rmSync(tempDir, { recursive: true, force: true });

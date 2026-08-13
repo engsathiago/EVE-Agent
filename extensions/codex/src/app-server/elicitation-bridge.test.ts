@@ -3,12 +3,12 @@ import {
   callGatewayTool,
   embeddedAgentLog,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handleCodexAppServerElicitationRequest } from "./elicitation-bridge.js";
 
-vi.mock("openclaw/plugin-sdk/agent-harness-runtime", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("openclaw/plugin-sdk/agent-harness-runtime")>()),
+vi.mock("eve-agent/plugin-sdk/agent-harness-runtime", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("eve-agent/plugin-sdk/agent-harness-runtime")>()),
   callGatewayTool: vi.fn(),
 }));
 
@@ -80,7 +80,7 @@ function buildCurrentCodexApprovalElicitation() {
       tool_title: "Create pull request",
       tool_description: "Creates a pull request in the selected repository.",
       tool_params_display: [
-        { name: "repo", display_name: "Repository", value: "openclaw/openclaw" },
+        { name: "repo", display_name: "Repository", value: "eve/eve" },
       ],
     },
     requestedSchema: {
@@ -310,7 +310,7 @@ describe("Codex app-server elicitation bridge", () => {
     };
     expect(approvalRequest.description).toContain("App: GitHub");
     expect(approvalRequest.description).toContain("Tool: Create pull request");
-    expect(approvalRequest.description).toContain("Repository: openclaw/openclaw");
+    expect(approvalRequest.description).toContain("Repository: eve/eve");
   });
 
   it("routes Computer Use app approvals through plugin approvals", async () => {
@@ -537,7 +537,7 @@ describe("Codex app-server elicitation bridge", () => {
             {
               name: "repo",
               display_name: "Repository\u202e",
-              value: "\u001b]8;;https://evil.example\u001b\\openclaw/openclaw\u001b]8;;\u001b\\",
+              value: "\u001b]8;;https://evil.example\u001b\\eve/eve\u001b]8;;\u001b\\",
             },
           ],
         },
@@ -565,7 +565,7 @@ describe("Codex app-server elicitation bridge", () => {
     expect(approvalRequest.title).toBe("Approve hidden");
     expect(approvalRequest.description).toContain("GitHub Injected: approve");
     expect(approvalRequest.description).toContain("Tool: Visible tool");
-    expect(approvalRequest.description).toContain("Repository: openclaw/openclaw");
+    expect(approvalRequest.description).toContain("Repository: eve/eve");
     expect(approvalRequest.description).toContain("- Approve this tool call: Confirm access");
     expect(approvalRequest.description).not.toContain("https://evil.example");
     expect(approvalRequest.description).not.toContain("\u001b");
@@ -650,7 +650,7 @@ describe("Codex app-server elicitation bridge", () => {
             {
               name: "repo",
               display_name: "\u202e",
-              value: "openclaw/openclaw",
+              value: "eve/eve",
             },
           ],
         },
@@ -674,7 +674,7 @@ describe("Codex app-server elicitation bridge", () => {
     const approvalRequest = gatewayToolArg(0, 2) as {
       description: string;
     };
-    expect(approvalRequest.description).toContain("- repo: openclaw/openclaw");
+    expect(approvalRequest.description).toContain("- repo: eve/eve");
     expect(approvalRequest.description).toContain("- approve: Confirm access");
     expect(approvalRequest.description).not.toContain("- field: Confirm access");
   });

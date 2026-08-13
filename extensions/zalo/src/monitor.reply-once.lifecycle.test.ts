@@ -1,5 +1,5 @@
 // Zalo tests cover monitor.reply once.lifecycle plugin behavior.
-import { withServer } from "openclaw/plugin-sdk/test-env";
+import { withServer } from "eve-agent/plugin-sdk/test-env";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PluginRuntime } from "../runtime-api.js";
 import {

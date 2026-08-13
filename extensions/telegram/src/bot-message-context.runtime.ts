@@ -1,5 +1,5 @@
 // Telegram plugin module implements bot message context behavior.
-export { createStatusReactionController } from "openclaw/plugin-sdk/channel-feedback";
-export { recordChannelActivity } from "openclaw/plugin-sdk/channel-activity-runtime";
-export { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-export { ensureConfiguredBindingRouteReady } from "openclaw/plugin-sdk/conversation-runtime";
+export { createStatusReactionController } from "eve-agent/plugin-sdk/channel-feedback";
+export { recordChannelActivity } from "eve-agent/plugin-sdk/channel-activity-runtime";
+export { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+export { ensureConfiguredBindingRouteReady } from "eve-agent/plugin-sdk/conversation-runtime";

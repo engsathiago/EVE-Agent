@@ -3,7 +3,7 @@
  */
 import { normalizeFastMode } from "../auto-reply/thinking.shared.js";
 import type { SessionEntry } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveAgentConfig } from "./agent-scope.js";
 import { modelKey } from "./model-ref-shared.js";
 
@@ -15,7 +15,7 @@ type FastModeState = {
 };
 
 function resolveConfiguredFastModeRaw(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   model: string;
 }): unknown {
@@ -26,7 +26,7 @@ function resolveConfiguredFastModeRaw(params: {
 
 /** Resolve the effective fast-mode setting and its source. */
 export function resolveFastModeState(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: EVEConfig | undefined;
   provider: string;
   model: string;
   agentId?: string;

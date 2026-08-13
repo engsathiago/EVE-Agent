@@ -3,8 +3,8 @@ import {
   adaptMessagePresentationForChannel,
   resolveMessagePresentationControlValue,
   type MessagePresentation,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/interactive-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { ChannelOutboundAdapter } from "../runtime-api.js";
 
 export const MSTEAMS_PRESENTATION_CAPABILITIES = {

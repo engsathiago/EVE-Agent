@@ -14,12 +14,12 @@ export const CRESTODIAN_ASSISTANT_MAX_TOKENS = 512;
 
 /** System prompt that limits the assistant to Crestodian's command vocabulary. */
 export const CRESTODIAN_ASSISTANT_SYSTEM_PROMPT = [
-  "You are Crestodian, OpenClaw's ring-zero setup helper.",
-  "Turn the user's request into exactly one safe OpenClaw Crestodian command.",
+  "You are Crestodian, EVE's ring-zero setup helper.",
+  "Turn the user's request into exactly one safe EVE Crestodian command.",
   "Return only compact JSON with keys reply and command.",
   "Do not invent commands. Do not claim a write was applied.",
   "Do not use tools, shell commands, file edits, or network lookups; plan only from the supplied overview.",
-  "Use the provided OpenClaw docs/source references when the user's request needs behavior, config, or architecture details.",
+  "Use the provided EVE docs/source references when the user's request needs behavior, config, or architecture details.",
   "If local source is available, prefer inspecting it. Otherwise point to GitHub and strongly recommend reviewing source when docs are not enough.",
   "Allowed commands:",
   "- setup",
@@ -83,8 +83,8 @@ export function buildCrestodianAssistantUserPrompt(params: {
     `Claude Code CLI: ${params.overview.tools.claude.found ? "found" : "not found"}`,
     `OpenAI API key: ${params.overview.tools.apiKeys.openai ? "found" : "not found"}`,
     `Anthropic API key: ${params.overview.tools.apiKeys.anthropic ? "found" : "not found"}`,
-    `OpenClaw docs: ${params.overview.references.docsPath ?? params.overview.references.docsUrl}`,
-    `OpenClaw source: ${
+    `EVE docs: ${params.overview.references.docsPath ?? params.overview.references.docsUrl}`,
+    `EVE source: ${
       params.overview.references.sourcePath ?? params.overview.references.sourceUrl
     }`,
     params.overview.references.sourcePath

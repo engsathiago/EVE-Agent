@@ -4,7 +4,7 @@ import type {
   ChannelMessageActionName,
   ChannelMessageToolDiscovery,
   ChannelMessageToolSchemaContribution,
-} from "openclaw/plugin-sdk/channel-contract";
+} from "eve-agent/plugin-sdk/channel-contract";
 import { Type, type TSchema } from "typebox";
 import { isSlackInteractiveRepliesEnabled } from "./interactive-replies.js";
 import { listSlackMessageActions } from "./message-actions.js";

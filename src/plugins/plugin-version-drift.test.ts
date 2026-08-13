@@ -1,6 +1,6 @@
 /** Tests plugin version drift detection between package, manifest, and install records. */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { detectPluginVersionDrift } from "./plugin-version-drift.js";
 
@@ -8,7 +8,7 @@ function npmRecord(
   version: string,
   overrides: Partial<PluginInstallRecord> = {},
 ): PluginInstallRecord {
-  const resolvedName = overrides.resolvedName ?? "@openclaw/whatsapp";
+  const resolvedName = overrides.resolvedName ?? "@eve/whatsapp";
   return {
     source: "npm",
     spec: `${resolvedName}@latest`,
@@ -24,8 +24,8 @@ function clawhubRecord(
 ): PluginInstallRecord {
   return {
     source: "clawhub",
-    spec: "clawhub:@openclaw/whatsapp",
-    clawhubPackage: "@openclaw/whatsapp",
+    spec: "clawhub:@eve/whatsapp",
+    clawhubPackage: "@eve/whatsapp",
     resolvedVersion: version,
     ...overrides,
   };
@@ -37,7 +37,7 @@ describe("detectPluginVersionDrift", () => {
       gatewayVersion: "2026.5.4",
       installRecords: {
         whatsapp: npmRecord("2026.5.4"),
-        discord: npmRecord("2026.5.4", { resolvedName: "@openclaw/discord" }),
+        discord: npmRecord("2026.5.4", { resolvedName: "@eve/discord" }),
       },
     });
 
@@ -50,10 +50,10 @@ describe("detectPluginVersionDrift", () => {
       gatewayVersion: "2026.5.4",
       installRecords: {
         whatsapp: npmRecord("2026.5.3", {
-          resolvedName: "@openclaw/whatsapp",
-          spec: "@openclaw/whatsapp@2026.5.3",
+          resolvedName: "@eve/whatsapp",
+          spec: "@eve/whatsapp@2026.5.3",
         }),
-        discord: npmRecord("2026.5.4", { resolvedName: "@openclaw/discord" }),
+        discord: npmRecord("2026.5.4", { resolvedName: "@eve/discord" }),
       },
     });
 
@@ -63,8 +63,8 @@ describe("detectPluginVersionDrift", () => {
       installedVersion: "2026.5.3",
       gatewayVersion: "2026.5.4",
       source: "npm",
-      packageName: "@openclaw/whatsapp",
-      spec: "@openclaw/whatsapp@2026.5.3",
+      packageName: "@eve/whatsapp",
+      spec: "@eve/whatsapp@2026.5.3",
     });
   });
 
@@ -74,7 +74,7 @@ describe("detectPluginVersionDrift", () => {
       installRecords: {
         whatsapp: npmRecord("2026.5.4"),
         // ...and the inverse direction
-        discord: npmRecord("2026.5.4-1", { resolvedName: "@openclaw/discord" }),
+        discord: npmRecord("2026.5.4-1", { resolvedName: "@eve/discord" }),
       },
     });
 
@@ -98,8 +98,8 @@ describe("detectPluginVersionDrift", () => {
       gatewayVersion: "2026.5.4",
       installRecords: {
         discord: clawhubRecord("2026.5.3", {
-          spec: "clawhub:@openclaw/discord",
-          clawhubPackage: "@openclaw/discord",
+          spec: "clawhub:@eve/discord",
+          clawhubPackage: "@eve/discord",
           clawhubChannel: "official",
           clawhubUrl: "https://clawhub.ai",
         }),
@@ -141,9 +141,9 @@ describe("detectPluginVersionDrift", () => {
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
       installRecords: {
-        "openclaw-plugin-yuanbao": npmRecord("2.13.1", {
-          resolvedName: "openclaw-plugin-yuanbao",
-          spec: "openclaw-plugin-yuanbao@2.13.1",
+        "eve-plugin-yuanbao": npmRecord("2.13.1", {
+          resolvedName: "eve-plugin-yuanbao",
+          spec: "eve-plugin-yuanbao@2.13.1",
         }),
       },
     });
@@ -155,9 +155,9 @@ describe("detectPluginVersionDrift", () => {
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.7",
       installRecords: {
-        "wecom-openclaw-plugin": npmRecord("2026.5.6", {
-          resolvedName: "@wecom/wecom-openclaw-plugin",
-          spec: "@wecom/wecom-openclaw-plugin@2026.5.6",
+        "wecom-eve-plugin": npmRecord("2026.5.6", {
+          resolvedName: "@wecom/wecom-eve-plugin",
+          spec: "@wecom/wecom-eve-plugin@2026.5.6",
         }),
       },
     });
@@ -174,19 +174,19 @@ describe("detectPluginVersionDrift", () => {
         // bump alone.
         archive: {
           source: "archive",
-          resolvedName: "@openclaw/whatsapp",
+          resolvedName: "@eve/whatsapp",
           resolvedVersion: "2026.5.3",
-          spec: "@openclaw/whatsapp@archive",
+          spec: "@eve/whatsapp@archive",
         },
         local: {
           source: "path",
-          resolvedName: "@openclaw/whatsapp",
+          resolvedName: "@eve/whatsapp",
           resolvedVersion: "2026.5.3",
           spec: "/tmp/local-plugin",
         },
         forked: {
           source: "git",
-          resolvedName: "@openclaw/whatsapp",
+          resolvedName: "@eve/whatsapp",
           resolvedVersion: "2026.5.3",
           spec: "git+ssh://example/forked",
         },
@@ -202,8 +202,8 @@ describe("detectPluginVersionDrift", () => {
       installRecords: {
         whatsapp: {
           source: "npm",
-          spec: "@openclaw/whatsapp@latest",
-          resolvedName: "@openclaw/whatsapp",
+          spec: "@eve/whatsapp@latest",
+          resolvedName: "@eve/whatsapp",
           version: "2026.5.3",
         },
       },
@@ -217,7 +217,7 @@ describe("detectPluginVersionDrift", () => {
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
       installRecords: {
-        whatsapp: { source: "npm", spec: "@openclaw/whatsapp@latest" },
+        whatsapp: { source: "npm", spec: "@eve/whatsapp@latest" },
       },
     });
 
@@ -225,20 +225,20 @@ describe("detectPluginVersionDrift", () => {
   });
 
   it("skips plugins that are explicitly disabled in config", () => {
-    const config: OpenClawConfig = {
+    const config: EVEConfig = {
       plugins: {
         entries: {
           whatsapp: { enabled: false },
           discord: { enabled: true },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
       installRecords: {
         whatsapp: npmRecord("2026.5.3"),
-        discord: npmRecord("2026.5.3", { resolvedName: "@openclaw/discord" }),
+        discord: npmRecord("2026.5.3", { resolvedName: "@eve/discord" }),
       },
       config,
     });
@@ -247,11 +247,11 @@ describe("detectPluginVersionDrift", () => {
   });
 
   it("skips plugins disabled by the global plugin activation policy", () => {
-    const config: OpenClawConfig = {
+    const config: EVEConfig = {
       plugins: {
         enabled: false,
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
@@ -274,7 +274,7 @@ describe("detectPluginVersionDrift", () => {
         plugins: {
           deny: ["whatsapp"],
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
     const notAllowed = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
@@ -285,7 +285,7 @@ describe("detectPluginVersionDrift", () => {
         plugins: {
           allow: ["discord"],
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(denied.drifts).toEqual([]);
@@ -293,7 +293,7 @@ describe("detectPluginVersionDrift", () => {
   });
 
   it("includes plugins with no entry in config (default-enabled)", () => {
-    const config: OpenClawConfig = { plugins: { entries: {} } } as OpenClawConfig;
+    const config: EVEConfig = { plugins: { entries: {} } } as EVEConfig;
     const result = detectPluginVersionDrift({
       gatewayVersion: "2026.5.4",
       installRecords: {
@@ -310,8 +310,8 @@ describe("detectPluginVersionDrift", () => {
       gatewayVersion: "2026.5.4",
       installRecords: {
         whatsapp: npmRecord("2026.5.3"),
-        discord: npmRecord("2026.5.3", { resolvedName: "@openclaw/discord" }),
-        matrix: npmRecord("2026.5.3", { resolvedName: "@openclaw/matrix" }),
+        discord: npmRecord("2026.5.3", { resolvedName: "@eve/discord" }),
+        matrix: npmRecord("2026.5.3", { resolvedName: "@eve/matrix" }),
       },
     });
 

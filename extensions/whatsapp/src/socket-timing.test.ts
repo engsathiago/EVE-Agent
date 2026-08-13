@@ -1,4 +1,4 @@
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 // Whatsapp tests cover socket timing plugin behavior.
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
@@ -11,7 +11,7 @@ import {
 } from "./socket-timing.js";
 
 describe("resolveWhatsAppSocketTiming", () => {
-  it("uses OpenClaw's explicit WhatsApp Web socket defaults", () => {
+  it("uses EVE's explicit WhatsApp Web socket defaults", () => {
     expect(resolveWhatsAppSocketTiming({})).toEqual(DEFAULT_WHATSAPP_SOCKET_TIMING);
   });
 

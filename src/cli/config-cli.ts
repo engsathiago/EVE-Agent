@@ -1,11 +1,11 @@
 // Config CLI command implementation for get/set/unset/patch/validate and secret refs.
 import fs from "node:fs";
-import { isRecord as isPlainRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { isRecord as isPlainRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   normalizeStringEntries,
   uniqueValues,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-normalization";
 import type { Command } from "commander";
 import JSON5 from "json5";
 import { formatDocsLink } from "../../packages/terminal-core/src/links.js";
@@ -27,7 +27,7 @@ import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import { isPluginPackagingRuntimeOutputInvalidConfigSnapshot } from "../config/recovery-policy.js";
 import { redactConfigObject } from "../config/redact-snapshot.js";
 import { readBestEffortRuntimeConfigSchema } from "../config/runtime-schema.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   coerceSecretRef,
   isValidEnvSecretRefId,
@@ -205,7 +205,7 @@ function normalizeProviderCatalogModelsForConfigMutation(
 }
 
 function normalizeModelProviderRefsForConfigMutation(
-  providers: NonNullable<OpenClawConfig["models"]>["providers"] | undefined,
+  providers: NonNullable<EVEConfig["models"]>["providers"] | undefined,
 ): unknown {
   if (!isPlainRecord(providers)) {
     return providers;
@@ -228,7 +228,7 @@ function normalizeModelProviderRefsForConfigMutation(
   return mutated ? nextProviders : providers;
 }
 
-function normalizeConfigMutationModelRefs(cfg: OpenClawConfig): OpenClawConfig {
+function normalizeConfigMutationModelRefs(cfg: EVEConfig): EVEConfig {
   const defaults = cfg.agents?.defaults;
   const agentList = cfg.agents?.list;
   const providers = cfg.models?.providers;
@@ -291,21 +291,21 @@ const GATEWAY_AUTH_MODE_PATH: PathSegment[] = ["gateway", "auth", "mode"];
 const SECRET_PROVIDER_PATH_PREFIX: PathSegment[] = ["secrets", "providers"];
 const PLUGIN_INSTALL_RECORD_PATH_PREFIX: PathSegment[] = ["plugins", "installs"];
 const CONFIG_SET_EXAMPLE_VALUE = formatCliCommand(
-  "openclaw config set gateway.port 19001 --strict-json",
+  "eve config set gateway.port 19001 --strict-json",
 );
 const CONFIG_SET_EXAMPLE_REF = formatCliCommand(
-  "openclaw config set channels.discord.token --ref-provider default --ref-source env --ref-id DISCORD_BOT_TOKEN",
+  "eve config set channels.discord.token --ref-provider default --ref-source env --ref-id DISCORD_BOT_TOKEN",
 );
 const CONFIG_SET_EXAMPLE_PROVIDER = formatCliCommand(
-  "openclaw config set secrets.providers.vault --provider-source file --provider-path /etc/openclaw/secrets.json --provider-mode json",
+  "eve config set secrets.providers.vault --provider-source file --provider-path /etc/eve/secrets.json --provider-mode json",
 );
 const CONFIG_SET_EXAMPLE_BATCH = formatCliCommand(
-  "openclaw config set --batch-file ./config-set.batch.json --dry-run",
+  "eve config set --batch-file ./config-set.batch.json --dry-run",
 );
 const CONFIG_PATCH_EXAMPLE_FILE = formatCliCommand(
-  "openclaw config patch --file ./openclaw.patch.json5 --dry-run",
+  "eve config patch --file ./eve.patch.json5 --dry-run",
 );
-const CONFIG_PATCH_EXAMPLE_STDIN = formatCliCommand("openclaw config patch --stdin");
+const CONFIG_PATCH_EXAMPLE_STDIN = formatCliCommand("eve config patch --stdin");
 const CONFIG_SET_DESCRIPTION = [
   "Set config values by path (value mode, ref/provider builder mode, or batch JSON mode).",
   "Examples:",
@@ -461,7 +461,7 @@ function hasOwnPathKey(value: Record<string, unknown>, key: string): boolean {
 }
 
 function formatDoctorHint(message: string): string {
-  return `Run \`${formatCliCommand("openclaw doctor --fix")}\` ${message}`;
+  return `Run \`${formatCliCommand("eve doctor --fix")}\` ${message}`;
 }
 
 function formatInvalidConfigRepairHint(
@@ -931,7 +931,7 @@ async function loadValidConfig(runtime: RuntimeEnv = defaultRuntime) {
   if (snapshot.valid) {
     return snapshot;
   }
-  runtime.error(`OpenClaw config is invalid: ${shortenHomePath(snapshot.path)}`);
+  runtime.error(`EVE config is invalid: ${shortenHomePath(snapshot.path)}`);
   for (const line of formatConfigIssueLines(snapshot.issues, "-", { normalizeRoot: true })) {
     runtime.error(line);
   }
@@ -1605,7 +1605,7 @@ function buildSingleSetOperations(params: {
 }
 
 function collectDryRunRefs(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   operations: ConfigSetOperation[];
 }): SecretRef[] {
   const refsByKey = new Map<string, SecretRef>();
@@ -1656,7 +1656,7 @@ function collectDryRunRefs(params: {
 
 async function collectDryRunResolvabilityErrors(params: {
   refs: SecretRef[];
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<ConfigSetDryRunError[]> {
   const failures: ConfigSetDryRunError[] = [];
   for (const ref of params.refs) {
@@ -1678,7 +1678,7 @@ async function collectDryRunResolvabilityErrors(params: {
 
 function collectDryRunStaticErrorsForSkippedExecRefs(params: {
   refs: SecretRef[];
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): ConfigSetDryRunError[] {
   const failures: ConfigSetDryRunError[] = [];
   for (const ref of params.refs) {
@@ -1745,9 +1745,9 @@ function formatPluginInstallConfigSetError(): string {
     "plugins.installs is managed by the plugin index and cannot be edited with config set.",
     "",
     "Use plugin commands instead:",
-    `  ${formatCliCommand("openclaw plugins install <spec>")}`,
-    `  ${formatCliCommand("openclaw plugins update <plugin-id>")}`,
-    `  ${formatCliCommand("openclaw plugins uninstall <plugin-id>")}`,
+    `  ${formatCliCommand("eve plugins install <spec>")}`,
+    `  ${formatCliCommand("eve plugins update <plugin-id>")}`,
+    `  ${formatCliCommand("eve plugins uninstall <plugin-id>")}`,
   ].join("\n");
 }
 
@@ -1845,9 +1845,9 @@ function formatAutoManagedMetaError(paths: readonly PathSegment[][]): string {
   const targets = paths.map((path) => toDotPath(path));
   const subject = targets.length === 1 ? targets[0] : targets.join(", ");
   return [
-    `${subject} is auto-managed by OpenClaw and cannot be edited; the value would be overwritten on the next config write.`,
+    `${subject} is auto-managed by EVE and cannot be edited; the value would be overwritten on the next config write.`,
     "",
-    "These fields are stamped on every config write to record the OpenClaw version and timestamp that produced the file.",
+    "These fields are stamped on every config write to record the EVE version and timestamp that produced the file.",
   ].join("\n");
 }
 
@@ -1859,7 +1859,7 @@ async function loadConfigMutationSchema(): Promise<JsonSchemaRecord | undefined>
   }
 }
 
-function collectDryRunSchemaErrors(params: { config: OpenClawConfig }): ConfigSetDryRunError[] {
+function collectDryRunSchemaErrors(params: { config: EVEConfig }): ConfigSetDryRunError[] {
   const validated = validateConfigObjectRawWithPlugins(params.config);
   if (validated.ok) {
     return [];
@@ -1871,7 +1871,7 @@ function collectDryRunSchemaErrors(params: { config: OpenClawConfig }): ConfigSe
 }
 
 function collectPluginIntegrationProviderErrors(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   operations: ConfigSetOperation[];
 }): ConfigSetDryRunError[] {
   const providers = params.config.secrets?.providers ?? {};
@@ -2043,7 +2043,7 @@ async function runConfigOperations(params: {
     root: next,
     operations,
   });
-  const nextConfig = normalizeConfigMutationModelRefs(next as OpenClawConfig);
+  const nextConfig = normalizeConfigMutationModelRefs(next as EVEConfig);
   const normalizedExplicitSetPaths = explicitSetPaths.map(normalizeConfigMutationExplicitSetPath);
   const policyIssues = collectUnsupportedSecretRefPolicyIssues(nextConfig);
   const policyIssueLines = formatConfigIssueLines(policyIssues, "", { normalizeRoot: true }).map(
@@ -2318,7 +2318,7 @@ export async function runConfigGet(opts: { path: string; json?: boolean; runtime
     if (!res.found) {
       runtime.error(
         danger(
-          `Config path not found: ${opts.path}. Run ${formatCliCommand("openclaw config validate")} to inspect config shape.`,
+          `Config path not found: ${opts.path}. Run ${formatCliCommand("eve config validate")} to inspect config shape.`,
         ),
       );
       runtime.exit(1);
@@ -2392,7 +2392,7 @@ export async function runConfigUnset(opts: {
       }
       runtime.error(
         danger(
-          `Config path not found: ${opts.path}. Nothing was changed. Run ${formatCliCommand("openclaw config get <path>")} first if you are unsure of the path.`,
+          `Config path not found: ${opts.path}. Nothing was changed. Run ${formatCliCommand("eve config get <path>")} first if you are unsure of the path.`,
         ),
       );
       runtime.exit(1);
@@ -2457,7 +2457,7 @@ export async function runConfigSchema(opts: { runtime?: RuntimeEnv } = {}) {
 
 export async function runConfigValidate(opts: { json?: boolean; runtime?: RuntimeEnv } = {}) {
   const runtime = opts.runtime ?? defaultRuntime;
-  let outputPath = CONFIG_PATH ?? "openclaw.json";
+  let outputPath = CONFIG_PATH ?? "eve.json";
 
   try {
     const snapshot = await readConfigFileSnapshot();
@@ -2470,7 +2470,7 @@ export async function runConfigValidate(opts: { json?: boolean; runtime?: Runtim
       } else {
         runtime.error(danger(`Config file not found: ${shortPath}`));
         runtime.error(
-          `Create one with ${formatCliCommand("openclaw onboard")} or run ${formatCliCommand("openclaw doctor --fix")}.`,
+          `Create one with ${formatCliCommand("eve onboard")} or run ${formatCliCommand("eve doctor --fix")}.`,
         );
       }
       runtime.exit(1);
@@ -2483,7 +2483,7 @@ export async function runConfigValidate(opts: { json?: boolean; runtime?: Runtim
       if (opts.json) {
         writeRuntimeJson(runtime, { valid: false, path: outputPath, issues });
       } else {
-        runtime.error(danger(`OpenClaw config is invalid: ${shortPath}`));
+        runtime.error(danger(`EVE config is invalid: ${shortPath}`));
         for (const line of formatConfigIssueLines(issues, danger("×"), { normalizeRoot: true })) {
           runtime.error(`  ${line}`);
         }
@@ -2491,7 +2491,7 @@ export async function runConfigValidate(opts: { json?: boolean; runtime?: Runtim
         runtime.error(
           formatInvalidConfigRepairHint(snapshot, "to repair, or fix the keys above manually."),
         );
-        runtime.error(`Inspect with ${formatCliCommand("openclaw config validate")}.`);
+        runtime.error(`Inspect with ${formatCliCommand("eve config validate")}.`);
       }
       runtime.exit(1);
       return;
@@ -2528,7 +2528,7 @@ export function registerConfigCli(program: Command) {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/config", "docs.openclaw.ai/cli/config")}\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/config", "docs.eve.ai/cli/config")}\n`,
     )
     .option(
       "--section <section>",
@@ -2558,7 +2558,7 @@ export function registerConfigCli(program: Command) {
     .option("--json", "Legacy alias for --strict-json", false)
     .option(
       "--dry-run",
-      "Validate changes without writing openclaw.json (checks run in builder/json/batch modes; exec SecretRefs are skipped unless --allow-exec is set)",
+      "Validate changes without writing eve.json (checks run in builder/json/batch modes; exec SecretRefs are skipped unless --allow-exec is set)",
       false,
     )
     .option(
@@ -2641,7 +2641,7 @@ export function registerConfigCli(program: Command) {
     .option("--stdin", "Read a JSON5 config patch object from stdin", false)
     .option(
       "--dry-run",
-      "Validate changes without writing openclaw.json (checks schema and SecretRef resolvability; exec SecretRefs are skipped unless --allow-exec is set)",
+      "Validate changes without writing eve.json (checks schema and SecretRef resolvability; exec SecretRefs are skipped unless --allow-exec is set)",
       false,
     )
     .option(
@@ -2680,7 +2680,7 @@ export function registerConfigCli(program: Command) {
 
   cmd
     .command("schema")
-    .description("Print the JSON schema for openclaw.json")
+    .description("Print the JSON schema for eve.json")
     .action(async () => {
       await runConfigSchema({});
     });

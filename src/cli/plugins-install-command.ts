@@ -1,13 +1,13 @@
 // Plugin install command implementation for bundled, npm, path, git, ClawHub, and hook packs.
 import fs from "node:fs";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { theme } from "../../packages/terminal-core/src/theme.js";
 import {
   assertConfigWriteAllowedInCurrentMode,
   readConfigFileSnapshotForWrite,
 } from "../config/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   installHooksFromNpmSpec,
   installHooksFromPath,
@@ -196,9 +196,9 @@ function hasValidBundledPluginConfig(params: {
 }
 
 function prepareConfigForDisabledBundledInstall(
-  config: OpenClawConfig,
+  config: EVEConfig,
   pluginId: string,
-): OpenClawConfig {
+): EVEConfig {
   const entries = config.plugins?.entries ?? {};
   const { [pluginId]: _removedEntry, ...nextEntries } = entries;
   return {
@@ -229,7 +229,7 @@ async function installBundledPluginSource(params: {
     : prepareConfigForDisabledBundledInstall(params.snapshot.config, params.bundledSource.pluginId);
   const configWarning = shouldEnable
     ? ""
-    : `Installed bundled plugin "${params.bundledSource.pluginId}" without enabling it because it requires configuration first. Configure it, then run \`openclaw plugins enable ${params.bundledSource.pluginId}\`.`;
+    : `Installed bundled plugin "${params.bundledSource.pluginId}" without enabling it because it requires configuration first. Configure it, then run \`eve plugins enable ${params.bundledSource.pluginId}\`.`;
   await persistPluginInstall({
     snapshot: {
       ...params.snapshot,
@@ -652,7 +652,7 @@ function extractMissingPluginLoadPath(issue: { path?: string; message?: string }
 }
 
 function collectRequestedPluginInstallPaths(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   installRecords: Awaited<ReturnType<typeof loadInstalledPluginIndexInstallRecords>>,
   request: PluginInstallRequestContext,
   env: NodeJS.ProcessEnv = process.env,
@@ -697,11 +697,11 @@ async function collectRequestedPluginLocationBridgePaths(
 }
 
 function removeOwnedMissingPluginLoadPaths(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   issues: readonly { path?: string; message?: string }[],
   ownedLoadPaths: ReadonlySet<string>,
   env: NodeJS.ProcessEnv = process.env,
-): OpenClawConfig {
+): EVEConfig {
   const missingPaths = new Set<string>();
   for (const issue of issues) {
     const missingPath = extractMissingPluginLoadPath(issue);
@@ -736,7 +736,7 @@ function removeOwnedMissingPluginLoadPaths(
 }
 
 async function resolveRequestedPluginInstallPaths(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   issues: readonly { path?: string; message?: string }[],
   request: PluginInstallRequestContext,
   env: NodeJS.ProcessEnv = process.env,
@@ -769,13 +769,13 @@ async function loadConfigFromSnapshotForInstall(
   const mutationWriteOptions = selectInstallMutationWriteOptions(writeOptions);
   if (resolvePluginInstallInvalidConfigPolicy(request) !== "allow-plugin-recovery") {
     throw buildInvalidPluginInstallConfigError(
-      "Config invalid; run `openclaw doctor --fix` before installing plugins.",
+      "Config invalid; run `eve doctor --fix` before installing plugins.",
     );
   }
   const parsed = (snapshot.parsed ?? {}) as Record<string, unknown>;
   if (!snapshot.exists || Object.keys(parsed).length === 0) {
     throw buildInvalidPluginInstallConfigError(
-      "Config file could not be parsed; run `openclaw doctor` to repair it.",
+      "Config file could not be parsed; run `eve doctor` to repair it.",
     );
   }
   const ownedLoadPaths = await resolveRequestedPluginInstallPaths(
@@ -791,12 +791,12 @@ async function loadConfigFromSnapshotForInstall(
   ) {
     const pluginLabel = request.bundledPluginId ?? "the requested plugin";
     throw buildInvalidPluginInstallConfigError(
-      `Config invalid outside the plugin recovery path for ${pluginLabel}; run \`openclaw doctor --fix\` before reinstalling it.`,
+      `Config invalid outside the plugin recovery path for ${pluginLabel}; run \`eve doctor --fix\` before reinstalling it.`,
     );
   }
   if (!supportsPluginRecoveryIncludeShape(parsed)) {
     throw buildInvalidPluginInstallConfigError(
-      "Config plugin recovery uses an unsupported $include shape; use a single-file top-level plugins include or run `openclaw doctor --fix` before reinstalling it.",
+      "Config plugin recovery uses an unsupported $include shape; use a single-file top-level plugins include or run `eve doctor --fix` before reinstalling it.",
     );
   }
   const { hookMutation, pluginMutation } = resolveInstallConfigMutationPreflights({
@@ -890,13 +890,13 @@ export async function runPluginInstallCommand(params: {
   if (opts.marketplace) {
     if (opts.link) {
       runtime.error(
-        `--link is not supported with --marketplace. Remove --link, or install a local path with ${formatCliCommand("openclaw plugins install --link <path>")}.`,
+        `--link is not supported with --marketplace. Remove --link, or install a local path with ${formatCliCommand("eve plugins install --link <path>")}.`,
       );
       return runtime.exit(1);
     }
     if (opts.pin) {
       runtime.error(
-        `--pin is not supported with --marketplace. Use ${formatCliCommand("openclaw plugins install <plugin> --marketplace <name>")} without --pin.`,
+        `--pin is not supported with --marketplace. Use ${formatCliCommand("eve plugins install <plugin> --marketplace <name>")} without --pin.`,
       );
       return runtime.exit(1);
     }
@@ -905,25 +905,25 @@ export async function runPluginInstallCommand(params: {
   const gitSpec = parseGitPluginSpec(raw);
   if (gitPrefix && !gitSpec) {
     runtime.error(
-      `Unsupported git plugin spec: ${raw}. Use ${formatCliCommand("openclaw plugins install git:<repo>@<ref>")}.`,
+      `Unsupported git plugin spec: ${raw}. Use ${formatCliCommand("eve plugins install git:<repo>@<ref>")}.`,
     );
     return runtime.exit(1);
   }
   if (gitSpec && opts.link) {
     runtime.error(
-      `--link is not supported with git: installs. Use ${formatCliCommand("openclaw plugins install git:<repo>@<ref>")} for Git installs or ${formatCliCommand("openclaw plugins install --link <path>")} for local paths.`,
+      `--link is not supported with git: installs. Use ${formatCliCommand("eve plugins install git:<repo>@<ref>")} for Git installs or ${formatCliCommand("eve plugins install --link <path>")} for local paths.`,
     );
     return runtime.exit(1);
   }
   if (gitSpec && opts.pin) {
     runtime.error(
-      `--pin is not supported with git: installs. Pin the ref in the spec instead, for example ${formatCliCommand("openclaw plugins install git:<repo>@<ref>")}.`,
+      `--pin is not supported with git: installs. Pin the ref in the spec instead, for example ${formatCliCommand("eve plugins install git:<repo>@<ref>")}.`,
     );
     return runtime.exit(1);
   }
   if (opts.link && opts.force) {
     runtime.error(
-      `--force is not supported with --link. Linked plugins point at the source path directly; remove --force and re-run ${formatCliCommand("openclaw plugins install --link <path>")}.`,
+      `--force is not supported with --link. Linked plugins point at the source path directly; remove --force and re-run ${formatCliCommand("eve plugins install --link <path>")}.`,
     );
     return runtime.exit(1);
   }
@@ -1157,7 +1157,7 @@ export async function runPluginInstallCommand(params: {
 
   if (opts.link) {
     runtime.error(
-      `--link requires a local path. Run ${formatCliCommand("openclaw plugins install --link <path>")}.`,
+      `--link requires a local path. Run ${formatCliCommand("eve plugins install --link <path>")}.`,
     );
     return runtime.exit(1);
   }
@@ -1166,7 +1166,7 @@ export async function runPluginInstallCommand(params: {
   if (npmPrefixSpec !== null) {
     if (!npmPrefixSpec) {
       runtime.error(
-        `Unsupported npm plugin spec: missing package. Use ${formatCliCommand("openclaw plugins install npm:<package>")}.`,
+        `Unsupported npm plugin spec: missing package. Use ${formatCliCommand("eve plugins install npm:<package>")}.`,
       );
       return runtime.exit(1);
     }
@@ -1203,7 +1203,7 @@ export async function runPluginInstallCommand(params: {
   if (npmPackPath !== null) {
     if (!npmPackPath) {
       runtime.error(
-        `Unsupported npm-pack plugin spec: missing archive path. Use ${formatCliCommand("openclaw plugins install npm-pack:<path-to.tgz>")}.`,
+        `Unsupported npm-pack plugin spec: missing archive path. Use ${formatCliCommand("eve plugins install npm-pack:<path-to.tgz>")}.`,
       );
       return runtime.exit(1);
     }
@@ -1251,7 +1251,7 @@ export async function runPluginInstallCommand(params: {
     ])
   ) {
     runtime.error(
-      `Plugin path not found: ${resolved}. Check the path, or install from npm with ${formatCliCommand("openclaw plugins install npm:<package>")}.`,
+      `Plugin path not found: ${resolved}. Check the path, or install from npm with ${formatCliCommand("eve plugins install npm:<package>")}.`,
     );
     return runtime.exit(1);
   }

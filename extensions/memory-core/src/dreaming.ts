@@ -1,5 +1,5 @@
 // Memory Core plugin module implements dreaming behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   DEFAULT_MEMORY_DREAMING_FREQUENCY as DEFAULT_MEMORY_DREAMING_CRON_EXPR,
   DEFAULT_MEMORY_DEEP_DREAMING_LIMIT as DEFAULT_MEMORY_DREAMING_LIMIT,
@@ -20,13 +20,13 @@ import {
   resolveMemoryCorePluginConfig,
   resolveMemoryDeepDreamingConfig,
   resolveMemoryDreamingWorkspaces,
-} from "openclaw/plugin-sdk/memory-core-host-status";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/memory-core-host-status";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   normalizeLowercaseStringOrEmpty,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { peekSystemEventEntries } from "openclaw/plugin-sdk/system-event-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { peekSystemEventEntries } from "eve-agent/plugin-sdk/system-event-runtime";
 import type { NarrativePhaseData } from "./dreaming-narrative.js";
 import {
   formatErrorMessage,
@@ -39,7 +39,7 @@ const STARTUP_CRON_RETRY_DELAY_MS = 5_000;
 const STARTUP_CRON_RETRY_MAX_ATTEMPTS = 12;
 const HEARTBEAT_ISOLATED_SESSION_SUFFIX = ":heartbeat";
 
-type Logger = Pick<OpenClawPluginApi["logger"], "info" | "warn" | "error">;
+type Logger = Pick<EVEPluginApi["logger"], "info" | "warn" | "error">;
 
 type CronSchedule = { kind: "cron"; expr: string; tz?: string };
 type CronPayload =
@@ -387,7 +387,7 @@ function hasPendingManagedDreamingCronEvent(sessionKey?: string): boolean {
 
 export function resolveShortTermPromotionDreamingConfig(params: {
   pluginConfig?: Record<string, unknown>;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): ShortTermPromotionDreamingConfig {
   const resolved = resolveMemoryDeepDreamingConfig(params);
   return {
@@ -497,10 +497,10 @@ export async function runShortTermDreamingPromotionIfTriggered(params: {
   cleanedBody: string;
   trigger?: string;
   workspaceDir?: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   config: ShortTermPromotionDreamingConfig;
   logger: Logger;
-  subagent?: OpenClawPluginApi["runtime"]["subagent"];
+  subagent?: EVEPluginApi["runtime"]["subagent"];
 }): Promise<{ handled: true; reason: string } | undefined> {
   if (params.trigger !== "heartbeat" && params.trigger !== "cron") {
     return undefined;
@@ -703,7 +703,7 @@ export async function runShortTermDreamingPromotionIfTriggered(params: {
   return { handled: true, reason: "memory-core: short-term dreaming processed" };
 }
 
-export function registerShortTermPromotionDreaming(api: OpenClawPluginApi): void {
+export function registerShortTermPromotionDreaming(api: EVEPluginApi): void {
   let resolveStartupCron: (() => CronServiceLike | null) | null = null;
   // Hold a live reference to the gateway context so we can retry cron resolution at runtime.
   // The startup capture may fail if the cron service isn't available yet (race condition in
@@ -720,8 +720,8 @@ export function registerShortTermPromotionDreaming(api: OpenClawPluginApi): void
   let startupCronRetryAttempts = 0;
   let disposed = false;
 
-  const resolveCurrentConfig = (): OpenClawConfig =>
-    (api.runtime.config?.current?.() ?? api.config) as OpenClawConfig;
+  const resolveCurrentConfig = (): EVEConfig =>
+    (api.runtime.config?.current?.() ?? api.config) as EVEConfig;
 
   const clearStartupCronRetry = (): void => {
     if (startupCronRetryTimer) {
@@ -771,7 +771,7 @@ export function registerShortTermPromotionDreaming(api: OpenClawPluginApi): void
 
   const reconcileManagedDreamingCron = async (params: {
     reason: "startup" | "startup_retry" | "runtime";
-    startupConfig?: OpenClawConfig;
+    startupConfig?: EVEConfig;
     startupCron?: (() => CronServiceLike | null) | null;
   }): Promise<ShortTermPromotionDreamingConfig> => {
     const startupCfg =

@@ -10,17 +10,17 @@ import {
   normalizeSessionTranscriptPathForComparison,
   parseUsageCountedSessionIdFromFileName,
   sessionPathForFile,
-} from "openclaw/plugin-sdk/memory-core-host-engine-qmd";
-import type { MemorySearchResult } from "openclaw/plugin-sdk/memory-core-host-runtime-files";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-qmd";
+import type { MemorySearchResult } from "eve-agent/plugin-sdk/memory-core-host-runtime-files";
 import {
   formatMemoryDreamingDay,
   resolveMemoryDreamingWorkspaces,
   resolveMemoryLightDreamingConfig,
   resolveMemoryRemDreamingConfig,
-} from "openclaw/plugin-sdk/memory-core-host-status";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import { appendRegularFile } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-status";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
+import { appendRegularFile } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeStringEntries, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { writeDailyDreamingPhaseBlock } from "./dreaming-markdown.js";
 import {
   generateAndAppendDreamNarrative,
@@ -48,7 +48,7 @@ import {
   type ShortTermRecallEntry,
 } from "./short-term-promotion.js";
 
-type Logger = Pick<OpenClawPluginApi["logger"], "info" | "warn" | "error">;
+type Logger = Pick<EVEPluginApi["logger"], "info" | "warn" | "error">;
 type DreamingHostConfig = unknown;
 type DreamingPhaseStorageConfig = {
   timezone?: string;
@@ -85,8 +85,8 @@ type RunPhaseIfTriggeredParams = {
       config: RemDreamingConfig;
     }
 );
-const LIGHT_SLEEP_EVENT_TEXT = "__openclaw_memory_core_light_sleep__";
-const REM_SLEEP_EVENT_TEXT = "__openclaw_memory_core_rem_sleep__";
+const LIGHT_SLEEP_EVENT_TEXT = "__eve_memory_core_light_sleep__";
+const REM_SLEEP_EVENT_TEXT = "__eve_memory_core_rem_sleep__";
 const MEMORY_DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
 const DAILY_MEMORY_FILENAME_RE = /^(\d{4}-\d{2}-\d{2})(?:-[^/]+)?\.md$/i;
 export const DAILY_INGESTION_STATE_RELATIVE_PATH = path.join(
@@ -120,13 +120,13 @@ const GENERIC_DAY_HEADING_RE =
 const MANAGED_DAILY_DREAMING_BLOCKS = [
   {
     heading: "## Light Sleep",
-    startMarker: "<!-- openclaw:dreaming:light:start -->",
-    endMarker: "<!-- openclaw:dreaming:light:end -->",
+    startMarker: "<!-- eve:dreaming:light:start -->",
+    endMarker: "<!-- eve:dreaming:light:end -->",
   },
   {
     heading: "## REM Sleep",
-    startMarker: "<!-- openclaw:dreaming:rem:start -->",
-    endMarker: "<!-- openclaw:dreaming:rem:end -->",
+    startMarker: "<!-- eve:dreaming:rem:start -->",
+    endMarker: "<!-- eve:dreaming:rem:end -->",
   },
 ] as const;
 

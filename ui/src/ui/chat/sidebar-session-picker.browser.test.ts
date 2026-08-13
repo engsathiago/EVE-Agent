@@ -69,7 +69,7 @@ function sidebarSessionPickerHtml(opts: { sidebarOpen?: boolean; workspaceRail?:
               ${iconSvg()}
             </button>
           </div>
-          <div class="chat-workspace-rail__path">/workspace/openclaw</div>
+          <div class="chat-workspace-rail__path">/workspace/eve</div>
           <div class="chat-workspace-rail__list" role="list">
             <div class="chat-workspace-rail__file chat-workspace-rail__file--active" role="listitem">
               <button class="chat-workspace-rail__file-open" type="button">
@@ -194,7 +194,7 @@ function sidebarSessionPickerHtml(opts: { sidebarOpen?: boolean; workspaceRail?:
                   </div>
                   <div class="agent-chat__input">
                     <div class="agent-chat__composer-combobox">
-                      <textarea placeholder="Message OpenClaw"></textarea>
+                      <textarea placeholder="Message EVE"></textarea>
                     </div>
                     <div class="agent-chat__toolbar">
                       <div class="agent-chat__toolbar-left">

@@ -1,7 +1,7 @@
 // Subagent spawn context tests cover isolated, forked, lightweight, and
 // thread-bound bootstrap context preparation for child sessions.
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   loadSubagentSpawnModuleForTest,

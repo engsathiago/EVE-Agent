@@ -1,11 +1,11 @@
 // Behavior coverage for replay-history sanitization across provider policies.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import type {
   AssistantMessage,
   ThinkingContent,
   UserMessage,
   Usage,
-} from "openclaw/plugin-sdk/llm";
+} from "eve-agent/plugin-sdk/llm";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   expectOpenAIResponsesStrictSanitizeCall,
@@ -1257,7 +1257,7 @@ describe("sanitizeSessionHistory", () => {
           text: [
             "Conversation info (untrusted metadata):",
             "```json",
-            '{"chat_id":"channel:123","sender":"OpenClaw"}',
+            '{"chat_id":"channel:123","sender":"EVE"}',
             "```",
             "",
             "Pong",
@@ -1294,7 +1294,7 @@ describe("sanitizeSessionHistory", () => {
     const metadataOnlyText = [
       "Conversation info (untrusted metadata):",
       "```json",
-      '{"chat_id":"channel:123","sender":"OpenClaw"}',
+      '{"chat_id":"channel:123","sender":"EVE"}',
       "```",
     ].join("\n");
     const messages = castAgentMessages([

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 export const DEFAULT_LIVE_RETRIES = 1;
 const LIVE_DOCKER_DEFAULT_HARNESS_DIR =
   /[\\/]\\.release-harness[\\/]/u.test(fileURLToPath(import.meta.url)) &&
-  process.env.OPENCLAW_DOCKER_E2E_REPO_ROOT
+  process.env.EVE_DOCKER_E2E_REPO_ROOT
     ? ".release-harness"
     : ".";
 const LIVE_ACP_TIMEOUT_MS = 20 * 60 * 1000;
@@ -14,14 +14,14 @@ const LIVE_CLI_TIMEOUT_MS = 20 * 60 * 1000;
 const LIVE_PROFILE_TIMEOUT_MS = 30 * 60 * 1000;
 const OPENWEBUI_TIMEOUT_MS = 20 * 60 * 1000;
 const RELEASE_OPENWEBUI_COMMAND =
-  "OPENCLAW_OPENWEBUI_MODEL=openai/gpt-5.4-mini OPENCLAW_OPENWEBUI_PROVIDER_TIMEOUT_SECONDS=300 OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openwebui";
+  "EVE_OPENWEBUI_MODEL=openai/gpt-5.4-mini EVE_OPENWEBUI_PROVIDER_TIMEOUT_SECONDS=300 EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openwebui";
 export const BUNDLED_PLUGIN_INSTALL_UNINSTALL_SHARDS = 24;
-const upgradeSurvivorCommand = "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:upgrade-survivor";
+const upgradeSurvivorCommand = "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:upgrade-survivor";
 const rootManagedVpsUpgradeCommand =
-  "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:root-managed-vps-upgrade";
+  "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:root-managed-vps-upgrade";
 const updateRestartAuthCommand =
-  "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-restart-auth";
-const CODEX_HARNESS_API_KEY_ENV = "OPENCLAW_LIVE_CODEX_HARNESS_AUTH=api-key";
+  "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-restart-auth";
+const CODEX_HARNESS_API_KEY_ENV = "EVE_LIVE_CODEX_HARNESS_AUTH=api-key";
 
 const LIVE_RETRY_PATTERNS = [
   /529\b/i,
@@ -34,8 +34,8 @@ const LIVE_RETRY_PATTERNS = [
 
 function liveDockerScriptCommand(script, envPrefix = "", options = {}) {
   const prefix = envPrefix ? `${envPrefix} ` : "";
-  const skipBuild = options.skipBuild === false ? "" : "OPENCLAW_SKIP_DOCKER_BUILD=1 ";
-  return `${prefix}${skipBuild}bash -c 'harness="\${OPENCLAW_DOCKER_E2E_TRUSTED_HARNESS_DIR:-${LIVE_DOCKER_DEFAULT_HARNESS_DIR}}"; OPENCLAW_LIVE_DOCKER_REPO_ROOT="\${OPENCLAW_DOCKER_E2E_REPO_ROOT:-$PWD}" bash "$harness/scripts/${script}"'`;
+  const skipBuild = options.skipBuild === false ? "" : "EVE_SKIP_DOCKER_BUILD=1 ";
+  return `${prefix}${skipBuild}bash -c 'harness="\${EVE_DOCKER_E2E_TRUSTED_HARNESS_DIR:-${LIVE_DOCKER_DEFAULT_HARNESS_DIR}}"; EVE_LIVE_DOCKER_REPO_ROOT="\${EVE_DOCKER_E2E_REPO_ROOT:-$PWD}" bash "$harness/scripts/${script}"'`;
 }
 
 function lane(name, command, options = {}) {
@@ -121,20 +121,20 @@ function serviceLane(name, command, options = {}) {
 
 function createPackageUpdateMaintenanceLanes() {
   return [
-    npmLane("doctor-switch", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:doctor-switch", {
+    npmLane("doctor-switch", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:doctor-switch", {
       stateScenario: "empty",
       weight: 3,
     }),
     npmLane(
       "update-channel-switch",
-      "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-channel-switch",
+      "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-channel-switch",
       {
         stateScenario: "update-stable",
         timeoutMs: 30 * 60 * 1000,
         weight: 3,
       },
     ),
-    npmLane("skill-install", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:skill-install", {
+    npmLane("skill-install", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:skill-install", {
       retryPatterns: LIVE_RETRY_PATTERNS,
       retries: 1,
       stateScenario: "empty",
@@ -148,7 +148,7 @@ function createPackageUpdateMaintenanceLanes() {
     }),
     npmLane(
       "published-upgrade-survivor",
-      "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:published-upgrade-survivor",
+      "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:published-upgrade-survivor",
       {
         stateScenario: "upgrade-survivor",
         timeoutMs: 25 * 60 * 1000,
@@ -173,7 +173,7 @@ const bundledPluginInstallUninstallLanes = Array.from(
   (_, index) =>
     lane(
       `bundled-plugin-install-uninstall-${index}`,
-      `OPENCLAW_BUNDLED_PLUGIN_SWEEP_TOTAL=${BUNDLED_PLUGIN_INSTALL_UNINSTALL_SHARDS} OPENCLAW_BUNDLED_PLUGIN_SWEEP_INDEX=${index} OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:bundled-plugin-install-uninstall`,
+      `EVE_BUNDLED_PLUGIN_SWEEP_TOTAL=${BUNDLED_PLUGIN_INSTALL_UNINSTALL_SHARDS} EVE_BUNDLED_PLUGIN_SWEEP_INDEX=${index} EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:bundled-plugin-install-uninstall`,
       {
         estimateSeconds: 120,
         resources: ["npm"],
@@ -186,7 +186,7 @@ const bundledPluginInstallUninstallLanes = Array.from(
 function livePluginToolLane() {
   return liveLane(
     "live-plugin-tool",
-    "OPENCLAW_LIVE_PLUGIN_TOOL_TIMEOUT_SECONDS=300 OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:live-plugin-tool",
+    "EVE_LIVE_PLUGIN_TOOL_TIMEOUT_SECONDS=300 EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:live-plugin-tool",
     {
       cacheKey: "plugin-tool",
       e2eImageKind: "bare",
@@ -202,7 +202,7 @@ function livePluginToolLane() {
 function liveOpenAiChatToolsLane() {
   return liveLane(
     "openai-chat-tools",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-chat-tools",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-chat-tools",
     {
       e2eImageKind: "functional",
       needsLiveImage: false,
@@ -234,7 +234,7 @@ function liveCodexNpmPluginLane() {
 function liveMcpCodeModeGatewayLane() {
   return liveLane(
     "live-mcp-code-mode-gateway",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:live-mcp-code-mode-gateway",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:live-mcp-code-mode-gateway",
     {
       cacheKey: "mcp-code-mode-gateway",
       e2eImageKind: "functional",
@@ -251,7 +251,7 @@ function liveMcpCodeModeGatewayLane() {
 function kitchenSinkRpcLane() {
   return serviceLane(
     "kitchen-sink-rpc",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-rpc",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-rpc",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -271,7 +271,7 @@ export const mainLanes = [
     "live-gateway",
     liveDockerScriptCommand(
       "test-live-gateway-models-docker.sh",
-      "OPENCLAW_IMAGE=openclaw:local-live-gateway OPENCLAW_DOCKER_BUILD_EXTENSIONS=matrix OPENCLAW_LIVE_GATEWAY_PROVIDERS=claude-cli,google-gemini-cli",
+      "EVE_IMAGE=eve:local-live-gateway EVE_DOCKER_BUILD_EXTENSIONS=matrix EVE_LIVE_GATEWAY_PROVIDERS=claude-cli,google-gemini-cli",
       { skipBuild: false },
     ),
     {
@@ -284,7 +284,7 @@ export const mainLanes = [
     "live-cli-backend-claude",
     liveDockerScriptCommand(
       "test-live-cli-backend-docker.sh",
-      "OPENCLAW_LIVE_CLI_BACKEND_MODEL=claude-cli/claude-sonnet-4-6",
+      "EVE_LIVE_CLI_BACKEND_MODEL=claude-cli/claude-sonnet-4-6",
     ),
     {
       cacheKey: "cli-backend-claude",
@@ -298,7 +298,7 @@ export const mainLanes = [
     "live-cli-backend-gemini",
     liveDockerScriptCommand(
       "test-live-cli-backend-docker.sh",
-      "OPENCLAW_LIVE_CLI_BACKEND_MODEL=google-gemini-cli/gemini-3-flash-preview",
+      "EVE_LIVE_CLI_BACKEND_MODEL=google-gemini-cli/gemini-3-flash-preview",
     ),
     {
       cacheKey: "cli-backend-gemini",
@@ -308,7 +308,7 @@ export const mainLanes = [
       weight: 3,
     },
   ),
-  liveLane("openwebui", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openwebui", {
+  liveLane("openwebui", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openwebui", {
     e2eImageKind: "functional",
     needsLiveImage: false,
     provider: "openai",
@@ -316,18 +316,18 @@ export const mainLanes = [
     timeoutMs: OPENWEBUI_TIMEOUT_MS,
     weight: 5,
   }),
-  serviceLane("onboard", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:onboard", {
+  serviceLane("onboard", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:onboard", {
     stateScenario: "empty",
     weight: 2,
   }),
-  npmLane("codex-on-demand", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-on-demand", {
+  npmLane("codex-on-demand", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-on-demand", {
     resources: ["service"],
     stateScenario: "empty",
     weight: 3,
   }),
   serviceLane(
     "codex-media-path",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-media-path",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-media-path",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -336,22 +336,22 @@ export const mainLanes = [
   ),
   npmLane(
     "npm-onboard-channel-agent",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   npmLane(
     "npm-onboard-discord-channel-agent",
-    "OPENCLAW_NPM_ONBOARD_CHANNEL=discord OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_NPM_ONBOARD_CHANNEL=discord EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   npmLane(
     "npm-onboard-slack-channel-agent",
-    "OPENCLAW_NPM_ONBOARD_CHANNEL=slack OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_NPM_ONBOARD_CHANNEL=slack EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   npmLane(
     "release-user-journey",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-user-journey",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-user-journey",
     {
       resources: ["npm", "service"],
       stateScenario: "empty",
@@ -361,7 +361,7 @@ export const mainLanes = [
   ),
   npmLane(
     "release-typed-onboarding",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-typed-onboarding",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-typed-onboarding",
     {
       resources: ["npm", "service"],
       stateScenario: "empty",
@@ -371,7 +371,7 @@ export const mainLanes = [
   ),
   npmLane(
     "release-media-memory",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-media-memory",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-media-memory",
     {
       resources: ["npm", "service"],
       stateScenario: "empty",
@@ -381,7 +381,7 @@ export const mainLanes = [
   ),
   npmLane(
     "release-upgrade-user-journey",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-upgrade-user-journey",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-upgrade-user-journey",
     {
       resources: ["npm", "service"],
       stateScenario: "empty",
@@ -391,7 +391,7 @@ export const mainLanes = [
   ),
   npmLane(
     "release-plugin-marketplace",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-plugin-marketplace",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-plugin-marketplace",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -399,7 +399,7 @@ export const mainLanes = [
       weight: 3,
     },
   ),
-  serviceLane("gateway-network", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:gateway-network"),
+  serviceLane("gateway-network", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:gateway-network"),
   serviceLane("browser-cdp-snapshot", "pnpm test:docker:browser-cdp-snapshot", {
     stateScenario: "empty",
     timeoutMs: 20 * 60 * 1000,
@@ -407,17 +407,17 @@ export const mainLanes = [
   }),
   serviceLane(
     "agents-delete-shared-workspace",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:agents-delete-shared-workspace",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:agents-delete-shared-workspace",
     { stateScenario: "empty" },
   ),
-  serviceLane("mcp-channels", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-channels", {
+  serviceLane("mcp-channels", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-channels", {
     resources: ["npm"],
     stateScenario: "empty",
     weight: 3,
   }),
   serviceLane(
     "mcp-code-mode-gateway",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-code-mode-gateway",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-code-mode-gateway",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -426,34 +426,34 @@ export const mainLanes = [
   ),
   lane(
     "agent-bundle-mcp-tools",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:agent-bundle-mcp-tools",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:agent-bundle-mcp-tools",
     {
       stateScenario: "empty",
     },
   ),
-  lane("crestodian-rescue", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-rescue", {
+  lane("crestodian-rescue", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-rescue", {
     stateScenario: "empty",
   }),
-  lane("crestodian-planner", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-planner", {
+  lane("crestodian-planner", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-planner", {
     stateScenario: "empty",
   }),
   serviceLane(
     "cron-mcp-cleanup",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
     { resources: ["npm"], stateScenario: "empty", weight: 3 },
   ),
   ...createPackageUpdateMaintenanceLanes(),
-  npmLane("update-migration", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-migration", {
+  npmLane("update-migration", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-migration", {
     stateScenario: "upgrade-survivor",
     timeoutMs: 30 * 60 * 1000,
     weight: 3,
   }),
-  lane("plugins", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
+  lane("plugins", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
     resources: ["npm", "service"],
     stateScenario: "empty",
     weight: 6,
   }),
-  lane("kitchen-sink-plugin", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-plugin", {
+  lane("kitchen-sink-plugin", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:kitchen-sink-plugin", {
     resources: ["npm"],
     stateScenario: "empty",
     weight: 3,
@@ -462,19 +462,19 @@ export const mainLanes = [
   ...bundledPluginInstallUninstallLanes,
   lane(
     "plugins-offline",
-    "OPENCLAW_PLUGINS_E2E_CLAWHUB=0 OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins",
+    "EVE_PLUGINS_E2E_CLAWHUB=0 EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins",
     {
       resources: ["npm", "service"],
       stateScenario: "empty",
       weight: 6,
     },
   ),
-  npmLane("plugin-update", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-update", {
+  npmLane("plugin-update", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-update", {
     stateScenario: "empty",
   }),
   npmLane(
     "update-corrupt-plugin",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-corrupt-plugin",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-corrupt-plugin",
     {
       stateScenario: "empty",
       timeoutMs: 30 * 60 * 1000,
@@ -483,45 +483,45 @@ export const mainLanes = [
   ),
   npmLane(
     "plugin-lifecycle-matrix",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-lifecycle-matrix",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-lifecycle-matrix",
     {
       stateScenario: "empty",
       timeoutMs: 12 * 60 * 1000,
     },
   ),
-  serviceLane("config-reload", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:config-reload", {
+  serviceLane("config-reload", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:config-reload", {
     stateScenario: "empty",
   }),
-  npmLane("multi-node-update", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:multi-node-update", {
+  npmLane("multi-node-update", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:multi-node-update", {
     stateScenario: "empty",
     timeoutMs: 15 * 60 * 1000,
     weight: 3,
   }),
-  lane("openai-image-auth", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-image-auth", {
+  lane("openai-image-auth", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-image-auth", {
     stateScenario: "empty",
   }),
   lane(
     "crestodian-first-run",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-first-run",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-first-run",
     { stateScenario: "empty" },
   ),
   lane(
     "session-runtime-context",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:session-runtime-context",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:session-runtime-context",
   ),
   lane(
     "plugin-binding-command-escape",
-    "OPENCLAW_SKIP_DOCKER_BUILD=0 pnpm test:docker:plugin-binding-command-escape",
+    "EVE_SKIP_DOCKER_BUILD=0 pnpm test:docker:plugin-binding-command-escape",
     {
       e2eImageKind: false,
       resources: ["npm"],
       stateScenario: "empty",
     },
   ),
-  lane("commitments-safety", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:commitments-safety", {
+  lane("commitments-safety", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:commitments-safety", {
     stateScenario: "empty",
   }),
-  liveLane("npm-telegram-live", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-telegram-live", {
+  liveLane("npm-telegram-live", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-telegram-live", {
     e2eImageKind: "bare",
     provider: "openai",
     resources: ["live:telegram", "npm", "service"],
@@ -534,7 +534,7 @@ export const mainLanes = [
 export const tailLanes = [
   serviceLane(
     "openai-web-search-minimal",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
     { stateScenario: "empty", timeoutMs: 8 * 60 * 1000 },
   ),
   liveLane(
@@ -552,7 +552,7 @@ export const tailLanes = [
     "live-codex-media-path",
     liveDockerScriptCommand(
       "test-live-codex-harness-docker.sh",
-      "OPENCLAW_LIVE_CODEX_HARNESS_AUTH=api-key OPENCLAW_LIVE_CODEX_HARNESS_CHAT_IMAGE_PROBE=1 OPENCLAW_LIVE_CODEX_HARNESS_IMAGE_PROBE=0 OPENCLAW_LIVE_CODEX_HARNESS_MCP_PROBE=0 OPENCLAW_LIVE_CODEX_HARNESS_SUBAGENT_PROBE=0 OPENCLAW_LIVE_CODEX_HARNESS_GUARDIAN_PROBE=0",
+      "EVE_LIVE_CODEX_HARNESS_AUTH=api-key EVE_LIVE_CODEX_HARNESS_CHAT_IMAGE_PROBE=1 EVE_LIVE_CODEX_HARNESS_IMAGE_PROBE=0 EVE_LIVE_CODEX_HARNESS_MCP_PROBE=0 EVE_LIVE_CODEX_HARNESS_SUBAGENT_PROBE=0 EVE_LIVE_CODEX_HARNESS_GUARDIAN_PROBE=0",
     ),
     {
       cacheKey: "codex-harness",
@@ -577,7 +577,7 @@ export const tailLanes = [
     "live-codex-bind",
     liveDockerScriptCommand(
       "test-live-codex-harness-docker.sh",
-      `${CODEX_HARNESS_API_KEY_ENV} OPENCLAW_LIVE_CODEX_BIND=1 OPENCLAW_LIVE_CODEX_TEST_FILES=src/gateway/gateway-codex-bind.live.test.ts`,
+      `${CODEX_HARNESS_API_KEY_ENV} EVE_LIVE_CODEX_BIND=1 EVE_LIVE_CODEX_TEST_FILES=src/gateway/gateway-codex-bind.live.test.ts`,
     ),
     {
       cacheKey: "codex-harness",
@@ -592,7 +592,7 @@ export const tailLanes = [
   livePluginToolLane(),
   liveLane(
     "live-acp-bind-claude",
-    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "OPENCLAW_LIVE_ACP_BIND_AGENT=claude"),
+    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "EVE_LIVE_ACP_BIND_AGENT=claude"),
     {
       cacheKey: "acp-bind-claude",
       provider: "claude-cli",
@@ -603,7 +603,7 @@ export const tailLanes = [
   ),
   liveLane(
     "live-acp-bind-codex",
-    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "OPENCLAW_LIVE_ACP_BIND_AGENT=codex"),
+    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "EVE_LIVE_ACP_BIND_AGENT=codex"),
     {
       cacheKey: "acp-bind-codex",
       provider: "codex-cli",
@@ -616,7 +616,7 @@ export const tailLanes = [
     "live-acp-bind-droid",
     liveDockerScriptCommand(
       "test-live-acp-bind-docker.sh",
-      "OPENCLAW_LIVE_ACP_BIND_AGENT=droid OPENCLAW_LIVE_ACP_BIND_REQUIRE_TRANSCRIPT=1",
+      "EVE_LIVE_ACP_BIND_AGENT=droid EVE_LIVE_ACP_BIND_REQUIRE_TRANSCRIPT=1",
     ),
     {
       cacheKey: "acp-bind-droid",
@@ -628,7 +628,7 @@ export const tailLanes = [
   ),
   liveLane(
     "live-acp-bind-gemini",
-    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "OPENCLAW_LIVE_ACP_BIND_AGENT=gemini"),
+    liveDockerScriptCommand("test-live-acp-bind-docker.sh", "EVE_LIVE_ACP_BIND_AGENT=gemini"),
     {
       cacheKey: "acp-bind-gemini",
       provider: "google-gemini-cli",
@@ -641,7 +641,7 @@ export const tailLanes = [
     "live-acp-bind-opencode",
     liveDockerScriptCommand(
       "test-live-acp-bind-docker.sh",
-      "OPENCLAW_LIVE_ACP_BIND_AGENT=opencode OPENCLAW_LIVE_ACP_BIND_REQUIRE_TRANSCRIPT=1",
+      "EVE_LIVE_ACP_BIND_AGENT=opencode EVE_LIVE_ACP_BIND_REQUIRE_TRANSCRIPT=1",
     ),
     {
       cacheKey: "acp-bind-opencode",
@@ -654,7 +654,7 @@ export const tailLanes = [
 ];
 
 const releasePathPluginRuntimeLanes = [
-  lane("plugins", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
+  lane("plugins", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
     resources: ["npm", "service"],
     stateScenario: "empty",
     weight: 6,
@@ -662,7 +662,7 @@ const releasePathPluginRuntimeLanes = [
   ...bundledPluginInstallUninstallLanes,
   serviceLane(
     "cron-mcp-cleanup",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -672,14 +672,14 @@ const releasePathPluginRuntimeLanes = [
   kitchenSinkRpcLane(),
   serviceLane(
     "openai-web-search-minimal",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
     { stateScenario: "empty", timeoutMs: 8 * 60 * 1000 },
   ),
   livePluginToolLane(),
 ];
 
 const releasePathPluginRuntimePluginLanes = [
-  lane("plugins", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
+  lane("plugins", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugins", {
     resources: ["npm", "service"],
     stateScenario: "empty",
     weight: 6,
@@ -689,7 +689,7 @@ const releasePathPluginRuntimePluginLanes = [
 const releasePathPluginRuntimeServiceLanes = [
   serviceLane(
     "cron-mcp-cleanup",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
     {
       resources: ["npm"],
       stateScenario: "empty",
@@ -699,7 +699,7 @@ const releasePathPluginRuntimeServiceLanes = [
   kitchenSinkRpcLane(),
   serviceLane(
     "openai-web-search-minimal",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-web-search-minimal",
     { stateScenario: "empty", timeoutMs: 8 * 60 * 1000 },
   ),
   livePluginToolLane(),
@@ -711,7 +711,7 @@ const releasePathPluginRuntimeCoreLanes = [
 ];
 
 const releasePathBundledChannelLanes = [
-  npmLane("plugin-update", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-update", {
+  npmLane("plugin-update", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:plugin-update", {
     stateScenario: "empty",
   }),
 ];
@@ -719,7 +719,7 @@ const releasePathBundledChannelLanes = [
 const releasePathPackageInstallOpenAiLanes = [
   liveLane(
     "install-e2e-openai",
-    "OPENCLAW_INSTALL_TAG=beta OPENCLAW_E2E_MODELS=openai OPENCLAW_INSTALL_E2E_IMAGE=openclaw-install-e2e-openai:local OPENCLAW_INSTALL_E2E_AGENT_TOOL_SMOKE=0 OPENCLAW_INSTALL_E2E_OPENAI_MODEL=openai/gpt-5.4-mini OPENCLAW_INSTALL_E2E_AGENT_TURN_TIMEOUT_SECONDS=120 OPENCLAW_INSTALL_E2E_OPENAI_PROVIDER_TIMEOUT_SECONDS=120 pnpm test:install:e2e",
+    "EVE_INSTALL_TAG=beta EVE_E2E_MODELS=openai EVE_INSTALL_E2E_IMAGE=eve-install-e2e-openai:local EVE_INSTALL_E2E_AGENT_TOOL_SMOKE=0 EVE_INSTALL_E2E_OPENAI_MODEL=openai/gpt-5.4-mini EVE_INSTALL_E2E_AGENT_TURN_TIMEOUT_SECONDS=120 EVE_INSTALL_E2E_OPENAI_PROVIDER_TIMEOUT_SECONDS=120 pnpm test:install:e2e",
     {
       e2eImageKind: "bare",
       needsLiveImage: false,
@@ -731,7 +731,7 @@ const releasePathPackageInstallOpenAiLanes = [
   ),
   liveOpenAiChatToolsLane(),
   liveCodexNpmPluginLane(),
-  npmLane("codex-on-demand", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-on-demand", {
+  npmLane("codex-on-demand", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-on-demand", {
     resources: ["service"],
     stateScenario: "empty",
     timeoutMs: 30 * 60 * 1000,
@@ -742,7 +742,7 @@ const releasePathPackageInstallOpenAiLanes = [
 const releasePathPackageInstallAnthropicLanes = [
   liveLane(
     "install-e2e-anthropic",
-    "OPENCLAW_INSTALL_TAG=beta OPENCLAW_E2E_MODELS=anthropic OPENCLAW_INSTALL_E2E_IMAGE=openclaw-install-e2e-anthropic:local pnpm test:install:e2e",
+    "EVE_INSTALL_TAG=beta EVE_E2E_MODELS=anthropic EVE_INSTALL_E2E_IMAGE=eve-install-e2e-anthropic:local pnpm test:install:e2e",
     {
       e2eImageKind: "bare",
       needsLiveImage: false,
@@ -756,17 +756,17 @@ const releasePathPackageInstallAnthropicLanes = [
 const releasePathPackageUpdateCoreLanes = [
   npmLane(
     "npm-onboard-channel-agent",
-    "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   npmLane(
     "npm-onboard-discord-channel-agent",
-    "OPENCLAW_NPM_ONBOARD_CHANNEL=discord OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_NPM_ONBOARD_CHANNEL=discord EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   npmLane(
     "npm-onboard-slack-channel-agent",
-    "OPENCLAW_NPM_ONBOARD_CHANNEL=slack OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
+    "EVE_NPM_ONBOARD_CHANNEL=slack EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
   ...createPackageUpdateMaintenanceLanes(),
@@ -774,37 +774,37 @@ const releasePathPackageUpdateCoreLanes = [
 
 const primaryReleasePathChunks = {
   core: [
-    lane("qr", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:qr"),
-    serviceLane("onboard", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:onboard", {
+    lane("qr", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:qr"),
+    serviceLane("onboard", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:onboard", {
       stateScenario: "empty",
       weight: 2,
     }),
-    serviceLane("gateway-network", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:gateway-network"),
-    serviceLane("config-reload", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:config-reload", {
+    serviceLane("gateway-network", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:gateway-network"),
+    serviceLane("config-reload", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:config-reload", {
       stateScenario: "empty",
     }),
     lane(
       "session-runtime-context",
-      "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:session-runtime-context",
+      "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:session-runtime-context",
     ),
     lane(
       "plugin-binding-command-escape",
-      "OPENCLAW_SKIP_DOCKER_BUILD=0 pnpm test:docker:plugin-binding-command-escape",
+      "EVE_SKIP_DOCKER_BUILD=0 pnpm test:docker:plugin-binding-command-escape",
       {
         e2eImageKind: false,
         resources: ["npm"],
         stateScenario: "empty",
       },
     ),
-    lane("commitments-safety", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:commitments-safety", {
+    lane("commitments-safety", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:commitments-safety", {
       stateScenario: "empty",
     }),
     lane(
       "agent-bundle-mcp-tools",
-      "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:agent-bundle-mcp-tools",
+      "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:agent-bundle-mcp-tools",
       { stateScenario: "empty" },
     ),
-    serviceLane("mcp-channels", "OPENCLAW_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-channels", {
+    serviceLane("mcp-channels", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:mcp-channels", {
       resources: ["npm"],
       stateScenario: "empty",
       weight: 3,
@@ -889,7 +889,7 @@ export function releasePathChunkLanes(chunk, options = {}) {
   const base = primaryReleasePathChunks[chunk] ?? legacyReleasePathChunks[chunk];
   if (!base) {
     throw new Error(
-      `OPENCLAW_DOCKER_ALL_CHUNK must be one of: ${[
+      `EVE_DOCKER_ALL_CHUNK must be one of: ${[
         ...Object.keys(primaryReleasePathChunks),
         ...Object.keys(legacyReleasePathChunks),
       ].join(", ")}. Got: ${JSON.stringify(chunk)}`,

@@ -5,7 +5,7 @@ import {
   findMissingLiveTransportStandardScenarios,
   type LiveTransportScenarioDefinition,
   type LiveTransportStandardScenarioId,
-} from "openclaw/plugin-sdk/qa-live-transport-scenarios";
+} from "eve-agent/plugin-sdk/qa-live-transport-scenarios";
 
 export {
   LIVE_TRANSPORT_BASELINE_STANDARD_SCENARIO_IDS,
@@ -14,7 +14,7 @@ export {
   selectLiveTransportScenarios,
   type LiveTransportScenarioDefinition,
   type LiveTransportStandardScenarioId,
-} from "openclaw/plugin-sdk/qa-live-transport-scenarios";
+} from "eve-agent/plugin-sdk/qa-live-transport-scenarios";
 
 export type LiveTransportCoverageMember = {
   scenarioId?: string;

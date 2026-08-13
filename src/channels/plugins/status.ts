@@ -3,8 +3,8 @@
  *
  * Combines plugin status hooks, account inspection, and safe account field projection.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { inspectChannelAccount } from "../account-inspection.js";
 import { projectSafeChannelAccountSnapshotFields } from "../account-snapshot-fields.js";
 import type { ChannelPlugin } from "./types.plugin.js";
@@ -12,7 +12,7 @@ import type { ChannelAccountSnapshot } from "./types.public.js";
 
 export async function buildChannelAccountSnapshotFromAccount<ResolvedAccount>(params: {
   plugin: ChannelPlugin<ResolvedAccount>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   account: ResolvedAccount;
   runtime?: ChannelAccountSnapshot;
@@ -62,7 +62,7 @@ export async function buildChannelAccountSnapshotFromAccount<ResolvedAccount>(pa
 
 export async function buildReadOnlySourceChannelAccountSnapshot<ResolvedAccount>(params: {
   plugin: ChannelPlugin<ResolvedAccount>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   runtime?: ChannelAccountSnapshot;
   probe?: unknown;
@@ -80,7 +80,7 @@ export async function buildReadOnlySourceChannelAccountSnapshot<ResolvedAccount>
 
 export async function buildChannelAccountSnapshot<ResolvedAccount>(params: {
   plugin: ChannelPlugin<ResolvedAccount>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   runtime?: ChannelAccountSnapshot;
   probe?: unknown;

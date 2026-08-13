@@ -36,7 +36,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 async function makeStorePath() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cron-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-cron-"));
   return {
     storePath: path.join(dir, "cron", "jobs.json"),
     cleanup: async () => {
@@ -84,7 +84,7 @@ function expectCronStatus(
   expect(status.enabled).toBe(true);
   expect(status.storePath).toBe(params.storePath);
   expect(status.storage).toBe("sqlite");
-  expect(status.sqlitePath).toContain("openclaw.sqlite");
+  expect(status.sqlitePath).toContain("eve.sqlite");
   expect(status.jobs).toBe(params.jobs);
   if (status.nextWakeAtMs !== null) {
     expect(status.nextWakeAtMs).toBeTypeOf("number");

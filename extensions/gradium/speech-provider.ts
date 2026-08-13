@@ -1,11 +1,11 @@
 // Gradium provider module implements model/runtime integration.
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
 import type {
   SpeechDirectiveTokenParseContext,
   SpeechProviderConfig,
   SpeechProviderPlugin,
-} from "openclaw/plugin-sdk/speech";
-import { asObject, trimToUndefined } from "openclaw/plugin-sdk/speech";
+} from "eve-agent/plugin-sdk/speech";
+import { asObject, trimToUndefined } from "eve-agent/plugin-sdk/speech";
 import { DEFAULT_GRADIUM_VOICE_ID, GRADIUM_VOICES, normalizeGradiumBaseUrl } from "./shared.js";
 import { gradiumTTS } from "./tts.js";
 

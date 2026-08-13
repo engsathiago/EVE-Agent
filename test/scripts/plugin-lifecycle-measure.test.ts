@@ -20,7 +20,7 @@ const hasTimeoutCommand =
   spawnSync("bash", ["-lc", "command -v timeout >/dev/null 2>&1"]).status === 0;
 
 function makeTempDir(): string {
-  const dir = mkdtempSync(path.join(tmpdir(), "openclaw-plugin-lifecycle-measure-"));
+  const dir = mkdtempSync(path.join(tmpdir(), "eve-plugin-lifecycle-measure-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -107,8 +107,8 @@ describe("plugin lifecycle resource sampler", () => {
         GETCONF_LOG: logPath,
         PATH: `${binDir}:${process.env.PATH ?? ""}`,
       };
-      delete env.OPENCLAW_PROC_PAGE_SIZE;
-      delete env.OPENCLAW_PROC_CLK_TCK;
+      delete env.EVE_PROC_PAGE_SIZE;
+      delete env.EVE_PROC_CLK_TCK;
 
       const result = spawnSync(
         process.execPath,
@@ -122,7 +122,7 @@ describe("plugin lifecycle resource sampler", () => {
       );
 
       expect(readFileSync(logPath, "utf8")).toBe("PAGESIZE\nCLK_TCK\n");
-      expect(result.stderr).not.toContain("failed to derive OPENCLAW_PROC");
+      expect(result.stderr).not.toContain("failed to derive EVE_PROC");
     },
   );
 
@@ -134,14 +134,14 @@ describe("plugin lifecycle resource sampler", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150ms",
+        EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150ms",
       },
       timeout: 5000,
     });
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
-      "OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS must be a positive integer; got: 150ms",
+      "EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS must be a positive integer; got: 150ms",
     );
   });
 
@@ -153,14 +153,14 @@ describe("plugin lifecycle resource sampler", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "0",
+        EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "0",
       },
       timeout: 5000,
     });
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
-      "OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS must be a positive integer; got: 0",
+      "EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS must be a positive integer; got: 0",
     );
   });
 
@@ -172,25 +172,25 @@ describe("plugin lifecycle resource sampler", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        OPENCLAW_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO: "1x",
+        EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO: "1x",
       },
       timeout: 5000,
     });
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
-      "OPENCLAW_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO must be a positive number; got: 1x",
+      "EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO must be a positive number; got: 1x",
     );
   });
 
   it("configures a phase timeout with process-group cleanup", () => {
     const script = readFileSync(scriptPath, "utf8");
 
-    expect(script).toContain("OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS");
-    expect(script).toContain("OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS");
-    expect(script).toContain("OPENCLAW_PLUGIN_LIFECYCLE_MAX_RSS_KB");
-    expect(script).toContain("OPENCLAW_PLUGIN_LIFECYCLE_MAX_WALL_MS");
-    expect(script).toContain("OPENCLAW_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO");
+    expect(script).toContain("EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS");
+    expect(script).toContain("EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS");
+    expect(script).toContain("EVE_PLUGIN_LIFECYCLE_MAX_RSS_KB");
+    expect(script).toContain("EVE_PLUGIN_LIFECYCLE_MAX_WALL_MS");
+    expect(script).toContain("EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO");
     expect(script).toContain("detached: true");
     expect(script).toContain("process.kill(-child.pid, signal)");
     expect(script).toContain("plugin lifecycle resource ceiling exceeded");
@@ -211,8 +211,8 @@ describe("plugin lifecycle resource sampler", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
-            OPENCLAW_PLUGIN_LIFECYCLE_MAX_WALL_MS: "1",
+            EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
+            EVE_PLUGIN_LIFECYCLE_MAX_WALL_MS: "1",
           },
           timeout: 5000,
         },
@@ -238,8 +238,8 @@ describe("plugin lifecycle resource sampler", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150",
-            OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "50",
+            EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150",
+            EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "50",
           },
           timeout: 5000,
         },
@@ -282,8 +282,8 @@ describe("plugin lifecycle resource sampler", () => {
             encoding: "utf8",
             env: {
               ...process.env,
-              OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150",
-              OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "100",
+              EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "150",
+              EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "100",
               PID_FILE: pidFile,
             },
             timeout: 5000,
@@ -331,8 +331,8 @@ describe("plugin lifecycle resource sampler", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
-            OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "100",
+            EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
+            EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "100",
             PID_FILE: pidFile,
           },
           timeout: 5000,
@@ -376,8 +376,8 @@ describe("plugin lifecycle resource sampler", () => {
           cwd: process.cwd(),
           env: {
             ...process.env,
-            OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
-            OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "1500",
+            EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
+            EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "1500",
             READY_FILE: readyFile,
           },
           stdio: "ignore",
@@ -415,8 +415,8 @@ describe("plugin lifecycle resource sampler", () => {
           cwd: process.cwd(),
           env: {
             ...process.env,
-            OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
-            OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "1500",
+            EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS: "5000",
+            EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS: "1500",
             READY_FILE: readyFile,
           },
           stdio: "ignore",

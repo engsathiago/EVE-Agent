@@ -44,7 +44,7 @@ delivery metadata; `[embed ...]` is the web-only rich render path.
 
 When block streaming is enabled, media must be carried on structured payload
 fields. If the same media URL is sent in a streamed block and repeated in the
-final assistant payload, OpenClaw delivers the attachment once and strips the
+final assistant payload, EVE delivers the attachment once and strips the
 duplicate from the final payload.
 
 ## `[embed ...]`
@@ -78,7 +78,7 @@ The normalized/stored assistant content block is a structured `canvas` item:
     "surface": "assistant_message",
     "render": "url",
     "viewId": "cv_123",
-    "url": "/__openclaw__/canvas/documents/cv_123/index.html",
+    "url": "/__eve__/canvas/documents/cv_123/index.html",
     "title": "Status",
     "preferredHeight": 320
   }

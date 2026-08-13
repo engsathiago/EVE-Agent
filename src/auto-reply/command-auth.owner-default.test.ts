@@ -1,6 +1,6 @@
 /** Tests command authorization owner defaults for direct-message senders. */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveCommandAuthorization } from "./command-auth.js";
 import type { MsgContext } from "./templating.js";
 import { installDiscordRegistryHooks } from "./test-helpers/command-auth-registry-fixture.js";
@@ -11,7 +11,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
   it("does not treat direct-message senders as owners when no ownerAllowFrom is configured", () => {
     const cfg = {
       channels: { discord: {} },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "discord",
@@ -34,7 +34,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
   it("does not treat group-chat senders as owners when no ownerAllowFrom is configured", () => {
     const cfg = {
       channels: { discord: {} },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "discord",
@@ -57,7 +57,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
   it("keeps channel-validated native group commands authorized without owner status", () => {
     const cfg = {
       channels: { telegram: {} },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "telegram",
@@ -82,7 +82,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
     const cfg = {
       channels: { discord: {} },
       commands: { ownerAllowFrom: ["456"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "discord",
@@ -104,7 +104,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
     const cfg = {
       channels: { telegram: {} },
       commands: { ownerAllowFrom: ["456"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "telegram",
@@ -129,7 +129,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
     const cfg = {
       channels: { discord: {} },
       commands: { ownerAllowFrom: ["456"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "discord",
@@ -151,7 +151,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
     const cfg = {
       channels: { discord: {} },
       commands: { ownerAllowFrom: ["*"] },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const ctx = {
       Provider: "discord",
@@ -170,7 +170,7 @@ describe("senderIsOwner only reflects explicit owner authorization", () => {
   });
 
   it("senderIsOwner is true for internal operator.admin sessions", () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as EVEConfig;
 
     const ctx = {
       Provider: "webchat",

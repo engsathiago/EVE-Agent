@@ -89,7 +89,7 @@ function tryFingerprintPublicKey(publicKeyPem: string): string | null {
 
 function keyPairMatches(publicKeyPem: string, privateKeyPem: string): boolean {
   try {
-    const payload = Buffer.from("openclaw-device-identity-self-check", "utf8");
+    const payload = Buffer.from("eve-device-identity-self-check", "utf8");
     const signature = crypto.sign(null, payload, crypto.createPrivateKey(privateKeyPem));
     return crypto.verify(null, payload, crypto.createPublicKey(publicKeyPem), signature);
   } catch {
@@ -235,7 +235,7 @@ export function loadOrCreateDeviceIdentity(
             trailingNewline: true,
           });
         } catch {
-          // Keep using recognized OpenClaw key material even if best-effort normalization fails.
+          // Keep using recognized EVE key material even if best-effort normalization fails.
         }
       }
       return normalized.identity;

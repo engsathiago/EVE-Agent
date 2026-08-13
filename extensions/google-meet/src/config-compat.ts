@@ -1,9 +1,9 @@
 // Google Meet helper module supports config compat behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   asNullableRecord as asRecord,
   normalizeOptionalLowercaseString as normalizeProviderId,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type LegacyConfigRule = {
   path: Array<string | number>;
@@ -27,13 +27,13 @@ export const legacyConfigRules: LegacyConfigRule[] = [
   {
     path: ["plugins", "entries", "google-meet", "config", "realtime"],
     message:
-      'plugins.entries.google-meet.config.realtime.provider="google" is legacy for Gemini Live bidi mode; use realtime.voiceProvider="google" and realtime.transcriptionProvider="openai". Run "openclaw doctor --fix".',
+      'plugins.entries.google-meet.config.realtime.provider="google" is legacy for Gemini Live bidi mode; use realtime.voiceProvider="google" and realtime.transcriptionProvider="openai". Run "eve doctor --fix".',
     match: hasLegacyGoogleRealtimeProvider,
   },
 ];
 
-export function migrateGoogleMeetLegacyRealtimeProvider(config: OpenClawConfig): {
-  config: OpenClawConfig;
+export function migrateGoogleMeetLegacyRealtimeProvider(config: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } | null {
   const rawEntry = asRecord(config.plugins?.entries?.["google-meet"]);
@@ -71,8 +71,8 @@ export function migrateGoogleMeetLegacyRealtimeProvider(config: OpenClawConfig):
   };
 }
 
-export function normalizeCompatibilityConfig({ cfg }: { cfg: OpenClawConfig }): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfig({ cfg }: { cfg: EVEConfig }): {
+  config: EVEConfig;
   changes: string[];
 } {
   return migrateGoogleMeetLegacyRealtimeProvider(cfg) ?? { config: cfg, changes: [] };

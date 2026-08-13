@@ -4,8 +4,8 @@ import {
   computeBackoff,
   sleepWithAbort,
   type BackoffPolicy,
-} from "openclaw/plugin-sdk/runtime-env";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   isRecoverableTelegramNetworkError,
   isTelegramRateLimitError,
@@ -199,7 +199,7 @@ export function createTelegramSendChatActionHandler({
           logger(
             `CRITICAL: sendChatAction suspended after ${consecutive401Failures} consecutive 401 errors. ` +
               `Bot token is likely invalid. Telegram may DELETE the bot if requests continue. ` +
-              `Replace the token and restart: openclaw channels restart telegram`,
+              `Replace the token and restart: eve channels restart telegram`,
           );
         } else {
           logger(

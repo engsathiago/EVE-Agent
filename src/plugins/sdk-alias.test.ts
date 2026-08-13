@@ -6,7 +6,7 @@ import {
   bundledDistPluginFile,
   bundledPluginFile,
   bundledPluginRoot,
-} from "openclaw/plugin-sdk/test-fixtures";
+} from "eve-agent/plugin-sdk/test-fixtures";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { withEnv } from "../test-utils/env.js";
 import {
@@ -44,7 +44,7 @@ async function getCreateJiti() {
 }
 
 const fixtureTempDirs: string[] = [];
-const fixtureRoot = makeTrackedTempDir("openclaw-sdk-alias-root", fixtureTempDirs);
+const fixtureRoot = makeTrackedTempDir("eve-sdk-alias-root", fixtureTempDirs);
 let tempDirIndex = 0;
 
 function makeTempDir() {
@@ -53,16 +53,16 @@ function makeTempDir() {
   return dir;
 }
 
-function createTrustedOpenClawPackageFixture(version: string) {
+function createTrustedEVEPackageFixture(version: string) {
   const root = makeTempDir();
-  fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
+  fs.writeFileSync(path.join(root, "eve.mjs"), "export {};\n", "utf-8");
   fs.writeFileSync(
     path.join(root, "package.json"),
     JSON.stringify(
       {
-        name: "openclaw",
+        name: "eve",
         version,
-        bin: { openclaw: "openclaw.mjs" },
+        bin: { eve: "eve.mjs" },
         exports: { "./plugin-sdk": { default: "./dist/plugin-sdk/index.js" } },
       },
       null,
@@ -101,12 +101,12 @@ function createPluginSdkAliasFixture(params?: {
     params?.trustedRootIndicatorMode ??
     (params?.trustedRootIndicators === false ? "none" : "bin+marker");
   const packageJson: Record<string, unknown> = {
-    name: "openclaw",
+    name: "eve",
     type: "module",
   };
   if (trustedRootIndicatorMode === "bin+marker") {
     packageJson.bin = {
-      openclaw: "openclaw.mjs",
+      eve: "eve.mjs",
     };
   }
   if (params?.packageExports || trustedRootIndicatorMode === "cli-entry-only") {
@@ -122,7 +122,7 @@ function createPluginSdkAliasFixture(params?: {
   }
   fs.writeFileSync(path.join(root, "package.json"), JSON.stringify(packageJson, null, 2), "utf-8");
   if (trustedRootIndicatorMode === "bin+marker") {
-    fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
+    fs.writeFileSync(path.join(root, "eve.mjs"), "export {};\n", "utf-8");
   }
   mkdirSafeDir(path.join(root, "scripts", "lib"));
   fs.writeFileSync(
@@ -147,10 +147,10 @@ function createExtensionApiAliasFixture(params?: {
   mkdirSafeDir(path.dirname(distFile));
   fs.writeFileSync(
     path.join(root, "package.json"),
-    JSON.stringify({ name: "openclaw", type: "module" }, null, 2),
+    JSON.stringify({ name: "eve", type: "module" }, null, 2),
     "utf-8",
   );
-  fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
+  fs.writeFileSync(path.join(root, "eve.mjs"), "export {};\n", "utf-8");
   fs.writeFileSync(srcFile, params?.srcBody ?? "export {};\n", "utf-8");
   fs.writeFileSync(distFile, params?.distBody ?? "export {};\n", "utf-8");
   return { root, srcFile, distFile };
@@ -179,7 +179,7 @@ function createPluginRuntimeAliasFixture(params?: { srcBody?: string; distBody?:
   mkdirSafeDir(path.dirname(distFile));
   fs.writeFileSync(
     path.join(root, "package.json"),
-    JSON.stringify({ name: "openclaw", type: "module" }, null, 2),
+    JSON.stringify({ name: "eve", type: "module" }, null, 2),
     "utf-8",
   );
   fs.writeFileSync(
@@ -247,7 +247,7 @@ function createBundledPluginPackagePublicSurfaceAliasFixture() {
   mkdirSafeDir(distExtensionRoot);
   fs.writeFileSync(
     path.join(extensionRoot, "package.json"),
-    JSON.stringify({ name: "@openclaw/slack", type: "module" }, null, 2),
+    JSON.stringify({ name: "@eve/slack", type: "module" }, null, 2),
     "utf-8",
   );
   const sourceApiPath = path.join(extensionRoot, "api.ts");
@@ -310,13 +310,13 @@ function writeInstalledPluginEntry(params: {
 function createUserInstalledPluginSdkAliasFixture() {
   const { fixture, sourcePluginEntryPath, sourceRootAlias, sourceChannelRuntimePath } =
     createPluginSdkAliasTargetFixture();
-  const externalPluginRoot = path.join(makeTempDir(), ".openclaw", "extensions", "demo");
+  const externalPluginRoot = path.join(makeTempDir(), ".eve", "extensions", "demo");
   const externalPluginEntry = path.join(externalPluginRoot, "index.ts");
   mkdirSafeDir(externalPluginRoot);
   fs.writeFileSync(
     externalPluginEntry,
     [
-      'import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";',
+      'import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";',
       'export default definePluginEntry({ id: "demo", register() {} });',
       "",
     ].join("\n"),
@@ -384,25 +384,25 @@ function expectPluginSdkAliasTargets(
     pluginEntryPath?: string;
   },
 ) {
-  expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
+  expect(fs.realpathSync(aliases["eve-agent/plugin-sdk"] ?? "")).toBe(
     fs.realpathSync(params.rootAliasPath),
   );
-  expect(fs.realpathSync(aliases["@openclaw/plugin-sdk"] ?? "")).toBe(
+  expect(fs.realpathSync(aliases["@eve/plugin-sdk"] ?? "")).toBe(
     fs.realpathSync(params.rootAliasPath),
   );
   if (params.channelRuntimePath) {
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(params.channelRuntimePath),
     );
-    expect(fs.realpathSync(aliases["@openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(params.channelRuntimePath),
     );
   }
   if (params.pluginEntryPath) {
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/plugin-entry"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/plugin-entry"] ?? "")).toBe(
       fs.realpathSync(params.pluginEntryPath),
     );
-    expect(fs.realpathSync(aliases["@openclaw/plugin-sdk/plugin-entry"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/plugin-sdk/plugin-entry"] ?? "")).toBe(
       fs.realpathSync(params.pluginEntryPath),
     );
   }
@@ -473,7 +473,7 @@ function expectCwdFallbackPluginSdkAliasResolution(params: {
     resolvePluginSdkAlias({
       srcFile: "channel-runtime.ts",
       distFile: "channel-runtime.js",
-      modulePath: "/tmp/tsx-cache/openclaw-loader.js",
+      modulePath: "/tmp/tsx-cache/eve-loader.js",
       env: { NODE_ENV: undefined },
     }),
   );
@@ -561,8 +561,8 @@ describe("plugin sdk alias helpers", () => {
             "./plugin-sdk/index": { default: "./dist/plugin-sdk/index.js" },
           },
         }),
-      modulePath: () => "/tmp/tsx-cache/openclaw-loader.js",
-      argv1: (root: string) => path.join(root, "openclaw.mjs"),
+      modulePath: () => "/tmp/tsx-cache/eve-loader.js",
+      argv1: (root: string) => path.join(root, "eve.mjs"),
       srcFile: "index.ts",
       distFile: "index.js",
       env: { NODE_ENV: undefined },
@@ -595,8 +595,8 @@ describe("plugin sdk alias helpers", () => {
     },
     {
       name: "resolves extension-api alias from package root when loader runs from transpiler cache path",
-      modulePath: () => "/tmp/tsx-cache/openclaw-loader.js",
-      argv1: (root: string) => path.join(root, "openclaw.mjs"),
+      modulePath: () => "/tmp/tsx-cache/eve-loader.js",
+      argv1: (root: string) => path.join(root, "eve.mjs"),
       env: { NODE_ENV: undefined },
       expected: "src" as const,
     },
@@ -635,7 +635,7 @@ describe("plugin sdk alias helpers", () => {
 
     const aliases = buildPluginLoaderAliasMap(entry, undefined, undefined, "dist", devFixture.root);
 
-    expect(fs.realpathSync(aliases["openclaw/extension-api"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/extension-api"] ?? "")).toBe(
       fs.realpathSync(devFixture.distFile),
     );
   });
@@ -709,7 +709,7 @@ describe("plugin sdk alias helpers", () => {
       "utf-8",
     );
 
-    const subpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
+    const subpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: path.join(fixture.root, "src", "plugins", "loader.ts"),
       }),
@@ -752,55 +752,55 @@ describe("plugin sdk alias helpers", () => {
     );
     const { packageRoot: installedCodexRoot, pluginEntry: installedCodexEntry } =
       writeInstalledPluginEntry({
-        installRoot: path.join(makeTempDir(), ".openclaw", "npm"),
-        packageName: "@openclaw/codex",
+        installRoot: path.join(makeTempDir(), ".eve", "npm"),
+        packageName: "@eve/codex",
       });
     const { packageRoot: installedOtherRoot, pluginEntry: installedOtherEntry } =
       writeInstalledPluginEntry({
-        installRoot: path.join(makeTempDir(), ".openclaw", "npm"),
-        packageName: "@openclaw/demo",
+        installRoot: path.join(makeTempDir(), ".eve", "npm"),
+        packageName: "@eve/demo",
       });
-    const shadowCodexRoot = path.join(makeTempDir(), ".openclaw", "extensions", "codex-shadow");
+    const shadowCodexRoot = path.join(makeTempDir(), ".eve", "extensions", "codex-shadow");
     const shadowCodexEntry = path.join(shadowCodexRoot, "dist", "index.js");
     mkdirSafeDir(path.dirname(shadowCodexEntry));
     fs.writeFileSync(
       path.join(shadowCodexRoot, "package.json"),
-      JSON.stringify({ name: "@openclaw/codex", type: "module" }, null, 2),
+      JSON.stringify({ name: "@eve/codex", type: "module" }, null, 2),
       "utf-8",
     );
     fs.writeFileSync(shadowCodexEntry, 'export const plugin = "shadow";\n', "utf-8");
 
-    const codexSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+    const codexSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: sourceCodexEntry,
       }),
     );
-    const otherSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+    const otherSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: sourceOtherEntry,
       }),
     );
     const installedCodexSubpaths = withCwd(installedCodexRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
         listPluginSdkExportedSubpaths({
           modulePath: installedCodexEntry,
-          argv1: path.join(fixture.root, "openclaw.mjs"),
+          argv1: path.join(fixture.root, "eve.mjs"),
         }),
       ),
     );
     const installedOtherSubpaths = withCwd(installedOtherRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
         listPluginSdkExportedSubpaths({
           modulePath: installedOtherEntry,
-          argv1: path.join(fixture.root, "openclaw.mjs"),
+          argv1: path.join(fixture.root, "eve.mjs"),
         }),
       ),
     );
     const shadowCodexSubpaths = withCwd(shadowCodexRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
         listPluginSdkExportedSubpaths({
           modulePath: shadowCodexEntry,
-          argv1: path.join(fixture.root, "openclaw.mjs"),
+          argv1: path.join(fixture.root, "eve.mjs"),
         }),
       ),
     );
@@ -849,7 +849,7 @@ describe("plugin sdk alias helpers", () => {
       }),
     ).toEqual(["core"]);
 
-    const privateSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
+    const privateSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: path.join(fixture.root, "src", "plugins", "loader.ts"),
       }),
@@ -865,7 +865,7 @@ describe("plugin sdk alias helpers", () => {
 
   it.each([
     {
-      name: "does not derive plugin-sdk subpaths from cwd fallback when package root is not an OpenClaw root",
+      name: "does not derive plugin-sdk subpaths from cwd fallback when package root is not an EVE root",
       fixture: () =>
         createPluginSdkAliasFixture({
           trustedRootIndicators: false,
@@ -893,7 +893,7 @@ describe("plugin sdk alias helpers", () => {
     expectExportedSubpaths({
       fixture,
       cwd: fixture.root,
-      modulePath: "/tmp/tsx-cache/openclaw-loader.js",
+      modulePath: "/tmp/tsx-cache/eve-loader.js",
       expected,
     });
   });
@@ -963,23 +963,23 @@ describe("plugin sdk alias helpers", () => {
       bundledPluginFile("qa-matrix", "src/index.ts"),
     );
 
-    const aliases = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined }, () =>
+    const aliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined }, () =>
       buildPluginLoaderAliasMap(sourcePluginEntry),
     );
 
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/qa-runtime"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/qa-runtime"] ?? "")).toBe(
       fs.realpathSync(sourceQaRuntimePath),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/qa-channel"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/qa-channel"] ?? "")).toBe(
       fs.realpathSync(sourceQaChannelPath),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/qa-channel-protocol"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/qa-channel-protocol"] ?? "")).toBe(
       fs.realpathSync(sourceQaChannelProtocolPath),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/qa-lab"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/qa-lab"] ?? "")).toBe(
       fs.realpathSync(distQaLabPath),
     );
   });
@@ -1088,105 +1088,105 @@ describe("plugin sdk alias helpers", () => {
     );
     const { packageRoot: installedCodexRoot, pluginEntry: installedCodexEntry } =
       writeInstalledPluginEntry({
-        installRoot: path.join(makeTempDir(), ".openclaw", "npm"),
-        packageName: "@openclaw/codex",
+        installRoot: path.join(makeTempDir(), ".eve", "npm"),
+        packageName: "@eve/codex",
       });
     const { packageRoot: installedOtherRoot, pluginEntry: installedOtherEntry } =
       writeInstalledPluginEntry({
-        installRoot: path.join(makeTempDir(), ".openclaw", "npm"),
-        packageName: "@openclaw/demo",
+        installRoot: path.join(makeTempDir(), ".eve", "npm"),
+        packageName: "@eve/demo",
       });
-    const shadowCodexRoot = path.join(makeTempDir(), ".openclaw", "extensions", "codex-shadow");
+    const shadowCodexRoot = path.join(makeTempDir(), ".eve", "extensions", "codex-shadow");
     const shadowCodexEntry = path.join(shadowCodexRoot, "dist", "index.js");
     mkdirSafeDir(path.dirname(shadowCodexEntry));
     fs.writeFileSync(
       path.join(shadowCodexRoot, "package.json"),
-      JSON.stringify({ name: "@openclaw/codex", type: "module" }, null, 2),
+      JSON.stringify({ name: "@eve/codex", type: "module" }, null, 2),
       "utf-8",
     );
     fs.writeFileSync(shadowCodexEntry, 'export const plugin = "shadow";\n', "utf-8");
 
     const aliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourcePluginEntry),
     );
     const otherAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceOtherPluginEntry),
     );
     const devRootAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () =>
         buildPluginLoaderAliasMap(
           distCodexEntry,
-          path.join(fixture.root, "openclaw.mjs"),
+          path.join(fixture.root, "eve.mjs"),
           undefined,
           "dist",
           devFixture.root,
         ),
     );
     const installedAliases = withCwd(installedCodexRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
         buildPluginLoaderAliasMap(
           installedCodexEntry,
-          path.join(fixture.root, "openclaw.mjs"),
+          path.join(fixture.root, "eve.mjs"),
           undefined,
           "dist",
         ),
       ),
     );
     const shadowCodexAliases = withCwd(shadowCodexRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
         buildPluginLoaderAliasMap(
           shadowCodexEntry,
-          path.join(fixture.root, "openclaw.mjs"),
+          path.join(fixture.root, "eve.mjs"),
           undefined,
           "dist",
         ),
       ),
     );
     const installedOtherAliases = withCwd(installedOtherRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
         buildPluginLoaderAliasMap(
           installedOtherEntry,
-          path.join(fixture.root, "openclaw.mjs"),
+          path.join(fixture.root, "eve.mjs"),
           undefined,
           "dist",
         ),
       ),
     );
 
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/codex-mcp-projection"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/codex-mcp-projection"] ?? "")).toBe(
       fs.realpathSync(sourceCodexMcpProjectionPath),
     );
-    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/codex-native-task-runtime"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["eve-agent/plugin-sdk/codex-native-task-runtime"] ?? "")).toBe(
       fs.realpathSync(sourceCodexNativeTaskRuntimePath),
     );
     expect(
-      fs.realpathSync(installedAliases["openclaw/plugin-sdk/codex-mcp-projection"] ?? ""),
+      fs.realpathSync(installedAliases["eve-agent/plugin-sdk/codex-mcp-projection"] ?? ""),
     ).toBe(fs.realpathSync(distCodexMcpProjectionPath));
     expect(
-      fs.realpathSync(installedAliases["openclaw/plugin-sdk/codex-native-task-runtime"] ?? ""),
+      fs.realpathSync(installedAliases["eve-agent/plugin-sdk/codex-native-task-runtime"] ?? ""),
     ).toBe(fs.realpathSync(distCodexNativeTaskRuntimePath));
-    expect(fs.realpathSync(devRootAliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(devRootAliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(devRootAlias),
     );
-    expect(fs.realpathSync(devRootAliases["openclaw/plugin-sdk/codex-mcp-projection"] ?? "")).toBe(
+    expect(fs.realpathSync(devRootAliases["eve-agent/plugin-sdk/codex-mcp-projection"] ?? "")).toBe(
       fs.realpathSync(devCodexMcpProjectionPath),
     );
     expect(
-      fs.realpathSync(devRootAliases["openclaw/plugin-sdk/codex-native-task-runtime"] ?? ""),
+      fs.realpathSync(devRootAliases["eve-agent/plugin-sdk/codex-native-task-runtime"] ?? ""),
     ).toBe(fs.realpathSync(devCodexNativeTaskRuntimePath));
-    expect(aliases["openclaw/plugin-sdk/qa-runtime"]).toBeUndefined();
-    expect(otherAliases["openclaw/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
-    expect(otherAliases["openclaw/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
-    expect(installedOtherAliases["openclaw/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
-    expect(installedOtherAliases["openclaw/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
-    expect(shadowCodexAliases["openclaw/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
-    expect(shadowCodexAliases["openclaw/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
+    expect(aliases["eve-agent/plugin-sdk/qa-runtime"]).toBeUndefined();
+    expect(otherAliases["eve-agent/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
+    expect(otherAliases["eve-agent/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
+    expect(installedOtherAliases["eve-agent/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
+    expect(installedOtherAliases["eve-agent/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
+    expect(shadowCodexAliases["eve-agent/plugin-sdk/codex-mcp-projection"]).toBeUndefined();
+    expect(shadowCodexAliases["eve-agent/plugin-sdk/codex-native-task-runtime"]).toBeUndefined();
   });
 
   it("aliases the SSRF internal helper only for bundled local IPC owner plugins", async () => {
@@ -1227,7 +1227,7 @@ describe("plugin sdk alias helpers", () => {
       bundledPluginFile("demo", "index.ts"),
     );
     const entryBody = [
-      'import { ssrfInternal } from "openclaw/plugin-sdk/ssrf-runtime-internal";',
+      'import { ssrfInternal } from "eve-agent/plugin-sdk/ssrf-runtime-internal";',
       "export const loadedSsrFInternal = ssrfInternal;",
       "",
     ].join("\n");
@@ -1256,62 +1256,62 @@ describe("plugin sdk alias helpers", () => {
     fs.writeFileSync(distRuntimeBrowserEntry, entryBody, "utf-8");
     const { packageRoot: installedOllamaRoot, pluginEntry: installedOllamaEntry } =
       writeInstalledPluginEntry({
-        installRoot: path.join(makeTempDir(), ".openclaw", "npm"),
-        packageName: "@openclaw/ollama",
+        installRoot: path.join(makeTempDir(), ".eve", "npm"),
+        packageName: "@eve/ollama",
       });
 
-    const sourceSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+    const sourceSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: sourceOllamaEntry,
       }),
     );
-    const sourceBrowserSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+    const sourceBrowserSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: sourceBrowserEntry,
       }),
     );
-    const privateQaOtherSubpaths = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
+    const privateQaOtherSubpaths = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
       listPluginSdkExportedSubpaths({
         modulePath: sourceOtherPluginEntry,
       }),
     );
     const sourceAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceOllamaEntry),
     );
     const sourceBrowserAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceBrowserEntry),
     );
     const distAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(distOllamaEntry, undefined, undefined, "dist"),
     );
     const distBrowserAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(distBrowserEntry, undefined, undefined, "dist"),
     );
     const distRuntimeAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(distRuntimeOllamaEntry, undefined, undefined, "dist"),
     );
     const distRuntimeBrowserAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(distRuntimeBrowserEntry, undefined, undefined, "dist"),
     );
     const otherAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceOtherPluginEntry),
     );
     const privateQaOtherAliases = withEnv(
-      { OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined },
+      { EVE_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceOtherPluginEntry),
     );
     const installedAliases = withCwd(installedOllamaRoot, () =>
-      withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
         buildPluginLoaderAliasMap(
           installedOllamaEntry,
-          path.join(fixture.root, "openclaw.mjs"),
+          path.join(fixture.root, "eve.mjs"),
           undefined,
           "dist",
         ),
@@ -1321,27 +1321,27 @@ describe("plugin sdk alias helpers", () => {
     expect(sourceSubpaths).toEqual(["core", "ssrf-runtime-internal"]);
     expect(sourceBrowserSubpaths).toEqual(["core", "ssrf-runtime-internal"]);
     expect(privateQaOtherSubpaths).toEqual(["core"]);
-    expect(fs.realpathSync(sourceAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? "")).toBe(
+    expect(fs.realpathSync(sourceAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? "")).toBe(
       fs.realpathSync(sourceSsrFInternalPath),
     );
     expect(
-      fs.realpathSync(sourceBrowserAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? ""),
+      fs.realpathSync(sourceBrowserAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
     ).toBe(fs.realpathSync(sourceSsrFInternalPath));
-    expect(fs.realpathSync(distAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? "")).toBe(
+    expect(fs.realpathSync(distAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? "")).toBe(
       fs.realpathSync(distSsrFInternalPath),
     );
     expect(
-      fs.realpathSync(distBrowserAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? ""),
+      fs.realpathSync(distBrowserAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
     ).toBe(fs.realpathSync(distSsrFInternalPath));
     expect(
-      fs.realpathSync(distRuntimeAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? ""),
+      fs.realpathSync(distRuntimeAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
     ).toBe(fs.realpathSync(distSsrFInternalPath));
     expect(
-      fs.realpathSync(distRuntimeBrowserAliases["openclaw/plugin-sdk/ssrf-runtime-internal"] ?? ""),
+      fs.realpathSync(distRuntimeBrowserAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
     ).toBe(fs.realpathSync(distSsrFInternalPath));
-    expect(otherAliases["openclaw/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
-    expect(privateQaOtherAliases["openclaw/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
-    expect(installedAliases["openclaw/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
+    expect(otherAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
+    expect(privateQaOtherAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
+    expect(installedAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
 
     const createJiti = await getCreateJiti();
     const sourceLoaderBaseUrl = pathToFileURL(
@@ -1569,61 +1569,61 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/gateway-client"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-client"] ?? "")).toBe(
       fs.realpathSync(gatewayClient.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/gateway-client/timeouts"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-client/timeouts"] ?? "")).toBe(
       fs.realpathSync(gatewayClientTimeouts.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/gateway-protocol"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-protocol"] ?? "")).toBe(
       fs.realpathSync(gatewayProtocol.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/gateway-protocol/schema"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-protocol/schema"] ?? "")).toBe(
       fs.realpathSync(gatewayProtocolSchema.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/markdown-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/markdown-core"] ?? "")).toBe(
       fs.realpathSync(markdownCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/markdown-core/tables"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/markdown-core/tables"] ?? "")).toBe(
       fs.realpathSync(markdownCoreTables.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-generation-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-generation-core"] ?? "")).toBe(
       fs.realpathSync(mediaGenerationCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-generation-core/model-ref"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-generation-core/model-ref"] ?? "")).toBe(
       fs.realpathSync(mediaGenerationModelRef.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-core"] ?? "")).toBe(
       fs.realpathSync(mediaCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-core/mime"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-core/mime"] ?? "")).toBe(
       fs.realpathSync(mediaCoreMime.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/acp-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/acp-core"] ?? "")).toBe(
       fs.realpathSync(acpCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/acp-core/runtime/types"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/acp-core/runtime/types"] ?? "")).toBe(
       fs.realpathSync(acpCoreRuntimeTypes.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/normalization-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/normalization-core"] ?? "")).toBe(
       fs.realpathSync(normalizationCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/normalization-core/string-coerce"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/normalization-core/string-coerce"] ?? "")).toBe(
       fs.realpathSync(normalizationStringCoerce.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/terminal-core"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/terminal-core"] ?? "")).toBe(
       fs.realpathSync(terminalCore.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/terminal-core/theme"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/terminal-core/theme"] ?? "")).toBe(
       fs.realpathSync(terminalCoreTheme.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/net-policy"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/net-policy"] ?? "")).toBe(
       fs.realpathSync(netPolicy.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/net-policy/ip"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/net-policy/ip"] ?? "")).toBe(
       fs.realpathSync(netPolicyIp.srcFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/model-catalog-core/provider-id"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/model-catalog-core/provider-id"] ?? "")).toBe(
       fs.realpathSync(modelCatalogProviderId.srcFile),
     );
   });
@@ -1722,35 +1722,35 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/gateway-client/readiness"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-client/readiness"] ?? "")).toBe(
       fs.realpathSync(gatewayClient.distFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/gateway-protocol/connect-error-details"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/gateway-protocol/connect-error-details"] ?? "")).toBe(
       fs.realpathSync(gatewayProtocol.distFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/markdown-core/render"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/markdown-core/render"] ?? "")).toBe(
       fs.realpathSync(markdownCore.distFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-generation-core/catalog"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-generation-core/catalog"] ?? "")).toBe(
       fs.realpathSync(mediaGenerationCore.distFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/media-core/read-response-with-limit"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/media-core/read-response-with-limit"] ?? "")).toBe(
       fs.realpathSync(mediaCoreRootDistFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/acp-core/normalize-text"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/acp-core/normalize-text"] ?? "")).toBe(
       fs.realpathSync(acpCoreRootDistFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/normalization-core/record-coerce"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/normalization-core/record-coerce"] ?? "")).toBe(
       fs.realpathSync(normalizationCoreRootDistFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/terminal-core/links"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/terminal-core/links"] ?? "")).toBe(
       fs.realpathSync(terminalCoreRootDistFile),
     );
-    expect(fs.realpathSync(aliases["@openclaw/net-policy/redact-sensitive-url"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/net-policy/redact-sensitive-url"] ?? "")).toBe(
       fs.realpathSync(netPolicy.distFile),
     );
     expect(
-      fs.realpathSync(aliases["@openclaw/model-catalog-core/provider-model-id-normalize"] ?? ""),
+      fs.realpathSync(aliases["@eve/model-catalog-core/provider-model-id-normalize"] ?? ""),
     ).toBe(fs.realpathSync(modelCatalogCore.distFile));
   });
 
@@ -1763,15 +1763,15 @@ describe("plugin sdk alias helpers", () => {
     const acpRuntimeErrors = path.join(fixture.root, "dist", "acp-core", "runtime", "errors.js");
     mkdirSafeDir(path.dirname(acpRuntimeErrors));
     fs.writeFileSync(acpRuntimeErrors, "export {};\n", "utf-8");
-    const cwdWithoutOpenClawPackage = makeTempDir();
+    const cwdWithoutEVEPackage = makeTempDir();
 
-    const aliases = withCwd(cwdWithoutOpenClawPackage, () =>
+    const aliases = withCwd(cwdWithoutEVEPackage, () =>
       withEnv({ NODE_ENV: undefined }, () =>
         buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
       ),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/acp-core/runtime/errors"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/acp-core/runtime/errors"] ?? "")).toBe(
       fs.realpathSync(acpRuntimeErrors),
     );
   });
@@ -1788,14 +1788,14 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/slack/api.js"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/slack/api.js"] ?? "")).toBe(
       fs.realpathSync(sourceApiPath),
     );
-    expect(fs.realpathSync(aliases["@openclaw/slack/runtime-api.js"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/slack/runtime-api.js"] ?? "")).toBe(
       fs.realpathSync(sourceRuntimeApiPath),
     );
-    expect(aliases["@openclaw/slack/test-api.js"]).toBeUndefined();
-    expect(aliases["@openclaw/slack/internal.js"]).toBeUndefined();
+    expect(aliases["@eve/slack/test-api.js"]).toBeUndefined();
+    expect(aliases["@eve/slack/internal.js"]).toBeUndefined();
   });
 
   it("aliases bundled plugin package test surfaces only in private QA mode", () => {
@@ -1805,11 +1805,11 @@ describe("plugin sdk alias helpers", () => {
       bundledPluginFile("qa-lab", "src/live-transports/slack/slack-live.runtime.ts"),
     );
 
-    const aliases = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined }, () =>
+    const aliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1", NODE_ENV: undefined }, () =>
       buildPluginLoaderAliasMap(sourcePluginEntry),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/slack/test-api.js"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/slack/test-api.js"] ?? "")).toBe(
       fs.realpathSync(sourceTestApiPath),
     );
   });
@@ -1826,10 +1826,10 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
     );
 
-    expect(fs.realpathSync(aliases["@openclaw/slack/api.js"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/slack/api.js"] ?? "")).toBe(
       fs.realpathSync(distApiPath),
     );
-    expect(fs.realpathSync(aliases["@openclaw/slack/runtime-api.js"] ?? "")).toBe(
+    expect(fs.realpathSync(aliases["@eve/slack/runtime-api.js"] ?? "")).toBe(
       fs.realpathSync(distRuntimeApiPath),
     );
   });
@@ -1858,7 +1858,7 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
     );
 
-    expect(fs.realpathSync(distAliases["openclaw/plugin-sdk/provider-entry"] ?? "")).toBe(
+    expect(fs.realpathSync(distAliases["eve-agent/plugin-sdk/provider-entry"] ?? "")).toBe(
       fs.realpathSync(sourceProviderEntryPath),
     );
   });
@@ -1883,7 +1883,7 @@ describe("plugin sdk alias helpers", () => {
     });
   });
 
-  it("resolves plugin-sdk aliases for user-installed plugins via the running openclaw argv hint", () => {
+  it("resolves plugin-sdk aliases for user-installed plugins via the running eve argv hint", () => {
     const {
       externalPluginEntry,
       externalPluginRoot,
@@ -1895,7 +1895,7 @@ describe("plugin sdk alias helpers", () => {
 
     const aliases = withCwd(externalPluginRoot, () =>
       withEnv({ NODE_ENV: undefined }, () =>
-        buildPluginLoaderAliasMap(externalPluginEntry, path.join(fixture.root, "openclaw.mjs")),
+        buildPluginLoaderAliasMap(externalPluginEntry, path.join(fixture.root, "eve.mjs")),
       ),
     );
 
@@ -1917,18 +1917,18 @@ describe("plugin sdk alias helpers", () => {
     } = createUserInstalledPluginSdkAliasFixture();
 
     // Simulate loader.ts passing its own import.meta.url as the moduleUrl hint.
-    // This covers installations where argv1 does not resolve to the openclaw root
+    // This covers installations where argv1 does not resolve to the eve root
     // (e.g. single-binary distributions or custom process launchers).
-    // Use openclaw.mjs which is created by createPluginSdkAliasFixture (bin+marker mode).
+    // Use eve.mjs which is created by createPluginSdkAliasFixture (bin+marker mode).
     // Use fixture.root as cwd so process.cwd() fallback also resolves to fixture, not the
-    // real openclaw repo root in the test runner environment.
-    const loaderModuleUrl = pathToFileURL(path.join(fixture.root, "openclaw.mjs")).href;
+    // real eve repo root in the test runner environment.
+    const loaderModuleUrl = pathToFileURL(path.join(fixture.root, "eve.mjs")).href;
 
     // Use externalPluginRoot as cwd so process.cwd() fallback cannot accidentally
     // resolve to the fixture root — only the moduleUrl hint can bridge the gap.
     // Pass "" for argv1: undefined would trigger the STARTUP_ARGV1 default (the vitest
-    // runner binary, inside the openclaw repo), which resolves before moduleUrl is checked.
-    // An empty string is falsy so resolveTrustedOpenClawRootFromArgvHint returns null,
+    // runner binary, inside the eve repo), which resolves before moduleUrl is checked.
+    // An empty string is falsy so resolveTrustedEVERootFromArgvHint returns null,
     // meaning only the moduleUrl hint can bridge the gap.
     const aliases = withCwd(externalPluginRoot, () =>
       withEnv({ NODE_ENV: undefined }, () =>
@@ -1949,7 +1949,7 @@ describe("plugin sdk alias helpers", () => {
 
   it.each([
     {
-      name: "does not resolve plugin-sdk alias files from cwd fallback when package root is not an OpenClaw root",
+      name: "does not resolve plugin-sdk alias files from cwd fallback when package root is not an EVE root",
       fixture: () =>
         createPluginSdkAliasFixture({
           srcFile: "channel-runtime.ts",
@@ -2102,13 +2102,13 @@ describe("plugin sdk alias helpers", () => {
   it("returns plugin loader module config with stable cache keys", () => {
     const first = resolvePluginLoaderModuleConfig({
       modulePath: `/repo/${bundledDistPluginFile("browser", "index.js")}`,
-      argv1: "/repo/openclaw.mjs",
+      argv1: "/repo/eve.mjs",
       moduleUrl: "file:///repo/src/plugins/public-surface-loader.ts",
       preferBuiltDist: true,
     });
     const second = resolvePluginLoaderModuleConfig({
       modulePath: `/repo/${bundledDistPluginFile("browser", "index.js")}`,
-      argv1: "/repo/openclaw.mjs",
+      argv1: "/repo/eve.mjs",
       moduleUrl: "file:///repo/src/plugins/public-surface-loader.ts",
       preferBuiltDist: true,
     });
@@ -2126,19 +2126,19 @@ describe("plugin sdk alias helpers", () => {
     const { auto, dist, distAgain } = withEnv({ NODE_ENV: undefined }, () => ({
       auto: resolvePluginLoaderModuleConfig({
         modulePath: sourcePluginEntry,
-        argv1: path.join(fixture.root, "openclaw.mjs"),
+        argv1: path.join(fixture.root, "eve.mjs"),
         moduleUrl: pathToFileURL(path.join(fixture.root, "src/plugins/loader.ts")).href,
         pluginSdkResolution: "auto",
       }),
       dist: resolvePluginLoaderModuleConfig({
         modulePath: sourcePluginEntry,
-        argv1: path.join(fixture.root, "openclaw.mjs"),
+        argv1: path.join(fixture.root, "eve.mjs"),
         moduleUrl: pathToFileURL(path.join(fixture.root, "src/plugins/loader.ts")).href,
         pluginSdkResolution: "dist",
       }),
       distAgain: resolvePluginLoaderModuleConfig({
         modulePath: sourcePluginEntry,
-        argv1: path.join(fixture.root, "openclaw.mjs"),
+        argv1: path.join(fixture.root, "eve.mjs"),
         moduleUrl: pathToFileURL(path.join(fixture.root, "src/plugins/loader.ts")).href,
         pluginSdkResolution: "dist",
       }),
@@ -2146,10 +2146,10 @@ describe("plugin sdk alias helpers", () => {
 
     expect(distAgain).toBe(dist);
     expect(auto).not.toBe(dist);
-    expect(fs.realpathSync(auto.aliasMap["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(auto.aliasMap["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
-    expect(fs.realpathSync(dist.aliasMap["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(dist.aliasMap["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(distRootAlias),
     );
   });
@@ -2158,19 +2158,19 @@ describe("plugin sdk alias helpers", () => {
     expect(
       isBundledPluginExtensionPath({
         modulePath: "/repo/extensions/demo/api.js",
-        openClawPackageRoot: "/repo",
+        evePackageRoot: "/repo",
       }),
     ).toBe(true);
     expect(
       isBundledPluginExtensionPath({
         modulePath: "/repo/dist/extensions/demo/api.js",
-        openClawPackageRoot: "/repo",
+        evePackageRoot: "/repo",
       }),
     ).toBe(true);
     expect(
       isBundledPluginExtensionPath({
         modulePath: "/repo/vendor/demo/api.js",
-        openClawPackageRoot: "/repo",
+        evePackageRoot: "/repo",
       }),
     ).toBe(false);
   });
@@ -2204,7 +2204,7 @@ describe("plugin sdk alias helpers", () => {
     fs.writeFileSync(sourceLoaderBaseFile, "export {};\n", "utf-8");
     fs.writeFileSync(
       path.join(copiedSourceDir, "channel.runtime.ts"),
-      `import { resolveOutboundSendDep } from "@openclaw/plugin-sdk/channel-outbound";
+      `import { resolveOutboundSendDep } from "@eve/plugin-sdk/channel-outbound";
 
 export const syntheticRuntimeMarker = {
   resolveOutboundSendDep,
@@ -2240,8 +2240,8 @@ export const syntheticRuntimeMarker = {
 
     const withAlias = createJiti(sourceLoaderBaseUrl, {
       ...buildPluginLoaderJitiOptions({
-        "openclaw/plugin-sdk/channel-outbound": copiedChannelRuntimeShim,
-        "@openclaw/plugin-sdk/channel-outbound": copiedChannelRuntimeShim,
+        "eve-agent/plugin-sdk/channel-outbound": copiedChannelRuntimeShim,
+        "@eve/plugin-sdk/channel-outbound": copiedChannelRuntimeShim,
       }),
       tryNative: false,
     });
@@ -2259,8 +2259,8 @@ export const syntheticRuntimeMarker = {
     },
     {
       name: "resolves plugin runtime module from package root when loader runs from transpiler cache path",
-      modulePath: () => "/tmp/tsx-cache/openclaw-loader.js",
-      argv1: (root: string) => path.join(root, "openclaw.mjs"),
+      modulePath: () => "/tmp/tsx-cache/eve-loader.js",
+      argv1: (root: string) => path.join(root, "eve.mjs"),
       env: { NODE_ENV: undefined },
       expected: "src" as const,
     },
@@ -2298,7 +2298,7 @@ export const syntheticRuntimeMarker = {
   it("falls back to ancestor runtime candidates when package-root markers are unavailable", () => {
     const root = makeTempDir();
     const distFile = path.join(root, "dist", "plugins", "runtime", "index.js");
-    const loaderCachePath = path.join(root, ".cache", "tsx", "openclaw-loader.js");
+    const loaderCachePath = path.join(root, ".cache", "tsx", "eve-loader.js");
     mkdirSafeDir(path.dirname(distFile));
     mkdirSafeDir(path.dirname(loaderCachePath));
     fs.writeFileSync(distFile, "export const createPluginRuntime = () => ({});\n", "utf-8");
@@ -2307,7 +2307,7 @@ export const syntheticRuntimeMarker = {
     expect(
       resolvePluginRuntimeModulePath({
         modulePath: loaderCachePath,
-        argv1: path.join(root, "bin", "openclaw"),
+        argv1: path.join(root, "bin", "eve"),
         pluginSdkResolution: "dist",
       }),
     ).toBe(distFile);
@@ -2317,7 +2317,7 @@ export const syntheticRuntimeMarker = {
     const root = makeTempDir();
     const distFile = path.join(root, "dist", "plugins", "runtime", "index.js");
     const loaderCacheRoot = makeTempDir();
-    const loaderCachePath = path.join(loaderCacheRoot, "tsx", "openclaw-loader.js");
+    const loaderCachePath = path.join(loaderCacheRoot, "tsx", "eve-loader.js");
     const originalArgv1 = process.argv[1];
     mkdirSafeDir(path.dirname(distFile));
     mkdirSafeDir(path.dirname(loaderCachePath));
@@ -2325,7 +2325,7 @@ export const syntheticRuntimeMarker = {
     fs.writeFileSync(distFile, "export const createPluginRuntime = () => ({});\n", "utf-8");
     fs.writeFileSync(loaderCachePath, "export {};\n", "utf-8");
 
-    process.argv[1] = path.join(root, "bin", "openclaw");
+    process.argv[1] = path.join(root, "bin", "eve");
     try {
       expect(
         resolvePluginRuntimeModulePath({
@@ -2343,7 +2343,7 @@ export const syntheticRuntimeMarker = {
     const distFile = path.join(root, "dist", "plugins", "runtime", "index.js");
     const loaderCacheRoot = makeTempDir();
     const cacheDistFile = path.join(loaderCacheRoot, "dist", "plugins", "runtime", "index.js");
-    const loaderCachePath = path.join(loaderCacheRoot, "tsx", "openclaw-loader.js");
+    const loaderCachePath = path.join(loaderCacheRoot, "tsx", "eve-loader.js");
     mkdirSafeDir(path.dirname(distFile));
     mkdirSafeDir(path.dirname(cacheDistFile));
     mkdirSafeDir(path.dirname(loaderCachePath));
@@ -2355,7 +2355,7 @@ export const syntheticRuntimeMarker = {
     expect(
       resolvePluginRuntimeModulePath({
         modulePath: loaderCachePath,
-        argv1: path.join(root, "bin", "openclaw"),
+        argv1: path.join(root, "bin", "eve"),
         pluginSdkResolution: "dist",
       }),
     ).toBe(distFile);
@@ -2364,10 +2364,10 @@ export const syntheticRuntimeMarker = {
   it("resolves runtime fallback through symlinked startup argv", () => {
     const root = makeTempDir();
     const distFile = path.join(root, "dist", "plugins", "runtime", "index.js");
-    const binFile = path.join(root, "bin", "openclaw");
+    const binFile = path.join(root, "bin", "eve");
     const shimRoot = makeTempDir();
-    const shimFile = path.join(shimRoot, "bin", "openclaw");
-    const loaderCachePath = path.join(makeTempDir(), "tsx", "openclaw-loader.js");
+    const shimFile = path.join(shimRoot, "bin", "eve");
+    const loaderCachePath = path.join(makeTempDir(), "tsx", "eve-loader.js");
     mkdirSafeDir(path.dirname(distFile));
     mkdirSafeDir(path.dirname(binFile));
     mkdirSafeDir(path.dirname(shimFile));
@@ -2388,11 +2388,11 @@ export const syntheticRuntimeMarker = {
 
   it("resolves runtime fallback through npm .bin startup argv", () => {
     const root = makeTempDir();
-    const packageRoot = path.join(root, "node_modules", "openclaw");
+    const packageRoot = path.join(root, "node_modules", "eve");
     const distFile = path.join(packageRoot, "dist", "plugins", "runtime", "index.js");
     const projectDistFile = path.join(root, "dist", "plugins", "runtime", "index.js");
-    const binFile = path.join(root, "node_modules", ".bin", "openclaw");
-    const loaderCachePath = path.join(makeTempDir(), "tsx", "openclaw-loader.js");
+    const binFile = path.join(root, "node_modules", ".bin", "eve");
+    const loaderCachePath = path.join(makeTempDir(), "tsx", "eve-loader.js");
     mkdirSafeDir(path.dirname(distFile));
     mkdirSafeDir(path.dirname(projectDistFile));
     mkdirSafeDir(path.dirname(binFile));
@@ -2416,7 +2416,7 @@ export const syntheticRuntimeMarker = {
     const modulePath = path.join(root, "dist", "plugins", "loader.js");
     fs.writeFileSync(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "openclaw", type: "module" }, null, 2),
+      JSON.stringify({ name: "eve", type: "module" }, null, 2),
       "utf-8",
     );
     mkdirSafeDir(path.dirname(modulePath));
@@ -2475,7 +2475,7 @@ describe("buildPluginLoaderAliasMap memoization", () => {
     const aliasB = buildPluginLoaderAliasMap(entryB);
 
     expect(aliasA).not.toBe(aliasB);
-    expect(aliasA["openclaw/plugin-sdk"]).not.toBe(aliasB["openclaw/plugin-sdk"]);
+    expect(aliasA["eve-agent/plugin-sdk"]).not.toBe(aliasB["eve-agent/plugin-sdk"]);
   });
 
   it("returns different references when pluginSdkResolution differs", () => {
@@ -2531,10 +2531,10 @@ describe("buildPluginLoaderAliasMap memoization", () => {
     );
 
     expect(devAliases).not.toBe(stableAliases);
-    expect(fs.realpathSync(stableAliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(stableAliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(stableRootAlias),
     );
-    expect(fs.realpathSync(devAliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(devAliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(devRootAlias),
     );
   });
@@ -2551,16 +2551,16 @@ describe("buildPluginLoaderAliasMap memoization", () => {
     fs.writeFileSync(sourceQaRuntimePath, "export const qaRuntime = true;\n", "utf-8");
     const entry = writePluginEntry(fixture.root, bundledPluginFile("private-qa", "src/index.ts"));
 
-    const publicAliases = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
+    const publicAliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined }, () =>
       buildPluginLoaderAliasMap(entry),
     );
-    const privateAliases = withEnv({ OPENCLAW_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
+    const privateAliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: "1" }, () =>
       buildPluginLoaderAliasMap(entry),
     );
 
     expect(publicAliases).not.toBe(privateAliases);
-    expect(publicAliases["openclaw/plugin-sdk/qa-runtime"]).toBeUndefined();
-    expect(fs.realpathSync(privateAliases["openclaw/plugin-sdk/qa-runtime"] ?? "")).toBe(
+    expect(publicAliases["eve-agent/plugin-sdk/qa-runtime"]).toBeUndefined();
+    expect(fs.realpathSync(privateAliases["eve-agent/plugin-sdk/qa-runtime"] ?? "")).toBe(
       fs.realpathSync(sourceQaRuntimePath),
     );
   });
@@ -2581,10 +2581,10 @@ describe("buildPluginLoaderAliasMap memoization", () => {
     );
 
     expect(developmentAliases).not.toBe(productionAliases);
-    expect(fs.realpathSync(developmentAliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(developmentAliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
-    expect(fs.realpathSync(productionAliases["openclaw/plugin-sdk"] ?? "")).toBe(
+    expect(fs.realpathSync(productionAliases["eve-agent/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(distRootAlias),
     );
   });
@@ -2611,8 +2611,8 @@ describe("buildPluginLoaderAliasMap memoization", () => {
 });
 
 describe("buildPluginLoaderJitiOptions", () => {
-  it("scopes jiti fs cache by OpenClaw package version and install metadata", () => {
-    const root = createTrustedOpenClawPackageFixture("1.2.3-beta.4");
+  it("scopes jiti fs cache by EVE package version and install metadata", () => {
+    const root = createTrustedEVEPackageFixture("1.2.3-beta.4");
     const tmpDir = path.join(root, "tmp");
 
     const fsCache = withEnv({ TMPDIR: tmpDir }, () =>
@@ -2621,12 +2621,12 @@ describe("buildPluginLoaderJitiOptions", () => {
       }),
     );
 
-    expect(fsCache).toContain(path.join(tmpDir, "jiti", "openclaw", "1.2.3-beta.4") + path.sep);
+    expect(fsCache).toContain(path.join(tmpDir, "jiti", "eve", "1.2.3-beta.4") + path.sep);
     expect(path.basename(fsCache)).toMatch(/^\d+-\d+$/u);
   });
 
   it("preserves jiti's tmpdir guard when TMPDIR resolves to cwd", () => {
-    const root = createTrustedOpenClawPackageFixture("1.2.3-beta.4");
+    const root = createTrustedEVEPackageFixture("1.2.3-beta.4");
 
     const guardedFsCache = withEnv({ TMPDIR: root, JITI_RESPECT_TMPDIR_ENV: undefined }, () =>
       withCwd(root, () =>
@@ -2643,29 +2643,29 @@ describe("buildPluginLoaderJitiOptions", () => {
       ),
     );
 
-    expect(guardedFsCache).toContain(path.join("jiti", "openclaw", "1.2.3-beta.4") + path.sep);
+    expect(guardedFsCache).toContain(path.join("jiti", "eve", "1.2.3-beta.4") + path.sep);
     expect(guardedFsCache.startsWith(path.join(root, "jiti") + path.sep)).toBe(false);
     expect(respectedFsCache).toContain(
-      path.join(root, "jiti", "openclaw", "1.2.3-beta.4") + path.sep,
+      path.join(root, "jiti", "eve", "1.2.3-beta.4") + path.sep,
     );
   });
 
   it("adds the versioned fs cache directory to plugin loader jiti options", () => {
-    const root = createTrustedOpenClawPackageFixture("2.0.0");
+    const root = createTrustedEVEPackageFixture("2.0.0");
     const tmpDir = path.join(root, "tmp");
 
     const options = withEnv({ TMPDIR: tmpDir }, () =>
       buildPluginLoaderJitiOptions(
-        { "openclaw/plugin-sdk": path.join(root, "dist", "plugin-sdk", "root-alias.cjs") },
+        { "eve-agent/plugin-sdk": path.join(root, "dist", "plugin-sdk", "root-alias.cjs") },
         { modulePath: path.join(root, "dist", "plugins", "loader.js") },
       ),
     );
 
-    expect(options.fsCache).toContain(path.join(tmpDir, "jiti", "openclaw", "2.0.0"));
+    expect(options.fsCache).toContain(path.join(tmpDir, "jiti", "eve", "2.0.0"));
   });
 
   it("preserves jiti's fs cache environment opt-out", () => {
-    const root = createTrustedOpenClawPackageFixture("2.0.0");
+    const root = createTrustedEVEPackageFixture("2.0.0");
 
     const explicitOptOut = withEnv({ JITI_FS_CACHE: "false" }, () =>
       resolvePluginLoaderJitiFsCacheOption({
@@ -2674,7 +2674,7 @@ describe("buildPluginLoaderJitiOptions", () => {
     );
     const legacyOptOut = withEnv({ JITI_CACHE: "false", JITI_FS_CACHE: undefined }, () =>
       buildPluginLoaderJitiOptions(
-        { "openclaw/plugin-sdk": path.join(root, "dist", "plugin-sdk", "root-alias.cjs") },
+        { "eve-agent/plugin-sdk": path.join(root, "dist", "plugin-sdk", "root-alias.cjs") },
         { modulePath: path.join(root, "dist", "plugins", "loader.js") },
       ),
     );
@@ -2686,9 +2686,9 @@ describe("buildPluginLoaderJitiOptions", () => {
   it("pre-normalizes and marks alias maps for source transforms", () => {
     const marker = Symbol.for("pathe:normalizedAlias");
     const aliasMap = {
-      "openclaw/plugin-sdk/core": "/repo/src/plugin-sdk/core.ts",
-      "openclaw/plugin-sdk": "/repo/src/plugin-sdk/root-alias.cjs",
-      "@openclaw/plugin-sdk": "/repo/src/plugin-sdk/root-alias.cjs",
+      "eve-agent/plugin-sdk/core": "/repo/src/plugin-sdk/core.ts",
+      "eve-agent/plugin-sdk": "/repo/src/plugin-sdk/root-alias.cjs",
+      "@eve/plugin-sdk": "/repo/src/plugin-sdk/root-alias.cjs",
     };
 
     const first = buildPluginLoaderJitiOptions(aliasMap).alias as Record<string, string>;

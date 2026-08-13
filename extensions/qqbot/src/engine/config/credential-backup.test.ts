@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   installQQBotRuntimeForStateTests,
@@ -39,12 +39,12 @@ async function useMockHome(homeDir: string): Promise<void> {
 }
 
 function useStateDir(stateDir: string): void {
-  vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+  vi.stubEnv("EVE_STATE_DIR", stateDir);
   installQQBotRuntimeForStateTests(stateDir);
 }
 
 function legacyOsHomeBackupPath(homeDir: string, accountId = "default"): string {
-  return path.join(homeDir, ".openclaw", "qqbot", "data", `credential-backup-${accountId}.json`);
+  return path.join(homeDir, ".eve", "qqbot", "data", `credential-backup-${accountId}.json`);
 }
 
 function writeJson(filePath: string, value: unknown): void {
@@ -56,7 +56,7 @@ function readCredentialRows(stateDir: string): CredentialBackup[] {
   const store = createPluginStateSyncKeyedStoreForTests<CredentialBackup>("qqbot", {
     namespace: "credential-backups",
     maxEntries: 1000,
-    env: { ...process.env, OPENCLAW_STATE_DIR: stateDir },
+    env: { ...process.env, EVE_STATE_DIR: stateDir },
   });
   return store.entries().map((entry) => entry.value);
 }
@@ -85,7 +85,7 @@ describe("engine/config/credential-backup", () => {
   it("round-trips a credential snapshot through SQLite without writing JSON", async () => {
     const { getCredentialBackupFile } = await import("../utils/data-paths.js");
     const { loadCredentialBackup, saveCredentialBackup } = await import("./credential-backup.js");
-    const stateDir = process.env.OPENCLAW_STATE_DIR!;
+    const stateDir = process.env.EVE_STATE_DIR!;
 
     saveCredentialBackup("default", "app-1", "secret-1");
 
@@ -101,7 +101,7 @@ describe("engine/config/credential-backup", () => {
 
   it("keeps same account IDs isolated across state directories", async () => {
     const { loadCredentialBackup, saveCredentialBackup } = await import("./credential-backup.js");
-    const stateDirA = process.env.OPENCLAW_STATE_DIR!;
+    const stateDirA = process.env.EVE_STATE_DIR!;
     saveCredentialBackup("default", "app-a", "secret-a");
 
     const stateDirB = createTempDir("qqbot-state-b-");
@@ -170,6 +170,6 @@ describe("engine/config/credential-backup", () => {
     saveCredentialBackup("default", "app", "");
 
     expect(loadCredentialBackup("default")).toBeNull();
-    expect(readCredentialRows(process.env.OPENCLAW_STATE_DIR!)).toHaveLength(0);
+    expect(readCredentialRows(process.env.EVE_STATE_DIR!)).toHaveLength(0);
   });
 });

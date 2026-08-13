@@ -6,16 +6,16 @@ import {
   clearRuntimeAuthProfileStoreSnapshots,
   ensureAuthProfileStore,
   saveAuthProfileStore,
-} from "openclaw/plugin-sdk/agent-runtime";
-import { MAX_DATE_TIMESTAMP_MS, MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/agent-runtime";
+import { MAX_DATE_TIMESTAMP_MS, MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import type {
-  OpenClawConfig,
-  OpenClawPluginApi,
+  EVEConfig,
+  EVEPluginApi,
   ProviderAuthResult,
   ProviderCatalogResult,
   UnifiedModelCatalogEntry,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+} from "eve-agent/plugin-sdk/plugin-entry";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import {
   runGitHubCopilotDeviceFlow,
@@ -31,9 +31,9 @@ const mocks = vi.hoisted(() => ({
   resolveCopilotApiToken: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/ssrf-runtime")>(
-    "openclaw/plugin-sdk/ssrf-runtime",
+vi.mock("eve-agent/plugin-sdk/ssrf-runtime", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/ssrf-runtime")>(
+    "eve-agent/plugin-sdk/ssrf-runtime",
   );
   return {
     ...actual,
@@ -52,13 +52,13 @@ import plugin from "./index.js";
 
 const tempDirs: string[] = [];
 type RegisteredMemoryEmbeddingProvider = Parameters<
-  OpenClawPluginApi["registerMemoryEmbeddingProvider"]
+  EVEPluginApi["registerMemoryEmbeddingProvider"]
 >[0];
-type RegisteredProvider = Parameters<OpenClawPluginApi["registerProvider"]>[0];
+type RegisteredProvider = Parameters<EVEPluginApi["registerProvider"]>[0];
 type GithubCopilotTestProvider = RegisteredProvider & {
   auth: Array<{
     run: (ctx: unknown) => Promise<ProviderAuthResult | null>;
-    runNonInteractive: (ctx: unknown) => Promise<OpenClawConfig | null>;
+    runNonInteractive: (ctx: unknown) => Promise<EVEConfig | null>;
   }>;
   catalog: {
     run: (ctx: unknown) => Promise<ProviderCatalogResult>;
@@ -83,7 +83,7 @@ afterAll(() => {
 });
 
 async function createAgentDir() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-github-copilot-test-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-github-copilot-test-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -117,9 +117,9 @@ function requireFirstMockArg<T>(
 }
 
 function registerProviderAndCatalogWithPluginConfig(pluginConfig: Record<string, unknown>) {
-  const registerProviderMock = vi.fn<OpenClawPluginApi["registerProvider"]>();
+  const registerProviderMock = vi.fn<EVEPluginApi["registerProvider"]>();
   const registerModelCatalogProviderMock =
-    vi.fn<OpenClawPluginApi["registerModelCatalogProvider"]>();
+    vi.fn<EVEPluginApi["registerModelCatalogProvider"]>();
 
   plugin.register(
     createTestPluginApi({
@@ -190,7 +190,7 @@ describe("github-copilot plugin", () => {
 
   it("registers embedding provider", () => {
     const registerMemoryEmbeddingProviderMock =
-      vi.fn<OpenClawPluginApi["registerMemoryEmbeddingProvider"]>();
+      vi.fn<EVEPluginApi["registerMemoryEmbeddingProvider"]>();
 
     plugin.register(
       createTestPluginApi({

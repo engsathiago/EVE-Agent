@@ -3,9 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../test-utils/openclaw-test-state.js";
+  createEVETestState,
+  type EVETestState,
+} from "../test-utils/eve-test-state.js";
 
 const note = vi.hoisted(() => vi.fn());
 
@@ -33,13 +33,13 @@ function firstNoteCall(): [string, string] {
 }
 
 describe("noteSessionLockHealth", () => {
-  let state: OpenClawTestState;
+  let state: EVETestState;
 
   beforeEach(async () => {
     note.mockClear();
-    state = await createOpenClawTestState({
+    state = await createEVETestState({
       layout: "state-only",
-      prefix: "openclaw-doctor-locks-",
+      prefix: "eve-doctor-locks-",
     });
   });
 
@@ -60,7 +60,7 @@ describe("noteSessionLockHealth", () => {
     await noteSessionLockHealth({
       shouldRepair: false,
       staleMs: 60_000,
-      readOwnerProcessArgs: () => ["node", "/opt/openclaw/openclaw.mjs", "doctor"],
+      readOwnerProcessArgs: () => ["node", "/opt/eve/eve.mjs", "doctor"],
     });
 
     expect(note).toHaveBeenCalledTimes(1);
@@ -93,7 +93,7 @@ describe("noteSessionLockHealth", () => {
     await noteSessionLockHealth({
       shouldRepair: true,
       staleMs: 30_000,
-      readOwnerProcessArgs: () => ["node", "/opt/openclaw/openclaw.mjs", "doctor"],
+      readOwnerProcessArgs: () => ["node", "/opt/eve/eve.mjs", "doctor"],
     });
 
     expect(note).toHaveBeenCalledTimes(1);
@@ -105,7 +105,7 @@ describe("noteSessionLockHealth", () => {
     await expect(fs.access(freshLock)).resolves.toBeUndefined();
   });
 
-  it("uses configured stale threshold without removing live OpenClaw lock files", async () => {
+  it("uses configured stale threshold without removing live EVE lock files", async () => {
     const sessionsDir = state.sessionsDir();
     await fs.mkdir(sessionsDir, { recursive: true });
 
@@ -119,7 +119,7 @@ describe("noteSessionLockHealth", () => {
     await noteSessionLockHealth({
       shouldRepair: true,
       config: { session: { writeLock: { staleMs: 30_000 } } },
-      readOwnerProcessArgs: () => ["node", "/opt/openclaw/openclaw.mjs", "doctor"],
+      readOwnerProcessArgs: () => ["node", "/opt/eve/eve.mjs", "doctor"],
     });
 
     expect(note).toHaveBeenCalledTimes(1);
@@ -129,7 +129,7 @@ describe("noteSessionLockHealth", () => {
     await expect(fs.access(configuredStaleLock)).resolves.toBeUndefined();
   });
 
-  it("removes fresh live locks when the owner is not an OpenClaw process", async () => {
+  it("removes fresh live locks when the owner is not an EVE process", async () => {
     const sessionsDir = state.sessionsDir();
     await fs.mkdir(sessionsDir, { recursive: true });
 
@@ -148,7 +148,7 @@ describe("noteSessionLockHealth", () => {
 
     expect(note).toHaveBeenCalledTimes(1);
     const [message] = firstNoteCall();
-    expect(message).toContain("stale=yes (non-openclaw-owner)");
+    expect(message).toContain("stale=yes (non-eve-owner)");
     expect(message).toContain("[removed]");
     expect(message).toContain("Removed 1 stale session lock file");
     await expect(fs.access(falseLiveLock)).rejects.toThrow();

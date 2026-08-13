@@ -1,7 +1,7 @@
 // Discord provider module implements model/runtime integration.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { asDateTimestampMs } from "openclaw/plugin-sdk/number-runtime";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { asDateTimestampMs } from "eve-agent/plugin-sdk/number-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { raceWithTimeout } from "./timeouts.js";
 
 type DiscordProviderSessionRuntimeModule = typeof import("./provider-session.runtime.js");
@@ -56,7 +56,7 @@ function resolveRunningActivityAgeMs(params: {
 }
 
 export async function probeDiscordAcpBindingHealth(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
   storedState?: "idle" | "running" | "error";
   lastActivityAt?: number;

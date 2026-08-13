@@ -2,7 +2,7 @@
  * Thin ClickClack REST/websocket client used by gateway, resolver, and outbound
  * delivery code.
  */
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
 import { WebSocket } from "ws";
 import type {
   ClickClackChannel,

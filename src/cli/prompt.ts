@@ -1,7 +1,7 @@
 // Small interactive prompt helpers for CLI confirmations.
 import { stdin as input, stdout as output } from "node:process";
 import readline from "node:readline/promises";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { isVerbose, isYes } from "../globals.js";
 
 /** Signals that an interactive prompt lost stdin before a complete answer arrived. */

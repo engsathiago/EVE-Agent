@@ -16,7 +16,7 @@ export const DEFAULT_PROXY_VALIDATION_ALLOWED_URLS = ["https://example.com/"] as
 export const DEFAULT_PROXY_VALIDATION_APNS_AUTHORITY = "https://api.sandbox.push.apple.com";
 
 const DEFAULT_PROXY_VALIDATION_TIMEOUT_MS = 5000;
-const DENIED_CANARY_HEADER = "x-openclaw-proxy-validation-canary";
+const DENIED_CANARY_HEADER = "x-eve-proxy-validation-canary";
 const APNS_REACHABILITY_REASON = "InvalidProviderToken";
 
 /** Describes where the effective proxy validation URL came from. */
@@ -94,7 +94,7 @@ export type ProxyValidationApnsCheck = (
 /** Inputs used to resolve proxy validation config before network probes run. */
 export type ResolveProxyValidationConfigOptions = {
   config?: ProxyConfig;
-  env?: NodeJS.ProcessEnv | Partial<Record<"OPENCLAW_PROXY_URL", string | undefined>>;
+  env?: NodeJS.ProcessEnv | Partial<Record<"EVE_PROXY_URL", string | undefined>>;
   proxyUrlOverride?: string;
   proxyCaFileOverride?: string;
 };
@@ -126,7 +126,7 @@ function isHttpOrHttpsProxyUrl(value: string): boolean {
 
 function validateProxyUrl(value: string | undefined): string[] {
   if (!value) {
-    return ["proxy validation requires proxy.proxyUrl, --proxy-url, or OPENCLAW_PROXY_URL"];
+    return ["proxy validation requires proxy.proxyUrl, --proxy-url, or EVE_PROXY_URL"];
   }
   if (!isHttpOrHttpsProxyUrl(value)) {
     return ["proxyUrl must use http:// or https://"];
@@ -139,7 +139,7 @@ function validateProxyEnabled(source: ProxyValidationConfigSource, enabled: bool
     return [];
   }
   if (source === "env") {
-    return ["proxy validation requires proxy.enabled to be true for OPENCLAW_PROXY_URL"];
+    return ["proxy validation requires proxy.enabled to be true for EVE_PROXY_URL"];
   }
   return ["proxy validation requires proxy.enabled to be true for configured proxy URLs"];
 }
@@ -187,7 +187,7 @@ export function resolveProxyValidationConfig(
     };
   }
 
-  const envUrl = normalizeProxyUrl(options.env?.OPENCLAW_PROXY_URL);
+  const envUrl = normalizeProxyUrl(options.env?.EVE_PROXY_URL);
   if (envUrl) {
     const proxyCaFile = resolveManagedProxyCaFileForUrl({
       proxyUrl: envUrl,
@@ -215,7 +215,7 @@ export function resolveProxyValidationConfig(
     enabled: false,
     source: "disabled",
     errors: [
-      "proxy validation requires proxy.enabled=true with proxy.proxyUrl or OPENCLAW_PROXY_URL, or --proxy-url",
+      "proxy validation requires proxy.enabled=true with proxy.proxyUrl or EVE_PROXY_URL, or --proxy-url",
     ],
   };
 }

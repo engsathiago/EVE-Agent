@@ -1,5 +1,5 @@
 // Discord plugin module implements message handlerm preflight behavior.
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { resolveDiscordConversationIdentity } from "../conversation-identity.js";
 import type { User } from "../internal/discord.js";
 import { resolveDiscordDmCommandAccess, type DiscordDmPolicy } from "./dm-command-auth.js";
@@ -11,12 +11,12 @@ import type {
 } from "./message-handler.preflight.types.js";
 
 let conversationRuntimePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/conversation-binding-runtime")>
+  | Promise<typeof import("eve-agent/plugin-sdk/conversation-binding-runtime")>
   | undefined;
 let discordSendRuntimePromise: Promise<typeof import("../send.js")> | undefined;
 
 async function loadConversationRuntime() {
-  conversationRuntimePromise ??= import("openclaw/plugin-sdk/conversation-binding-runtime");
+  conversationRuntimePromise ??= import("eve-agent/plugin-sdk/conversation-binding-runtime");
   return await conversationRuntimePromise;
 }
 

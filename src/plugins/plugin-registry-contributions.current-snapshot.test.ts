@@ -1,6 +1,6 @@
 // Verifies current plugin registry contribution snapshots.
 import { afterEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   clearCurrentPluginMetadataSnapshot,
   setCurrentPluginMetadataSnapshot,
@@ -18,7 +18,7 @@ afterEach(() => {
 function createPluginRecord(id: string, enabled: boolean): InstalledPluginIndex["plugins"][number] {
   return {
     pluginId: id,
-    manifestPath: `/plugins/${id}/openclaw.plugin.json`,
+    manifestPath: `/plugins/${id}/eve.plugin.json`,
     manifestHash: id,
     rootDir: `/plugins/${id}`,
     origin: "global",
@@ -46,7 +46,7 @@ function createManifest(id: string): PluginManifestRecord {
 }
 
 function createSnapshot(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir: string;
   registryDiagnostics?: PluginMetadataSnapshot["registryDiagnostics"];
 }): PluginMetadataSnapshot {
@@ -97,10 +97,10 @@ function createSnapshot(params: {
 
 describe("loadPluginManifestRegistryForPluginRegistry current snapshot", () => {
   it("reuses compatible current manifest metadata", () => {
-    const config: OpenClawConfig = {};
+    const config: EVEConfig = {};
     const env = {
-      HOME: "/tmp/openclaw-test-home",
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
+      HOME: "/tmp/eve-test-home",
+      EVE_DISABLE_BUNDLED_PLUGINS: "1",
     };
     const workspaceDir = "/workspace";
     setCurrentPluginMetadataSnapshot(createSnapshot({ config, workspaceDir }), {
@@ -143,10 +143,10 @@ describe("loadPluginManifestRegistryForPluginRegistry current snapshot", () => {
   });
 
   it("does not reuse current metadata for explicit registry inputs or diagnostics", () => {
-    const config: OpenClawConfig = {};
+    const config: EVEConfig = {};
     const env = {
-      HOME: "/tmp/openclaw-test-home",
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
+      HOME: "/tmp/eve-test-home",
+      EVE_DISABLE_BUNDLED_PLUGINS: "1",
     };
     const workspaceDir = "/workspace";
     setCurrentPluginMetadataSnapshot(createSnapshot({ config, workspaceDir }), {

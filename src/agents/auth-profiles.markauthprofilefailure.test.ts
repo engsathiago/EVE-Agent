@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { closeOpenClawAgentDatabasesForTest } from "../state/openclaw-agent-db.js";
+import { closeEVEAgentDatabasesForTest } from "../state/eve-agent-db.js";
 
 vi.mock("./cli-credentials.js", () => ({
   readClaudeCliCredentialsCached: () => null,
@@ -36,12 +36,12 @@ let tempRoot = "";
 let tempCaseIndex = 0;
 
 beforeAll(() => {
-  tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-auth-"));
+  tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-auth-"));
 });
 
 afterAll(() => {
   clearRuntimeAuthProfileStoreSnapshots();
-  closeOpenClawAgentDatabasesForTest();
+  closeEVEAgentDatabasesForTest();
   fs.rmSync(tempRoot, { recursive: true, force: true });
 });
 

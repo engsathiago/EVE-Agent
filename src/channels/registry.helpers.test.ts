@@ -64,20 +64,20 @@ describe("channel registry helpers", () => {
     const line = formatChannelSelectionLine(telegram, formatTestLink);
     expect(line).not.toContain("Docs:");
     expect(line).toContain("/channels/telegram");
-    expect(line).toContain("https://openclaw.ai");
+    expect(line).toContain("https://eve.ai");
   });
 
   it("prefers the pinned channel registry when resolving registered plugin channels", () => {
-    const startupRegistry = createRegistryWithRegisteredChannel("openclaw-weixin", ["weixin"]);
+    const startupRegistry = createRegistryWithRegisteredChannel("eve-weixin", ["weixin"]);
     setActivePluginRegistry(startupRegistry);
     pinActivePluginChannelRegistry(startupRegistry);
 
     const replacementRegistry = createRegistryWithRegisteredChannel("qqbot", ["qq"]);
     setActivePluginRegistry(replacementRegistry);
 
-    expect(listRegisteredChannelPluginIds()).toEqual(["openclaw-weixin"]);
-    expect(normalizeAnyChannelId("weixin")).toBe("openclaw-weixin");
-    expect(getRegisteredChannelPluginMeta("OPENCLAW-WEIXIN")?.aliases).toEqual(["weixin"]);
+    expect(listRegisteredChannelPluginIds()).toEqual(["eve-weixin"]);
+    expect(normalizeAnyChannelId("weixin")).toBe("eve-weixin");
+    expect(getRegisteredChannelPluginMeta("EVE-WEIXIN")?.aliases).toEqual(["weixin"]);
   });
 
   it("falls back to the active registry when the pinned channel registry has no channels", () => {

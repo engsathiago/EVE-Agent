@@ -1,7 +1,7 @@
 // Resolves installed plugin directories for security trust audits.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 
-const IGNORED_INSTALLED_PLUGIN_DIR_NAMES = new Set(["node_modules", ".openclaw-install-backups"]);
+const IGNORED_INSTALLED_PLUGIN_DIR_NAMES = new Set(["node_modules", ".eve-install-backups"]);
 
 /**
  * Decide whether an installed-plugin directory should be skipped by security audits.

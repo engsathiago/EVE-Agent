@@ -8,15 +8,15 @@ import {
   clearMemoryEmbeddingProviders as clearRegistry,
   listRegisteredMemoryEmbeddingProviderAdapters as listRegisteredAdapters,
   registerMemoryEmbeddingProvider as registerAdapter,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { hashText } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
-import { resolveSessionTranscriptsDirForAgent } from "openclaw/plugin-sdk/memory-core-host-runtime-core";
-import { resolveOpenClawAgentSqlitePath } from "openclaw/plugin-sdk/sqlite-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
+import { hashText } from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
+import { resolveSessionTranscriptsDirForAgent } from "eve-agent/plugin-sdk/memory-core-host-runtime-core";
+import { resolveEVEAgentSqlitePath } from "eve-agent/plugin-sdk/sqlite-runtime";
 import {
-  closeOpenClawAgentDatabasesForTest,
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawAgentDatabase,
-} from "openclaw/plugin-sdk/sqlite-runtime-testing";
+  closeEVEAgentDatabasesForTest,
+  closeEVEStateDatabaseForTest,
+  openEVEAgentDatabase,
+} from "eve-agent/plugin-sdk/sqlite-runtime-testing";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import "./test-runtime-mocks.js";
 import type { MemoryIndexManager } from "./index.js";
@@ -283,7 +283,7 @@ describe("memory index", () => {
   const managersForCleanup = new Set<MemoryIndexManager>();
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-mem-fixtures-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-mem-fixtures-"));
     workspaceDir = path.join(fixtureRoot, "workspace");
     memoryDir = path.join(workspaceDir, "memory");
   });
@@ -297,8 +297,8 @@ describe("memory index", () => {
     vi.useRealTimers();
     await Promise.all(Array.from(managersForCleanup).map((manager) => manager.close()));
     await closeAllMemorySearchManagers();
-    closeOpenClawAgentDatabasesForTest();
-    closeOpenClawStateDatabaseForTest();
+    closeEVEAgentDatabasesForTest();
+    closeEVEStateDatabaseForTest();
     clearRegistry();
     managersForCleanup.clear();
     vi.unstubAllEnvs();
@@ -324,7 +324,7 @@ describe("memory index", () => {
 
     rmSync(workspaceDir, { recursive: true, force: true });
     mkdirSync(memoryDir, { recursive: true });
-    vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, ".state-memory-index"));
+    vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, ".state-memory-index"));
     await fs.writeFile(
       path.join(memoryDir, "2026-01-12.md"),
       "# Log\nAlpha memory line.\nZebra memory line.",
@@ -514,7 +514,7 @@ describe("memory index", () => {
     stateDirName: string;
   }): Promise<MemoryIndexManager | null> {
     forceNoProvider = true;
-    vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, params.stateDirName));
+    vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, params.stateDirName));
     const cfg = createCfg({
       sources: ["memory", "sessions"],
       sessionMemory: true,
@@ -599,13 +599,13 @@ describe("memory index", () => {
 
   it("reindexes memory tables in place without deleting unrelated agent rows", async () => {
     const stateDir = path.join(workspaceDir, "managed-memory-state");
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
-    const agentDbPath = resolveOpenClawAgentSqlitePath({ agentId: "main" });
-    const agentDb = openOpenClawAgentDatabase({ agentId: "main" });
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
+    const agentDbPath = resolveEVEAgentSqlitePath({ agentId: "main" });
+    const agentDb = openEVEAgentDatabase({ agentId: "main" });
     agentDb.db
       .prepare("INSERT INTO cache_entries (scope, key, value_json, updated_at) VALUES (?, ?, ?, ?)")
       .run("test", "keep-me", JSON.stringify({ value: "keep-me" }), 1);
-    closeOpenClawAgentDatabasesForTest();
+    closeEVEAgentDatabasesForTest();
 
     const manager = await getFreshManager(
       createCfg({
@@ -619,7 +619,7 @@ describe("memory index", () => {
       await manager.close?.();
     }
 
-    const reopened = openOpenClawAgentDatabase({ agentId: "main" });
+    const reopened = openEVEAgentDatabase({ agentId: "main" });
     expect(
       reopened.db
         .prepare("SELECT value_json FROM cache_entries WHERE scope = ? AND key = ?")
@@ -633,7 +633,7 @@ describe("memory index", () => {
     const manager = await getFreshManager(createCfg({}));
     await manager.close?.();
 
-    const agentDb = openOpenClawAgentDatabase({ agentId: "main" });
+    const agentDb = openEVEAgentDatabase({ agentId: "main" });
     expect(
       agentDb.db.prepare("SELECT role, agent_id FROM schema_meta WHERE meta_key = 'primary'").get(),
     ).toEqual({
@@ -1143,7 +1143,7 @@ describe("memory index", () => {
 
   it("clears dirty after sessions-only identity reindex", async () => {
     try {
-      vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, ".state-sessions-only-reindex"));
+      vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, ".state-sessions-only-reindex"));
       const sessionsDir = resolveSessionTranscriptsDirForAgent("main");
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(
@@ -1199,7 +1199,7 @@ describe("memory index", () => {
 
   it("marks sessions-only indexes dirty when metadata is missing but chunks exist", async () => {
     try {
-      vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, ".state-sessions-missing-meta"));
+      vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, ".state-sessions-missing-meta"));
       const sessionsDir = resolveSessionTranscriptsDirForAgent("main");
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(
@@ -1255,7 +1255,7 @@ describe("memory index", () => {
 
   it("keeps provider cutover vector search paused during targeted session sync", async () => {
     try {
-      vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, ".state-targeted-cutover"));
+      vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, ".state-targeted-cutover"));
       const sessionsDir = resolveSessionTranscriptsDirForAgent("main");
       await fs.mkdir(sessionsDir, { recursive: true });
       const sessionFile = path.join(sessionsDir, "session-targeted-cutover.jsonl");
@@ -1319,7 +1319,7 @@ describe("memory index", () => {
 
   it("preserves memory dirty events raised during session identity reindex", async () => {
     try {
-      vi.stubEnv("OPENCLAW_STATE_DIR", path.join(workspaceDir, ".state-dirty-during-session"));
+      vi.stubEnv("EVE_STATE_DIR", path.join(workspaceDir, ".state-dirty-during-session"));
       const sessionsDir = resolveSessionTranscriptsDirForAgent("main");
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(

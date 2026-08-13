@@ -2,22 +2,22 @@
 import type {
   ExecApprovalRequest,
   PluginApprovalRequest,
-} from "openclaw/plugin-sdk/approval-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/approval-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   shouldSuppressLocalSignalExecApprovalPrompt,
   signalApprovalCapability,
 } from "./approval-native.js";
 
-type SignalConfig = NonNullable<NonNullable<OpenClawConfig["channels"]>["signal"]>;
+type SignalConfig = NonNullable<NonNullable<EVEConfig["channels"]>["signal"]>;
 
 function buildConfig(
   params: {
     signal?: Partial<SignalConfig>;
-    approvals?: OpenClawConfig["approvals"];
+    approvals?: EVEConfig["approvals"];
   } = {},
-): OpenClawConfig {
+): EVEConfig {
   return {
     channels: {
       signal: {
@@ -26,7 +26,7 @@ function buildConfig(
       },
     },
     approvals: params.approvals,
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function buildExecRequest(
@@ -71,7 +71,7 @@ function buildPluginRequest(
 }
 
 function nativeShouldHandle(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   request: ExecApprovalRequest | PluginApprovalRequest;
   accountId?: string | null;
 }) {

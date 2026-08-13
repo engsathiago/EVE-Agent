@@ -1,6 +1,6 @@
 // Registers music generation provider runtimes by normalized provider id.
 import { normalizeProviderId } from "../agents/model-selection.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import { resolvePluginCapabilityProviders } from "../plugins/capability-provider-runtime.js";
 import type { MusicGenerationProviderPlugin } from "../plugins/types.js";
@@ -28,7 +28,7 @@ function isSafeMusicGenerationProviderId(id: string | undefined): id is string {
 }
 
 function resolvePluginMusicGenerationProviders(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): MusicGenerationProviderPlugin[] {
   return resolvePluginCapabilityProviders({
     key: "musicGenerationProviders",
@@ -36,7 +36,7 @@ function resolvePluginMusicGenerationProviders(
   });
 }
 
-function buildProviderMaps(cfg?: OpenClawConfig): {
+function buildProviderMaps(cfg?: EVEConfig): {
   canonical: Map<string, MusicGenerationProviderPlugin>;
   aliases: Map<string, MusicGenerationProviderPlugin>;
 } {
@@ -69,7 +69,7 @@ function buildProviderMaps(cfg?: OpenClawConfig): {
 
 /** List canonical music generation providers available for the current config. */
 export function listMusicGenerationProviders(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): MusicGenerationProviderPlugin[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
@@ -77,7 +77,7 @@ export function listMusicGenerationProviders(
 /** Resolve a music generation provider by canonical id or alias. */
 export function getMusicGenerationProvider(
   providerId: string | undefined,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): MusicGenerationProviderPlugin | undefined {
   const normalized = normalizeMusicGenerationProviderId(providerId);
   if (!normalized) {

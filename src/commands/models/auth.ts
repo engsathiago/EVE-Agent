@@ -7,11 +7,11 @@ import {
   select as clackSelect,
   text as clackText,
 } from "@clack/prompts";
-import { resolveExpiresAtMsFromDurationMs } from "@openclaw/normalization-core/number-coercion";
+import { resolveExpiresAtMsFromDurationMs } from "@eve/normalization-core/number-coercion";
 import {
   normalizeOptionalString,
   normalizeStringifiedOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import {
   stylePromptHint,
   stylePromptMessage,
@@ -40,7 +40,7 @@ import { formatCliCommand } from "../../cli/command-format.js";
 import { parseDurationMs } from "../../cli/parse-duration.js";
 import { logConfigUpdated } from "../../config/logging.js";
 import { normalizeAgentModelRefForConfig } from "../../config/model-input.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   applyProviderAuthConfigPatch,
   applyDefaultModel,
@@ -196,13 +196,13 @@ function validateOpenAICodexApiKeyInput(value: string): string | undefined {
   if (looksLikeJwtToken(trimmed) || looksLikeStructuredCredential(trimmed)) {
     // OAuth/token material belongs in token profiles; storing it as an API key
     // would make provider auth fail later with misleading model errors.
-    return `That looks like token or OAuth material, not an OpenAI API key. Use ${formatCliCommand("openclaw models auth paste-token --provider openai")} for token auth material.`;
+    return `That looks like token or OAuth material, not an OpenAI API key. Use ${formatCliCommand("eve models auth paste-token --provider openai")} for token auth material.`;
   }
   return "That does not look like an OpenAI API key.";
 }
 
 type ResolvedModelsAuthContext = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir: string;
   workspaceDir: string;
   providers: ProviderPlugin[];
@@ -244,7 +244,7 @@ function mergeSetupProviders(
 
 function preferSetupAuthProviders(params: {
   providers: readonly ProviderPlugin[];
-  config: OpenClawConfig;
+  config: EVEConfig;
   workspaceDir: string;
   requestedProvider?: string;
 }): ProviderPlugin[] {
@@ -333,7 +333,7 @@ function resolveRequestedProviderOrThrow(
     .toSorted((a, b) => a.localeCompare(b));
   const availableText = available.length > 0 ? available.join(", ") : "(none)";
   throw new Error(
-    `Unknown provider "${requested}". Loaded providers: ${availableText}. Verify plugins via \`${formatCliCommand("openclaw plugins list --json")}\`.`,
+    `Unknown provider "${requested}". Loaded providers: ${availableText}. Verify plugins via \`${formatCliCommand("eve plugins list --json")}\`.`,
   );
 }
 
@@ -418,7 +418,7 @@ async function pickProviderTokenMethod(params: {
 async function persistProviderAuthResult(params: {
   result: ProviderAuthResult;
   profiles?: ProviderAuthResult["profiles"];
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir: string;
   runtime: RuntimeEnv;
   prompter: ReturnType<typeof createClackPrompter>;
@@ -451,7 +451,7 @@ async function persistProviderAuthResult(params: {
     });
   }
 
-  // Auth login owns the credential store. Keep openclaw.json untouched unless
+  // Auth login owns the credential store. Keep eve.json untouched unless
   // the provider explicitly returns a config patch or the user opts into a
   // default-model write.
   if (shouldUpdateConfig) {
@@ -507,7 +507,7 @@ async function persistProviderAuthResult(params: {
 }
 
 function resolveConfiguredAuthSelectionForProvider(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   provider: string,
 ): { createIfMissing: boolean; order?: string[] } {
   const providerAuthKey = resolveProviderIdForAuth(provider, { config: cfg });
@@ -531,7 +531,7 @@ function resolveConfiguredAuthSelectionForProvider(
 }
 
 async function runProviderAuthMethod(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentDir: string;
   workspaceDir: string;
   provider: ProviderPlugin;
@@ -593,7 +593,7 @@ export async function modelsAuthSetupTokenCommand(
 ) {
   if (!process.stdin.isTTY) {
     throw new Error(
-      `setup-token requires an interactive TTY. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} instead.`,
+      `setup-token requires an interactive TTY. In automation, use ${formatCliCommand("eve models auth paste-token --provider <provider>")} instead.`,
     );
   }
 
@@ -604,7 +604,7 @@ export async function modelsAuthSetupTokenCommand(
   const tokenProviders = listProvidersWithTokenMethods(providers);
   if (tokenProviders.length === 0) {
     throw new Error(
-      `No provider token-auth plugins found. Install one via \`${formatCliCommand("openclaw plugins install")}\`.`,
+      `No provider token-auth plugins found. Install one via \`${formatCliCommand("eve plugins install")}\`.`,
     );
   }
 
@@ -612,7 +612,7 @@ export async function modelsAuthSetupTokenCommand(
     resolveRequestedProviderOrThrow(tokenProviders, opts.provider) ?? tokenProviders[0] ?? null;
   if (!provider) {
     throw new Error(
-      `No token-capable provider is available. Run ${formatCliCommand("openclaw plugins list")} to verify provider plugins are installed.`,
+      `No token-capable provider is available. Run ${formatCliCommand("eve plugins list")} to verify provider plugins are installed.`,
     );
   }
 
@@ -657,7 +657,7 @@ export async function modelsAuthPasteTokenCommand(
   const rawProvider = normalizeOptionalString(opts.provider);
   if (!rawProvider) {
     throw new Error(
-      `Missing --provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to choose a provider.`,
+      `Missing --provider. Run ${formatCliCommand("eve models status")} or ${formatCliCommand("eve plugins list")} to choose a provider.`,
     );
   }
   const provider = normalizeManualAuthProvider(rawProvider);
@@ -673,7 +673,7 @@ export async function modelsAuthPasteTokenCommand(
       return validateAnthropicSetupToken(trimmed.replaceAll(/\s+/g, ""));
     }
     if (isOpenAIProvider(provider) && looksLikeOpenAIApiKey(trimmed)) {
-      return `That looks like an OpenAI API key. Use ${formatCliCommand("openclaw models auth paste-api-key --provider openai")} for API-key auth.`;
+      return `That looks like an OpenAI API key. Use ${formatCliCommand("eve models auth paste-api-key --provider openai")} for API-key auth.`;
     }
     return undefined;
   };
@@ -705,9 +705,9 @@ export async function modelsAuthPasteTokenCommand(
   logConfigUpdated(runtime);
   runtime.log(`Auth profile: ${profileId} (${provider}/token)`);
   if (provider === "anthropic") {
-    runtime.log("Anthropic setup-token auth is supported in OpenClaw.");
-    runtime.log("OpenClaw prefers Claude CLI reuse when it is available on the host.");
-    runtime.log("Anthropic staff told us this OpenClaw path is allowed again.");
+    runtime.log("Anthropic setup-token auth is supported in EVE.");
+    runtime.log("EVE prefers Claude CLI reuse when it is available on the host.");
+    runtime.log("Anthropic staff told us this EVE path is allowed again.");
   }
 }
 
@@ -724,7 +724,7 @@ export async function modelsAuthPasteApiKeyCommand(
   const rawProvider = normalizeOptionalString(opts.provider);
   if (!rawProvider) {
     throw new Error(
-      `Missing --provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to choose a provider.`,
+      `Missing --provider. Run ${formatCliCommand("eve models status")} or ${formatCliCommand("eve plugins list")} to choose a provider.`,
     );
   }
   const provider = normalizeManualAuthProvider(rawProvider);
@@ -825,7 +825,7 @@ export async function modelsAuthAddCommand(opts: { agent?: string }, runtime: Ru
       const method = tokenMethods.find((candidate) => candidate.id === methodId);
       if (!method) {
         throw new Error(
-          `Unknown token auth method "${methodId}". Run ${formatCliCommand("openclaw models auth login --provider " + providerPlugin.id)} to choose interactively.`,
+          `Unknown token auth method "${methodId}". Run ${formatCliCommand("eve models auth login --provider " + providerPlugin.id)} to choose interactively.`,
         );
       }
       await runProviderAuthMethod({
@@ -956,7 +956,7 @@ function maybeLogOpenAICodexNativeSearchTip(runtime: RuntimeEnv, providerId: str
     return;
   }
   runtime.log(
-    "Tip: Codex-capable models can use native Codex web search. Enable it with openclaw configure --section web (recommended mode: cached). Docs: https://docs.openclaw.ai/tools/web",
+    "Tip: Codex-capable models can use native Codex web search. Enable it with eve configure --section web (recommended mode: cached). Docs: https://docs.eve.ai/tools/web",
   );
 }
 
@@ -964,7 +964,7 @@ function maybeLogOpenAICodexNativeSearchTip(runtime: RuntimeEnv, providerId: str
 export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: RuntimeEnv) {
   if (!process.stdin.isTTY) {
     throw new Error(
-      `models auth login requires an interactive TTY. In automation, use ${formatCliCommand("openclaw models auth paste-token --provider <provider>")} when token auth is available.`,
+      `models auth login requires an interactive TTY. In automation, use ${formatCliCommand("eve models auth paste-token --provider <provider>")} when token auth is available.`,
     );
   }
 
@@ -976,7 +976,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
   const authProviders = listProvidersWithAuthMethods(providers);
   if (authProviders.length === 0) {
     throw new Error(
-      `No provider plugins found. Install one via \`${formatCliCommand("openclaw plugins install")}\`.`,
+      `No provider plugins found. Install one via \`${formatCliCommand("eve plugins install")}\`.`,
     );
   }
 
@@ -999,7 +999,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
 
   if (!selectedProvider) {
     throw new Error(
-      `Unknown provider. Run ${formatCliCommand("openclaw models status")} or ${formatCliCommand("openclaw plugins list")} to see available provider plugins.`,
+      `Unknown provider. Run ${formatCliCommand("eve models status")} or ${formatCliCommand("eve plugins list")} to see available provider plugins.`,
     );
   }
 
@@ -1011,7 +1011,7 @@ export async function modelsAuthLoginCommand(opts: LoginOptions, runtime: Runtim
 
   if (!chosenMethod) {
     throw new Error(
-      `Unknown auth method. Run ${formatCliCommand("openclaw models auth login --provider " + selectedProvider.id)} without --method to choose interactively.`,
+      `Unknown auth method. Run ${formatCliCommand("eve models auth login --provider " + selectedProvider.id)} without --method to choose interactively.`,
     );
   }
 

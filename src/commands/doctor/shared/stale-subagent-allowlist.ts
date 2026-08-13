@@ -1,7 +1,7 @@
 // Doctor scanner and repair for subagent allowlists that reference missing agents.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { listAgentIds } from "../../../agents/agent-scope-config.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { normalizeAgentId } from "../../../routing/session-key.js";
 
 export type StaleSubagentAllowlistHit = {
@@ -21,7 +21,7 @@ function normalizeOptionalAgentId(value: string | undefined | null): string | un
   return normalizeAgentId(trimmed);
 }
 
-function collectConfiguredSubagentTargetIds(cfg: OpenClawConfig): Set<string> {
+function collectConfiguredSubagentTargetIds(cfg: EVEConfig): Set<string> {
   const ids = new Set<string>(listAgentIds(cfg));
   for (const agent of cfg.agents?.list ?? []) {
     if (agent.runtime?.type !== "acp") {
@@ -86,7 +86,7 @@ function collectStaleAllowlistEntries(params: {
 
 /** Find subagent allowlist entries not backed by configured agent or ACP targets. */
 export function scanStaleSubagentAllowlistReferences(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): StaleSubagentAllowlistHit[] {
   const configuredTargetIds = collectConfiguredSubagentTargetIds(cfg);
   const hits: StaleSubagentAllowlistHit[] = [];
@@ -138,8 +138,8 @@ function filterAllowAgents(params: {
 }
 
 /** Remove stale subagent allowlist entries while preserving valid targets and wildcards. */
-export function maybeRepairStaleSubagentAllowlists(cfg: OpenClawConfig): {
-  config: OpenClawConfig;
+export function maybeRepairStaleSubagentAllowlists(cfg: EVEConfig): {
+  config: EVEConfig;
   changes: string[];
 } {
   const hits = scanStaleSubagentAllowlistReferences(cfg);

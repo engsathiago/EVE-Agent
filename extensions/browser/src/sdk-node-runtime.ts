@@ -14,20 +14,20 @@ export {
   resolveGatewayAuth,
   resolveNodeCommandAllowlist,
   safeParseJson,
-} from "openclaw/plugin-sdk/gateway-runtime";
+} from "eve-agent/plugin-sdk/gateway-runtime";
 export type {
   GatewayRequestHandlers,
   GatewayRpcOpts,
   NodeSession,
-} from "openclaw/plugin-sdk/gateway-runtime";
-export { runCommandWithRuntime } from "openclaw/plugin-sdk/cli-runtime";
-export type { OpenClawPluginService } from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/gateway-runtime";
+export { runCommandWithRuntime } from "eve-agent/plugin-sdk/cli-runtime";
+export type { EVEPluginService } from "eve-agent/plugin-sdk/plugin-entry";
 export {
   startLazyPluginServiceModule,
   type LazyPluginServiceHandle,
-} from "openclaw/plugin-sdk/plugin-runtime";
-export { defaultRuntime } from "openclaw/plugin-sdk/runtime-env";
-import { clampTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/plugin-runtime";
+export { defaultRuntime } from "eve-agent/plugin-sdk/runtime-env";
+import { clampTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
 
 function normalizeTimeoutMs(timeoutMs: number | undefined): number | undefined {
   return clampTimerTimeoutMs(timeoutMs);

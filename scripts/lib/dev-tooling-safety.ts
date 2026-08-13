@@ -1,4 +1,4 @@
-// Dev Tooling Safety script supports OpenClaw repository automation.
+// Dev Tooling Safety script supports EVE repository automation.
 import path from "node:path";
 import { redactSensitiveText } from "../../src/logging/redact.js";
 

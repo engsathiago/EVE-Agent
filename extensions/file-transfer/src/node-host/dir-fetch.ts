@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
 import path from "node:path";
-import { root as fsRoot } from "openclaw/plugin-sdk/security-runtime";
+import { root as fsRoot } from "eve-agent/plugin-sdk/security-runtime";
 import {
   classifyFsSafeReadError,
   readAbsolutePath,

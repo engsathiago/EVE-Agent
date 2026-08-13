@@ -1,6 +1,6 @@
-// Github Copilot plugin entrypoint registers its OpenClaw integration.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
+// Github Copilot plugin entrypoint registers its EVE integration.
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { resolvePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
 import {
   definePluginEntry,
   type ProviderCatalogContext,
@@ -10,7 +10,7 @@ import {
   type ProviderAuthMethodNonInteractiveContext,
   type UnifiedModelCatalogEntry,
   type UnifiedModelCatalogProviderContext,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/plugin-entry";
 import {
   applyAuthProfileConfig,
   coerceSecretRef,
@@ -19,8 +19,8 @@ import {
   normalizeOptionalSecretInput,
   resolveDefaultSecretProviderAlias,
   upsertAuthProfileWithLock,
-} from "openclaw/plugin-sdk/provider-auth";
-import { getCachedLiveCatalogValue } from "openclaw/plugin-sdk/provider-catalog-shared";
+} from "eve-agent/plugin-sdk/provider-auth";
+import { getCachedLiveCatalogValue } from "eve-agent/plugin-sdk/provider-catalog-shared";
 import { resolveFirstGithubToken } from "./auth.js";
 import { githubCopilotMemoryEmbeddingProviderAdapter } from "./embeddings.js";
 import { resolveCopilotExtendedThinkingLevels } from "./model-metadata.js";
@@ -49,7 +49,7 @@ async function loadGithubCopilotRuntime() {
   return await import("./register.runtime.js");
 }
 
-function applyCopilotDefaultModel(cfg: OpenClawConfig): OpenClawConfig {
+function applyCopilotDefaultModel(cfg: EVEConfig): EVEConfig {
   const defaults = cfg.agents?.defaults;
   const existingModel = defaults?.model;
   const existingPrimary =
@@ -191,7 +191,7 @@ async function resolveCopilotNonInteractiveToken(
 
 async function runGitHubCopilotNonInteractiveAuth(
   ctx: ProviderAuthMethodNonInteractiveContext,
-): Promise<OpenClawConfig | null> {
+): Promise<EVEConfig | null> {
   const opts = ctx.opts as Record<string, unknown> | undefined;
   const flagValue = normalizeOptionalSecretInput(opts?.githubCopilotToken);
   const resolved = await resolveCopilotNonInteractiveToken(ctx, flagValue);
@@ -259,7 +259,7 @@ export default definePluginEntry({
   register(api) {
     const startupPluginConfig = (api.pluginConfig ?? {}) as GithubCopilotPluginConfig;
 
-    function resolveCurrentPluginConfig(config?: OpenClawConfig): GithubCopilotPluginConfig {
+    function resolveCurrentPluginConfig(config?: EVEConfig): GithubCopilotPluginConfig {
       const runtimePluginConfig = resolvePluginConfigObject(config, "github-copilot");
       if (runtimePluginConfig) {
         return runtimePluginConfig as GithubCopilotPluginConfig;

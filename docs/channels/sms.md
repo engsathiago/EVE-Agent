@@ -1,12 +1,12 @@
 ---
 summary: "Twilio SMS channel setup, access controls, and webhook configuration"
 read_when:
-  - You want to connect OpenClaw to SMS through Twilio
+  - You want to connect EVE to SMS through Twilio
   - You need SMS webhook or allowlist setup
 title: "SMS"
 ---
 
-OpenClaw can receive and send SMS through a Twilio phone number or Messaging Service. The Gateway registers an inbound webhook route, validates Twilio request signatures by default, and sends replies back through Twilio's Messages API.
+EVE can receive and send SMS through a Twilio phone number or Messaging Service. The Gateway registers an inbound webhook route, validates Twilio request signatures by default, and sends replies back through Twilio's Messages API.
 
 <CardGroup cols={3}>
   <Card title="Pairing" icon="link" href="/channels/pairing">
@@ -26,7 +26,7 @@ You need:
 
 - A Twilio account with an SMS-capable phone number, or a Twilio Messaging Service.
 - The Twilio Account SID and Auth Token.
-- A public HTTPS URL that reaches your OpenClaw Gateway.
+- A public HTTPS URL that reaches your EVE Gateway.
 - A sender policy choice: `pairing` for private use, `allowlist` for preapproved phone numbers, or `open` only for intentionally public SMS access.
 
 Use one Twilio number for both SMS and Voice Call if the number has both capabilities. Configure the SMS webhook and Voice webhook separately in Twilio; this page only covers the SMS webhook.
@@ -67,8 +67,8 @@ Save this as `sms.patch.json5` and change the placeholders:
 Apply it:
 
 ```bash
-openclaw config patch --file ./sms.patch.json5 --dry-run
-openclaw config patch --file ./sms.patch.json5
+eve config patch --file ./sms.patch.json5 --dry-run
+eve config patch --file ./sms.patch.json5
 ```
 
   </Step>
@@ -99,14 +99,14 @@ tailscale funnel status
   <Step title="Start the Gateway and approve first sender">
 
 ```bash
-openclaw gateway
+eve gateway
 ```
 
 Send a text message to the Twilio number. The first message creates a pairing request. Approve it:
 
 ```bash
-openclaw pairing list sms
-openclaw pairing approve sms <CODE>
+eve pairing list sms
+eve pairing approve sms <CODE>
 ```
 
     Pairing codes expire after 1 hour.
@@ -163,7 +163,7 @@ Then enable the channel in config:
 
 ### SecretRef auth token
 
-`authToken` can be a SecretRef. Use this when the Gateway should resolve the Twilio Auth Token from the OpenClaw secrets runtime instead of storing plaintext config:
+`authToken` can be a SecretRef. Use this when the Gateway should resolve the Twilio Auth Token from the EVE secrets runtime instead of storing plaintext config:
 
 ```json5
 {
@@ -258,20 +258,20 @@ Set `defaultTo` when automation or agent-initiated delivery should have a defaul
 Outbound SMS targets use the `sms:` service prefix with the SMS channel selected:
 
 ```bash
-openclaw message send --channel sms --target sms:+15551234567 --message "hello"
+eve message send --channel sms --target sms:+15551234567 --message "hello"
 ```
 
 When channel selection is implicit, `twilio-sms:+15551234567` selects this channel without taking over the existing channel-owned `sms:` service prefix used by iMessage.
 
 ```bash
-openclaw message send --target twilio-sms:+15551234567 --message "hello"
+eve message send --target twilio-sms:+15551234567 --message "hello"
 ```
 
 The CLI requires an explicit `--target`. `defaultTo` is for automation and agent-initiated delivery paths where the target can be resolved from channel config.
 
 Agent replies from inbound SMS conversations automatically go back to the sender through the configured Twilio sender.
 
-SMS output is plain text. OpenClaw strips markdown, flattens fenced code blocks, preserves readable links, and chunks long replies before sending them through Twilio.
+SMS output is plain text. EVE strips markdown, flattens fenced code blocks, preserves readable links, and chunks long replies before sending them through Twilio.
 
 ## Verify Setup
 
@@ -281,19 +281,19 @@ After the Gateway starts:
 2. Run a Twilio-side probe:
 
 ```bash
-openclaw channels capabilities --channel sms
-openclaw channels status --channel sms --probe --json
+eve channels capabilities --channel sms
+eve channels status --channel sms --probe --json
 ```
 
 3. Send an SMS to the Twilio number from your phone.
-4. Run `openclaw pairing list sms`.
-5. Approve the pairing code with `openclaw pairing approve sms <CODE>`.
+4. Run `eve pairing list sms`.
+5. Approve the pairing code with `eve pairing approve sms <CODE>`.
 6. Send another SMS and confirm the agent replies.
 
 For outbound-only testing, use:
 
 ```bash
-openclaw message send --channel sms --target sms:+15557654321 --message "OpenClaw SMS test"
+eve message send --channel sms --target sms:+15557654321 --message "EVE SMS test"
 ```
 
 ### End-to-end test from macOS iMessage/SMS
@@ -301,9 +301,9 @@ openclaw message send --channel sms --target sms:+15557654321 --message "OpenCla
 On a Mac that can send carrier SMS through Messages, you can use `imsg` to drive the sender side without touching your phone:
 
 ```bash
-imsg send --to "+15551234567" --service sms --text "OpenClaw SMS E2E $(date -u +%Y%m%dT%H%M%SZ)" --json
-openclaw pairing list sms
-openclaw pairing approve sms <CODE>
+imsg send --to "+15551234567" --service sms --text "EVE SMS E2E $(date -u +%Y%m%dT%H%M%SZ)" --json
+eve pairing list sms
+eve pairing approve sms <CODE>
 imsg send --to "+15551234567" --service sms --text "reply exactly SMS pong" --json
 ```
 
@@ -311,7 +311,7 @@ The first message should create a pairing request. The second message should rec
 
 ## Webhook security
 
-By default, OpenClaw validates `X-Twilio-Signature` using `publicWebhookUrl` and `authToken`. Keep `publicWebhookUrl` byte-for-byte aligned with the URL configured in Twilio, including scheme, host, path, and query string.
+By default, EVE validates `X-Twilio-Signature` using `publicWebhookUrl` and `authToken`. Keep `publicWebhookUrl` byte-for-byte aligned with the URL configured in Twilio, including scheme, host, path, and query string.
 
 For local tunnel testing only, you can set:
 
@@ -356,7 +356,7 @@ Each account should use a distinct `webhookPath`.
 
 ## Troubleshooting
 
-### Twilio returns 403 or OpenClaw rejects the webhook
+### Twilio returns 403 or EVE rejects the webhook
 
 Check that `publicWebhookUrl` exactly matches the URL configured in Twilio, including scheme, host, path, and query string. Twilio signs the public URL string, so proxy rewrites and alternate hostnames can break signature validation.
 

@@ -2,11 +2,11 @@
 summary: "Cohere setup (auth + model selection)"
 title: "Cohere"
 read_when:
-  - You want to use Cohere with OpenClaw
+  - You want to use Cohere with EVE
   - You need the Cohere API key env var or CLI auth choice
 ---
 
-[Cohere](https://cohere.com) provides OpenAI-compatible inference through its Compatibility API. OpenClaw ships the Cohere provider during its externalization transition and also publishes it as an official external plugin with the Command A model catalog.
+[Cohere](https://cohere.com) provides OpenAI-compatible inference through its Compatibility API. EVE ships the Cohere provider during its externalization transition and also publishes it as an official external plugin with the Command A model catalog.
 
 | Property        | Value                                                |
 | --------------- | ---------------------------------------------------- |
@@ -21,18 +21,18 @@ read_when:
 
 ## Get started
 
-1. Cohere is included in current OpenClaw packages. If it is unavailable, install the external package and restart the Gateway:
+1. Cohere is included in current EVE packages. If it is unavailable, install the external package and restart the Gateway:
 
 ```bash
-openclaw plugins install @openclaw/cohere-provider
-openclaw gateway restart
+eve plugins install @eve/cohere-provider
+eve gateway restart
 ```
 
 2. Create a Cohere API key.
 3. Run onboarding:
 
 ```bash
-openclaw onboard --non-interactive \
+eve onboard --non-interactive \
   --auth-choice cohere-api-key \
   --cohere-api-key "$COHERE_API_KEY"
 ```
@@ -40,7 +40,7 @@ openclaw onboard --non-interactive \
 4. Confirm the catalog is available:
 
 ```bash
-openclaw models list --provider cohere
+eve models list --provider cohere
 ```
 
 The default model is set only when no primary model is already configured.

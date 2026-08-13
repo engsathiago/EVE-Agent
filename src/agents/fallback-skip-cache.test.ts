@@ -262,9 +262,9 @@ describe("fallback-skip-cache", () => {
     ).toBe(false);
   });
 
-  it("uses OPENCLAW_FALLBACK_SKIP_TTL_MS as an opt-in default TTL", () => {
-    const previous = process.env.OPENCLAW_FALLBACK_SKIP_TTL_MS;
-    process.env.OPENCLAW_FALLBACK_SKIP_TTL_MS = "60000";
+  it("uses EVE_FALLBACK_SKIP_TTL_MS as an opt-in default TTL", () => {
+    const previous = process.env.EVE_FALLBACK_SKIP_TTL_MS;
+    process.env.EVE_FALLBACK_SKIP_TTL_MS = "60000";
     try {
       markFallbackCandidateSkipped({
         sessionId: "s1",
@@ -291,9 +291,9 @@ describe("fallback-skip-cache", () => {
       ).toBe(false);
     } finally {
       if (previous === undefined) {
-        delete process.env.OPENCLAW_FALLBACK_SKIP_TTL_MS;
+        delete process.env.EVE_FALLBACK_SKIP_TTL_MS;
       } else {
-        process.env.OPENCLAW_FALLBACK_SKIP_TTL_MS = previous;
+        process.env.EVE_FALLBACK_SKIP_TTL_MS = previous;
       }
     }
   });

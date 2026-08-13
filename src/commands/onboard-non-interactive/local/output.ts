@@ -146,17 +146,17 @@ function recoveryHintForGatewayHealthFailure(
 ): string | undefined {
   switch (classification) {
     case "auth-mismatch":
-      return "Fix: run `openclaw doctor --fix`.";
+      return "Fix: run `eve doctor --fix`.";
     case "module-missing":
-      return "Fix: run `openclaw doctor --fix`.";
+      return "Fix: run `eve doctor --fix`.";
     case "service-missing":
-      return "Fix: run `openclaw gateway install --force`.";
+      return "Fix: run `eve gateway install --force`.";
     case "service-stopped":
-      return "Fix: run `openclaw gateway restart`.";
+      return "Fix: run `eve gateway restart`.";
     case "startup-blocked":
-      return "Fix: run `openclaw gateway status --deep`.";
+      return "Fix: run `eve gateway status --deep`.";
     case "not-listening":
-      return "Fix: start `openclaw gateway run`, or run `openclaw gateway restart` for a managed gateway.";
+      return "Fix: start `eve gateway run`, or run `eve gateway restart` for a managed gateway.";
     default:
       return undefined;
   }

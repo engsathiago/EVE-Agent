@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/acpx",
+  "name": "@eve/acpx",
   "version": "2026.6.8",
-  "description": "OpenClaw ACP runtime backend with plugin-owned session and transport management.",
+  "description": "EVE ACP runtime backend with plugin-owned session and transport management.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -14,14 +14,14 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/acpx",
+      "npmSpec": "@eve/acpx",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.25"
     },
@@ -29,7 +29,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8",
+      "eveVersion": "2026.6.8",
       "staticAssets": [
         {
           "source": "./src/runtime-internals/mcp-proxy.mjs",

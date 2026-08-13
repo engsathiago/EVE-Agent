@@ -1,8 +1,8 @@
 import Foundation
 import Testing
 import UIKit
-@testable import OpenClawKit
-@testable import OpenClaw
+@testable import EVEKit
+@testable import EVE
 
 @Suite(.serialized) struct GatewayConnectionControllerTests {
     @Test @MainActor func resolvedDisplayNameSetsDefaultWhenMissing() {
@@ -24,32 +24,32 @@ import UIKit
             "node.instanceId": "ios-test",
             "node.displayName": "Test Node",
             "camera.enabled": true,
-            "location.enabledMode": OpenClawLocationMode.always.rawValue,
+            "location.enabledMode": EVELocationMode.always.rawValue,
             VoiceWakePreferences.enabledKey: true,
         ]) {
             let appModel = NodeAppModel()
             let controller = GatewayConnectionController(appModel: appModel, startDiscovery: false)
             let caps = Set(controller._test_currentCaps())
 
-            #expect(caps.contains(OpenClawCapability.canvas.rawValue))
-            #expect(caps.contains(OpenClawCapability.screen.rawValue))
-            #expect(caps.contains(OpenClawCapability.camera.rawValue))
-            #expect(caps.contains(OpenClawCapability.location.rawValue))
-            #expect(caps.contains(OpenClawCapability.voiceWake.rawValue))
-            #expect(caps.contains(OpenClawCapability.talk.rawValue))
+            #expect(caps.contains(EVECapability.canvas.rawValue))
+            #expect(caps.contains(EVECapability.screen.rawValue))
+            #expect(caps.contains(EVECapability.camera.rawValue))
+            #expect(caps.contains(EVECapability.location.rawValue))
+            #expect(caps.contains(EVECapability.voiceWake.rawValue))
+            #expect(caps.contains(EVECapability.talk.rawValue))
         }
     }
 
     @Test @MainActor func currentCommandsIncludeLocationWhenEnabled() {
         withUserDefaults([
             "node.instanceId": "ios-test",
-            "location.enabledMode": OpenClawLocationMode.whileUsing.rawValue,
+            "location.enabledMode": EVELocationMode.whileUsing.rawValue,
         ]) {
             let appModel = NodeAppModel()
             let controller = GatewayConnectionController(appModel: appModel, startDiscovery: false)
             let commands = Set(controller._test_currentCommands())
 
-            #expect(commands.contains(OpenClawLocationCommand.get.rawValue))
+            #expect(commands.contains(EVELocationCommand.get.rawValue))
         }
     }
 
@@ -72,34 +72,34 @@ import UIKit
         withUserDefaults([
             "node.instanceId": "ios-test",
             "camera.enabled": true,
-            "location.enabledMode": OpenClawLocationMode.whileUsing.rawValue,
+            "location.enabledMode": EVELocationMode.whileUsing.rawValue,
         ]) {
             let appModel = NodeAppModel()
             let controller = GatewayConnectionController(appModel: appModel, startDiscovery: false)
             let commands = Set(controller._test_currentCommands())
 
             // iOS should expose notify, but not host shell/exec-approval commands.
-            #expect(commands.contains(OpenClawSystemCommand.notify.rawValue))
-            #expect(!commands.contains(OpenClawSystemCommand.run.rawValue))
-            #expect(!commands.contains(OpenClawSystemCommand.which.rawValue))
-            #expect(!commands.contains(OpenClawSystemCommand.execApprovalsGet.rawValue))
-            #expect(!commands.contains(OpenClawSystemCommand.execApprovalsSet.rawValue))
+            #expect(commands.contains(EVESystemCommand.notify.rawValue))
+            #expect(!commands.contains(EVESystemCommand.run.rawValue))
+            #expect(!commands.contains(EVESystemCommand.which.rawValue))
+            #expect(!commands.contains(EVESystemCommand.execApprovalsGet.rawValue))
+            #expect(!commands.contains(EVESystemCommand.execApprovalsSet.rawValue))
         }
     }
 
     @Test @MainActor func operatorConnectOptionsOnlyRequestApprovalScopeWhenEnabled() {
         let appModel = NodeAppModel()
         let withoutApprovalScope = appModel._test_makeOperatorConnectOptions(
-            clientId: "openclaw-ios",
-            displayName: "OpenClaw iOS",
+            clientId: "eve-ios",
+            displayName: "EVE iOS",
             includeApprovalScope: false)
         let withApprovalScope = appModel._test_makeOperatorConnectOptions(
-            clientId: "openclaw-ios",
-            displayName: "OpenClaw iOS",
+            clientId: "eve-ios",
+            displayName: "EVE iOS",
             includeApprovalScope: true)
         let withAdminScope = appModel._test_makeOperatorConnectOptions(
-            clientId: "openclaw-ios",
-            displayName: "OpenClaw iOS",
+            clientId: "eve-ios",
+            displayName: "EVE iOS",
             includeAdminScope: true,
             includeApprovalScope: false)
 
@@ -118,8 +118,8 @@ import UIKit
     @Test @MainActor func operatorTalkPermissionUpgradeUsesExplicitLeastPrivilegeScopes() {
         let appModel = NodeAppModel()
         let options = appModel._test_makeOperatorConnectOptions(
-            clientId: "openclaw-ios",
-            displayName: "OpenClaw iOS",
+            clientId: "eve-ios",
+            displayName: "EVE iOS",
             includeApprovalScope: false,
             forceExplicitScopes: true)
 
@@ -371,18 +371,18 @@ import UIKit
     }
 
     @Test @MainActor func loadLastConnectionReadsSavedValues() {
-        let prior = KeychainStore.loadString(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+        let prior = KeychainStore.loadString(service: "ai.evefoundation.app.gateway", account: "lastConnection")
         defer {
             if let prior {
                 _ = KeychainStore.saveString(
                     prior,
-                    service: "ai.openclawfoundation.app.gateway",
+                    service: "ai.evefoundation.app.gateway",
                     account: "lastConnection")
             } else {
-                _ = KeychainStore.delete(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+                _ = KeychainStore.delete(service: "ai.evefoundation.app.gateway", account: "lastConnection")
             }
         }
-        _ = KeychainStore.delete(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+        _ = KeychainStore.delete(service: "ai.evefoundation.app.gateway", account: "lastConnection")
 
         GatewaySettingsStore.saveLastGatewayConnectionManual(
             host: "gateway.example.com",
@@ -398,18 +398,18 @@ import UIKit
     }
 
     @Test @MainActor func loadLastConnectionReturnsNilForInvalidData() {
-        let prior = KeychainStore.loadString(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+        let prior = KeychainStore.loadString(service: "ai.evefoundation.app.gateway", account: "lastConnection")
         defer {
             if let prior {
                 _ = KeychainStore.saveString(
                     prior,
-                    service: "ai.openclawfoundation.app.gateway",
+                    service: "ai.evefoundation.app.gateway",
                     account: "lastConnection")
             } else {
-                _ = KeychainStore.delete(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+                _ = KeychainStore.delete(service: "ai.evefoundation.app.gateway", account: "lastConnection")
             }
         }
-        _ = KeychainStore.delete(service: "ai.openclawfoundation.app.gateway", account: "lastConnection")
+        _ = KeychainStore.delete(service: "ai.evefoundation.app.gateway", account: "lastConnection")
 
         // Plant legacy UserDefaults with invalid host/port to exercise migration + validation.
         withUserDefaults([

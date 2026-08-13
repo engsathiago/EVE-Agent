@@ -19,21 +19,21 @@ beforeEach(() => {
 describe("channel plugin catalog", () => {
   it("keeps third-party channel ids mapped with catalog install trust", () => {
     const options = {
-      workspaceDir: "/tmp/openclaw-channel-catalog-empty-workspace",
+      workspaceDir: "/tmp/eve-channel-catalog-empty-workspace",
       env: {},
     };
 
     const wecom = getChannelPluginCatalogEntry("wecom", options);
     expect(wecom?.id).toBe("wecom");
-    expect(wecom?.pluginId).toBe("wecom-openclaw-plugin");
+    expect(wecom?.pluginId).toBe("wecom-eve-plugin");
     expect(wecom?.trustedSourceLinkedOfficialInstall).toBe(true);
-    expect(wecom?.install?.npmSpec).toBe("@wecom/wecom-openclaw-plugin@2026.5.7");
+    expect(wecom?.install?.npmSpec).toBe("@wecom/wecom-eve-plugin@2026.5.7");
 
     const yuanbao = getChannelPluginCatalogEntry("yuanbao", options);
     expect(yuanbao?.id).toBe("yuanbao");
-    expect(yuanbao?.pluginId).toBe("openclaw-plugin-yuanbao");
+    expect(yuanbao?.pluginId).toBe("eve-plugin-yuanbao");
     expect(yuanbao?.trustedSourceLinkedOfficialInstall).toBe(true);
-    expect(yuanbao?.install?.npmSpec).toBe("openclaw-plugin-yuanbao@2.13.1");
+    expect(yuanbao?.install?.npmSpec).toBe("eve-plugin-yuanbao@2.13.1");
   });
 
   it("excludes only the rejected origin/plugin pair when resolving fallback copies", () => {
@@ -56,7 +56,7 @@ describe("channel plugin catalog", () => {
         pluginId: "telegram",
         origin: "bundled",
         rootDir: "/tmp/bundled-telegram",
-        packageName: "@openclaw/telegram",
+        packageName: "@eve/telegram",
         channel: {
           id: "telegram",
           label: "Telegram",
@@ -64,7 +64,7 @@ describe("channel plugin catalog", () => {
           docsPath: "/channels/telegram",
           blurb: "bundled",
         },
-        install: { npmSpec: "@openclaw/telegram@1.0.0" },
+        install: { npmSpec: "@eve/telegram@1.0.0" },
       },
     ] satisfies PluginChannelCatalogEntry[]);
 

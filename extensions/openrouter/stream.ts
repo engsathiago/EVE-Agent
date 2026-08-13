@@ -1,23 +1,23 @@
 // Openrouter plugin module implements stream behavior.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
 import {
   createAssistantMessageEventStream,
   type AssistantMessage,
   type AssistantMessageEvent,
-} from "openclaw/plugin-sdk/llm";
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
+} from "eve-agent/plugin-sdk/llm";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
 import {
   assertOkOrThrowHttpError,
   fetchWithTimeoutGuarded,
-} from "openclaw/plugin-sdk/provider-http";
-import { OPENROUTER_THINKING_STREAM_HOOKS } from "openclaw/plugin-sdk/provider-stream-family";
+} from "eve-agent/plugin-sdk/provider-http";
+import { OPENROUTER_THINKING_STREAM_HOOKS } from "eve-agent/plugin-sdk/provider-stream-family";
 import {
   createDeepSeekV4OpenAICompatibleThinkingWrapper,
   type DeepSeekV4ReasoningEffort,
   type DeepSeekV4ThinkingLevel,
   createPayloadPatchStreamWrapper,
-} from "openclaw/plugin-sdk/provider-stream-shared";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
 import { isOpenRouterDeepSeekV4ModelId } from "./models.js";
 import {
   isOpenRouterProxyReasoningUnsupportedModel,
@@ -114,8 +114,8 @@ async function fetchOpenRouterGenerationTotalCost(params: {
       method: "GET",
       headers: {
         Authorization: `Bearer ${params.apiKey}`,
-        "HTTP-Referer": "https://openclaw.ai",
-        "X-OpenRouter-Title": "OpenClaw",
+        "HTTP-Referer": "https://eve.ai",
+        "X-OpenRouter-Title": "EVE",
       },
     },
     OPENROUTER_GENERATION_LOOKUP_TIMEOUT_MS,

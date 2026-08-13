@@ -1,10 +1,10 @@
 // Audio transcode helpers run ffmpeg to convert audio for provider requirements.
 import { spawn } from "node:child_process";
 import path from "node:path";
-import { basenameFromAnyPath } from "@openclaw/media-core/file-name";
+import { basenameFromAnyPath } from "@eve/media-core/file-name";
 import { writeExternalFileWithinRoot } from "../infra/fs-safe.js";
 import { tempWorkspaceSync, withTempWorkspace } from "../infra/private-temp-workspace.js";
-import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 import { runFfmpeg } from "./ffmpeg-exec.js";
 
 const DEFAULT_OPUS_SAMPLE_RATE_HZ = 48_000;
@@ -57,7 +57,7 @@ export async function transcodeAudioBufferToOpus(params: {
 }): Promise<Buffer> {
   return await withTempWorkspace(
     {
-      rootDir: resolvePreferredOpenClawTmpDir(),
+      rootDir: resolvePreferredEVETmpDir(),
       prefix: normalizeTempPrefix(params.tempPrefix),
     },
     async (workspace) => {
@@ -141,7 +141,7 @@ export async function transcodeAudioBuffer(params: {
 
   // afconvert is macOS-only and writes native Messages-compatible voice containers.
   const tmp = tempWorkspaceSync({
-    rootDir: resolvePreferredOpenClawTmpDir(),
+    rootDir: resolvePreferredEVETmpDir(),
     prefix: "tts-transcode-",
   });
   const inPath = tmp.write(`in.${source}`, params.audioBuffer);

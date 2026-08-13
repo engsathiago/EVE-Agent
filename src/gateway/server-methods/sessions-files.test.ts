@@ -99,10 +99,10 @@ describe("sessions.files RPC handlers", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-files-test-"));
+    workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-files-test-"));
     hoisted.resolveDefaultAgentId.mockReturnValue("main");
     hoisted.resolveAgentWorkspaceDir.mockReturnValue(workspaceRoot);
-    writeWorkspaceFile(workspaceRoot, "package.json", '{"name":"openclaw-test"}\n');
+    writeWorkspaceFile(workspaceRoot, "package.json", '{"name":"eve-test"}\n');
     writeWorkspaceFile(workspaceRoot, "src/readme.md", "# Read me\n");
     writeWorkspaceFile(workspaceRoot, "ui/chat.ts", "export const chat = true;\n");
     writeWorkspaceFile(workspaceRoot, "ui/vite.config.ts", "export default {};\n");
@@ -440,7 +440,7 @@ describe("sessions.files RPC handlers", () => {
   });
 
   it("does not read absolute paths outside the configured workspace", async () => {
-    const outsidePath = path.join(os.tmpdir(), `openclaw-outside-${Date.now()}.txt`);
+    const outsidePath = path.join(os.tmpdir(), `eve-outside-${Date.now()}.txt`);
     fs.writeFileSync(outsidePath, "outside\n", "utf8");
     hoisted.loadSessionEntry.mockReturnValue({
       canonicalKey: "agent:main:main",
@@ -474,7 +474,7 @@ describe("sessions.files RPC handlers", () => {
   });
 
   it("does not follow workspace symlinks for file previews", async () => {
-    const outsidePath = path.join(os.tmpdir(), `openclaw-linked-${Date.now()}.txt`);
+    const outsidePath = path.join(os.tmpdir(), `eve-linked-${Date.now()}.txt`);
     fs.writeFileSync(outsidePath, "linked outside\n", "utf8");
     fs.symlinkSync(outsidePath, path.join(workspaceRoot, "linked.txt"));
 
@@ -496,7 +496,7 @@ describe("sessions.files RPC handlers", () => {
   });
 
   it("does not follow symlinked parent directories for file previews", async () => {
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-linked-parent-"));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-linked-parent-"));
     writeWorkspaceFile(outsideDir, "secret.txt", "linked parent outside\n");
     fs.symlinkSync(outsideDir, path.join(workspaceRoot, "linked-dir"), "dir");
 
@@ -548,7 +548,7 @@ describe("sessions.files RPC handlers", () => {
 
   it("does not derive a workspace root from transcript cwd", async () => {
     const sessionsDir = path.join(workspaceRoot, "custom-sessions");
-    const transcriptCwd = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-transcript-cwd-"));
+    const transcriptCwd = fs.mkdtempSync(path.join(os.tmpdir(), "eve-transcript-cwd-"));
     writeWorkspaceFile(transcriptCwd, "secret.txt", "transcript cwd secret\n");
     fs.mkdirSync(sessionsDir, { recursive: true });
     fs.writeFileSync(

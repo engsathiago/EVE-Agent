@@ -1,9 +1,9 @@
 /**
  * Mirrors the AgentMessages produced by the copilot agent runtime into the
- * OpenClaw audit transcript that sits next to (but is distinct from) the
+ * EVE audit transcript that sits next to (but is distinct from) the
  * SDK's own session storage.
  *
- * The OpenClaw shell (src/agents/command/attempt-execution.ts) already
+ * The EVE shell (src/agents/command/attempt-execution.ts) already
  * writes the user prompt and the terminal assistant text into the
  * transcript at the end of each attempt. That is the bare minimum to
  * keep `/history` working. It does NOT capture tool calls, tool
@@ -12,7 +12,7 @@
  *
  * For audit/compliance and for the codex-parity guarantees we promised
  * in the proposal, we mirror the full `messagesSnapshot` (user +
- * assistant + toolResult) into the OpenClaw transcript via the same
+ * assistant + toolResult) into the EVE transcript via the same
  * plugin-sdk primitives that the codex extension uses
  * (extensions/codex/src/app-server/transcript-mirror.ts). Both writers
  * cooperate via idempotency-key dedupe: each mirrored entry carries a
@@ -38,7 +38,7 @@ import {
   runAgentHarnessBeforeMessageWriteHook,
   type AgentMessage,
   type SessionWriteLockAcquireTimeoutConfig,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 
 type MirroredAgentMessage = Extract<AgentMessage, { role: "user" | "assistant" | "toolResult" }>;
 
@@ -59,20 +59,20 @@ export function attachCopilotMirrorIdentity<T extends AgentMessage>(
   identity: string,
 ): T {
   const record = message as unknown as Record<string, unknown>;
-  const existing = record["__openclaw"];
+  const existing = record["__eve"];
   const baseMeta =
     existing && typeof existing === "object" && !Array.isArray(existing)
       ? (existing as Record<string, unknown>)
       : {};
   return {
     ...record,
-    __openclaw: { ...baseMeta, [MIRROR_IDENTITY_META_KEY]: identity },
+    __eve: { ...baseMeta, [MIRROR_IDENTITY_META_KEY]: identity },
   } as unknown as T;
 }
 
 function readMirrorIdentity(message: MirroredAgentMessage): string | undefined {
-  const record = message as unknown as { __openclaw?: unknown };
-  const meta = record["__openclaw"];
+  const record = message as unknown as { __eve?: unknown };
+  const meta = record["__eve"];
   if (!meta || typeof meta !== "object" || Array.isArray(meta)) {
     return undefined;
   }
@@ -206,7 +206,7 @@ async function readTranscriptIdempotencyKeys(sessionFile: string): Promise<Set<s
  * this so that a transient transcript-mirror failure (lock contention,
  * disk full, etc.) never breaks an otherwise-successful attempt. The
  * SDK's own session file remains the source of truth in that case;
- * the OpenClaw audit trail just misses the intermediate messages for
+ * the EVE audit trail just misses the intermediate messages for
  * this turn.
  */
 export async function dualWriteCopilotTranscriptBestEffort(

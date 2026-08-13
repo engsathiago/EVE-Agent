@@ -7,7 +7,7 @@
 import {
   normalizeOptionalLowercaseString,
   normalizeStringifiedEntries,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import { formatDocsLink } from "../../packages/terminal-core/src/links.js";
 import { colorize, isRich, theme } from "../../packages/terminal-core/src/theme.js";
 import { resolveAgentConfig } from "../agents/agent-scope.js";
@@ -21,7 +21,7 @@ import {
   resolveStorePath,
 } from "../config/sessions.js";
 import { loadSessionEntry } from "../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   buildAgentMainSessionKey,
   normalizeAgentId,
@@ -38,10 +38,10 @@ type SandboxExplainOptions = {
   json: boolean;
 };
 
-const SANDBOX_DOCS_URL = "https://docs.openclaw.ai/sandbox";
+const SANDBOX_DOCS_URL = "https://docs.eve.ai/sandbox";
 
 function normalizeExplainSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   session?: string;
 }): string {
@@ -67,7 +67,7 @@ function normalizeExplainSessionKey(params: {
 }
 
 function inferProviderFromSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey: string;
 }): string | undefined {
   const parsed = parseAgentSessionKey(params.sessionKey);
@@ -99,7 +99,7 @@ function inferProviderFromSessionKey(params: {
 }
 
 function resolveActiveChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   sessionKey: string;
 }): string | undefined {
@@ -356,7 +356,7 @@ export async function sandboxExplainCommand(
     lines.push(`  - ${keyLocal}`);
   }
   lines.push("");
-  lines.push(`${key("Docs:")} ${formatDocsLink("/sandbox", "docs.openclaw.ai/sandbox")}`);
+  lines.push(`${key("Docs:")} ${formatDocsLink("/sandbox", "docs.eve.ai/sandbox")}`);
 
   runtime.log(`${lines.join("\n")}\n`);
 }

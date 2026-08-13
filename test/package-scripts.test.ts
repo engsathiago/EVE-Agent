@@ -121,7 +121,7 @@ describe("package scripts", () => {
 
   it("enables live cache validation in the package script", () => {
     expect(readPackageJson().scripts["test:live:cache"]).toBe(
-      "node scripts/run-with-env.mjs OPENCLAW_LIVE_TEST=1 OPENCLAW_LIVE_CACHE_TEST=1 -- node --import tsx scripts/check-live-cache.ts",
+      "node scripts/run-with-env.mjs EVE_LIVE_TEST=1 EVE_LIVE_CACHE_TEST=1 -- node --import tsx scripts/check-live-cache.ts",
     );
   });
 
@@ -132,7 +132,7 @@ describe("package scripts", () => {
   });
 
   it("uses the shipped package launcher for npm start", () => {
-    expect(readPackageJson().scripts.start).toBe("node openclaw.mjs");
+    expect(readPackageJson().scripts.start).toBe("node eve.mjs");
   });
 
   it("runs generated module formatting coverage in Windows CI", () => {

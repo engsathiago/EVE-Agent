@@ -1,46 +1,46 @@
 {
   "teamId": "FWJYW4S8P8",
-  "signingRepo": "git@github.com:openclaw/apps-signing.git",
+  "signingRepo": "git@github.com:eve/apps-signing.git",
   "signingBranch": "main",
   "profileType": "appstore",
-  "appGroupId": "group.ai.openclawfoundation.app.shared",
+  "appGroupId": "group.ai.evefoundation.app.shared",
   "targets": [
     {
-      "target": "OpenClaw",
-      "displayName": "OpenClaw",
-      "bundleId": "ai.openclawfoundation.app",
+      "target": "EVE",
+      "displayName": "EVE",
+      "bundleId": "ai.evefoundation.app",
       "platform": "IOS",
-      "profileKey": "OPENCLAW_APP_PROFILE",
-      "profileName": "OpenClaw App Store ai.openclawfoundation.app",
+      "profileKey": "EVE_APP_PROFILE",
+      "profileName": "EVE App Store ai.evefoundation.app",
       "capabilities": ["PUSH_NOTIFICATIONS", "APP_GROUPS"],
-      "appGroups": ["group.ai.openclawfoundation.app.shared"]
+      "appGroups": ["group.ai.evefoundation.app.shared"]
     },
     {
-      "target": "OpenClawShareExtension",
-      "displayName": "OpenClaw Share",
-      "bundleId": "ai.openclawfoundation.app.share",
+      "target": "EVEShareExtension",
+      "displayName": "EVE Share",
+      "bundleId": "ai.evefoundation.app.share",
       "platform": "IOS",
-      "profileKey": "OPENCLAW_SHARE_PROFILE",
-      "profileName": "OpenClaw App Store ai.openclawfoundation.app.share",
+      "profileKey": "EVE_SHARE_PROFILE",
+      "profileName": "EVE App Store ai.evefoundation.app.share",
       "capabilities": ["APP_GROUPS"],
-      "appGroups": ["group.ai.openclawfoundation.app.shared"]
+      "appGroups": ["group.ai.evefoundation.app.shared"]
     },
     {
-      "target": "OpenClawActivityWidget",
-      "displayName": "OpenClaw Activity Widget",
-      "bundleId": "ai.openclawfoundation.app.activitywidget",
+      "target": "EVEActivityWidget",
+      "displayName": "EVE Activity Widget",
+      "bundleId": "ai.evefoundation.app.activitywidget",
       "platform": "IOS",
-      "profileKey": "OPENCLAW_ACTIVITY_WIDGET_PROFILE",
-      "profileName": "OpenClaw App Store ai.openclawfoundation.app.activitywidget",
+      "profileKey": "EVE_ACTIVITY_WIDGET_PROFILE",
+      "profileName": "EVE App Store ai.evefoundation.app.activitywidget",
       "capabilities": []
     },
     {
-      "target": "OpenClawWatchApp",
-      "displayName": "OpenClaw Watch App",
-      "bundleId": "ai.openclawfoundation.app.watchkitapp",
+      "target": "EVEWatchApp",
+      "displayName": "EVE Watch App",
+      "bundleId": "ai.evefoundation.app.watchkitapp",
       "platform": "IOS",
-      "profileKey": "OPENCLAW_WATCH_APP_PROFILE",
-      "profileName": "OpenClaw App Store ai.openclawfoundation.app.watchkitapp",
+      "profileKey": "EVE_WATCH_APP_PROFILE",
+      "profileName": "EVE App Store ai.evefoundation.app.watchkitapp",
       "capabilities": []
     }
   ]

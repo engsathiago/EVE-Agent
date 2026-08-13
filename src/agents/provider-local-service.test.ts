@@ -3,8 +3,8 @@ import fs from "node:fs/promises";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
-import type { Model } from "openclaw/plugin-sdk/llm";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
+import type { Model } from "eve-agent/plugin-sdk/llm";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { killPidIfAlive, readPidFile, waitForPidToExit } from "../test-utils/process-tree.js";
 import {
@@ -244,7 +244,7 @@ describe("provider local service", () => {
   it("serializes concurrent cold starts for the same local service", async () => {
     const port = await freePort();
     const healthUrl = `http://127.0.0.1:${port}/v1/models`;
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-local-service-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-local-service-"));
     const startsPath = path.join(tempDir, "starts.txt");
     const model = attachModelProviderLocalService(
       {
@@ -291,7 +291,7 @@ describe("provider local service", () => {
     const secondPort = await freePort();
     const firstHealthUrl = `http://127.0.0.1:${firstPort}/v1/models`;
     const secondHealthUrl = `http://127.0.0.1:${secondPort}/v1/models`;
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-local-service-key-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-local-service-key-"));
     const startsPath = path.join(tempDir, "starts.txt");
     const args = [
       "-e",
@@ -350,10 +350,10 @@ describe("provider local service", () => {
     }
   });
 
-  it("restarts an OpenClaw-managed local service when its health endpoint is down", async () => {
+  it("restarts an EVE-managed local service when its health endpoint is down", async () => {
     const port = await freePort();
     const healthUrl = `http://127.0.0.1:${port}/v1/models`;
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-local-service-restart-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-local-service-restart-"));
     const startsPath = path.join(tempDir, "starts.txt");
     const statusPath = path.join(tempDir, "status.txt");
     const forkedPidPath = path.join(tempDir, "forked.pid");

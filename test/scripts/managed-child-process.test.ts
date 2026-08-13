@@ -143,7 +143,7 @@ describe("managed-child-process", () => {
   posixIt(
     "kills managed child process group descendants when the runner is terminated",
     async () => {
-      const dir = createTempDir("openclaw-managed-child-");
+      const dir = createTempDir("eve-managed-child-");
       const childPath = path.join(dir, "child.mjs");
       const runnerPath = path.join(dir, "runner.mjs");
       const childPidPath = path.join(dir, "child.pid");

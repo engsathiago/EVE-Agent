@@ -5,16 +5,16 @@ read_when:
 title: "Agent runtime"
 ---
 
-OpenClaw runs a **single embedded agent runtime** - one agent process per
+EVE runs a **single embedded agent runtime** - one agent process per
 Gateway, with its own workspace, bootstrap files, and session store. This page
 covers that runtime contract: what the workspace must contain, which files get
 injected, and how sessions bootstrap against it.
 
 ## Workspace (required)
 
-OpenClaw uses a single agent workspace directory (`agents.defaults.workspace`) as the agent's **only** working directory (`cwd`) for tools and context.
+EVE uses a single agent workspace directory (`agents.defaults.workspace`) as the agent's **only** working directory (`cwd`) for tools and context.
 
-Recommended: use `openclaw setup` to create `~/.openclaw/openclaw.json` if missing and initialize the workspace files.
+Recommended: use `eve setup` to create `~/.eve/eve.json` if missing and initialize the workspace files.
 
 Full workspace layout + backup guide: [Agent workspace](/concepts/agent-workspace)
 
@@ -24,7 +24,7 @@ per-session workspaces under `agents.defaults.sandbox.workspaceRoot` (see
 
 ## Bootstrap files (injected)
 
-Inside `agents.defaults.workspace`, OpenClaw expects these user-editable files:
+Inside `agents.defaults.workspace`, EVE expects these user-editable files:
 
 - `AGENTS.md` - operating instructions + "memory"
 - `SOUL.md` - persona, boundaries, tone
@@ -33,15 +33,15 @@ Inside `agents.defaults.workspace`, OpenClaw expects these user-editable files:
 - `IDENTITY.md` - agent name/vibe/emoji
 - `USER.md` - user profile + preferred address
 
-On the first turn of a new session, OpenClaw injects the contents of these files into the system prompt's Project Context.
+On the first turn of a new session, EVE injects the contents of these files into the system prompt's Project Context.
 
 Blank files are skipped. Large files are trimmed and truncated with a marker so prompts stay lean (read the file for full content).
 
-If a file is missing, OpenClaw injects a single "missing file" marker line (and `openclaw setup` will create a safe default template).
+If a file is missing, EVE injects a single "missing file" marker line (and `eve setup` will create a safe default template).
 
-`BOOTSTRAP.md` is only created for a **brand new workspace** (no other bootstrap files present). While it is pending, OpenClaw keeps it in Project Context and adds system-prompt bootstrap guidance for the initial ritual instead of copying it into the user message. If you delete it after completing the ritual, it should not be recreated on later restarts.
+`BOOTSTRAP.md` is only created for a **brand new workspace** (no other bootstrap files present). While it is pending, EVE keeps it in Project Context and adds system-prompt bootstrap guidance for the initial ritual instead of copying it into the user message. If you delete it after completing the ritual, it should not be recreated on later restarts.
 
-After a workspace has been observed, OpenClaw also keeps a state-dir attestation marker for the workspace path. If a recently attested workspace disappears or is wiped, startup refuses to silently re-seed `BOOTSTRAP.md`; restore the workspace or use a full onboard reset so the workspace and marker are cleared together.
+After a workspace has been observed, EVE also keeps a state-dir attestation marker for the workspace path. If a recently attested workspace disappears or is wiped, startup refuses to silently re-seed `BOOTSTRAP.md`; restore the workspace or use a full onboard reset so the workspace and marker are cleared together.
 
 To disable bootstrap file creation entirely (for pre-seeded workspaces), set:
 
@@ -58,12 +58,12 @@ guidance for how _you_ want them used.
 
 ## Skills
 
-OpenClaw loads skills from these locations (highest precedence first):
+EVE loads skills from these locations (highest precedence first):
 
 - Workspace: `<workspace>/skills`
 - Project agent skills: `<workspace>/.agents/skills`
 - Personal agent skills: `~/.agents/skills`
-- Managed/local: `~/.openclaw/skills`
+- Managed/local: `~/.eve/skills`
 - Bundled (shipped with the install)
 - Extra skill folders: `skills.load.extraDirs`
 
@@ -75,7 +75,7 @@ Skills can be gated by config/env (see `skills` in [Gateway configuration](/gate
 
 ## Runtime boundaries
 
-The embedded agent runtime is OpenClaw-owned: model discovery, tool wiring,
+The embedded agent runtime is EVE-owned: model discovery, tool wiring,
 prompt assembly, session management, and channel delivery share one integrated
 runtime surface.
 
@@ -83,9 +83,9 @@ runtime surface.
 
 Session transcripts are stored as JSONL at:
 
-- `~/.openclaw/agents/<agentId>/sessions/<SessionId>.jsonl`
+- `~/.eve/agents/<agentId>/sessions/<SessionId>.jsonl`
 
-The session ID is stable and chosen by OpenClaw.
+The session ID is stable and chosen by EVE.
 Legacy session folders from other tools are not read.
 
 ## Steering while streaming
@@ -118,10 +118,10 @@ Model refs in config (for example `agents.defaults.model` and `agents.defaults.m
 
 - Use `provider/model` when configuring models.
 - If the model ID itself contains `/` (OpenRouter-style), include the provider prefix (example: `openrouter/moonshotai/kimi-k2`).
-- If you omit the provider, OpenClaw tries an alias first, then a unique
+- If you omit the provider, EVE tries an alias first, then a unique
   configured-provider match for that exact model id, and only then falls back
   to the configured default provider. If that provider no longer exposes the
-  configured default model, OpenClaw falls back to the first configured
+  configured default model, EVE falls back to the first configured
   provider/model instead of surfacing a stale removed-provider default.
 
 ## Configuration (minimal)

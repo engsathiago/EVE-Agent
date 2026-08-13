@@ -1,4 +1,4 @@
-// Verifies state-dir migrations preserve existing OpenClaw runtime data.
+// Verifies state-dir migrations preserve existing EVE runtime data.
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -11,7 +11,7 @@ import {
 
 async function withStateDirFixture(run: (root: string) => Promise<void>): Promise<void> {
   try {
-    await withTempDir({ prefix: "openclaw-state-dir-" }, async (root) => {
+    await withTempDir({ prefix: "eve-state-dir-" }, async (root) => {
       await run(root);
     });
   } finally {
@@ -47,13 +47,13 @@ describe("legacy state dir auto-migration", () => {
     });
   });
 
-  it("skips state-dir migration when OPENCLAW_STATE_DIR is explicitly set", async () => {
+  it("skips state-dir migration when EVE_STATE_DIR is explicitly set", async () => {
     await withStateDirFixture(async (root) => {
       const legacyDir = path.join(root, ".clawdbot");
       fs.mkdirSync(legacyDir, { recursive: true });
 
       const result = await autoMigrateLegacyStateDir({
-        env: { OPENCLAW_STATE_DIR: path.join(root, "custom-state") } as NodeJS.ProcessEnv,
+        env: { EVE_STATE_DIR: path.join(root, "custom-state") } as NodeJS.ProcessEnv,
         homedir: () => root,
       });
 
@@ -88,7 +88,7 @@ describe("legacy state dir auto-migration", () => {
       );
 
       const result = await autoMigrateLegacyStateDir({
-        env: { OPENCLAW_STATE_DIR: stateDir } as NodeJS.ProcessEnv,
+        env: { EVE_STATE_DIR: stateDir } as NodeJS.ProcessEnv,
         homedir: () => root,
       });
 
@@ -132,7 +132,7 @@ describe("legacy state dir auto-migration", () => {
 
   it("migrates the legacy plugin install index before config reads", async () => {
     await withStateDirFixture(async (root) => {
-      const stateDir = path.join(root, ".openclaw");
+      const stateDir = path.join(root, ".eve");
       const sourcePath = path.join(stateDir, "plugins", "installs.json");
       fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
       fs.writeFileSync(

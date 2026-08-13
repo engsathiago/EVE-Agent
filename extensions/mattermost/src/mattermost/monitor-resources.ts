@@ -2,8 +2,8 @@
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   fetchMattermostChannel,
   fetchMattermostUser,

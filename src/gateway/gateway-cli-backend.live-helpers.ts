@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type { EventFrame } from "../../packages/gateway-protocol/src/index.js";
 import {
   listCliRuntimeModelBackendBindings,
@@ -64,8 +64,8 @@ export type CliBackendLiveEnvSnapshot = {
   anthropicApiKeyOld?: string;
 };
 
-export const CLI_BACKEND_LIVE_PROVIDER_SKIP_ENV = "OPENCLAW_LIVE_CLI_BACKEND_ALLOW_PROVIDER_SKIP";
-export const CLI_BACKEND_LIVE_ADVISORY_ENV = "OPENCLAW_LIVE_CLI_BACKEND_ADVISORY";
+export const CLI_BACKEND_LIVE_PROVIDER_SKIP_ENV = "EVE_LIVE_CLI_BACKEND_ALLOW_PROVIDER_SKIP";
+export const CLI_BACKEND_LIVE_ADVISORY_ENV = "EVE_LIVE_CLI_BACKEND_ADVISORY";
 
 export type CliBackendLiveProviderSkipDecision = {
   action: "fail" | "skip";
@@ -94,13 +94,13 @@ export function resolveCliBackendLiveModelSelection(params: {
   const parsed = parseModelRef(params.rawModel, params.defaultProvider);
   if (!parsed) {
     throw new Error(
-      `OPENCLAW_LIVE_CLI_BACKEND_MODEL must resolve to a CLI backend model. Got: ${params.rawModel}`,
+      `EVE_LIVE_CLI_BACKEND_MODEL must resolve to a CLI backend model. Got: ${params.rawModel}`,
     );
   }
 
   if (parsed.provider === "codex-cli") {
     throw new Error(
-      "OPENCLAW_LIVE_CLI_BACKEND_MODEL=codex-cli/... is no longer supported. Use a supported CLI backend such as claude-cli or google-gemini-cli.",
+      "EVE_LIVE_CLI_BACKEND_MODEL=codex-cli/... is no longer supported. Use a supported CLI backend such as claude-cli or google-gemini-cli.",
     );
   }
   const cliBinding = listCliRuntimeModelBackendBindings({ includeSetupRegistry: true }).find(
@@ -122,7 +122,7 @@ export function resolveCliBackendLiveModelSelection(params: {
     cliModelKey: modelKey,
     configModelKey: modelKey,
     configModelSwitchTarget: params.modelSwitchTarget,
-    agentRuntime: { id: "openclaw" },
+    agentRuntime: { id: "eve" },
   };
 }
 
@@ -146,11 +146,11 @@ export function parseImageMode(raw?: string): "list" | "repeat" | undefined {
   if (trimmed === "list" || trimmed === "repeat") {
     return trimmed;
   }
-  throw new Error("OPENCLAW_LIVE_CLI_BACKEND_IMAGE_MODE must be 'list' or 'repeat'.");
+  throw new Error("EVE_LIVE_CLI_BACKEND_IMAGE_MODE must be 'list' or 'repeat'.");
 }
 
 export function shouldRunCliImageProbe(providerId: string): boolean {
-  const raw = process.env.OPENCLAW_LIVE_CLI_BACKEND_IMAGE_PROBE?.trim();
+  const raw = process.env.EVE_LIVE_CLI_BACKEND_IMAGE_PROBE?.trim();
   if (raw) {
     return isTruthyEnvValue(raw);
   }
@@ -158,7 +158,7 @@ export function shouldRunCliImageProbe(providerId: string): boolean {
 }
 
 export function shouldRunCliMcpProbe(providerId: string): boolean {
-  const raw = process.env.OPENCLAW_LIVE_CLI_BACKEND_MCP_PROBE?.trim();
+  const raw = process.env.EVE_LIVE_CLI_BACKEND_MCP_PROBE?.trim();
   if (raw) {
     return isTruthyEnvValue(raw);
   }
@@ -172,18 +172,18 @@ export function resolveCliBackendLiveArgs(params: {
 }): { args: string[]; resumeArgs?: string[] } {
   const args =
     parseJsonStringArray(
-      "OPENCLAW_LIVE_CLI_BACKEND_ARGS",
-      process.env.OPENCLAW_LIVE_CLI_BACKEND_ARGS,
+      "EVE_LIVE_CLI_BACKEND_ARGS",
+      process.env.EVE_LIVE_CLI_BACKEND_ARGS,
     ) ?? params.defaultArgs;
   if (!args || args.length === 0) {
     throw new Error(
-      `OPENCLAW_LIVE_CLI_BACKEND_ARGS is required for provider "${params.providerId}".`,
+      `EVE_LIVE_CLI_BACKEND_ARGS is required for provider "${params.providerId}".`,
     );
   }
   const resumeArgs =
     parseJsonStringArray(
-      "OPENCLAW_LIVE_CLI_BACKEND_RESUME_ARGS",
-      process.env.OPENCLAW_LIVE_CLI_BACKEND_RESUME_ARGS,
+      "EVE_LIVE_CLI_BACKEND_RESUME_ARGS",
+      process.env.EVE_LIVE_CLI_BACKEND_RESUME_ARGS,
     ) ?? params.defaultResumeArgs;
   return { args, resumeArgs };
 }
@@ -204,7 +204,7 @@ export function resolveCliModelSwitchProbeTarget(
 }
 
 export function shouldRunCliModelSwitchProbe(providerId: string, modelRef: string): boolean {
-  const raw = process.env.OPENCLAW_LIVE_CLI_BACKEND_MODEL_SWITCH_PROBE?.trim();
+  const raw = process.env.EVE_LIVE_CLI_BACKEND_MODEL_SWITCH_PROBE?.trim();
   if (raw) {
     return isTruthyEnvValue(raw);
   }
@@ -509,30 +509,30 @@ function isRetryableGatewayConnectError(error: Error): boolean {
 
 export function snapshotCliBackendLiveEnv(): CliBackendLiveEnvSnapshot {
   return {
-    configPath: process.env.OPENCLAW_CONFIG_PATH,
-    stateDir: process.env.OPENCLAW_STATE_DIR,
-    token: process.env.OPENCLAW_GATEWAY_TOKEN,
-    skipChannels: process.env.OPENCLAW_SKIP_CHANNELS,
-    skipProviders: process.env.OPENCLAW_SKIP_PROVIDERS,
-    skipGmail: process.env.OPENCLAW_SKIP_GMAIL_WATCHER,
-    skipCron: process.env.OPENCLAW_SKIP_CRON,
-    skipCanvas: process.env.OPENCLAW_SKIP_CANVAS_HOST,
-    skipBrowserControl: process.env.OPENCLAW_SKIP_BROWSER_CONTROL_SERVER,
-    bundledPluginsDir: process.env.OPENCLAW_BUNDLED_PLUGINS_DIR,
-    minimalGateway: process.env.OPENCLAW_TEST_MINIMAL_GATEWAY,
+    configPath: process.env.EVE_CONFIG_PATH,
+    stateDir: process.env.EVE_STATE_DIR,
+    token: process.env.EVE_GATEWAY_TOKEN,
+    skipChannels: process.env.EVE_SKIP_CHANNELS,
+    skipProviders: process.env.EVE_SKIP_PROVIDERS,
+    skipGmail: process.env.EVE_SKIP_GMAIL_WATCHER,
+    skipCron: process.env.EVE_SKIP_CRON,
+    skipCanvas: process.env.EVE_SKIP_CANVAS_HOST,
+    skipBrowserControl: process.env.EVE_SKIP_BROWSER_CONTROL_SERVER,
+    bundledPluginsDir: process.env.EVE_BUNDLED_PLUGINS_DIR,
+    minimalGateway: process.env.EVE_TEST_MINIMAL_GATEWAY,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     anthropicApiKeyOld: process.env.ANTHROPIC_API_KEY_OLD,
   };
 }
 
 export function applyCliBackendLiveEnv(preservedEnv: ReadonlySet<string>): void {
-  process.env.OPENCLAW_SKIP_CHANNELS = "1";
-  process.env.OPENCLAW_SKIP_PROVIDERS = "1";
-  process.env.OPENCLAW_SKIP_GMAIL_WATCHER = "1";
-  process.env.OPENCLAW_SKIP_CRON = "1";
-  process.env.OPENCLAW_SKIP_CANVAS_HOST = "1";
-  process.env.OPENCLAW_SKIP_BROWSER_CONTROL_SERVER = "1";
-  process.env.OPENCLAW_TEST_MINIMAL_GATEWAY = "1";
+  process.env.EVE_SKIP_CHANNELS = "1";
+  process.env.EVE_SKIP_PROVIDERS = "1";
+  process.env.EVE_SKIP_GMAIL_WATCHER = "1";
+  process.env.EVE_SKIP_CRON = "1";
+  process.env.EVE_SKIP_CANVAS_HOST = "1";
+  process.env.EVE_SKIP_BROWSER_CONTROL_SERVER = "1";
+  process.env.EVE_TEST_MINIMAL_GATEWAY = "1";
   if (!preservedEnv.has("ANTHROPIC_API_KEY")) {
     delete process.env.ANTHROPIC_API_KEY;
   }
@@ -542,17 +542,17 @@ export function applyCliBackendLiveEnv(preservedEnv: ReadonlySet<string>): void 
 }
 
 export function restoreCliBackendLiveEnv(snapshot: CliBackendLiveEnvSnapshot): void {
-  restoreEnvVar("OPENCLAW_CONFIG_PATH", snapshot.configPath);
-  restoreEnvVar("OPENCLAW_STATE_DIR", snapshot.stateDir);
-  restoreEnvVar("OPENCLAW_GATEWAY_TOKEN", snapshot.token);
-  restoreEnvVar("OPENCLAW_SKIP_CHANNELS", snapshot.skipChannels);
-  restoreEnvVar("OPENCLAW_SKIP_PROVIDERS", snapshot.skipProviders);
-  restoreEnvVar("OPENCLAW_SKIP_GMAIL_WATCHER", snapshot.skipGmail);
-  restoreEnvVar("OPENCLAW_SKIP_CRON", snapshot.skipCron);
-  restoreEnvVar("OPENCLAW_SKIP_CANVAS_HOST", snapshot.skipCanvas);
-  restoreEnvVar("OPENCLAW_SKIP_BROWSER_CONTROL_SERVER", snapshot.skipBrowserControl);
-  restoreEnvVar("OPENCLAW_BUNDLED_PLUGINS_DIR", snapshot.bundledPluginsDir);
-  restoreEnvVar("OPENCLAW_TEST_MINIMAL_GATEWAY", snapshot.minimalGateway);
+  restoreEnvVar("EVE_CONFIG_PATH", snapshot.configPath);
+  restoreEnvVar("EVE_STATE_DIR", snapshot.stateDir);
+  restoreEnvVar("EVE_GATEWAY_TOKEN", snapshot.token);
+  restoreEnvVar("EVE_SKIP_CHANNELS", snapshot.skipChannels);
+  restoreEnvVar("EVE_SKIP_PROVIDERS", snapshot.skipProviders);
+  restoreEnvVar("EVE_SKIP_GMAIL_WATCHER", snapshot.skipGmail);
+  restoreEnvVar("EVE_SKIP_CRON", snapshot.skipCron);
+  restoreEnvVar("EVE_SKIP_CANVAS_HOST", snapshot.skipCanvas);
+  restoreEnvVar("EVE_SKIP_BROWSER_CONTROL_SERVER", snapshot.skipBrowserControl);
+  restoreEnvVar("EVE_BUNDLED_PLUGINS_DIR", snapshot.bundledPluginsDir);
+  restoreEnvVar("EVE_TEST_MINIMAL_GATEWAY", snapshot.minimalGateway);
   restoreEnvVar("ANTHROPIC_API_KEY", snapshot.anthropicApiKey);
   restoreEnvVar("ANTHROPIC_API_KEY_OLD", snapshot.anthropicApiKeyOld);
 }

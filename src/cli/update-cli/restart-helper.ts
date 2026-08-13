@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { DEFAULT_GATEWAY_PORT } from "../../config/paths.js";
 import { quoteCmdScriptArg } from "../../daemon/cmd-argv.js";
 import {
@@ -36,27 +36,27 @@ function powerShellSingleQuote(value: string): string {
 }
 
 function resolveSystemdUnit(env: NodeJS.ProcessEnv): string {
-  const override = normalizeOptionalString(env.OPENCLAW_SYSTEMD_UNIT);
+  const override = normalizeOptionalString(env.EVE_SYSTEMD_UNIT);
   if (override) {
     return override.endsWith(".service") ? override : `${override}.service`;
   }
-  return `${resolveGatewaySystemdServiceName(env.OPENCLAW_PROFILE)}.service`;
+  return `${resolveGatewaySystemdServiceName(env.EVE_PROFILE)}.service`;
 }
 
 function resolveLaunchdLabel(env: NodeJS.ProcessEnv): string {
-  const override = normalizeOptionalString(env.OPENCLAW_LAUNCHD_LABEL);
+  const override = normalizeOptionalString(env.EVE_LAUNCHD_LABEL);
   if (override) {
     return override;
   }
-  return resolveGatewayLaunchAgentLabel(env.OPENCLAW_PROFILE);
+  return resolveGatewayLaunchAgentLabel(env.EVE_PROFILE);
 }
 
 function resolveWindowsTaskName(env: NodeJS.ProcessEnv): string {
-  const override = env.OPENCLAW_WINDOWS_TASK_NAME?.trim();
+  const override = env.EVE_WINDOWS_TASK_NAME?.trim();
   if (override) {
     return override;
   }
-  return resolveGatewayWindowsTaskName(env.OPENCLAW_PROFILE);
+  return resolveGatewayWindowsTaskName(env.EVE_PROFILE);
 }
 
 /**
@@ -80,33 +80,33 @@ export async function prepareRestartScript(
       const unitName = resolveSystemdUnit(env);
       const escaped = shellEscape(unitName);
       const logSetup = renderPosixRestartLogSetup({ ...process.env, ...env });
-      filename = `openclaw-restart-${timestamp}.sh`;
+      filename = `eve-restart-${timestamp}.sh`;
       scriptContent = `#!/bin/sh
 # Standalone restart script — survives parent process termination.
 # Wait briefly to ensure file locks are released after update.
 sleep 1
 exec 3>&2
 ${logSetup}
-printf '[%s] openclaw restart attempt source=update target=%s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&2
+printf '[%s] eve restart attempt source=update target=%s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&2
 if systemctl --user is-active --quiet '${escaped}' || systemctl --user is-enabled --quiet '${escaped}'; then
   if systemctl --user restart '${escaped}'; then
     status=0
-    printf '[%s] openclaw restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
+    printf '[%s] eve restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
   else
     status=$?
-    printf '[%s] openclaw restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
+    printf '[%s] eve restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
   fi
 elif systemctl is-active --quiet '${escaped}' || systemctl is-enabled --quiet '${escaped}'; then
   status=78
-  printf '[%s] system-scoped openclaw gateway unit detected; update cannot restart it without sudo. Run: sudo systemctl restart %s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&2
-  printf '[%s] system-scoped openclaw gateway unit detected; update cannot restart it without sudo. Run: sudo systemctl restart %s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&3 2>/dev/null || true
+  printf '[%s] system-scoped eve gateway unit detected; update cannot restart it without sudo. Run: sudo systemctl restart %s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&2
+  printf '[%s] system-scoped eve gateway unit detected; update cannot restart it without sudo. Run: sudo systemctl restart %s\\n' "$(date -u +%FT%TZ)" '${escaped}' >&3 2>/dev/null || true
 else
   if systemctl --user restart '${escaped}'; then
     status=0
-    printf '[%s] openclaw restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
+    printf '[%s] eve restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
   else
     status=$?
-    printf '[%s] openclaw restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
+    printf '[%s] eve restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
   fi
 fi
 # Self-cleanup
@@ -127,7 +127,7 @@ exit "$status"
       const plistPath = path.join(home, "Library", "LaunchAgents", `${label}.plist`);
       const escapedPlistPath = shellEscape(plistPath);
       const logSetup = renderPosixRestartLogSetup({ ...process.env, ...env });
-      filename = `openclaw-restart-${timestamp}.sh`;
+      filename = `eve-restart-${timestamp}.sh`;
       scriptContent = `#!/bin/sh
 # Standalone restart script — survives parent process termination.
 # Wait briefly to ensure file locks are released after update.
@@ -136,7 +136,7 @@ sleep 1
 # audit trail. Log setup is best-effort: restart must still run if the log path
 # is temporarily unavailable.
 ${logSetup}
-printf '[%s] openclaw restart attempt source=update target=%s\\n' "$(date -u +%FT%TZ)" '${shellEscapeRestartLogValue(label)}' >&2
+printf '[%s] eve restart attempt source=update target=%s\\n' "$(date -u +%FT%TZ)" '${shellEscapeRestartLogValue(label)}' >&2
 # Try kickstart first (works when the service is still registered).
 # If it fails (e.g. after bootout), clear any persisted disabled state,
 # then re-register via bootstrap. Bootstrap loads RunAtLoad agents, so the
@@ -154,11 +154,11 @@ if ! launchctl kickstart -k 'gui/${uid}/${escaped}'; then
   fi
 fi
 if [ "$status" -eq 0 ]; then
-  printf '[%s] openclaw restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
+  printf '[%s] eve restart done source=update\\n' "$(date -u +%FT%TZ)" >&2
 else
-  printf '[%s] openclaw restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
+  printf '[%s] eve restart failed source=update status=%s\\n' "$(date -u +%FT%TZ)" "$status" >&2
 fi
-# Self-cleanup (log is retained under the OpenClaw state logs directory).
+# Self-cleanup (log is retained under the EVE state logs directory).
 script_dir=$(dirname "$0")
 rm -f "$0"
 rmdir "$script_dir" 2>/dev/null || true
@@ -174,18 +174,18 @@ exit "$status"
       const restartLogPath = resolveGatewayRestartLogPath({ ...process.env, ...env });
       const quotedLogPath = powerShellSingleQuote(restartLogPath);
       const quotedTaskName = powerShellSingleQuote(taskName);
-      filename = `openclaw-restart-${timestamp}.cmd`;
+      filename = `eve-restart-${timestamp}.cmd`;
       scriptContent = `@echo off
 REM Standalone restart script - survives parent process termination.
 REM Keep this as a cmd wrapper so Group Policy script execution policies
 REM cannot block the update restart handoff before schtasks.exe runs.
 setlocal
-set "OPENCLAW_RESTART_SCRIPT=%~f0"
-set "OPENCLAW_RESTART_SCRIPT_DIR=%~dp0."
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:OPENCLAW_RESTART_SCRIPT; $s=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL'; $i=$s.IndexOf($m); if ($i -lt 0) { exit 1 }; Invoke-Expression $s.Substring($i)"
+set "EVE_RESTART_SCRIPT=%~f0"
+set "EVE_RESTART_SCRIPT_DIR=%~dp0."
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:EVE_RESTART_SCRIPT; $s=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL'; $i=$s.IndexOf($m); if ($i -lt 0) { exit 1 }; Invoke-Expression $s.Substring($i)"
 set "status=%ERRORLEVEL%"
 del "%~f0" >nul 2>&1
-rmdir "%OPENCLAW_RESTART_SCRIPT_DIR%" >nul 2>&1
+rmdir "%EVE_RESTART_SCRIPT_DIR%" >nul 2>&1
 exit /b %status%
 # POWERSHELL
 # Wait briefly to ensure file locks are released after update.
@@ -196,7 +196,7 @@ $logPath = ${quotedLogPath}
 try {
   $logDir = Split-Path -Parent $logPath
   New-Item -ItemType Directory -Path $logDir -Force | Out-Null
-  Add-Content -LiteralPath $logPath -Value "[$(Get-Date -Format o)] openclaw restart log initialized"
+  Add-Content -LiteralPath $logPath -Value "[$(Get-Date -Format o)] eve restart log initialized"
 } catch {
   # Restart should still run if log setup is unavailable.
 }
@@ -209,7 +209,7 @@ function Write-RestartLog {
   }
 }
 
-function Join-OpenClawProcessArguments {
+function Join-EVEProcessArguments {
   param([string[]]$Arguments)
   ($Arguments | ForEach-Object {
     if ($_ -match "\\s") {
@@ -220,7 +220,7 @@ function Join-OpenClawProcessArguments {
   }) -join " "
 }
 
-function Invoke-OpenClawSchtasksWithTimeout {
+function Invoke-EVESchtasksWithTimeout {
   param(
     [string[]]$Arguments,
     [int]$TimeoutSeconds
@@ -229,7 +229,7 @@ function Invoke-OpenClawSchtasksWithTimeout {
   try {
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
     $startInfo.FileName = "schtasks.exe"
-    $startInfo.Arguments = Join-OpenClawProcessArguments -Arguments $Arguments
+    $startInfo.Arguments = Join-EVEProcessArguments -Arguments $Arguments
     $startInfo.UseShellExecute = $false
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
@@ -239,7 +239,7 @@ function Invoke-OpenClawSchtasksWithTimeout {
         $process.Kill()
       } catch {
       }
-      Write-RestartLog "openclaw restart schtasks timeout source=update args=$($Arguments -join ' ')"
+      Write-RestartLog "eve restart schtasks timeout source=update args=$($Arguments -join ' ')"
       return 124
     }
     $stdout = $process.StandardOutput.ReadToEnd()
@@ -252,12 +252,12 @@ function Invoke-OpenClawSchtasksWithTimeout {
     }
     return $process.ExitCode
   } catch {
-    Write-RestartLog "openclaw restart schtasks failed source=update args=$($Arguments -join ' ') error=$($_.Exception.Message)"
+    Write-RestartLog "eve restart schtasks failed source=update args=$($Arguments -join ' ') error=$($_.Exception.Message)"
     return 1
   }
 }
 
-function Get-OpenClawScheduledTaskState {
+function Get-EVEScheduledTaskState {
   param([string]$TaskName)
   try {
     $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
@@ -280,7 +280,7 @@ function Get-OpenClawScheduledTaskState {
   return "Unknown"
 }
 
-function Get-OpenClawListenerPids {
+function Get-EVEListenerPids {
   param([int]$Port)
   $listenerPids = @()
 
@@ -308,39 +308,39 @@ function Get-OpenClawListenerPids {
   $listenerPids | Sort-Object -Unique
 }
 
-function Invoke-OpenClawStartupLauncher {
-  $launcherPath = Join-Path $env:USERPROFILE ".openclaw\\gateway.cmd"
+function Invoke-EVEStartupLauncher {
+  $launcherPath = Join-Path $env:USERPROFILE ".eve\\gateway.cmd"
   if (-not (Test-Path -LiteralPath $launcherPath)) {
-    Write-RestartLog "openclaw restart startup launcher missing source=update path=$launcherPath"
+    Write-RestartLog "eve restart startup launcher missing source=update path=$launcherPath"
     return 1
   }
 
   try {
     Start-Process -FilePath $launcherPath -WindowStyle Hidden | Out-Null
-    Write-RestartLog "openclaw restart launched startup fallback source=update path=$launcherPath"
+    Write-RestartLog "eve restart launched startup fallback source=update path=$launcherPath"
     return 0
   } catch {
-    Write-RestartLog "openclaw restart startup fallback failed source=update error=$($_.Exception.Message)"
+    Write-RestartLog "eve restart startup fallback failed source=update error=$($_.Exception.Message)"
     return 1
   }
 }
 
 $taskName = ${quotedTaskName}
 $port = ${port}
-Write-RestartLog "openclaw restart attempt source=update target=$taskName"
+Write-RestartLog "eve restart attempt source=update target=$taskName"
 
-$taskState = Get-OpenClawScheduledTaskState -TaskName $taskName
+$taskState = Get-EVEScheduledTaskState -TaskName $taskName
 if ($taskState -eq "Running") {
-  $endStatus = Invoke-OpenClawSchtasksWithTimeout -Arguments @("/End", "/TN", $taskName) -TimeoutSeconds 10
+  $endStatus = Invoke-EVESchtasksWithTimeout -Arguments @("/End", "/TN", $taskName) -TimeoutSeconds 10
   if ($endStatus -ne 0) {
-    Write-RestartLog "openclaw restart schtasks end did not complete cleanly source=update status=$endStatus"
+    Write-RestartLog "eve restart schtasks end did not complete cleanly source=update status=$endStatus"
   }
 } else {
-  Write-RestartLog "openclaw restart skipped schtasks end source=update state=$taskState"
+  Write-RestartLog "eve restart skipped schtasks end source=update state=$taskState"
 }
 
 for ($attempt = 1; $attempt -le 10; $attempt++) {
-  $listeners = @(Get-OpenClawListenerPids -Port $port)
+  $listeners = @(Get-EVEListenerPids -Port $port)
   if ($listeners.Count -eq 0) {
     break
   }
@@ -349,9 +349,9 @@ for ($attempt = 1; $attempt -le 10; $attempt++) {
     foreach ($listenerPid in $listeners) {
       try {
         Stop-Process -Id $listenerPid -Force -ErrorAction Stop
-        Write-RestartLog "openclaw restart killed stale listener source=update pid=$listenerPid"
+        Write-RestartLog "eve restart killed stale listener source=update pid=$listenerPid"
       } catch {
-        Write-RestartLog "openclaw restart failed to kill stale listener source=update pid=$listenerPid error=$($_.Exception.Message)"
+        Write-RestartLog "eve restart failed to kill stale listener source=update pid=$listenerPid error=$($_.Exception.Message)"
       }
     }
     break
@@ -360,14 +360,14 @@ for ($attempt = 1; $attempt -le 10; $attempt++) {
   Start-Sleep -Seconds 1
 }
 
-$status = Invoke-OpenClawSchtasksWithTimeout -Arguments @("/Run", "/TN", $taskName) -TimeoutSeconds 30
+$status = Invoke-EVESchtasksWithTimeout -Arguments @("/Run", "/TN", $taskName) -TimeoutSeconds 30
 if ($status -ne 0) {
-  $status = Invoke-OpenClawStartupLauncher
+  $status = Invoke-EVEStartupLauncher
 }
 if ($status -eq 0) {
-  Write-RestartLog "openclaw restart done source=update"
+  Write-RestartLog "eve restart done source=update"
 } else {
-  Write-RestartLog "openclaw restart failed source=update status=$status"
+  Write-RestartLog "eve restart failed source=update status=$status"
 }
 
 exit $status
@@ -376,7 +376,7 @@ exit $status
       return null;
     }
 
-    const scriptDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-restart-"));
+    const scriptDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-restart-"));
     const scriptPath = path.join(scriptDir, filename);
     try {
       await fs.writeFile(scriptPath, scriptContent, { mode: 0o755, flag: "wx" });

@@ -2,7 +2,7 @@
 import {
   createPatchedAccountSetupAdapter,
   createSetupInputPresenceValidator,
-} from "openclaw/plugin-sdk/setup-runtime";
+} from "eve-agent/plugin-sdk/setup-runtime";
 
 const channel = "googlechat" as const;
 

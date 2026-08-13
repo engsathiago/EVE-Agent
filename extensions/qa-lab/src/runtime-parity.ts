@@ -1,12 +1,12 @@
 // Qa Lab plugin module implements runtime parity behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   asFiniteNumber as readFiniteNumber,
   isRecord as isMessageRecord,
   normalizeOptionalString as readNonEmptyString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   scanDirectReplyTranscriptSentinels,
   scanGatewayLogSentinels,
@@ -14,7 +14,7 @@ import {
 } from "./gateway-log-sentinel.js";
 import { compareToolCallShape, stableHash } from "./parity-shared.js";
 
-export type RuntimeId = "openclaw" | "codex";
+export type RuntimeId = "eve" | "codex";
 
 export type RuntimeParityToolCall = {
   tool: string;
@@ -55,7 +55,7 @@ export type RuntimeParityDrift =
 export type RuntimeParityResult = {
   scenarioId: string;
   cells: {
-    openclaw: RuntimeParityCell;
+    eve: RuntimeParityCell;
     codex: RuntimeParityCell;
   };
   drift: RuntimeParityDrift;
@@ -80,7 +80,7 @@ export function runtimeParityCellStatus(
 export function isRuntimeParityResultPass(result: RuntimeParityResult) {
   return (
     result.drift !== "failure-mode" &&
-    isRuntimeParityCellPassable(result.cells.openclaw) &&
+    isRuntimeParityCellPassable(result.cells.eve) &&
     isRuntimeParityCellPassable(result.cells.codex)
   );
 }
@@ -132,7 +132,7 @@ type RuntimeParityPendingToolCall = RuntimeParityToolCall & {
 
 const DEFAULT_AGENT_ID = "qa";
 const HEARTBEAT_RESPONSE_TOOL_NAME = "heartbeat_respond";
-const HEARTBEAT_TRANSCRIPT_PROMPT = "[OpenClaw heartbeat poll]";
+const HEARTBEAT_TRANSCRIPT_PROMPT = "[EVE heartbeat poll]";
 const HEARTBEAT_TASK_PROMPT_PREFIX =
   "Run the following periodic tasks (only those due based on their intervals):";
 const TOOL_RESULT_MISSING_ERROR_CLASS = "tool-result-missing";
@@ -781,28 +781,28 @@ function summarizeSentinelErrorClass(findings: readonly GatewayLogSentinelFindin
 }
 
 function classifyRuntimeParityCells(params: {
-  openclaw: RuntimeParityCell;
+  eve: RuntimeParityCell;
   codex: RuntimeParityCell;
-  openclawScenarioStatus: "pass" | "fail";
+  eveScenarioStatus: "pass" | "fail";
   codexScenarioStatus: "pass" | "fail";
 }): Pick<RuntimeParityResult, "drift" | "driftDetails"> {
   if (
-    isHardFailureRuntimeError(params.openclaw.runtimeErrorClass) ||
+    isHardFailureRuntimeError(params.eve.runtimeErrorClass) ||
     isHardFailureRuntimeError(params.codex.runtimeErrorClass) ||
-    params.openclaw.transportErrorClass ||
+    params.eve.transportErrorClass ||
     params.codex.transportErrorClass
   ) {
     return {
       drift: "failure-mode",
       driftDetails:
-        params.openclaw.transportErrorClass || params.codex.transportErrorClass
+        params.eve.transportErrorClass || params.codex.transportErrorClass
           ? "at least one runtime hit a transport failure"
           : "at least one runtime hit a hard runtime failure",
     };
   }
 
   if (
-    hasMissingToolResult(params.openclaw.toolCalls) ||
+    hasMissingToolResult(params.eve.toolCalls) ||
     hasMissingToolResult(params.codex.toolCalls)
   ) {
     return {
@@ -812,22 +812,22 @@ function classifyRuntimeParityCells(params: {
   }
 
   if (
-    params.openclawScenarioStatus === "fail" ||
+    params.eveScenarioStatus === "fail" ||
     params.codexScenarioStatus === "fail" ||
-    !isRuntimeParityCellPassable(params.openclaw) ||
+    !isRuntimeParityCellPassable(params.eve) ||
     !isRuntimeParityCellPassable(params.codex)
   ) {
     return {
       drift: "failure-mode",
       driftDetails:
-        params.openclawScenarioStatus === params.codexScenarioStatus
+        params.eveScenarioStatus === params.codexScenarioStatus
           ? "at least one runtime failed"
-          : `scenario status differs (${params.openclawScenarioStatus} vs ${params.codexScenarioStatus})`,
+          : `scenario status differs (${params.eveScenarioStatus} vs ${params.codexScenarioStatus})`,
     };
   }
 
   const toolCallShapeDetails = compareToolCallShape(
-    params.openclaw.toolCalls,
+    params.eve.toolCalls,
     params.codex.toolCalls,
   );
   if (toolCallShapeDetails) {
@@ -835,32 +835,32 @@ function classifyRuntimeParityCells(params: {
   }
 
   const toolResultShapeDetails = compareToolResultShape(
-    params.openclaw.toolCalls,
+    params.eve.toolCalls,
     params.codex.toolCalls,
   );
   if (toolResultShapeDetails) {
     return { drift: "tool-result-shape", driftDetails: toolResultShapeDetails };
   }
 
-  const openclawTranscriptLines = params.openclaw.transcriptBytes.trim().length
-    ? params.openclaw.transcriptBytes.trim().split(/\r?\n/u).length
+  const eveTranscriptLines = params.eve.transcriptBytes.trim().length
+    ? params.eve.transcriptBytes.trim().split(/\r?\n/u).length
     : 0;
   const codexTranscriptLines = params.codex.transcriptBytes.trim().length
     ? params.codex.transcriptBytes.trim().split(/\r?\n/u).length
     : 0;
   if (
-    openclawTranscriptLines !== codexTranscriptLines ||
-    (!params.openclaw.finalText && Boolean(params.codex.finalText)) ||
-    (Boolean(params.openclaw.finalText) && !params.codex.finalText)
+    eveTranscriptLines !== codexTranscriptLines ||
+    (!params.eve.finalText && Boolean(params.codex.finalText)) ||
+    (Boolean(params.eve.finalText) && !params.codex.finalText)
   ) {
     return {
       drift: "structural",
-      driftDetails: `transcript/final-text structure differs (${openclawTranscriptLines} lines vs ${codexTranscriptLines})`,
+      driftDetails: `transcript/final-text structure differs (${eveTranscriptLines} lines vs ${codexTranscriptLines})`,
     };
   }
 
   if (
-    normalizeTextForParity(params.openclaw.finalText) ===
+    normalizeTextForParity(params.eve.finalText) ===
     normalizeTextForParity(params.codex.finalText)
   ) {
     return { drift: "none" };
@@ -1047,18 +1047,18 @@ export async function runRuntimeParityScenario(params: {
   scenarioId: string;
   runCell: (runtime: RuntimeId) => Promise<RuntimeParityScenarioExecution>;
 }): Promise<RuntimeParityResult> {
-  const openclaw = await params.runCell("openclaw");
+  const eve = await params.runCell("eve");
   const codex = await params.runCell("codex");
   const drift = classifyRuntimeParityCells({
-    openclaw: openclaw.cell,
+    eve: eve.cell,
     codex: codex.cell,
-    openclawScenarioStatus: openclaw.scenarioStatus,
+    eveScenarioStatus: eve.scenarioStatus,
     codexScenarioStatus: codex.scenarioStatus,
   });
   return {
     scenarioId: params.scenarioId,
     cells: {
-      openclaw: openclaw.cell,
+      eve: eve.cell,
       codex: codex.cell,
     },
     drift: drift.drift,

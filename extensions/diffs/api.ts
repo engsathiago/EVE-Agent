@@ -1,11 +1,11 @@
 // Diffs API module exposes the plugin public contract.
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 export {
   definePluginEntry,
   type AnyAgentTool,
-  type OpenClawPluginApi,
-  type OpenClawPluginConfigSchema,
-  type OpenClawPluginToolContext,
+  type EVEPluginApi,
+  type EVEPluginConfigSchema,
+  type EVEPluginToolContext,
   type PluginLogger,
-} from "openclaw/plugin-sdk/plugin-entry";
-export { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "eve-agent/plugin-sdk/plugin-entry";
+export { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";

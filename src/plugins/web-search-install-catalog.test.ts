@@ -15,8 +15,8 @@ describe("web-search install catalog", () => {
     expect(entry).toMatchObject({
       pluginId: "parallel",
       install: {
-        clawhubSpec: "clawhub:@openclaw/parallel-plugin",
-        npmSpec: "@openclaw/parallel-plugin",
+        clawhubSpec: "clawhub:@eve/parallel-plugin",
+        npmSpec: "@eve/parallel-plugin",
       },
       provider: {
         id: "parallel-free",

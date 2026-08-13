@@ -9,7 +9,7 @@ title: "Mantis Slack desktop runbook"
 ---
 
 Mantis Slack desktop QA is the real-UI lane for Slack-class bugs that need a
-Linux desktop, VNC rescue, Slack Web, a real OpenClaw gateway, screenshots,
+Linux desktop, VNC rescue, Slack Web, a real EVE gateway, screenshots,
 videos, and a PR evidence comment.
 
 Use it when unit tests or the headless Slack live lane cannot prove the bug.
@@ -24,7 +24,7 @@ Mantis uses three different storage layers:
 - Warm lease state: owned by the current operator session. It can contain a
   logged-in browser profile, `/var/cache/crabbox/pnpm`, and a prepared source
   checkout while the lease is alive.
-- Mantis artifacts: owned by the OpenClaw run. They live under
+- Mantis artifacts: owned by the EVE run. They live under
   `.artifacts/qa-e2e/mantis/...`, then GitHub Actions uploads them and the
   Mantis GitHub App comments inline evidence on the PR.
 
@@ -48,7 +48,7 @@ gh workflow run mantis-slack-desktop-smoke.yml \
 
 Allowed `candidate_ref` values are intentionally narrow because the workflow
 uses live credentials: current `main` ancestry, release tags, or an open PR head
-from `openclaw/openclaw`.
+from `eve/eve`.
 
 The workflow writes:
 
@@ -60,7 +60,7 @@ The workflow writes:
 - `slack-desktop-smoke-change.mp4`;
 - `mantis-slack-desktop-smoke-summary.json`;
 - `mantis-slack-desktop-smoke-report.md`;
-- remote logs such as `slack-desktop-command.log`, `openclaw-gateway.log`,
+- remote logs such as `slack-desktop-command.log`, `eve-gateway.log`,
   `chrome.log`, and `ffmpeg.log`.
 
 The PR comment is updated in place by the hidden
@@ -71,7 +71,7 @@ The PR comment is updated in place by the hidden
 Cold source proof:
 
 ```bash
-pnpm openclaw qa mantis slack-desktop-smoke \
+pnpm eve qa mantis slack-desktop-smoke \
   --provider aws \
   --class standard \
   --gateway-setup \
@@ -87,7 +87,7 @@ pnpm openclaw qa mantis slack-desktop-smoke \
 Keep the VM for VNC rescue:
 
 ```bash
-pnpm openclaw qa mantis slack-desktop-smoke \
+pnpm eve qa mantis slack-desktop-smoke \
   --provider aws \
   --class standard \
   --gateway-setup \
@@ -104,7 +104,7 @@ crabbox vnc --provider aws --id <cbx_id> --open
 Reuse a warm lease:
 
 ```bash
-pnpm openclaw qa mantis slack-desktop-smoke \
+pnpm eve qa mantis slack-desktop-smoke \
   --provider aws \
   --lease-id <cbx_id-or-slug> \
   --gateway-setup \
@@ -119,7 +119,7 @@ missing.
 Prove native Slack approval UI:
 
 ```bash
-pnpm openclaw qa mantis slack-desktop-smoke \
+pnpm eve qa mantis slack-desktop-smoke \
   --provider aws \
   --class standard \
   --approval-checkpoints \
@@ -162,12 +162,12 @@ uses `/var/cache/crabbox/pnpm` when present.
 - `crabbox.warmup`: cloud provider boot, desktop/browser readiness, and SSH.
 - `crabbox.inspect`: lease metadata lookup.
 - `credentials.prepare`: Convex credential lease acquisition.
-- `crabbox.remote_run`: sync, browser launch, OpenClaw install/build or
+- `crabbox.remote_run`: sync, browser launch, EVE install/build or
   hydrate validation, gateway startup, screenshot, and video capture.
 - `artifacts.copy`: rsync back from the VM.
 
 `crabbox.remote_run` can be marked `accepted` when Crabbox returns a non-zero
-remote status after Mantis has copied metadata proving that either the OpenClaw
+remote status after Mantis has copied metadata proving that either the EVE
 gateway setup completed or the Slack QA command itself exited successfully.
 Treat `accepted` as pass-with-explanation, not a failed scenario.
 
@@ -209,7 +209,7 @@ If the VM run fails but screenshots were copied back, inspect:
 cat mantis-slack-desktop-smoke-report.md
 cat mantis-slack-desktop-smoke-summary.json
 cat slack-desktop-command.log
-cat openclaw-gateway.log
+cat eve-gateway.log
 cat chrome.log
 cat ffmpeg.log
 ```

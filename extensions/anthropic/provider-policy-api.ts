@@ -5,8 +5,8 @@
 import {
   resolveClaudeModelIdentity,
   resolveClaudeThinkingProfile,
-} from "openclaw/plugin-sdk/provider-model-shared";
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-types";
+} from "eve-agent/plugin-sdk/provider-model-shared";
+import type { ModelProviderConfig } from "eve-agent/plugin-sdk/provider-model-types";
 import { CLAUDE_CLI_OFF_THINKING_PROFILE } from "./cli-shared.js";
 import {
   applyAnthropicConfigDefaults,

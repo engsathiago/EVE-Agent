@@ -1,9 +1,9 @@
 // User turn transcript helpers extract user-turn text from session transcripts.
 import path from "node:path";
-import { mimeTypeFromFilePath } from "@openclaw/media-core/mime";
+import { mimeTypeFromFilePath } from "@eve/media-core/mime";
 import type { AgentMessage } from "../../packages/agent-core/src/types.js";
 import { persistSessionTranscriptTurn } from "../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { applyInputProvenanceToUserMessage, normalizeInputProvenance } from "./input-provenance.js";
 import type {
   PersistedUserTurnMediaInput,
@@ -40,7 +40,7 @@ type AppendUserTurnTranscriptMessageParams = {
   agentId?: string;
   sessionKey?: string;
   cwd?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   updateMode?: UserTurnTranscriptUpdateMode;
   beforeMessageWrite?: UserTurnBeforeMessageWrite;
 };
@@ -235,7 +235,7 @@ function buildPersistedUserTurnMessage(params: UserTurnInput): PersistedUserTurn
   // derived from each message's own `timestamp` field, so the current turn and
   // every historical turn serialize identically on the wire. Persisting a stamp
   // here would NOT match the bare-current arrival (the gateway no longer stamps
-  // the live turn) — see https://github.com/openclaw/openclaw/issues/3658.
+  // the live turn) — see https://github.com/engsathiago/eve-agent/issues/3658.
   const content = text || (hasMedia ? (params.mediaOnlyText ?? "") : "");
 
   const message = {
@@ -265,7 +265,7 @@ function isUserMessage(message: AgentMessage): message is PersistedUserTurnMessa
 }
 
 function isBeforeAgentRunBlockedMessage(message: AgentMessage): boolean {
-  const marker = (message as { __openclaw?: { beforeAgentRunBlocked?: unknown } })["__openclaw"]
+  const marker = (message as { __eve?: { beforeAgentRunBlocked?: unknown } })["__eve"]
     ?.beforeAgentRunBlocked;
   return marker !== undefined;
 }
@@ -403,7 +403,7 @@ export async function persistUserTurnTranscript(
     },
     {
       ...(params.cwd ? { cwd: params.cwd } : {}),
-      ...(params.config ? { config: params.config as OpenClawConfig } : {}),
+      ...(params.config ? { config: params.config as EVEConfig } : {}),
       updateMode: params.updateMode ?? "inline",
       messages: [
         {
@@ -446,7 +446,7 @@ async function appendFileTargetUserTurnTranscript(params: {
     ...target,
     message: params.message,
     updateMode: params.updateMode,
-    ...(config ? { config: config as OpenClawConfig } : {}),
+    ...(config ? { config: config as EVEConfig } : {}),
     ...(params.beforeMessageWrite ? { beforeMessageWrite: params.beforeMessageWrite } : {}),
   });
   return appended

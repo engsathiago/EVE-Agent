@@ -3,7 +3,7 @@
  * deterministic across platform newlines, trailing whitespace, and input
  * ordering.
  */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 
 /** Normalize structured prompt text before hashing or snapshot comparison. */
 export function normalizeStructuredPromptSection(text: string): string {

@@ -5,7 +5,7 @@ const approvalRuntimeHoisted = vi.hoisted(() => ({
   resolveApprovalOverGatewaySpy: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/approval-gateway-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/approval-gateway-runtime", () => ({
   resolveApprovalOverGateway: (...args: unknown[]) =>
     approvalRuntimeHoisted.resolveApprovalOverGatewaySpy(...args),
 }));

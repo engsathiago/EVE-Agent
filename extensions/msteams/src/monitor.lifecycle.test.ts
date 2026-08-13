@@ -2,7 +2,7 @@
 import { EventEmitter } from "node:events";
 import type { Request, Response } from "express";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig, RuntimeEnv } from "../runtime-api.js";
+import type { EVEConfig, RuntimeEnv } from "../runtime-api.js";
 import type { MSTeamsConversationStore } from "./conversation-store.js";
 import type { MSTeamsActivityHandler, MSTeamsMessageHandlerDeps } from "./monitor-handler.js";
 import type { MSTeamsPollStore } from "./polls.js";
@@ -217,7 +217,7 @@ vi.mock("./sso-token-store.js", () => ({
 
 import { monitorMSTeamsProvider } from "./monitor.js";
 
-function createConfig(port: number): OpenClawConfig {
+function createConfig(port: number): EVEConfig {
   return {
     channels: {
       msteams: {
@@ -231,12 +231,12 @@ function createConfig(port: number): OpenClawConfig {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function updateMSTeamsConfig(
-  cfg: OpenClawConfig,
-  patch: NonNullable<NonNullable<OpenClawConfig["channels"]>["msteams"]>,
+  cfg: EVEConfig,
+  patch: NonNullable<NonNullable<EVEConfig["channels"]>["msteams"]>,
 ): void {
   const msteams = cfg.channels?.msteams;
   if (!cfg.channels || !msteams) {
@@ -265,9 +265,9 @@ function createStores() {
   };
 }
 
-function requireRegisteredMSTeamsConfig(): OpenClawConfig {
+function requireRegisteredMSTeamsConfig(): EVEConfig {
   const registered = registerMSTeamsHandlers.mock.calls[0]?.[1] as
-    | { cfg?: OpenClawConfig }
+    | { cfg?: EVEConfig }
     | undefined;
   if (!registered?.cfg) {
     throw new Error("expected registered MSTeams handler config");
@@ -831,7 +831,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
         name: "adaptiveCard/action",
         from: { id: "29:user", aadObjectId: "aad-user" },
         conversation: { id: "19:channel@thread.tacv2", conversationType: "channel" },
-        value: { action: { data: { openclawPollId: "poll-1", choices: "0" } } },
+        value: { action: { data: { evePollId: "poll-1", choices: "0" } } },
       },
     });
 
@@ -891,7 +891,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
         name: "adaptiveCard/action",
         from: { id: "29:user", aadObjectId: "aad-user" },
         conversation: { id: "19:other@thread.tacv2", conversationType: "channel" },
-        value: { action: { data: { openclawPollId: "poll-1", choices: "0" } } },
+        value: { action: { data: { evePollId: "poll-1", choices: "0" } } },
       },
     });
 

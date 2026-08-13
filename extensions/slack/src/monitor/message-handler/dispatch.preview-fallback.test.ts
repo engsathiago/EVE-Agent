@@ -359,8 +359,8 @@ function createPreparedSlackMessage(params?: {
       botToken: "xoxb-test",
       app: { client: { chat: { postMessage: postMessageMock, update: chatUpdateMock } } },
       teamId: "T1",
-      botUserId: "U_OPENCLAW",
-      botId: "B_OPENCLAW",
+      botUserId: "U_EVE",
+      botId: "B_EVE",
       textLimit: 4000,
       typingReaction: params?.typingReaction ?? "",
       removeAckAfterReply: false,
@@ -429,11 +429,11 @@ async function dispatchNativeProgressScenario(params: {
   );
 }
 
-vi.mock("openclaw/plugin-sdk/agent-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/agent-runtime", () => ({
   resolveHumanDelayConfig: () => undefined,
 }));
 
-vi.mock("openclaw/plugin-sdk/channel-feedback", () => ({
+vi.mock("eve-agent/plugin-sdk/channel-feedback", () => ({
   DEFAULT_TIMING: {
     doneHoldMs: 0,
     errorHoldMs: 0,
@@ -451,8 +451,8 @@ vi.mock("../conversation.runtime.js", () => ({
   recordInboundSession: recordInboundSessionMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/channel-outbound", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/channel-outbound")>();
+vi.mock("eve-agent/plugin-sdk/channel-outbound", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/channel-outbound")>();
   return {
     ...actual,
     createChannelMessageReplyPipeline: (params: {
@@ -744,14 +744,14 @@ vi.mock("openclaw/plugin-sdk/channel-outbound", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/reply-history", () => ({
+vi.mock("eve-agent/plugin-sdk/reply-history", () => ({
   clearHistoryEntriesIfEnabled: () => {},
   createChannelHistoryWindow: () => ({
     clear: () => {},
   }),
 }));
 
-vi.mock("openclaw/plugin-sdk/reply-payload", () => ({
+vi.mock("eve-agent/plugin-sdk/reply-payload", () => ({
   buildTtsSupplementMediaPayload: (payload: {
     text?: string;
     mediaUrl?: string;
@@ -796,17 +796,17 @@ vi.mock("openclaw/plugin-sdk/reply-payload", () => ({
   },
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-env", () => ({
   danger: (message: string) => message,
   logVerbose: () => {},
   shouldLogVerbose: () => false,
 }));
 
-vi.mock("openclaw/plugin-sdk/security-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/security-runtime", () => ({
   resolvePinnedMainDmOwnerFromAllowlist: () => mockedPinnedMainDmOwner,
 }));
 
-vi.mock("openclaw/plugin-sdk/string-coerce-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/string-coerce-runtime", () => ({
   isRecord: (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null && !Array.isArray(value),
   normalizeOptionalLowercaseString: (value?: string) => value?.toLowerCase(),
@@ -882,7 +882,7 @@ vi.mock("../allow-list.js", () => ({
 }));
 
 vi.mock("../config.runtime.js", () => ({
-  resolveStorePath: () => "/tmp/openclaw-store.json",
+  resolveStorePath: () => "/tmp/eve-store.json",
   updateLastRoute: updateLastRouteMock,
 }));
 
@@ -1487,7 +1487,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     );
 
     expect(updateLastRouteMock).toHaveBeenCalledWith({
-      storePath: "/tmp/openclaw-store.json",
+      storePath: "/tmp/eve-store.json",
       sessionKey: "agent:main:slack:direct:u1",
       deliveryContext: {
         channel: "slack",
@@ -1528,7 +1528,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     );
 
     expect(updateLastRouteMock).toHaveBeenCalledWith({
-      storePath: "/tmp/openclaw-store.json",
+      storePath: "/tmp/eve-store.json",
       sessionKey: "agent:main:main",
       deliveryContext: {
         channel: "slack",
@@ -1568,7 +1568,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     );
 
     expect(updateLastRouteMock).toHaveBeenCalledWith({
-      storePath: "/tmp/openclaw-store.json",
+      storePath: "/tmp/eve-store.json",
       sessionKey: "agent:main:main",
       deliveryContext: {
         channel: "slack",

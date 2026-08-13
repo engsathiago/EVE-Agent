@@ -1,5 +1,5 @@
 // Openai provider module implements model/runtime integration.
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/runtime-env";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "eve-agent/plugin-sdk/runtime-env";
 import { refreshOpenAICodexToken as refreshOpenAICodexTokenFromFlow } from "./openai-chatgpt-oauth-flow.runtime.js";
 import type { OAuthCredentials } from "./openai-chatgpt-oauth-types.runtime.js";
 

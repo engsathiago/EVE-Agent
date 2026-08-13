@@ -8,9 +8,9 @@ import {
   normalizeBatchBaseUrl,
   sanitizeAndNormalizeEmbedding,
   withRemoteHttpResponse,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { createProviderHttpError } from "openclaw/plugin-sdk/provider-http";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-embeddings";
+import { createProviderHttpError } from "eve-agent/plugin-sdk/provider-http";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { GeminiEmbeddingClient, GeminiTextEmbeddingRequest } from "./embedding-provider.js";
 
 type EmbeddingBatchExecutionParams = {
@@ -66,7 +66,7 @@ function buildGeminiUploadBody(params: { jsonl: string; displayName: string }): 
   body: Blob;
   contentType: string;
 } {
-  const boundary = `openclaw-${hashText(params.displayName)}`;
+  const boundary = `eve-${hashText(params.displayName)}`;
   const jsonPart = JSON.stringify({
     file: {
       displayName: params.displayName,

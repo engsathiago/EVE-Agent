@@ -54,13 +54,13 @@ async function installFakeClaudeCli(fakeBinDir, promptLogPath) {
 
 async function main() {
   const stateDir =
-    process.env.OPENCLAW_STATE_DIR ??
-    (await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-crestodian-planner-")));
-  const configPath = process.env.OPENCLAW_CONFIG_PATH ?? path.join(stateDir, "openclaw.json");
+    process.env.EVE_STATE_DIR ??
+    (await fs.mkdtemp(path.join(os.tmpdir(), "eve-crestodian-planner-")));
+  const configPath = process.env.EVE_CONFIG_PATH ?? path.join(stateDir, "eve.json");
   const fakeBinDir = path.join(stateDir, "fake-bin");
   const promptLogPath = path.join(stateDir, "fake-claude-prompt.jsonl");
-  process.env.OPENCLAW_STATE_DIR = stateDir;
-  process.env.OPENCLAW_CONFIG_PATH = configPath;
+  process.env.EVE_STATE_DIR = stateDir;
+  process.env.EVE_CONFIG_PATH = configPath;
   process.env.PATH = `${fakeBinDir}:${process.env.PATH ?? ""}`;
   await fs.rm(stateDir, { recursive: true, force: true });
   await fs.mkdir(stateDir, { recursive: true });
@@ -101,7 +101,7 @@ async function main() {
   const promptLine = await fs.readFile(promptLogPath, "utf8");
   assert(promptLine.includes("User request:"), "fake Claude CLI did not receive planner prompt");
   assert(
-    promptLine.includes("OpenClaw docs:"),
+    promptLine.includes("EVE docs:"),
     "planner prompt did not include docs reference context",
   );
 

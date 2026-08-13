@@ -2,14 +2,14 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import {
   parseStrictPositiveInteger,
   resolveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { isRecord, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
+import { isRecord, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { z } from "zod";
 import {
   QA_EVIDENCE_FILENAME,
@@ -311,13 +311,13 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     id: "telegram-status-command",
     title: "Telegram status command reply",
     rationale: "Recent Telegram group regressions broke /status while normal chat still worked.",
-    regressionRefs: ["openclaw/openclaw#74698"],
+    regressionRefs: ["eve/eve#74698"],
     timeoutMs: 45_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
         expectReply: true,
         input: `/status@${sutUsername}`,
-        expectedTextIncludes: ["OpenClaw", "Model:", "Session:", "Activation:"],
+        expectedTextIncludes: ["EVE", "Model:", "Session:", "Activation:"],
       }),
   },
   {
@@ -338,7 +338,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
           driverGroupAuthorization: "allow",
           expectReply: true,
           input: `/status@${sutUsername}`,
-          expectedTextIncludes: ["OpenClaw", "Session:"],
+          expectedTextIncludes: ["EVE", "Session:"],
         },
         {
           expectReply: true,
@@ -362,7 +362,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     buildRun: () =>
       telegramQaStepRun({
         expectReply: false,
-        input: "/status@OpenClawQaOtherBot",
+        input: "/status@EVEQaOtherBot",
       }),
   },
   {
@@ -399,7 +399,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     defaultEnabled: false,
     rationale:
       "Opt-in real Telegram proof that /usage tokens decorates message-tool-only visible replies.",
-    regressionRefs: ["openclaw/openclaw#87392"],
+    regressionRefs: ["eve/eve#87392"],
     timeoutMs: 90_000,
     buildRun: (sutUsername) => {
       const marker = `QA-TELEGRAM-USAGE-FOOTER-${randomUUID().slice(0, 8).toUpperCase()}`;
@@ -471,7 +471,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     defaultEnabled: false,
     defaultProviderModes: ["mock-openai"],
     rationale: "Opt-in regression guard for duplicate final replies from Telegram streaming paths.",
-    regressionRefs: ["openclaw/openclaw#39905"],
+    regressionRefs: ["eve/eve#39905"],
     timeoutMs: 75_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -489,7 +489,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     title: "Telegram long final reuses the preview message",
     defaultProviderModes: ["mock-openai"],
     rationale: "Regression guard for long streamed finals leaving stale preview messages behind.",
-    regressionRefs: ["openclaw/openclaw#39905"],
+    regressionRefs: ["eve/eve#39905"],
     timeoutMs: 60_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -508,7 +508,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     title: "Telegram three-chunk final keeps only final chunks",
     defaultEnabled: false,
     rationale: "Opt-in stress probe for Telegram long final chunk accounting.",
-    regressionRefs: ["openclaw/openclaw#39905"],
+    regressionRefs: ["eve/eve#39905"],
     timeoutMs: 60_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -548,12 +548,12 @@ const TELEGRAM_QA_STANDARD_SCENARIO_IDS = collectLiveTransportStandardScenarioCo
 });
 
 const TELEGRAM_QA_ENV_KEYS = [
-  "OPENCLAW_QA_TELEGRAM_GROUP_ID",
-  "OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN",
-  "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN",
+  "EVE_QA_TELEGRAM_GROUP_ID",
+  "EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN",
+  "EVE_QA_TELEGRAM_SUT_BOT_TOKEN",
 ] as const;
-const QA_REDACT_PUBLIC_METADATA_ENV = "OPENCLAW_QA_REDACT_PUBLIC_METADATA";
-const QA_SUITE_PROGRESS_ENV = "OPENCLAW_QA_SUITE_PROGRESS";
+const QA_REDACT_PUBLIC_METADATA_ENV = "EVE_QA_REDACT_PUBLIC_METADATA";
+const QA_SUITE_PROGRESS_ENV = "EVE_QA_SUITE_PROGRESS";
 const TELEGRAM_QA_PROGRESS_DETAIL_LIMIT = 240;
 const TELEGRAM_QA_PROGRESS_PREFIX = "[qa-telegram-live]";
 
@@ -602,7 +602,7 @@ function parsePositiveTelegramQaEnvMs(env: NodeJS.ProcessEnv, name: string, fall
 function resolveTelegramQaCanaryTimeoutMs(env: NodeJS.ProcessEnv = process.env) {
   return parsePositiveTelegramQaEnvMs(
     env,
-    "OPENCLAW_QA_TELEGRAM_CANARY_TIMEOUT_MS",
+    "EVE_QA_TELEGRAM_CANARY_TIMEOUT_MS",
     DEFAULT_TELEGRAM_QA_CANARY_TIMEOUT_MS,
   );
 }
@@ -611,11 +611,11 @@ function resolveTelegramQaScenarioTimeoutMs(
   fallbackMs: number,
   env: NodeJS.ProcessEnv = process.env,
 ) {
-  return parsePositiveTelegramQaEnvMs(env, "OPENCLAW_QA_TELEGRAM_SCENARIO_TIMEOUT_MS", fallbackMs);
+  return parsePositiveTelegramQaEnvMs(env, "EVE_QA_TELEGRAM_SCENARIO_TIMEOUT_MS", fallbackMs);
 }
 
 function resolveTelegramQaReadyTimeoutMs(env: NodeJS.ProcessEnv = process.env) {
-  const raw = env.OPENCLAW_QA_TRANSPORT_READY_TIMEOUT_MS;
+  const raw = env.EVE_QA_TRANSPORT_READY_TIMEOUT_MS;
   if (!raw) {
     return TELEGRAM_QA_DEFAULT_READY_TIMEOUT_MS;
   }
@@ -680,14 +680,14 @@ function formatTelegramQaProgressDetails(details: string): string {
 }
 
 function resolveTelegramQaRuntimeEnv(env: NodeJS.ProcessEnv = process.env): TelegramQaRuntimeEnv {
-  const groupId = resolveEnvValue(env, "OPENCLAW_QA_TELEGRAM_GROUP_ID");
+  const groupId = resolveEnvValue(env, "EVE_QA_TELEGRAM_GROUP_ID");
   if (!/^-?\d+$/u.test(groupId)) {
-    throw new Error("OPENCLAW_QA_TELEGRAM_GROUP_ID must be a numeric Telegram chat id.");
+    throw new Error("EVE_QA_TELEGRAM_GROUP_ID must be a numeric Telegram chat id.");
   }
   return {
     groupId,
-    driverToken: resolveEnvValue(env, "OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN"),
-    sutToken: resolveEnvValue(env, "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN"),
+    driverToken: resolveEnvValue(env, "EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN"),
+    sutToken: resolveEnvValue(env, "EVE_QA_TELEGRAM_SUT_BOT_TOKEN"),
   };
 }
 
@@ -851,14 +851,14 @@ function normalizeTelegramObservedMessage(update: TelegramUpdate): TelegramObser
 }
 
 function buildTelegramQaConfig(
-  baseCfg: OpenClawConfig,
+  baseCfg: EVEConfig,
   params: {
     groupId: string;
     sutToken: string;
     driverBotId: number;
     sutAccountId: string;
   },
-): OpenClawConfig {
+): EVEConfig {
   const pluginAllow = uniqueStrings([...(baseCfg.plugins?.allow ?? []), "telegram"]);
   const pluginEntries = {
     ...baseCfg.plugins?.entries,
@@ -874,7 +874,7 @@ function buildTelegramQaConfig(
           ...baseCfg.agents?.defaults?.models,
           "openai/gpt-5.5": {
             ...baseCfg.agents?.defaults?.models?.["openai/gpt-5.5"],
-            agentRuntime: { id: "openclaw" },
+            agentRuntime: { id: "eve" },
           },
         },
         skipBootstrap: true,
@@ -1784,7 +1784,7 @@ export async function runTelegramQaLive(params: {
   env?: NodeJS.ProcessEnv;
   repoRoot?: string;
   outputDir?: string;
-  sutOpenClawCommand?: string;
+  sutEVECommand?: string;
   providerMode?: QaProviderModeInput;
   primaryModel?: string;
   alternateModel?: string;
@@ -1878,9 +1878,9 @@ export async function runTelegramQaLive(params: {
 
     const gatewayHarness = await startQaLiveLaneGateway({
       repoRoot,
-      command: params.sutOpenClawCommand
+      command: params.sutEVECommand
         ? {
-            executablePath: params.sutOpenClawCommand,
+            executablePath: params.sutEVECommand,
             usePackagedPlugins: true,
           }
         : undefined,

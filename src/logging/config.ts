@@ -1,13 +1,13 @@
 // Logging config helpers read and normalize logger configuration.
 import fs from "node:fs";
-import { isRecord as isObjectRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord as isObjectRecord } from "@eve/normalization-core/record-coerce";
 import JSON5 from "json5";
 import { getCommandPathWithRootOptions } from "../cli/argv.js";
 import { resolveConfigPath } from "../config/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 // Lightweight logging-config reader used before the full config runtime is safe to load.
-type LoggingConfig = OpenClawConfig["logging"];
+type LoggingConfig = EVEConfig["logging"];
 
 let cachedLoggingConfig:
   | {

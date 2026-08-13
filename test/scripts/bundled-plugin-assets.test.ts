@@ -9,15 +9,15 @@ import {
 } from "../../scripts/bundled-plugin-assets.mjs";
 
 async function withPluginAssetFixture(run: (rootDir: string) => Promise<void>) {
-  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-assets-"));
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-assets-"));
   try {
     fs.mkdirSync(path.join(rootDir, "extensions", "canvas"), { recursive: true });
     fs.writeFileSync(
       path.join(rootDir, "extensions", "canvas", "package.json"),
       JSON.stringify(
         {
-          name: "@openclaw/canvas-plugin",
-          openclaw: {
+          name: "@eve/canvas-plugin",
+          eve: {
             assetScripts: {
               build: "node scripts/bundle-a2ui.mjs",
               copy: "node scripts/copy-a2ui.mjs",
@@ -29,7 +29,7 @@ async function withPluginAssetFixture(run: (rootDir: string) => Promise<void>) {
       ),
     );
     fs.writeFileSync(
-      path.join(rootDir, "extensions", "canvas", "openclaw.plugin.json"),
+      path.join(rootDir, "extensions", "canvas", "eve.plugin.json"),
       JSON.stringify({ id: "canvas" }, null, 2),
     );
     await run(rootDir);
@@ -49,9 +49,9 @@ describe("bundled plugin assets", () => {
 
       expect(hooks).toEqual([
         {
-          aliases: ["@openclaw/canvas-plugin", "canvas", "canvas-plugin"],
+          aliases: ["@eve/canvas-plugin", "canvas", "canvas-plugin"],
           command: "node scripts/bundle-a2ui.mjs",
-          packageName: "@openclaw/canvas-plugin",
+          packageName: "@eve/canvas-plugin",
           phase: "build",
           pluginDir: path.join(rootDir, "extensions", "canvas"),
           pluginId: "canvas",

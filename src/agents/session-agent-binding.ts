@@ -6,8 +6,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   parseAgentSessionKey,
   normalizeAgentId,
@@ -19,7 +19,7 @@ import { resolveDefaultAgentId } from "./agent-scope.js";
  * Resolve the trusted active agent bound to a host-owned session reference.
  */
 export function resolveBoundAgentIdForSession(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   sessionKey?: string;
   agentId?: string;
 }): string | undefined {

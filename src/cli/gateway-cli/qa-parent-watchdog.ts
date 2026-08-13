@@ -1,15 +1,15 @@
 // QA watchdog for shutting down orphaned gateway children and cleaning staged temp roots.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 
-export const QA_PARENT_PID_ENV = "OPENCLAW_QA_PARENT_PID";
-export const QA_TEMP_ROOT_ENV = "OPENCLAW_QA_TEMP_ROOT";
-export const QA_STAGED_RUNTIME_ROOT_ENV = "OPENCLAW_QA_STAGED_RUNTIME_ROOT";
+export const QA_PARENT_PID_ENV = "EVE_QA_PARENT_PID";
+export const QA_TEMP_ROOT_ENV = "EVE_QA_TEMP_ROOT";
+export const QA_STAGED_RUNTIME_ROOT_ENV = "EVE_QA_STAGED_RUNTIME_ROOT";
 
 const DEFAULT_QA_PARENT_WATCHDOG_INTERVAL_MS = 1000;
-const QA_TEMP_ROOT_PREFIX = "openclaw-qa-suite-";
+const QA_TEMP_ROOT_PREFIX = "eve-qa-suite-";
 
 type QaParentWatchdogTimer =
   | number

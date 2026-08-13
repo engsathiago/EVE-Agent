@@ -1,8 +1,8 @@
 // Telegram plugin module implements message dispatch dedupe behavior.
 import path from "node:path";
 import type { Message } from "grammy/types";
-import { createClaimableDedupe, type ClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { createClaimableDedupe, type ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
+import { normalizeStringEntries, uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 export const TELEGRAM_MESSAGE_DISPATCH_DEDUPE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 export const TELEGRAM_MESSAGE_DISPATCH_DEDUPE_NAMESPACE = "global";

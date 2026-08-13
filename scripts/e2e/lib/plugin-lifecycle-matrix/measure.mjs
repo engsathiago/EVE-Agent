@@ -48,18 +48,18 @@ function readPositiveNumberEnv(name, fallback) {
   return value;
 }
 
-const pollMs = readPositiveIntEnv("OPENCLAW_PLUGIN_LIFECYCLE_METRIC_POLL_MS", 100);
-const timeoutMs = readPositiveIntEnv("OPENCLAW_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS", 300000);
+const pollMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_METRIC_POLL_MS", 100);
+const timeoutMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS", 300000);
 const timeoutKillGraceMs = readPositiveIntEnv(
-  "OPENCLAW_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS",
+  "EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS",
   2000,
 );
 const maxRssKbThreshold = readPositiveIntEnv(
-  "OPENCLAW_PLUGIN_LIFECYCLE_MAX_RSS_KB",
+  "EVE_PLUGIN_LIFECYCLE_MAX_RSS_KB",
   4 * 1024 * 1024,
 );
-const maxWallMs = readPositiveIntEnv("OPENCLAW_PLUGIN_LIFECYCLE_MAX_WALL_MS", timeoutMs);
-const maxCpuCoreRatio = readPositiveNumberEnv("OPENCLAW_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO", 16);
+const maxWallMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_MAX_WALL_MS", timeoutMs);
+const maxCpuCoreRatio = readPositiveNumberEnv("EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO", 16);
 
 if (!fs.existsSync("/proc")) {
   console.error("plugin lifecycle resource sampler requires Linux /proc");
@@ -68,8 +68,8 @@ if (!fs.existsSync("/proc")) {
 
 // /proc RSS is in host pages and CPU times are in host clock ticks. Query the
 // live units so 64 KiB ARM kernels do not under-report resource use.
-const pageSize = readPositiveIntEnvOrGetconf("OPENCLAW_PROC_PAGE_SIZE", "PAGESIZE");
-const clockTicks = readPositiveIntEnvOrGetconf("OPENCLAW_PROC_CLK_TCK", "CLK_TCK");
+const pageSize = readPositiveIntEnvOrGetconf("EVE_PROC_PAGE_SIZE", "PAGESIZE");
+const clockTicks = readPositiveIntEnvOrGetconf("EVE_PROC_CLK_TCK", "CLK_TCK");
 
 function readProcSnapshot() {
   const stats = new Map();

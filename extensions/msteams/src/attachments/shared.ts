@@ -7,13 +7,13 @@ import {
   isPrivateIpAddress,
   normalizeHostnameSuffixAllowlist,
   type SsrFPolicy,
-} from "openclaw/plugin-sdk/ssrf-policy";
-import { fetchWithSsrFGuard, type LookupFn } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/ssrf-policy";
+import { fetchWithSsrFGuard, type LookupFn } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   isRecord,
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { MSTeamsAttachmentLike } from "./types.js";
 
 type InlineImageCandidate =

@@ -4,7 +4,7 @@
  * Verifies optional directory/threading hooks return normalized public shapes.
  */
 import { expect } from "vitest";
-import type { OpenClawConfig } from "../../../../config/config.js";
+import type { EVEConfig } from "../../../../config/config.js";
 import type { RuntimeEnv } from "../../../../runtime.js";
 import type {
   ChannelDirectoryEntry,
@@ -100,7 +100,7 @@ export function expectChannelThreadingReturnValuesNormalized(
     expect(
       ["off", "first", "all"].includes(
         threading.resolveReplyToMode({
-          cfg: {} as OpenClawConfig,
+          cfg: {} as EVEConfig,
           accountId: "default",
           chatType: "group",
         }),
@@ -110,7 +110,7 @@ export function expectChannelThreadingReturnValuesNormalized(
 
   const repliedRef = { value: false };
   const toolContext = threading?.buildToolContext?.({
-    cfg: {} as OpenClawConfig,
+    cfg: {} as EVEConfig,
     accountId: "default",
     context: {
       Channel: "group:test",
@@ -134,7 +134,7 @@ export function expectChannelThreadingReturnValuesNormalized(
   }
 
   const autoThreadId = threading?.resolveAutoThreadId?.({
-    cfg: {} as OpenClawConfig,
+    cfg: {} as EVEConfig,
     accountId: "default",
     to: "group:test",
     toolContext,
@@ -146,7 +146,7 @@ export function expectChannelThreadingReturnValuesNormalized(
   }
 
   const replyTransport = threading?.resolveReplyTransport?.({
-    cfg: {} as OpenClawConfig,
+    cfg: {} as EVEConfig,
     accountId: "default",
     threadId: "thread-0",
     replyToId: "msg-0",
@@ -156,7 +156,7 @@ export function expectChannelThreadingReturnValuesNormalized(
   }
 
   const focusedBinding = threading?.resolveFocusedBinding?.({
-    cfg: {} as OpenClawConfig,
+    cfg: {} as EVEConfig,
     accountId: "default",
     context: {
       Channel: "group:test",
@@ -179,7 +179,7 @@ export function expectChannelThreadingReturnValuesNormalized(
 export async function expectChannelDirectoryBaseContract(params: {
   plugin: Pick<ChannelPlugin, "id" | "directory">;
   coverage?: "lookups" | "presence";
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   accountId?: string;
 }) {
   const directory = params.plugin.directory;
@@ -190,7 +190,7 @@ export async function expectChannelDirectoryBaseContract(params: {
       channels: {
         [params.plugin.id]: { enabled: false },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as EVEConfig);
   const accountId = params.accountId ?? "default";
 
   if (params.coverage === "presence") {

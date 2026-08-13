@@ -14,7 +14,7 @@ describe("buildCliAgentSystemPrompt", () => {
 
   it("uses config-backed sub-agent delegation mode", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       config: {
         agents: {
           defaults: {
@@ -36,36 +36,36 @@ describe("buildCliAgentSystemPrompt", () => {
     expect(prompt).not.toContain("Do not poll `subagents list` / `sessions_list` in a loop");
   });
 
-  it("uses CLI backend tool fallback instead of OpenClaw tool assumptions", () => {
+  it("uses CLI backend tool fallback instead of EVE tool assumptions", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       tools: [],
       modelDisplay: "test/model",
     });
 
-    expect(prompt).not.toContain("OpenClaw lists the standard tools above");
+    expect(prompt).not.toContain("EVE lists the standard tools above");
     expect(prompt).not.toContain("This runtime enables:");
     expect(prompt).not.toContain("For long waits, avoid rapid poll loops");
     expect(prompt).not.toContain("Larger work: use `sessions_spawn`");
     expect(prompt).not.toContain("Do not poll `subagents list` / `sessions_list` in a loop");
-    expect(prompt).toContain("No OpenClaw tool list is injected");
+    expect(prompt).toContain("No EVE tool list is injected");
   });
 
   it("uses cwd, not bootstrap workspace, for CLI workspace guidance", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw-agent",
+      workspaceDir: "/tmp/eve-agent",
       cwd: "/tmp/task-repo",
       tools: [],
       modelDisplay: "test/model",
     });
 
     expect(prompt).toContain("Your working directory is: /tmp/task-repo");
-    expect(prompt).not.toContain("Your working directory is: /tmp/openclaw-agent");
+    expect(prompt).not.toContain("Your working directory is: /tmp/eve-agent");
   });
 
   it("includes CLI-scoped plugin command guidance", () => {
     // Plugin command guidance is surface-filtered; CLI prompts must not leak
-    // OpenClaw-main command text into external CLI backends.
+    // EVE-main command text into external CLI backends.
     registerPluginCommand("demo-plugin", {
       name: "demo_cli",
       description: "Demo CLI command",
@@ -75,26 +75,26 @@ describe("buildCliAgentSystemPrompt", () => {
           surfaces: ["cli_backend"],
         },
         {
-          text: "OpenClaw-only command guidance.",
-          surfaces: ["openclaw_main"],
+          text: "EVE-only command guidance.",
+          surfaces: ["eve_main"],
         },
       ],
       handler: async () => ({ text: "ok" }),
     });
 
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       tools: [{ name: "exec" } as never],
       modelDisplay: "test/model",
     });
 
     expect(prompt).toContain("CLI-only command guidance.");
-    expect(prompt).not.toContain("OpenClaw-only command guidance.");
+    expect(prompt).not.toContain("EVE-only command guidance.");
   });
 
   it("includes session identity in runtime when provided", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       tools: [],
       modelDisplay: "test/model",
       agentId: "main",
@@ -109,7 +109,7 @@ describe("buildCliAgentSystemPrompt", () => {
 
   it("includes Telegram rich text guidance for CLI final replies", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       tools: [],
       modelDisplay: "anthropic/claude-opus-4-8",
       runtimeChannel: "telegram",
@@ -127,7 +127,7 @@ describe("buildCliAgentSystemPrompt", () => {
 
   it("requires an explicit message target when the CLI turn policy requires one", () => {
     const prompt = buildCliAgentSystemPrompt({
-      workspaceDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/eve",
       tools: [{ name: "message" } as never],
       modelDisplay: "test/model",
       sourceReplyDeliveryMode: "message_tool_only",

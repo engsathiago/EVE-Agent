@@ -1,8 +1,8 @@
 import Foundation
-import OpenClawKit
-import OpenClawProtocol
+import EVEKit
+import EVEProtocol
 import Testing
-@testable import OpenClaw
+@testable import EVE
 
 @Suite struct IOSGatewayChatTransportTests {
     private func object(from json: String) throws -> [String: Any] {

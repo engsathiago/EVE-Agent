@@ -26,17 +26,17 @@ struct PushBuildConfig {
     init(bundle: Bundle = .main) {
         self.transport = Self.readEnum(
             bundle: bundle,
-            key: "OpenClawPushTransport",
+            key: "EVEPushTransport",
             fallback: .direct)
         self.distribution = Self.readEnum(
             bundle: bundle,
-            key: "OpenClawPushDistribution",
+            key: "EVEPushDistribution",
             fallback: .local)
         self.apnsEnvironment = Self.readEnum(
             bundle: bundle,
-            key: "OpenClawPushAPNsEnvironment",
+            key: "EVEPushAPNsEnvironment",
             fallback: Self.defaultAPNsEnvironment)
-        self.relayBaseURL = Self.readURL(bundle: bundle, key: "OpenClawPushRelayBaseURL")
+        self.relayBaseURL = Self.readURL(bundle: bundle, key: "EVEPushRelayBaseURL")
     }
 
     private static func readURL(bundle: Bundle, key: String) -> URL? {

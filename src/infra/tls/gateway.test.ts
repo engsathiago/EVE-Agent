@@ -9,7 +9,7 @@ import { normalizeFingerprint } from "./fingerprint.js";
 import { loadGatewayTlsRuntime } from "./gateway.js";
 
 const tempDirs = createTrackedTempDirs();
-const createTempDir = () => tempDirs.make("openclaw-gateway-tls-test-");
+const createTempDir = () => tempDirs.make("eve-gateway-tls-test-");
 
 const KEY_PEM = [
   "-----BEGIN PRIVATE KEY-----", // pragma: allowlist secret

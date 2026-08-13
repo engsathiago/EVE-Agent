@@ -1,5 +1,5 @@
 /** File-backed implementation for plugin host-owned session-state cleanup. */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { normalizeSessionEntrySlotKey } from "../../plugins/session-entry-slot-keys.js";
 import { updateSessionStore } from "./store.js";
 import type { SessionEntry } from "./types.js";

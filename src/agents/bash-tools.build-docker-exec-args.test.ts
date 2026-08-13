@@ -19,16 +19,16 @@ describe("buildDockerExecArgs", () => {
     });
 
     const commandArg = args[args.length - 1];
-    expect(args).toContain("OPENCLAW_PREPEND_PATH=/custom/bin:/usr/local/bin:/usr/bin");
-    expect(commandArg).toContain('export PATH="${OPENCLAW_PREPEND_PATH}:$PATH"');
+    expect(args).toContain("EVE_PREPEND_PATH=/custom/bin:/usr/local/bin:/usr/bin");
+    expect(commandArg).toContain('export PATH="${EVE_PREPEND_PATH}:$PATH"');
     expect(commandArg).toContain("echo hello");
     expect(commandArg).toBe(
-      'export PATH="${OPENCLAW_PREPEND_PATH}:$PATH"; unset OPENCLAW_PREPEND_PATH; echo hello',
+      'export PATH="${EVE_PREPEND_PATH}:$PATH"; unset EVE_PREPEND_PATH; echo hello',
     );
   });
 
   it("does not interpolate PATH into the shell command", () => {
-    const injectedPath = "$(touch /tmp/openclaw-path-injection)";
+    const injectedPath = "$(touch /tmp/eve-path-injection)";
     const args = buildDockerExecArgs({
       containerName: "test-container",
       command: "echo hello",
@@ -40,9 +40,9 @@ describe("buildDockerExecArgs", () => {
     });
 
     const commandArg = args[args.length - 1];
-    expect(args).toContain(`OPENCLAW_PREPEND_PATH=${injectedPath}`);
+    expect(args).toContain(`EVE_PREPEND_PATH=${injectedPath}`);
     expect(commandArg).not.toContain(injectedPath);
-    expect(commandArg).toContain("OPENCLAW_PREPEND_PATH");
+    expect(commandArg).toContain("EVE_PREPEND_PATH");
   });
 
   it("does not add PATH export when PATH is not in env", () => {

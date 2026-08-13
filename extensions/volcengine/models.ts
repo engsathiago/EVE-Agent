@@ -1,7 +1,7 @@
 // Volcengine plugin module implements models behavior.
-import { buildManifestModelProviderConfig } from "openclaw/plugin-sdk/provider-catalog-shared";
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-model-shared";
-import manifest from "./openclaw.plugin.json" with { type: "json" };
+import { buildManifestModelProviderConfig } from "eve-agent/plugin-sdk/provider-catalog-shared";
+import type { ModelDefinitionConfig } from "eve-agent/plugin-sdk/provider-model-shared";
+import manifest from "./eve.plugin.json" with { type: "json" };
 
 const DOUBAO_MANIFEST_PROVIDER = buildManifestModelProviderConfig({
   providerId: "volcengine",

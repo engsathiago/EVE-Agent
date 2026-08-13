@@ -1,5 +1,5 @@
 ---
-summary: "CLI reference for `openclaw setup` (initialize config plus workspace, optionally run onboarding)"
+summary: "CLI reference for `eve setup` (initialize config plus workspace, optionally run onboarding)"
 read_when:
   - You're doing first-run setup without full CLI onboarding
   - You want to set the default workspace path
@@ -7,19 +7,19 @@ read_when:
 title: "Setup"
 ---
 
-# `openclaw setup`
+# `eve setup`
 
 Initialize the baseline config and agent workspace. With any onboarding flag present, also runs the wizard.
 
 <Note>
-`openclaw setup` is for mutable config installs. In Nix mode (`OPENCLAW_NIX_MODE=1`) OpenClaw refuses setup writes because the config file is managed by Nix. Use the first-party [nix-openclaw Quick Start](https://github.com/openclaw/nix-openclaw#quick-start) or the equivalent source config for another Nix package.
+`eve setup` is for mutable config installs. In Nix mode (`EVE_NIX_MODE=1`) EVE refuses setup writes because the config file is managed by Nix. Use the first-party [nix-eve Quick Start](https://github.com/eve/nix-eve#quick-start) or the equivalent source config for another Nix package.
 </Note>
 
 ## Options
 
 | Flag                       | Description                                                                                         |
 | -------------------------- | --------------------------------------------------------------------------------------------------- |
-| `--workspace <dir>`        | Agent workspace directory (default `~/.openclaw/workspace`; stored as `agents.defaults.workspace`). |
+| `--workspace <dir>`        | Agent workspace directory (default `~/.eve/workspace`; stored as `agents.defaults.workspace`). |
 | `--wizard`                 | Run interactive onboarding.                                                                         |
 | `--non-interactive`        | Run onboarding without prompts.                                                                     |
 | `--accept-risk`            | Acknowledge full-system agent access risk; required with `--non-interactive`.                       |
@@ -32,24 +32,24 @@ Initialize the baseline config and agent workspace. With any onboarding flag pre
 
 ### Wizard auto-trigger
 
-`openclaw setup` runs the wizard when any of these flags are explicitly present, even without `--wizard`:
+`eve setup` runs the wizard when any of these flags are explicitly present, even without `--wizard`:
 
 `--wizard`, `--non-interactive`, `--accept-risk`, `--mode`, `--import-from`, `--import-source`, `--import-secrets`, `--remote-url`, `--remote-token`.
 
 ## Examples
 
 ```bash
-openclaw setup
-openclaw setup --workspace ~/.openclaw/workspace
-openclaw setup --wizard
-openclaw setup --wizard --import-from hermes --import-source ~/.hermes
-openclaw setup --non-interactive --accept-risk --mode remote --remote-url wss://gateway-host:18789 --remote-token <token>
+eve setup
+eve setup --workspace ~/.eve/workspace
+eve setup --wizard
+eve setup --wizard --import-from hermes --import-source ~/.hermes
+eve setup --non-interactive --accept-risk --mode remote --remote-url wss://gateway-host:18789 --remote-token <token>
 ```
 
 ## Notes
 
-- Plain `openclaw setup` initializes config and workspace without running the full onboarding flow.
-- After plain setup, run `openclaw onboard` for the full guided journey, `openclaw configure` for targeted changes, or `openclaw channels add` to add channel accounts.
+- Plain `eve setup` initializes config and workspace without running the full onboarding flow.
+- After plain setup, run `eve onboard` for the full guided journey, `eve configure` for targeted changes, or `eve channels add` to add channel accounts.
 - If Hermes state is detected, interactive onboarding can offer migration automatically. Import onboarding requires a fresh setup; use [Migrate](/cli/migrate) for dry-run plans, backups, and overwrite mode outside onboarding.
 
 ## Related

@@ -1,4 +1,4 @@
-import { isLiveTestEnabled } from "openclaw/plugin-sdk/test-env";
+import { isLiveTestEnabled } from "eve-agent/plugin-sdk/test-env";
 import { describe, expect, it } from "vitest";
 import { createParallelWebSearchProvider } from "./src/parallel-web-search-provider.js";
 
@@ -22,8 +22,8 @@ describeLive("parallel plugin live", () => {
 
       const result = (await tool.execute({
         objective:
-          "Find the OpenClaw GitHub repository and recent project activity for a quick smoke test.",
-        search_queries: ["openclaw github repository", "openclaw release notes"],
+          "Find the EVE GitHub repository and recent project activity for a quick smoke test.",
+        search_queries: ["eve github repository", "eve release notes"],
         count: 3,
         client_model: "claude-opus-4-7",
       })) as {

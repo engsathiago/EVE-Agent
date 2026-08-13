@@ -2,7 +2,7 @@
 import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { PluginDoctorStateMigration } from "openclaw/plugin-sdk/runtime-doctor";
+import type { PluginDoctorStateMigration } from "eve-agent/plugin-sdk/runtime-doctor";
 import { normalizeNostrStateAccountId } from "./src/state-account-id.js";
 
 type NostrBusState = {

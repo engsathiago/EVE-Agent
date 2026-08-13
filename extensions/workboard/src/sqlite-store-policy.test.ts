@@ -13,7 +13,7 @@ vi.mock("node:sqlite", () => ({
     return { close };
   }),
 }));
-vi.mock("openclaw/plugin-sdk/plugin-state-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/plugin-state-runtime", () => ({
   configureSqliteConnectionPragmas,
 }));
 
@@ -26,7 +26,7 @@ describe("Workboard SQLite policy", () => {
   });
 
   it("closes a newly opened database when filesystem policy refuses it", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-workboard-policy-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-workboard-policy-"));
     const dbPath = path.join(dir, "workboard.sqlite");
     configureSqliteConnectionPragmas.mockImplementation(() => {
       throw new Error("SSHFS is unsupported");

@@ -1,12 +1,12 @@
 // Hook install record helpers read and write installed hook metadata.
 import type { HookInstallRecord } from "../config/types.hooks.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 /** Install record plus the hook pack id being updated in config. */
 export type HookInstallUpdate = HookInstallRecord & { hookId: string };
 
 /** Return config with one hook install record merged into hooks.internal.installs. */
-export function recordHookInstall(cfg: OpenClawConfig, update: HookInstallUpdate): OpenClawConfig {
+export function recordHookInstall(cfg: EVEConfig, update: HookInstallUpdate): EVEConfig {
   const { hookId, ...record } = update;
   const installs = {
     ...cfg.hooks?.internal?.installs,

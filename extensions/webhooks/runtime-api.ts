@@ -11,6 +11,6 @@ export {
   WEBHOOK_IN_FLIGHT_DEFAULTS,
   WEBHOOK_RATE_LIMIT_DEFAULTS,
   type WebhookInFlightLimiter,
-} from "openclaw/plugin-sdk/webhook-ingress";
-export { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/webhook-ingress";
+export { resolveConfiguredSecretInputString } from "eve-agent/plugin-sdk/secret-input-runtime";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";

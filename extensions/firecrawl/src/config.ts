@@ -1,8 +1,8 @@
 // Firecrawl helper module supports config behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { canResolveEnvSecretRefInReadOnlyPath } from "openclaw/plugin-sdk/extension-shared";
-import { resolvePositiveTimeoutSeconds } from "openclaw/plugin-sdk/provider-web-fetch";
-import { resolveSecretInputString, normalizeSecretInput } from "openclaw/plugin-sdk/secret-input";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { canResolveEnvSecretRefInReadOnlyPath } from "eve-agent/plugin-sdk/extension-shared";
+import { resolvePositiveTimeoutSeconds } from "eve-agent/plugin-sdk/provider-web-fetch";
+import { resolveSecretInputString, normalizeSecretInput } from "eve-agent/plugin-sdk/secret-input";
 
 export const DEFAULT_FIRECRAWL_BASE_URL = "https://api.firecrawl.dev";
 export const DEFAULT_FIRECRAWL_SEARCH_TIMEOUT_SECONDS = 30;
@@ -10,13 +10,13 @@ export const DEFAULT_FIRECRAWL_SCRAPE_TIMEOUT_SECONDS = 60;
 export const DEFAULT_FIRECRAWL_MAX_AGE_MS = 172_800_000;
 const FIRECRAWL_API_KEY_ENV_VAR = "FIRECRAWL_API_KEY";
 
-type WebSearchConfig = NonNullable<OpenClawConfig["tools"]>["web"] extends infer Web
+type WebSearchConfig = NonNullable<EVEConfig["tools"]>["web"] extends infer Web
   ? Web extends { search?: infer Search }
     ? Search
     : undefined
   : undefined;
 
-type WebFetchConfig = NonNullable<OpenClawConfig["tools"]>["web"] extends infer Web
+type WebFetchConfig = NonNullable<EVEConfig["tools"]>["web"] extends infer Web
   ? Web extends { fetch?: infer Fetch }
     ? Fetch
     : undefined
@@ -55,7 +55,7 @@ type FirecrawlFetchConfig =
     }
   | undefined;
 
-function resolveSearchConfig(cfg?: OpenClawConfig): WebSearchConfig {
+function resolveSearchConfig(cfg?: EVEConfig): WebSearchConfig {
   const search = cfg?.tools?.web?.search;
   if (!search || typeof search !== "object") {
     return undefined;
@@ -63,7 +63,7 @@ function resolveSearchConfig(cfg?: OpenClawConfig): WebSearchConfig {
   return search;
 }
 
-function resolveFetchConfig(cfg?: OpenClawConfig): WebFetchConfig {
+function resolveFetchConfig(cfg?: EVEConfig): WebFetchConfig {
   const fetch = cfg?.tools?.web?.fetch;
   if (!fetch || typeof fetch !== "object") {
     return undefined;
@@ -71,7 +71,7 @@ function resolveFetchConfig(cfg?: OpenClawConfig): WebFetchConfig {
   return fetch;
 }
 
-export function resolveFirecrawlSearchConfig(cfg?: OpenClawConfig): FirecrawlSearchConfig {
+export function resolveFirecrawlSearchConfig(cfg?: EVEConfig): FirecrawlSearchConfig {
   const pluginConfig = cfg?.plugins?.entries?.firecrawl?.config as PluginEntryConfig;
   const pluginWebSearch = pluginConfig?.webSearch;
   if (pluginWebSearch && typeof pluginWebSearch === "object" && !Array.isArray(pluginWebSearch)) {
@@ -88,7 +88,7 @@ export function resolveFirecrawlSearchConfig(cfg?: OpenClawConfig): FirecrawlSea
   return firecrawl as FirecrawlSearchConfig;
 }
 
-function resolveFirecrawlFetchConfig(cfg?: OpenClawConfig): FirecrawlFetchConfig {
+function resolveFirecrawlFetchConfig(cfg?: EVEConfig): FirecrawlFetchConfig {
   const pluginConfig = cfg?.plugins?.entries?.firecrawl?.config as PluginEntryConfig;
   const pluginWebFetch = pluginConfig?.webFetch;
   if (pluginWebFetch && typeof pluginWebFetch === "object" && !Array.isArray(pluginWebFetch)) {
@@ -113,7 +113,7 @@ type ConfiguredSecretResolution =
 function resolveConfiguredSecret(
   value: unknown,
   path: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
 ): ConfiguredSecretResolution {
   const resolved = resolveSecretInputString({
     value,
@@ -148,7 +148,7 @@ function resolveConfiguredSecret(
   return envValue ? { status: "available", value: envValue } : { status: "missing" };
 }
 
-export function resolveFirecrawlApiKey(cfg?: OpenClawConfig): string | undefined {
+export function resolveFirecrawlApiKey(cfg?: EVEConfig): string | undefined {
   const pluginConfig = cfg?.plugins?.entries?.firecrawl?.config as PluginEntryConfig;
   const search = resolveFirecrawlSearchConfig(cfg);
   const fetch = resolveFirecrawlFetchConfig(cfg);
@@ -186,7 +186,7 @@ export function resolveFirecrawlApiKey(cfg?: OpenClawConfig): string | undefined
   return normalizeSecretInput(process.env[FIRECRAWL_API_KEY_ENV_VAR]) || undefined;
 }
 
-export function resolveFirecrawlBaseUrl(cfg?: OpenClawConfig): string {
+export function resolveFirecrawlBaseUrl(cfg?: EVEConfig): string {
   const search = resolveFirecrawlSearchConfig(cfg);
   const fetch = resolveFirecrawlFetchConfig(cfg);
   const configured =
@@ -197,7 +197,7 @@ export function resolveFirecrawlBaseUrl(cfg?: OpenClawConfig): string {
   return configured || DEFAULT_FIRECRAWL_BASE_URL;
 }
 
-export function resolveFirecrawlOnlyMainContent(cfg?: OpenClawConfig, override?: boolean): boolean {
+export function resolveFirecrawlOnlyMainContent(cfg?: EVEConfig, override?: boolean): boolean {
   if (typeof override === "boolean") {
     return override;
   }
@@ -208,7 +208,7 @@ export function resolveFirecrawlOnlyMainContent(cfg?: OpenClawConfig, override?:
   return true;
 }
 
-export function resolveFirecrawlMaxAgeMs(cfg?: OpenClawConfig, override?: number): number {
+export function resolveFirecrawlMaxAgeMs(cfg?: EVEConfig, override?: number): number {
   if (typeof override === "number" && Number.isFinite(override) && override >= 0) {
     return Math.floor(override);
   }
@@ -224,7 +224,7 @@ export function resolveFirecrawlMaxAgeMs(cfg?: OpenClawConfig, override?: number
 }
 
 export function resolveFirecrawlScrapeTimeoutSeconds(
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   override?: number,
 ): number {
   const fetch = resolveFirecrawlFetchConfig(cfg);

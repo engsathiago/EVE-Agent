@@ -230,7 +230,7 @@ function configureTaskRegistryMaintenanceRuntimeForTest(params: {
       return next;
     },
     isRuntimeAuthoritative: () => true,
-    resolveCronJobsStorePath: () => "/tmp/openclaw-test-cron/jobs.json",
+    resolveCronJobsStorePath: () => "/tmp/eve-test-cron/jobs.json",
     loadCronJobsStoreSync: () => ({ version: 1, jobs: [] }),
     readCronRunLogEntriesSync: () => [],
   });
@@ -270,7 +270,7 @@ function createAcpSessionStoreEntry(params: {
   } as const;
   return {
     cfg: {} as never,
-    storePath: "/tmp/openclaw-test-sessions.json",
+    storePath: "/tmp/eve-test-sessions.json",
     sessionKey: params.sessionKey,
     storeSessionKey: params.sessionKey,
     entry: {
@@ -435,8 +435,8 @@ async function withTaskRegistryTempDir<T>(
   run: (root: string) => Promise<T>,
   options?: { durableStore?: boolean },
 ): Promise<T> {
-  return await withTempDir({ prefix: "openclaw-task-registry-" }, async (root) => {
-    return await withEnvAsync({ OPENCLAW_STATE_DIR: root }, async () => {
+  return await withTempDir({ prefix: "eve-task-registry-" }, async (root) => {
+    return await withEnvAsync({ EVE_STATE_DIR: root }, async () => {
       resetTaskRegistryForTests({ persist: false });
       resetTaskFlowRegistryForTests({ persist: false });
       if (options?.durableStore !== true) {
@@ -1325,7 +1325,7 @@ describe("task-registry", () => {
 
   it("delivers delegated ACP completion directly to an explicitly bound Discord thread", async () => {
     await withTaskRegistryTempDir(async (root) => {
-      process.env.OPENCLAW_STATE_DIR = root;
+      process.env.EVE_STATE_DIR = root;
       resetTaskRegistryForTests();
       const runId = "run-bound-discord-thread-terminal";
       hoisted.sendMessageMock.mockResolvedValue({
@@ -1417,7 +1417,7 @@ describe("task-registry", () => {
     "keeps delegated ACP completion queued without an explicit bound Discord thread ($id)",
     async ({ requesterOrigin }) => {
       await withTaskRegistryTempDir(async (root) => {
-        process.env.OPENCLAW_STATE_DIR = root;
+        process.env.EVE_STATE_DIR = root;
         resetTaskRegistryForTests();
         const runId = `run-non-bound-discord-thread-terminal-${requesterOrigin.channel}-${requesterOrigin.to}`;
         hoisted.sendMessageMock.mockResolvedValue({
@@ -2975,7 +2975,7 @@ describe("task-registry", () => {
         resolveTaskForLookupToken: () => undefined,
         setTaskCleanupAfterById: () => null,
         isRuntimeAuthoritative: () => true,
-        resolveCronJobsStorePath: () => "/tmp/openclaw-test-cron/jobs.json",
+        resolveCronJobsStorePath: () => "/tmp/eve-test-cron/jobs.json",
         loadCronJobsStoreSync: () => ({ version: 1, jobs: [] }),
         readCronRunLogEntriesSync: () => [],
       });
@@ -3769,7 +3769,7 @@ describe("task-registry", () => {
     });
   });
 
-  it("cancels childless codex-native tasks without routing through OpenClaw subagent sessions", async () => {
+  it("cancels childless codex-native tasks without routing through EVE subagent sessions", async () => {
     await withTaskRegistryTempDir(async () => {
       resetTaskRegistryForTests();
       const task = createTaskRecord({

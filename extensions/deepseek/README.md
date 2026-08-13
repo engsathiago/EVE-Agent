@@ -1,12 +1,12 @@
-# OpenClaw DeepSeek Provider
+# EVE DeepSeek Provider
 
-Official OpenClaw provider plugin for DeepSeek.
+Official EVE provider plugin for DeepSeek.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/deepseek-provider
-openclaw gateway restart
+eve plugins install @eve/deepseek-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/deepseek> for setup and configuration.
+See <https://docs.eve.ai/providers/deepseek> for setup and configuration.

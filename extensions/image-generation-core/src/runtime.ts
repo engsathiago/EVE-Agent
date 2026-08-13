@@ -4,4 +4,4 @@ export {
   listRuntimeImageGenerationProviders,
   type GenerateImageParams,
   type GenerateImageRuntimeResult,
-} from "openclaw/plugin-sdk/image-generation-runtime";
+} from "eve-agent/plugin-sdk/image-generation-runtime";

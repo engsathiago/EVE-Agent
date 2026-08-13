@@ -76,7 +76,7 @@ describe("web_search late-bound runtime fallback", () => {
       },
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(firstRunWebSearchParams()?.runtimeWebSearch?.selectedProvider).toBe("brave");
   });
@@ -90,7 +90,7 @@ describe("web_search late-bound runtime fallback", () => {
       lateBindRuntimeConfig: true,
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(firstRunWebSearchParams()?.config).toBe(fallbackConfig);
   });
@@ -104,7 +104,7 @@ describe("web_search late-bound runtime fallback", () => {
       lateBindRuntimeConfig: true,
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(firstProviderResolutionParams()?.value).toBe("brave");
     expect(firstRunWebSearchParams()?.preferRuntimeProviders).toBe(true);
@@ -116,14 +116,14 @@ describe("web_search late-bound runtime fallback", () => {
       lateBindRuntimeConfig: true,
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(mocks.resolveManifestContractOwnerPluginId).not.toHaveBeenCalled();
     expect(firstRunWebSearchParams()?.preferRuntimeProviders).toBe(true);
   });
 
   it("does not prefer runtime providers when the configured provider is a bundled manifest owner", async () => {
-    mocks.resolveManifestContractOwnerPluginId.mockReturnValue("openclaw-bundled-brave");
+    mocks.resolveManifestContractOwnerPluginId.mockReturnValue("eve-bundled-brave");
     const config = {
       tools: { web: { search: { provider: "brave" } } },
     };
@@ -132,7 +132,7 @@ describe("web_search late-bound runtime fallback", () => {
       lateBindRuntimeConfig: true,
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(firstRunWebSearchParams()?.preferRuntimeProviders).toBe(false);
   });
@@ -159,7 +159,7 @@ describe("web_search late-bound runtime fallback", () => {
       },
     });
 
-    await tool?.execute("call-search", { query: "openclaw" }, undefined);
+    await tool?.execute("call-search", { query: "eve" }, undefined);
 
     expect(firstRunWebSearchParams()?.runtimeWebSearch?.selectedProvider).toBe("perplexity");
   });
@@ -175,7 +175,7 @@ describe("web_search late-bound runtime fallback", () => {
       lateBindRuntimeConfig: true,
     });
 
-    await expect(tool?.execute("call-search", { query: "openclaw" }, undefined)).rejects.toThrow(
+    await expect(tool?.execute("call-search", { query: "eve" }, undefined)).rejects.toThrow(
       "web_search is disabled.",
     );
     expect(mocks.runWebSearch).not.toHaveBeenCalled();

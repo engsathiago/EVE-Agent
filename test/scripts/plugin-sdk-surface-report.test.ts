@@ -16,33 +16,33 @@ function runSurfaceReport(env: Record<string, string>) {
 describe("plugin SDK surface report", () => {
   it("rejects loose numeric budget env vars before collecting SDK stats", () => {
     const result = runSurfaceReport({
-      OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS: "1e9",
+      EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS: "1e9",
     });
 
     expect(result.status).toBe(1);
     expect(result.stdout).toBe("");
     expect(result.stderr).toContain(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS must be a non-negative integer",
+      "EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS must be a non-negative integer",
     );
     expect(result.stderr).not.toContain("at ");
   });
 
   it("rejects unsafe budget env vars before collecting SDK stats", () => {
     const result = runSurfaceReport({
-      OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS: "9007199254740992",
+      EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS: "9007199254740992",
     });
 
     expect(result.status).toBe(1);
     expect(result.stdout).toBe("");
     expect(result.stderr).toContain(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS must be a safe non-negative integer",
+      "EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS must be a safe non-negative integer",
     );
     expect(result.stderr).not.toContain("at ");
   });
 
   it("accepts exact deprecated export budget overrides by public entrypoint", () => {
     const result = runSurfaceReport({
-      OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT: JSON.stringify({ core: 2 }),
+      EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT: JSON.stringify({ core: 2 }),
     });
 
     expect(result.status).toBe(0);
@@ -51,7 +51,7 @@ describe("plugin SDK surface report", () => {
 
   it("rejects deprecated export growth by public entrypoint", () => {
     const result = runSurfaceReport({
-      OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT: JSON.stringify({ core: 1 }),
+      EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT: JSON.stringify({ core: 1 }),
     });
 
     expect(result.status).toBe(1);

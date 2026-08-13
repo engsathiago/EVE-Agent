@@ -2,8 +2,8 @@
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { resolveFetch } from "openclaw/plugin-sdk/fetch-runtime";
-import { MAX_DATE_TIMESTAMP_MS } from "openclaw/plugin-sdk/number-runtime";
+import { resolveFetch } from "eve-agent/plugin-sdk/fetch-runtime";
+import { MAX_DATE_TIMESTAMP_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const setDefaultResultOrder = vi.hoisted(() => vi.fn());
@@ -15,7 +15,7 @@ const loggerWarn = vi.hoisted(() => vi.fn());
 
 const undiciFetch = vi.hoisted(() => vi.fn());
 const setGlobalDispatcher = vi.hoisted(() => vi.fn());
-const TEST_UNDICI_RUNTIME_DEPS_KEY = "__OPENCLAW_TEST_UNDICI_RUNTIME_DEPS__";
+const TEST_UNDICI_RUNTIME_DEPS_KEY = "__EVE_TEST_UNDICI_RUNTIME_DEPS__";
 type MockDispatcherInstance = {
   options?: Record<string, unknown> | string;
   destroy: ReturnType<typeof vi.fn>;
@@ -79,7 +79,7 @@ vi.mock("undici", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-env", () => ({
   createSubsystemLogger: () => ({
     info: loggerInfo,
     debug: loggerDebug,
@@ -132,8 +132,8 @@ beforeAll(async () => {
 beforeEach(() => {
   vi.unstubAllEnvs();
   for (const key of [
-    "OPENCLAW_DEBUG_PROXY_ENABLED",
-    "OPENCLAW_DEBUG_PROXY_URL",
+    "EVE_DEBUG_PROXY_ENABLED",
+    "EVE_DEBUG_PROXY_URL",
     "ALL_PROXY",
     "all_proxy",
     "HTTP_PROXY",
@@ -142,9 +142,9 @@ beforeEach(() => {
     "https_proxy",
     "NO_PROXY",
     "no_proxy",
-    "OPENCLAW_PROXY_URL",
-    "OPENCLAW_PROXY_ACTIVE",
-    "OPENCLAW_PROXY_CA_FILE",
+    "EVE_PROXY_URL",
+    "EVE_PROXY_ACTIVE",
+    "EVE_PROXY_CA_FILE",
   ]) {
     vi.stubEnv(key, "");
   }
@@ -202,7 +202,7 @@ function constructorOptions(ctor: ReturnType<typeof vi.fn>, label: string): unkn
 }
 
 function writeTempCa(contents: string): string {
-  const dir = mkdtempSync(path.join(os.tmpdir(), "openclaw-telegram-proxy-ca-"));
+  const dir = mkdtempSync(path.join(os.tmpdir(), "eve-telegram-proxy-ca-"));
   tempDirs.push(dir);
   const caFile = path.join(dir, "proxy-ca.pem");
   writeFileSync(caFile, contents, "utf8");
@@ -477,8 +477,8 @@ describe("resolveTelegramFetch", () => {
   it("adds managed proxy CA trust to Telegram env proxy dispatchers", async () => {
     const caFile = writeTempCa("telegram-managed-proxy-ca");
     vi.stubEnv("https_proxy", "https://proxy.example:8443");
-    vi.stubEnv("OPENCLAW_PROXY_ACTIVE", "1");
-    vi.stubEnv("OPENCLAW_PROXY_CA_FILE", caFile);
+    vi.stubEnv("EVE_PROXY_ACTIVE", "1");
+    vi.stubEnv("EVE_PROXY_CA_FILE", caFile);
     undiciFetch.mockResolvedValue({ ok: true } as Response);
 
     const resolved = resolveTelegramFetchOrThrow(undefined, {
@@ -500,9 +500,9 @@ describe("resolveTelegramFetch", () => {
     expect(envProxyOptions.proxyTls?.autoSelectFamily).toBe(false);
   });
 
-  it("uses the OpenClaw debug proxy URL when no explicit proxy fetch is provided", async () => {
-    vi.stubEnv("OPENCLAW_DEBUG_PROXY_ENABLED", "1");
-    vi.stubEnv("OPENCLAW_DEBUG_PROXY_URL", "http://127.0.0.1:7777");
+  it("uses the EVE debug proxy URL when no explicit proxy fetch is provided", async () => {
+    vi.stubEnv("EVE_DEBUG_PROXY_ENABLED", "1");
+    vi.stubEnv("EVE_DEBUG_PROXY_URL", "http://127.0.0.1:7777");
     undiciFetch.mockResolvedValue({ ok: true } as Response);
 
     const resolved = resolveTelegramFetch(undefined);
@@ -517,8 +517,8 @@ describe("resolveTelegramFetch", () => {
     expect(proxyOptions.uri).toBe("http://127.0.0.1:7777");
   });
 
-  it("uses OPENCLAW_PROXY_URL as a Telegram explicit proxy when proxy env is absent", async () => {
-    vi.stubEnv("OPENCLAW_PROXY_URL", "http://127.0.0.1:7788");
+  it("uses EVE_PROXY_URL as a Telegram explicit proxy when proxy env is absent", async () => {
+    vi.stubEnv("EVE_PROXY_URL", "http://127.0.0.1:7788");
     undiciFetch.mockResolvedValue({ ok: true } as Response);
 
     const transport = resolveTelegramTransport(undefined, {
@@ -531,7 +531,7 @@ describe("resolveTelegramFetch", () => {
     await transport.fetch("https://api.telegram.org/botTOKEN/getMe");
 
     expect(ProxyAgentCtor).toHaveBeenCalledTimes(1);
-    const proxyOptions = constructorOptions(ProxyAgentCtor, "OpenClaw proxy") as {
+    const proxyOptions = constructorOptions(ProxyAgentCtor, "EVE proxy") as {
       allowH2?: boolean;
       uri?: string;
       requestTls?: { autoSelectFamily?: boolean };
@@ -548,8 +548,8 @@ describe("resolveTelegramFetch", () => {
     expect(dispatcherPolicy?.proxyUrl).toBe("http://127.0.0.1:7788");
   });
 
-  it("preserves caller-provided custom fetch when OPENCLAW_PROXY_URL is present", async () => {
-    vi.stubEnv("OPENCLAW_PROXY_URL", "http://127.0.0.1:7788");
+  it("preserves caller-provided custom fetch when EVE_PROXY_URL is present", async () => {
+    vi.stubEnv("EVE_PROXY_URL", "http://127.0.0.1:7788");
     const proxyFetch = vi.fn(async () => ({ ok: true }) as Response) as unknown as typeof fetch;
 
     const transport = resolveTelegramTransport(proxyFetch, {
@@ -570,8 +570,8 @@ describe("resolveTelegramFetch", () => {
     expect(transport.dispatcherAttempts).toBeUndefined();
   });
 
-  it("prefers standard proxy env over OPENCLAW_PROXY_URL for Telegram", async () => {
-    vi.stubEnv("OPENCLAW_PROXY_URL", "http://127.0.0.1:7788");
+  it("prefers standard proxy env over EVE_PROXY_URL for Telegram", async () => {
+    vi.stubEnv("EVE_PROXY_URL", "http://127.0.0.1:7788");
     vi.stubEnv("https_proxy", "http://127.0.0.1:7890");
     undiciFetch.mockResolvedValue({ ok: true } as Response);
 
@@ -610,7 +610,7 @@ describe("resolveTelegramFetch", () => {
     expect(dispatcher?.options?.proxyTls?.autoSelectFamilyAttemptTimeout).toBe(300);
   });
 
-  it("keeps resolver-scoped transport policy for OpenClaw proxy fetches", async () => {
+  it("keeps resolver-scoped transport policy for EVE proxy fetches", async () => {
     const { makeProxyFetch } = await import("./proxy.js");
     const proxyFetch = makeProxyFetch("http://127.0.0.1:7890");
     ProxyAgentCtor.mockClear();
@@ -702,7 +702,7 @@ describe("resolveTelegramFetch", () => {
   });
 
   it("skips sticky IPv4 fallback when the DNS result order env override is verbatim", async () => {
-    vi.stubEnv("OPENCLAW_TELEGRAM_DNS_RESULT_ORDER", "verbatim");
+    vi.stubEnv("EVE_TELEGRAM_DNS_RESULT_ORDER", "verbatim");
     undiciFetch.mockResolvedValueOnce({ ok: true } as Response);
     const transport = resolveTelegramTransport();
 

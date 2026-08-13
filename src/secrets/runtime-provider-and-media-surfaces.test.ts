@@ -3,12 +3,12 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { createEmptyPluginRegistry } from "../plugins/registry.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
 import { asConfig, setupSecretsRuntimeSnapshotTestHooks } from "./runtime.test-support.ts";
 
-function createOpenAiFileModelsConfig(): NonNullable<OpenClawConfig["models"]> {
+function createOpenAiFileModelsConfig(): NonNullable<EVEConfig["models"]> {
   return {
     providers: {
       openai: {
@@ -57,7 +57,7 @@ async function prepareMediaModelAuthSnapshot(params: {
       },
     }),
     env: {},
-    agentDirs: ["/tmp/openclaw-agent-main"],
+    agentDirs: ["/tmp/eve-agent-main"],
     loadAuthStore: () => ({ version: 1, profiles: {} }),
   });
 }
@@ -85,7 +85,7 @@ describe("secrets runtime provider and media surfaces", () => {
       env: {
         OPENAI_REALTIME_API_KEY: "sk-realtime-test",
       },
-      agentDirs: ["/tmp/openclaw-agent-main"],
+      agentDirs: ["/tmp/eve-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 
@@ -97,7 +97,7 @@ describe("secrets runtime provider and media surfaces", () => {
     if (process.platform === "win32") {
       return;
     }
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-secrets-file-provider-"));
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-secrets-file-provider-"));
     const secretsPath = path.join(root, "secrets.json");
     try {
       await fs.writeFile(
@@ -143,7 +143,7 @@ describe("secrets runtime provider and media surfaces", () => {
 
       const snapshot = await prepareSecretsRuntimeSnapshot({
         config,
-        agentDirs: ["/tmp/openclaw-agent-main"],
+        agentDirs: ["/tmp/eve-agent-main"],
         loadAuthStore: () => ({ version: 1, profiles: {} }),
       });
 
@@ -157,7 +157,7 @@ describe("secrets runtime provider and media surfaces", () => {
     if (process.platform === "win32") {
       return;
     }
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-secrets-file-provider-bad-"));
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-secrets-file-provider-bad-"));
     const secretsPath = path.join(root, "secrets.json");
     try {
       await fs.writeFile(secretsPath, JSON.stringify(["not-an-object"]), "utf8");
@@ -179,7 +179,7 @@ describe("secrets runtime provider and media surfaces", () => {
               ...createOpenAiFileModelsConfig(),
             },
           }),
-          agentDirs: ["/tmp/openclaw-agent-main"],
+          agentDirs: ["/tmp/eve-agent-main"],
           loadAuthStore: () => ({ version: 1, profiles: {} }),
         }),
       ).rejects.toThrow("payload is not a JSON object");
@@ -216,7 +216,7 @@ describe("secrets runtime provider and media surfaces", () => {
       env: {
         MEDIA_SHARED_AUDIO_TOKEN: "shared-audio-token",
       },
-      agentDirs: ["/tmp/openclaw-agent-main"],
+      agentDirs: ["/tmp/eve-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 
@@ -285,7 +285,7 @@ describe("secrets runtime provider and media surfaces", () => {
       env: {
         MEDIA_INFERRED_AUDIO_TOKEN: "inferred-audio-token",
       },
-      agentDirs: ["/tmp/openclaw-agent-main"],
+      agentDirs: ["/tmp/eve-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 
@@ -355,7 +355,7 @@ describe("secrets runtime provider and media surfaces", () => {
         },
       }),
       env: {},
-      agentDirs: ["/tmp/openclaw-agent-main"],
+      agentDirs: ["/tmp/eve-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 
@@ -394,7 +394,7 @@ describe("secrets runtime provider and media surfaces", () => {
         },
       }),
       env: {},
-      agentDirs: ["/tmp/openclaw-agent-main"],
+      agentDirs: ["/tmp/eve-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 

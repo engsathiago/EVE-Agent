@@ -406,7 +406,7 @@ describe("ensureApiKeyFromEnvOrPrompt", () => {
       "Reference check failed",
     );
     expect(note).toHaveBeenCalledWith(
-      "Validated environment variable MINIMAX_API_KEY. OpenClaw will store a reference, not the key value.",
+      "Validated environment variable MINIMAX_API_KEY. EVE will store a reference, not the key value.",
       "Reference validated",
     );
   });

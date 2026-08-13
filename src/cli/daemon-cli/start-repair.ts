@@ -4,7 +4,7 @@ import { DEFAULT_GATEWAY_DAEMON_RUNTIME } from "../../commands/daemon-runtime.js
 import { resolveGatewayInstallToken } from "../../commands/gateway-install-token.js";
 import { readConfigFileSnapshotForWrite } from "../../config/io.js";
 import { resolveGatewayPort } from "../../config/paths.js";
-import { OPENCLAW_WRAPPER_ENV_KEY, resolveOpenClawWrapperPath } from "../../daemon/program-args.js";
+import { EVE_WRAPPER_ENV_KEY, resolveEVEWrapperPath } from "../../daemon/program-args.js";
 import type { GatewayServiceEnv } from "../../daemon/service-types.js";
 import type {
   GatewayService,
@@ -31,7 +31,7 @@ export async function repairLoadedGatewayServiceForStart(params: {
     env: process.env,
     existingServiceEnv: existingEnvironment,
   });
-  const wrapperPath = await resolveOpenClawWrapperPath(installEnv[OPENCLAW_WRAPPER_ENV_KEY]);
+  const wrapperPath = await resolveEVEWrapperPath(installEnv[EVE_WRAPPER_ENV_KEY]);
   const port = resolveGatewayPort(cfg);
 
   const tokenResolution = await resolveGatewayInstallToken({
@@ -90,7 +90,7 @@ export async function repairLoadedGatewayServiceForStart(params: {
   return {
     result: "started",
     message:
-      "Gateway service definition repaired and started. Reopen the Control UI with `openclaw dashboard` or copy a fresh auth URL with `openclaw dashboard --no-open`.",
+      "Gateway service definition repaired and started. Reopen the Control UI with `eve dashboard` or copy a fresh auth URL with `eve dashboard --no-open`.",
     warnings: warnings.length ? warnings : undefined,
     loaded,
   };

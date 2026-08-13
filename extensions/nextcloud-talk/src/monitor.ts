@@ -1,13 +1,13 @@
 // Nextcloud Talk plugin module implements monitor behavior.
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { safeParseJsonWithSchema } from "openclaw/plugin-sdk/extension-shared";
+import { safeParseJsonWithSchema } from "eve-agent/plugin-sdk/extension-shared";
 import {
   WEBHOOK_RATE_LIMIT_DEFAULTS,
   createAuthRateLimiter,
   isRequestBodyLimitError,
   readRequestBodyWithLimit,
   requestBodyErrorToText,
-} from "openclaw/plugin-sdk/webhook-ingress";
+} from "eve-agent/plugin-sdk/webhook-ingress";
 import { z } from "zod";
 import type { NextcloudTalkReplayGuard } from "./replay-guard.js";
 import { extractNextcloudTalkHeaders, verifyNextcloudTalkSignature } from "./signature.js";

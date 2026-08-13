@@ -1,25 +1,25 @@
 ---
-summary: "Step-by-step guide to building a model provider plugin for OpenClaw"
+summary: "Step-by-step guide to building a model provider plugin for EVE"
 title: "Building provider plugins"
 sidebarTitle: "Provider plugins"
 read_when:
   - You are building a new model provider plugin
-  - You want to add an OpenAI-compatible proxy or custom LLM to OpenClaw
+  - You want to add an OpenAI-compatible proxy or custom LLM to EVE
   - You need to understand provider auth, catalogs, and runtime hooks
 ---
 
 This guide walks through building a provider plugin that adds a model provider
-(LLM) to OpenClaw. By the end you will have a provider with a model catalog,
+(LLM) to EVE. By the end you will have a provider with a model catalog,
 API key auth, and dynamic model resolution.
 
 <Info>
-  If you have not built any OpenClaw plugin before, read
+  If you have not built any EVE plugin before, read
   [Getting Started](/plugins/building-plugins) first for the basic package
   structure and manifest setup.
 </Info>
 
 <Tip>
-  Provider plugins add models to OpenClaw's normal inference loop. If the model
+  Provider plugins add models to EVE's normal inference loop. If the model
   must run through a native agent daemon that owns threads, compaction, or tool
   events, pair the provider with an [agent harness](/plugins/sdk-agent-harness)
   instead of putting daemon protocol details in core.
@@ -34,10 +34,10 @@ API key auth, and dynamic model resolution.
     <CodeGroup>
     ```json package.json
     {
-      "name": "@myorg/openclaw-acme-ai",
+      "name": "@myorg/eve-acme-ai",
       "version": "1.0.0",
       "type": "module",
-      "openclaw": {
+      "eve": {
         "extensions": ["./index.ts"],
         "providers": ["acme-ai"],
         "compat": {
@@ -45,14 +45,14 @@ API key auth, and dynamic model resolution.
           "minGatewayVersion": "2026.3.24-beta.2"
         },
         "build": {
-          "openclawVersion": "2026.3.24-beta.2",
+          "eveVersion": "2026.3.24-beta.2",
           "pluginSdkVersion": "2026.3.24-beta.2"
         }
       }
     }
     ```
 
-    ```json openclaw.plugin.json
+    ```json eve.plugin.json
     {
       "id": "acme-ai",
       "name": "Acme AI",
@@ -93,12 +93,12 @@ API key auth, and dynamic model resolution.
     ```
     </CodeGroup>
 
-    The manifest declares `setup.providers[].envVars` so OpenClaw can detect
+    The manifest declares `setup.providers[].envVars` so EVE can detect
     credentials without loading your plugin runtime. Add `providerAuthAliases`
     when a provider variant should reuse another provider id's auth. `modelSupport`
-    is optional and lets OpenClaw auto-load your provider plugin from shorthand
+    is optional and lets EVE auto-load your provider plugin from shorthand
     model ids like `acme-large` before runtime hooks exist. If you publish the
-    provider on ClawHub, those `openclaw.compat` and `openclaw.build` fields
+    provider on ClawHub, those `eve.compat` and `eve.build` fields
     are required in `package.json`.
 
   </Step>
@@ -109,8 +109,8 @@ API key auth, and dynamic model resolution.
     vendor APIs and returns `models.providers` entries.
 
     ```typescript index.ts
-    import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-    import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
+    import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+    import { createProviderApiKeyAuthMethod } from "eve-agent/plugin-sdk/provider-auth";
 
     export default definePluginEntry({
       id: "acme-ai",
@@ -198,31 +198,31 @@ API key auth, and dynamic model resolution.
     `registerModelCatalogProvider` is the newer control-plane catalog surface
     for list/help/picker UI. Use it for text, image-generation,
     video-generation, and music-generation rows. Keep vendor endpoint calls and
-    response mapping in the plugin; OpenClaw owns the shared row shape, source
+    response mapping in the plugin; EVE owns the shared row shape, source
     labels, and help rendering.
 
     That is a working provider. Users can now
-    `openclaw onboard --acme-ai-api-key <key>` and select
+    `eve onboard --acme-ai-api-key <key>` and select
     `acme-ai/acme-large` as their model.
 
     ### Live model discovery
 
     If your provider exposes a `/models`-style API, keep the provider-specific
     endpoint and row projection in your plugin and use
-    `openclaw/plugin-sdk/provider-catalog-live-runtime` for the shared fetch
+    `eve-agent/plugin-sdk/provider-catalog-live-runtime` for the shared fetch
     lifecycle. The helper gives you guarded HTTP fetches, provider-auth headers,
     structured HTTP errors, TTL caching, and static fallback behavior without
-    putting provider policy in OpenClaw core.
+    putting provider policy in EVE core.
 
     Use `buildLiveModelProviderConfig` when the live API only tells you which
     provider-owned static catalog rows are currently available:
 
     ```typescript index.ts
-    import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+    import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
     import {
       buildLiveModelProviderConfig,
       type LiveModelCatalogFetchGuard,
-    } from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+    } from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
 
     const STATIC_MODELS = [
       {
@@ -304,14 +304,14 @@ API key auth, and dynamic model resolution.
     ```
 
     Use `getCachedLiveProviderModelRows` when the provider API returns richer
-    metadata and the plugin needs to project rows into OpenClaw model
+    metadata and the plugin needs to project rows into EVE model
     definitions itself:
 
     ```typescript index.ts
     import {
       getCachedLiveProviderModelRows,
       LiveModelCatalogHttpError,
-    } from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+    } from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
 
     async function discoverAcmeModels(apiKey: string) {
       try {
@@ -342,7 +342,7 @@ API key auth, and dynamic model resolution.
     upstream response is not an OpenAI-compatible `{ data: [{ id, object }] }`
     shape.
 
-    If the upstream provider uses different control tokens than OpenClaw, add a
+    If the upstream provider uses different control tokens than EVE, add a
     small bidirectional text transform instead of replacing the stream path:
 
     ```typescript
@@ -362,14 +362,14 @@ API key auth, and dynamic model resolution.
 
     `input` rewrites the final system prompt and text message content before
     transport. `output` rewrites assistant text deltas and final text before
-    OpenClaw parses its own control markers or channel delivery.
+    EVE parses its own control markers or channel delivery.
 
     For bundled providers that only register one text provider with API-key
     auth plus a single catalog-backed runtime, prefer the narrower
     `defineSingleProviderPluginEntry(...)` helper:
 
     ```typescript
-    import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
+    import { defineSingleProviderPluginEntry } from "eve-agent/plugin-sdk/provider-entry";
 
     export default defineSingleProviderPluginEntry({
       id: "acme-ai",
@@ -406,24 +406,24 @@ API key auth, and dynamic model resolution.
     });
     ```
 
-    `buildProvider` is the live catalog path used when OpenClaw can resolve real
+    `buildProvider` is the live catalog path used when EVE can resolve real
     provider auth. It may perform provider-specific discovery. Use
     `buildStaticProvider` only for offline rows that are safe to show before auth
     is configured; it must not require credentials or make network requests.
-    OpenClaw's `models list --all` display currently executes static catalogs
+    EVE's `models list --all` display currently executes static catalogs
     only for bundled provider plugins, with an empty config, empty env, and no
     agent/workspace paths.
 
     If your auth flow also needs to patch `models.providers.*`, aliases, and
     the agent default model during onboarding, use the preset helpers from
-    `openclaw/plugin-sdk/provider-onboard`. The narrowest helpers are
+    `eve-agent/plugin-sdk/provider-onboard`. The narrowest helpers are
     `createDefaultModelPresetAppliers(...)`,
     `createDefaultModelsPresetAppliers(...)`, and
     `createModelCatalogPresetAppliers(...)`.
 
     When a provider's native endpoint supports streamed usage blocks on the
     normal `openai-completions` transport, prefer the shared catalog helpers in
-    `openclaw/plugin-sdk/provider-catalog-shared` instead of hardcoding
+    `eve-agent/plugin-sdk/provider-catalog-shared` instead of hardcoding
     provider-id checks. `supportsNativeStreamingUsageCompat(...)` and
     `applyProviderNativeStreamingUsageCompat(...)` detect support from the
     endpoint capability map, so native Moonshot/DashScope-style endpoints still
@@ -471,9 +471,9 @@ API key auth, and dynamic model resolution.
     families, so plugins usually do not need to hand-wire each hook one by one:
 
     ```typescript
-    import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
-    import { buildProviderStreamFamilyHooks } from "openclaw/plugin-sdk/provider-stream";
-    import { buildProviderToolCompatFamilyHooks } from "openclaw/plugin-sdk/provider-tools";
+    import { buildProviderReplayFamilyHooks } from "eve-agent/plugin-sdk/provider-model-shared";
+    import { buildProviderStreamFamilyHooks } from "eve-agent/plugin-sdk/provider-stream";
+    import { buildProviderToolCompatFamilyHooks } from "eve-agent/plugin-sdk/provider-tools";
 
     const GOOGLE_FAMILY_HOOKS = {
       ...buildProviderReplayFamilyHooks({ family: "google-gemini" }),
@@ -513,21 +513,21 @@ API key auth, and dynamic model resolution.
     <Accordion title="SDK seams powering the family builders">
       Each family builder is composed from lower-level public helpers exported from the same package, which you can reach for when a provider needs to go off the common pattern:
 
-      - `openclaw/plugin-sdk/provider-model-shared` - `ProviderReplayFamily`, `buildProviderReplayFamilyHooks(...)`, and the raw replay builders (`buildOpenAICompatibleReplayPolicy`, `buildAnthropicReplayPolicyForModel`, `buildGoogleGeminiReplayPolicy`, `buildHybridAnthropicOrOpenAIReplayPolicy`). Also exports Gemini replay helpers (`sanitizeGoogleGeminiReplayHistory`, `resolveTaggedReasoningOutputMode`) and endpoint/model helpers (`resolveProviderEndpoint`, `normalizeProviderId`, `normalizeGooglePreviewModelId`).
-      - `openclaw/plugin-sdk/provider-stream` - `ProviderStreamFamily`, `buildProviderStreamFamilyHooks(...)`, `composeProviderStreamWrappers(...)`, plus the shared OpenAI/Codex wrappers (`createOpenAIAttributionHeadersWrapper`, `createOpenAIFastModeWrapper`, `createOpenAIServiceTierWrapper`, `createOpenAIResponsesContextManagementWrapper`, `createCodexNativeWebSearchWrapper`), DeepSeek V4 OpenAI-compatible wrapper (`createDeepSeekV4OpenAICompatibleThinkingWrapper`), Anthropic Messages thinking prefill cleanup (`createAnthropicThinkingPrefillPayloadWrapper`), plain-text tool-call compat (`createPlainTextToolCallCompatWrapper`), and shared proxy/provider wrappers (`createOpenRouterWrapper`, `createToolStreamWrapper`, `createMinimaxFastModeWrapper`).
-      - `openclaw/plugin-sdk/provider-stream-shared` - lightweight payload and event wrappers for hot provider paths, including `createOpenAICompatibleCompletionsThinkingOffWrapper`, `createPayloadPatchStreamWrapper`, and `createPlainTextToolCallCompatWrapper`.
-      - `openclaw/plugin-sdk/provider-tools` - `ProviderToolCompatFamily`, `buildProviderToolCompatFamilyHooks("deepseek" | "gemini" | "openai")`, and underlying provider schema helpers.
+      - `eve-agent/plugin-sdk/provider-model-shared` - `ProviderReplayFamily`, `buildProviderReplayFamilyHooks(...)`, and the raw replay builders (`buildOpenAICompatibleReplayPolicy`, `buildAnthropicReplayPolicyForModel`, `buildGoogleGeminiReplayPolicy`, `buildHybridAnthropicOrOpenAIReplayPolicy`). Also exports Gemini replay helpers (`sanitizeGoogleGeminiReplayHistory`, `resolveTaggedReasoningOutputMode`) and endpoint/model helpers (`resolveProviderEndpoint`, `normalizeProviderId`, `normalizeGooglePreviewModelId`).
+      - `eve-agent/plugin-sdk/provider-stream` - `ProviderStreamFamily`, `buildProviderStreamFamilyHooks(...)`, `composeProviderStreamWrappers(...)`, plus the shared OpenAI/Codex wrappers (`createOpenAIAttributionHeadersWrapper`, `createOpenAIFastModeWrapper`, `createOpenAIServiceTierWrapper`, `createOpenAIResponsesContextManagementWrapper`, `createCodexNativeWebSearchWrapper`), DeepSeek V4 OpenAI-compatible wrapper (`createDeepSeekV4OpenAICompatibleThinkingWrapper`), Anthropic Messages thinking prefill cleanup (`createAnthropicThinkingPrefillPayloadWrapper`), plain-text tool-call compat (`createPlainTextToolCallCompatWrapper`), and shared proxy/provider wrappers (`createOpenRouterWrapper`, `createToolStreamWrapper`, `createMinimaxFastModeWrapper`).
+      - `eve-agent/plugin-sdk/provider-stream-shared` - lightweight payload and event wrappers for hot provider paths, including `createOpenAICompatibleCompletionsThinkingOffWrapper`, `createPayloadPatchStreamWrapper`, and `createPlainTextToolCallCompatWrapper`.
+      - `eve-agent/plugin-sdk/provider-tools` - `ProviderToolCompatFamily`, `buildProviderToolCompatFamilyHooks("deepseek" | "gemini" | "openai")`, and underlying provider schema helpers.
 
       For Gemini-family providers, keep the reasoning-output mode aligned with
       the transport. Direct Google Gemini API providers should use `native`
-      reasoning output so OpenClaw consumes native thought parts without adding
+      reasoning output so EVE consumes native thought parts without adding
       `<think>` / `<final>` prompt directives. Text-only Gemini CLI-style
       backends that parse a final JSON/text response can keep the shared
       `google-gemini` tagged contract.
 
-      Some stream helpers stay provider-local on purpose. `@openclaw/anthropic-provider` keeps `wrapAnthropicProviderStream`, `resolveAnthropicBetas`, `resolveAnthropicFastMode`, `resolveAnthropicServiceTier`, and the lower-level Anthropic wrapper builders in its own public `api.ts` / `contract-api.ts` seam because they encode Claude OAuth beta handling and `context1m` gating. The xAI plugin similarly keeps native xAI Responses shaping in its own `wrapStreamFn` (`/fast` aliases, default `tool_stream`, unsupported strict-tool cleanup, xAI-specific reasoning-payload removal).
+      Some stream helpers stay provider-local on purpose. `@eve/anthropic-provider` keeps `wrapAnthropicProviderStream`, `resolveAnthropicBetas`, `resolveAnthropicFastMode`, `resolveAnthropicServiceTier`, and the lower-level Anthropic wrapper builders in its own public `api.ts` / `contract-api.ts` seam because they encode Claude OAuth beta handling and `context1m` gating. The xAI plugin similarly keeps native xAI Responses shaping in its own `wrapStreamFn` (`/fast` aliases, default `tool_stream`, unsupported strict-tool cleanup, xAI-specific reasoning-payload removal).
 
-      The same package-root pattern also backs `@openclaw/openai-provider` (provider builders, default-model helpers, realtime provider builders) and `@openclaw/openrouter-provider` (provider builder plus onboarding/config helpers).
+      The same package-root pattern also backs `@eve/openai-provider` (provider builders, default-model helpers, realtime provider builders) and `@eve/openrouter-provider` (provider builder plus onboarding/config helpers).
     </Accordion>
 
     <Tabs>
@@ -601,15 +601,15 @@ API key auth, and dynamic model resolution.
         `resolveUsageAuth` has three outcomes. Return `{ token, accountId? }`
         when the provider has a usage/billing credential. Return
         `{ handled: true }` only when the provider has definitively handled usage
-        auth but has no usable usage token, and OpenClaw must skip generic
+        auth but has no usable usage token, and EVE must skip generic
         API-key/OAuth fallback. Return `null` or `undefined` when the provider did
-        not handle the request and OpenClaw should continue with generic fallback.
+        not handle the request and EVE should continue with generic fallback.
       </Tab>
     </Tabs>
 
     <Accordion title="All available provider hooks">
-      OpenClaw calls hooks in this order. Most providers only use 2-3:
-      Compatibility-only provider fields that OpenClaw no longer calls, such as
+      EVE calls hooks in this order. Most providers only use 2-3:
+      Compatibility-only provider fields that EVE no longer calls, such as
       `ProviderPlugin.capabilities` and `suppressBuiltInModel`, are not listed
       here.
 
@@ -674,7 +674,7 @@ API key auth, and dynamic model resolution.
 
     A provider plugin can register embeddings, speech, realtime transcription,
     realtime voice, media understanding, image generation, video generation,
-    web fetch, and web search alongside text inference. OpenClaw classifies this as a
+    web fetch, and web search alongside text inference. EVE classifies this as a
     **hybrid-capability** plugin - the recommended pattern for company plugins
     (one plugin per vendor). See
     [Internals: Capability Ownership](/plugins/architecture#capability-ownership-model).
@@ -688,7 +688,7 @@ API key auth, and dynamic model resolution.
         import {
           assertOkOrThrowProviderError,
           postJsonRequest,
-        } from "openclaw/plugin-sdk/provider-http";
+        } from "eve-agent/plugin-sdk/provider-http";
 
         api.registerSpeechProvider({
           id: "acme-ai",
@@ -767,7 +767,7 @@ API key auth, and dynamic model resolution.
 
         Batch STT providers that POST multipart audio should use
         `buildAudioTranscriptionFormData(...)` from
-        `openclaw/plugin-sdk/provider-http`. The helper normalizes upload
+        `eve-agent/plugin-sdk/provider-http`. The helper normalizes upload
         filenames, including AAC uploads that need an M4A-style filename for
         compatible transcription APIs.
       </Tab>
@@ -819,7 +819,7 @@ API key auth, and dynamic model resolution.
 
         Local or self-hosted media providers that intentionally do not require
         credentials can expose `resolveAuth` and return `kind: "none"`.
-        OpenClaw still keeps the normal auth gate for providers that do not
+        EVE still keeps the normal auth gate for providers that do not
         explicitly opt in. Existing providers can keep reading `req.apiKey`;
         new providers should prefer `req.auth`.
 
@@ -986,8 +986,8 @@ Do not use the legacy skill-only publish alias here; plugin packages should use
 
 ```
 <bundled-plugin-root>/acme-ai/
-├── package.json              # openclaw.providers metadata
-├── openclaw.plugin.json      # Manifest with provider auth metadata
+├── package.json              # eve.providers metadata
+├── eve.plugin.json      # Manifest with provider auth metadata
 ├── index.ts                  # definePluginEntry + registerProvider
 └── src/
     ├── provider.test.ts      # Tests

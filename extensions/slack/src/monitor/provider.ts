@@ -6,23 +6,23 @@ import {
   mergeAllowlist,
   patchAllowlistUsersInConfigEntries,
   summarizeMapping,
-} from "openclaw/plugin-sdk/allow-from";
-import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "openclaw/plugin-sdk/approval-handler-adapter-runtime";
-import { registerChannelRuntimeContext } from "openclaw/plugin-sdk/channel-runtime-context";
-import type { SessionScope } from "openclaw/plugin-sdk/config-contracts";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { DEFAULT_GROUP_HISTORY_LIMIT } from "openclaw/plugin-sdk/reply-history";
-import { normalizeMainKey } from "openclaw/plugin-sdk/routing";
-import { warn } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/allow-from";
+import { CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY } from "eve-agent/plugin-sdk/approval-handler-adapter-runtime";
+import { registerChannelRuntimeContext } from "eve-agent/plugin-sdk/channel-runtime-context";
+import type { SessionScope } from "eve-agent/plugin-sdk/config-contracts";
+import { resolveTextChunkLimit } from "eve-agent/plugin-sdk/reply-chunking";
+import { DEFAULT_GROUP_HISTORY_LIMIT } from "eve-agent/plugin-sdk/reply-history";
+import { normalizeMainKey } from "eve-agent/plugin-sdk/routing";
+import { warn } from "eve-agent/plugin-sdk/runtime-env";
 import {
   computeBackoff,
   createNonExitingRuntime,
   sleepWithAbort,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk/runtime-env";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { installRequestBodyLimitGuard } from "openclaw/plugin-sdk/webhook-request-guards";
+} from "eve-agent/plugin-sdk/runtime-env";
+import { normalizeResolvedSecretInputString } from "eve-agent/plugin-sdk/secret-input";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { installRequestBodyLimitGuard } from "eve-agent/plugin-sdk/webhook-request-guards";
 import {
   resolveSlackAccount,
   resolveSlackAccountAllowFrom,
@@ -256,7 +256,7 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
   // Pre-set shuttingDown on the SocketModeClient before app.stop() to prevent
   // a race where the library's internal ping timeout fires disconnect() before
   // shuttingDown is set, causing orphaned reconnects with leaked ping intervals.
-  // See: openclaw/openclaw#56508
+  // See: eve/eve#56508
   const gracefulStop = async () => {
     await gracefulStopSlackApp(app);
   };

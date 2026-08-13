@@ -173,7 +173,7 @@ describe("browser manage output", () => {
             profiles: [
               {
                 name: "remote",
-                driver: "openclaw",
+                driver: "eve",
                 transport: "cdp",
                 running: true,
                 tabCount: 1,
@@ -311,7 +311,7 @@ describe("browser manage output", () => {
         ? {
             enabled: true,
             profile: "remote",
-            driver: "openclaw",
+            driver: "eve",
             transport: "cdp",
             running: true,
             cdpReady: true,
@@ -416,8 +416,8 @@ describe("browser manage output", () => {
       if (req.path === "/") {
         return {
           enabled: true,
-          profile: "openclaw",
-          driver: "openclaw",
+          profile: "eve",
+          driver: "eve",
           transport: "cdp",
           running: true,
           cdpReady: true,
@@ -435,7 +435,7 @@ describe("browser manage output", () => {
         };
       }
       if (req.path === "/profiles") {
-        return { profiles: [{ name: "openclaw", running: true }] };
+        return { profiles: [{ name: "eve", running: true }] };
       }
       if (req.path === "/tabs") {
         return {
@@ -478,7 +478,7 @@ describe("browser manage output", () => {
     expect(output).toContain(
       "FAIL gateway: Gateway auth SecretRef is unavailable in this command path",
     );
-    expect(output).toContain("OPENCLAW_GATEWAY_TOKEN");
+    expect(output).toContain("EVE_GATEWAY_TOKEN");
     expect(output).not.toContain("GatewaySecretRefUnavailableError");
   });
 });

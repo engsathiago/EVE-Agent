@@ -56,7 +56,7 @@ async function readPlanFile(pathname: string): Promise<SecretsApplyPlan> {
   const parsed = JSON.parse(raw) as unknown;
   if (!isSecretsApplyPlan(parsed)) {
     throw new Error(
-      `Invalid secrets plan file: ${pathname}. Generate a fresh plan with ${formatCliCommand("openclaw secrets configure --plan-out <path>")}.`,
+      `Invalid secrets plan file: ${pathname}. Generate a fresh plan with ${formatCliCommand("eve secrets configure --plan-out <path>")}.`,
     );
   }
   return parsed;
@@ -69,7 +69,7 @@ export function registerSecretsCli(program: Command): void {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/gateway/security", "docs.openclaw.ai/gateway/security")}\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/gateway/security", "docs.eve.ai/gateway/security")}\n`,
     );
 
   addGatewayClientOptions(
@@ -100,7 +100,7 @@ export function registerSecretsCli(program: Command): void {
           formatGatewayCommandFailure({
             action: "reload secrets",
             error: err,
-            inspectCommand: "openclaw gateway status --deep",
+            inspectCommand: "eve gateway status --deep",
           }),
         ),
       );
@@ -154,7 +154,7 @@ export function registerSecretsCli(program: Command): void {
       } catch (err) {
         defaultRuntime.error(
           danger(
-            `Secrets audit failed: ${formatErrorMessage(err)}. Run ${formatCliCommand("openclaw doctor")} to inspect config and credential state.`,
+            `Secrets audit failed: ${formatErrorMessage(err)}. Run ${formatCliCommand("eve doctor")} to inspect config and credential state.`,
           ),
         );
         defaultRuntime.exit(2);
@@ -280,7 +280,7 @@ export function registerSecretsCli(program: Command): void {
       } catch (err) {
         defaultRuntime.error(
           danger(
-            `Secrets configure failed: ${formatErrorMessage(err)}. Re-run ${formatCliCommand("openclaw secrets audit")} before applying changes.`,
+            `Secrets configure failed: ${formatErrorMessage(err)}. Re-run ${formatCliCommand("eve secrets audit")} before applying changes.`,
           ),
         );
         defaultRuntime.exit(1);
@@ -330,7 +330,7 @@ export function registerSecretsCli(program: Command): void {
       } catch (err) {
         defaultRuntime.error(
           danger(
-            `Secrets apply failed: ${formatErrorMessage(err)}. Re-run ${formatCliCommand("openclaw secrets apply --from <path> --dry-run")} to inspect the plan without writing.`,
+            `Secrets apply failed: ${formatErrorMessage(err)}. Re-run ${formatCliCommand("eve secrets apply --from <path> --dry-run")} to inspect the plan without writing.`,
           ),
         );
         defaultRuntime.exit(1);

@@ -162,20 +162,20 @@ let budgets;
 let publicDeprecatedExportsByEntrypointBudget;
 try {
   budgets = {
-    publicEntrypoints: readBudgetEnv("OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS", 321),
-    publicExports: readBudgetEnv("OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS", 10337),
-    publicFunctionExports: readBudgetEnv("OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS", 5187),
+    publicEntrypoints: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS", 321),
+    publicExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS", 10337),
+    publicFunctionExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS", 5187),
     publicDeprecatedExports: readBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS",
+      "EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS",
       3245,
     ),
     publicWildcardReexports: readBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS",
+      "EVE_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS",
       215,
     ),
   };
   publicDeprecatedExportsByEntrypointBudget = readEntrypointBudgetEnv(
-    "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT",
+    "EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT",
     defaultPublicDeprecatedExportsByEntrypointBudget,
   );
 } catch (error) {

@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createDefaultMenuConfig,
@@ -232,7 +232,7 @@ describe("createDefaultMenuConfig", () => {
   });
 });
 
-const richMenuUploadCfg: OpenClawConfig = {
+const richMenuUploadCfg: EVEConfig = {
   channels: {
     line: {
       channelAccessToken: "line-token",
@@ -245,7 +245,7 @@ describe("uploadRichMenuImage", () => {
   let tempRoot: string;
 
   beforeEach(async () => {
-    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-line-rich-menu-"));
+    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-line-rich-menu-"));
     setRichMenuImageMock.mockReset();
     MessagingApiBlobClientMock.mockClear();
   });

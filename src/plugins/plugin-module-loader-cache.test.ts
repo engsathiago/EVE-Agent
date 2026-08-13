@@ -1,6 +1,6 @@
 /** Tests plugin module loader cache keys and lifecycle reset behavior. */
 import path from "node:path";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { PluginModuleLoaderFactory } from "./plugin-module-loader-cache.js";
 
@@ -104,7 +104,7 @@ describe("getCachedPluginModuleLoader", () => {
       cache,
       modulePath: "/repo/dist/extensions/demo/api.ts",
       importerUrl: "file:///repo/src/plugins/public-surface-loader.ts",
-      argvEntry: "/repo/openclaw.mjs",
+      argvEntry: "/repo/eve.mjs",
       preferBuiltDist: true,
       loaderFilename: "file:///repo/src/plugins/public-surface-loader.ts",
     });
@@ -112,7 +112,7 @@ describe("getCachedPluginModuleLoader", () => {
       cache,
       modulePath: "/repo/dist/extensions/demo/api.ts",
       importerUrl: "file:///repo/src/plugins/public-surface-loader.ts",
-      argvEntry: "/repo/openclaw.mjs",
+      argvEntry: "/repo/eve.mjs",
       preferBuiltDist: true,
       loaderFilename: "file:///repo/src/plugins/bundled-channel-config-metadata.ts",
     });
@@ -200,7 +200,7 @@ describe("getCachedPluginModuleLoader", () => {
       cache,
       modulePath: "/repo/extensions/demo/index.ts",
       importerUrl: "file:///repo/src/plugins/setup-registry.ts",
-      argvEntry: "/repo/openclaw.mjs",
+      argvEntry: "/repo/eve.mjs",
       loaderFilename: "file:///repo/src/plugins/source-loader.ts",
     } as const;
 
@@ -298,7 +298,7 @@ describe("getCachedPluginModuleLoader", () => {
       tryNative: false,
     });
     expect(options.fsCache).toEqual(expect.any(String));
-    expect(String(options.fsCache)).toContain(`${path.sep}jiti${path.sep}openclaw${path.sep}`);
+    expect(String(options.fsCache)).toContain(`${path.sep}jiti${path.sep}eve${path.sep}`);
     expect(options.alias).toEqual({
       alpha: "/repo/alpha.js",
       zeta: "/repo/zeta.js",
@@ -509,8 +509,8 @@ describe("getCachedPluginModuleLoader", () => {
       importerUrl: "file:///repo/src/plugins/public-surface-loader.ts",
       loaderFilename: "file:///repo/src/plugins/public-surface-loader.ts",
       aliasMap: {
-        "openclaw/plugin-sdk": "/repo/dist/plugin-sdk/root-alias.cjs",
-        "openclaw/plugin-sdk/core": "/repo/dist/plugin-sdk/core.js",
+        "eve-agent/plugin-sdk": "/repo/dist/plugin-sdk/root-alias.cjs",
+        "eve-agent/plugin-sdk/core": "/repo/dist/plugin-sdk/core.js",
       },
       createLoader: asPluginModuleLoaderFactory(createJiti),
     });
@@ -523,7 +523,7 @@ describe("getCachedPluginModuleLoader", () => {
     const options = callArg(nativeStub, 0, 1, "native options") as {
       aliasMap?: Record<string, string>;
     };
-    expect(options.aliasMap?.["openclaw/plugin-sdk/core"]).toBe("/repo/dist/plugin-sdk/core.js");
+    expect(options.aliasMap?.["eve-agent/plugin-sdk/core"]).toBe("/repo/dist/plugin-sdk/core.js");
     expectStats(getPluginModuleLoaderStats(), {
       calls: 1,
       nativeHits: 1,
@@ -664,23 +664,23 @@ describe("getCachedPluginModuleLoader", () => {
     const cache = new Map();
     const loader = getCachedPluginModuleLoader({
       cache,
-      modulePath: "C:\\Users\\alice\\openclaw\\dist\\extensions\\feishu\\api.js",
-      importerUrl: "file:///C:/Users/alice/openclaw/dist/src/plugins/public-surface-loader.js",
-      loaderFilename: "C:\\Users\\alice\\openclaw\\dist\\extensions\\feishu\\api.js",
+      modulePath: "C:\\Users\\alice\\eve\\dist\\extensions\\feishu\\api.js",
+      importerUrl: "file:///C:/Users/alice/eve/dist/src/plugins/public-surface-loader.js",
+      loaderFilename: "C:\\Users\\alice\\eve\\dist\\extensions\\feishu\\api.js",
       tryNative: true,
       createLoader: asPluginModuleLoaderFactory(createJiti),
     });
 
-    loader("C:\\Users\\alice\\openclaw\\dist\\extensions\\feishu\\api.js");
+    loader("C:\\Users\\alice\\eve\\dist\\extensions\\feishu\\api.js");
 
     expectJitiOptions(
       createJiti,
       0,
-      "file:///C:/Users/alice/openclaw/dist/extensions/feishu/api.js",
+      "file:///C:/Users/alice/eve/dist/extensions/feishu/api.js",
       { tryNative: true },
     );
     expect(fromSourceTransformer).toHaveBeenCalledWith(
-      "file:///C:/Users/alice/openclaw/dist/extensions/feishu/api.js",
+      "file:///C:/Users/alice/eve/dist/extensions/feishu/api.js",
     );
   });
 
@@ -702,7 +702,7 @@ describe("getCachedPluginModuleLoader", () => {
       modulePath: "/repo/dist/extensions/demo/api.js",
       importerUrl: "file:///repo/src/plugins/bundled-capability-runtime.ts",
       loaderFilename: "file:///repo/src/plugins/bundled-capability-runtime.ts",
-      aliasMap: { "openclaw/plugin-sdk": "/repo/shim.js" },
+      aliasMap: { "eve-agent/plugin-sdk": "/repo/shim.js" },
       tryNative: false,
       createLoader: asPluginModuleLoaderFactory(createJiti),
     });
@@ -780,21 +780,21 @@ describe("getCachedPluginModuleLoader", () => {
     const cache = new Map();
     const loader = getCachedPluginModuleLoader({
       cache,
-      modulePath: "C:\\Users\\alice\\openclaw\\extensions\\feishu\\api.ts",
-      importerUrl: "file:///C:/Users/alice/openclaw/src/plugins/loader.ts",
-      loaderFilename: "C:\\Users\\alice\\openclaw\\extensions\\feishu\\api.ts",
+      modulePath: "C:\\Users\\alice\\eve\\extensions\\feishu\\api.ts",
+      importerUrl: "file:///C:/Users/alice/eve/src/plugins/loader.ts",
+      loaderFilename: "C:\\Users\\alice\\eve\\extensions\\feishu\\api.ts",
       tryNative: false,
       createLoader: asPluginModuleLoaderFactory(createJiti),
     });
 
-    loader("C:\\Users\\alice\\openclaw\\extensions\\feishu\\api.ts");
+    loader("C:\\Users\\alice\\eve\\extensions\\feishu\\api.ts");
 
     expect(nativeStub).not.toHaveBeenCalled();
-    expectJitiOptions(createJiti, 0, "file:///C:/Users/alice/openclaw/extensions/feishu/api.ts", {
+    expectJitiOptions(createJiti, 0, "file:///C:/Users/alice/eve/extensions/feishu/api.ts", {
       tryNative: false,
     });
     expect(fromSourceTransformer).toHaveBeenCalledWith(
-      "file:///C:/Users/alice/openclaw/extensions/feishu/api.ts",
+      "file:///C:/Users/alice/eve/extensions/feishu/api.ts",
     );
   });
 

@@ -240,10 +240,10 @@ describe("markdownToTelegramHtml", () => {
   it("keeps unsupported markdown link hrefs as visible text in rich HTML", () => {
     expect(
       markdownToTelegramRichHtml(
-        "[scripts/yougile.py](/home/dankar/.openclaw/workspace-yougile/scripts/yougile.py#L41)",
+        "[scripts/yougile.py](/home/dankar/.eve/workspace-yougile/scripts/yougile.py#L41)",
       ),
     ).toBe("<code>scripts/yougile.py</code>");
-    expect(markdownToTelegramRichHtml("[config](./openclaw.json)")).toBe("config");
+    expect(markdownToTelegramRichHtml("[config](./eve.json)")).toBe("config");
     expect(markdownToTelegramRichHtml("[docs](https://example.com/docs)")).toBe(
       '<a href="https://example.com/docs">docs</a>',
     );

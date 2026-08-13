@@ -6,9 +6,9 @@ RUN apt-get update \
 
 RUN corepack enable
 
-WORKDIR /workspace/openclaw
+WORKDIR /workspace/eve
 COPY . .
 
-RUN OPENCLAW_DISABLE_BUNDLED_PLUGIN_POSTINSTALL=1 pnpm install --frozen-lockfile --ignore-scripts --filter openclaw
+RUN EVE_DISABLE_BUNDLED_PLUGIN_POSTINSTALL=1 pnpm install --frozen-lockfile --ignore-scripts --filter eve
 
 CMD ["bash"]

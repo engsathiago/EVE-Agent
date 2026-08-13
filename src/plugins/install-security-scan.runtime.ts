@@ -1,10 +1,10 @@
 // Runtime bridge for plugin install security scanning.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { tryReadJson } from "../infra/json-files.js";
-import { resolveOpenClawPackageRootSync } from "../infra/openclaw-root.js";
+import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
 import { parseStrictPositiveInteger } from "../infra/parse-finite-number.js";
 import {
   runInstallPolicy,
@@ -181,13 +181,13 @@ function pathContainsNodeModulesSegment(relativePath: string): boolean {
     .includes("node_modules");
 }
 
-function isPackageRootOpenClawPeerSymlink(segments: string[]): boolean {
+function isPackageRootEVEPeerSymlink(segments: string[]): boolean {
   return (
-    (segments.length === 2 && segments[0] === "node_modules" && segments[1] === "openclaw") ||
+    (segments.length === 2 && segments[0] === "node_modules" && segments[1] === "eve") ||
     (segments.length === 3 &&
       segments[0] === "node_modules" &&
       segments[1] === ".bin" &&
-      segments[2] === "openclaw")
+      segments[2] === "eve")
   );
 }
 
@@ -203,23 +203,23 @@ function isManagedNpmRootPackagePeerSymlink(segments: string[]): boolean {
   ) {
     return false;
   }
-  return isPackageRootOpenClawPeerSymlink(segments.slice(packageEndIndex));
+  return isPackageRootEVEPeerSymlink(segments.slice(packageEndIndex));
 }
 
-function isTrustedOpenClawPeerSymlink(params: {
+function isTrustedEVEPeerSymlink(params: {
   allowManagedNpmRootPackagePeerSymlinks?: boolean;
   relativePath: string;
 }): boolean {
   const segments = params.relativePath.split(/[\\/]+/);
   return (
-    isPackageRootOpenClawPeerSymlink(segments) ||
+    isPackageRootEVEPeerSymlink(segments) ||
     (params.allowManagedNpmRootPackagePeerSymlinks === true &&
       isManagedNpmRootPackagePeerSymlink(segments))
   );
 }
 
-async function resolveTrustedHostOpenClawRootRealPath(): Promise<string | null> {
-  const hostRoot = resolveOpenClawPackageRootSync({
+async function resolveTrustedHostEVERootRealPath(): Promise<string | null> {
+  const hostRoot = resolveEVEPackageRootSync({
     argv1: process.argv[1],
     cwd: process.cwd(),
     moduleUrl: import.meta.url,
@@ -230,13 +230,13 @@ async function resolveTrustedHostOpenClawRootRealPath(): Promise<string | null> 
   return await fs.realpath(hostRoot).catch(() => path.resolve(hostRoot));
 }
 
-function isTrustedHostOpenClawPath(params: {
+function isTrustedHostEVEPath(params: {
   resolvedTargetPath: string;
-  trustedHostOpenClawRootRealPath: string | null;
+  trustedHostEVERootRealPath: string | null;
 }): boolean {
   return (
-    params.trustedHostOpenClawRootRealPath !== null &&
-    isPathInside(params.trustedHostOpenClawRootRealPath, params.resolvedTargetPath)
+    params.trustedHostEVERootRealPath !== null &&
+    isPathInside(params.trustedHostEVERootRealPath, params.resolvedTargetPath)
   );
 }
 
@@ -245,7 +245,7 @@ async function inspectNodeModulesSymlinkTarget(params: {
   rootRealPath: string;
   symlinkPath: string;
   symlinkRelativePath: string;
-  trustedHostOpenClawRootRealPath: string | null;
+  trustedHostEVERootRealPath: string | null;
 }): Promise<
   Pick<PackageManifestTraversalResult, "blockedDirectoryFinding" | "blockedFileFinding">
 > {
@@ -263,13 +263,13 @@ async function inspectNodeModulesSymlinkTarget(params: {
 
   if (!isPathInside(params.rootRealPath, resolvedTargetPath)) {
     if (
-      isTrustedOpenClawPeerSymlink({
+      isTrustedEVEPeerSymlink({
         allowManagedNpmRootPackagePeerSymlinks: params.allowManagedNpmRootPackagePeerSymlinks,
         relativePath: params.symlinkRelativePath,
       }) &&
-      isTrustedHostOpenClawPath({
+      isTrustedHostEVEPath({
         resolvedTargetPath,
-        trustedHostOpenClawRootRealPath: params.trustedHostOpenClawRootRealPath,
+        trustedHostEVERootRealPath: params.trustedHostEVERootRealPath,
       })
     ) {
       return {};
@@ -306,15 +306,15 @@ function readPositiveIntegerEnv(name: string, fallback: number): number {
 function resolvePackageManifestTraversalLimits(): PackageManifestTraversalLimits {
   return {
     maxDepth: readPositiveIntegerEnv(
-      "OPENCLAW_INSTALL_SCAN_MAX_DEPTH",
+      "EVE_INSTALL_SCAN_MAX_DEPTH",
       DEFAULT_PACKAGE_MANIFEST_TRAVERSAL_LIMITS.maxDepth,
     ),
     maxDirectories: readPositiveIntegerEnv(
-      "OPENCLAW_INSTALL_SCAN_MAX_DIRECTORIES",
+      "EVE_INSTALL_SCAN_MAX_DIRECTORIES",
       DEFAULT_PACKAGE_MANIFEST_TRAVERSAL_LIMITS.maxDirectories,
     ),
     maxManifests: readPositiveIntegerEnv(
-      "OPENCLAW_INSTALL_SCAN_MAX_MANIFESTS",
+      "EVE_INSTALL_SCAN_MAX_MANIFESTS",
       DEFAULT_PACKAGE_MANIFEST_TRAVERSAL_LIMITS.maxManifests,
     ),
   };
@@ -354,7 +354,7 @@ function collectManifestRuntimeDependencyNames(manifest: PackageManifest): strin
     }
   }
   for (const dependencyName of Object.keys(manifest.peerDependencies ?? {})) {
-    if (dependencyName !== "openclaw" && isInstallScannableDependencyName(dependencyName)) {
+    if (dependencyName !== "eve" && isInstallScannableDependencyName(dependencyName)) {
       dependencyNames.add(dependencyName);
     }
   }
@@ -485,7 +485,7 @@ async function collectPackageManifestPaths(params: {
   const limits = resolvePackageManifestTraversalLimits();
   const rootDir = params.rootDir;
   const rootRealPath = await fs.realpath(rootDir).catch(() => rootDir);
-  const trustedHostOpenClawRootRealPath = await resolveTrustedHostOpenClawRootRealPath();
+  const trustedHostEVERootRealPath = await resolveTrustedHostEVERootRealPath();
   const queue: Array<{ depth: number; dir: string }> = [{ depth: 0, dir: rootDir }];
   const packageManifestPaths: string[] = [];
   const visitedDirectories = new Set<string>();
@@ -554,7 +554,7 @@ async function collectPackageManifestPaths(params: {
             rootRealPath,
             symlinkPath: nextPath,
             symlinkRelativePath: relativeNextPath,
-            trustedHostOpenClawRootRealPath,
+            trustedHostEVERootRealPath,
           });
           if (symlinkTargetInspection.blockedDirectoryFinding) {
             firstBlockedDirectoryFinding ??= symlinkTargetInspection.blockedDirectoryFinding;
@@ -792,7 +792,7 @@ function resolvePolicySource(params: {
   if (params.requestKind === "skill-install") {
     switch (params.origin?.type) {
       case "clawhub":
-        return { kind: "clawhub", authority: "openclaw", mutable: false, network: true };
+        return { kind: "clawhub", authority: "eve", mutable: false, network: true };
       case "git":
         return {
           kind: "git",
@@ -804,11 +804,11 @@ function resolvePolicySource(params: {
         return { kind: "local-path", authority: "user", mutable: true, network: false };
       case "upload":
         return { kind: "upload", authority: "user", mutable: false, network: false };
-      case "openclaw-bundled":
-        return { kind: "bundled", authority: "openclaw", mutable: false, network: false };
-      case "openclaw-managed":
-      case "openclaw-extra":
-        return { kind: "managed", authority: "openclaw", mutable: false, network: false };
+      case "eve-bundled":
+        return { kind: "bundled", authority: "eve", mutable: false, network: false };
+      case "eve-managed":
+      case "eve-extra":
+        return { kind: "managed", authority: "eve", mutable: false, network: false };
       default:
         return { kind: "workspace", authority: "user", mutable: true, network: false };
     }
@@ -830,7 +830,7 @@ function resolvePolicySource(params: {
 }
 
 async function runOperatorInstallPolicy(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   logger: InstallScanLogger;
   origin: InstallPolicyOrigin;
   source?: InstallPolicySource;
@@ -886,7 +886,7 @@ async function runOperatorInstallPolicy(params: {
 
 export async function scanBundleInstallSourceRuntime(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     logger: InstallScanLogger;
     pluginId: string;
     sourceDir: string;
@@ -953,7 +953,7 @@ export async function scanBundleInstallSourceRuntime(
 
 export async function scanPackageInstallSourceRuntime(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     extensions: string[];
     logger: InstallScanLogger;
     packageDir: string;
@@ -1033,7 +1033,7 @@ export async function scanPackageInstallSourceRuntime(
 export async function scanInstalledPackageDependencyTreeRuntime(params: {
   additionalPackageDirs?: string[];
   allowManagedNpmRootPackagePeerSymlinks?: boolean;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   dangerouslyForceUnsafeInstall?: boolean;
   dependencyScanRootDir?: string;
   logger: InstallScanLogger;
@@ -1088,7 +1088,7 @@ export async function scanInstalledPackageDependencyTreeRuntime(params: {
 
 export async function scanFileInstallSourceRuntime(
   params: InstallSafetyOverrides & {
-    config?: OpenClawConfig;
+    config?: EVEConfig;
     filePath: string;
     logger: InstallScanLogger;
     mode?: "install" | "update";
@@ -1140,7 +1140,7 @@ export async function scanFileInstallSourceRuntime(
 }
 
 export async function preflightPluginNpmInstallPolicyRuntime(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   logger: InstallScanLogger;
   mode?: "install" | "update";
   packageName: string;
@@ -1172,7 +1172,7 @@ export async function preflightPluginNpmInstallPolicyRuntime(params: {
 }
 
 export async function preflightPluginGitInstallPolicyRuntime(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   logger: InstallScanLogger;
   mode?: "install" | "update";
   pluginId: string;
@@ -1200,7 +1200,7 @@ export async function preflightPluginGitInstallPolicyRuntime(params: {
 }
 
 export async function evaluateSkillInstallPolicyRuntime(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   installId: string;
   installSpec?: SkillInstallSpec;
   logger: InstallScanLogger;

@@ -1,8 +1,8 @@
 // Link-understanding runner fetches allowed URLs and invokes configured commands with bounded content.
-import { readResponseWithLimit } from "@openclaw/media-core/read-response-with-limit";
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 import type { MsgContext } from "../auto-reply/templating.js";
 import { applyTemplate } from "../auto-reply/templating.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { LinkModelConfig, LinkToolsConfig } from "../config/types.tools.js";
 import { logVerbose, shouldLogVerbose } from "../globals.js";
 import { fetchWithSsrFGuard, GUARDED_FETCH_MODE } from "../infra/net/fetch-guard.js";
@@ -81,7 +81,7 @@ async function fetchLinkContent(params: {
     init: {
       headers: {
         Accept: "text/*,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "User-Agent": "OpenClaw-LinkUnderstanding/1.0",
+        "User-Agent": "EVE-LinkUnderstanding/1.0",
       },
     },
   });
@@ -140,8 +140,8 @@ async function runCliEntry(params: {
     timeoutMs,
     input: params.content,
     env: {
-      OPENCLAW_LINK_FINAL_URL: params.finalUrl,
-      OPENCLAW_LINK_URL: params.url,
+      EVE_LINK_FINAL_URL: params.finalUrl,
+      EVE_LINK_URL: params.url,
     },
   });
   if (result.code !== 0) {
@@ -191,7 +191,7 @@ async function runLinkEntries(params: {
  * Returns detected URLs even when processors are absent so callers can report discovery.
  */
 export async function runLinkUnderstanding(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   ctx: MsgContext;
   message?: string;
 }): Promise<LinkUnderstandingResult> {

@@ -1,6 +1,6 @@
 // Tests subagent routing commands and active focus handoff.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import {
   getActivePluginRegistry,
   resetPluginRuntimeStateForTest,
@@ -97,7 +97,7 @@ function buildParams(
     directives: {} as HandleCommandsParams["directives"],
     elevated: { enabled: true, allowed: true, failures: [] },
     sessionKey,
-    workspaceDir: "/tmp/openclaw-commands-subagents",
+    workspaceDir: "/tmp/eve-commands-subagents",
     defaultGroupActivation: () => "mention",
     resolvedVerboseLevel: "off",
     resolvedReasoningLevel: "off",
@@ -176,7 +176,7 @@ describe("subagents command dispatch", () => {
     const cfg = {
       commands: { allowFrom: { "*": ["*"] } },
       channels: { telegram: { allowFrom: ["*"] } },
-    } as OpenClawConfig;
+    } as EVEConfig;
     const ctx = {
       Provider: "telegram",
       Surface: "telegram",

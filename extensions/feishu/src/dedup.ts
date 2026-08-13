@@ -1,6 +1,6 @@
 // Feishu plugin module implements dedup behavior.
 import { createHash } from "node:crypto";
-import type { PluginStateSyncKeyedStore } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { PluginStateSyncKeyedStore } from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   releaseFeishuMessageProcessing,
   tryBeginFeishuMessageProcessing,

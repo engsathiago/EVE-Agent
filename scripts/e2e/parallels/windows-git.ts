@@ -1,4 +1,4 @@
-// Windows Git script supports OpenClaw repository automation.
+// Windows Git script supports EVE repository automation.
 import path from "node:path";
 import type { WindowsGuest } from "./guest-transports.ts";
 import { die, run, say } from "./host-command.ts";
@@ -26,7 +26,7 @@ try:
     req = urllib.request.Request(
         "https://api.github.com/repos/git-for-windows/git/releases/latest",
         headers={
-            "User-Agent": "openclaw-parallels-smoke",
+            "User-Agent": "eve-parallels-smoke",
             "Accept": "application/vnd.github+json",
         },
     )
@@ -118,7 +118,7 @@ export function ensureGuestGit(input: {
   const minGitName = path.basename(input.minGitZipPath);
   input.guest.powershell(
     `$ErrorActionPreference = 'Stop'
-$depsRoot = Join-Path $env:LOCALAPPDATA 'OpenClaw\\deps'
+$depsRoot = Join-Path $env:LOCALAPPDATA 'EVE\\deps'
 $portableGit = Join-Path $depsRoot 'portable-git'
 $archive = Join-Path $env:TEMP ${psSingleQuote(minGitName)}
 if (Test-Path $portableGit) {

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
-import { importFreshModule } from "openclaw/plugin-sdk/test-fixtures";
+import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { isJavaScriptModulePath } from "../../plugins/native-module-require.js";
 import type { PluginModuleLoaderFactory } from "../../plugins/plugin-module-loader-cache.js";
@@ -22,7 +22,7 @@ afterEach(() => {
 });
 
 function createTempDir(): string {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-channel-module-loader-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-channel-module-loader-"));
   tempDirs.push(tempDir);
   return tempDir;
 }

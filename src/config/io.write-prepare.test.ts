@@ -9,7 +9,7 @@ import {
   resolveWriteEnvSnapshotForPath,
   unsetPathForWrite,
 } from "./io.write-prepare.js";
-import type { OpenClawConfig } from "./types.js";
+import type { EVEConfig } from "./types.js";
 
 describe("config io write prepare", () => {
   it("persists caller changes onto resolved config without leaking runtime defaults", () => {
@@ -52,11 +52,11 @@ describe("config io write prepare", () => {
           plugins: {
             entries: {},
             installs: {
-              "openclaw-web-search": {
+              "eve-web-search": {
                 source: "npm",
-                spec: "@ollama/openclaw-web-search",
-                installPath: "/tmp/openclaw-web-search",
-                resolvedName: "@ollama/openclaw-web-search",
+                spec: "@ollama/eve-web-search",
+                installPath: "/tmp/eve-web-search",
+                resolvedName: "@ollama/eve-web-search",
                 resolvedVersion: "0.2.2",
               },
             },
@@ -66,17 +66,17 @@ describe("config io write prepare", () => {
           plugins: {
             entries: {},
             installs: {
-              "openclaw-web-search": {
+              "eve-web-search": {
                 source: "npm",
-                spec: "@ollama/openclaw-web-search@0.2.2",
-                installPath: "/tmp/openclaw-web-search",
-                resolvedName: "@ollama/openclaw-web-search",
+                spec: "@ollama/eve-web-search@0.2.2",
+                installPath: "/tmp/eve-web-search",
+                resolvedName: "@ollama/eve-web-search",
                 resolvedVersion: "0.2.2",
               },
             },
           },
         },
-      }) as OpenClawConfig,
+      }) as EVEConfig,
       [["plugins", "installs"]],
     ) as {
       plugins?: {
@@ -119,7 +119,7 @@ describe("config io write prepare", () => {
         agents: { list: [{ id: "main" }, { id: "ops" }] },
         gateway: { mode: "local" },
       },
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.agents?.defaults?.params).toEqual({
       transport: "sse",
@@ -133,7 +133,7 @@ describe("config io write prepare", () => {
   });
 
   it("preserves authored Google model params under normalized config keys", () => {
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       agents: {
         defaults: {
           model: { primary: "google/gemini-3-pro-preview" },
@@ -159,7 +159,7 @@ describe("config io write prepare", () => {
           },
         },
       },
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.agents?.defaults?.model).toEqual({
       primary: "google/gemini-3.1-pro-preview",
@@ -171,7 +171,7 @@ describe("config io write prepare", () => {
   });
 
   it("does not reintroduce legacy openai-codex model params after doctor route repair", () => {
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       agents: {
         defaults: {
           model: "openai-codex/gpt-5.5",
@@ -199,7 +199,7 @@ describe("config io write prepare", () => {
           },
         },
       },
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.agents?.defaults?.model).toBe("openai/gpt-5.5");
     expect(persisted.agents?.defaults?.models).not.toHaveProperty("openai-codex/gpt-5.5");
@@ -210,7 +210,7 @@ describe("config io write prepare", () => {
   });
 
   it("normalizes retired Google model refs during unrelated config writes", () => {
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       agents: {
         defaults: {
           model: {
@@ -253,7 +253,7 @@ describe("config io write prepare", () => {
       },
       gateway: { port: 18789 },
     };
-    const runtimeConfig: OpenClawConfig = {
+    const runtimeConfig: EVEConfig = {
       agents: {
         defaults: {
           model: {
@@ -303,7 +303,7 @@ describe("config io write prepare", () => {
         ...runtimeConfig,
         gateway: { port: 18888 },
       },
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.agents?.defaults?.model).toEqual({
       primary: "google/gemini-3.1-pro-preview",
@@ -347,7 +347,7 @@ describe("config io write prepare", () => {
       contextWindow: 1_048_576,
       maxTokens: 65_536,
     });
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       models: {
         providers: {
           google: {
@@ -362,7 +362,7 @@ describe("config io write prepare", () => {
       },
       gateway: { port: 18789 },
     };
-    const runtimeConfig: OpenClawConfig = {
+    const runtimeConfig: EVEConfig = {
       models: {
         providers: {
           google: {
@@ -384,7 +384,7 @@ describe("config io write prepare", () => {
         ...runtimeConfig,
         gateway: { port: 18888 },
       },
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.models?.providers?.google?.models).toEqual([
       makeModel("google/gemini-3.1-pro-preview", "Gemini 3 Pro"),
@@ -405,7 +405,7 @@ describe("config io write prepare", () => {
       contextWindow: 200_000,
       maxTokens: 8192,
     });
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       models: {
         providers: {
           myproxy: {
@@ -416,7 +416,7 @@ describe("config io write prepare", () => {
       },
       gateway: { port: 18789 },
     };
-    const runtimeConfig: OpenClawConfig = {
+    const runtimeConfig: EVEConfig = {
       models: {
         providers: {
           myproxy: {
@@ -443,7 +443,7 @@ describe("config io write prepare", () => {
           },
         ],
       ]),
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.models?.providers?.myproxy?.models).toEqual([
       makeModel("vendor/modern-model"),
@@ -452,7 +452,7 @@ describe("config io write prepare", () => {
   });
 
   it("allows explicit unsets to remove authored agent provider params", () => {
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       agents: {
         defaults: {
           params: { transport: "sse", openaiWsWarmup: false },
@@ -472,7 +472,7 @@ describe("config io write prepare", () => {
         ["agents", "defaults", "params"],
         ["agents", "defaults", "models", "openai/gpt-5.4", "params"],
       ],
-    }) as OpenClawConfig;
+    }) as EVEConfig;
 
     expect(persisted.agents?.defaults).not.toHaveProperty("params");
     expect(persisted.agents?.defaults?.models?.["openai/gpt-5.4"]).not.toHaveProperty("params");
@@ -792,8 +792,8 @@ describe("config io write prepare", () => {
       'channels.telegram.dmPolicy = "open" requires channels.telegram.allowFrom to include "*"',
     );
 
-    expect(message).toContain("openclaw config set channels.telegram.allowFrom '[\"*\"]'");
-    expect(message).toContain('openclaw config set channels.telegram.dmPolicy "pairing"');
+    expect(message).toContain("eve config set channels.telegram.allowFrom '[\"*\"]'");
+    expect(message).toContain('eve config set channels.telegram.dmPolicy "pairing"');
   });
 
   it("unsets explicit paths when runtime defaults would otherwise reappear", () => {
@@ -810,10 +810,10 @@ describe("config io write prepare", () => {
   });
 
   it("does not mutate caller config when unsetting existing config objects", () => {
-    const input: OpenClawConfig = {
+    const input: EVEConfig = {
       gateway: { mode: "local" },
       commands: { ownerDisplay: "hash" },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const next = unsetPathForWrite(input, ["commands", "ownerDisplay"]);
 
@@ -825,10 +825,10 @@ describe("config io write prepare", () => {
   });
 
   it("keeps caller arrays immutable when unsetting array entries", () => {
-    const input: OpenClawConfig = {
+    const input: EVEConfig = {
       gateway: { mode: "local" },
       tools: { alsoAllow: ["exec", "fetch", "read"] },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const next = unsetPathForWrite(input, ["tools", "alsoAllow", "1"]);
 
@@ -840,10 +840,10 @@ describe("config io write prepare", () => {
   });
 
   it("treats invalid array-index unset paths as no-ops", () => {
-    const input: OpenClawConfig = {
+    const input: EVEConfig = {
       gateway: { mode: "local" },
       tools: { alsoAllow: ["exec", "fetch"] },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     for (const path of [
       ["tools", "alsoAllow", "1abc"],
@@ -858,10 +858,10 @@ describe("config io write prepare", () => {
   });
 
   it("treats missing unset paths as no-op without mutating caller config", () => {
-    const input: OpenClawConfig = {
+    const input: EVEConfig = {
       gateway: { mode: "local" },
       commands: { ownerDisplay: "hash" },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const next = unsetPathForWrite(input, ["commands", "missingKey"]);
 
@@ -874,10 +874,10 @@ describe("config io write prepare", () => {
   });
 
   it("ignores blocked prototype-key unset path segments", () => {
-    const input: OpenClawConfig = {
+    const input: EVEConfig = {
       gateway: { mode: "local" },
       commands: { ownerDisplay: "hash" },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const blocked = [
       ["commands", "__proto__"],
@@ -1098,8 +1098,8 @@ describe("config io write prepare", () => {
     const snapshot = { OPENAI_API_KEY: "sk-secret" };
     expect(
       resolveWriteEnvSnapshotForPath({
-        actualConfigPath: "/tmp/openclaw.json",
-        expectedConfigPath: "/tmp/openclaw.json",
+        actualConfigPath: "/tmp/eve.json",
+        expectedConfigPath: "/tmp/eve.json",
         envSnapshotForRestore: snapshot,
       }),
     ).toBe(snapshot);
@@ -1108,7 +1108,7 @@ describe("config io write prepare", () => {
   it("drops the read-time env snapshot when writing a different config path", () => {
     expect(
       resolveWriteEnvSnapshotForPath({
-        actualConfigPath: "/tmp/openclaw.json",
+        actualConfigPath: "/tmp/eve.json",
         expectedConfigPath: "/tmp/other.json",
         envSnapshotForRestore: { OPENAI_API_KEY: "sk-secret" },
       }),
@@ -1123,19 +1123,19 @@ describe("config io write prepare", () => {
           cliPath: "/usr/local/bin/imsg",
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
-    const runtimeConfig: OpenClawConfig = {
+    const runtimeConfig: EVEConfig = {
       gateway: { port: 18789 },
       channels: {
         imessage: {
           cliPath: "/usr/local/bin/imsg",
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     (runtimeConfig.channels!.imessage as Record<string, unknown>).runtimeOnlyDefault = true;
 
-    const nextConfig: OpenClawConfig = structuredClone(runtimeConfig);
+    const nextConfig: EVEConfig = structuredClone(runtimeConfig);
     nextConfig.gateway = {
       ...nextConfig.gateway,
       auth: { mode: "token" },
@@ -1157,7 +1157,7 @@ describe("config io write prepare", () => {
   });
 
   it("does not reintroduce legacy nested dm.policy defaults in the persisted candidate", () => {
-    const sourceConfig: OpenClawConfig = {
+    const sourceConfig: EVEConfig = {
       channels: {
         discord: {
           dmPolicy: "pairing",
@@ -1169,7 +1169,7 @@ describe("config io write prepare", () => {
         },
       },
       gateway: { port: 18789 },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const nextConfig = structuredClone(sourceConfig);
     delete (nextConfig.channels?.discord?.dm as { enabled?: boolean; policy?: string } | undefined)
@@ -1223,9 +1223,9 @@ describe("config io write prepare", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
-    const nextConfig: OpenClawConfig = {
+    const nextConfig: EVEConfig = {
       ...structuredClone(sourceConfig),
       gateway: {
         auth: { mode: "token" },
@@ -1258,26 +1258,26 @@ describe("config io write prepare", () => {
   });
 
   it("preserves root $schema during unrelated partial writes", () => {
-    const sourceConfig: OpenClawConfig = {
-      $schema: "https://openclaw.ai/config.json",
+    const sourceConfig: EVEConfig = {
+      $schema: "https://eve.ai/config.json",
       gateway: { mode: "local" },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const persisted = resolvePersistCandidateForWrite({
       runtimeConfig: sourceConfig,
       sourceConfig,
       nextConfig: {
         gateway: { mode: "local", port: 18789 },
-      } satisfies OpenClawConfig,
-    }) as OpenClawConfig;
+      } satisfies EVEConfig,
+    }) as EVEConfig;
 
-    expect(persisted.$schema).toBe("https://openclaw.ai/config.json");
+    expect(persisted.$schema).toBe("https://eve.ai/config.json");
     expect(persisted.gateway).toEqual({ mode: "local", port: 18789 });
   });
 
   it("rejects writes that would flatten a root include", () => {
     const sourceConfig = {
-      $schema: "https://openclaw.ai/config-from-include.json",
+      $schema: "https://eve.ai/config-from-include.json",
       gateway: { mode: "local" },
     };
 
@@ -1298,7 +1298,7 @@ describe("config io write prepare", () => {
 
   it("does not restore root $schema when the next config explicitly clears it", () => {
     const sourceConfig = {
-      $schema: "https://openclaw.ai/config.json",
+      $schema: "https://eve.ai/config.json",
       gateway: { mode: "local" },
     };
 
@@ -1317,7 +1317,7 @@ describe("config io write prepare", () => {
 
   it("does not restore root $schema when the next config sets an invalid value", () => {
     const sourceConfig = {
-      $schema: "https://openclaw.ai/config.json",
+      $schema: "https://eve.ai/config.json",
       gateway: { mode: "local" },
     };
 

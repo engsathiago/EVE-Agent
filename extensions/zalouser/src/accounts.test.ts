@@ -1,7 +1,7 @@
 // Zalouser tests cover accounts plugin behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import {
   getZcaUserInfo,
   listEnabledZalouserAccounts,
@@ -22,8 +22,8 @@ const mockGetUserInfo = vi.mocked(getZaloUserInfo);
 const originalZalouserProfile = process.env.ZALOUSER_PROFILE;
 const originalZcaProfile = process.env.ZCA_PROFILE;
 
-function asConfig(value: unknown): OpenClawConfig {
-  return value as OpenClawConfig;
+function asConfig(value: unknown): EVEConfig {
+  return value as EVEConfig;
 }
 
 describe("zalouser account resolution", () => {

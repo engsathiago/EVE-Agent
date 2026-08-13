@@ -7,7 +7,7 @@ import "../infra/fs-safe-defaults.js";
 import type fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import { createFileLockManager } from "../infra/file-lock-manager.js";
 import { readGatewayProcessArgsSync as readProcessArgsSync } from "../infra/gateway-processes.js";
 import { getProcessStartTime, isPidAlive } from "../shared/pid-alive.js";
@@ -43,8 +43,8 @@ export type SessionLockOwnerProcessArgsReader = (pid: number) => string[] | null
 
 const CLEANUP_SIGNALS = ["SIGINT", "SIGTERM", "SIGQUIT", "SIGABRT"] as const;
 type CleanupSignal = (typeof CLEANUP_SIGNALS)[number];
-const CLEANUP_STATE_KEY = Symbol.for("openclaw.sessionWriteLockCleanupState");
-const WATCHDOG_STATE_KEY = Symbol.for("openclaw.sessionWriteLockWatchdogState");
+const CLEANUP_STATE_KEY = Symbol.for("eve.sessionWriteLockCleanupState");
+const WATCHDOG_STATE_KEY = Symbol.for("eve.sessionWriteLockWatchdogState");
 
 const DEFAULT_SESSION_WRITE_LOCK_STALE_MS = 30 * 60 * 1000;
 const DEFAULT_SESSION_WRITE_LOCK_MAX_HOLD_MS = 5 * 60 * 1000;
@@ -86,7 +86,7 @@ type LockInspectionDetails = Pick<
   "pid" | "pidAlive" | "createdAt" | "ageMs" | "stale" | "staleReasons"
 >;
 
-const SESSION_LOCKS = createFileLockManager("openclaw.session-write-lock");
+const SESSION_LOCKS = createFileLockManager("eve.session-write-lock");
 let resolveProcessStartTimeForLock = getProcessStartTime;
 
 function isFileLockError(error: unknown, code: string): boolean {
@@ -106,9 +106,9 @@ export type SessionWriteLockAcquireTimeoutConfig = {
 type SessionWriteLockMsKey = "acquireTimeoutMs" | "staleMs" | "maxHoldMs";
 
 const SESSION_WRITE_LOCK_ENV: Record<SessionWriteLockMsKey, string> = {
-  acquireTimeoutMs: "OPENCLAW_SESSION_WRITE_LOCK_ACQUIRE_TIMEOUT_MS",
-  staleMs: "OPENCLAW_SESSION_WRITE_LOCK_STALE_MS",
-  maxHoldMs: "OPENCLAW_SESSION_WRITE_LOCK_MAX_HOLD_MS",
+  acquireTimeoutMs: "EVE_SESSION_WRITE_LOCK_ACQUIRE_TIMEOUT_MS",
+  staleMs: "EVE_SESSION_WRITE_LOCK_STALE_MS",
+  maxHoldMs: "EVE_SESSION_WRITE_LOCK_MAX_HOLD_MS",
 };
 
 function readPositiveMsEnv(
@@ -316,7 +316,7 @@ function stopWatchdogTimer(): void {
 }
 
 function shouldStartBackgroundWatchdog(): boolean {
-  return process.env.VITEST !== "true" || process.env.OPENCLAW_TEST_SESSION_LOCK_WATCHDOG === "1";
+  return process.env.VITEST !== "true" || process.env.EVE_TEST_SESSION_LOCK_WATCHDOG === "1";
 }
 
 function ensureWatchdogStarted(intervalMs: number): void {
@@ -450,22 +450,22 @@ function normalizeOwnerProcessArg(arg: string): string {
   return arg.trim().replaceAll("\\", "/").toLowerCase();
 }
 
-function isOpenClawSessionOwnerArgv(args: string[]): boolean {
+function isEVESessionOwnerArgv(args: string[]): boolean {
   const normalized = args.map(normalizeOwnerProcessArg).filter(Boolean);
   if (normalized.length === 0) {
     return false;
   }
   const exe = (normalized[0] ?? "").replace(/\.(bat|cmd|exe)$/i, "");
-  if (exe === "openclaw" || exe.endsWith("/openclaw") || exe.endsWith("/openclaw-gateway")) {
+  if (exe === "eve" || exe.endsWith("/eve") || exe.endsWith("/eve-gateway")) {
     return true;
   }
   if (
     normalized.some(
       (arg) =>
-        arg === "openclaw" ||
-        arg.endsWith("/openclaw") ||
-        arg === "openclaw.mjs" ||
-        arg.endsWith("/openclaw.mjs"),
+        arg === "eve" ||
+        arg.endsWith("/eve") ||
+        arg === "eve.mjs" ||
+        arg.endsWith("/eve.mjs"),
     )
   ) {
     return true;
@@ -478,9 +478,9 @@ function isOpenClawSessionOwnerArgv(args: string[]): boolean {
     "src/entry.ts",
     "src/index.ts",
   ];
-  const hasOpenClawCommandToken = normalized.some((arg) => arg === "gateway" || arg === "agent");
+  const hasEVECommandToken = normalized.some((arg) => arg === "gateway" || arg === "agent");
   return normalized.some(
-    (arg) => entryCandidates.some((entry) => arg.endsWith(entry)) && hasOpenClawCommandToken,
+    (arg) => entryCandidates.some((entry) => arg.endsWith(entry)) && hasEVECommandToken,
   );
 }
 
@@ -554,7 +554,7 @@ function inspectLockPayload(
   };
 }
 
-function shouldTreatAsNonOpenClawOwner(params: {
+function shouldTreatAsNonEVEOwner(params: {
   payload: LockFilePayload | null;
   inspected: LockInspectionDetails;
   heldByThisProcess: boolean;
@@ -577,7 +577,7 @@ function shouldTreatAsNonOpenClawOwner(params: {
   if (!args || args.every((arg) => !arg.trim())) {
     return false;
   }
-  return !isOpenClawSessionOwnerArgv(args);
+  return !isEVESessionOwnerArgv(args);
 }
 
 function lockInspectionNeedsMtimeStaleFallback(details: LockInspectionDetails): boolean {
@@ -773,7 +773,7 @@ function inspectLockPayloadForSession(params: {
   }
 
   if (
-    shouldTreatAsNonOpenClawOwner({
+    shouldTreatAsNonEVEOwner({
       payload: params.payload,
       inspected,
       heldByThisProcess: params.heldByThisProcess,
@@ -783,7 +783,7 @@ function inspectLockPayloadForSession(params: {
     return {
       ...inspected,
       stale: true,
-      staleReasons: [...inspected.staleReasons, "non-openclaw-owner"],
+      staleReasons: [...inspected.staleReasons, "non-eve-owner"],
     };
   }
 

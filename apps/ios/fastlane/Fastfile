@@ -8,11 +8,11 @@ require "cgi"
 
 default_platform(:ios)
 
-APP_STORE_APP_IDENTIFIER = "ai.openclawfoundation.app"
-DEFAULT_APP_STORE_CONNECT_KEYCHAIN_SERVICE = "openclaw-app-store-connect-key"
+APP_STORE_APP_IDENTIFIER = "ai.evefoundation.app"
+DEFAULT_APP_STORE_CONNECT_KEYCHAIN_SERVICE = "eve-app-store-connect-key"
 DEFAULT_SNAPSHOT_DEVICES = ["iPhone 16 Pro Max", "iPad Pro 13-inch (M4)"].freeze
 DEFAULT_WATCH_SNAPSHOT_DEVICE = "Apple Watch Ultra 3 (49mm)"
-WATCH_SCREENSHOT_MODE_DEFAULTS_KEY = "openclaw.watch.screenshotMode"
+WATCH_SCREENSHOT_MODE_DEFAULTS_KEY = "eve.watch.screenshotMode"
 WATCH_SNAPSHOT_STATUS_BAR_TIME = "09:41"
 SNAPSHOT_STATUS_BAR_ARGUMENTS = "--time 09:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100".freeze
 REQUIRED_SCREENSHOT_FAMILIES = {
@@ -76,14 +76,14 @@ def validate_required_screenshots!(paths)
 end
 
 def snapshot_devices
-  raw = ENV["OPENCLAW_SNAPSHOT_DEVICES"].to_s.strip
+  raw = ENV["EVE_SNAPSHOT_DEVICES"].to_s.strip
   return DEFAULT_SNAPSHOT_DEVICES if raw.empty?
 
   raw.split(",").map(&:strip).reject(&:empty?)
 end
 
 def watch_snapshot_device
-  raw = ENV["OPENCLAW_WATCH_SNAPSHOT_DEVICE"].to_s.strip
+  raw = ENV["EVE_WATCH_SNAPSHOT_DEVICE"].to_s.strip
   raw.empty? ? DEFAULT_WATCH_SNAPSHOT_DEVICE : raw
 end
 
@@ -273,7 +273,7 @@ def normalize_watch_screenshot_status_bar(path)
     try png.write(to: URL(fileURLWithPath: path))
   SWIFT
 
-  Tempfile.create(["openclaw-watch-status-bar", ".swift"]) do |file|
+  Tempfile.create(["eve-watch-status-bar", ".swift"]) do |file|
     file.write(script)
     file.flush
     sh(shell_join(["xcrun", "swift", file.path, path, "9:41"]))
@@ -287,7 +287,7 @@ def capture_watch_screenshot
   output_dir = File.join(ios_root, "fastlane", "screenshots", "en-US")
   output_path = File.join(output_dir, "#{device_name}-01-now-face.png")
   derived_data_path = File.join(ios_root, "build", "WatchScreenshotDerivedData")
-  app_path = File.join(derived_data_path, "Build", "Products", "Debug-watchsimulator", "OpenClawWatchApp.app")
+  app_path = File.join(derived_data_path, "Build", "Products", "Debug-watchsimulator", "EVEWatchApp.app")
 
   FileUtils.mkdir_p(output_dir)
   Dir[File.join(output_dir, "Apple Watch*-*.png")].each { |path| FileUtils.rm_f(path) }
@@ -299,9 +299,9 @@ def capture_watch_screenshot
     xcodebuild_shell_join([
       "xcodebuild",
       "-project",
-      File.join(ios_root, "OpenClaw.xcodeproj"),
+      File.join(ios_root, "EVE.xcodeproj"),
       "-scheme",
-      "OpenClawWatchApp",
+      "EVEWatchApp",
       "-configuration",
       "Debug",
       "-destination",
@@ -325,13 +325,13 @@ def capture_watch_screenshot
     write_watch_screenshot_mode_defaults(udid, screenshot_mode_bundle_identifiers)
     status_bar_overridden = set_watch_status_bar_override(udid)
     sh(
-      "SIMCTL_CHILD_OPENCLAW_WATCH_SCREENSHOT_MODE=1 #{shell_join([
+      "SIMCTL_CHILD_EVE_WATCH_SCREENSHOT_MODE=1 #{shell_join([
         "xcrun",
         "simctl",
         "launch",
         udid,
         watch_app_identifier,
-        "--openclaw-watch-screenshot-mode",
+        "--eve-watch-screenshot-mode",
       ])}"
     )
     sleep(3)
@@ -553,7 +553,7 @@ def match_profile_env_key(target, suffix)
 end
 
 def profile_plist_value(profile_path, key_path)
-  Tempfile.create(["openclaw-profile", ".plist"]) do |file|
+  Tempfile.create(["eve-profile", ".plist"]) do |file|
     stdout, stderr, status = Open3.capture3("security", "cms", "-D", "-i", profile_path)
     unless status.success?
       detail = stderr.to_s.strip
@@ -628,7 +628,7 @@ def release_notes_metadata_path
   source = release_notes_path
   UI.user_error!("Missing release notes at #{source}. Run `pnpm ios:version:sync`.") unless File.exist?(source)
 
-  temp_root = Dir.mktmpdir("openclaw-release-notes")
+  temp_root = Dir.mktmpdir("eve-release-notes")
   target_dir = File.join(temp_root, "en-US")
   FileUtils.mkdir_p(target_dir)
   FileUtils.cp(source, File.join(target_dir, "release_notes.txt"))
@@ -637,7 +637,7 @@ end
 
 def public_metadata_path
   source = File.join(__dir__, "metadata")
-  temp_root = Dir.mktmpdir("openclaw-app-store-metadata")
+  temp_root = Dir.mktmpdir("eve-app-store-metadata")
   Dir.children(source).each do |entry|
     source_entry = File.join(source, entry)
     next unless File.directory?(source_entry)
@@ -744,11 +744,11 @@ end
 
 def build_app_store_release(context)
   version = context[:version]
-  project_path = File.join(ios_root, "OpenClaw.xcodeproj")
+  project_path = File.join(ios_root, "EVE.xcodeproj")
   output_directory = File.join(ios_root, "build", "app-store")
-  archive_path = File.join(output_directory, "OpenClaw-#{version}.xcarchive")
+  archive_path = File.join(output_directory, "EVE-#{version}.xcarchive")
   export_options_path = File.join(output_directory, "ExportOptions.plist")
-  output_name = "OpenClaw-#{version}.ipa"
+  output_name = "EVE-#{version}.ipa"
   expected_ipa_path = File.join(output_directory, output_name)
 
   FileUtils.mkdir_p(output_directory)
@@ -762,7 +762,7 @@ def build_app_store_release(context)
       "-project",
       project_path,
       "-scheme",
-      "OpenClaw",
+      "EVE",
       "-configuration",
       "Release",
       "-destination",
@@ -984,7 +984,7 @@ platform :ios do
       api_key: api_key,
       force: true,
       app_version: version_metadata[:short_version],
-      copyright: "2026 OpenClaw",
+      copyright: "2026 EVE",
       primary_category: "PRODUCTIVITY",
       secondary_category: "UTILITIES",
       metadata_path: metadata_path,
@@ -1013,12 +1013,12 @@ platform :ios do
     sh(shell_join(["xcodegen", "generate", "--spec", File.join(ios_root, "project.yml"), "--project", ios_root]))
 
     capture_ios_screenshots(
-      project: File.join(ios_root, "OpenClaw.xcodeproj"),
-      scheme: "OpenClawUITests",
+      project: File.join(ios_root, "EVE.xcodeproj"),
+      scheme: "EVEUITests",
       configuration: "Debug",
       devices: snapshot_devices,
       languages: ["en-US"],
-      launch_arguments: ["--openclaw-screenshot-mode"],
+      launch_arguments: ["--eve-screenshot-mode"],
       output_directory: File.join(ios_root, "fastlane", "screenshots"),
       clear_previous_screenshots: true,
       reinstall_app: true,

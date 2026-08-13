@@ -9,7 +9,7 @@ const runtime = vi.hoisted(() => ({
   resolveSessionAgentId: vi.fn(() => "main"),
   loadSessionEntry: vi.fn(() => ({
     cfg: {},
-    storePath: "/tmp/openclaw-sessions.json",
+    storePath: "/tmp/eve-sessions.json",
     entry: { sessionId: "sess-main" },
   })),
   resolveSessionModelRef: vi.fn(() => ({ provider: "openai" })),
@@ -28,7 +28,7 @@ const runtime = vi.hoisted(() => ({
   capArrayByJsonBytes: vi.fn((items: unknown[]) => ({ items })),
   enforceChatHistoryFinalBudget: vi.fn(({ messages }: { messages: unknown[] }) => ({ messages })),
   loadCombinedSessionStoreForGateway: vi.fn(() => ({
-    storePath: "/tmp/openclaw-sessions.json",
+    storePath: "/tmp/eve-sessions.json",
     store: {},
   })),
   listSessionsFromStoreAsync: vi.fn(async () => ({ sessions: [] })),
@@ -61,7 +61,7 @@ describe("embedded gateway stub", () => {
     );
     expect(runtime.listSessionsFromStoreAsync).toHaveBeenCalledWith({
       cfg: { agents: { list: [{ id: "main", default: true }] } },
-      storePath: "/tmp/openclaw-sessions.json",
+      storePath: "/tmp/eve-sessions.json",
       store: {},
       opts: { agentId: "work", includeGlobal: true, search: "global" },
     });
@@ -129,7 +129,7 @@ describe("embedded gateway stub", () => {
         sessionEntry: { sessionId: "sess-main" },
         sessionId: "sess-main",
         sessionKey: "agent:main:main",
-        storePath: "/tmp/openclaw-sessions.json",
+        storePath: "/tmp/eve-sessions.json",
       },
       {
         mode: "recent",
@@ -196,7 +196,7 @@ describe("embedded gateway stub", () => {
         sessionEntry: { sessionId: "sess-main" },
         sessionId: "sess-main",
         sessionKey: "agent:main:main",
-        storePath: "/tmp/openclaw-sessions.json",
+        storePath: "/tmp/eve-sessions.json",
       },
       {
         mode: "recent",
@@ -230,7 +230,7 @@ describe("embedded gateway stub", () => {
         sessionEntry: { sessionId: "sess-main" },
         sessionId: "sess-main",
         sessionKey: "agent:main:main",
-        storePath: "/tmp/openclaw-sessions.json",
+        storePath: "/tmp/eve-sessions.json",
       },
       {
         mode: "recent",

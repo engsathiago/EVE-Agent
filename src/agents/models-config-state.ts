@@ -1,6 +1,6 @@
 // Process-wide models.json coordination state. Dynamic imports can load this
 // module multiple times, so Symbol.for keeps write locks and ready-cache shared.
-const MODELS_JSON_STATE_KEY = Symbol.for("openclaw.modelsJsonState");
+const MODELS_JSON_STATE_KEY = Symbol.for("eve.modelsJsonState");
 
 export type ModelsJsonReadyResult = {
   agentDir: string;

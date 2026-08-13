@@ -2,11 +2,11 @@
 import {
   listMemoryHostPublicArtifacts,
   type MemoryPluginPublicArtifact,
-} from "openclaw/plugin-sdk/memory-host-core";
-import type { OpenClawConfig } from "../api.js";
+} from "eve-agent/plugin-sdk/memory-host-core";
+import type { EVEConfig } from "../api.js";
 
 export async function listMemoryCorePublicArtifacts(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Promise<MemoryPluginPublicArtifact[]> {
   return await listMemoryHostPublicArtifacts(params);
 }

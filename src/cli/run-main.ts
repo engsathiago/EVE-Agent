@@ -2,14 +2,14 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { Command as CommanderCommand, Option as CommanderOption } from "commander";
 import { resolveStateDir } from "../config/paths.js";
-import type { ConfigFileSnapshot, OpenClawConfig } from "../config/types.openclaw.js";
+import type { ConfigFileSnapshot, EVEConfig } from "../config/types.eve.js";
 import { FLAG_TERMINATOR, isValueToken } from "../infra/cli-root-options.js";
 import { isTruthyEnvValue, normalizeEnv } from "../infra/env.js";
 import type { ProxyHandle } from "../infra/net/proxy/proxy-lifecycle.js";
-import { ensureOpenClawCliOnPath } from "../infra/path-env.js";
+import { ensureEVECliOnPath } from "../infra/path-env.js";
 import { assertSupportedRuntime } from "../infra/runtime-guard.js";
 import type { PluginManifestCommandAliasRegistry } from "../plugins/manifest-command-aliases.js";
 import { resolveCliArgvInvocation } from "./argv-invocation.js";
@@ -90,7 +90,7 @@ const loadProgressModule = async () => await import("./progress.js");
 function createGatewayCliMainStartupTrace(argv: string[]) {
   // Startup trace is scoped to gateway invocations to avoid routine CLI stderr noise.
   const enabled =
-    isTruthyEnvValue(process.env.OPENCLAW_GATEWAY_STARTUP_TRACE) &&
+    isTruthyEnvValue(process.env.EVE_GATEWAY_STARTUP_TRACE) &&
     argv.slice(2).includes("gateway");
   const started = performance.now();
   let last = started;
@@ -214,7 +214,7 @@ async function tryRunGatewayRunFastPath(
     emitCliBanner(VERSION, { argv });
   }
   const program = new Command();
-  program.name("openclaw");
+  program.name("eve");
   program.enablePositionalOptions();
   program.option("--no-color", "Disable ANSI colors", false);
   program.exitOverride((err) => {
@@ -339,7 +339,7 @@ function pauseNonTtyStdinForCliExit(): void {
 
 export function resolveMissingPluginCommandMessage(
   pluginId: string,
-  config?: OpenClawConfig,
+  config?: EVEConfig,
   options?: { registry?: PluginManifestCommandAliasRegistry },
 ): string | null {
   return resolveMissingPluginCommandMessageFromPolicy(
@@ -490,8 +490,8 @@ async function ensureCliEnvProxyDispatcher(): Promise<void> {
 
 function shouldBootstrapCliProxyBeforeFastPath(env: NodeJS.ProcessEnv = process.env): boolean {
   if (
-    isTruthyEnvValue(env.OPENCLAW_DEBUG_PROXY_ENABLED) ||
-    isTruthyEnvValue(env.OPENCLAW_DEBUG_PROXY_REQUIRE)
+    isTruthyEnvValue(env.EVE_DEBUG_PROXY_ENABLED) ||
+    isTruthyEnvValue(env.EVE_DEBUG_PROXY_REQUIRE)
   ) {
     return true;
   }
@@ -510,7 +510,7 @@ function isKnownBuiltInCommandRoot(primary: string): boolean {
 
 async function isPluginCliRoot(params: {
   primary: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<boolean | null> {
   try {
     const { resolvePluginCliRootOwnerIds } = await loadCliRegistryLoaderModule();
@@ -525,7 +525,7 @@ async function isPluginCliRoot(params: {
   }
 }
 
-function createAllowlistAgnosticCliLookupConfig(config: OpenClawConfig): OpenClawConfig {
+function createAllowlistAgnosticCliLookupConfig(config: EVEConfig): EVEConfig {
   if (!Array.isArray(config.plugins?.allow) || config.plugins.allow.length === 0) {
     return config;
   }
@@ -540,7 +540,7 @@ function createAllowlistAgnosticCliLookupConfig(config: OpenClawConfig): OpenCla
 
 async function resolveCliCommandSurfaceOwner(params: {
   primary: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<string | undefined> {
   const { resolveManifestCliCommandSurfaceOwner } = await loadManifestCommandAliasesRuntimeModule();
   const manifestOwner = resolveManifestCliCommandSurfaceOwner({
@@ -581,7 +581,7 @@ function resolveUnownedCliPrimaryCandidate(argv: string[]): string | null {
 
 async function resolveUnownedCliPrimary(params: {
   argv: string[];
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<string | null> {
   const primary = resolveUnownedCliPrimaryCandidate(params.argv);
   if (!primary) {
@@ -596,7 +596,7 @@ async function resolveUnownedCliPrimary(params: {
 
 async function resolveUnownedCliPrimaryMessage(params: {
   primary: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<string> {
   const { resolveManifestCommandAliasOwner, resolveManifestToolOwner } =
     await loadManifestCommandAliasesRuntimeModule();
@@ -615,7 +615,7 @@ async function resolveUnownedCliPrimaryMessage(params: {
   }
   const suggestion = formatCliCommandSuggestions(params.primary);
   return [
-    `Unknown command: openclaw ${params.primary}. No built-in command or plugin CLI metadata owns "${params.primary}".`,
+    `Unknown command: eve ${params.primary}. No built-in command or plugin CLI metadata owns "${params.primary}".`,
     suggestion,
   ]
     .filter(Boolean)
@@ -657,7 +657,7 @@ export async function runCli(argv: string[] = process.argv) {
     applyCliProfileEnv({ profile: parsedProfile.profile });
   }
   const containerTargetName =
-    parsedContainer.container ?? normalizeOptionalString(process.env.OPENCLAW_CONTAINER) ?? null;
+    parsedContainer.container ?? normalizeOptionalString(process.env.EVE_CONTAINER) ?? null;
   if (containerTargetName && parsedProfile.profile) {
     throw new Error("--container cannot be combined with --profile/--dev");
   }
@@ -701,7 +701,7 @@ export async function runCli(argv: string[] = process.argv) {
   }
   normalizeEnv();
   if (shouldEnsureCliPath(normalizedArgv)) {
-    ensureOpenClawCliOnPath();
+    ensureEVECliOnPath();
   }
 
   // Activate operator-managed proxy routing for network-capable commands.
@@ -711,9 +711,9 @@ export async function runCli(argv: string[] = process.argv) {
   let onSigterm: (() => void) | null = null;
   let onSigint: (() => void) | null = null;
   let onExit: (() => void) | null = null;
-  let bestEffortConfigPromise: Promise<OpenClawConfig> | null = null;
+  let bestEffortConfigPromise: Promise<EVEConfig> | null = null;
   const isolateProxyConfigEnv = isGatewayRunInvocation;
-  const readBestEffortCliConfig = async (): Promise<OpenClawConfig> => {
+  const readBestEffortCliConfig = async (): Promise<EVEConfig> => {
     if (!bestEffortConfigPromise) {
       bestEffortConfigPromise = import("../config/io.js").then(({ readBestEffortConfig }) =>
         readBestEffortConfig(
@@ -767,7 +767,7 @@ export async function runCli(argv: string[] = process.argv) {
     process.once("SIGINT", onSigint);
     process.once("exit", onExit);
   };
-  const replaceStartedProxy = async (config: OpenClawConfig["proxy"]) => {
+  const replaceStartedProxy = async (config: EVEConfig["proxy"]) => {
     await stopStartedProxy();
     const { startProxy } = await loadProxyLifecycleModule();
     proxyHandle = await startProxy(config);
@@ -854,8 +854,8 @@ export async function runCli(argv: string[] = process.argv) {
     }
 
     // Reject unowned command roots before help/version routing, so that
-    // `openclaw <typo> --help` surfaces the same Unknown command error as
-    // `openclaw <typo>` instead of silently showing generic top-level help.
+    // `eve <typo> --help` surfaces the same Unknown command error as
+    // `eve <typo>` instead of silently showing generic top-level help.
     // Runs after legitimate precomputed help fast paths so known help commands
     // still dispatch normally. See #81077.
     {
@@ -881,7 +881,7 @@ export async function runCli(argv: string[] = process.argv) {
       if (await shouldStartOnboardingForFreshInstall(normalizedArgv)) {
         if (!process.stdin.isTTY || !process.stdout.isTTY) {
           console.error(
-            "Onboarding needs an interactive TTY. Use `openclaw onboard --non-interactive --accept-risk ...` for automation.",
+            "Onboarding needs an interactive TTY. Use `eve onboard --non-interactive --accept-risk ...` for automation.",
           );
           process.exitCode = 1;
           return;
@@ -892,7 +892,7 @@ export async function runCli(argv: string[] = process.argv) {
       }
       if (!process.stdin.isTTY || !process.stdout.isTTY) {
         console.error(
-          'Crestodian needs an interactive TTY. Use `openclaw crestodian --message "status"` for one command.',
+          'Crestodian needs an interactive TTY. Use `eve crestodian --message "status"` for one command.',
         );
         process.exitCode = 1;
         return;
@@ -966,7 +966,7 @@ export async function runCli(argv: string[] = process.argv) {
     const suppressStartupProgress = hasJsonOutputFlag(parseArgv);
     const { createCliProgress } = await loadProgressModule();
     const startupProgress = createCliProgress({
-      label: "Loading OpenClaw CLI…",
+      label: "Loading EVE CLI…",
       indeterminate: true,
       delayMs: 0,
       ...(suppressStartupProgress ? { enabled: false } : {}),
@@ -1018,20 +1018,20 @@ export async function runCli(argv: string[] = process.argv) {
         }
         if (isBenignUncaughtExceptionError(error)) {
           console.warn(
-            "[openclaw] Non-fatal uncaught exception (continuing):",
+            "[eve] Non-fatal uncaught exception (continuing):",
             formatUncaughtError(error),
           );
           return;
         }
         for (const line of formatCliFailureLines({
-          title: "OpenClaw hit an unexpected runtime error.",
+          title: "EVE hit an unexpected runtime error.",
           error,
           argv: normalizedArgv,
         })) {
           console.error(line);
         }
         for (const message of runFatalErrorHooks({ reason: "uncaught_exception", error })) {
-          console.error("[openclaw]", message);
+          console.error("[eve]", message);
         }
         restoreTerminalState("uncaught exception", { resumeStdinIfPaused: false });
         process.exit(1);

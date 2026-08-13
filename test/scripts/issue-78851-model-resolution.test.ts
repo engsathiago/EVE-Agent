@@ -18,7 +18,7 @@ describe("issue 78851 model resolution profiler CLI", () => {
     const result = runProfiler("--help");
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain("OpenClaw issue #78851 model-resolution profiler");
+    expect(result.stdout).toContain("EVE issue #78851 model-resolution profiler");
     expect(result.stdout).toContain(
       "node --import tsx scripts/perf/issue-78851-model-resolution.ts [options]",
     );

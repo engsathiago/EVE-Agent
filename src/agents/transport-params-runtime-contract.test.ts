@@ -1,7 +1,7 @@
 // Transport params runtime-contract tests cover default extra params and
-// provider transport patching for embedded OpenClaw/OpenAI execution paths.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { Context, Model } from "openclaw/plugin-sdk/llm";
+// provider transport patching for embedded EVE/OpenAI execution paths.
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
+import type { Context, Model } from "eve-agent/plugin-sdk/llm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   GPT_PARALLEL_TOOL_CALLS_PAYLOAD_APIS,
@@ -27,7 +27,7 @@ afterEach(() => {
   extraParamsTesting.resetProviderRuntimeDepsForTest();
 });
 
-describe("transport params runtime contract (embedded OpenClaw/OpenAI path)", () => {
+describe("transport params runtime contract (embedded EVE/OpenAI path)", () => {
   it.each(OPENAI_GPT5_TRANSPORT_DEFAULT_CASES)(
     "applies OpenAI GPT-5 transport defaults for $provider/$modelId",
     ({ provider, modelId }) => {

@@ -1,6 +1,6 @@
 // Identifier redaction helpers replace sensitive identifiers with stable hashes.
 import crypto from "node:crypto";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 
 /** Returns a stable sha256 hex prefix for non-secret identifier correlation. */
 export function sha256HexPrefix(value: string, len = 12): string {

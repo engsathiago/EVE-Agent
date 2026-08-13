@@ -1,6 +1,6 @@
 // Doctor repair for configs that reuse Gateway shared-secret auth as hooks.token.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import {
   canMaterializeGatewayAuthSecretRefsWithoutExec,
   materializeGatewayAuthSecretRefs,
@@ -21,7 +21,7 @@ function activeGatewaySharedSecret(auth: ResolvedGatewayAuth): string {
 
 /** Rotate hooks.token when it matches the active Gateway token/password shared secret. */
 export function repairHooksTokenReuseGatewayAuth(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env: NodeJS.ProcessEnv = process.env,
   createToken: () => string = randomToken,
 ): Promise<DoctorConfigMutationResult> {
@@ -29,15 +29,15 @@ export function repairHooksTokenReuseGatewayAuth(
 }
 
 async function materializeDoctorGatewayAuthRefs(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env: NodeJS.ProcessEnv,
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   const materializeParams = {
     cfg,
     env,
     mode: cfg.gateway?.auth?.mode,
-    hasTokenCandidate: Boolean(normalizeOptionalString(env.OPENCLAW_GATEWAY_TOKEN)),
-    hasPasswordCandidate: Boolean(normalizeOptionalString(env.OPENCLAW_GATEWAY_PASSWORD)),
+    hasTokenCandidate: Boolean(normalizeOptionalString(env.EVE_GATEWAY_TOKEN)),
+    hasPasswordCandidate: Boolean(normalizeOptionalString(env.EVE_GATEWAY_PASSWORD)),
   };
   if (!canMaterializeGatewayAuthSecretRefsWithoutExec(materializeParams)) {
     return cfg;
@@ -50,7 +50,7 @@ async function materializeDoctorGatewayAuthRefs(
 }
 
 async function repairHooksTokenReuseGatewayAuthAfterMaterializingRefs(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env: NodeJS.ProcessEnv,
   createToken: () => string,
 ): Promise<DoctorConfigMutationResult> {

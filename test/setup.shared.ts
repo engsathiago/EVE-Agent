@@ -1,7 +1,7 @@
 // Shared test setup installs common Vitest mocks and cleanup behavior.
 import { vi } from "vitest";
 
-const openAiCodexTokenRefreshTestHook = "__OPENCLAW_TEST_REFRESH_OPENAI_CODEX_TOKEN__";
+const openAiCodexTokenRefreshTestHook = "__EVE_TEST_REFRESH_OPENAI_CODEX_TOKEN__";
 type GlobalWithOpenAiCodexTokenRefreshTestHook = typeof globalThis & {
   [openAiCodexTokenRefreshTestHook]?: ((...args: unknown[]) => unknown) | undefined;
 };
@@ -42,8 +42,8 @@ vi.mock("@mariozechner/clipboard", () => ({
 // Ensure Vitest environment is properly set.
 process.env.VITEST = "true";
 // Tests frequently point bundled plugin discovery at temp fixture roots. Production still rejects
-// arbitrary OPENCLAW_BUNDLED_PLUGINS_DIR overrides unless this Vitest-only opt-in is present.
-process.env.OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR ??= "1";
+// arbitrary EVE_BUNDLED_PLUGINS_DIR overrides unless this Vitest-only opt-in is present.
+process.env.EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR ??= "1";
 // Vitest fork workers can load transitive lockfile helpers many times per worker.
 // Raise listener budget to avoid noisy MaxListeners warnings and warning-stack overhead.
 const TEST_PROCESS_MAX_LISTENERS = 256;
@@ -58,7 +58,7 @@ type SharedTestSetupOptions = {
   loadProfileEnv?: boolean;
 };
 
-const SHARED_TEST_SETUP = Symbol.for("openclaw.sharedTestSetup");
+const SHARED_TEST_SETUP = Symbol.for("eve.sharedTestSetup");
 
 type SharedTestSetupHandle = {
   cleanup: () => void;

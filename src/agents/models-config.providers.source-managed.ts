@@ -1,7 +1,7 @@
 /**
  * Enforces source-managed provider secret ownership rules.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveSecretInputRef } from "../config/types.secrets.js";
 import { isRecord } from "../utils.js";
 import {
@@ -17,7 +17,7 @@ import type { ProviderConfig, SecretDefaults } from "./models-config.providers.s
  * This keeps runtime snapshots from materializing secret refs as plain values after config
  * normalization rewrites provider entries.
  */
-type ModelsConfig = NonNullable<OpenClawConfig["models"]>;
+type ModelsConfig = NonNullable<EVEConfig["models"]>;
 
 function normalizeSourceProviderLookup(
   providers: ModelsConfig["providers"] | undefined,

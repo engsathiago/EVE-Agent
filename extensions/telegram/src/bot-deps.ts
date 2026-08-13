@@ -1,30 +1,30 @@
 // Telegram plugin module implements bot deps behavior.
-import { recordChannelActivity } from "openclaw/plugin-sdk/channel-activity-runtime";
-import { buildChannelInboundEventContext } from "openclaw/plugin-sdk/channel-inbound";
+import { recordChannelActivity } from "eve-agent/plugin-sdk/channel-activity-runtime";
+import { buildChannelInboundEventContext } from "eve-agent/plugin-sdk/channel-inbound";
 import {
   createChannelMessageReplyPipeline,
   deliverInboundReplyWithMessageSendContext,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { readChannelAllowFromStore } from "openclaw/plugin-sdk/conversation-runtime";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { readChannelAllowFromStore } from "eve-agent/plugin-sdk/conversation-runtime";
 import {
   recordInboundSession,
   upsertChannelPairingRequest,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { buildModelsProviderData } from "openclaw/plugin-sdk/models-provider-runtime";
-import { dispatchReplyWithBufferedBlockDispatcher } from "openclaw/plugin-sdk/reply-dispatch-runtime";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/conversation-runtime";
+import { buildModelsProviderData } from "eve-agent/plugin-sdk/models-provider-runtime";
+import { dispatchReplyWithBufferedBlockDispatcher } from "eve-agent/plugin-sdk/reply-dispatch-runtime";
+import { resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
+import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
 import {
   getSessionEntry,
   listSessionEntries,
   readSessionUpdatedAt,
   resolveStorePath,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { loadSessionStore } from "openclaw/plugin-sdk/session-store-runtime";
-import { listSkillCommandsForAgents } from "openclaw/plugin-sdk/skill-commands-runtime";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/system-event-runtime";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "eve-agent/plugin-sdk/session-store-runtime";
+import { loadSessionStore } from "eve-agent/plugin-sdk/session-store-runtime";
+import { listSkillCommandsForAgents } from "eve-agent/plugin-sdk/skill-commands-runtime";
+import { enqueueSystemEvent } from "eve-agent/plugin-sdk/system-event-runtime";
+import { loadWebMedia } from "eve-agent/plugin-sdk/web-media";
 import { syncTelegramMenuCommands } from "./bot-native-command-menu.js";
 import { deliverReplies, emitInternalMessageSentHook } from "./bot/delivery.js";
 import { createTelegramDraftStream } from "./draft-stream.js";

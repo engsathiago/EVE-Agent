@@ -11,48 +11,48 @@ export type {
   ChannelOutboundAdapter,
   ChannelPlugin,
   HistoryEntry,
-  OpenClawConfig,
-  OpenClawPluginApi,
+  EVEConfig,
+  EVEPluginApi,
   OutboundIdentity,
   PluginRuntime,
   ReplyPayload,
-} from "openclaw/plugin-sdk/core";
-export type { OpenClawConfig as ClawdbotConfig } from "openclaw/plugin-sdk/core";
+} from "eve-agent/plugin-sdk/core";
+export type { EVEConfig as ClawdbotConfig } from "eve-agent/plugin-sdk/core";
 export type RuntimeEnv = {
   log: (...args: unknown[]) => void;
   error: (...args: unknown[]) => void;
   exit: (code: number) => void;
 };
-export type { GroupToolPolicyConfig } from "openclaw/plugin-sdk/config-contracts";
+export type { GroupToolPolicyConfig } from "eve-agent/plugin-sdk/config-contracts";
 export {
   DEFAULT_ACCOUNT_ID,
   buildChannelConfigSchema,
   createActionGate,
   createDedupeCache,
-} from "openclaw/plugin-sdk/core";
+} from "eve-agent/plugin-sdk/core";
 export {
   PAIRING_APPROVED_MESSAGE,
   buildProbeChannelStatusSummary,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/channel-status";
-export { buildAgentMediaPayload } from "openclaw/plugin-sdk/agent-media-payload";
-export { createChannelPairingController } from "openclaw/plugin-sdk/channel-pairing";
-export { createReplyPrefixContext } from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-status";
+export { buildAgentMediaPayload } from "eve-agent/plugin-sdk/agent-media-payload";
+export { createChannelPairingController } from "eve-agent/plugin-sdk/channel-pairing";
+export { createReplyPrefixContext } from "eve-agent/plugin-sdk/channel-outbound";
 export {
   evaluateSupplementalContextVisibility,
   filterSupplementalContextItems,
   resolveChannelContextVisibilityMode,
-} from "openclaw/plugin-sdk/context-visibility-runtime";
+} from "eve-agent/plugin-sdk/context-visibility-runtime";
 export {
   loadSessionStore,
   resolveSessionStoreEntry,
-} from "openclaw/plugin-sdk/session-store-runtime";
-export { readJsonFileWithFallback } from "openclaw/plugin-sdk/json-store";
-export { normalizeAgentId } from "openclaw/plugin-sdk/routing";
-export { chunkTextForOutbound } from "openclaw/plugin-sdk/text-chunking";
+} from "eve-agent/plugin-sdk/session-store-runtime";
+export { readJsonFileWithFallback } from "eve-agent/plugin-sdk/json-store";
+export { normalizeAgentId } from "eve-agent/plugin-sdk/routing";
+export { chunkTextForOutbound } from "eve-agent/plugin-sdk/text-chunking";
 export {
   isRequestBodyLimitError,
   readRequestBodyWithLimit,
   requestBodyErrorToText,
-} from "openclaw/plugin-sdk/webhook-ingress";
+} from "eve-agent/plugin-sdk/webhook-ingress";
 export { setFeishuRuntime } from "./src/runtime.js";

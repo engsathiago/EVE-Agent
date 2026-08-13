@@ -1,9 +1,9 @@
 // Diffs tests cover tool plugin behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawPluginApi, OpenClawPluginToolContext } from "../api.js";
+import type { EVEPluginApi, EVEPluginToolContext } from "../api.js";
 import type { DiffScreenshotter } from "./browser.js";
 import { DEFAULT_DIFFS_TOOL_DEFAULTS } from "./config.js";
 import { DiffArtifactStore } from "./store.js";
@@ -16,7 +16,7 @@ describe("diffs tool", () => {
   let cleanupRootDir: () => Promise<void>;
 
   beforeEach(async () => {
-    ({ store, cleanup: cleanupRootDir } = await createDiffStoreHarness("openclaw-diffs-tool-"));
+    ({ store, cleanup: cleanupRootDir } = await createDiffStoreHarness("eve-diffs-tool-"));
   });
 
   afterEach(async () => {
@@ -47,11 +47,11 @@ describe("diffs tool", () => {
   it("uses configured viewerBaseUrl when tool input omits baseUrl", async () => {
     const tool = createDiffsTool({
       api: createApi({
-        viewerBaseUrl: "https://example.com/openclaw/",
+        viewerBaseUrl: "https://example.com/eve/",
       }),
       store,
       defaults: DEFAULT_DIFFS_TOOL_DEFAULTS,
-      viewerBaseUrl: "https://example.com/openclaw",
+      viewerBaseUrl: "https://example.com/eve",
     });
 
     const result = await tool.execute?.("tool-viewer-config", {
@@ -62,21 +62,21 @@ describe("diffs tool", () => {
     });
 
     expect(readTextContent(result, 0)).toContain(
-      "https://example.com/openclaw/plugins/diffs/view/",
+      "https://example.com/eve/plugins/diffs/view/",
     );
     expect(String((result.details as Record<string, unknown>).viewerUrl)).toContain(
-      "https://example.com/openclaw/plugins/diffs/view/",
+      "https://example.com/eve/plugins/diffs/view/",
     );
   });
 
   it("prefers per-call baseUrl over configured viewerBaseUrl", async () => {
     const tool = createDiffsTool({
       api: createApi({
-        viewerBaseUrl: "https://example.com/openclaw",
+        viewerBaseUrl: "https://example.com/eve",
       }),
       store,
       defaults: DEFAULT_DIFFS_TOOL_DEFAULTS,
-      viewerBaseUrl: "https://example.com/openclaw",
+      viewerBaseUrl: "https://example.com/eve",
     });
 
     const result = await tool.execute?.("tool-viewer-override", {
@@ -519,7 +519,7 @@ describe("diffs tool", () => {
   });
 });
 
-function createApi(pluginConfig?: Record<string, unknown>): OpenClawPluginApi {
+function createApi(pluginConfig?: Record<string, unknown>): EVEPluginApi {
   return createTestPluginApi({
     id: "diffs",
     name: "Diffs",
@@ -532,7 +532,7 @@ function createApi(pluginConfig?: Record<string, unknown>): OpenClawPluginApi {
       },
     },
     pluginConfig,
-    runtime: {} as OpenClawPluginApi["runtime"],
+    runtime: {} as EVEPluginApi["runtime"],
   });
 }
 
@@ -540,7 +540,7 @@ function createToolWithScreenshotter(
   store: DiffArtifactStore,
   screenshotter: DiffScreenshotter,
   defaults = DEFAULT_DIFFS_TOOL_DEFAULTS,
-  context: OpenClawPluginToolContext = {
+  context: EVEPluginToolContext = {
     agentId: "main",
     sessionId: "session-123",
     messageChannel: "discord",

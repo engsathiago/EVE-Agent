@@ -8,7 +8,7 @@
  * - mdl_sel/{model}       - select model (compact fallback when standard is >64 bytes)
  * - mdl_back              - back to providers list
  */
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
 import { fitsTelegramCallbackData } from "./approval-callback-data.js";
 
 export type ButtonRow = Array<{ text: string; callback_data: string }>;

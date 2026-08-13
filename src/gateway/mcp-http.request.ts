@@ -1,11 +1,11 @@
 // MCP loopback HTTP request helpers.
 // Authenticates local MCP POST requests and extracts scoped Gateway context.
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { SourceReplyDeliveryMode } from "../auto-reply/get-reply-options.types.js";
 import type { InboundEventKind } from "../channels/inbound-event/kind.js";
 import { resolveMainSessionKey } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { safeEqualSecret } from "../security/secret-equal.js";
 import { normalizeMessageChannel } from "../utils/message-channel.js";
@@ -36,8 +36,8 @@ function readPositiveIntEnv(name: string, fallback: number): number {
 
 function shouldLogMcpLoopbackHttp(): boolean {
   return (
-    isTruthyEnvValue(process.env.OPENCLAW_CLI_BACKEND_LOG_OUTPUT) ||
-    isTruthyEnvValue(process.env.OPENCLAW_LIVE_CLI_BACKEND_DEBUG)
+    isTruthyEnvValue(process.env.EVE_CLI_BACKEND_LOG_OUTPUT) ||
+    isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND_DEBUG)
   );
 }
 
@@ -63,7 +63,7 @@ type McpRequestContext = {
   senderIsOwner: boolean | undefined;
 };
 
-function resolveScopedSessionKey(cfg: OpenClawConfig, rawSessionKey: string | undefined): string {
+function resolveScopedSessionKey(cfg: EVEConfig, rawSessionKey: string | undefined): string {
   const trimmed = normalizeOptionalString(rawSessionKey);
   return !trimmed || trimmed === "main" ? resolveMainSessionKey(cfg) : trimmed;
 }
@@ -352,36 +352,36 @@ export function isMcpHttpBodyTimeoutError(error: unknown): error is Error & { co
 }
 
 export function resolveMcpHttpBodyTimeoutMs(): number {
-  return readPositiveIntEnv("OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS", DEFAULT_MCP_BODY_TIMEOUT_MS);
+  return readPositiveIntEnv("EVE_MCP_LOOPBACK_BODY_TIMEOUT_MS", DEFAULT_MCP_BODY_TIMEOUT_MS);
 }
 
 export function resolveMcpCliCaptureKey(req: IncomingMessage): string | undefined {
-  return normalizeOptionalString(getHeader(req, "x-openclaw-cli-capture-key"));
+  return normalizeOptionalString(getHeader(req, "x-eve-cli-capture-key"));
 }
 
 export function resolveMcpRequestContext(
   req: IncomingMessage,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   auth: { senderIsOwner: boolean },
 ): McpRequestContext {
   return {
     sessionKey: resolveScopedSessionKey(cfg, getHeader(req, "x-session-key")),
-    sessionId: normalizeOptionalString(getHeader(req, "x-openclaw-session-id")),
+    sessionId: normalizeOptionalString(getHeader(req, "x-eve-session-id")),
     messageProvider:
-      normalizeMessageChannel(getHeader(req, "x-openclaw-message-channel")) ?? undefined,
-    currentChannelId: normalizeOptionalString(getHeader(req, "x-openclaw-current-channel-id")),
-    currentThreadTs: normalizeOptionalString(getHeader(req, "x-openclaw-current-thread-ts")),
-    currentMessageId: normalizeOptionalString(getHeader(req, "x-openclaw-current-message-id")),
+      normalizeMessageChannel(getHeader(req, "x-eve-message-channel")) ?? undefined,
+    currentChannelId: normalizeOptionalString(getHeader(req, "x-eve-current-channel-id")),
+    currentThreadTs: normalizeOptionalString(getHeader(req, "x-eve-current-thread-ts")),
+    currentMessageId: normalizeOptionalString(getHeader(req, "x-eve-current-message-id")),
     currentInboundAudio: normalizeMcpBooleanHeader(
-      getHeader(req, "x-openclaw-current-inbound-audio"),
+      getHeader(req, "x-eve-current-inbound-audio"),
     ),
-    accountId: normalizeOptionalString(getHeader(req, "x-openclaw-account-id")),
-    inboundEventKind: normalizeMcpInboundEventKind(getHeader(req, "x-openclaw-inbound-event-kind")),
+    accountId: normalizeOptionalString(getHeader(req, "x-eve-account-id")),
+    inboundEventKind: normalizeMcpInboundEventKind(getHeader(req, "x-eve-inbound-event-kind")),
     sourceReplyDeliveryMode: normalizeMcpSourceReplyDeliveryMode(
-      getHeader(req, "x-openclaw-source-reply-delivery-mode"),
+      getHeader(req, "x-eve-source-reply-delivery-mode"),
     ),
     requireExplicitMessageTarget: normalizeMcpBooleanHeader(
-      getHeader(req, "x-openclaw-require-explicit-message-target"),
+      getHeader(req, "x-eve-require-explicit-message-target"),
     ),
     senderIsOwner: auth.senderIsOwner,
   };

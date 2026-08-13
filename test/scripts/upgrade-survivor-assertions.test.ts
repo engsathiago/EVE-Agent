@@ -41,7 +41,7 @@ function writeMigratedSessionState(stateDir: string): void {
     },
   });
 
-  const db = new DatabaseSync(join(agentDbDir, "openclaw-agent.sqlite"));
+  const db = new DatabaseSync(join(agentDbDir, "eve-agent.sqlite"));
   try {
     db.exec(`
       CREATE TABLE IF NOT EXISTS cache_entries (
@@ -94,7 +94,7 @@ function writeMigratedSessionState(stateDir: string): void {
 }
 
 function assertConfiguredPluginState(params: { installPath?: string } = {}): void {
-  const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-"));
+  const root = mkdtempSync(join(tmpdir(), "eve-upgrade-survivor-"));
   try {
     const stateDir = join(root, "state");
     const workspace = join(root, "workspace");
@@ -109,15 +109,15 @@ function assertConfiguredPluginState(params: { installPath?: string } = {}): voi
     });
     writeMigratedSessionState(stateDir);
     writeJson(join(matrixInstallDir, "package.json"), {
-      name: "@openclaw/matrix",
+      name: "@eve/matrix",
     });
     writeJson(join(stateDir, "plugins", "installs.json"), {
       installRecords: {
         matrix: {
           source: "clawhub",
-          spec: "clawhub:@openclaw/matrix",
+          spec: "clawhub:@eve/matrix",
           installPath: matrixInstallDir,
-          clawhubPackage: "@openclaw/matrix",
+          clawhubPackage: "@eve/matrix",
           clawhubChannel: "official",
           artifactKind: "npm-pack",
         },
@@ -133,10 +133,10 @@ function assertConfiguredPluginState(params: { installPath?: string } = {}): voi
     execFileSync(process.execPath, [ASSERTIONS_PATH, "assert-state"], {
       env: {
         ...process.env,
-        OPENCLAW_STATE_DIR: stateDir,
-        OPENCLAW_TEST_WORKSPACE_DIR: workspace,
-        OPENCLAW_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
-        OPENCLAW_UPGRADE_SURVIVOR_SCENARIO: "configured-plugin-installs",
+        EVE_STATE_DIR: stateDir,
+        EVE_TEST_WORKSPACE_DIR: workspace,
+        EVE_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
+        EVE_UPGRADE_SURVIVOR_SCENARIO: "configured-plugin-installs",
       },
       stdio: "pipe",
     });
@@ -151,7 +151,7 @@ describe("upgrade survivor assertions", () => {
   });
 
   it("rejects ClawHub npm-pack installs outside the managed extensions root", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-outside-"));
+    const root = mkdtempSync(join(tmpdir(), "eve-upgrade-survivor-outside-"));
     try {
       expect(() =>
         assertConfiguredPluginState({ installPath: join(root, "outside-matrix") }),

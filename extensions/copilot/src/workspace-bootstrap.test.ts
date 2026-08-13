@@ -2,7 +2,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import type { AgentHarnessAttemptParams } from "openclaw/plugin-sdk/agent-harness-runtime";
+import type { AgentHarnessAttemptParams } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   TESTING_EXPORTS,
@@ -198,7 +198,7 @@ describe("remapCopilotBootstrapContextFiles (PR #86155 [P2] round-9)", () => {
     const out = remapCopilotBootstrapContextFiles({
       files: [
         { path: "/host/ws/SOUL.md", content: "soul" },
-        { path: "/host/ws/.openclaw/agents/main/IDENTITY.md", content: "id" },
+        { path: "/host/ws/.eve/agents/main/IDENTITY.md", content: "id" },
         { path: "/host/other/UNRELATED.md", content: "u" },
         { path: "/host/ws", content: "root" },
       ],
@@ -207,7 +207,7 @@ describe("remapCopilotBootstrapContextFiles (PR #86155 [P2] round-9)", () => {
     });
     expect(out.map((f) => f.path)).toEqual([
       "/sandbox/copy/SOUL.md",
-      "/sandbox/copy/.openclaw/agents/main/IDENTITY.md",
+      "/sandbox/copy/.eve/agents/main/IDENTITY.md",
       "/host/other/UNRELATED.md",
       "/sandbox/copy",
     ]);
@@ -230,7 +230,7 @@ describe("resolveCopilotWorkspaceBootstrapContext sandbox remap (PR #86155 [P2] 
 
   it("rewrites rendered context paths from host workspace to sandbox workspace when effective differs", async () => {
     // Readonly sandbox: bootstrap files live on the host workspace
-    // (the canonical source of SOUL.md / .openclaw conventions), but
+    // (the canonical source of SOUL.md / .eve conventions), but
     // the SDK session's workingDirectory and bridged tools see the
     // sandbox copy. The rendered systemMessage must show the model
     // sandbox paths, not host paths, so it matches what the native

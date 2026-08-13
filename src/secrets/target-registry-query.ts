@@ -1,5 +1,5 @@
 /** Query helpers for discovering secret target registry entries. */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { loadChannelSecretContractApi } from "./channel-contract-api.js";
 import { getPath } from "./path-utils.js";
 import { getCoreSecretTargetRegistry, getSecretTargetRegistry } from "./target-registry-data.js";
@@ -21,20 +21,20 @@ let compiledSecretTargetRegistryState: {
   authProfilesTargetsById: Map<string, CompiledTargetRegistryEntry[]>;
   compiledSecretTargetRegistry: CompiledTargetRegistryEntry[];
   knownTargetIds: Set<string>;
-  openClawCompiledSecretTargets: CompiledTargetRegistryEntry[];
-  openClawTargetsById: Map<string, CompiledTargetRegistryEntry[]>;
+  eveCompiledSecretTargets: CompiledTargetRegistryEntry[];
+  eveTargetsById: Map<string, CompiledTargetRegistryEntry[]>;
   targetsByType: Map<string, CompiledTargetRegistryEntry[]>;
 } | null = null;
 
-let compiledCoreOpenClawTargetState: {
+let compiledCoreEVETargetState: {
   knownTargetIds: Set<string>;
-  openClawCompiledSecretTargets: CompiledTargetRegistryEntry[];
-  openClawTargetsById: Map<string, CompiledTargetRegistryEntry[]>;
+  eveCompiledSecretTargets: CompiledTargetRegistryEntry[];
+  eveTargetsById: Map<string, CompiledTargetRegistryEntry[]>;
   targetsByType: Map<string, CompiledTargetRegistryEntry[]>;
 } | null = null;
 
 // Channel contract entries are process-stable; plugin install/reload is the owner of freshness.
-const compiledChannelOpenClawTargets = new Map<string, CompiledTargetRegistryEntry[] | null>();
+const compiledChannelEVETargets = new Map<string, CompiledTargetRegistryEntry[] | null>();
 
 function buildTargetTypeIndex(
   compiledSecretTargetRegistry: CompiledTargetRegistryEntry[],
@@ -77,8 +77,8 @@ function getCompiledSecretTargetRegistryState() {
     return compiledSecretTargetRegistryState;
   }
   const compiledSecretTargetRegistry = getSecretTargetRegistry().map(compileTargetRegistryEntry);
-  const openClawCompiledSecretTargets = compiledSecretTargetRegistry.filter(
-    (entry) => entry.configFile === "openclaw.json",
+  const eveCompiledSecretTargets = compiledSecretTargetRegistry.filter(
+    (entry) => entry.configFile === "eve.json",
   );
   const authProfilesCompiledSecretTargets = compiledSecretTargetRegistry.filter(
     (entry) => entry.configFile === "auth-profiles.json",
@@ -88,48 +88,48 @@ function getCompiledSecretTargetRegistryState() {
     authProfilesTargetsById: buildConfigTargetIdIndex(authProfilesCompiledSecretTargets),
     compiledSecretTargetRegistry,
     knownTargetIds: new Set(compiledSecretTargetRegistry.map((entry) => entry.id)),
-    openClawCompiledSecretTargets,
-    openClawTargetsById: buildConfigTargetIdIndex(openClawCompiledSecretTargets),
+    eveCompiledSecretTargets,
+    eveTargetsById: buildConfigTargetIdIndex(eveCompiledSecretTargets),
     targetsByType: buildTargetTypeIndex(compiledSecretTargetRegistry),
   };
   return compiledSecretTargetRegistryState;
 }
 
-function getCompiledCoreOpenClawTargetState() {
-  if (compiledCoreOpenClawTargetState) {
-    return compiledCoreOpenClawTargetState;
+function getCompiledCoreEVETargetState() {
+  if (compiledCoreEVETargetState) {
+    return compiledCoreEVETargetState;
   }
-  const openClawCompiledSecretTargets = getCoreSecretTargetRegistry()
-    .filter((entry) => entry.configFile === "openclaw.json")
+  const eveCompiledSecretTargets = getCoreSecretTargetRegistry()
+    .filter((entry) => entry.configFile === "eve.json")
     .map(compileTargetRegistryEntry);
-  compiledCoreOpenClawTargetState = {
-    knownTargetIds: new Set(openClawCompiledSecretTargets.map((entry) => entry.id)),
-    openClawCompiledSecretTargets,
-    openClawTargetsById: buildConfigTargetIdIndex(openClawCompiledSecretTargets),
-    targetsByType: buildTargetTypeIndex(openClawCompiledSecretTargets),
+  compiledCoreEVETargetState = {
+    knownTargetIds: new Set(eveCompiledSecretTargets.map((entry) => entry.id)),
+    eveCompiledSecretTargets,
+    eveTargetsById: buildConfigTargetIdIndex(eveCompiledSecretTargets),
+    targetsByType: buildTargetTypeIndex(eveCompiledSecretTargets),
   };
-  return compiledCoreOpenClawTargetState;
+  return compiledCoreEVETargetState;
 }
 
-function getCompiledChannelOpenClawTargets(
+function getCompiledChannelEVETargets(
   channelId: string,
 ): CompiledTargetRegistryEntry[] | null {
   const normalizedChannelId = channelId.trim();
   if (!normalizedChannelId) {
     return null;
   }
-  if (compiledChannelOpenClawTargets.has(normalizedChannelId)) {
-    return compiledChannelOpenClawTargets.get(normalizedChannelId) ?? null;
+  if (compiledChannelEVETargets.has(normalizedChannelId)) {
+    return compiledChannelEVETargets.get(normalizedChannelId) ?? null;
   }
   const compiledEntries =
     loadChannelSecretContractApi({
       channelId: normalizedChannelId,
-      config: {} as OpenClawConfig,
+      config: {} as EVEConfig,
       env: process.env,
     })
-      ?.secretTargetRegistryEntries?.filter((entry) => entry.configFile === "openclaw.json")
+      ?.secretTargetRegistryEntries?.filter((entry) => entry.configFile === "eve.json")
       .map(compileTargetRegistryEntry) ?? null;
-  compiledChannelOpenClawTargets.set(normalizedChannelId, compiledEntries);
+  compiledChannelEVETargets.set(normalizedChannelId, compiledEntries);
   return compiledEntries;
 }
 
@@ -276,7 +276,7 @@ export function resolvePlanTargetAgainstRegistry(candidate: {
   providerId?: string;
   accountId?: string;
 }): ResolvedPlanTarget | null {
-  const coreEntries = getCompiledCoreOpenClawTargetState().targetsByType.get(candidate.type);
+  const coreEntries = getCompiledCoreEVETargetState().targetsByType.get(candidate.type);
   if (coreEntries) {
     return resolvePlanTargetAgainstEntries(candidate, coreEntries);
   }
@@ -325,10 +325,10 @@ function resolvePlanTargetAgainstEntries(
 }
 
 /**
- * Resolves an openclaw.json config path to the matching plan-capable secrets target.
+ * Resolves an eve.json config path to the matching plan-capable secrets target.
  */
 export function resolveConfigSecretTargetByPath(pathSegments: string[]): ResolvedPlanTarget | null {
-  for (const entry of getCompiledCoreOpenClawTargetState().openClawCompiledSecretTargets) {
+  for (const entry of getCompiledCoreEVETargetState().eveCompiledSecretTargets) {
     if (!entry.includeInPlan) {
       continue;
     }
@@ -345,7 +345,7 @@ export function resolveConfigSecretTargetByPath(pathSegments: string[]): Resolve
 
   const explicitChannelId = pathSegments[0] === "channels" ? (pathSegments[1]?.trim() ?? "") : "";
   const explicitChannelEntries = explicitChannelId
-    ? getCompiledChannelOpenClawTargets(explicitChannelId)
+    ? getCompiledChannelEVETargets(explicitChannelId)
     : null;
   // Channel-owned contracts get first chance for explicit channel paths before bundled defaults.
   for (const entry of explicitChannelEntries ?? []) {
@@ -363,7 +363,7 @@ export function resolveConfigSecretTargetByPath(pathSegments: string[]): Resolve
     return resolved;
   }
 
-  for (const entry of getCompiledSecretTargetRegistryState().openClawCompiledSecretTargets) {
+  for (const entry of getCompiledSecretTargetRegistryState().eveCompiledSecretTargets) {
     if (!entry.includeInPlan) {
       continue;
     }
@@ -381,33 +381,33 @@ export function resolveConfigSecretTargetByPath(pathSegments: string[]): Resolve
 }
 
 /**
- * Discovers configured secret-bearing values in openclaw.json using the full registry.
+ * Discovers configured secret-bearing values in eve.json using the full registry.
  */
 export function discoverConfigSecretTargets(
-  config: OpenClawConfig,
+  config: EVEConfig,
 ): DiscoveredConfigSecretTarget[] {
   return discoverConfigSecretTargetsByIds(config);
 }
 
 /**
- * Discovers configured openclaw.json targets, optionally limited to selected registry ids.
+ * Discovers configured eve.json targets, optionally limited to selected registry ids.
  */
 export function discoverConfigSecretTargetsByIds(
-  config: OpenClawConfig,
+  config: EVEConfig,
   targetIds?: Iterable<string>,
 ): DiscoveredConfigSecretTarget[] {
   const allowedTargetIds = normalizeAllowedTargetIds(targetIds);
   const registryState =
     allowedTargetIds !== null &&
     Array.from(allowedTargetIds).every((targetId) =>
-      getCompiledCoreOpenClawTargetState().knownTargetIds.has(targetId),
+      getCompiledCoreEVETargetState().knownTargetIds.has(targetId),
     )
-      ? getCompiledCoreOpenClawTargetState()
+      ? getCompiledCoreEVETargetState()
       : getCompiledSecretTargetRegistryState();
   const discoveryEntries = resolveDiscoveryEntries({
     allowedTargetIds,
-    defaultEntries: registryState.openClawCompiledSecretTargets,
-    entriesById: registryState.openClawTargetsById,
+    defaultEntries: registryState.eveCompiledSecretTargets,
+    entriesById: registryState.eveTargetsById,
   });
   return discoverSecretTargetsFromEntries(config, discoveryEntries);
 }

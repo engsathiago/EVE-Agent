@@ -1,36 +1,36 @@
 // Private runtime barrel for the bundled Microsoft Teams extension.
 // Keep this barrel thin and aligned with the local extension surface.
 
-export { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-export type { AllowlistMatch } from "openclaw/plugin-sdk/allow-from";
+export { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
+export type { AllowlistMatch } from "eve-agent/plugin-sdk/allow-from";
 export {
   mergeAllowlist,
   resolveAllowlistMatchSimple,
   summarizeMapping,
-} from "openclaw/plugin-sdk/allow-from";
+} from "eve-agent/plugin-sdk/allow-from";
 export type {
   BaseProbeResult,
   ChannelDirectoryEntry,
   ChannelGroupContext,
   ChannelMessageActionName,
   ChannelOutboundAdapter,
-} from "openclaw/plugin-sdk/channel-contract";
-export type { ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-export { logTypingFailure } from "openclaw/plugin-sdk/channel-outbound";
-export { createChannelPairingController } from "openclaw/plugin-sdk/channel-pairing";
-export { resolveToolsBySender } from "openclaw/plugin-sdk/channel-policy";
-export { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-contract";
+export type { ChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
+export { logTypingFailure } from "eve-agent/plugin-sdk/channel-outbound";
+export { createChannelPairingController } from "eve-agent/plugin-sdk/channel-pairing";
+export { resolveToolsBySender } from "eve-agent/plugin-sdk/channel-policy";
+export { createChannelMessageReplyPipeline } from "eve-agent/plugin-sdk/channel-outbound";
 export {
   PAIRING_APPROVED_MESSAGE,
   buildProbeChannelStatusSummary,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/channel-status";
+} from "eve-agent/plugin-sdk/channel-status";
 export {
   buildChannelKeyCandidates,
   normalizeChannelSlug,
   resolveChannelEntryMatchWithFallback,
   resolveNestedAllowlistDecision,
-} from "openclaw/plugin-sdk/channel-targets";
+} from "eve-agent/plugin-sdk/channel-targets";
 export type {
   GroupPolicy,
   GroupToolPolicyConfig,
@@ -40,28 +40,28 @@ export type {
   MSTeamsReplyStyle,
   MSTeamsTeamConfig,
   MarkdownTableMode,
-  OpenClawConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-export { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
-export { resolveDefaultGroupPolicy } from "openclaw/plugin-sdk/runtime-group-policy";
-export { withFileLock } from "openclaw/plugin-sdk/file-lock";
-export { keepHttpServerTaskAlive } from "openclaw/plugin-sdk/channel-outbound";
+  EVEConfig,
+} from "eve-agent/plugin-sdk/config-contracts";
+export { isDangerousNameMatchingEnabled } from "eve-agent/plugin-sdk/dangerous-name-runtime";
+export { resolveDefaultGroupPolicy } from "eve-agent/plugin-sdk/runtime-group-policy";
+export { withFileLock } from "eve-agent/plugin-sdk/file-lock";
+export { keepHttpServerTaskAlive } from "eve-agent/plugin-sdk/channel-outbound";
 export {
   detectMime,
   extensionForMime,
   extractOriginalFilename,
   getFileExtension,
   resolveChannelMediaMaxBytes,
-} from "openclaw/plugin-sdk/media-runtime";
-export { dispatchReplyFromConfigWithSettledDispatcher } from "openclaw/plugin-sdk/channel-inbound";
-export { loadOutboundMediaFromUrl } from "openclaw/plugin-sdk/outbound-media";
-export { buildMediaPayload } from "openclaw/plugin-sdk/reply-payload";
-export type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
-export type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
-export type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-export type { SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
-export { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-export { normalizeStringEntries } from "openclaw/plugin-sdk/string-normalization-runtime";
-export { chunkTextForOutbound } from "openclaw/plugin-sdk/text-chunking";
-export { DEFAULT_WEBHOOK_MAX_BODY_BYTES } from "openclaw/plugin-sdk/webhook-ingress";
+} from "eve-agent/plugin-sdk/media-runtime";
+export { dispatchReplyFromConfigWithSettledDispatcher } from "eve-agent/plugin-sdk/channel-inbound";
+export { loadOutboundMediaFromUrl } from "eve-agent/plugin-sdk/outbound-media";
+export { buildMediaPayload } from "eve-agent/plugin-sdk/reply-payload";
+export type { ReplyPayload } from "eve-agent/plugin-sdk/reply-payload";
+export type { PluginRuntime } from "eve-agent/plugin-sdk/runtime-store";
+export type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime";
+export type { SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
+export { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
+export { normalizeStringEntries } from "eve-agent/plugin-sdk/string-normalization-runtime";
+export { chunkTextForOutbound } from "eve-agent/plugin-sdk/text-chunking";
+export { DEFAULT_WEBHOOK_MAX_BODY_BYTES } from "eve-agent/plugin-sdk/webhook-ingress";
 export { setMSTeamsRuntime } from "./src/runtime.js";

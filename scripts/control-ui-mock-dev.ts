@@ -1,4 +1,4 @@
-// Control Ui Mock Dev script supports OpenClaw repository automation.
+// Control Ui Mock Dev script supports EVE repository automation.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer, type Plugin, type ViteDevServer } from "vite";
@@ -229,7 +229,7 @@ function createChatPickerScenario(): ControlUiMockGatewayScenario {
       updatedAtMs: baseTime - 30_000,
     },
   ];
-  const workspaceListCases = ["main", "alpha", "openclaw-mock"].map((agentId) => ({
+  const workspaceListCases = ["main", "alpha", "eve-mock"].map((agentId) => ({
     match: { agentId },
     response: {
       agentId,
@@ -251,7 +251,7 @@ function createChatPickerScenario(): ControlUiMockGatewayScenario {
       "# Context notes\n\nThe right rail should feel like workspace context, not a modal pasted beside the chat.\n\n## Current focus\n\n- Markdown previews need readable dark-mode chrome.\n- Empty or unavailable content should show a quiet state instead of an empty card.\n- File previews should load from the same mock scenario as the file list.\n",
     ],
   ]);
-  const workspaceFileCases = ["main", "alpha", "openclaw-mock"].flatMap((agentId) =>
+  const workspaceFileCases = ["main", "alpha", "eve-mock"].flatMap((agentId) =>
     workspaceFiles.map((file) => ({
       match: { agentId, name: file.name },
       response: {
@@ -318,7 +318,7 @@ function createChatPickerScenario(): ControlUiMockGatewayScenario {
     ],
     [
       "package.json",
-      '{\n  "name": "openclaw",\n  "scripts": { "dev:ui:mock": "tsx scripts/control-ui-mock-dev.ts" }\n}\n',
+      '{\n  "name": "eve",\n  "scripts": { "dev:ui:mock": "tsx scripts/control-ui-mock-dev.ts" }\n}\n',
     ],
     [
       "ui/vite.config.ts",
@@ -393,12 +393,12 @@ function createChatPickerScenario(): ControlUiMockGatewayScenario {
   <path d="M232 114c-72-44-135-22-146 35 52 9 91-4 125-39" fill="none" stroke="#f06b5f" stroke-width="28" stroke-linecap="round"/>
   <path d="M408 114c72-44 135-22 146 35-52 9-91-4-125-39" fill="none" stroke="#f06b5f" stroke-width="28" stroke-linecap="round"/>
   <path d="M232 246c-45 28-91 35-142 23M408 246c45 28 91 35 142 23" fill="none" stroke="#e14b47" stroke-width="16" stroke-linecap="round"/>
-  <text x="320" y="326" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="24" fill="#f6f7f9">openclaw session artifact</text>
+  <text x="320" y="326" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="24" fill="#f6f7f9">eve session artifact</text>
 </svg>`;
   const lobsterArtifact = {
-    id: "artifact-openclaw-lobster",
+    id: "artifact-eve-lobster",
     type: "image",
-    title: "openclaw-lobster-preview.svg",
+    title: "eve-lobster-preview.svg",
     mimeType: "image/svg+xml",
     sizeBytes: Buffer.byteLength(lobsterSvg, "utf8"),
     source: "session-transcript",
@@ -428,9 +428,9 @@ function createChatPickerScenario(): ControlUiMockGatewayScenario {
     modelProvider: "anthropic",
   });
   return {
-    assistantAgentId: "openclaw-mock",
-    assistantName: "OpenClaw mock",
-    defaultAgentId: "openclaw-mock",
+    assistantAgentId: "eve-mock",
+    assistantName: "EVE mock",
+    defaultAgentId: "eve-mock",
     historyMessages: buildScrollableChatHistory(baseTime),
     methodResponses: {
       "agents.files.get": {
@@ -559,11 +559,11 @@ function createMockGatewayPlugin(scenario: ControlUiMockGatewayScenario): Plugin
         res.end(bootstrapBody);
       });
     },
-    name: "openclaw-control-ui-mock-gateway",
+    name: "eve-control-ui-mock-gateway",
     transformIndexHtml(html) {
       return html.replace(
         "</head>",
-        `    <script data-openclaw-control-ui-mock-gateway>\n${initScript}\n    </script>\n  </head>`,
+        `    <script data-eve-control-ui-mock-gateway>\n${initScript}\n    </script>\n  </head>`,
       );
     },
   };
@@ -598,7 +598,7 @@ const server = await createServer({
   clearScreen: false,
   configFile: path.join(uiRoot, "vite.config.ts"),
   define: {
-    OPENCLAW_CONTROL_UI_BUILD_ID: JSON.stringify("mock"),
+    EVE_CONTROL_UI_BUILD_ID: JSON.stringify("mock"),
   },
   logLevel: "error",
   optimizeDeps: {

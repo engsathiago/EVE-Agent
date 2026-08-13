@@ -1,6 +1,6 @@
 /** Normalizes accepted child-session spawn results from loose tool payloads. */
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 
 // Helpers for recognizing accepted session-spawn tool results in loosely typed
 // tool payloads and persisted delivery metadata.

@@ -4,31 +4,31 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { captureEnv, setTestEnvValue } from "../test-utils/env.js";
 
-const envSnapshot = captureEnv(["HOME", "OPENCLAW_HOME"]);
+const envSnapshot = captureEnv(["HOME", "EVE_HOME"]);
 
 const tempHomes: string[] = [];
 
 function useTempHome(): string {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-approval-runtime-"));
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "eve-approval-runtime-"));
   tempHomes.push(home);
   setTestEnvValue("HOME", home);
-  setTestEnvValue("OPENCLAW_HOME", home);
+  setTestEnvValue("EVE_HOME", home);
   return home;
 }
 
 function execApprovalsPath(home: string): string {
-  return path.join(home, ".openclaw", "exec-approvals.json");
+  return path.join(home, ".eve", "exec-approvals.json");
 }
 
 function writeExecApprovalsToken(home: string, token: string): void {
-  fs.mkdirSync(path.join(home, ".openclaw"), { recursive: true });
+  fs.mkdirSync(path.join(home, ".eve"), { recursive: true });
   fs.writeFileSync(
     execApprovalsPath(home),
     `${JSON.stringify(
       {
         version: 1,
         socket: {
-          path: "~/.openclaw/exec-approvals.sock",
+          path: "~/.eve/exec-approvals.sock",
           token,
         },
         agents: {},

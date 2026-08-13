@@ -6,7 +6,7 @@ import {
   resolveAgentDir,
   resolveAgentWorkspaceDir,
 } from "../../../agents/agent-scope.js";
-import { createOpenClawCodingTools } from "../../../agents/agent-tools.js";
+import { createEVECodingTools } from "../../../agents/agent-tools.js";
 import { DEFAULT_MODEL, DEFAULT_PROVIDER } from "../../../agents/defaults.js";
 import { resolveModel } from "../../../agents/embedded-agent-runner/model.js";
 import { parseModelRef } from "../../../agents/model-selection-normalize.js";
@@ -17,14 +17,14 @@ import {
 } from "../../../agents/tool-schema-projection.js";
 import type { AnyAgentTool } from "../../../agents/tools/common.js";
 import { resolveAgentModelPrimaryValue } from "../../../config/model-input.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { formatErrorMessage } from "../../../infra/errors.js";
 import { extractModelCompat } from "../../../plugins/provider-model-compat.js";
 import type { ProviderRuntimeModel } from "../../../plugins/provider-runtime-model.types.js";
 import { getPluginToolMeta } from "../../../plugins/tools.js";
 
 function resolvePrimaryModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentModel?: NonNullable<ReturnType<typeof resolveAgentConfig>>["model"],
 ): { provider: string; model: string } {
   const raw =
@@ -40,7 +40,7 @@ function resolvePrimaryModelRef(
 }
 
 function resolveRuntimeModelContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir: string;
   workspaceDir: string;
   provider: string;
@@ -74,7 +74,7 @@ function formatDiagnostic(params: {
 }): string {
   const plugin = params.pluginId ? ` from plugin "${params.pluginId}"` : "";
   return sanitizeForLog(
-    `- agents.${params.agentId}: active tool "${params.diagnostic.toolName}"${plugin} has unsupported runtime input schema (${params.diagnostic.violations.join(", ")}). OpenClaw will quarantine this tool at runtime; fix or disable the plugin, or remove the tool from active allowlists.`,
+    `- agents.${params.agentId}: active tool "${params.diagnostic.toolName}"${plugin} has unsupported runtime input schema (${params.diagnostic.violations.join(", ")}). EVE will quarantine this tool at runtime; fix or disable the plugin, or remove the tool from active allowlists.`,
   );
 }
 
@@ -117,7 +117,7 @@ function readPluginId(tool: AnyAgentTool | undefined): string | undefined {
 
 /** Collect per-agent warnings for active plugin tools rejected by runtime schema projection. */
 export function collectActiveToolSchemaProjectionWarnings(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
 }): string[] {
   if (params.cfg.plugins?.enabled === false) {
@@ -147,9 +147,9 @@ export function collectActiveToolSchemaProjectionWarnings(params: {
         ),
       );
     }
-    let tools: ReturnType<typeof createOpenClawCodingTools>;
+    let tools: ReturnType<typeof createEVECodingTools>;
     try {
-      tools = createOpenClawCodingTools({
+      tools = createEVECodingTools({
         agentId,
         agentDir,
         workspaceDir,

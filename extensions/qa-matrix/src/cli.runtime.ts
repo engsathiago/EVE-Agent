@@ -2,13 +2,13 @@
 import {
   printLiveTransportQaArtifacts,
   startLiveTransportQaOutputTee,
-} from "openclaw/plugin-sdk/qa-runtime";
+} from "eve-agent/plugin-sdk/qa-runtime";
 import { ensureRepoBoundDirectory } from "./cli-paths.js";
 import { runMatrixQaLive } from "./runners/contract/runtime.js";
 import type { LiveTransportQaCommandOptions } from "./shared/live-transport-cli.js";
 import { resolveLiveTransportQaRunOptions } from "./shared/live-transport-cli.runtime.js";
 
-const RUN_NODE_OUTPUT_LOG_ENV = "OPENCLAW_RUN_NODE_OUTPUT_LOG";
+const RUN_NODE_OUTPUT_LOG_ENV = "EVE_RUN_NODE_OUTPUT_LOG";
 
 async function closeMatrixQaCommandFetchHandles() {
   try {

@@ -1,6 +1,6 @@
 /**
- * OpenClaw ACPX runtime adapter. It wraps the upstream acpx runtime with
- * OpenClaw session metadata, lease tracking, model scoping, and cleanup policy.
+ * EVE ACPX runtime adapter. It wraps the upstream acpx runtime with
+ * EVE session metadata, lease tracking, model scoping, and cleanup policy.
  */
 import { AsyncLocalStorage } from "node:async_hooks";
 import fs from "node:fs/promises";
@@ -23,9 +23,9 @@ import {
   type AcpRuntimeTurnResult,
   type SessionAgentOptions,
 } from "acpx/runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { redactSensitiveText } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { redactSensitiveText } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { AcpRuntimeError, type AcpRuntime, type AcpRuntimeErrorCode } from "../runtime-api.js";
 import { splitCommandParts } from "./command-line.js";
 import {
@@ -36,8 +36,8 @@ import {
   type AcpxProcessLeaseStore,
 } from "./process-lease.js";
 import {
-  cleanupOpenClawOwnedAcpxProcessTree,
-  isOpenClawLeaseAwareAcpxProcessCommand,
+  cleanupEVEOwnedAcpxProcessTree,
+  isEVELeaseAwareAcpxProcessCommand,
   type AcpxProcessCleanupDeps,
 } from "./process-reaper.js";
 
@@ -45,29 +45,29 @@ type AcpSessionStore = AcpRuntimeOptions["sessionStore"];
 type AcpSessionRecord = Parameters<AcpSessionStore["save"]>[0];
 type AcpLoadedSessionRecord = Awaited<ReturnType<AcpSessionStore["load"]>>;
 type BaseAcpxRuntimeTestOptions = ConstructorParameters<typeof BaseAcpxRuntime>[1];
-type OpenClawAcpxRuntimeOptions = AcpRuntimeOptions & {
-  openclawWrapperRoot?: string;
-  openclawGatewayInstanceId?: string;
-  openclawProcessLeaseStore?: AcpxProcessLeaseStore;
+type EVEAcpxRuntimeOptions = AcpRuntimeOptions & {
+  eveWrapperRoot?: string;
+  eveGatewayInstanceId?: string;
+  eveProcessLeaseStore?: AcpxProcessLeaseStore;
 };
 type AcpxRuntimeTestOptions = Record<string, unknown> & {
-  openclawProcessCleanup?: AcpxProcessCleanupDeps;
+  eveProcessCleanup?: AcpxProcessCleanupDeps;
 };
-type OpenClawRuntimeTurnInput = Parameters<NonNullable<AcpRuntime["startTurn"]>>[0];
-type OpenClawRuntimeEnsureInput = Parameters<AcpRuntime["ensureSession"]>[0];
+type EVERuntimeTurnInput = Parameters<NonNullable<AcpRuntime["startTurn"]>>[0];
+type EVERuntimeEnsureInput = Parameters<AcpRuntime["ensureSession"]>[0];
 type AcpxDelegateEnsureInput = Parameters<BaseAcpxRuntime["ensureSession"]>[0];
 
 type ResetAwareSessionStore = AcpSessionStore & {
   markFresh: (sessionKey: string) => void;
 };
 
-type OpenClawLeaseSessionMetadata = {
-  openclawLeaseId: string;
-  openclawGatewayInstanceId: string;
+type EVELeaseSessionMetadata = {
+  eveLeaseId: string;
+  eveGatewayInstanceId: string;
 };
 
-function withOpenClawManagedTurnTimeout<T extends object>(input: T): T & { timeoutMs: 0 } {
-  // OpenClaw owns ACP turn deadlines. acpx treats timeout after partial agent
+function withEVEManagedTurnTimeout<T extends object>(input: T): T & { timeoutMs: 0 } {
+  // EVE owns ACP turn deadlines. acpx treats timeout after partial agent
   // output as a completed turn, which can mark background work done early.
   return {
     ...input,
@@ -75,14 +75,14 @@ function withOpenClawManagedTurnTimeout<T extends object>(input: T): T & { timeo
   };
 }
 
-function withOpenClawLeaseSessionMetadata<T extends object>(
+function withEVELeaseSessionMetadata<T extends object>(
   record: T,
-  metadata: OpenClawLeaseSessionMetadata,
-): T & OpenClawLeaseSessionMetadata {
+  metadata: EVELeaseSessionMetadata,
+): T & EVELeaseSessionMetadata {
   return {
     ...record,
-    openclawLeaseId: metadata.openclawLeaseId,
-    openclawGatewayInstanceId: metadata.openclawGatewayInstanceId,
+    eveLeaseId: metadata.eveLeaseId,
+    eveGatewayInstanceId: metadata.eveGatewayInstanceId,
   };
 }
 
@@ -190,21 +190,21 @@ function readRecordAgentPid(record: unknown): number | undefined {
   return numericPid && Number.isInteger(numericPid) && numericPid > 0 ? numericPid : undefined;
 }
 
-function readOpenClawLeaseIdFromRecord(record: unknown): string | undefined {
+function readEVELeaseIdFromRecord(record: unknown): string | undefined {
   if (typeof record !== "object" || record === null) {
     return undefined;
   }
-  const { openclawLeaseId } = record as { openclawLeaseId?: unknown };
-  return typeof openclawLeaseId === "string" ? openclawLeaseId.trim() || undefined : undefined;
+  const { eveLeaseId } = record as { eveLeaseId?: unknown };
+  return typeof eveLeaseId === "string" ? eveLeaseId.trim() || undefined : undefined;
 }
 
-function readOpenClawGatewayInstanceIdFromRecord(record: unknown): string | undefined {
+function readEVEGatewayInstanceIdFromRecord(record: unknown): string | undefined {
   if (typeof record !== "object" || record === null) {
     return undefined;
   }
-  const { openclawGatewayInstanceId } = record as { openclawGatewayInstanceId?: unknown };
-  return typeof openclawGatewayInstanceId === "string"
-    ? openclawGatewayInstanceId.trim() || undefined
+  const { eveGatewayInstanceId } = record as { eveGatewayInstanceId?: unknown };
+  return typeof eveGatewayInstanceId === "string"
+    ? eveGatewayInstanceId.trim() || undefined
     : undefined;
 }
 
@@ -267,9 +267,9 @@ function createResetAwareSessionStore(
       if (!lease) {
         return record;
       }
-      return withOpenClawLeaseSessionMetadata(record, {
-        openclawLeaseId: lease.leaseId,
-        openclawGatewayInstanceId: lease.gatewayInstanceId,
+      return withEVELeaseSessionMetadata(record, {
+        eveLeaseId: lease.leaseId,
+        eveGatewayInstanceId: lease.gatewayInstanceId,
       });
     },
     async save(record: AcpSessionRecord): Promise<void> {
@@ -298,7 +298,7 @@ function createResetAwareSessionStore(
           state: "open",
         };
         await params.leaseStore.save(lease);
-        recordToSave = withOpenClawLeaseSessionMetadata(
+        recordToSave = withEVELeaseSessionMetadata(
           {
             ...record,
             // ACPX uses agentCommand as reuse identity. Lease metadata belongs to
@@ -306,8 +306,8 @@ function createResetAwareSessionStore(
             agentCommand: stableAgentCommand,
           },
           {
-            openclawLeaseId: launch.leaseId,
-            openclawGatewayInstanceId: launch.gatewayInstanceId,
+            eveLeaseId: launch.leaseId,
+            eveGatewayInstanceId: launch.gatewayInstanceId,
           },
         );
       }
@@ -325,11 +325,11 @@ function createResetAwareSessionStore(
   };
 }
 
-const OPENCLAW_BRIDGE_EXECUTABLE = "openclaw";
-const OPENCLAW_BRIDGE_SUBCOMMAND = "acp";
+const EVE_BRIDGE_EXECUTABLE = "eve";
+const EVE_BRIDGE_SUBCOMMAND = "acp";
 const CODEX_ACP_AGENT_ID = "codex";
-const CODEX_ACP_OPENCLAW_PREFIX = "openai/";
-const CLAUDE_ACP_OPENCLAW_PREFIX = "anthropic/";
+const CODEX_ACP_EVE_PREFIX = "openai/";
+const CLAUDE_ACP_EVE_PREFIX = "anthropic/";
 const CODEX_ACP_REASONING_EFFORTS = new Set(["low", "medium", "high", "xhigh"]);
 const CODEX_ACP_THINKING_ALIASES = new Map<string, string | undefined>([
   ["off", undefined],
@@ -441,19 +441,19 @@ function isAcpCommand(
   return scriptName === params.executableName || scriptName === `${params.executableName}-wrapper`;
 }
 
-function isOpenClawBridgeCommand(command: string | undefined): boolean {
+function isEVEBridgeCommand(command: string | undefined): boolean {
   if (!command) {
     return false;
   }
   const parts = unwrapEnvCommand(splitCommandParts(command.trim()));
-  if (basename(parts[0] ?? "") === OPENCLAW_BRIDGE_EXECUTABLE) {
-    return parts[1] === OPENCLAW_BRIDGE_SUBCOMMAND;
+  if (basename(parts[0] ?? "") === EVE_BRIDGE_EXECUTABLE) {
+    return parts[1] === EVE_BRIDGE_SUBCOMMAND;
   }
   if (basename(parts[0] ?? "") !== "node") {
     return false;
   }
   const scriptName = basename(parts[1] ?? "");
-  return /^openclaw(?:\.[cm]?js)?$/i.test(scriptName) && parts[2] === OPENCLAW_BRIDGE_SUBCOMMAND;
+  return /^eve(?:\.[cm]?js)?$/i.test(scriptName) && parts[2] === EVE_BRIDGE_SUBCOMMAND;
 }
 
 function isCodexAcpCommand(command: string | undefined): boolean {
@@ -481,7 +481,7 @@ function failUnsupportedCodexAcpModel(rawModel: string, detail?: string): never 
 // acpx's `decodeAcpxRuntimeHandleState` only accepts `persistent` and `oneshot`; any other
 // value silently round-trips through the encoded handle as `persistent` and later throws
 // `SessionResumeRequiredError` on agent restart. Fail fast at this boundary instead.
-// See openclaw/openclaw#73071.
+// See eve/eve#73071.
 const SUPPORTED_RUNTIME_SESSION_MODES = new Set(["persistent", "oneshot"] as const);
 const WIRE_TIMEOUT_CONFIG_KEYS = new Set(["timeout", "timeout_seconds"]);
 
@@ -528,8 +528,8 @@ function normalizeCodexAcpModelOverride(
   }
 
   let value = raw;
-  if (value.toLowerCase().startsWith(CODEX_ACP_OPENCLAW_PREFIX)) {
-    value = value.slice(CODEX_ACP_OPENCLAW_PREFIX.length);
+  if (value.toLowerCase().startsWith(CODEX_ACP_EVE_PREFIX)) {
+    value = value.slice(CODEX_ACP_EVE_PREFIX.length);
   }
   const parts = value.split("/");
   if (parts.length > 2) {
@@ -570,13 +570,13 @@ function normalizeClaudeAcpModelOverride(rawModel: string | undefined): string |
   if (!raw) {
     return undefined;
   }
-  if (!raw.toLowerCase().startsWith(CLAUDE_ACP_OPENCLAW_PREFIX)) {
+  if (!raw.toLowerCase().startsWith(CLAUDE_ACP_EVE_PREFIX)) {
     return raw;
   }
-  return raw.slice(CLAUDE_ACP_OPENCLAW_PREFIX.length).trim() || undefined;
+  return raw.slice(CLAUDE_ACP_EVE_PREFIX.length).trim() || undefined;
 }
 
-function withAcpxSessionOptions(input: OpenClawRuntimeEnsureInput): AcpxDelegateEnsureInput {
+function withAcpxSessionOptions(input: EVERuntimeEnsureInput): AcpxDelegateEnsureInput {
   const existingOptions = (input as { sessionOptions?: SessionAgentOptions }).sessionOptions;
   const model = input.model?.trim() || existingOptions?.model;
   const sessionOptions = model ? { ...existingOptions, model } : existingOptions;
@@ -653,7 +653,7 @@ function resolveAgentCommandForName(params: {
 }
 
 function shouldUseBridgeSafeDelegateForCommand(command: string | undefined): boolean {
-  return isOpenClawBridgeCommand(command);
+  return isEVEBridgeCommand(command);
 }
 
 function shouldUseDistinctBridgeDelegate(options: AcpRuntimeOptions): boolean {
@@ -661,7 +661,7 @@ function shouldUseDistinctBridgeDelegate(options: AcpRuntimeOptions): boolean {
   return Array.isArray(mcpServers) && mcpServers.length > 0;
 }
 
-/** OpenClaw-managed ACP runtime implementation backed by the upstream acpx runtime. */
+/** EVE-managed ACP runtime implementation backed by the upstream acpx runtime. */
 export class AcpxRuntime implements AcpRuntime {
   private readonly sessionStore: ResetAwareSessionStore;
   private readonly agentRegistry: AcpAgentRegistry;
@@ -679,12 +679,12 @@ export class AcpxRuntime implements AcpRuntime {
   private readonly launchLeaseScope = new AsyncLocalStorage<AcpxLaunchLeaseContext | undefined>();
   private readonly cwd: string;
 
-  constructor(options: OpenClawAcpxRuntimeOptions, testOptions?: AcpxRuntimeTestOptions) {
-    const { openclawProcessCleanup, ...delegateTestOptions } = testOptions ?? {};
-    this.processCleanupDeps = openclawProcessCleanup;
-    this.wrapperRoot = options.openclawWrapperRoot;
-    this.gatewayInstanceId = options.openclawGatewayInstanceId;
-    this.processLeaseStore = options.openclawProcessLeaseStore;
+  constructor(options: EVEAcpxRuntimeOptions, testOptions?: AcpxRuntimeTestOptions) {
+    const { eveProcessCleanup, ...delegateTestOptions } = testOptions ?? {};
+    this.processCleanupDeps = eveProcessCleanup;
+    this.wrapperRoot = options.eveWrapperRoot;
+    this.gatewayInstanceId = options.eveGatewayInstanceId;
+    this.processLeaseStore = options.eveProcessLeaseStore;
     this.cwd = options.cwd;
     this.sessionStore = createResetAwareSessionStore(options.sessionStore, {
       gatewayInstanceId: this.gatewayInstanceId,
@@ -811,7 +811,7 @@ export class AcpxRuntime implements AcpRuntime {
       !this.wrapperRoot ||
       !this.gatewayInstanceId ||
       !this.processLeaseStore ||
-      !isOpenClawLeaseAwareAcpxProcessCommand({
+      !isEVELeaseAwareAcpxProcessCommand({
         command: params.command,
         wrapperRoot: this.wrapperRoot,
       })
@@ -871,7 +871,7 @@ export class AcpxRuntime implements AcpRuntime {
     );
     return readCodexWrapperStderrTail({
       wrapperRoot: this.wrapperRoot,
-      leaseId: readOpenClawLeaseIdFromRecord(record),
+      leaseId: readEVELeaseIdFromRecord(record),
     });
   }
 
@@ -879,7 +879,7 @@ export class AcpxRuntime implements AcpRuntime {
     handle: AcpRuntimeHandle,
     record: AcpLoadedSessionRecord,
   ): Promise<void> {
-    const leaseId = readOpenClawLeaseIdFromRecord(record);
+    const leaseId = readEVELeaseIdFromRecord(record);
     const rootPid = readAgentPidFromRecord(record);
     const sessionKeys = [handle.sessionKey, readSessionRecordName(record)];
     const openLeases =
@@ -902,7 +902,7 @@ export class AcpxRuntime implements AcpRuntime {
         : undefined);
     if (lease && lease.gatewayInstanceId === this.gatewayInstanceId && lease.rootPid > 0) {
       await this.processLeaseStore?.markState(lease.leaseId, "closing");
-      const result = await cleanupOpenClawOwnedAcpxProcessTree({
+      const result = await cleanupEVEOwnedAcpxProcessTree({
         rootPid: lease.rootPid,
         rootCommand: readAgentCommandFromRecord(record),
         expectedLeaseId: lease.leaseId,
@@ -928,8 +928,8 @@ export class AcpxRuntime implements AcpRuntime {
     if (!rootPid || !rootCommand) {
       return;
     }
-    const expectedGatewayInstanceId = readOpenClawGatewayInstanceIdFromRecord(record);
-    await cleanupOpenClawOwnedAcpxProcessTree({
+    const expectedGatewayInstanceId = readEVEGatewayInstanceIdFromRecord(record);
+    await cleanupEVEOwnedAcpxProcessTree({
       rootPid,
       rootCommand,
       ...(leaseId ? { expectedLeaseId: leaseId } : {}),
@@ -1019,7 +1019,7 @@ export class AcpxRuntime implements AcpRuntime {
     const command = await this.resolveCommandForHandle(input.handle);
     const delegate = await this.resolveDelegateForHandle(input.handle);
     try {
-      for await (const event of delegate.runTurn(withOpenClawManagedTurnTimeout(input))) {
+      for await (const event of delegate.runTurn(withEVEManagedTurnTimeout(input))) {
         if (
           event.type !== "error" ||
           !isCodexAcpCommand(command) ||
@@ -1053,7 +1053,7 @@ export class AcpxRuntime implements AcpRuntime {
     }
   }
 
-  startTurn(input: OpenClawRuntimeTurnInput): AcpRuntimeTurn {
+  startTurn(input: EVERuntimeTurnInput): AcpRuntimeTurn {
     const readCodexTurnFailureStderr = () =>
       this.readCodexTurnFailureStderr({
         handle: input.handle,
@@ -1065,7 +1065,7 @@ export class AcpxRuntime implements AcpRuntime {
       try {
         return {
           command,
-          turn: delegate.startTurn(withOpenClawManagedTurnTimeout(input)),
+          turn: delegate.startTurn(withEVEManagedTurnTimeout(input)),
         };
       } catch (error) {
         if (!isCodexAcpCommand(command) || !isGenericInternalAcpError(error)) {

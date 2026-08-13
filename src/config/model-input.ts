@@ -1,15 +1,15 @@
 // Normalizes model input config into provider and model references.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   normalizeGooglePreviewModelId,
   normalizeTogetherModelId,
-} from "@openclaw/model-catalog-core/provider-model-id-normalize";
-import { isRecord as isPlainRecord } from "@openclaw/normalization-core/record-coerce";
+} from "@eve/model-catalog-core/provider-model-id-normalize";
+import { isRecord as isPlainRecord } from "@eve/normalization-core/record-coerce";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   resolvePrimaryStringValue,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@eve/normalization-core/string-coerce";
 import type { AgentModelConfig, AgentToolModelConfig } from "./types.agents-shared.js";
 
 type AgentModelListLike = {

@@ -1,5 +1,5 @@
 // Whatsapp plugin module implements dedupe behavior.
-import { createClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
+import { createClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
 
 const RECENT_WEB_MESSAGE_TTL_MS = 20 * 60_000;
 const RECENT_WEB_MESSAGE_MAX = 5000;

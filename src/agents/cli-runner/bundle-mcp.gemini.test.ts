@@ -14,26 +14,26 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         command: "gemini",
         args: ["--prompt", "{prompt}"],
       },
-      workspaceDir: "/tmp/openclaw-bundle-mcp-gemini",
+      workspaceDir: "/tmp/eve-bundle-mcp-gemini",
       config: { plugins: { enabled: false } },
       additionalConfig: {
         mcpServers: {
-          openclaw: {
+          eve: {
             type: "http",
             url: "http://127.0.0.1:23119/mcp",
             headers: {
-              Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
+              Authorization: "Bearer ${EVE_MCP_TOKEN}",
             },
           },
         },
       },
       env: {
-        OPENCLAW_MCP_TOKEN: "loopback-token-123",
+        EVE_MCP_TOKEN: "loopback-token-123",
       },
     });
 
     expect(prepared.backend.args).toEqual(["--prompt", "{prompt}"]);
-    expect(prepared.env?.OPENCLAW_MCP_TOKEN).toBe("loopback-token-123");
+    expect(prepared.env?.EVE_MCP_TOKEN).toBe("loopback-token-123");
     expect(typeof prepared.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe("string");
     // Gemini reads MCP servers from a generated system settings JSON file.
     const raw = JSON.parse(
@@ -42,9 +42,9 @@ describe("prepareCliBundleMcpConfig gemini", () => {
       mcp?: { allowed?: string[] };
       mcpServers?: Record<string, { url?: string; headers?: Record<string, string> }>;
     };
-    expect(raw.mcp?.allowed).toEqual(["openclaw"]);
-    expect(raw.mcpServers?.openclaw?.url).toBe("http://127.0.0.1:23119/mcp");
-    expect(raw.mcpServers?.openclaw?.headers?.Authorization).toBe("Bearer loopback-token-123");
+    expect(raw.mcp?.allowed).toEqual(["eve"]);
+    expect(raw.mcpServers?.eve?.url).toBe("http://127.0.0.1:23119/mcp");
+    expect(raw.mcpServers?.eve?.headers?.Authorization).toBe("Bearer loopback-token-123");
 
     await prepared.cleanup?.();
   });
@@ -57,7 +57,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         command: "gemini",
         args: ["--prompt", "{prompt}"],
       },
-      workspaceDir: "/tmp/openclaw-bundle-mcp-gemini",
+      workspaceDir: "/tmp/eve-bundle-mcp-gemini",
       config: {
         plugins: { enabled: false },
         mcp: {
@@ -79,7 +79,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
 
     expect(prepared.env?.CONTEXT7_API_KEY).toBe("ctx7-test");
     expect(typeof prepared.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe("string");
-    // User OpenClaw transport names are normalized to Gemini's expected schema.
+    // User EVE transport names are normalized to Gemini's expected schema.
     const raw = JSON.parse(
       await fs.readFile(prepared.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH as string, "utf-8"),
     ) as {
@@ -106,21 +106,21 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         command: "gemini",
         args: ["--prompt", "{prompt}"],
       },
-      workspaceDir: "/tmp/openclaw-bundle-mcp-gemini",
+      workspaceDir: "/tmp/eve-bundle-mcp-gemini",
       config: { plugins: { enabled: false } },
       additionalConfig: {
         mcpServers: {
-          openclaw: {
+          eve: {
             type: "http",
             url: "http://127.0.0.1:23119/mcp",
             headers: {
-              "x-openclaw-cli-capture-key": "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+              "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
             },
           },
         },
       },
       env: {
-        OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
+        EVE_MCP_CLI_CAPTURE_KEY: "",
       },
     });
     const attempt = await prepareCliBundleMcpCaptureAttempt({
@@ -135,7 +135,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
       ) as {
         mcpServers?: Record<string, { headers?: Record<string, string> }>;
       };
-      expect(raw.mcpServers?.openclaw?.headers?.["x-openclaw-cli-capture-key"]).toBe("attempt-123");
+      expect(raw.mcpServers?.eve?.headers?.["x-eve-cli-capture-key"]).toBe("attempt-123");
       expect(attempt.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).not.toBe(
         prepared.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH,
       );
@@ -146,7 +146,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
   });
 
   it("preserves inherited Gemini auth selection in generated system settings", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gemini-settings-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-gemini-settings-"));
     const inheritedSettingsPath = path.join(dir, "settings.json");
     await fs.writeFile(
       inheritedSettingsPath,
@@ -173,11 +173,11 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         command: "gemini",
         args: ["--prompt", "{prompt}"],
       },
-      workspaceDir: "/tmp/openclaw-bundle-mcp-gemini",
+      workspaceDir: "/tmp/eve-bundle-mcp-gemini",
       config: { plugins: { enabled: false } },
       additionalConfig: {
         mcpServers: {
-          openclaw: {
+          eve: {
             type: "http",
             url: "http://127.0.0.1:23119/mcp",
           },

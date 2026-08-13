@@ -143,7 +143,7 @@ export type AgentConfig = {
   };
   /** Optional outer run loop retry boundaries. */
   runRetries?: AgentDefaultsConfig["runRetries"];
-  /** Optional per-agent embedded OpenClaw overrides. */
+  /** Optional per-agent embedded EVE overrides. */
   embeddedAgent?: {
     /** Optional per-agent execution contract override. */
     executionContract?: EmbeddedAgentExecutionContract;

@@ -1,9 +1,9 @@
 // Qa Lab API module exposes the plugin public contract.
 export type { Command } from "commander";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-export { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-export { callGatewayFromCli } from "openclaw/plugin-sdk/gateway-runtime";
-export type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
+export type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+export { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
+export { callGatewayFromCli } from "eve-agent/plugin-sdk/gateway-runtime";
+export type { PluginRuntime } from "eve-agent/plugin-sdk/runtime-store";
 export { defaultQaRuntimeModelForMode } from "./model-selection.runtime.js";
 export {
   buildQaTarget,
@@ -21,7 +21,7 @@ export {
   searchQaBusMessages,
   sendQaBusMessage,
   setQaChannelRuntime,
-} from "openclaw/plugin-sdk/qa-channel";
+} from "eve-agent/plugin-sdk/qa-channel";
 export type {
   QaBusAttachment,
   QaBusConversation,

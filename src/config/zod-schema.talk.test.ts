@@ -1,10 +1,10 @@
 // Covers talk schema parsing and validation behavior.
 import { describe, expect, it } from "vitest";
-import { OpenClawSchema } from "./zod-schema.js";
+import { EVESchema } from "./zod-schema.js";
 
-describe("OpenClawSchema talk validation", () => {
+describe("EVESchema talk validation", () => {
   it("accepts a positive integer talk.silenceTimeoutMs", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = EVESchema.safeParse({
       talk: {
         consultThinkingLevel: "low",
         consultFastMode: true,
@@ -17,7 +17,7 @@ describe("OpenClawSchema talk validation", () => {
 
   it("rejects invalid talk.consultThinkingLevel", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           consultThinkingLevel: "turbo",
         },
@@ -27,7 +27,7 @@ describe("OpenClawSchema talk validation", () => {
 
   it("accepts additional realtime Talk instructions", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           realtime: {
             provider: "openai",
@@ -48,7 +48,7 @@ describe("OpenClawSchema talk validation", () => {
 
   it("rejects invalid realtime Talk consult routing", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           realtime: {
             consultRouting: "always",
@@ -64,7 +64,7 @@ describe("OpenClawSchema talk validation", () => {
     ["float", 1500.5],
   ])("rejects %s talk.silenceTimeoutMs", (_label, value) => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           silenceTimeoutMs: value,
         },
@@ -74,7 +74,7 @@ describe("OpenClawSchema talk validation", () => {
 
   it("rejects talk.provider when it does not match talk.providers", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           provider: "acme",
           providers: {
@@ -89,7 +89,7 @@ describe("OpenClawSchema talk validation", () => {
 
   it("rejects multi-provider talk config without talk.provider", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      EVESchema.parse({
         talk: {
           providers: {
             acme: {

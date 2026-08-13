@@ -15,20 +15,20 @@ Feishu/Lark is an all-in-one collaboration platform where teams chat, share docu
 ## Quick start
 
 <Note>
-Requires OpenClaw 2026.5.29 or above. Run `openclaw --version` to check. Upgrade with `openclaw update`.
+Requires EVE 2026.5.29 or above. Run `eve --version` to check. Upgrade with `eve update`.
 </Note>
 
 <Steps>
   <Step title="Run the channel setup wizard">
   ```bash
-  openclaw channels login --channel feishu
+  eve channels login --channel feishu
   ```
   Choose manual setup to paste an App ID and App Secret from Feishu Open Platform, or choose QR setup to create a bot automatically. If the domestic Feishu mobile app does not react to the QR code, rerun setup and choose manual setup.
   </Step>
   
   <Step title="After setup completes, restart the gateway to apply the changes">
   ```bash
-  openclaw gateway restart
+  eve gateway restart
   ```
   </Step>
 </Steps>
@@ -49,8 +49,8 @@ Configure `dmPolicy` to control who can DM the bot:
 **Approve a pairing request:**
 
 ```bash
-openclaw pairing list feishu
-openclaw pairing approve feishu <CODE>
+eve pairing list feishu
+eve pairing approve feishu <CODE>
 ```
 
 ### Group chats
@@ -168,13 +168,13 @@ Open the group in Feishu/Lark, click the menu icon in the top-right corner, and 
 Start the gateway, send a DM to the bot, then check the logs:
 
 ```bash
-openclaw logs --follow
+eve logs --follow
 ```
 
 Look for `open_id` in the log output. You can also check pending pairing requests:
 
 ```bash
-openclaw pairing list feishu
+eve pairing list feishu
 ```
 
 ---
@@ -200,7 +200,7 @@ Feishu/Lark does not support native slash-command menus, so send these as plain 
 1. Ensure the bot is added to the group
 2. Ensure you @mention the bot (required by default)
 3. Verify `groupPolicy` is not `"disabled"`
-4. Check logs: `openclaw logs --follow`
+4. Check logs: `eve logs --follow`
 
 ### Bot does not receive messages
 
@@ -208,12 +208,12 @@ Feishu/Lark does not support native slash-command menus, so send these as plain 
 2. Ensure event subscription includes `im.message.receive_v1`
 3. Ensure **persistent connection** (WebSocket) is selected
 4. Ensure all required permission scopes are granted
-5. Ensure the gateway is running: `openclaw gateway status`
-6. Check logs: `openclaw logs --follow`
+5. Ensure the gateway is running: `eve gateway status`
+6. Check logs: `eve logs --follow`
 
 ### QR setup does not react in the Feishu mobile app
 
-1. Rerun setup: `openclaw channels login --channel feishu`
+1. Rerun setup: `eve channels login --channel feishu`
 2. Choose manual setup
 3. In Feishu Open Platform, create a self-built app and copy its App ID and App Secret
 4. Paste those credentials into the setup wizard
@@ -222,7 +222,7 @@ Feishu/Lark does not support native slash-command menus, so send these as plain 
 
 1. Reset the App Secret in Feishu Open Platform / Lark Developer
 2. Update the value in your config
-3. Restart the gateway: `openclaw gateway restart`
+3. Restart the gateway: `eve gateway restart`
 
 ---
 
@@ -322,7 +322,7 @@ Feishu/Lark supports ACP for DMs and group thread messages. Feishu/Lark ACP is t
             agent: "codex",
             backend: "acpx",
             mode: "persistent",
-            cwd: "/workspace/openclaw",
+            cwd: "/workspace/eve",
           },
         },
       },
@@ -418,7 +418,7 @@ This is essential for public bots where you want each user to have their own pri
 <Note>
 Dynamic bindings include the normalized Feishu `accountId`, so default and named accounts route each sender to the correct dynamic agent.
 
-If a named account created an unscoped dynamic agent on an older release, that legacy agent still counts toward `maxAgents`. Confirm that it is not used by the default account before removing it, or temporarily increase `maxAgents`; OpenClaw cannot safely infer which account owns ambiguous legacy state.
+If a named account created an unscoped dynamic agent on an older release, that legacy agent still counts toward `maxAgents`. Confirm that it is not used by the default account before removing it, or temporarily increase `maxAgents`; EVE cannot safely infer which account owns ambiguous legacy state.
 </Note>
 
 ### Quick setup
@@ -431,8 +431,8 @@ If a named account created an unscoped dynamic agent on an older release, that l
       allowFrom: ["*"],
       dynamicAgentCreation: {
         enabled: true,
-        workspaceTemplate: "~/.openclaw/workspace-{agentId}",
-        agentDirTemplate: "~/.openclaw/agents/{agentId}/agent",
+        workspaceTemplate: "~/.eve/workspace-{agentId}",
+        agentDirTemplate: "~/.eve/agents/{agentId}/agent",
       },
     },
   },
@@ -460,8 +460,8 @@ When a new user sends their first DM:
 | Setting                                                  | Description                                | Default                              |
 | -------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
 | `channels.feishu.dynamicAgentCreation.enabled`           | Enable automatic per-user agent creation   | `false`                              |
-| `channels.feishu.dynamicAgentCreation.workspaceTemplate` | Path template for dynamic agent workspaces | `~/.openclaw/workspace-{agentId}`    |
-| `channels.feishu.dynamicAgentCreation.agentDirTemplate`  | Agent directory name template              | `~/.openclaw/agents/{agentId}/agent` |
+| `channels.feishu.dynamicAgentCreation.workspaceTemplate` | Path template for dynamic agent workspaces | `~/.eve/workspace-{agentId}`    |
+| `channels.feishu.dynamicAgentCreation.agentDirTemplate`  | Agent directory name template              | `~/.eve/agents/{agentId}/agent` |
 | `channels.feishu.dynamicAgentCreation.maxAgents`         | Maximum number of dynamic agents to create | unlimited                            |
 
 Template variables:
@@ -511,8 +511,8 @@ Use `"per-account-channel-peer"` when named Feishu accounts should keep separate
       requireMention: true,
       dynamicAgentCreation: {
         enabled: true,
-        workspaceTemplate: "~/.openclaw/workspace-{agentId}",
-        agentDirTemplate: "~/.openclaw/agents/{agentId}/agent",
+        workspaceTemplate: "~/.eve/workspace-{agentId}",
+        agentDirTemplate: "~/.eve/agents/{agentId}/agent",
       },
     },
   },
@@ -531,14 +531,14 @@ Check gateway logs to confirm dynamic creation is working:
 
 ```
 feishu: creating dynamic agent "feishu-ou_xxxxxx" for user ou_xxxxxx
-workspace: /Users/you/.openclaw/workspace-feishu-ou_xxxxxx
+workspace: /Users/you/.eve/workspace-feishu-ou_xxxxxx
 feishu: dynamic agent created, new route: agent:feishu-ou_xxxxxx:main
 ```
 
 List all created workspaces:
 
 ```bash
-ls -la ~/.openclaw/workspace-*
+ls -la ~/.eve/workspace-*
 ```
 
 ### Notes
@@ -578,8 +578,8 @@ Full configuration: [Gateway configuration](/gateway/configuration)
 | `channels.feishu.groups.<chat_id>.requireMention`        | Per-group @mention override; explicit IDs also admit the group in allowlist mode | inherited                            |
 | `channels.feishu.groups.<chat_id>.enabled`               | Enable/disable a specific group                                                  | `true`                               |
 | `channels.feishu.dynamicAgentCreation.enabled`           | Enable automatic per-user agent creation                                         | `false`                              |
-| `channels.feishu.dynamicAgentCreation.workspaceTemplate` | Path template for dynamic agent workspaces                                       | `~/.openclaw/workspace-{agentId}`    |
-| `channels.feishu.dynamicAgentCreation.agentDirTemplate`  | Agent directory name template                                                    | `~/.openclaw/agents/{agentId}/agent` |
+| `channels.feishu.dynamicAgentCreation.workspaceTemplate` | Path template for dynamic agent workspaces                                       | `~/.eve/workspace-{agentId}`    |
+| `channels.feishu.dynamicAgentCreation.agentDirTemplate`  | Agent directory name template                                                    | `~/.eve/agents/{agentId}/agent` |
 | `channels.feishu.dynamicAgentCreation.maxAgents`         | Maximum number of dynamic agents to create                                       | unlimited                            |
 | `channels.feishu.textChunkLimit`                         | Message chunk size                                                               | `2000`                               |
 | `channels.feishu.mediaMaxMb`                             | Media size limit                                                                 | `30`                                 |
@@ -607,7 +607,7 @@ Full configuration: [Gateway configuration](/gateway/configuration)
 - ✅ Stickers
 
 Inbound Feishu/Lark audio messages are normalized as media placeholders instead
-of raw `file_key` JSON. When `tools.media.audio` is configured, OpenClaw
+of raw `file_key` JSON. When `tools.media.audio` is configured, EVE
 downloads the voice-note resource and runs shared audio transcription before the
 agent turn, so the agent receives the spoken transcript. If Feishu includes
 transcript text directly in the audio payload, that text is used without another
@@ -631,7 +631,7 @@ is sent directly as native audio. MP3/WAV/M4A and other likely audio formats are
 transcoded to 48kHz Ogg/Opus with `ffmpeg` only when the reply requests voice
 delivery (`audioAsVoice` / message tool `asVoice`, including TTS voice-note
 replies). Ordinary MP3 attachments stay regular files. If `ffmpeg` is missing or
-conversion fails, OpenClaw falls back to a file attachment and logs the reason.
+conversion fails, EVE falls back to a file attachment and logs the reason.
 
 ### Threads and replies
 
@@ -641,9 +641,9 @@ conversion fails, OpenClaw falls back to a file attachment and logs the reason.
 
 For `groupSessionScope: "group_topic"` and `"group_topic_sender"`, native
 Feishu/Lark topic groups use the event `thread_id` (`omt_*`) as the canonical
-topic session key. If a native topic starter event omits `thread_id`, OpenClaw
+topic session key. If a native topic starter event omits `thread_id`, EVE
 hydrates it from Feishu before routing the turn. Normal group replies that
-OpenClaw turns into threads keep using the reply root message ID (`om_*`) so the
+EVE turns into threads keep using the reply root message ID (`om_*`) so the
 first turn and follow-up turn stay in the same session.
 
 ---

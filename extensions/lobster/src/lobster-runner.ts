@@ -185,7 +185,7 @@ function normalizeEnvelope(envelope: EmbeddedToolEnvelope): LobsterEnvelope {
         ok: false,
         error: {
           type: "unsupported_status",
-          message: "Lobster input requests are not supported by the OpenClaw Lobster tool yet",
+          message: "Lobster input requests are not supported by the EVE Lobster tool yet",
         },
       };
     }

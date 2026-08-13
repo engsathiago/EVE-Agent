@@ -24,7 +24,7 @@ let setPluginDoctorContractRegistryModuleLoaderFactoryForTest:
   | undefined;
 
 function makeTempDir(): string {
-  return makeTrackedTempDir("openclaw-doctor-contract-registry", tempDirs);
+  return makeTrackedTempDir("eve-doctor-contract-registry", tempDirs);
 }
 
 function requireFirstCreateJitiCall(): [string, { tryNative?: boolean }] {

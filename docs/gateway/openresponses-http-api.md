@@ -6,7 +6,7 @@ read_when:
 title: "OpenResponses API"
 ---
 
-OpenClaw's Gateway can serve an OpenResponses-compatible `POST /v1/responses` endpoint.
+EVE's Gateway can serve an OpenResponses-compatible `POST /v1/responses` endpoint.
 
 This endpoint is **disabled by default**. Enable it in config first.
 
@@ -14,7 +14,7 @@ This endpoint is **disabled by default**. Enable it in config first.
 - Same port as the Gateway (WS + HTTP multiplex): `http://<gateway-host>:<port>/v1/responses`
 
 Under the hood, requests are executed as a normal Gateway agent run (same codepath as
-`openclaw agent`), so routing/permissions/config match your Gateway.
+`eve agent`), so routing/permissions/config match your Gateway.
 
 ## Authentication, security, and routing
 
@@ -23,27 +23,27 @@ Operational behavior matches [OpenAI Chat Completions](/gateway/openai-http-api)
 - use the matching Gateway HTTP auth path:
   - shared-secret auth (`gateway.auth.mode="token"` or `"password"`): `Authorization: Bearer <token-or-password>`
   - trusted-proxy auth (`gateway.auth.mode="trusted-proxy"`): identity-aware proxy headers from a configured trusted proxy source; same-host loopback proxies require explicit `gateway.auth.trustedProxy.allowLoopback = true`
-  - trusted-proxy local direct fallback: same-host callers with no `Forwarded`, `X-Forwarded-*`, or `X-Real-IP` headers can use `gateway.auth.password` / `OPENCLAW_GATEWAY_PASSWORD`
+  - trusted-proxy local direct fallback: same-host callers with no `Forwarded`, `X-Forwarded-*`, or `X-Real-IP` headers can use `gateway.auth.password` / `EVE_GATEWAY_PASSWORD`
   - private-ingress open auth (`gateway.auth.mode="none"`): no auth header
 - treat the endpoint as full operator access for the gateway instance
-- for shared-secret auth modes (`token` and `password`), ignore narrower bearer-declared `x-openclaw-scopes` values and restore the normal full operator defaults
-- for trusted identity-bearing HTTP modes (for example trusted proxy auth or `gateway.auth.mode="none"`), honor `x-openclaw-scopes` when present and otherwise fall back to the normal operator default scope set
-- select agents with `model: "openclaw"`, `model: "openclaw/default"`, `model: "openclaw/<agentId>"`, or `x-openclaw-agent-id`
-- use `x-openclaw-model` when you want to override the selected agent's backend model
-- use `x-openclaw-session-key` for explicit session routing
-- use `x-openclaw-message-channel` when you want a non-default synthetic ingress channel context
+- for shared-secret auth modes (`token` and `password`), ignore narrower bearer-declared `x-eve-scopes` values and restore the normal full operator defaults
+- for trusted identity-bearing HTTP modes (for example trusted proxy auth or `gateway.auth.mode="none"`), honor `x-eve-scopes` when present and otherwise fall back to the normal operator default scope set
+- select agents with `model: "eve"`, `model: "eve/default"`, `model: "eve/<agentId>"`, or `x-eve-agent-id`
+- use `x-eve-model` when you want to override the selected agent's backend model
+- use `x-eve-session-key` for explicit session routing
+- use `x-eve-message-channel` when you want a non-default synthetic ingress channel context
 
 Auth matrix:
 
 - `gateway.auth.mode="token"` or `"password"` + `Authorization: Bearer ...`
   - proves possession of the shared gateway operator secret
-  - ignores narrower `x-openclaw-scopes`
+  - ignores narrower `x-eve-scopes`
   - restores the full default operator scope set:
     `operator.admin`, `operator.approvals`, `operator.pairing`,
     `operator.read`, `operator.talk.secrets`, `operator.write`
   - treats chat turns on this endpoint as owner-sender turns
 - trusted identity-bearing HTTP modes (for example trusted proxy auth, or `gateway.auth.mode="none"` on private ingress)
-  - honor `x-openclaw-scopes` when the header is present
+  - honor `x-eve-scopes` when the header is present
   - fall back to the normal operator default scope set when the header is absent
   - only lose owner semantics when the caller explicitly narrows scopes and omits `operator.admin`
 
@@ -56,7 +56,7 @@ The same compatibility surface also includes:
 - `POST /v1/embeddings`
 - `POST /v1/chat/completions`
 
-For the canonical explanation of how agent-target models, `openclaw/default`, embeddings pass-through, and backend model overrides fit together, see [OpenAI Chat Completions](/gateway/openai-http-api#agent-first-model-contract) and [Model list and agent routing](/gateway/openai-http-api#model-list-and-agent-routing).
+For the canonical explanation of how agent-target models, `eve/default`, embeddings pass-through, and backend model overrides fit together, see [OpenAI Chat Completions](/gateway/openai-http-api#agent-first-model-contract) and [Model list and agent routing](/gateway/openai-http-api#model-list-and-agent-routing).
 
 ## Session behavior
 
@@ -89,7 +89,7 @@ Accepted but **currently ignored**:
 
 Supported:
 
-- `previous_response_id`: OpenClaw reuses the earlier response session when the request stays within the same agent/user/requested-session scope.
+- `previous_response_id`: EVE reuses the earlier response session when the request stays within the same agent/user/requested-session scope.
 
 ## Items (input)
 
@@ -124,7 +124,7 @@ Provide tools with `tools: [{ type: "function", name, description?, parameters? 
 If the agent decides to call a tool, the response returns a `function_call` output item.
 You then send a follow-up request with `function_call_output` to continue the turn.
 
-For `tool_choice: "required"` and function-pinned `tool_choice`, the endpoint narrows the exposed client function-tool set, instructs the runtime to call a client tool before responding, and rejects the turn if it does not include a matching structured client-tool call. This contract applies to the caller-supplied HTTP `tools` list, not every internal OpenClaw agent tool. Non-streaming requests return `502` with an `api_error`; streaming requests emit a `response.failed` event. This matches the `/v1/chat/completions` contract.
+For `tool_choice: "required"` and function-pinned `tool_choice`, the endpoint narrows the exposed client function-tool set, instructs the runtime to call a client tool before responding, and rejects the turn if it does not include a matching structured client-tool call. This contract applies to the caller-supplied HTTP `tools` list, not every internal EVE agent tool. Non-streaming requests return `502` with an `api_error`; streaming requests emit a `response.failed` event. This matches the `/v1/chat/completions` contract.
 
 ## Images (`input_image`)
 
@@ -296,7 +296,7 @@ Event types currently emitted:
 ## Usage
 
 `usage` is populated when the underlying provider reports token counts.
-OpenClaw normalizes common OpenAI-style aliases before those counters reach
+EVE normalizes common OpenAI-style aliases before those counters reach
 downstream status/session surfaces, including `input_tokens` / `output_tokens`
 and `prompt_tokens` / `completion_tokens`.
 
@@ -322,9 +322,9 @@ Non-streaming:
 curl -sS http://127.0.0.1:18789/v1/responses \
   -H 'Authorization: Bearer YOUR_TOKEN' \
   -H 'Content-Type: application/json' \
-  -H 'x-openclaw-agent-id: main' \
+  -H 'x-eve-agent-id: main' \
   -d '{
-    "model": "openclaw",
+    "model": "eve",
     "input": "hi"
   }'
 ```
@@ -335,9 +335,9 @@ Streaming:
 curl -N http://127.0.0.1:18789/v1/responses \
   -H 'Authorization: Bearer YOUR_TOKEN' \
   -H 'Content-Type: application/json' \
-  -H 'x-openclaw-agent-id: main' \
+  -H 'x-eve-agent-id: main' \
   -d '{
-    "model": "openclaw",
+    "model": "eve",
     "stream": true,
     "input": "hi"
   }'

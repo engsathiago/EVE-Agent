@@ -93,7 +93,7 @@ async function withTranscript(
   messages: unknown[],
   run: (sessionFile: string, dir: string) => Promise<void>,
 ): Promise<void> {
-  const dir = await mkdtemp(join(tmpdir(), "openclaw-context-report-"));
+  const dir = await mkdtemp(join(tmpdir(), "eve-context-report-"));
   try {
     const sessionFile = join(dir, "session.jsonl");
     const lines = messages.map((message, index) =>

@@ -87,7 +87,7 @@ describe("resolveCodexPluginAppCacheEndpoint", () => {
           headers: {},
         },
         connectionClass: "remote",
-        remoteWorkspaceRoot: "/home/oai/openclaw-workspaces",
+        remoteWorkspaceRoot: "/home/oai/eve-workspaces",
       },
       runtimeIdentity: {
         serverVersion: "0.20.0",

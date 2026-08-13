@@ -1,7 +1,7 @@
 // Diagnostic support redaction helpers scrub support bundle files and paths.
 import path from "node:path";
-import { isSensitiveUrlQueryParamName } from "@openclaw/net-policy/redact-sensitive-url";
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
+import { isSensitiveUrlQueryParamName } from "@eve/net-policy/redact-sensitive-url";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
 import { isSecretRefShape } from "../config/redact-snapshot.secret-ref.js";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import { redactSensitiveText } from "./redact.js";
@@ -197,7 +197,7 @@ function addPathPrefixVariants(
 
 function pathRedactionPrefixes(options: SupportRedactionContext): PathRedactionPrefix[] {
   const prefixes = new Map<string, PathRedactionPrefix>();
-  addPathPrefixVariants(prefixes, options.stateDir, "$OPENCLAW_STATE_DIR");
+  addPathPrefixVariants(prefixes, options.stateDir, "$EVE_STATE_DIR");
   addPathPrefixVariants(prefixes, options.env.HOME, "~");
   addPathPrefixVariants(prefixes, options.env.USERPROFILE, "~");
   return [...prefixes.values()].toSorted((a, b) => b.prefix.length - a.prefix.length);

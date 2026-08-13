@@ -23,7 +23,7 @@ describe("OAuth refresh lock timeout classification", () => {
     const profileId = "openai:default";
     const provider = "openai";
     const refreshLockPath = resolveOAuthRefreshLockPath(provider, profileId);
-    const authStoreLockPath = resolveAuthStorePath("/tmp/openclaw-oauth-lock-timeout/agent");
+    const authStoreLockPath = resolveAuthStorePath("/tmp/eve-oauth-lock-timeout/agent");
 
     expect(
       isGlobalRefreshLockTimeoutError(

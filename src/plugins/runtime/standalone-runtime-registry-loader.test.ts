@@ -12,15 +12,15 @@ import {
 } from "../runtime.js";
 
 const loaderMocks = vi.hoisted(() => ({
-  loadOpenClawPlugins: vi.fn<typeof import("../loader.js").loadOpenClawPlugins>(),
+  loadEVEPlugins: vi.fn<typeof import("../loader.js").loadEVEPlugins>(),
 }));
 
 vi.mock("../loader.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../loader.js")>();
   return {
     ...actual,
-    loadOpenClawPlugins: (...args: Parameters<typeof loaderMocks.loadOpenClawPlugins>) =>
-      loaderMocks.loadOpenClawPlugins(...args),
+    loadEVEPlugins: (...args: Parameters<typeof loaderMocks.loadEVEPlugins>) =>
+      loaderMocks.loadEVEPlugins(...args),
   };
 });
 
@@ -37,7 +37,7 @@ function createRegistryWithPlugin(pluginId: string): PluginRegistry {
 }
 
 beforeEach(() => {
-  loaderMocks.loadOpenClawPlugins.mockReset();
+  loaderMocks.loadEVEPlugins.mockReset();
 });
 
 afterEach(() => {
@@ -77,7 +77,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded", () => {
     });
 
     expect(result).toBe(activeRegistry);
-    expect(loaderMocks.loadOpenClawPlugins).not.toHaveBeenCalled();
+    expect(loaderMocks.loadEVEPlugins).not.toHaveBeenCalled();
   });
 
   it("loads a fresh registry when dispatch config is not startup-compatible", () => {
@@ -99,7 +99,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded", () => {
     const { cacheKey } = testing.resolvePluginLoadCacheContext(startupLoadOptions);
     setActivePluginRegistry(activeRegistry, cacheKey, "gateway-bindable", "/tmp/ws");
     const loadedRegistry = createRegistryWithPlugin("telegram");
-    loaderMocks.loadOpenClawPlugins.mockReturnValue(loadedRegistry);
+    loaderMocks.loadEVEPlugins.mockReturnValue(loadedRegistry);
 
     const result = ensureStandaloneRuntimePluginRegistryLoaded({
       loadOptions: {
@@ -118,7 +118,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded", () => {
     });
 
     expect(result).toBe(loadedRegistry);
-    expect(loaderMocks.loadOpenClawPlugins).toHaveBeenCalledOnce();
+    expect(loaderMocks.loadEVEPlugins).toHaveBeenCalledOnce();
   });
 });
 
@@ -129,7 +129,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded tool-discovery installs", 
     const channelRegistry = createRegistryWithPlugin("channel-plugin");
     pinActivePluginChannelRegistry(channelRegistry);
     const toolRegistry = createRegistryWithPlugin("tool-plugin");
-    loaderMocks.loadOpenClawPlugins.mockReturnValue(toolRegistry);
+    loaderMocks.loadEVEPlugins.mockReturnValue(toolRegistry);
 
     ensureStandaloneRuntimePluginRegistryLoaded({
       surface: "channel",
@@ -150,7 +150,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded tool-discovery installs", 
     const activeRegistry = createRegistryWithPlugin("provider-only");
     setActivePluginRegistry(activeRegistry, "active-key", "default", "/tmp/ws");
     const toolRegistry = createRegistryWithPlugin("tool-plugin");
-    loaderMocks.loadOpenClawPlugins.mockReturnValue(toolRegistry);
+    loaderMocks.loadEVEPlugins.mockReturnValue(toolRegistry);
 
     const result = ensureStandaloneRuntimePluginRegistryLoaded({
       surface: "active",
@@ -172,7 +172,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded tool-discovery installs", 
     const activeRegistry = createRegistryWithPlugin("provider-only");
     setActivePluginRegistry(activeRegistry, "active-key", "default", "/tmp/ws");
     const migrationRegistry = createRegistryWithPlugin("migration-plugin");
-    loaderMocks.loadOpenClawPlugins.mockReturnValue(migrationRegistry);
+    loaderMocks.loadEVEPlugins.mockReturnValue(migrationRegistry);
 
     ensureStandaloneRuntimePluginRegistryLoaded({
       surface: "active",
@@ -194,7 +194,7 @@ describe("ensureStandaloneRuntimePluginRegistryLoaded tool-discovery installs", 
     // Establish the cold-start precondition deterministically (no active registry).
     resetPluginRuntimeStateForTest();
     const toolRegistry = createRegistryWithPlugin("tool-plugin");
-    loaderMocks.loadOpenClawPlugins.mockReturnValue(toolRegistry);
+    loaderMocks.loadEVEPlugins.mockReturnValue(toolRegistry);
 
     const result = ensureStandaloneRuntimePluginRegistryLoaded({
       surface: "channel",

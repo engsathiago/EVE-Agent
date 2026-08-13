@@ -123,7 +123,7 @@ function runVitestSpec(spec) {
 }
 
 function applyDefaultParallelVitestWorkerBudget(specs, env) {
-  if (env.OPENCLAW_VITEST_MAX_WORKERS || env.OPENCLAW_TEST_WORKERS || isCiLikeEnv(env)) {
+  if (env.EVE_VITEST_MAX_WORKERS || env.EVE_TEST_WORKERS || isCiLikeEnv(env)) {
     return specs;
   }
   const { vitestMaxWorkers } = resolveLocalFullSuiteProfile(env);
@@ -131,7 +131,7 @@ function applyDefaultParallelVitestWorkerBudget(specs, env) {
     ...spec,
     env: {
       ...spec.env,
-      OPENCLAW_VITEST_MAX_WORKERS: String(vitestMaxWorkers),
+      EVE_VITEST_MAX_WORKERS: String(vitestMaxWorkers),
     },
   }));
 }
@@ -196,7 +196,7 @@ function printNoChangedTestTargets(args, cwd, baseEnv) {
   for (const changedPath of skippedBroadFallbackPaths) {
     console.error(`[test]   ${changedPath}`);
   }
-  console.error("[test] run `OPENCLAW_TEST_CHANGED_BROAD=1 pnpm test:changed` for broad coverage.");
+  console.error("[test] run `EVE_TEST_CHANGED_BROAD=1 pnpm test:changed` for broad coverage.");
 }
 
 async function runVitestSpecsParallel(specs, concurrency) {
@@ -311,7 +311,7 @@ async function main() {
     changedTargetArgs === null &&
     !runSpecs.some((spec) => spec.watchMode);
   const isExplicitParallelMultiConfigRun =
-    Boolean(baseEnv.OPENCLAW_TEST_PROJECTS_PARALLEL) &&
+    Boolean(baseEnv.EVE_TEST_PROJECTS_PARALLEL) &&
     runSpecs.length > 1 &&
     !runSpecs.some((spec) => spec.watchMode);
   const isParallelShardRun =
@@ -335,9 +335,9 @@ async function main() {
       );
       if (
         !isCiLikeEnv(baseEnv) &&
-        !baseEnv.OPENCLAW_TEST_PROJECTS_PARALLEL &&
-        !baseEnv.OPENCLAW_VITEST_MAX_WORKERS &&
-        !baseEnv.OPENCLAW_TEST_WORKERS &&
+        !baseEnv.EVE_TEST_PROJECTS_PARALLEL &&
+        !baseEnv.EVE_VITEST_MAX_WORKERS &&
+        !baseEnv.EVE_TEST_WORKERS &&
         localFullSuiteProfile.shardParallelism === 10 &&
         localFullSuiteProfile.vitestMaxWorkers === 2
       ) {

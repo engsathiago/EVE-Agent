@@ -1,5 +1,5 @@
 ---
-summary: "Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to OpenClaw."
+summary: "Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the qwen plugin
 title: "Qwen plugin"
@@ -7,12 +7,12 @@ title: "Qwen plugin"
 
 # Qwen plugin
 
-Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to OpenClaw.
+Adds Qwen, Qwen Cloud, Model Studio, DashScope, Qwen Oauth, Qwen Portal, Qwen CLI model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/qwen-provider`
-- Install route: npm; ClawHub: `clawhub:@openclaw/qwen-provider`
+- Package: `@eve/qwen-provider`
+- Install route: npm; ClawHub: `clawhub:@eve/qwen-provider`
 
 ## Surface
 

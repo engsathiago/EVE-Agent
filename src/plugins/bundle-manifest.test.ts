@@ -1,4 +1,4 @@
-/** Tests bundle manifest parsing for Codex, Claude, Cursor, and OpenClaw formats. */
+/** Tests bundle manifest parsing for Codex, Claude, Cursor, and EVE formats. */
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -29,7 +29,7 @@ type ReadonlyBundleManifestExpectation = Omit<
 const tempDirs: string[] = [];
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-bundle-manifest", tempDirs);
+  return makeTrackedTempDir("eve-bundle-manifest", tempDirs);
 }
 
 const mkdirSafe = mkdirSafeDir;
@@ -145,9 +145,9 @@ afterEach(() => {
 });
 
 describe("bundle manifest parsing", () => {
-  it("does not treat openclaw.bundle.json as a bundle manifest", () => {
+  it("does not treat eve.bundle.json as a bundle manifest", () => {
     const rootDir = makeTempDir();
-    writeBundleManifest(rootDir, "openclaw.bundle.json", {
+    writeBundleManifest(rootDir, "eve.bundle.json", {
       name: "Not Real",
       skills: ["skills"],
     });

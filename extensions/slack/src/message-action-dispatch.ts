@@ -1,17 +1,17 @@
 // Slack plugin module implements message action dispatch behavior.
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-resolution";
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import { readBooleanParam } from "openclaw/plugin-sdk/boolean-param";
-import type { ChannelMessageActionContext } from "openclaw/plugin-sdk/channel-contract";
+import { normalizeAccountId } from "eve-agent/plugin-sdk/account-resolution";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
+import { readBooleanParam } from "eve-agent/plugin-sdk/boolean-param";
+import type { ChannelMessageActionContext } from "eve-agent/plugin-sdk/channel-contract";
 import {
   normalizeInteractiveReply,
   normalizeMessagePresentation,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { readPositiveIntegerParam, readStringParam } from "openclaw/plugin-sdk/param-readers";
+} from "eve-agent/plugin-sdk/interactive-runtime";
+import { readPositiveIntegerParam, readStringParam } from "eve-agent/plugin-sdk/param-readers";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveDefaultSlackAccountId } from "./accounts.js";
 import {
   buildSlackInteractiveBlocks,

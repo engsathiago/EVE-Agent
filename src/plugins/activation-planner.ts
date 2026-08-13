@@ -1,8 +1,8 @@
 /** Computes which manifest-owned plugins need activation for commands, routes, providers, or capabilities. */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.js";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import { uniqueStrings } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../config/types.js";
 import { normalizePluginsConfig } from "./config-state.js";
 import { passesManifestOwnerBasePolicy } from "./manifest-owner-policy.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
@@ -56,7 +56,7 @@ export type PluginActivationPlan = {
 
 type ResolveManifestActivationPlanParams = {
   trigger: PluginActivationPlannerTrigger;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   env?: NodeJS.ProcessEnv;
   origin?: PluginOrigin;

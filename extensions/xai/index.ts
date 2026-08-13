@@ -1,8 +1,8 @@
-// Xai plugin entrypoint registers its OpenClaw integration.
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { OPENAI_COMPATIBLE_REPLAY_HOOKS } from "openclaw/plugin-sdk/provider-model-shared";
-import { defaultToolStreamExtraParams } from "openclaw/plugin-sdk/provider-stream-shared";
-import { jsonResult } from "openclaw/plugin-sdk/provider-web-search";
+// Xai plugin entrypoint registers its EVE integration.
+import { defineSingleProviderPluginEntry } from "eve-agent/plugin-sdk/provider-entry";
+import { OPENAI_COMPATIBLE_REPLAY_HOOKS } from "eve-agent/plugin-sdk/provider-model-shared";
+import { defaultToolStreamExtraParams } from "eve-agent/plugin-sdk/provider-stream-shared";
+import { jsonResult } from "eve-agent/plugin-sdk/provider-web-search";
 import {
   applyXaiRuntimeModelCompat,
   buildXaiImageGenerationProvider,
@@ -185,7 +185,7 @@ export default defineSingleProviderPluginEntry({
         const auth = ctx.resolveProviderAuth(PROVIDER_ID);
         try {
           const { resolveApiKeyForProvider } =
-            await import("openclaw/plugin-sdk/provider-auth-runtime");
+            await import("eve-agent/plugin-sdk/provider-auth-runtime");
           const runtimeAuth = await resolveApiKeyForProvider({
             provider: PROVIDER_ID,
             cfg: ctx.config,

@@ -1,5 +1,5 @@
 // Channel Message Flows tests cover QA Lab channel delivery evidence.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it, vi } from "vitest";
 import {
   resolveTelegramFlowThreadSpec,
@@ -49,7 +49,7 @@ describe("channel message flows QA e2e", () => {
     const result = await runTelegramThinkingFinalFlow(
       {
         accountId: "sut",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         delayMs: 0,
         target: "123",
         threadId: 42,
@@ -94,7 +94,7 @@ describe("channel message flows QA e2e", () => {
     await expect(
       runTelegramThinkingFinalFlow(
         {
-          cfg: {} as OpenClawConfig,
+          cfg: {} as EVEConfig,
           delayMs: 0,
           target: "123",
           thinkingUpdates: ["Checking the request."],
@@ -125,7 +125,7 @@ describe("channel message flows QA e2e", () => {
     await expect(
       runTelegramThinkingFinalFlow(
         {
-          cfg: {} as OpenClawConfig,
+          cfg: {} as EVEConfig,
           delayMs: 0,
           target: "123",
           thinkingUpdates: ["Checking the request."],
@@ -145,7 +145,7 @@ describe("channel message flows QA e2e", () => {
 
     const result = await runTelegramWorkingFinalFlow(
       {
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         delayMs: 0,
         durationMs: 12_000,
         target: "123",
@@ -191,7 +191,7 @@ describe("channel message flows QA e2e", () => {
     await expect(
       runTelegramWorkingFinalFlow(
         {
-          cfg: {} as OpenClawConfig,
+          cfg: {} as EVEConfig,
           delayMs: 0,
           durationMs: 12_000,
           target: "123",
@@ -214,7 +214,7 @@ describe("channel message flows QA e2e", () => {
     await expect(
       runTelegramWorkingFinalFlow(
         {
-          cfg: {} as OpenClawConfig,
+          cfg: {} as EVEConfig,
           delayMs: 0,
           durationMs: 12_000,
           target: "123",
@@ -234,7 +234,7 @@ describe("channel message flows QA e2e", () => {
 
     const result = await runTelegramWorkingFinalFlow(
       {
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         durationMs: 20_000,
         target: "123",
       },

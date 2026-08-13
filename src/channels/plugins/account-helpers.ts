@@ -3,9 +3,9 @@
  *
  * Lists configured accounts and resolves default-account behavior for plugin configs.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
+import type { EVEConfig } from "../../config/types.eve.js";
 import {
   resolveAccountEntry,
   resolveNormalizedAccountEntry,
@@ -29,10 +29,10 @@ export function createAccountListHelpers(
       channelKeys?: readonly string[];
       envVars?: readonly string[];
     };
-    hasImplicitDefaultAccount?: (cfg: OpenClawConfig) => boolean;
+    hasImplicitDefaultAccount?: (cfg: EVEConfig) => boolean;
   },
 ) {
-  function hasImplicitDefaultAccount(cfg: OpenClawConfig): boolean {
+  function hasImplicitDefaultAccount(cfg: EVEConfig): boolean {
     // Legacy single-account configs and env-only setup imply the default account even when
     // channels.<id>.accounts is absent.
     if (options?.hasImplicitDefaultAccount?.(cfg)) {
@@ -52,7 +52,7 @@ export function createAccountListHelpers(
     return false;
   }
 
-  function resolveConfiguredDefaultAccountId(cfg: OpenClawConfig): string | undefined {
+  function resolveConfiguredDefaultAccountId(cfg: EVEConfig): string | undefined {
     const channel = cfg.channels?.[channelKey] as Record<string, unknown> | undefined;
     const preferred = normalizeOptionalAccountId(
       typeof channel?.defaultAccount === "string" ? channel.defaultAccount : undefined,
@@ -71,7 +71,7 @@ export function createAccountListHelpers(
     return undefined;
   }
 
-  function listConfiguredAccountIds(cfg: OpenClawConfig): string[] {
+  function listConfiguredAccountIds(cfg: EVEConfig): string[] {
     const channel = cfg.channels?.[channelKey];
     const accounts = (channel as Record<string, unknown> | undefined)?.accounts;
     if (!accounts || typeof accounts !== "object") {
@@ -85,7 +85,7 @@ export function createAccountListHelpers(
     return normalizeUniqueStringEntries(ids.map((id) => normalizeConfiguredAccountId(id)));
   }
 
-  function listAccountIds(cfg: OpenClawConfig): string[] {
+  function listAccountIds(cfg: EVEConfig): string[] {
     return listCombinedAccountIds({
       configuredAccountIds: listConfiguredAccountIds(cfg),
       implicitAccountId: hasImplicitDefaultAccount(cfg) ? DEFAULT_ACCOUNT_ID : undefined,
@@ -93,7 +93,7 @@ export function createAccountListHelpers(
     });
   }
 
-  function resolveDefaultAccountId(cfg: OpenClawConfig): string {
+  function resolveDefaultAccountId(cfg: EVEConfig): string {
     return resolveListedDefaultAccountId({
       accountIds: listAccountIds(cfg),
       configuredDefaultAccountId: resolveConfiguredDefaultAccountId(cfg),

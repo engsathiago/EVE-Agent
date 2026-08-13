@@ -1,5 +1,5 @@
 /** Main agent command orchestration for sessions, model selection, delivery, and attempts. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import { resolveInlineAgentImageAttachments } from "../auto-reply/reply/agent-turn-attachments.js";
 import { sanitizePendingFinalDeliveryText } from "../auto-reply/reply/pending-final-delivery.js";
@@ -16,7 +16,7 @@ import { formatCliCommand } from "../cli/command-format.js";
 import type { CliDeps } from "../cli/deps.types.js";
 import { getRuntimeConfig } from "../config/io.js";
 import type { SessionEntry } from "../config/sessions/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { withLocalGatewayRequestScope } from "../gateway/local-request-context.js";
 import {
   assertAgentRunLifecycleGenerationCurrent,
@@ -142,7 +142,7 @@ import { ensureAgentWorkspace } from "./workspace.js";
 const log = createSubsystemLogger("agents/agent-command");
 
 function hasExactConfiguredProviderModel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
 }): boolean {
@@ -160,7 +160,7 @@ function hasExactConfiguredProviderModel(params: {
   return false;
 }
 
-function hasConfiguredProvider(params: { cfg: OpenClawConfig; provider: string }): boolean {
+function hasConfiguredProvider(params: { cfg: EVEConfig; provider: string }): boolean {
   const normalizedProvider = normalizeProviderId(params.provider);
   if (!normalizedProvider) {
     return false;
@@ -171,7 +171,7 @@ function hasConfiguredProvider(params: { cfg: OpenClawConfig; provider: string }
 }
 
 function allowPluginModelNormalizationForRef(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   provider: string;
   model: string;
 }): boolean {
@@ -182,7 +182,7 @@ function allowPluginModelNormalizationForRef(params: {
 }
 
 function normalizeAgentCommandModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   provider: string,
   model: string,
   modelManifestContext: ModelManifestNormalizationContext,
@@ -194,7 +194,7 @@ function normalizeAgentCommandModelRef(
 }
 
 function normalizeAgentCommandDefaultModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   provider: string,
   model: string,
   modelManifestContext: ModelManifestNormalizationContext,
@@ -212,7 +212,7 @@ function normalizeAgentCommandDefaultModelRef(
 }
 
 function parseAgentCommandModelRef(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   raw: string,
   defaultProvider: string,
   modelManifestContext: ModelManifestNormalizationContext,
@@ -257,7 +257,7 @@ function applyAgentRunAbortMetadata<T extends { meta: object }>(
 type AcpManagerRuntime = typeof import("../acp/control-plane/manager.js");
 type AcpPolicyRuntime = typeof import("../acp/policy.js");
 type AcpRuntimeErrorsRuntime = typeof import("../acp/runtime/errors.js");
-type AcpSessionIdentifiersRuntime = typeof import("@openclaw/acp-core/runtime/session-identifiers");
+type AcpSessionIdentifiersRuntime = typeof import("@eve/acp-core/runtime/session-identifiers");
 type DeliveryRuntime = typeof import("./command/delivery.runtime.js");
 type SessionStoreRuntime = typeof import("./command/session-store.runtime.js");
 type CliCompactionRuntime = typeof import("./command/cli-compaction.js");
@@ -282,7 +282,7 @@ const acpRuntimeErrorsRuntimeLoader = createLazyImportLoader<AcpRuntimeErrorsRun
   () => import("../acp/runtime/errors.js"),
 );
 const acpSessionIdentifiersRuntimeLoader = createLazyImportLoader<AcpSessionIdentifiersRuntime>(
-  () => import("@openclaw/acp-core/runtime/session-identifiers"),
+  () => import("@eve/acp-core/runtime/session-identifiers"),
 );
 const deliveryRuntimeLoader = createLazyImportLoader<DeliveryRuntime>(
   () => import("./command/delivery.runtime.js"),
@@ -432,7 +432,7 @@ function clearPendingFinalDeliveryFields(entry: SessionEntry, updatedAt: number)
 }
 
 async function resolveCurrentRunDeliveryContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   opts: AgentCommandOpts;
   sessionEntry?: SessionEntry;
 }): Promise<DeliveryContext | undefined> {
@@ -596,7 +596,7 @@ function resolveExplicitAgentCommandSessionKey(params: {
   rawExplicitSessionKey?: string;
   agentIdOverride?: string;
   shouldScopeDefaultAgentKey?: boolean;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): string | undefined {
   if (
     isUnscopedSessionKeySentinel(params.rawExplicitSessionKey) &&
@@ -649,7 +649,7 @@ async function prepareAgentCommandExecution(opts: AgentCommandOpts, runtime: Run
     const knownAgents = listAgentIds(cfg);
     if (!knownAgents.includes(agentIdOverride)) {
       throw new Error(
-        `Unknown agent id "${agentIdOverrideRaw}". Use "${formatCliCommand("openclaw agents list")}" to see configured agents.`,
+        `Unknown agent id "${agentIdOverrideRaw}". Use "${formatCliCommand("eve agents list")}" to see configured agents.`,
       );
     }
   }

@@ -2,7 +2,7 @@
 // inbound-processing.ts drops every group message when groupPolicy="allowlist"
 // and channels.imessage.groups is missing. Without these warnings the drop is
 // invisible at default log level during iMessage config migration. See
-// https://github.com/openclaw/openclaw/issues/78749.
+// https://github.com/engsathiago/eve-agent/issues/78749.
 
 type GroupsConfig = Record<
   string,

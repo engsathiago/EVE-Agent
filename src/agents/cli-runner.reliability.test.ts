@@ -11,7 +11,7 @@ import {
 } from "../auto-reply/reply/reply-run-registry.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import { CURRENT_SESSION_VERSION } from "../config/sessions/version.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   markMcpLoopbackRequestClassified,
   markMcpLoopbackRequestFinished,
@@ -61,7 +61,7 @@ vi.mock("../tts/tts.js", () => ({
 
 const mockGetGlobalHookRunner = vi.mocked(getGlobalHookRunner);
 const mockAutoCapture = vi.mocked(runSkillResearchAutoCapture);
-const hookRunnerGlobalStateKey = Symbol.for("openclaw.plugins.hook-runner-global-state");
+const hookRunnerGlobalStateKey = Symbol.for("eve.plugins.hook-runner-global-state");
 let sessionFileEnvSnapshot: ReturnType<typeof captureEnv> | undefined;
 
 type HookRunnerGlobalStateForTest = {
@@ -87,9 +87,9 @@ function setHookRunnerForTest(hookRunner: unknown): void {
 function createSessionFile(params?: { history?: Array<{ role: "user"; content: string }> }) {
   // Session files use the real JSONL shape so transcript/history readers stay
   // covered without spinning up a full CLI process.
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-cli-hooks-"));
-  sessionFileEnvSnapshot ??= captureEnv(["OPENCLAW_STATE_DIR"]);
-  setTestEnvValue("OPENCLAW_STATE_DIR", dir);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-cli-hooks-"));
+  sessionFileEnvSnapshot ??= captureEnv(["EVE_STATE_DIR"]);
+  setTestEnvValue("EVE_STATE_DIR", dir);
   const sessionFile = path.join(dir, "agents", "main", "sessions", "s1.jsonl");
   const storePath = path.join(path.dirname(sessionFile), "sessions.json");
   fs.mkdirSync(path.dirname(sessionFile), { recursive: true });
@@ -157,7 +157,7 @@ function buildPreparedContext(params?: {
   cliSessionId?: string;
   runId?: string;
   lane?: string;
-  openClawHistoryPrompt?: string;
+  eveHistoryPrompt?: string;
   provider?: string;
   model?: string;
   executionMode?: PreparedCliRunContext["params"]["executionMode"];
@@ -216,8 +216,8 @@ function buildPreparedContext(params?: {
     systemPrompt: "You are a helpful assistant.",
     systemPromptReport: {} as PreparedCliRunContext["systemPromptReport"],
     bootstrapPromptWarningLines: [],
-    ...(params?.openClawHistoryPrompt
-      ? { openClawHistoryPrompt: params.openClawHistoryPrompt }
+    ...(params?.eveHistoryPrompt
+      ? { eveHistoryPrompt: params.eveHistoryPrompt }
       : {}),
     authEpochVersion: 2,
   };
@@ -292,7 +292,7 @@ function readTranscriptMessages(sessionFile: string): unknown[] {
 }
 
 const CLI_RESEED_PROMPT =
-  "Continue this conversation using the OpenClaw transcript below as prior session history.\n\n<conversation_history>\nUser: earlier context\n</conversation_history>\n\n<next_user_message>\nhi\n</next_user_message>";
+  "Continue this conversation using the EVE transcript below as prior session history.\n\n<conversation_history>\nUser: earlier context\n</conversation_history>\n\n<next_user_message>\nhi\n</next_user_message>";
 
 describe("runCliAgent reliability", () => {
   afterEach(() => {
@@ -582,7 +582,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
 
     const result = await runPreparedCliAgent(context);
@@ -595,7 +595,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockClear();
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
-      const captureKey = input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "";
+      const captureKey = input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "";
       const captureHandle = markMcpLoopbackToolCallStarted({
         captureKey,
         toolName: "message",
@@ -643,7 +643,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     context.mcpDeliveryCapture = true;
 
@@ -661,12 +661,12 @@ describe("runCliAgent reliability", () => {
     expect(supervisorSpawnMock).toHaveBeenCalledTimes(1);
   });
 
-  it("preserves first-turn delivery through cleanup without binding the OpenClaw session id", async () => {
+  it("preserves first-turn delivery through cleanup without binding the EVE session id", async () => {
     supervisorSpawnMock.mockClear();
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -740,7 +740,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -814,7 +814,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -892,7 +892,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -957,7 +957,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -1016,7 +1016,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -1099,7 +1099,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "react",
@@ -1137,7 +1137,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     context.mcpDeliveryCapture = true;
 
@@ -1161,7 +1161,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackRequestStarted(
-        input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
       );
       if (!captureHandle) {
         throw new Error("Expected request delivery capture");
@@ -1184,7 +1184,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     context.mcpDeliveryCapture = true;
 
@@ -1208,7 +1208,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const requestCaptureHandle = markMcpLoopbackRequestStarted(
-        input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
       );
       if (!requestCaptureHandle) {
         throw new Error("Expected request delivery capture");
@@ -1237,7 +1237,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     context.mcpDeliveryCapture = true;
 
@@ -1260,7 +1260,7 @@ describe("runCliAgent reliability", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: {
           action: "send",
@@ -1297,7 +1297,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     context.mcpDeliveryCapture = true;
 
@@ -1331,7 +1331,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
 
     await expect(
@@ -1369,7 +1369,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     const expiredBudgetContext = {
       ...context,
@@ -1412,7 +1412,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
 
     await expect(
@@ -1451,7 +1451,7 @@ describe("runCliAgent reliability", () => {
       cliSessionId: "stale-cli-session",
       provider: "claude-cli",
       model: "opus",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
 
     await expect(
@@ -1538,7 +1538,7 @@ describe("runCliAgent reliability", () => {
           cliSessionId: "stale-cli-session",
           provider: "claude-cli",
           model: "opus",
-          openClawHistoryPrompt: CLI_RESEED_PROMPT,
+          eveHistoryPrompt: CLI_RESEED_PROMPT,
         });
         const result = await runPreparedCliAgent({
           ...context,
@@ -1620,7 +1620,7 @@ describe("runCliAgent reliability", () => {
       sessionKey: "agent:main:subagent:retry",
       runId: "run-retry-failure",
       cliSessionId: "thread-123",
-      openClawHistoryPrompt: CLI_RESEED_PROMPT,
+      eveHistoryPrompt: CLI_RESEED_PROMPT,
     });
     const clearBeforeRetry = vi.fn(async () => true);
 
@@ -1700,7 +1700,7 @@ describe("runCliAgent reliability", () => {
   it("marks CLI runs as paused after sessions_yield", async () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
-      const captureHandle = markMcpLoopbackRequestStarted(input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY);
+      const captureHandle = markMcpLoopbackRequestStarted(input.env?.EVE_MCP_CLI_CAPTURE_KEY);
       await resolveMcpLoopbackYieldContext(captureHandle)?.onYield("waiting on subagents");
       markMcpLoopbackRequestFinished(captureHandle);
       input.onStdout?.("yield acknowledged");
@@ -1732,7 +1732,7 @@ describe("runCliAgent reliability", () => {
     });
   });
 
-  it("seeds fresh CLI sessions from the OpenClaw transcript", async () => {
+  it("seeds fresh CLI sessions from the EVE transcript", async () => {
     supervisorSpawnMock.mockResolvedValueOnce(
       createManagedRun({
         reason: "exit",
@@ -1748,8 +1748,8 @@ describe("runCliAgent reliability", () => {
 
     const result = await runPreparedCliAgent(
       buildPreparedContext({
-        openClawHistoryPrompt:
-          "Continue this conversation using the OpenClaw transcript below.\n\nUser: earlier ask\n\nAssistant: earlier answer\n\n<next_user_message>\nhi\n</next_user_message>",
+        eveHistoryPrompt:
+          "Continue this conversation using the EVE transcript below.\n\nUser: earlier ask\n\nAssistant: earlier answer\n\n<next_user_message>\nhi\n</next_user_message>",
       }),
     );
 
@@ -1774,7 +1774,7 @@ describe("runCliAgent reliability", () => {
     const result = await runPreparedCliAgent(
       buildPreparedContext({
         cliSessionId: "cli-session",
-        openClawHistoryPrompt: "User: earlier ask",
+        eveHistoryPrompt: "User: earlier ask",
       }),
     );
 
@@ -2402,7 +2402,7 @@ describe("runCliAgent reliability", () => {
       }),
     );
     const { dir, sessionFile } = createSessionFile();
-    const taskDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-cli-persist-cwd-"));
+    const taskDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-cli-persist-cwd-"));
     let capturedTarget: unknown;
     const recorder = {
       message: undefined,
@@ -2581,7 +2581,7 @@ describe("runCliAgent reliability", () => {
 
   it("does not execute the CLI when approved user turn persistence fails", async () => {
     supervisorSpawnMock.mockClear();
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-cli-persist-fail-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-cli-persist-fail-"));
     const blockedParent = path.join(dir, "not-a-directory");
     fs.writeFileSync(blockedParent, "occupied", "utf-8");
     const onUserMessagePersisted = vi.fn();
@@ -2741,11 +2741,11 @@ describe("runCliAgent reliability", () => {
       );
       expect(JSON.stringify(blockedLine)).not.toContain("secret prompt");
       expect(JSON.stringify(blockedLine)).not.toContain("matched secret prompt");
-      expect(blockedLine.message["__openclaw"].beforeAgentRunBlocked.blockedBy).toBe(
+      expect(blockedLine.message["__eve"].beforeAgentRunBlocked.blockedBy).toBe(
         "policy-plugin",
       );
-      expect(blockedLine.message["__openclaw"].beforeAgentRunBlocked).not.toHaveProperty("reason");
-      expect(Object.hasOwn(blockedLine.message["__openclaw"], "beforeAgentRunBlocked")).toBe(true);
+      expect(blockedLine.message["__eve"].beforeAgentRunBlocked).not.toHaveProperty("reason");
+      expect(Object.hasOwn(blockedLine.message["__eve"], "beforeAgentRunBlocked")).toBe(true);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -2985,8 +2985,8 @@ describe("runCliAgent reliability", () => {
       sessionKey: "agent:main:main",
       runId: "run-retry-success",
       cliSessionId: "thread-123",
-      openClawHistoryPrompt:
-        "Continue this conversation using the OpenClaw transcript below.\n\nUser: recovered history\n\n<next_user_message>\nhi\n</next_user_message>",
+      eveHistoryPrompt:
+        "Continue this conversation using the EVE transcript below.\n\nUser: recovered history\n\n<next_user_message>\nhi\n</next_user_message>",
     });
     const clearBeforeRetry = vi.fn(async () => true);
 
@@ -3081,7 +3081,7 @@ describe("runCliAgent reliability", () => {
       })}\n`,
       "utf-8",
     );
-    const config: OpenClawConfig = {
+    const config: EVEConfig = {
       agents: {
         defaults: {
           workspace: dir,
@@ -3118,9 +3118,9 @@ describe("runCliAgent reliability", () => {
       });
 
       expect(context.params.prompt).toBe("hook context\n\ncurrent ask");
-      expect(context.openClawHistoryPrompt).toContain("Compaction summary: compacted earlier ask");
-      expect(context.openClawHistoryPrompt).toContain("hook context");
-      expect(context.openClawHistoryPrompt).toContain("current ask");
+      expect(context.eveHistoryPrompt).toContain("Compaction summary: compacted earlier ask");
+      expect(context.eveHistoryPrompt).toContain("hook context");
+      expect(context.eveHistoryPrompt).toContain("current ask");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

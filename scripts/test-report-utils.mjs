@@ -65,7 +65,7 @@ function validateVitestJsonReport(reportPath) {
 export function runVitestJsonReport({
   config,
   reportPath = "",
-  prefix = "openclaw-vitest-report",
+  prefix = "eve-vitest-report",
 }) {
   const resolvedReportPath = reportPath || path.join(os.tmpdir(), `${prefix}-${Date.now()}.json`);
 

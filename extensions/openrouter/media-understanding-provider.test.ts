@@ -2,7 +2,7 @@
 import {
   describeImageWithModel,
   describeImagesWithModel,
-} from "openclaw/plugin-sdk/media-understanding";
+} from "eve-agent/plugin-sdk/media-understanding";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   openrouterMediaUnderstandingProvider,
@@ -21,7 +21,7 @@ const { assertOkOrThrowHttpErrorMock, postJsonRequestMock, resolveProviderHttpRe
     })),
   }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-http", () => ({
   assertOkOrThrowHttpError: assertOkOrThrowHttpErrorMock,
   postJsonRequest: postJsonRequestMock,
   requireTranscriptionText: (value: string | undefined, message: string) => {
@@ -93,8 +93,8 @@ describe("openrouter media understanding provider", () => {
       defaultHeaders: {
         Authorization: "Bearer sk-openrouter",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://openclaw.ai",
-        "X-OpenRouter-Title": "OpenClaw",
+        "HTTP-Referer": "https://eve.ai",
+        "X-OpenRouter-Title": "EVE",
       },
       provider: "openrouter",
       api: "openrouter-stt",
@@ -123,8 +123,8 @@ describe("openrouter media understanding provider", () => {
       throw new Error("expected OpenRouter request headers");
     }
     expect(headers.get("authorization")).toBe("Bearer sk-openrouter");
-    expect(headers.get("http-referer")).toBe("https://openclaw.ai");
-    expect(headers.get("x-openrouter-title")).toBe("OpenClaw");
+    expect(headers.get("http-referer")).toBe("https://eve.ai");
+    expect(headers.get("x-openrouter-title")).toBe("EVE");
     expect(release).toHaveBeenCalledOnce();
   });
 

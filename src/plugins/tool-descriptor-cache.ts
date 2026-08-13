@@ -4,7 +4,7 @@ import type { AnyAgentTool } from "../agents/tools/common.js";
 import { resolveRuntimeConfigCacheKey } from "../config/runtime-snapshot.js";
 import type { JsonObject, ToolDescriptor } from "../tools/types.js";
 import type { PluginLoadOptions } from "./loader.js";
-import type { OpenClawPluginToolContext } from "./types.js";
+import type { EVEPluginToolContext } from "./types.js";
 
 const PLUGIN_TOOL_DESCRIPTOR_CACHE_VERSION = 1;
 const PLUGIN_TOOL_DESCRIPTOR_CACHE_LIMIT = 256;
@@ -90,7 +90,7 @@ function getDescriptorConfigCacheKey(
 }
 
 function buildDescriptorContextCacheKey(params: {
-  ctx: OpenClawPluginToolContext;
+  ctx: EVEPluginToolContext;
   currentRuntimeConfig?: PluginLoadOptions["config"] | null;
   configCacheKeyMemo?: PluginToolDescriptorConfigCacheKeyMemo;
 }): string {
@@ -121,7 +121,7 @@ export function buildPluginToolDescriptorCacheKey(params: {
   source: string;
   rootDir?: string;
   contractToolNames: readonly string[];
-  ctx: OpenClawPluginToolContext;
+  ctx: EVEPluginToolContext;
   currentRuntimeConfig?: PluginLoadOptions["config"] | null;
   configCacheKeyMemo?: PluginToolDescriptorConfigCacheKeyMemo;
 }): string {

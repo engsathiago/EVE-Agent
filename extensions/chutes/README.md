@@ -1,12 +1,12 @@
-# OpenClaw Chutes Provider
+# EVE Chutes Provider
 
-Official OpenClaw provider plugin for Chutes.
+Official EVE provider plugin for Chutes.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/chutes-provider
-openclaw gateway restart
+eve plugins install @eve/chutes-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/chutes> for setup and configuration.
+See <https://docs.eve.ai/providers/chutes> for setup and configuration.

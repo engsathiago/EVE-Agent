@@ -1,10 +1,10 @@
 /** Reads installed-index records back into manifest registry records. */
 import fs from "node:fs";
 import path from "node:path";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { tryReadJsonSync } from "../infra/json-files.js";
-import { openOpenClawStateDatabase } from "../state/openclaw-state-db.js";
+import { openEVEStateDatabase } from "../state/eve-state-db.js";
 import { resolveDefaultPluginNpmDir, validatePluginId } from "./install-paths.js";
 import {
   getInstalledPluginIndexInstallRecordsCache,
@@ -74,16 +74,16 @@ function readStringRecord(value: unknown): Record<string, string> {
 }
 
 function hasPackagePluginMetadata(manifest: Record<string, unknown>): boolean {
-  const openclaw = manifest.openclaw;
-  if (!isRecord(openclaw)) {
+  const eve = manifest.eve;
+  if (!isRecord(eve)) {
     return false;
   }
-  const extensions = openclaw.extensions;
+  const extensions = eve.extensions;
   return Array.isArray(extensions) && extensions.some((entry) => typeof entry === "string");
 }
 
 function readManifestPluginId(packageDir: string): string | undefined {
-  const manifest = readJsonObjectFileSync(path.join(packageDir, "openclaw.plugin.json"));
+  const manifest = readJsonObjectFileSync(path.join(packageDir, "eve.plugin.json"));
   const id = typeof manifest?.id === "string" ? manifest.id.trim() : "";
   return id || undefined;
 }
@@ -265,7 +265,7 @@ function readPersistedInstalledPluginIndexForRecords(
     return tryReadJsonSync(options.filePath);
   }
   try {
-    const database = openOpenClawStateDatabase(
+    const database = openEVEStateDatabase(
       resolveInstalledPluginIndexStateDatabaseOptions(options),
     );
     const row = database.db

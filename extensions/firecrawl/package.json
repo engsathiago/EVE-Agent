@@ -1,25 +1,25 @@
 {
-  "name": "@openclaw/firecrawl-plugin",
+  "name": "@eve/firecrawl-plugin",
   "version": "2026.6.8",
-  "description": "OpenClaw Firecrawl plugin.",
+  "description": "EVE Firecrawl plugin.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/firecrawl-plugin",
-      "npmSpec": "@openclaw/firecrawl-plugin",
+      "clawhubSpec": "clawhub:@eve/firecrawl-plugin",
+      "npmSpec": "@eve/firecrawl-plugin",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -27,7 +27,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8",
+      "eveVersion": "2026.6.8",
       "bundledDist": false
     },
     "release": {

@@ -1,21 +1,21 @@
 {
-  "name": "@openclaw/nostr",
+  "name": "@eve/nostr",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/nostr",
+      "name": "@eve/nostr",
       "version": "2026.6.8",
       "dependencies": {
         "nostr-tools": "2.23.5",
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.8"
+        "eve-agent": ">=2026.6.8"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "eve-agent": {
           "optional": true
         }
       }

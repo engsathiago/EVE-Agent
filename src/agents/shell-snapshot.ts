@@ -15,9 +15,9 @@ import { killProcessTree } from "../process/kill-tree.js";
 const SNAPSHOT_VERSION = 1;
 const SNAPSHOT_REFRESH_MS = 5 * 60 * 1000;
 const SNAPSHOT_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000;
-const CAPTURE_MARKER = "__OPENCLAW_SHELL_SNAPSHOT_CAPTURE__";
-const ENV_MARKER = "__OPENCLAW_SHELL_SNAPSHOT_ENV__";
-const EXEC_SHELL_SNAPSHOT_ENV = "OPENCLAW_EXEC_SHELL_SNAPSHOT";
+const CAPTURE_MARKER = "__EVE_SHELL_SNAPSHOT_CAPTURE__";
+const ENV_MARKER = "__EVE_SHELL_SNAPSHOT_ENV__";
+const EXEC_SHELL_SNAPSHOT_ENV = "EVE_EXEC_SHELL_SNAPSHOT";
 const VALID_ENV_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const SNAPSHOT_SHELLS = new Set(["bash", "zsh"]);
 const SNAPSHOT_DISABLE_VALUES = new Set(["0", "false", "no", "off"]);
@@ -45,7 +45,7 @@ const SAFE_ENV_NAMES = new Set([
 const CAPTURE_ENV_NAMES = new Set([
   ...SAFE_ENV_NAMES,
   "HOME",
-  "OPENCLAW_SHELL",
+  "EVE_SHELL",
   "SHELL",
   "USERPROFILE",
   "ZDOTDIR",
@@ -254,7 +254,7 @@ async function validateSnapshot(
 
 async function captureShellSnapshot(opts: ShellSnapshotWrapOptions): Promise<string | null> {
   const shellName = path.basename(opts.shell);
-  const captureOutputDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-shell-snapshot-"));
+  const captureOutputDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-shell-snapshot-"));
   await fs.chmod(captureOutputDir, 0o700);
   const captureOutputPath = path.join(captureOutputDir, "snapshot.out");
   const captureOutputFile = await fs.open(captureOutputPath, "wx", 0o600);
@@ -313,10 +313,10 @@ function buildTrustedSnapshotCaptureEnv(
   runtimeEnv: Record<string, string | undefined>,
 ): Record<string, string | undefined> {
   const env = buildSnapshotCaptureEnv(process.env);
-  // OPENCLAW_SHELL is injected by the exec runtime, so startup files can keep
+  // EVE_SHELL is injected by the exec runtime, so startup files can keep
   // their documented exec-specific branches without trusting model input.
-  if (runtimeEnv.OPENCLAW_SHELL === "exec") {
-    env.OPENCLAW_SHELL = "exec";
+  if (runtimeEnv.EVE_SHELL === "exec") {
+    env.EVE_SHELL = "exec";
   }
   return env;
 }
@@ -365,7 +365,7 @@ function buildSnapshotFile(stdout: string): string | null {
   const exports = parseSafeEnvExports(stdout.slice(envIndex + ENV_MARKER.length).trim());
 
   return [
-    "# OpenClaw exec shell snapshot. Generated; do not edit.",
+    "# EVE exec shell snapshot. Generated; do not edit.",
     'if [ -n "${BASH_VERSION:-}" ]; then shopt -s expand_aliases 2>/dev/null || true; fi',
     "unalias -a 2>/dev/null || true",
     shellState,

@@ -2,19 +2,19 @@
  * Twitch setup wizard surface for CLI setup.
  */
 
-import { normalizeOptionalAccountId } from "openclaw/plugin-sdk/account-id";
-import { getChatChannelMeta, type ChannelPlugin } from "openclaw/plugin-sdk/core";
+import { normalizeOptionalAccountId } from "eve-agent/plugin-sdk/account-id";
+import { getChatChannelMeta, type ChannelPlugin } from "eve-agent/plugin-sdk/core";
 import {
   formatDocsLink,
   type ChannelSetupAdapter,
   type ChannelSetupDmPolicy,
   type ChannelSetupWizard,
-  type OpenClawConfig,
+  type EVEConfig,
   type WizardPrompter,
   normalizeAccountId,
   createSetupTranslator,
-} from "openclaw/plugin-sdk/setup";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/setup";
+import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   DEFAULT_ACCOUNT_ID,
   getAccountConfig,
@@ -37,7 +37,7 @@ function normalizeRequestedSetupAccountId(accountId: string): string {
   return normalized;
 }
 
-function resolveSetupAccountId(cfg: OpenClawConfig, requestedAccountId?: string): string {
+function resolveSetupAccountId(cfg: EVEConfig, requestedAccountId?: string): string {
   const requested = requestedAccountId?.trim();
   if (requested) {
     return normalizeRequestedSetupAccountId(requested);
@@ -48,10 +48,10 @@ function resolveSetupAccountId(cfg: OpenClawConfig, requestedAccountId?: string)
 }
 
 export function setTwitchAccount(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   account: Partial<TwitchAccountConfig>,
   accountId: string = resolveSetupAccountId(cfg),
-): OpenClawConfig {
+): EVEConfig {
   const resolvedAccountId = accountId.trim()
     ? normalizeRequestedSetupAccountId(accountId)
     : resolveSetupAccountId(cfg);
@@ -215,14 +215,14 @@ export async function promptRefreshTokenSetup(
 }
 
 export async function configureWithEnvToken(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   prompter: WizardPrompter,
   account: TwitchAccountConfig | null,
   envToken: string,
   forceAllowFrom: boolean,
   dmPolicy: ChannelSetupDmPolicy,
   accountId: string = resolveSetupAccountId(cfg),
-): Promise<{ cfg: OpenClawConfig } | null> {
+): Promise<{ cfg: EVEConfig } | null> {
   const resolvedAccountId = accountId.trim()
     ? normalizeRequestedSetupAccountId(accountId)
     : resolveSetupAccountId(cfg);
@@ -266,11 +266,11 @@ export async function configureWithEnvToken(
 }
 
 function setTwitchAccessControl(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   allowedRoles: TwitchRole[],
   requireMention: boolean,
   accountId?: string,
-): OpenClawConfig {
+): EVEConfig {
   const resolvedAccountId = resolveSetupAccountId(cfg, accountId);
   const account = getAccountConfig(cfg, resolvedAccountId);
   if (!account) {
@@ -289,7 +289,7 @@ function setTwitchAccessControl(
 }
 
 function resolveTwitchGroupPolicy(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   accountId?: string,
 ): "open" | "allowlist" | "disabled" {
   const account = getAccountConfig(cfg, resolveSetupAccountId(cfg, accountId));
@@ -303,10 +303,10 @@ function resolveTwitchGroupPolicy(
 }
 
 function setTwitchGroupPolicy(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   policy: "open" | "allowlist" | "disabled",
   accountId?: string,
-): OpenClawConfig {
+): EVEConfig {
   const allowedRoles: TwitchRole[] =
     policy === "open" ? ["all"] : policy === "allowlist" ? ["moderator", "vip"] : [];
   return setTwitchAccessControl(cfg, allowedRoles, true, accountId);
@@ -427,7 +427,7 @@ export const twitchSetupWizard: ChannelSetupWizard = {
       await noteTwitchSetupHelp(prompter);
     }
 
-    const envToken = process.env.OPENCLAW_TWITCH_ACCESS_TOKEN?.trim();
+    const envToken = process.env.EVE_TWITCH_ACCESS_TOKEN?.trim();
 
     if (accountId === DEFAULT_ACCOUNT_ID && envToken && !account?.accessToken) {
       const envResult = await configureWithEnvToken(

@@ -2,18 +2,18 @@
 import { mkdtemp, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { Context, Model } from "openclaw/plugin-sdk/llm";
+import type { Context, Model } from "eve-agent/plugin-sdk/llm";
 import type {
   ProviderReplaySessionEntry,
   ProviderSanitizeReplayHistoryContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+} from "eve-agent/plugin-sdk/plugin-entry";
+import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import {
   registerProviderPlugin,
   requireRegisteredProvider,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import { createCapturedThinkingConfigStream } from "openclaw/plugin-sdk/provider-test-contracts";
-import type { RealtimeVoiceProviderPlugin } from "openclaw/plugin-sdk/realtime-voice";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+import { createCapturedThinkingConfigStream } from "eve-agent/plugin-sdk/provider-test-contracts";
+import type { RealtimeVoiceProviderPlugin } from "eve-agent/plugin-sdk/realtime-voice";
 import { describe, expect, it, vi } from "vitest";
 import { registerGoogleGeminiCliProvider } from "./gemini-cli-provider.js";
 import googlePlugin from "./index.js";
@@ -168,7 +168,7 @@ describe("google provider plugin hooks", () => {
   });
 
   it("resolves Google Vertex ADC auth evidence to the config marker", async () => {
-    const tempDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-google-vertex-config-key-"));
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), "eve-google-vertex-config-key-"));
     const credentialsPath = path.join(tempDir, "application_default_credentials.json");
     await writeFile(
       credentialsPath,

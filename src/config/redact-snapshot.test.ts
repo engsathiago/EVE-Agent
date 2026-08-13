@@ -10,7 +10,7 @@ import {
   type TestSnapshot,
 } from "./redact-snapshot.test-helpers.js";
 import { buildConfigSchema, type ConfigUiHints } from "./schema.js";
-import type { ConfigFileSnapshot, OpenClawConfig } from "./types.openclaw.js";
+import type { ConfigFileSnapshot, EVEConfig } from "./types.eve.js";
 
 function expectNestedLevelPairValue(
   source: Record<string, Record<string, Record<string, unknown>>>,
@@ -47,7 +47,7 @@ describe("redactConfigSnapshot", () => {
             {
               id: "demo",
               rootDir: "/private/plugin/root",
-              manifestPath: "/private/plugin/root/openclaw.plugin.json",
+              manifestPath: "/private/plugin/root/eve.plugin.json",
             },
           ],
           diagnostics: [],
@@ -420,7 +420,7 @@ describe("redactConfigSnapshot", () => {
       enabled: true,
       exec: {
         source: "exec",
-        command: "/usr/local/bin/openclaw-install-policy",
+        command: "/usr/local/bin/eve-install-policy",
         env: {
           POLICY_TOKEN: "operator-policy-secret-token",
           AUDIT_ENDPOINT: "operator-policy-secret-endpoint",
@@ -436,7 +436,7 @@ describe("redactConfigSnapshot", () => {
             enabled: true,
             exec: {
               source: "exec",
-              command: "/usr/local/bin/openclaw-install-policy",
+              command: "/usr/local/bin/eve-install-policy",
               env: {
                 POLICY_TOKEN: "operator-policy-secret-token",
                 AUDIT_ENDPOINT: "operator-policy-secret-endpoint",
@@ -570,9 +570,9 @@ describe("redactConfigSnapshot", () => {
     const snapshot = makeSnapshot({
       channels: {
         irc: {
-          passwordFile: "/etc/openclaw/irc-password.txt",
+          passwordFile: "/etc/eve/irc-password.txt",
           nickserv: {
-            passwordFile: "/etc/openclaw/nickserv-password.txt",
+            passwordFile: "/etc/eve/nickserv-password.txt",
             password: "super-secret-nickserv-password",
           },
         },
@@ -584,8 +584,8 @@ describe("redactConfigSnapshot", () => {
     const irc = channels.irc;
     const nickserv = irc.nickserv as Record<string, unknown>;
 
-    expect(irc.passwordFile).toBe("/etc/openclaw/irc-password.txt");
-    expect(nickserv.passwordFile).toBe("/etc/openclaw/nickserv-password.txt");
+    expect(irc.passwordFile).toBe("/etc/eve/irc-password.txt");
+    expect(nickserv.passwordFile).toBe("/etc/eve/nickserv-password.txt");
     expect(nickserv.password).toBe(REDACTED_SENTINEL);
   });
 
@@ -612,7 +612,7 @@ describe("redactConfigSnapshot", () => {
           security: "full",
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
     const raw = JSON.stringify(sourceConfig);
     const runtimeConfig = materializeRuntimeConfig(structuredClone(sourceConfig), "snapshot");
     const snapshot = {

@@ -1,11 +1,11 @@
 ---
-summary: "CLI reference for `openclaw pairing` (approve/list pairing requests)"
+summary: "CLI reference for `eve pairing` (approve/list pairing requests)"
 read_when:
   - You're using pairing-mode DMs and need to approve senders
 title: "Pairing"
 ---
 
-# `openclaw pairing`
+# `eve pairing`
 
 Approve or inspect DM pairing requests (for channels that support pairing).
 
@@ -16,13 +16,13 @@ Related:
 ## Commands
 
 ```bash
-openclaw pairing list telegram
-openclaw pairing list --channel telegram --account work
-openclaw pairing list telegram --json
+eve pairing list telegram
+eve pairing list --channel telegram --account work
+eve pairing list telegram --json
 
-openclaw pairing approve <code>
-openclaw pairing approve telegram <code>
-openclaw pairing approve --channel telegram --account work <code> --notify
+eve pairing approve <code>
+eve pairing approve telegram <code>
+eve pairing approve --channel telegram --account work <code> --notify
 ```
 
 ## `pairing list`
@@ -47,9 +47,9 @@ Approve a pending pairing code and allow that sender.
 
 Usage:
 
-- `openclaw pairing approve <channel> <code>`
-- `openclaw pairing approve --channel <channel> <code>`
-- `openclaw pairing approve <code>` when exactly one pairing-capable channel is configured
+- `eve pairing approve <channel> <code>`
+- `eve pairing approve --channel <channel> <code>`
+- `eve pairing approve <code>` when exactly one pairing-capable channel is configured
 
 Options:
 
@@ -59,7 +59,7 @@ Options:
 
 Owner bootstrap:
 
-- If `commands.ownerAllowFrom` is empty when you approve a pairing code, OpenClaw also records the approved sender as the command owner, using a channel-scoped entry such as `telegram:123456789`.
+- If `commands.ownerAllowFrom` is empty when you approve a pairing code, EVE also records the approved sender as the command owner, using a channel-scoped entry such as `telegram:123456789`.
 - This only bootstraps the first owner. Later pairing approvals do not replace or expand `commands.ownerAllowFrom`.
 - The command owner is the human operator account allowed to run owner-only commands and approve dangerous actions such as `/diagnostics`, `/export-trajectory`, `/config`, and exec approvals.
 
@@ -69,7 +69,7 @@ Owner bootstrap:
 - `pairing list` supports `--account <accountId>` for multi-account channels.
 - `pairing approve` supports `--account <accountId>` and `--notify`.
 - If only one pairing-capable channel is configured, `pairing approve <code>` is allowed.
-- If you approved a sender before this bootstrap existed, run `openclaw doctor`; it warns when no command owner is configured and shows the `openclaw config set commands.ownerAllowFrom ...` command to fix it.
+- If you approved a sender before this bootstrap existed, run `eve doctor`; it warns when no command owner is configured and shows the `eve config set commands.ownerAllowFrom ...` command to fix it.
 
 ## Related
 

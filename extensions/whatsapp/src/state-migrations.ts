@@ -1,9 +1,9 @@
 // Whatsapp plugin module implements state migrations behavior.
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import type { ChannelLegacyStateMigrationPlan } from "openclaw/plugin-sdk/channel-contract";
-import { statRegularFileSync } from "openclaw/plugin-sdk/security-runtime";
+import { DEFAULT_ACCOUNT_ID } from "eve-agent/plugin-sdk/account-id";
+import type { ChannelLegacyStateMigrationPlan } from "eve-agent/plugin-sdk/channel-contract";
+import { statRegularFileSync } from "eve-agent/plugin-sdk/security-runtime";
 
 function fileExists(pathValue: string): boolean {
   try {

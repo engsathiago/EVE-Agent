@@ -1,8 +1,8 @@
 // Doctor warnings for configured channels blocked by disabled channel plugins.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../../../packages/terminal-core/src/ansi.js";
 import { listExplicitlyDisabledChannelIdsForConfig } from "../../../channels/config-presence.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import {
   hasExplicitChannelConfig,
   listExplicitConfiguredChannelIdsForConfig,
@@ -40,9 +40,9 @@ type ChannelPluginBlockerHit = {
 
 /** Find configured channel ids whose backing plugins cannot activate. */
 export function scanConfiguredChannelPluginBlockers(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env: NodeJS.ProcessEnv = process.env,
-  activationSourceConfig: OpenClawConfig = cfg,
+  activationSourceConfig: EVEConfig = cfg,
 ): ChannelPluginBlockerHit[] {
   const explicitChannelIds = listExplicitConfiguredChannelIdsForConfig(cfg)
     .map((channelId) => normalizeOptionalLowercaseString(channelId))
@@ -221,9 +221,9 @@ type ChannelOwnerState = {
 function resolveConfiguredChannelOwnerState(params: {
   plugin: PluginManifestRecord;
   channelId: string;
-  sourceConfig: OpenClawConfig;
+  sourceConfig: EVEConfig;
   sourcePluginsConfig: ReturnType<typeof normalizePluginsConfig>;
-  effectiveConfig: OpenClawConfig;
+  effectiveConfig: EVEConfig;
   effectivePluginsConfig: ReturnType<typeof normalizePluginsConfig>;
 }): ChannelOwnerState {
   const bundledChannelConfigured =

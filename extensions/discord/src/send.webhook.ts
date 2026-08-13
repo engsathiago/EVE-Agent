@@ -1,8 +1,8 @@
 // Discord plugin module implements send.webhook behavior.
-import { recordChannelActivity } from "openclaw/plugin-sdk/channel-activity-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { recordChannelActivity } from "eve-agent/plugin-sdk/channel-activity-runtime";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolveDiscordClientAccountContext } from "./client.js";
 import {
   DiscordError,
@@ -18,7 +18,7 @@ import type { DiscordSendResult } from "./send.types.js";
 const DISCORD_WEBHOOK_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 
 type DiscordWebhookSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   webhookId: string;
   webhookToken: string;
   accountId?: string;

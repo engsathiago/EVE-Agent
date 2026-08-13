@@ -156,7 +156,7 @@ describe("matrix driver client", () => {
     });
 
     const login = await client.loginWithPassword({
-      deviceName: "OpenClaw Matrix QA Stale Device",
+      deviceName: "EVE Matrix QA Stale Device",
       password: "driver-password",
       userId: "@qa-driver:matrix-qa.test",
     });
@@ -174,7 +174,7 @@ describe("matrix driver client", () => {
             type: "m.id.user",
             user: "@qa-driver:matrix-qa.test",
           },
-          initial_device_display_name: "OpenClaw Matrix QA Stale Device",
+          initial_device_display_name: "EVE Matrix QA Stale Device",
           password: "driver-password",
         },
       },
@@ -489,11 +489,11 @@ describe("matrix driver client", () => {
       driverLocalpart: "qa-driver",
       observerLocalpart: "qa-observer",
       registrationToken: "reg-token",
-      roomName: "OpenClaw Matrix QA",
+      roomName: "EVE Matrix QA",
       sutLocalpart: "qa-sut",
       fetchImpl,
       topology: buildDefaultMatrixQaTopologySpec({
-        defaultRoomName: "OpenClaw Matrix QA",
+        defaultRoomName: "EVE Matrix QA",
       }),
     });
 
@@ -513,7 +513,7 @@ describe("matrix driver client", () => {
           ],
           requireMention: true,
           roomId: "!room:matrix-qa.test",
-          name: "OpenClaw Matrix QA",
+          name: "EVE Matrix QA",
           encrypted: false,
         },
       ],
@@ -531,7 +531,7 @@ describe("matrix driver client", () => {
         ],
         invite: ["@qa-observer:matrix-qa.test", "@qa-sut:matrix-qa.test"],
         is_direct: false,
-        name: "OpenClaw Matrix QA",
+        name: "EVE Matrix QA",
         preset: "private_chat",
       },
     ]);

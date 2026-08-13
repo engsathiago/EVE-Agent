@@ -1,5 +1,5 @@
-// Whatsapp plugin entrypoint registers its OpenClaw integration.
-import { defineBundledChannelEntry } from "openclaw/plugin-sdk/channel-entry-contract";
+// Whatsapp plugin entrypoint registers its EVE integration.
+import { defineBundledChannelEntry } from "eve-agent/plugin-sdk/channel-entry-contract";
 
 export default defineBundledChannelEntry({
   id: "whatsapp",

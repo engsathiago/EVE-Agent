@@ -3,7 +3,7 @@
  * and harness auth owners are resolved before session auth profiles can be
  * safely forwarded.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { normalizePluginsConfig } from "../../plugins/config-state.js";
 import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
 import { normalizeOptionalAgentRuntimeId } from "../agent-runtime-id.js";
@@ -36,7 +36,7 @@ export function buildAgentRuntimeAuthPlan(params: {
   authProfileMode?: string;
   sessionAuthProfileId?: string;
   sessionAuthProfileCandidateIds?: string[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
   metadataSnapshot?: Pick<PluginMetadataSnapshot, "plugins">;
   providerAuthAliasesEnabled?: boolean;

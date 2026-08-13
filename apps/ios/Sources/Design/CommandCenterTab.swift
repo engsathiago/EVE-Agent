@@ -1,4 +1,4 @@
-import OpenClawChatUI
+import EVEChatUI
 import SwiftUI
 
 struct CommandCenterTab: View {
@@ -8,10 +8,10 @@ struct CommandCenterTab: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
-    @State private var defaultChatSessionEntry: OpenClawChatSessionEntry?
-    @State private var recentChatSessions: [OpenClawChatSessionEntry] = []
-    var headerTitle: String = "OpenClaw"
-    var headerLeadingAction: OpenClawSidebarHeaderAction?
+    @State private var defaultChatSessionEntry: EVEChatSessionEntry?
+    @State private var recentChatSessions: [EVEChatSessionEntry] = []
+    var headerTitle: String = "EVE"
+    var headerLeadingAction: EVESidebarHeaderAction?
     var showsHeaderMark: Bool = true
     var openChat: () -> Void
     var openSettings: () -> Void
@@ -53,18 +53,18 @@ struct CommandCenterTab: View {
                                     self.recentSessions
                                         .frame(maxWidth: .infinity, alignment: .topLeading)
                                 }
-                                .padding(.horizontal, OpenClawProMetric.pagePadding)
+                                .padding(.horizontal, EVEProMetric.pagePadding)
                             } else {
                                 self.defaultChatSessionSection
-                                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                                    .padding(.horizontal, EVEProMetric.pagePadding)
                                 self.recentSessions
-                                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                                    .padding(.horizontal, EVEProMetric.pagePadding)
                             }
                         }
                         .padding(.top, 18)
                         .padding(.bottom, 18)
                     }
-                    .safeAreaPadding(.bottom, OpenClawProMetric.bottomScrollInset)
+                    .safeAreaPadding(.bottom, EVEProMetric.bottomScrollInset)
                 }
             }
             .navigationBarHidden(true)
@@ -90,7 +90,7 @@ struct CommandCenterTab: View {
     }
 
     private var header: some View {
-        OpenClawAdaptiveHeaderRow(
+        EVEAdaptiveHeaderRow(
             title: self.headerTitle,
             subtitle: self.gatewaySubtitle,
             titleFont: .title3.weight(.semibold),
@@ -98,12 +98,12 @@ struct CommandCenterTab: View {
             subtitleLineLimit: 1)
         {
             if let headerLeadingAction {
-                OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                EVESidebarHeaderLeadingSlot(action: headerLeadingAction)
             } else if Self.shouldShowHeaderMark(
                 hasLeadingAction: headerLeadingAction != nil,
                 showsHeaderMark: self.showsHeaderMark)
             {
-                OpenClawProMark(size: 28, shadowRadius: 5)
+                EVEProMark(size: 28, shadowRadius: 5)
             }
         } accessory: {
             Button(action: self.openSettings) {
@@ -116,7 +116,7 @@ struct CommandCenterTab: View {
             .accessibilityLabel("Gateway \(self.gatewayStateText)")
             .accessibilityHint("Opens Settings / Gateway")
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var commandAmbientOverlay: some View {
@@ -155,13 +155,13 @@ struct CommandCenterTab: View {
                         icon: "server.rack",
                         title: "Address",
                         value: self.gatewayAddressText,
-                        color: OpenClawBrand.accent)
+                        color: EVEBrand.accent)
                     Divider().frame(height: 38)
                     self.gatewayFact(
                         icon: "person.2.fill",
                         title: "Agents",
                         value: self.gatewayAgentCountText,
-                        color: OpenClawBrand.accentHot)
+                        color: EVEBrand.accentHot)
                 }
                 .padding(.vertical, 9)
                 .background {
@@ -176,7 +176,7 @@ struct CommandCenterTab: View {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private func gatewayFact(icon: String, title: String, value: String, color: Color) -> some View {
@@ -206,7 +206,7 @@ struct CommandCenterTab: View {
                 self.cardHeader(
                     title: "Agent session",
                     value: nil,
-                    color: OpenClawBrand.accent)
+                    color: EVEBrand.accent)
 
                 Button {
                     self.open(.chat(nil))
@@ -275,7 +275,7 @@ struct CommandCenterTab: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 3)
-                    .background(OpenClawBrand.accentHot, in: Capsule())
+                    .background(EVEBrand.accentHot, in: Capsule())
             }
             Spacer(minLength: 8)
             if let value {
@@ -314,7 +314,7 @@ struct CommandCenterTab: View {
     }
 
     private var gatewayStatusColor: Color {
-        self.gatewayConnected ? OpenClawBrand.ok : .secondary
+        self.gatewayConnected ? EVEBrand.ok : .secondary
     }
 
     private var gatewayAddressText: String {
@@ -337,7 +337,7 @@ struct CommandCenterTab: View {
             detail: self.defaultChatActivityText,
             state: isOpen ? "open" : "default",
             trailing: "chat",
-            color: isOpen ? OpenClawBrand.accent : OpenClawBrand.ok,
+            color: isOpen ? EVEBrand.accent : EVEBrand.ok,
             progress: nil,
             route: .chat(nil))
     }
@@ -429,12 +429,12 @@ struct CommandCenterTab: View {
     }
 
     private static func sessionChoices(
-        _ sessions: [OpenClawChatSessionEntry],
+        _ sessions: [EVEChatSessionEntry],
         currentSessionKey: String,
-        defaultSessionKey: String) -> [OpenClawChatSessionEntry]
+        defaultSessionKey: String) -> [EVEChatSessionEntry]
     {
         let sorted = sessions.sorted { ($0.updatedAt ?? 0) > ($1.updatedAt ?? 0) }
-        var result: [OpenClawChatSessionEntry] = []
+        var result: [EVEChatSessionEntry] = []
         var included = Set<String>()
 
         if Self.isRecentChatSession(currentSessionKey, defaultSessionKey: defaultSessionKey),
@@ -456,7 +456,7 @@ struct CommandCenterTab: View {
     }
 
     static func sessionWorkItem(
-        for session: OpenClawChatSessionEntry,
+        for session: EVEChatSessionEntry,
         currentSessionKey: String) -> WorkItem
     {
         let isCurrent = session.key == currentSessionKey
@@ -467,12 +467,12 @@ struct CommandCenterTab: View {
             detail: Self.sessionDetail(session),
             state: isCurrent ? "open" : "recent",
             trailing: "chat",
-            color: isCurrent ? OpenClawBrand.accent : OpenClawBrand.ok,
+            color: isCurrent ? EVEBrand.accent : EVEBrand.ok,
             progress: nil,
             route: .chat(session.key))
     }
 
-    fileprivate static func sessionTitle(_ session: OpenClawChatSessionEntry) -> String {
+    fileprivate static func sessionTitle(_ session: EVEChatSessionEntry) -> String {
         if let title = redactedSessionTitle(for: session.key) {
             return title
         }
@@ -527,7 +527,7 @@ struct CommandCenterTab: View {
             .joined(separator: " ")
     }
 
-    fileprivate static func sessionDetail(_ session: OpenClawChatSessionEntry) -> String {
+    fileprivate static func sessionDetail(_ session: EVEChatSessionEntry) -> String {
         if let updatedAt = session.updatedAt, updatedAt > 0 {
             return self.relativeTimeText(forMilliseconds: updatedAt)
         }
@@ -613,13 +613,13 @@ struct CommandCenterTab: View {
 struct CommandSessionsScreen: View {
     @Environment(NodeAppModel.self) private var appModel
     @Environment(\.dismiss) private var dismiss
-    @State private var sessions: [OpenClawChatSessionEntry] = []
+    @State private var sessions: [EVEChatSessionEntry] = []
     @State private var isLoading = false
     @State private var loadErrorText: String?
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: EVESidebarHeaderAction?
     let openChat: () -> Void
 
-    init(headerLeadingAction: OpenClawSidebarHeaderAction? = nil, openChat: @escaping () -> Void) {
+    init(headerLeadingAction: EVESidebarHeaderAction? = nil, openChat: @escaping () -> Void) {
         self.headerLeadingAction = headerLeadingAction
         self.openChat = openChat
     }
@@ -635,7 +635,7 @@ struct CommandSessionsScreen: View {
                 .padding(.top, 16)
                 .padding(.bottom, 18)
             }
-            .safeAreaPadding(.bottom, OpenClawProMetric.bottomScrollInset)
+            .safeAreaPadding(.bottom, EVEProMetric.bottomScrollInset)
         }
         .navigationTitle("Sessions")
         .navigationBarTitleDisplayMode(.inline)
@@ -647,7 +647,7 @@ struct CommandSessionsScreen: View {
     private var header: some View {
         HStack(alignment: .top, spacing: 12) {
             if let headerLeadingAction {
-                OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                EVESidebarHeaderLeadingSlot(action: headerLeadingAction)
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -658,7 +658,7 @@ struct CommandSessionsScreen: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var sessionsPanel: some View {
@@ -710,7 +710,7 @@ struct CommandSessionsScreen: View {
                 }
             }
         }
-        .padding(.horizontal, OpenClawProMetric.pagePadding)
+        .padding(.horizontal, EVEProMetric.pagePadding)
     }
 
     private var headerDetail: String {

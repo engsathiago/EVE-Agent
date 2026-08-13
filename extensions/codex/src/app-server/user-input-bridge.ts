@@ -1,11 +1,11 @@
 /**
- * Bridges Codex item/tool user-input requests to OpenClaw messaging prompts and
+ * Bridges Codex item/tool user-input requests to EVE messaging prompts and
  * turns replies into app-server answer payloads.
  */
 import {
   embeddedAgentLog,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { formatCodexDisplayText } from "../command-formatters.js";
 import {
   isJsonObject,

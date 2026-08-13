@@ -1,5 +1,5 @@
 // Codex tests cover attempt timeouts plugin behavior.
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "eve-agent/plugin-sdk/number-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   CODEX_APP_SERVER_STARTUP_TIMEOUT_FLOOR_MS,

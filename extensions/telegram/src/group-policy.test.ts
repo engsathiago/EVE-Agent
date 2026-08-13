@@ -1,5 +1,5 @@
 // Telegram tests cover group policy plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   resolveTelegramGroupRequireMention,
@@ -25,7 +25,7 @@ describe("resolveTelegramGroupRequireMention", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveTelegramGroupRequireMention({
@@ -55,7 +55,7 @@ describe("resolveTelegramGroupRequireMention", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveTelegramGroupRequireMention({
@@ -79,7 +79,7 @@ describe("resolveTelegramGroupToolPolicy", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(
       resolveTelegramGroupToolPolicy({

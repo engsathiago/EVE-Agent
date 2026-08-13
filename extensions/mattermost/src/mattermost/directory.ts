@@ -1,6 +1,6 @@
 // Mattermost plugin module implements directory behavior.
-import { isPrivateNetworkOptInEnabled } from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isPrivateNetworkOptInEnabled } from "eve-agent/plugin-sdk/ssrf-runtime";
+import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { listMattermostAccountIds, resolveMattermostAccount } from "./accounts.js";
 import {
   createMattermostClient,
@@ -9,10 +9,10 @@ import {
   type MattermostClient,
   type MattermostUser,
 } from "./client.js";
-import type { ChannelDirectoryEntry, OpenClawConfig, RuntimeEnv } from "./runtime-api.js";
+import type { ChannelDirectoryEntry, EVEConfig, RuntimeEnv } from "./runtime-api.js";
 
 export type MattermostDirectoryParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   query?: string | null;
   limit?: number | null;
@@ -20,7 +20,7 @@ export type MattermostDirectoryParams = {
 };
 
 function buildClient(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
 }): MattermostClient | null {
   const account = resolveMattermostAccount({ cfg: params.cfg, accountId: params.accountId });

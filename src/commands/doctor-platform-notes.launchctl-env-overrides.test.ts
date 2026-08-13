@@ -1,13 +1,13 @@
 // Doctor launchctl environment tests cover macOS gateway platform warnings for env overrides.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   collectMacGatewayPlatformWarnings,
   collectMacLaunchAgentOverrideWarning,
   collectMacLaunchctlGatewayEnvOverrideWarning,
-  collectMacStaleOpenClawUpdateLaunchdJobsWarning,
+  collectMacStaleEVEUpdateLaunchdJobsWarning,
   noteMacLaunchctlGatewayEnvOverrides,
-  noteMacStaleOpenClawUpdateLaunchdJobs,
+  noteMacStaleEVEUpdateLaunchdJobs,
 } from "./doctor-platform-notes.js";
 
 function requireNoteCall(noteFn: { mock: { calls: unknown[][] } }, index = 0): unknown[] {
@@ -21,7 +21,7 @@ function requireNoteCall(noteFn: { mock: { calls: unknown[][] } }, index = 0): u
 describe("noteMacLaunchctlGatewayEnvOverrides", () => {
   it("collects clear unsetenv instructions for token override", async () => {
     const getenv = vi.fn(async (name: string) =>
-      name === "OPENCLAW_GATEWAY_TOKEN" ? "launchctl-token" : undefined,
+      name === "EVE_GATEWAY_TOKEN" ? "launchctl-token" : undefined,
     );
     const cfg = {
       gateway: {
@@ -29,7 +29,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
           token: "config-token",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const warning = await collectMacLaunchctlGatewayEnvOverrideWarning(cfg, {
       platform: "darwin",
@@ -37,15 +37,15 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     });
 
     expect(warning).toContain("Host-wide launchctl gateway auth overrides detected");
-    expect(warning).toContain("OPENCLAW_GATEWAY_TOKEN");
-    expect(warning).toContain("launchctl unsetenv OPENCLAW_GATEWAY_TOKEN");
-    expect(warning).not.toContain("OPENCLAW_GATEWAY_PASSWORD");
+    expect(warning).toContain("EVE_GATEWAY_TOKEN");
+    expect(warning).toContain("launchctl unsetenv EVE_GATEWAY_TOKEN");
+    expect(warning).not.toContain("EVE_GATEWAY_PASSWORD");
   });
 
   it("prints clear unsetenv instructions for token override", async () => {
     const noteFn = vi.fn();
     const getenv = vi.fn(async (name: string) =>
-      name === "OPENCLAW_GATEWAY_TOKEN" ? "launchctl-token" : undefined,
+      name === "EVE_GATEWAY_TOKEN" ? "launchctl-token" : undefined,
     );
     const cfg = {
       gateway: {
@@ -53,7 +53,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
           token: "config-token",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await noteMacLaunchctlGatewayEnvOverrides(cfg, { platform: "darwin", getenv, noteFn });
 
@@ -64,15 +64,15 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     expect(title).toBe("Gateway (macOS)");
     expect(message).toContain("Host-wide launchctl gateway auth overrides detected");
     expect(message).toContain("Current managed Gateway installs do not need these values");
-    expect(message).toContain("OPENCLAW_GATEWAY_TOKEN");
-    expect(message).toContain("launchctl unsetenv OPENCLAW_GATEWAY_TOKEN");
-    expect(message).not.toContain("OPENCLAW_GATEWAY_PASSWORD");
+    expect(message).toContain("EVE_GATEWAY_TOKEN");
+    expect(message).toContain("launchctl unsetenv EVE_GATEWAY_TOKEN");
+    expect(message).not.toContain("EVE_GATEWAY_PASSWORD");
   });
 
   it("does nothing when config has no gateway credentials", async () => {
     const noteFn = vi.fn();
     const getenv = vi.fn(async () => "launchctl-token");
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as EVEConfig;
 
     await noteMacLaunchctlGatewayEnvOverrides(cfg, { platform: "darwin", getenv, noteFn });
 
@@ -83,12 +83,12 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
   it("treats SecretRef-backed credentials as configured", async () => {
     const noteFn = vi.fn();
     const getenv = vi.fn(async (name: string) =>
-      name === "OPENCLAW_GATEWAY_PASSWORD" ? "launchctl-password" : undefined,
+      name === "EVE_GATEWAY_PASSWORD" ? "launchctl-password" : undefined,
     );
     const cfg = {
       gateway: {
         auth: {
-          password: { source: "env", provider: "default", id: "OPENCLAW_GATEWAY_PASSWORD" },
+          password: { source: "env", provider: "default", id: "EVE_GATEWAY_PASSWORD" },
         },
       },
       secrets: {
@@ -96,13 +96,13 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
           default: { source: "env" },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await noteMacLaunchctlGatewayEnvOverrides(cfg, { platform: "darwin", getenv, noteFn });
 
     expect(noteFn).toHaveBeenCalledTimes(1);
     const [message] = requireNoteCall(noteFn);
-    expect(message).toContain("OPENCLAW_GATEWAY_PASSWORD");
+    expect(message).toContain("EVE_GATEWAY_PASSWORD");
   });
 
   it("does nothing on non-darwin platforms", async () => {
@@ -114,7 +114,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
           token: "config-token",
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await noteMacLaunchctlGatewayEnvOverrides(cfg, { platform: "linux", getenv, noteFn });
 
@@ -123,40 +123,40 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
   });
 });
 
-describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
+describe("noteMacStaleEVEUpdateLaunchdJobs", () => {
   it("collects stale updater job cleanup guidance on macOS", async () => {
     const findJobs = vi.fn(async () => [
       {
-        label: "ai.openclaw.update.2026.5.12",
+        label: "ai.eve.update.2026.5.12",
         lastExitStatus: 127,
       },
       {
-        label: "ai.openclaw.manual-update.1717168800",
+        label: "ai.eve.manual-update.1717168800",
         lastExitStatus: 0,
       },
     ]);
     const env = {
-      OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.gateway",
+      EVE_LAUNCHD_LABEL: "ai.eve.manual-update.gateway",
     } as NodeJS.ProcessEnv;
 
-    const warning = await collectMacStaleOpenClawUpdateLaunchdJobsWarning({
+    const warning = await collectMacStaleEVEUpdateLaunchdJobsWarning({
       platform: "darwin",
       findJobs,
       env,
     });
 
     expect(findJobs).toHaveBeenCalledWith(env);
-    expect(warning).toContain("Stale OpenClaw updater launchd job(s) detected");
-    expect(warning).toContain("ai.openclaw.update.2026.5.12");
-    expect(warning).toContain("ai.openclaw.manual-update.1717168800");
+    expect(warning).toContain("Stale EVE updater launchd job(s) detected");
+    expect(warning).toContain("ai.eve.update.2026.5.12");
+    expect(warning).toContain("ai.eve.manual-update.1717168800");
     expect(warning).toContain("launchctl remove <label>");
-    expect(warning).toContain("openclaw gateway restart");
+    expect(warning).toContain("eve gateway restart");
   });
 
   it("uses service env for gateway platform stale updater warnings", async () => {
     const serviceEnv = {
-      OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon",
-      OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.gateway",
+      EVE_STATE_DIR: "/tmp/eve-daemon",
+      EVE_LAUNCHD_LABEL: "ai.eve.manual-update.gateway",
     };
     const service = {
       readCommand: vi.fn(async () => ({
@@ -166,7 +166,7 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     };
     const findJobs = vi.fn(async () => []);
 
-    await collectMacGatewayPlatformWarnings({} as OpenClawConfig, {
+    await collectMacGatewayPlatformWarnings({} as EVEConfig, {
       platform: "darwin",
       service,
       findJobs,
@@ -175,16 +175,16 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     expect(service.readCommand).toHaveBeenCalledTimes(1);
     expect(findJobs).toHaveBeenCalledWith(
       expect.objectContaining({
-        OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon",
-        OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.gateway",
+        EVE_STATE_DIR: "/tmp/eve-daemon",
+        EVE_LAUNCHD_LABEL: "ai.eve.manual-update.gateway",
       }),
     );
   });
 
   it("uses service env for doctor stale updater notes", async () => {
     const serviceEnv = {
-      OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon",
-      OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.gateway",
+      EVE_STATE_DIR: "/tmp/eve-daemon",
+      EVE_LAUNCHD_LABEL: "ai.eve.manual-update.gateway",
     };
     const service = {
       readCommand: vi.fn(async () => ({
@@ -194,7 +194,7 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     };
     const findJobs = vi.fn(async () => []);
 
-    await noteMacStaleOpenClawUpdateLaunchdJobs({
+    await noteMacStaleEVEUpdateLaunchdJobs({
       platform: "darwin",
       service,
       findJobs,
@@ -203,8 +203,8 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     expect(service.readCommand).toHaveBeenCalledTimes(1);
     expect(findJobs).toHaveBeenCalledWith(
       expect.objectContaining({
-        OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon",
-        OPENCLAW_LAUNCHD_LABEL: "ai.openclaw.manual-update.gateway",
+        EVE_STATE_DIR: "/tmp/eve-daemon",
+        EVE_LAUNCHD_LABEL: "ai.eve.manual-update.gateway",
       }),
     );
   });
@@ -216,16 +216,16 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     };
     const findJobs = vi.fn(async () => [
       {
-        label: "ai.openclaw.update.2026.5.12",
+        label: "ai.eve.update.2026.5.12",
         lastExitStatus: 127,
       },
       {
-        label: "ai.openclaw.manual-update.1717168800",
+        label: "ai.eve.manual-update.1717168800",
         lastExitStatus: 0,
       },
     ]);
 
-    await noteMacStaleOpenClawUpdateLaunchdJobs({
+    await noteMacStaleEVEUpdateLaunchdJobs({
       platform: "darwin",
       service,
       findJobs,
@@ -235,11 +235,11 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     expect(findJobs).toHaveBeenCalledTimes(1);
     const [message, title] = requireNoteCall(noteFn);
     expect(title).toBe("Gateway (macOS)");
-    expect(message).toContain("Stale OpenClaw updater launchd job(s) detected");
-    expect(message).toContain("ai.openclaw.update.2026.5.12");
-    expect(message).toContain("ai.openclaw.manual-update.1717168800");
+    expect(message).toContain("Stale EVE updater launchd job(s) detected");
+    expect(message).toContain("ai.eve.update.2026.5.12");
+    expect(message).toContain("ai.eve.manual-update.1717168800");
     expect(message).toContain("launchctl remove <label>");
-    expect(message).toContain("openclaw gateway restart");
+    expect(message).toContain("eve gateway restart");
   });
 
   it("does nothing when no stale updater jobs exist", async () => {
@@ -249,7 +249,7 @@ describe("noteMacStaleOpenClawUpdateLaunchdJobs", () => {
     };
     const findJobs = vi.fn(async () => []);
 
-    await noteMacStaleOpenClawUpdateLaunchdJobs({
+    await noteMacStaleEVEUpdateLaunchdJobs({
       platform: "darwin",
       service,
       findJobs,

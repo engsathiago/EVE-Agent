@@ -1,8 +1,8 @@
 // Moonshot thinking wrapper normalizes reasoning output from Moonshot streams.
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
+import { streamSimple } from "eve-agent/plugin-sdk/llm";
 import type { StreamFn } from "../../../agents/runtime/index.js";
 import type { ThinkLevel } from "../../../auto-reply/thinking.js";
-import { createLazyImportLoader } from "../../../shared/lazy-promise.js";
 
 type MoonshotThinkingType = "enabled" | "disabled";
 type MoonshotThinkingKeep = "all";
@@ -15,11 +15,8 @@ const MOONSHOT_FIXED_SAMPLING_FIELDS = [
   "presence_penalty",
   "frequency_penalty",
 ] as const;
-const llmRuntimeLoader = createLazyImportLoader(() => import("openclaw/plugin-sdk/llm"));
-
 async function loadDefaultStreamFn(): Promise<StreamFn> {
-  const runtime = await llmRuntimeLoader.load();
-  return runtime.streamSimple;
+  return streamSimple;
 }
 
 function normalizeMoonshotThinkingType(value: unknown): MoonshotThinkingType | undefined {

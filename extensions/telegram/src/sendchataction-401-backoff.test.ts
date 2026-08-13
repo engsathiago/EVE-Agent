@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 // Mock the runtime-exported backoff sleep that the handler actually imports.
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("eve-agent/plugin-sdk/runtime-env", () => ({
   computeBackoff: vi.fn((_policy, attempt: number) => attempt * 1000),
   sleepWithAbort: mocks.sleepWithAbort,
 }));
@@ -125,7 +125,7 @@ describe("createTelegramSendChatActionHandler", () => {
 
     expect(handler.isSuspended()).toBe(true);
     expect(logger.mock.calls.at(-1)).toEqual([
-      "CRITICAL: sendChatAction suspended after 3 consecutive 401 errors. Bot token is likely invalid. Telegram may DELETE the bot if requests continue. Replace the token and restart: openclaw channels restart telegram",
+      "CRITICAL: sendChatAction suspended after 3 consecutive 401 errors. Bot token is likely invalid. Telegram may DELETE the bot if requests continue. Replace the token and restart: eve channels restart telegram",
     ]);
 
     // Subsequent calls are silently skipped
@@ -353,7 +353,7 @@ describe("createTelegramSendChatActionHandler", () => {
 
     expect(handler.isSuspended()).toBe(true);
     expect(logger.mock.calls.at(-1)).toEqual([
-      "CRITICAL: sendChatAction suspended after 2 consecutive 401 errors. Bot token is likely invalid. Telegram may DELETE the bot if requests continue. Replace the token and restart: openclaw channels restart telegram",
+      "CRITICAL: sendChatAction suspended after 2 consecutive 401 errors. Bot token is likely invalid. Telegram may DELETE the bot if requests continue. Replace the token and restart: eve channels restart telegram",
     ]);
   });
 

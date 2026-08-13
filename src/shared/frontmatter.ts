@@ -2,8 +2,8 @@
 import {
   normalizeOptionalLowercaseString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeCsvOrLooseStringList } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeCsvOrLooseStringList } from "@eve/normalization-core/string-normalization";
 import JSON5 from "json5";
 import { LEGACY_MANIFEST_KEYS, MANIFEST_KEY } from "../compat/legacy-names.js";
 import { parseBooleanValue } from "../utils/boolean.js";
@@ -27,8 +27,8 @@ export function parseFrontmatterBool(value: string | undefined, fallback: boolea
   return parsed === undefined ? fallback : parsed;
 }
 
-/** Parses the JSON5 OpenClaw manifest block embedded inside a string frontmatter field. */
-export function resolveOpenClawManifestBlock(params: {
+/** Parses the JSON5 EVE manifest block embedded inside a string frontmatter field. */
+export function resolveEVEManifestBlock(params: {
   frontmatter: Record<string, unknown>;
   key?: string;
 }): Record<string, unknown> | undefined {
@@ -57,7 +57,7 @@ export function resolveOpenClawManifestBlock(params: {
   }
 }
 
-export type OpenClawManifestRequires = {
+export type EVEManifestRequires = {
   /** All binaries that must be available. */
   bins: string[];
   /** Alternative binaries where any one match is enough. */
@@ -68,10 +68,10 @@ export type OpenClawManifestRequires = {
   config: string[];
 };
 
-/** Extracts normalized runtime requirement lists from an OpenClaw manifest block. */
-export function resolveOpenClawManifestRequires(
+/** Extracts normalized runtime requirement lists from an EVE manifest block. */
+export function resolveEVEManifestRequires(
   metadataObj: Record<string, unknown>,
-): OpenClawManifestRequires | undefined {
+): EVEManifestRequires | undefined {
   const requiresRaw =
     typeof metadataObj.requires === "object" && metadataObj.requires !== null
       ? (metadataObj.requires as Record<string, unknown>)
@@ -88,7 +88,7 @@ export function resolveOpenClawManifestRequires(
 }
 
 /** Parses manifest install entries with a caller-owned parser and drops unsupported specs. */
-export function resolveOpenClawManifestInstall<T>(
+export function resolveEVEManifestInstall<T>(
   metadataObj: Record<string, unknown>,
   parseInstallSpec: (input: unknown) => T | undefined,
 ): T[] {
@@ -98,12 +98,12 @@ export function resolveOpenClawManifestInstall<T>(
     .filter((entry): entry is T => Boolean(entry));
 }
 
-/** Extracts normalized OS allowlist entries from an OpenClaw manifest block. */
-export function resolveOpenClawManifestOs(metadataObj: Record<string, unknown>): string[] {
+/** Extracts normalized OS allowlist entries from an EVE manifest block. */
+export function resolveEVEManifestOs(metadataObj: Record<string, unknown>): string[] {
   return normalizeStringList(metadataObj.os);
 }
 
-export type ParsedOpenClawManifestInstallBase = {
+export type ParsedEVEManifestInstallBase = {
   /** Original install entry for caller-specific parsing. */
   raw: Record<string, unknown>;
   /** Normalized install kind accepted by the caller. */
@@ -117,10 +117,10 @@ export type ParsedOpenClawManifestInstallBase = {
 };
 
 /** Parses kind/type plus common install fields shared by package-manager install specs. */
-export function parseOpenClawManifestInstallBase(
+export function parseEVEManifestInstallBase(
   input: unknown,
   allowedKinds: readonly string[],
-): ParsedOpenClawManifestInstallBase | undefined {
+): ParsedEVEManifestInstallBase | undefined {
   if (!input || typeof input !== "object") {
     return undefined;
   }
@@ -132,7 +132,7 @@ export function parseOpenClawManifestInstallBase(
     return undefined;
   }
 
-  const spec: ParsedOpenClawManifestInstallBase = {
+  const spec: ParsedEVEManifestInstallBase = {
     raw,
     kind,
   };
@@ -150,9 +150,9 @@ export function parseOpenClawManifestInstallBase(
 }
 
 /** Copies optional common install fields onto a caller-specific install spec object. */
-export function applyOpenClawManifestInstallCommonFields<
+export function applyEVEManifestInstallCommonFields<
   T extends { id?: string; label?: string; bins?: string[] },
->(spec: T, parsed: Pick<ParsedOpenClawManifestInstallBase, "id" | "label" | "bins">): T {
+>(spec: T, parsed: Pick<ParsedEVEManifestInstallBase, "id" | "label" | "bins">): T {
   if (parsed.id) {
     spec.id = parsed.id;
   }

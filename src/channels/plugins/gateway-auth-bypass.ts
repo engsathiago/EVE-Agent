@@ -3,14 +3,14 @@
  *
  * Reads optional public artifacts that declare unauthenticated Gateway callback paths.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { loadBundledPluginPublicArtifactModuleSync } from "../../plugins/public-surface-loader.js";
 
 /**
  * Lightweight public artifact contract for channel gateway auth bypass paths.
  */
 type GatewayAuthBypassApi = {
-  resolveGatewayAuthBypassPaths?: (params: { cfg: OpenClawConfig }) => readonly unknown[];
+  resolveGatewayAuthBypassPaths?: (params: { cfg: EVEConfig }) => readonly unknown[];
 };
 
 const GATEWAY_AUTH_API_ARTIFACT_BASENAME = "gateway-auth-api.js";
@@ -37,7 +37,7 @@ function loadBundledChannelGatewayAuthApi(channelId: string): GatewayAuthBypassA
  */
 export function resolveBundledChannelGatewayAuthBypassPaths(params: {
   channelId: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): string[] {
   const api = loadBundledChannelGatewayAuthApi(params.channelId);
   const paths = api?.resolveGatewayAuthBypassPaths?.({ cfg: params.cfg }) ?? [];

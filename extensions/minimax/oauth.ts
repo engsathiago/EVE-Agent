@@ -5,11 +5,11 @@ import {
   asSafeIntegerInRange,
   resolveExpiresAtMsFromDurationOrEpoch,
   resolvePositiveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { generatePkceVerifierChallenge, toFormUrlEncoded } from "openclaw/plugin-sdk/provider-auth";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/runtime-env";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { generatePkceVerifierChallenge, toFormUrlEncoded } from "eve-agent/plugin-sdk/provider-auth";
+import { readResponseTextLimited } from "eve-agent/plugin-sdk/provider-http";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "eve-agent/plugin-sdk/runtime-env";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 
 export type MiniMaxRegion = "cn" | "global";
 

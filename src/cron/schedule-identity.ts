@@ -1,5 +1,5 @@
 /** Builds stable identities for cron scheduling inputs. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { coerceFiniteScheduleNumber } from "./schedule-number.js";
 import { normalizeCronStaggerMs } from "./stagger.js";
 

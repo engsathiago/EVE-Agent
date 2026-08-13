@@ -5,12 +5,12 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { createScriptTestHarness } from "./test-helpers.js";
 
-const scriptPath = ".agents/skills/openclaw-secret-scanning-maintainer/scripts/secret-scanning.mjs";
+const scriptPath = ".agents/skills/eve-secret-scanning-maintainer/scripts/secret-scanning.mjs";
 const { createTempDir } = createScriptTestHarness();
 
 describe("secret scanning maintainer script", () => {
   it("marks body alerts as not requiring notification when redaction is unchanged", () => {
-    const tempDir = createTempDir("openclaw-secret-scan-");
+    const tempDir = createTempDir("eve-secret-scan-");
     const currentBody = path.join(tempDir, "current.md");
     const redactedBody = path.join(tempDir, "redacted.md");
     const resultFile = path.join(tempDir, "redaction-result.json");
@@ -35,7 +35,7 @@ describe("secret scanning maintainer script", () => {
   });
 
   it("patches body alerts and requires notification when redaction changes the current body", () => {
-    const tempDir = createTempDir("openclaw-secret-scan-");
+    const tempDir = createTempDir("eve-secret-scan-");
     const binDir = path.join(tempDir, "bin");
     const ghLog = path.join(tempDir, "gh.log");
     fs.mkdirSync(binDir);
@@ -69,12 +69,12 @@ describe("secret scanning maintainer script", () => {
       redacted: true,
     });
     expect(fs.readFileSync(ghLog, "utf8")).toContain(
-      `api repos/openclaw/openclaw/issues/123 -X PATCH -F body=@${redactedBody}`,
+      `api repos/eve/eve/issues/123 -X PATCH -F body=@${redactedBody}`,
     );
   });
 
   it("skips body notification when the redaction result says the current body was already redacted", () => {
-    const tempDir = createTempDir("openclaw-secret-scan-");
+    const tempDir = createTempDir("eve-secret-scan-");
     const resultFile = path.join(tempDir, "redaction-result.json");
     fs.writeFileSync(
       resultFile,

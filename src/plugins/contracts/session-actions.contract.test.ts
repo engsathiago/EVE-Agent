@@ -2,7 +2,7 @@
 import {
   createPluginRegistryFixture,
   registerTestPlugin,
-} from "openclaw/plugin-sdk/plugin-test-contracts";
+} from "eve-agent/plugin-sdk/plugin-test-contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { APPROVALS_SCOPE, READ_SCOPE, WRITE_SCOPE } from "../../gateway/operator-scopes.js";
 import { handleGatewayRequest } from "../../gateway/server-methods.js";
@@ -13,7 +13,7 @@ import { createEmptyPluginRegistry } from "../registry-empty.js";
 import { createPluginRegistry } from "../registry.js";
 import { setActivePluginRegistry } from "../runtime.js";
 import { createPluginRecord } from "../status.test-helpers.js";
-import type { OpenClawPluginApi } from "../types.js";
+import type { EVEPluginApi } from "../types.js";
 
 const MAIN_SESSION_KEY = "agent:main:main";
 
@@ -130,7 +130,7 @@ function requireObservedEvent(
 function registerActionFixture(params: {
   id: string;
   name?: string;
-  register: (api: OpenClawPluginApi) => void;
+  register: (api: EVEPluginApi) => void;
 }) {
   const { config, registry } = createPluginRegistryFixture();
   registerTestPlugin({
@@ -695,8 +695,8 @@ describe("plugin session actions", () => {
     const observed: unknown[] = [];
     const unsubscribe = onAgentEvent((event) => observed.push(event));
     const { config, registry } = createPluginRegistryFixture();
-    let bundledApi: OpenClawPluginApi | undefined;
-    let workspaceApi: OpenClawPluginApi | undefined;
+    let bundledApi: EVEPluginApi | undefined;
+    let workspaceApi: EVEPluginApi | undefined;
     registerTestPlugin({
       registry,
       config,
@@ -799,7 +799,7 @@ describe("plugin session actions", () => {
     const observed: unknown[] = [];
     const unsubscribe = onAgentEvent((event) => observed.push(event));
     const { config, registry } = createPluginRegistryFixture();
-    let capturedApi: OpenClawPluginApi | undefined;
+    let capturedApi: EVEPluginApi | undefined;
     registerTestPlugin({
       registry,
       config,
@@ -833,7 +833,7 @@ describe("plugin session actions", () => {
         },
         runtime: {} as never,
       });
-      let neverActiveApi: OpenClawPluginApi | undefined;
+      let neverActiveApi: EVEPluginApi | undefined;
       registerTestPlugin({
         registry: neverActiveRegistry,
         config,
@@ -864,7 +864,7 @@ describe("plugin session actions", () => {
         runtime: {} as never,
         activateGlobalSideEffects: false,
       });
-      let inactiveApi: OpenClawPluginApi | undefined;
+      let inactiveApi: EVEPluginApi | undefined;
       registerTestPlugin({
         registry: inactiveRegistry,
         config,
@@ -895,7 +895,7 @@ describe("plugin session actions", () => {
     const observed: unknown[] = [];
     const unsubscribe = onAgentEvent((event) => observed.push(event));
     const { config, registry } = createPluginRegistryFixture();
-    let capturedApi: OpenClawPluginApi | undefined;
+    let capturedApi: EVEPluginApi | undefined;
     registerTestPlugin({
       registry,
       config,

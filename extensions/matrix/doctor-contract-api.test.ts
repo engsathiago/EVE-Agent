@@ -2,16 +2,16 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type {
   OpenKeyedStoreOptions,
   PluginStateKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import type { PluginDoctorStateMigrationContext } from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import type { PluginDoctorStateMigrationContext } from "eve-agent/plugin-sdk/runtime-doctor";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stateMigrations } from "./doctor-contract-api.js";
 import { SqliteBackedMatrixSyncStore } from "./src/matrix/client/file-sync-store.js";
@@ -32,8 +32,8 @@ function createContext(): PluginDoctorStateMigrationContext {
 
 function createMigrationParams(stateDir: string) {
   return {
-    config: {} as OpenClawConfig,
-    env: { OPENCLAW_STATE_DIR: stateDir },
+    config: {} as EVEConfig,
+    env: { EVE_STATE_DIR: stateDir },
     stateDir,
     oauthDir: path.join(stateDir, "oauth"),
     context: createContext(),
@@ -64,7 +64,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("migrates legacy sync cache JSON to SQLite plugin state", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const storageRootDir = path.join(
       stateDir,
@@ -114,7 +114,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("migrates Matrix storage metadata JSON to SQLite plugin state", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const storageRootDir = path.join(
       stateDir,
@@ -162,7 +162,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("does not archive the legacy flat sync cache into an unread SQLite root", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const flatRoot = path.join(stateDir, "matrix");
     fs.mkdirSync(flatRoot, { recursive: true });
@@ -185,7 +185,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("migrates Matrix recovery-key JSON to SQLite plugin state", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const storageRootDir = path.join(
       stateDir,
@@ -224,7 +224,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("migrates Matrix IndexedDB snapshot JSON to SQLite plugin state", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const storageRootDir = path.join(
       stateDir,
@@ -237,7 +237,7 @@ describe("matrix doctor contract state migrations", () => {
     fs.mkdirSync(storageRootDir, { recursive: true });
     const snapshot = [
       {
-        name: "openclaw-matrix::matrix-sdk-crypto",
+        name: "eve-matrix::matrix-sdk-crypto",
         version: 1,
         stores: [
           {
@@ -273,7 +273,7 @@ describe("matrix doctor contract state migrations", () => {
   });
 
   it("migrates Matrix legacy crypto migration JSON to SQLite plugin state", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-doctor-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-doctor-"));
     tempDirs.push(stateDir);
     const storageRootDir = path.join(
       stateDir,

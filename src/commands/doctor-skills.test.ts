@@ -1,7 +1,7 @@
 // Doctor skills tests cover skill install checks, status summaries, and repair guidance.
 import { describe, expect, it } from "vitest";
 import { createEmptyInstallChecks } from "../cli/requirements-test-fixtures.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { SkillStatusEntry, SkillStatusReport } from "../skills/discovery/status.js";
 import type { GhConfigDiscoveryInput } from "../skills/lifecycle/gh-config-discovery.js";
 import {
@@ -90,7 +90,7 @@ describe("doctor skills", () => {
 
     expect(lines.join("\n")).toContain("places: bins: goplaces; env: GOOGLE_MAPS_API_KEY");
     expect(lines.join("\n")).toContain("install option: Install goplaces (brew)");
-    expect(lines.join("\n")).toContain("openclaw doctor --fix");
+    expect(lines.join("\n")).toContain("eve doctor --fix");
   });
 
   it("surfaces a GH_CONFIG_DIR hint when the github skill is eligible but auth lives at a different HOME", () => {
@@ -103,7 +103,7 @@ describe("doctor skills", () => {
     });
     const discovery: GhConfigDiscoveryInput = {
       platform: "linux",
-      env: { HOME: "/root/.openclaw/agents/main/agent/codex-home/home" },
+      env: { HOME: "/root/.eve/agents/main/agent/codex-home/home" },
       fileExists: (p) => p === "/root/.config/gh/hosts.yml",
     };
 
@@ -177,7 +177,7 @@ describe("doctor skills", () => {
     });
     const discovery: GhConfigDiscoveryInput = {
       platform: "linux",
-      env: { HOME: "/agent/home", GH_CONFIG_DIR: "/etc/openclaw/gh" },
+      env: { HOME: "/agent/home", GH_CONFIG_DIR: "/etc/eve/gh" },
       fileExists: () => true,
     };
 
@@ -195,7 +195,7 @@ describe("doctor skills", () => {
   });
 
   it("disables unavailable skills through skills.entries without dropping existing config", () => {
-    const config: OpenClawConfig = {
+    const config: EVEConfig = {
       skills: {
         entries: {
           gog: { env: { EXISTING: "1" } },

@@ -1,28 +1,28 @@
-import { loadModelCatalog } from "openclaw/plugin-sdk/agent-runtime";
+import { loadModelCatalog } from "eve-agent/plugin-sdk/agent-runtime";
 // Discord provider module implements model/runtime integration.
-import type { ChannelRuntimeSurface } from "openclaw/plugin-sdk/channel-contract";
+import type { ChannelRuntimeSurface } from "eve-agent/plugin-sdk/channel-contract";
 import {
   listNativeCommandSpecsForConfig,
   listSkillCommandsForAgents,
-} from "openclaw/plugin-sdk/command-auth-native";
-import type { OpenClawConfig, ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
-import { createConnectedChannelStatusPatch } from "openclaw/plugin-sdk/gateway-runtime";
+} from "eve-agent/plugin-sdk/command-auth-native";
+import type { EVEConfig, ReplyToMode } from "eve-agent/plugin-sdk/config-contracts";
+import { createConnectedChannelStatusPatch } from "eve-agent/plugin-sdk/gateway-runtime";
 import {
   resolveNativeCommandsEnabled,
   resolveNativeSkillsEnabled,
-} from "openclaw/plugin-sdk/native-command-config-runtime";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { isVerbose, logVerbose, shouldLogVerbose, warn } from "openclaw/plugin-sdk/runtime-env";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/native-command-config-runtime";
+import { resolveTextChunkLimit } from "eve-agent/plugin-sdk/reply-chunking";
+import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { isVerbose, logVerbose, shouldLogVerbose, warn } from "eve-agent/plugin-sdk/runtime-env";
+import { createSubsystemLogger } from "eve-agent/plugin-sdk/runtime-env";
+import { createNonExitingRuntime, type RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import {
   GROUP_POLICY_BLOCKED_LABEL,
   resolveOpenProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "eve-agent/plugin-sdk/runtime-group-policy";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import {
   resolveDiscordAccount,
   resolveDiscordAccountAllowFrom,
@@ -68,7 +68,7 @@ import type { DiscordMonitorStatusSink } from "./status.js";
 export type MonitorDiscordOpts = {
   token?: string;
   accountId?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   runtime?: RuntimeEnv;
   channelRuntime?: ChannelRuntimeSurface;
   abortSignal?: AbortSignal;
@@ -482,7 +482,7 @@ export async function monitorDiscordProvider(opts: MonitorDiscordOpts = {}) {
     const logger = createSubsystemLogger("discord/monitor");
     const guildHistories = new Map<
       string,
-      import("openclaw/plugin-sdk/reply-history").HistoryEntry[]
+      import("eve-agent/plugin-sdk/reply-history").HistoryEntry[]
     >();
     const { botUserId, botUserName } = await fetchDiscordBotIdentity({
       client,

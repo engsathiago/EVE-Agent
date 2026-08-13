@@ -24,7 +24,7 @@ async function listShellScripts(dir: string): Promise<string[]> {
 async function extractClawhubSkillInstallVerifier(): Promise<string> {
   const script = await readFile("scripts/e2e/lib/skills/clawhub-install-proof.sh", "utf8");
   const marker =
-    'node --input-type=module - "$OPENCLAW_CONFIG_PATH" "$skill_dir" "$origin_json" "$lock_json" "$info_json" "$slug" <<\'NODE\'\n';
+    'node --input-type=module - "$EVE_CONFIG_PATH" "$skill_dir" "$origin_json" "$lock_json" "$info_json" "$slug" <<\'NODE\'\n';
   const start = script.indexOf(marker);
   if (start === -1) {
     throw new Error("ClawHub skill install verifier heredoc was not found");
@@ -52,20 +52,20 @@ describe("e2e shell tempfile hygiene", () => {
   });
 
   it("preserves wizard exit status when reporting failures", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-onboard-status-test-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-onboard-status-test-"));
     const fixturePath = path.join(tempRoot, "wizard-status.sh");
     await writeFile(
       fixturePath,
       `#!/usr/bin/env bash
 set -euo pipefail
 
-export OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY=1
-export OPENCLAW_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
-OPENCLAW_ENTRY=node
-openclaw_test_state_create() { :; }
+export EVE_ONBOARD_SCENARIO_SOURCE_ONLY=1
+export EVE_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
+EVE_ENTRY=node
+eve_test_state_create() { :; }
 source scripts/e2e/lib/onboard/scenario.sh
 
-openclaw_e2e_run_script_with_pty() {
+eve_e2e_run_script_with_pty() {
   local _command="$1"
   local log_path="$2"
   printf 'fake wizard log\\n' >"$log_path"
@@ -97,34 +97,34 @@ run_wizard_cmd failing-wizard fake-state "node fake-wizard" send_noop false
     const contents = await readFile("scripts/e2e/lib/onboard/scenario.sh", "utf8");
 
     expect(contents).toContain(
-      'ONBOARD_TMP_DIR="$(mktemp -d "$ONBOARD_TMP_ROOT/openclaw-onboard.XXXXXX")"',
+      'ONBOARD_TMP_DIR="$(mktemp -d "$ONBOARD_TMP_ROOT/eve-onboard.XXXXXX")"',
     );
-    expect(contents).toContain('OPENCLAW_E2E_LOG_DIR="$ONBOARD_TMP_DIR/logs"');
+    expect(contents).toContain('EVE_E2E_LOG_DIR="$ONBOARD_TMP_DIR/logs"');
     expect(contents).toContain('GATEWAY_LOG_PATH="$ONBOARD_TMP_DIR/gateway-e2e.log"');
     expect(contents).not.toContain("/tmp/gateway-e2e.log");
-    expect(contents).toContain('validate_local_basic_log "$OPENCLAW_E2E_LAST_LOG_PATH"');
+    expect(contents).toContain('validate_local_basic_log "$EVE_E2E_LAST_LOG_PATH"');
     expect(contents).not.toContain(
-      "validate_local_basic_log /tmp/openclaw-onboard-local-basic.log",
+      "validate_local_basic_log /tmp/eve-onboard-local-basic.log",
     );
     expect(contents).toContain(
-      'openclaw_e2e_assert_log_not_contains "$log_path" "systemctl --user unavailable"',
+      'eve_e2e_assert_log_not_contains "$log_path" "systemctl --user unavailable"',
     );
   });
 
   it("probes onboarding gateway readiness through TCP", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-onboard-gateway-log-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-onboard-gateway-log-"));
     const fixturePath = path.join(tempRoot, "gateway-log.sh");
     await writeFile(
       fixturePath,
       `#!/usr/bin/env bash
 set -euo pipefail
 
-export OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY=1
-export OPENCLAW_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
-OPENCLAW_ENTRY=node
+export EVE_ONBOARD_SCENARIO_SOURCE_ONLY=1
+export EVE_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
+EVE_ENTRY=node
 source scripts/e2e/lib/onboard/scenario.sh
 
-openclaw_e2e_probe_tcp() { return 0; }
+eve_e2e_probe_tcp() { return 0; }
 sleep 30 &
 GATEWAY_PID="$!"
 printf 'listening on ws://127.0.0.1:18789\\n' >"$GATEWAY_LOG_PATH"
@@ -151,21 +151,21 @@ test ! -e "$ONBOARD_TMP_DIR"
   });
 
   it("rejects onboarding gateway readiness when the TCP probe fails", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-onboard-gateway-tcp-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-onboard-gateway-tcp-"));
     const fixturePath = path.join(tempRoot, "gateway-tcp.sh");
     await writeFile(
       fixturePath,
       `#!/usr/bin/env bash
 set -euo pipefail
 
-export OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY=1
-export OPENCLAW_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
-export OPENCLAW_ONBOARD_GATEWAY_WAIT_ATTEMPTS=2
-export OPENCLAW_ONBOARD_GATEWAY_WAIT_INTERVAL_S=0.1
-OPENCLAW_ENTRY=node
+export EVE_ONBOARD_SCENARIO_SOURCE_ONLY=1
+export EVE_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
+export EVE_ONBOARD_GATEWAY_WAIT_ATTEMPTS=2
+export EVE_ONBOARD_GATEWAY_WAIT_INTERVAL_S=0.1
+EVE_ENTRY=node
 source scripts/e2e/lib/onboard/scenario.sh
 
-openclaw_e2e_probe_tcp() { return 1; }
+eve_e2e_probe_tcp() { return 1; }
 sleep 30 &
 GATEWAY_PID="$!"
 printf 'listening on ws://127.0.0.1:18789\\n' >"$GATEWAY_LOG_PATH"
@@ -194,20 +194,20 @@ test ! -e "$ONBOARD_TMP_DIR"
   });
 
   it("rejects invalid onboarding gateway wait attempts before probing", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-onboard-gateway-attempts-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-onboard-gateway-attempts-"));
     const fixturePath = path.join(tempRoot, "gateway-attempts.sh");
     await writeFile(
       fixturePath,
       `#!/usr/bin/env bash
 set -euo pipefail
 
-export OPENCLAW_ONBOARD_SCENARIO_SOURCE_ONLY=1
-export OPENCLAW_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
-export OPENCLAW_ONBOARD_GATEWAY_WAIT_ATTEMPTS=2x
-OPENCLAW_ENTRY=node
+export EVE_ONBOARD_SCENARIO_SOURCE_ONLY=1
+export EVE_ONBOARD_E2E_TMPDIR=${JSON.stringify(tempRoot)}
+export EVE_ONBOARD_GATEWAY_WAIT_ATTEMPTS=2x
+EVE_ENTRY=node
 source scripts/e2e/lib/onboard/scenario.sh
 
-openclaw_e2e_probe_tcp() {
+eve_e2e_probe_tcp() {
   echo "probe should not run" >&2
   return 1
 }
@@ -227,7 +227,7 @@ exit "$status"
       });
 
       expect(result.status).toBe(2);
-      expect(result.stderr).toContain("invalid OPENCLAW_ONBOARD_GATEWAY_WAIT_ATTEMPTS: 2x");
+      expect(result.stderr).toContain("invalid EVE_ONBOARD_GATEWAY_WAIT_ATTEMPTS: 2x");
       expect(result.stderr).not.toContain("probe should not run");
     } finally {
       await rm(tempRoot, { force: true, recursive: true });
@@ -235,7 +235,7 @@ exit "$status"
   });
 
   it("removes fallback ClawHub skill install HOME on failure", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-clawhub-home-test-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-clawhub-home-test-"));
     const fakeBin = path.join(tempRoot, "bin");
     const scratchRoot = path.join(tempRoot, "scratch");
     await mkdir(fakeBin, { recursive: true });
@@ -254,8 +254,8 @@ exit 42
         encoding: "utf8",
         env: {
           ...process.env,
-          OPENCLAW_CURRENT_PACKAGE_TGZ: "",
-          OPENCLAW_TEST_STATE_SCRIPT_B64: "",
+          EVE_CURRENT_PACKAGE_TGZ: "",
+          EVE_TEST_STATE_SCRIPT_B64: "",
           PATH: `${fakeBin}:${process.env.PATH ?? ""}`,
           TMPDIR: scratchRoot,
         },
@@ -264,7 +264,7 @@ exit 42
       expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(42);
       const scratchEntries = await readdir(scratchRoot);
       expect(
-        scratchEntries.filter((entry) => entry.startsWith("openclaw-skill-install-home.")),
+        scratchEntries.filter((entry) => entry.startsWith("eve-skill-install-home.")),
       ).toEqual([]);
     } finally {
       await rm(tempRoot, { force: true, recursive: true });
@@ -272,12 +272,12 @@ exit 42
   });
 
   it("rejects ClawHub skill info paths that only share a resolved prefix", async () => {
-    const tempRoot = await mkdtemp(path.join(tmpdir(), "openclaw-clawhub-info-path-"));
+    const tempRoot = await mkdtemp(path.join(tmpdir(), "eve-clawhub-info-path-"));
     const workspaceDir = path.join(tempRoot, "workspace");
     const slug = "demo";
     const skillDir = path.join(workspaceDir, "skills", slug);
     const escapedInfoPath = path.join(workspaceDir, "skills", `${slug}-escape`, "SKILL.md");
-    const configPath = path.join(tempRoot, "openclaw.json");
+    const configPath = path.join(tempRoot, "eve.json");
     const originPath = path.join(skillDir, ".clawhub", "origin.json");
     const lockPath = path.join(workspaceDir, ".clawhub", "lock.json");
     const infoPath = path.join(tempRoot, "info.json");

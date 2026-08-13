@@ -1,5 +1,5 @@
 // Qqbot tests cover interaction handler plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createSdkAccessAdapter } from "../../bridge/sdk-adapter.js";
 import { registerPlatformAdapter, type PlatformAdapter } from "../adapter/index.js";
@@ -33,7 +33,7 @@ const account = makeAccount();
 
 const runtime = {} as GatewayPluginRuntime;
 
-function makeRestrictedCfg(approvers: string[]): OpenClawConfig {
+function makeRestrictedCfg(approvers: string[]): EVEConfig {
   return {
     channels: {
       qqbot: {
@@ -45,10 +45,10 @@ function makeRestrictedCfg(approvers: string[]): OpenClawConfig {
         },
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
-function makeCommandAuthorizedFallbackCfg(): OpenClawConfig {
+function makeCommandAuthorizedFallbackCfg(): EVEConfig {
   return {
     channels: {
       qqbot: {
@@ -57,7 +57,7 @@ function makeCommandAuthorizedFallbackCfg(): OpenClawConfig {
         allowFrom: ["ATTACKER_OPENID"],
       },
     },
-  } as OpenClawConfig;
+  } as EVEConfig;
 }
 
 function makeApprovalEvent(overrides: Partial<InteractionEvent> = {}): InteractionEvent {
@@ -211,7 +211,7 @@ describe("createInteractionHandler approval buttons", () => {
               allowFrom: ["accessGroup:operators"],
             },
           },
-        }) as OpenClawConfig,
+        }) as EVEConfig,
       resolveCommandAuthorized: (params) => access.resolveSlashCommandAuthorization(params),
     });
 
@@ -237,7 +237,7 @@ describe("createInteractionHandler approval buttons", () => {
               },
             },
           },
-        }) as OpenClawConfig,
+        }) as EVEConfig,
     });
 
     handler(makeApprovalEvent());
@@ -258,7 +258,7 @@ describe("createInteractionHandler approval buttons", () => {
               allowFrom: ["OWNER_OPENID"],
             },
           },
-        }) as OpenClawConfig,
+        }) as EVEConfig,
     });
 
     handler(makeApprovalEvent());
@@ -298,7 +298,7 @@ describe("createInteractionHandler approval buttons", () => {
         },
       },
     ],
-  ] satisfies Array<[string, OpenClawConfig]>)(
+  ] satisfies Array<[string, EVEConfig]>)(
     "rejects fallback approval buttons when %s does not grant command auth",
     async (_name, cfg) => {
       const handler = createInteractionHandler(account, runtime, undefined, {

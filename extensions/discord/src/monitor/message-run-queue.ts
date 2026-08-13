@@ -1,7 +1,7 @@
 // Discord plugin module implements message run queue behavior.
-import { createChannelRunQueue } from "openclaw/plugin-sdk/channel-outbound";
-import type { ClaimableDedupe } from "openclaw/plugin-sdk/persistent-dedupe";
-import { danger } from "openclaw/plugin-sdk/runtime-env";
+import { createChannelRunQueue } from "eve-agent/plugin-sdk/channel-outbound";
+import type { ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
+import { danger } from "eve-agent/plugin-sdk/runtime-env";
 import {
   commitDiscordInboundReplay,
   createDiscordInboundReplayGuard,

@@ -2,7 +2,7 @@
 // options for local transcription binaries.
 import fs from "node:fs/promises";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import { CLI_OUTPUT_MAX_BUFFER } from "./defaults.constants.js";
 import { withAudioFixture } from "./runner.test-utils.js";
 
@@ -38,7 +38,7 @@ describe("media-understanding CLI audio entry", () => {
   it("applies per-request prompt and language overrides to CLI transcription templating", async () => {
     let mediaPath = "";
 
-    await withAudioFixture("openclaw-cli-audio", async ({ ctx, cache }) => {
+    await withAudioFixture("eve-cli-audio", async ({ ctx, cache }) => {
       mediaPath = await fs.realpath(ctx.MediaPath);
 
       await runCliEntry({
@@ -61,7 +61,7 @@ describe("media-understanding CLI audio entry", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
         ctx,
         attachmentIndex: 0,
         cache,
@@ -91,7 +91,7 @@ describe("media-understanding CLI audio entry", () => {
       stderr: "",
     });
 
-    await withAudioFixture("openclaw-cli-audio-empty-sherpa", async ({ ctx, cache }) => {
+    await withAudioFixture("eve-cli-audio-empty-sherpa", async ({ ctx, cache }) => {
       const result = await runCliEntry({
         capability: "audio",
         entry: {
@@ -99,7 +99,7 @@ describe("media-understanding CLI audio entry", () => {
           command: "sherpa-onnx-offline",
           args: ["{{MediaPath}}"],
         },
-        cfg: { tools: { media: { audio: {} } } } as OpenClawConfig,
+        cfg: { tools: { media: { audio: {} } } } as EVEConfig,
         ctx,
         attachmentIndex: 0,
         cache,
@@ -116,7 +116,7 @@ describe("media-understanding CLI audio entry", () => {
       stderr: "",
     });
 
-    await withAudioFixture("openclaw-cli-audio-sherpa-json", async ({ ctx, cache }) => {
+    await withAudioFixture("eve-cli-audio-sherpa-json", async ({ ctx, cache }) => {
       const result = await runCliEntry({
         capability: "audio",
         entry: {
@@ -124,7 +124,7 @@ describe("media-understanding CLI audio entry", () => {
           command: "sherpa-onnx-offline",
           args: ["{{MediaPath}}"],
         },
-        cfg: { tools: { media: { audio: {} } } } as OpenClawConfig,
+        cfg: { tools: { media: { audio: {} } } } as EVEConfig,
         ctx,
         attachmentIndex: 0,
         cache,

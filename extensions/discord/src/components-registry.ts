@@ -1,12 +1,12 @@
 // Discord plugin module implements components registry behavior.
-import { resolveGlobalMap } from "openclaw/plugin-sdk/global-singleton";
+import { resolveGlobalMap } from "eve-agent/plugin-sdk/global-singleton";
 import {
   asDateTimestampMs,
   isFutureDateTimestampMs,
   resolveDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { DiscordComponentEntry, DiscordModalEntry } from "./components.js";
 import { getOptionalDiscordRuntime } from "./runtime.js";
 
@@ -15,8 +15,8 @@ const PERSISTENT_COMPONENT_NAMESPACE = "discord.components";
 const PERSISTENT_MODAL_NAMESPACE = "discord.modals";
 const PERSISTENT_COMPONENT_MAX_ENTRIES = 500;
 const PERSISTENT_MODAL_MAX_ENTRIES = 500;
-const DISCORD_COMPONENT_ENTRIES_KEY = Symbol.for("openclaw.discord.componentEntries");
-const DISCORD_MODAL_ENTRIES_KEY = Symbol.for("openclaw.discord.modalEntries");
+const DISCORD_COMPONENT_ENTRIES_KEY = Symbol.for("eve.discord.componentEntries");
+const DISCORD_MODAL_ENTRIES_KEY = Symbol.for("eve.discord.modalEntries");
 
 type PersistedDiscordRegistryEntry<T extends { id: string }> = {
   version: 1;

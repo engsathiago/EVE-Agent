@@ -4,12 +4,12 @@ set -euo pipefail
 # Definition:
 #   Docker/package E2E proof for local channel plugin trust gating. The host
 #   mode builds or reuses the functional Docker image, then runs the container
-#   mode against the installed OpenClaw package.
+#   mode against the installed EVE package.
 #
 # Parameters:
 #   --container: run the in-container scenario. Host mode is the default.
-#   OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_IMAGE: override the Docker image name.
-#   OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD=1: reuse/pull the image.
+#   EVE_CHANNEL_PLUGIN_TRUST_E2E_IMAGE: override the Docker image name.
+#   EVE_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD=1: reuse/pull the image.
 #
 # Outputs:
 #   stdout logs each case and prints "Channel plugin trust Docker E2E passed."
@@ -22,7 +22,7 @@ Usage:
   bash scripts/e2e/channel-plugin-trust-docker.sh [--container]
 
 Description:
-  Proves the packaged OpenClaw CLI enforces local channel plugin trust for
+  Proves the packaged EVE CLI enforces local channel plugin trust for
   plugins.load.paths entries in a clean Docker/package environment.
 
 Options:
@@ -30,9 +30,9 @@ Options:
   -h, --help    Show this help.
 
 Environment:
-  OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_IMAGE       Override Docker image name.
-  OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD  Reuse/pull image instead of building.
-  OPENCLAW_TEST_STATE_SCRIPT_B64                Required in --container mode.
+  EVE_CHANNEL_PLUGIN_TRUST_E2E_IMAGE       Override Docker image name.
+  EVE_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD  Reuse/pull image instead of building.
+  EVE_TEST_STATE_SCRIPT_B64                Required in --container mode.
 
 Outputs:
   Prints case progress and PASS lines to stdout. Exits non-zero on assertion
@@ -40,22 +40,22 @@ Outputs:
 
 Examples:
   bash scripts/e2e/channel-plugin-trust-docker.sh
-  OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD=1 bash scripts/e2e/channel-plugin-trust-docker.sh
+  EVE_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD=1 bash scripts/e2e/channel-plugin-trust-docker.sh
 EOF
 }
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-run_openclaw() {
-  if command -v openclaw >/dev/null 2>&1; then
-    openclaw "$@"
+run_eve() {
+  if command -v eve >/dev/null 2>&1; then
+    eve "$@"
     return
   fi
-  if [ -f /app/openclaw.mjs ]; then
-    node /app/openclaw.mjs "$@"
+  if [ -f /app/eve.mjs ]; then
+    node /app/eve.mjs "$@"
     return
   fi
-  echo "openclaw CLI not found in Docker image" >&2
+  echo "eve CLI not found in Docker image" >&2
   exit 1
 }
 
@@ -68,10 +68,10 @@ write_load_paths_fixture() {
 
   cat >"$plugin_dir/package.json" <<EOF
 {
-  "name": "@openclaw-e2e/$plugin_id",
+  "name": "@eve-e2e/$plugin_id",
   "version": "0.0.0-e2e",
   "private": true,
-  "openclaw": {
+  "eve": {
     "extensions": ["./index.cjs"],
     "setupEntry": "./setup-entry.cjs",
     "channel": {
@@ -85,7 +85,7 @@ write_load_paths_fixture() {
 }
 EOF
 
-  cat >"$plugin_dir/openclaw.plugin.json" <<EOF
+  cat >"$plugin_dir/eve.plugin.json" <<EOF
 {
   "id": "$plugin_id",
   "name": "E2E load-paths Shadow",
@@ -185,9 +185,9 @@ write_case_config() {
   local plugin_dir="${1:?missing plugin dir}"
   local trusted="${2:?missing trusted flag}"
   local plugin_id="e2e-load-paths-shadow"
-  mkdir -p "$(dirname "$OPENCLAW_CONFIG_PATH")"
+  mkdir -p "$(dirname "$EVE_CONFIG_PATH")"
   if [ "$trusted" = "1" ]; then
-    cat >"$OPENCLAW_CONFIG_PATH" <<EOF
+    cat >"$EVE_CONFIG_PATH" <<EOF
 {
   "plugins": {
     "enabled": true,
@@ -199,7 +199,7 @@ write_case_config() {
 }
 EOF
   else
-    cat >"$OPENCLAW_CONFIG_PATH" <<EOF
+    cat >"$EVE_CONFIG_PATH" <<EOF
 {
   "plugins": {
     "enabled": true,
@@ -216,7 +216,7 @@ run_case() {
   local case_id="${1:?missing case id}"
   local trusted="${2:?missing trusted flag}"
   local scratch
-  scratch="$(mktemp -d "/tmp/openclaw-channel-plugin-trust-$case_id.XXXXXX")"
+  scratch="$(mktemp -d "/tmp/eve-channel-plugin-trust-$case_id.XXXXXX")"
   local plugin_dir="$scratch/e2e-load-paths-shadow"
   local marker_dir="$scratch/markers"
   local stdout_file="$scratch/stdout.log"
@@ -234,7 +234,7 @@ run_case() {
     PLUGINTRUST_SETUP_IMPORT_MARKER="$marker_dir/setup-import.marker" \
     PLUGINTRUST_SETUP_REGISTER_MARKER="$marker_dir/setup-register.marker" \
     PLUGINTRUST_CANARY="$canary" \
-    run_openclaw channels add --channel e2e-load-paths --token "$canary" \
+    run_eve channels add --channel e2e-load-paths --token "$canary" \
       >"$stdout_file" 2>"$stderr_file"
   local status=$?
   set -e
@@ -273,11 +273,11 @@ run_case() {
 }
 
 run_container() {
-  source scripts/lib/openclaw-e2e-instance.sh
-  openclaw_e2e_eval_test_state_from_b64 "${OPENCLAW_TEST_STATE_SCRIPT_B64:?missing OPENCLAW_TEST_STATE_SCRIPT_B64}"
-  export OPENCLAW_WORKSPACE_DIR="$HOME/.openclaw/workspace"
+  source scripts/lib/eve-e2e-instance.sh
+  eve_e2e_eval_test_state_from_b64 "${EVE_TEST_STATE_SCRIPT_B64:?missing EVE_TEST_STATE_SCRIPT_B64}"
+  export EVE_WORKSPACE_DIR="$HOME/.eve/workspace"
 
-  run_openclaw --version
+  run_eve --version
   run_case untrusted-load-paths 0
   run_case trusted-load-paths 1
   echo "Channel plugin trust Docker E2E passed."
@@ -288,10 +288,10 @@ run_host() {
   local image_name
   image_name="$(
     docker_e2e_resolve_image \
-      "openclaw-channel-plugin-trust-e2e:local" \
-      OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_IMAGE
+      "eve-channel-plugin-trust-e2e:local" \
+      EVE_CHANNEL_PLUGIN_TRUST_E2E_IMAGE
   )"
-  local skip_build="${OPENCLAW_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD:-0}"
+  local skip_build="${EVE_CHANNEL_PLUGIN_TRUST_E2E_SKIP_BUILD:-0}"
   docker_e2e_build_or_reuse "$image_name" channel-plugin-trust "$ROOT_DIR/scripts/e2e/Dockerfile" "$ROOT_DIR" "" "$skip_build"
 
   local state_script_b64
@@ -300,7 +300,7 @@ run_host() {
   docker_e2e_run_logged_print_with_harness \
     channel-plugin-trust \
     -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
-    -e "OPENCLAW_TEST_STATE_SCRIPT_B64=$state_script_b64" \
+    -e "EVE_TEST_STATE_SCRIPT_B64=$state_script_b64" \
     "$image_name" \
     bash scripts/e2e/channel-plugin-trust-docker.sh --container
 }

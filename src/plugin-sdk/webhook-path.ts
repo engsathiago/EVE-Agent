@@ -1,6 +1,6 @@
 /**
  * @deprecated Compatibility subpath. Import webhook path helpers from
- * `openclaw/plugin-sdk/webhook-ingress` instead.
+ * `eve-agent/plugin-sdk/webhook-ingress` instead.
  */
 
 /**
@@ -8,7 +8,7 @@
  * Empty values resolve to `/` so route registration and request matching use the
  * same canonical key.
  *
- * @deprecated Import from `openclaw/plugin-sdk/webhook-ingress` instead.
+ * @deprecated Import from `eve-agent/plugin-sdk/webhook-ingress` instead.
  */
 export function normalizeWebhookPath(raw: string): string {
   const trimmed = raw.trim();
@@ -26,7 +26,7 @@ export function normalizeWebhookPath(raw: string): string {
  * Resolves a webhook path from explicit path config, then URL pathname, then
  * caller default. Invalid webhook URLs resolve to `null` instead of guessing.
  *
- * @deprecated Import from `openclaw/plugin-sdk/webhook-ingress` instead.
+ * @deprecated Import from `eve-agent/plugin-sdk/webhook-ingress` instead.
  */
 export function resolveWebhookPath(params: {
   webhookPath?: string;

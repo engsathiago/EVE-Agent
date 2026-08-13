@@ -1,6 +1,6 @@
 // Memory Core plugin module serializes full memory reindex builds across processes.
 import type { DatabaseSync } from "node:sqlite";
-import { requireNodeSqlite } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+import { requireNodeSqlite } from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 
 export type MemoryReindexLockHandle = {
   release: () => void;

@@ -2,7 +2,7 @@
 import { note } from "../../packages/terminal-core/src/note.js";
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginVersionDriftReport } from "../plugins/plugin-version-drift.js";
 import {
   buildPluginCompatibilityWarnings,
@@ -49,8 +49,8 @@ function noteFlowRecoveryHints() {
     [
       ...suspicious.slice(0, 5),
       suspicious.length > 5 ? `...and ${suspicious.length - 5} more.` : null,
-      `Inspect: ${formatCliCommand("openclaw tasks flow show <flow-id>")}`,
-      `Cancel: ${formatCliCommand("openclaw tasks flow cancel <flow-id>")}`,
+      `Inspect: ${formatCliCommand("eve tasks flow show <flow-id>")}`,
+      `Cancel: ${formatCliCommand("eve tasks flow cancel <flow-id>")}`,
     ]
       .filter((line): line is string => Boolean(line))
       .join("\n"),
@@ -66,24 +66,24 @@ function notePluginVersionDrift(drift: PluginVersionDriftReport | undefined) {
   const lines = [
     `${drift.drifts.length} active official plugin${
       drift.drifts.length === 1 ? "" : "s"
-    } not on OpenClaw ${drift.gatewayVersion}`,
+    } not on EVE ${drift.gatewayVersion}`,
     ...drift.drifts.map((entry) => {
       const sourceLabel = entry.source === "clawhub" ? "clawhub" : "npm";
       return `- ${entry.pluginId}: ${entry.installedVersion} (${sourceLabel}) -> expected ${drift.gatewayVersion}`;
     }),
     singleDrift
       ? `Fix: ${formatCliCommand(
-          `openclaw plugins update ${singleDrift.pluginId}`,
-        )} && ${formatCliCommand("openclaw gateway restart")}.`
+          `eve plugins update ${singleDrift.pluginId}`,
+        )} && ${formatCliCommand("eve gateway restart")}.`
       : `Fix: ${formatCliCommand(
-          "openclaw plugins update <plugin-id>",
-        )} for each drifted plugin, then ${formatCliCommand("openclaw gateway restart")}.`,
+          "eve plugins update <plugin-id>",
+        )} for each drifted plugin, then ${formatCliCommand("eve gateway restart")}.`,
   ];
   note(lines.join("\n"), "Plugin version drift");
 }
 
 /** Emits workspace, skills, plugin, and TaskFlow recovery status notes for doctor. */
-export function noteWorkspaceStatus(cfg: OpenClawConfig, options: NoteWorkspaceStatusOptions = {}) {
+export function noteWorkspaceStatus(cfg: EVEConfig, options: NoteWorkspaceStatusOptions = {}) {
   const workspaceDir = resolveAgentWorkspaceDir(cfg, resolveDefaultAgentId(cfg));
   const legacyWorkspace = detectLegacyWorkspaceDirs({ workspaceDir });
   if (legacyWorkspace.legacyDirs.length > 0) {

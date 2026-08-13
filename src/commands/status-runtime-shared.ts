@@ -2,7 +2,7 @@
 // Heavy modules stay lazily loaded so fast status output avoids security/provider/gateway costs.
 
 import { resolveDefaultAgentDir } from "../agents/agent-scope.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { HeartbeatEventPayload } from "../infra/heartbeat-events.js";
 import { createLazyImportLoader } from "../shared/lazy-promise.js";
 import type { HealthSummary } from "./health.js";
@@ -35,8 +35,8 @@ function loadGatewayCallModule() {
 
 /** Runs the lightweight security audit used by status JSON/all output. */
 export async function resolveStatusSecurityAudit(params: {
-  config: OpenClawConfig;
-  sourceConfig: OpenClawConfig;
+  config: EVEConfig;
+  sourceConfig: EVEConfig;
   timeoutMs?: number;
 }) {
   const { runSecurityAudit } = await loadSecurityAuditModule();
@@ -61,7 +61,7 @@ export async function resolveStatusSecurityAudit(params: {
 }
 
 type StatusUsageSummaryOptions = {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
   agentDir?: string;
 };
@@ -83,7 +83,7 @@ export async function loadStatusProviderUsageModule() {
 
 /** Calls gateway health and lets errors propagate to deep status callers. */
 export async function resolveStatusGatewayHealth(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
 }) {
   const { callGateway } = await loadGatewayCallModule();
@@ -97,7 +97,7 @@ export async function resolveStatusGatewayHealth(params: {
 
 /** Calls gateway health but converts unreachable/failing probes into an error object. */
 export async function resolveStatusGatewayHealthSafe(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
   gatewayReachable: boolean;
   gatewayProbeError?: string | null;
@@ -123,7 +123,7 @@ export async function resolveStatusGatewayHealthSafe(params: {
 
 /** Reads gateway delivery diagnostics when reachable, returning null on failures. */
 export async function resolveStatusGatewayDiagnosticsSafe(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
   gatewayReachable: boolean;
   callOverrides?: {
@@ -147,7 +147,7 @@ export async function resolveStatusGatewayDiagnosticsSafe(params: {
 
 /** Reads the most recent gateway heartbeat only when the gateway probe succeeded. */
 export async function resolveStatusLastHeartbeat(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
   gatewayReachable: boolean;
 }) {
@@ -177,7 +177,7 @@ type StatusSecurityAudit = Awaited<ReturnType<typeof resolveStatusSecurityAudit>
 
 /** Resolves optional usage/deep runtime details plus service summaries for status output. */
 export async function resolveStatusRuntimeDetails(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   timeoutMs?: number;
   usage?: boolean;
   deep?: boolean;
@@ -185,7 +185,7 @@ export async function resolveStatusRuntimeDetails(params: {
   suppressHealthErrors?: boolean;
   resolveUsage?: (input: StatusUsageSummaryOptions) => Promise<StatusUsageSummary>;
   resolveHealth?: (input: {
-    config: OpenClawConfig;
+    config: EVEConfig;
     timeoutMs?: number;
   }) => Promise<StatusGatewayHealth>;
 }) {
@@ -235,8 +235,8 @@ export async function resolveStatusRuntimeDetails(params: {
 
 /** Resolves the full runtime snapshot, including optional security audit, for status JSON/text. */
 export async function resolveStatusRuntimeSnapshot(params: {
-  config: OpenClawConfig;
-  sourceConfig: OpenClawConfig;
+  config: EVEConfig;
+  sourceConfig: EVEConfig;
   timeoutMs?: number;
   usage?: boolean;
   deep?: boolean;
@@ -244,13 +244,13 @@ export async function resolveStatusRuntimeSnapshot(params: {
   includeSecurityAudit?: boolean;
   suppressHealthErrors?: boolean;
   resolveSecurityAudit?: (input: {
-    config: OpenClawConfig;
-    sourceConfig: OpenClawConfig;
+    config: EVEConfig;
+    sourceConfig: EVEConfig;
     timeoutMs?: number;
   }) => Promise<StatusSecurityAudit>;
   resolveUsage?: (input: StatusUsageSummaryOptions) => Promise<StatusUsageSummary>;
   resolveHealth?: (input: {
-    config: OpenClawConfig;
+    config: EVEConfig;
     timeoutMs?: number;
   }) => Promise<StatusGatewayHealth>;
 }) {

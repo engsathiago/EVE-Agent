@@ -1,12 +1,12 @@
-# OpenClaw DeepInfra Provider
+# EVE DeepInfra Provider
 
-Official OpenClaw provider plugin for DeepInfra.
+Official EVE provider plugin for DeepInfra.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/deepinfra-provider
-openclaw gateway restart
+eve plugins install @eve/deepinfra-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/deepinfra> for setup and configuration.
+See <https://docs.eve.ai/providers/deepinfra> for setup and configuration.

@@ -4,8 +4,8 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+} from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { AssistantMessage } from "../../llm/types.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import {
@@ -614,7 +614,7 @@ function isOAuthRefreshContentionMessage(raw: string): boolean {
   return (
     /\brefresh_contention\b/i.test(raw) ||
     (/\bfile lock timeout\b/i.test(raw) &&
-      /(?:\/|\\|^)(?:oauth-refresh|openclaw-oauth-refresh)[^/\n\\]*?(?:\.lock)?\b/i.test(raw))
+      /(?:\/|\\|^)(?:oauth-refresh|eve-oauth-refresh)[^/\n\\]*?(?:\.lock)?\b/i.test(raw))
   );
 }
 
@@ -1325,7 +1325,7 @@ export function classifyAssistantFailoverReason(
 export function formatAssistantErrorText(
   msg: AssistantMessage,
   opts?: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     sessionKey?: string;
     provider?: string;
     model?: string;
@@ -1569,7 +1569,7 @@ export function isRawAssistantErrorPassthrough(params: {
 export function formatUserFacingAssistantErrorText(
   msg: AssistantMessage,
   opts?: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     sessionKey?: string;
     provider?: string;
     model?: string;

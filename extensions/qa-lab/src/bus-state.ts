@@ -1,6 +1,6 @@
 // Qa Lab plugin module implements bus state behavior.
 import { randomUUID } from "node:crypto";
-import { sanitizeQaBusToolCalls } from "openclaw/plugin-sdk/qa-channel-protocol";
+import { sanitizeQaBusToolCalls } from "eve-agent/plugin-sdk/qa-channel-protocol";
 import {
   buildQaBusSnapshot,
   cloneMessage,
@@ -31,8 +31,8 @@ import type {
   QaBusWaitForInput,
 } from "./runtime-api.js";
 
-const DEFAULT_BOT_ID = "openclaw";
-const DEFAULT_BOT_NAME = "OpenClaw QA";
+const DEFAULT_BOT_ID = "eve";
+const DEFAULT_BOT_NAME = "EVE QA";
 
 type QaBusEventSeed =
   | {

@@ -3,7 +3,7 @@
  * Verifies retryable parameter errors expose useful context while intentional
  * hook blocks and exec secrets stay out of raw logs.
  */
-import type { AgentTool } from "openclaw/plugin-sdk/agent-core";
+import type { AgentTool } from "eve-agent/plugin-sdk/agent-core";
 import { Type } from "typebox";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -295,7 +295,7 @@ describe("agent tool definition adapter logging", () => {
 
     const result = await def.execute(
       "call-web-search-abort",
-      { query: "OpenClaw" },
+      { query: "EVE" },
       undefined,
       undefined,
       extensionContext,
@@ -337,7 +337,7 @@ describe("agent tool definition adapter logging", () => {
     try {
       await def.execute(
         "call-web-search-agent-abort",
-        { query: "OpenClaw" },
+        { query: "EVE" },
         controller.signal,
         undefined,
         extensionContext,

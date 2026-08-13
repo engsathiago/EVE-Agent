@@ -88,7 +88,7 @@ describe("synthetic auth runtime refs", () => {
 
   it("loads manifest synthetic auth refs with the current runtime scope", () => {
     const config = { plugins: { allow: ["external-local"] } };
-    const env = { OPENCLAW_HOME: "/tmp/openclaw-home" };
+    const env = { EVE_HOME: "/tmp/eve-home" };
     pluginRegistryMocks.loadPluginRegistrySnapshotWithMetadata.mockReturnValue({
       source: "persisted",
       snapshot: {

@@ -65,15 +65,15 @@ parallels_log_progress_extract() {
 parallels_bash_seed_workspace_snippet() {
   local purpose="$1"
   cat <<EOF
-workspace="\${OPENCLAW_WORKSPACE_DIR:-\$HOME/.openclaw/workspace}"
-mkdir -p "\$workspace/.openclaw"
+workspace="\${EVE_WORKSPACE_DIR:-\$HOME/.eve/workspace}"
+mkdir -p "\$workspace/.eve"
 cat > "\$workspace/IDENTITY.md" <<'IDENTITY_EOF'
 # Identity
 
-- Name: OpenClaw
+- Name: EVE
 - Purpose: $purpose
 IDENTITY_EOF
-cat > "\$workspace/.openclaw/workspace-state.json" <<'STATE_EOF'
+cat > "\$workspace/.eve/workspace-state.json" <<'STATE_EOF'
 {
   "version": 1,
   "setupCompletedAt": "2026-01-01T00:00:00.000Z"
@@ -86,16 +86,16 @@ EOF
 parallels_powershell_seed_workspace_snippet() {
   local purpose="$1"
   cat <<EOF
-\$workspace = \$env:OPENCLAW_WORKSPACE_DIR
+\$workspace = \$env:EVE_WORKSPACE_DIR
 if (-not \$workspace) {
-  \$workspace = Join-Path \$env:USERPROFILE '.openclaw\\workspace'
+  \$workspace = Join-Path \$env:USERPROFILE '.eve\\workspace'
 }
-\$stateDir = Join-Path \$workspace '.openclaw'
+\$stateDir = Join-Path \$workspace '.eve'
 New-Item -ItemType Directory -Path \$stateDir -Force | Out-Null
 @'
 # Identity
 
-- Name: OpenClaw
+- Name: EVE
 - Purpose: $purpose
 '@ | Set-Content -Path (Join-Path \$workspace 'IDENTITY.md') -Encoding UTF8
 @'

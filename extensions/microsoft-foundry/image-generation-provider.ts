@@ -1,18 +1,18 @@
 // Microsoft Foundry image provider routes MAI image deployments to the MAI API.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/core";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/core";
 import type {
   ImageGenerationProvider,
   ImageGenerationRequest,
   ImageGenerationResult,
   ImageGenerationSourceImage,
-} from "openclaw/plugin-sdk/image-generation";
+} from "eve-agent/plugin-sdk/image-generation";
 import {
   imageSourceUploadFileName,
   parseOpenAiCompatibleImageResponse,
-} from "openclaw/plugin-sdk/image-generation";
-import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
+} from "eve-agent/plugin-sdk/image-generation";
+import { isProviderApiKeyConfigured } from "eve-agent/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "eve-agent/plugin-sdk/provider-auth-runtime";
 import {
   assertOkOrThrowHttpError,
   createProviderOperationDeadline,
@@ -21,11 +21,11 @@ import {
   resolveProviderHttpRequestConfig,
   resolveProviderOperationTimeoutMs,
   sanitizeConfiguredModelProviderRequest,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { prepareFoundryRuntimeAuth } from "./runtime.js";
 import { extractFoundryEndpoint } from "./shared-runtime.js";
 import {
@@ -43,7 +43,7 @@ const MAI_IMAGE_BASE_PATH = "/mai/v1";
 const MAI_IMAGE_OUTPUT_MIME = "image/png";
 const MAI_IMAGE_UPLOAD_MIME_TYPES = new Set(["image/jpeg", "image/jpg", "image/png"]);
 
-type ModelProviderConfig = NonNullable<NonNullable<OpenClawConfig["models"]>["providers"]>[string];
+type ModelProviderConfig = NonNullable<NonNullable<EVEConfig["models"]>["providers"]>[string];
 
 function readProviderConfig(req: ImageGenerationRequest): ModelProviderConfig | undefined {
   return req.cfg.models?.providers?.[PROVIDER_ID];

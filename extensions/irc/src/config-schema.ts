@@ -7,7 +7,7 @@ import {
   ToolPolicySchema,
   buildChannelConfigSchema,
   requireOpenAllowFrom,
-} from "openclaw/plugin-sdk/channel-config-schema";
+} from "eve-agent/plugin-sdk/channel-config-schema";
 import { z } from "zod";
 import { ircChannelConfigUiHints } from "./config-ui-hints.js";
 

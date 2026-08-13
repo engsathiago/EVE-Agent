@@ -24,8 +24,8 @@ import {
 import { buildUpdateRestartSentinelPayload } from "./update-restart-sentinel-payload.js";
 
 async function withRestartSentinelStateDir(run: () => Promise<void>): Promise<void> {
-  await withTempDir({ prefix: "openclaw-sentinel-" }, async (tempDir) => {
-    await withEnvAsync({ OPENCLAW_STATE_DIR: tempDir }, run);
+  await withTempDir({ prefix: "eve-sentinel-" }, async (tempDir) => {
+    await withEnvAsync({ EVE_STATE_DIR: tempDir }, run);
   });
 }
 
@@ -150,7 +150,7 @@ describe("restart sentinel", () => {
       status: "error" as const,
       ts: Date.now(),
       message: "Patch failed",
-      doctorHint: "Run openclaw doctor",
+      doctorHint: "Run eve doctor",
       stats: { mode: "patch", reason: "validation failed" },
     };
 
@@ -159,7 +159,7 @@ describe("restart sentinel", () => {
         "Gateway restart config-patch error (patch)",
         "Patch failed",
         "Reason: validation failed",
-        "Run openclaw doctor",
+        "Run eve doctor",
       ].join("\n"),
     );
   });
@@ -315,7 +315,7 @@ describe("control-plane update restart sentinel", () => {
     const result = {
       status: "ok" as const,
       mode: "npm" as const,
-      root: "/tmp/openclaw",
+      root: "/tmp/eve",
       before: { version: "2026.4.23" },
       after: { version: "2026.4.24" },
       steps: [],
@@ -384,18 +384,18 @@ describe("restart sentinel message dedup", () => {
 
   it("formats the non-interactive doctor command as actionability guidance", () => {
     expect(formatDoctorNonInteractiveHint({ PATH: "/usr/bin:/bin" })).toBe(
-      "Recommended follow-up: run openclaw doctor --non-interactive in a terminal or approvals-capable OpenClaw surface.",
+      "Recommended follow-up: run eve doctor --non-interactive in a terminal or approvals-capable EVE surface.",
     );
   });
 
   it("keeps profile-aware doctor guidance actionable outside constrained delivery surfaces", () => {
     expect(
       formatDoctorNonInteractiveHint({
-        OPENCLAW_PROFILE: "isolated",
+        EVE_PROFILE: "isolated",
         PATH: "/usr/bin:/bin",
       }),
     ).toBe(
-      "Recommended follow-up: run openclaw --profile isolated doctor --non-interactive in a terminal or approvals-capable OpenClaw surface.",
+      "Recommended follow-up: run eve --profile isolated doctor --non-interactive in a terminal or approvals-capable EVE surface.",
     );
   });
 });

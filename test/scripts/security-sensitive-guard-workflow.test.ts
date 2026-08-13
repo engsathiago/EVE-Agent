@@ -92,7 +92,7 @@ describe("security-sensitive guard workflow", () => {
   it("temporarily skips PR bases that predate the guard rollout commit", () => {
     const parsed = readWorkflow();
 
-    expect(parsed.env?.OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA).toBe(
+    expect(parsed.env?.EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA).toBe(
       "5d9c010628ea4de3492a12e32f9be5b8c5dfa9ed",
     );
 
@@ -107,7 +107,7 @@ describe("security-sensitive guard workflow", () => {
       expect(rollout?.env?.GH_TOKEN).toBe("${{ github.token }}");
       expect(rollout?.env?.PR_BASE_SHA).toBe("${{ github.event.pull_request.base.sha }}");
       expect(rollout?.run).toContain(
-        "compare/${OPENCLAW_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}",
+        "compare/${EVE_SECURITY_SENSITIVE_GUARD_ROLLOUT_SHA}...${PR_BASE_SHA}",
       );
       expect(rollout?.run).toContain("ahead|identical)");
       expect(rollout?.run).toContain("behind|diverged)");
@@ -125,10 +125,10 @@ describe("security-sensitive guard workflow", () => {
 
     expect(finalJob?.needs).toEqual(["security-sensitive-guard-detect"]);
     expect(finalJob?.if).toContain("always()");
-    expect(detectSteps.at(-1)?.env?.OPENCLAW_SECURITY_SENSITIVE_GUARD_MODE).toBe("detect");
-    expect(finalSteps.at(-1)?.env?.OPENCLAW_SECURITY_SENSITIVE_GUARD_MODE).toBe("enforce");
-    expect(finalSteps.at(-1)?.env?.OPENCLAW_SECURITY_TEAM_SLUG).toBe("openclaw-secops");
-    expect(finalSteps.at(-1)?.env?.OPENCLAW_SECURITY_APPROVERS).toBe(
+    expect(detectSteps.at(-1)?.env?.EVE_SECURITY_SENSITIVE_GUARD_MODE).toBe("detect");
+    expect(finalSteps.at(-1)?.env?.EVE_SECURITY_SENSITIVE_GUARD_MODE).toBe("enforce");
+    expect(finalSteps.at(-1)?.env?.EVE_SECURITY_TEAM_SLUG).toBe("eve-secops");
+    expect(finalSteps.at(-1)?.env?.EVE_SECURITY_APPROVERS).toBe(
       "vincentkoc,steipete,joshavant",
     );
   });
@@ -144,7 +144,7 @@ describe("security-sensitive guard workflow", () => {
     expect(script).toContain('path: ".gitignore"');
     expect(script).toContain(".env");
     expect(script).toContain("/allow-security-sensitive-change");
-    expect(script).toContain("openclaw-secops");
+    expect(script).toContain("eve-secops");
     expect(guardSources).toContain("/memberships/");
     expect(script).toContain("A later push requires a fresh approval.");
     expect(script).toContain("process.exitCode = 1");
@@ -153,17 +153,17 @@ describe("security-sensitive guard workflow", () => {
   it("requires secops review for future workflow or guard changes", () => {
     const codeowners = readFileSync(CODEOWNERS, "utf8");
     expect(codeowners).toContain(
-      "/.github/workflows/security-sensitive-guard.yml @openclaw/openclaw-secops",
+      "/.github/workflows/security-sensitive-guard.yml @eve/eve-secops",
     );
     expect(codeowners).toContain(
-      "/test/scripts/security-sensitive-guard-workflow.test.ts @openclaw/openclaw-secops",
+      "/test/scripts/security-sensitive-guard-workflow.test.ts @eve/eve-secops",
     );
     expect(codeowners).toContain(
-      "/test/scripts/security-sensitive-guard-script.test.ts @openclaw/openclaw-secops",
+      "/test/scripts/security-sensitive-guard-script.test.ts @eve/eve-secops",
     );
     expect(codeowners).toContain(
-      "/scripts/github/security-sensitive-guard.mjs @openclaw/openclaw-secops",
+      "/scripts/github/security-sensitive-guard.mjs @eve/eve-secops",
     );
-    expect(codeowners).toContain("/.gitignore @openclaw/openclaw-secops");
+    expect(codeowners).toContain("/.gitignore @eve/eve-secops");
   });
 });

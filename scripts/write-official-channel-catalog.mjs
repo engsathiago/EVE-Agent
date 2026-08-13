@@ -36,7 +36,7 @@ function buildCatalogEntry(packageJson) {
     return null;
   }
   const packageName = trimString(packageJson.name);
-  const manifest = isRecord(packageJson.openclaw) ? packageJson.openclaw : null;
+  const manifest = isRecord(packageJson.eve) ? packageJson.eve : null;
   const release = manifest && isRecord(manifest.release) ? manifest.release : null;
   const channel = manifest && isRecord(manifest.channel) ? manifest.channel : null;
   if (!packageName || !channel || release?.publishToNpm !== true) {
@@ -52,7 +52,7 @@ function buildCatalogEntry(packageJson) {
     name: packageName,
     ...(version ? { version } : {}),
     ...(description ? { description } : {}),
-    openclaw: {
+    eve: {
       channel,
       install,
     },
@@ -60,7 +60,7 @@ function buildCatalogEntry(packageJson) {
 }
 
 function getCatalogChannelId(entry) {
-  return trimString(entry?.openclaw?.channel?.id) || trimString(entry?.name);
+  return trimString(entry?.eve?.channel?.id) || trimString(entry?.name);
 }
 
 /**
@@ -100,8 +100,8 @@ export function buildOfficialChannelCatalog(params = {}) {
   }
 
   entries.sort((left, right) => {
-    const leftId = trimString(left.openclaw?.channel?.id) || left.name;
-    const rightId = trimString(right.openclaw?.channel?.id) || right.name;
+    const leftId = trimString(left.eve?.channel?.id) || left.name;
+    const rightId = trimString(right.eve?.channel?.id) || right.name;
     return leftId.localeCompare(rightId);
   });
 

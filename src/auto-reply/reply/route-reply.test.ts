@@ -5,7 +5,7 @@ import type {
   ChannelPlugin,
   ChannelThreadingAdapter,
 } from "../../channels/plugins/types.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { setActivePluginRegistry } from "../../plugins/runtime.js";
 import {
   createChannelTestPluginBase,
@@ -659,7 +659,7 @@ describe("routeReply", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     const res = await routeReply({
       payload: { text: "native command response" },
@@ -688,7 +688,7 @@ describe("routeReply", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
 
     await expectSlackNoDelivery(
       { text: SILENT_REPLY_TOKEN },
@@ -703,15 +703,15 @@ describe("routeReply", () => {
 
   it("applies responsePrefix when routing", async () => {
     const cfg = {
-      messages: { responsePrefix: "[openclaw]" },
-    } as unknown as OpenClawConfig;
+      messages: { responsePrefix: "[eve]" },
+    } as unknown as EVEConfig;
     await routeReply({
       payload: { text: "hi" },
       channel: "slack",
       to: "channel:C123",
       cfg,
     });
-    expect(lastDeliveryPayload().text).toBe("[openclaw] hi");
+    expect(lastDeliveryPayload().text).toBe("[eve] hi");
   });
 
   it("routes directive-only Slack replies when interactive replies are enabled", async () => {
@@ -721,7 +721,7 @@ describe("routeReply", () => {
           capabilities: { interactiveReplies: true },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     await routeReply({
       payload: { text: "[[slack_select: Choose one | Alpha:alpha]]" },
       channel: "slack",
@@ -753,7 +753,7 @@ describe("routeReply", () => {
         ],
       },
       messages: {},
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     await routeReply({
       payload: { text: "hi" },
       channel: "slack",
@@ -909,7 +909,7 @@ describe("routeReply", () => {
             baseUrl: "https://chat.example.com",
           },
         },
-      } as unknown as OpenClawConfig,
+      } as unknown as EVEConfig,
     });
     expectLastDeliveryFields({
       channel: "mattermost",
@@ -955,7 +955,7 @@ describe("routeReply", () => {
           enabled: true,
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     await routeReply({
       payload: { text: "hi" },
       channel: "msteams",

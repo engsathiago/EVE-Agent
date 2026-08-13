@@ -1,18 +1,18 @@
 ---
-summary: "Install and use Codex, Claude, and Cursor bundles as OpenClaw plugins"
+summary: "Install and use Codex, Claude, and Cursor bundles as EVE plugins"
 read_when:
   - You want to install a Codex, Claude, or Cursor-compatible bundle
-  - You need to understand how OpenClaw maps bundle content into native features
+  - You need to understand how EVE maps bundle content into native features
   - You are debugging bundle detection or missing capabilities
 title: "Plugin bundles"
 ---
 
-OpenClaw can install plugins from three external ecosystems: **Codex**, **Claude**,
+EVE can install plugins from three external ecosystems: **Codex**, **Claude**,
 and **Cursor**. These are called **bundles** — content and metadata packs that
-OpenClaw maps into native features like skills, hooks, and MCP tools.
+EVE maps into native features like skills, hooks, and MCP tools.
 
 <Info>
-  Bundles are **not** the same as native OpenClaw plugins. Native plugins run
+  Bundles are **not** the same as native EVE plugins. Native plugins run
   in-process and can register any capability. Bundles are content packs with
   selective feature mapping and a narrower trust boundary.
 </Info>
@@ -20,7 +20,7 @@ OpenClaw maps into native features like skills, hooks, and MCP tools.
 ## Why bundles exist
 
 Many useful plugins are published in Codex, Claude, or Cursor format. Instead
-of requiring authors to rewrite them as native OpenClaw plugins, OpenClaw
+of requiring authors to rewrite them as native EVE plugins, EVE
 detects these formats and maps their supported content into the native feature
 set. This means you can install a Claude command pack or a Codex skill bundle
 and use it immediately.
@@ -31,22 +31,22 @@ and use it immediately.
   <Step title="Install from a directory, archive, or marketplace">
     ```bash
     # Local directory
-    openclaw plugins install ./my-bundle
+    eve plugins install ./my-bundle
 
     # Archive
-    openclaw plugins install ./my-bundle.tgz
+    eve plugins install ./my-bundle.tgz
 
     # Claude marketplace
-    openclaw plugins marketplace list <marketplace-name>
-    openclaw plugins install <plugin-name>@<marketplace-name>
+    eve plugins marketplace list <marketplace-name>
+    eve plugins install <plugin-name>@<marketplace-name>
     ```
 
   </Step>
 
   <Step title="Verify detection">
     ```bash
-    openclaw plugins list
-    openclaw plugins inspect <id>
+    eve plugins list
+    eve plugins inspect <id>
     ```
 
     Bundles show as `Format: bundle` with a subtype of `codex`, `claude`, or `cursor`.
@@ -55,7 +55,7 @@ and use it immediately.
 
   <Step title="Restart and use">
     ```bash
-    openclaw gateway restart
+    eve gateway restart
     ```
 
     Mapped features (skills, hooks, MCP tools, LSP defaults) are available in the next session.
@@ -63,44 +63,44 @@ and use it immediately.
   </Step>
 </Steps>
 
-## What OpenClaw maps from bundles
+## What EVE maps from bundles
 
-Not every bundle feature runs in OpenClaw today. Here is what works and what
+Not every bundle feature runs in EVE today. Here is what works and what
 is detected but not yet wired.
 
 ### Supported now
 
 | Feature       | How it maps                                                                                       | Applies to     |
 | ------------- | ------------------------------------------------------------------------------------------------- | -------------- |
-| Skill content | Bundle skill roots load as normal OpenClaw skills                                                 | All formats    |
+| Skill content | Bundle skill roots load as normal EVE skills                                                 | All formats    |
 | Commands      | `commands/` and `.cursor/commands/` treated as skill roots                                        | Claude, Cursor |
-| Hook packs    | OpenClaw-style `HOOK.md` + `handler.ts` layouts                                                   | Codex          |
-| MCP tools     | Bundle MCP config merged into embedded OpenClaw settings; supported stdio and HTTP servers loaded | All formats    |
-| LSP servers   | Claude `.lsp.json` and manifest-declared `lspServers` merged into embedded OpenClaw LSP defaults  | Claude         |
-| Settings      | Claude `settings.json` imported as embedded OpenClaw defaults                                     | Claude         |
+| Hook packs    | EVE-style `HOOK.md` + `handler.ts` layouts                                                   | Codex          |
+| MCP tools     | Bundle MCP config merged into embedded EVE settings; supported stdio and HTTP servers loaded | All formats    |
+| LSP servers   | Claude `.lsp.json` and manifest-declared `lspServers` merged into embedded EVE LSP defaults  | Claude         |
+| Settings      | Claude `settings.json` imported as embedded EVE defaults                                     | Claude         |
 
 #### Skill content
 
-- bundle skill roots load as normal OpenClaw skill roots
+- bundle skill roots load as normal EVE skill roots
 - Claude `commands` roots are treated as additional skill roots
 - Cursor `.cursor/commands` roots are treated as additional skill roots
 
-This means Claude markdown command files work through the normal OpenClaw skill
+This means Claude markdown command files work through the normal EVE skill
 loader. Cursor command markdown works through the same path.
 
 #### Hook packs
 
-- bundle hook roots work **only** when they use the normal OpenClaw hook-pack
+- bundle hook roots work **only** when they use the normal EVE hook-pack
   layout. Today this is primarily the Codex-compatible case:
   - `HOOK.md`
   - `handler.ts` or `handler.js`
 
-#### MCP for embedded OpenClaw
+#### MCP for embedded EVE
 
 - enabled bundles can contribute MCP server config
-- OpenClaw merges bundle MCP config into the effective embedded OpenClaw settings as
+- EVE merges bundle MCP config into the effective embedded EVE settings as
   `mcpServers`
-- OpenClaw exposes supported bundle MCP tools during embedded OpenClaw agent turns by
+- EVE exposes supported bundle MCP tools during embedded EVE agent turns by
   launching stdio servers or connecting to HTTP servers
 - the `coding` and `messaging` tool profiles include bundle MCP tools by
   default; use `tools.deny: ["bundle-mcp"]` to opt out for an agent or gateway
@@ -148,8 +148,8 @@ MCP servers can use stdio or HTTP transport:
 }
 ```
 
-- `transport` may be set to `"streamable-http"` or `"sse"`; when omitted, OpenClaw uses `sse`
-- `type: "http"` is a CLI-native downstream shape; use `transport: "streamable-http"` in OpenClaw config. `openclaw mcp set` and `openclaw doctor --fix` normalize the common alias.
+- `transport` may be set to `"streamable-http"` or `"sse"`; when omitted, EVE uses `sse`
+- `type: "http"` is a CLI-native downstream shape; use `transport: "streamable-http"` in EVE config. `eve mcp set` and `eve doctor --fix` normalize the common alias.
 - only `http:` and `https:` URL schemes are allowed
 - `headers` values support `${ENV_VAR}` interpolation
 - a server entry with both `command` and `url` is rejected
@@ -160,7 +160,7 @@ MCP servers can use stdio or HTTP transport:
 
 ##### Tool naming
 
-OpenClaw registers bundle MCP tools with provider-safe names in the form
+EVE registers bundle MCP tools with provider-safe names in the form
 `serverName__toolName`. For example, a server keyed `"vigil-harbor"` exposing a
 `memory_search` tool registers as `vigil-harbor__memory_search`.
 
@@ -177,28 +177,28 @@ OpenClaw registers bundle MCP tools with provider-safe names in the form
   by `bundle-mcp`, so profile allowlists and deny lists can include either
   individual exposed tool names or the `bundle-mcp` plugin key
 
-#### Embedded OpenClaw settings
+#### Embedded EVE settings
 
-- Claude `settings.json` is imported as default embedded OpenClaw settings when the
+- Claude `settings.json` is imported as default embedded EVE settings when the
   bundle is enabled
-- OpenClaw sanitizes shell override keys before applying them
+- EVE sanitizes shell override keys before applying them
 
 Sanitized keys:
 
 - `shellPath`
 - `shellCommandPrefix`
 
-#### Embedded OpenClaw LSP
+#### Embedded EVE LSP
 
 - enabled Claude bundles can contribute LSP server config
-- OpenClaw loads `.lsp.json` plus any manifest-declared `lspServers` paths
-- bundle LSP config is merged into the effective embedded OpenClaw LSP defaults
+- EVE loads `.lsp.json` plus any manifest-declared `lspServers` paths
+- bundle LSP config is merged into the effective embedded EVE LSP defaults
 - only supported stdio-backed LSP servers are runnable today; unsupported
-  transports still show up in `openclaw plugins inspect <id>`
+  transports still show up in `eve plugins inspect <id>`
 
 ### Detected but not executed
 
-These are recognized and shown in diagnostics, but OpenClaw does not run them:
+These are recognized and shown in diagnostics, but EVE does not run them:
 
 - Claude `agents`, `hooks.json` automation, `outputStyles`
 - Cursor `.cursor/agents`, `.cursor/hooks.json`, `.cursor/rules`
@@ -212,7 +212,7 @@ These are recognized and shown in diagnostics, but OpenClaw does not run them:
 
     Optional content: `skills/`, `hooks/`, `.mcp.json`, `.app.json`
 
-    Codex bundles fit OpenClaw best when they use skill roots and OpenClaw-style
+    Codex bundles fit EVE best when they use skill roots and EVE-style
     hook-pack directories (`HOOK.md` + `handler.ts`).
 
   </Accordion>
@@ -226,9 +226,9 @@ These are recognized and shown in diagnostics, but OpenClaw does not run them:
     Claude-specific behavior:
 
     - `commands/` is treated as skill content
-    - `settings.json` is imported into embedded OpenClaw settings (shell override keys are sanitized)
-    - `.mcp.json` exposes supported stdio tools to embedded OpenClaw
-    - `.lsp.json` plus manifest-declared `lspServers` paths load into embedded OpenClaw LSP defaults
+    - `settings.json` is imported into embedded EVE settings (shell override keys are sanitized)
+    - `.mcp.json` exposes supported stdio tools to embedded EVE
+    - `.lsp.json` plus manifest-declared `lspServers` paths load into embedded EVE LSP defaults
     - `hooks/hooks.json` is detected but not executed
     - Custom component paths in the manifest are additive (they extend defaults, not replace them)
 
@@ -247,23 +247,23 @@ These are recognized and shown in diagnostics, but OpenClaw does not run them:
 
 ## Detection precedence
 
-OpenClaw checks for native plugin format first:
+EVE checks for native plugin format first:
 
-1. `openclaw.plugin.json` or valid `package.json` with `openclaw.extensions` — treated as **native plugin**
+1. `eve.plugin.json` or valid `package.json` with `eve.extensions` — treated as **native plugin**
 2. Bundle markers (`.codex-plugin/`, `.claude-plugin/`, or default Claude/Cursor layout) — treated as **bundle**
 
-If a directory contains both, OpenClaw uses the native path. This prevents
+If a directory contains both, EVE uses the native path. This prevents
 dual-format packages from being partially installed as bundles.
 
 ## Runtime dependencies and cleanup
 
 - Third-party compatible bundles do not get startup `npm install` repair. They
-  should be installed through `openclaw plugins install` and ship everything
+  should be installed through `eve plugins install` and ship everything
   they need in the installed plugin directory.
-- OpenClaw-owned bundled plugins are either shipped lightweight in core or
+- EVE-owned bundled plugins are either shipped lightweight in core or
   downloadable through the plugin installer. Gateway startup never runs a
   package manager for them.
-- `openclaw doctor --fix` removes legacy staged dependency directories and can
+- `eve doctor --fix` removes legacy staged dependency directories and can
   recover downloadable plugins that are missing from the local plugin index when
   config references them.
 
@@ -271,7 +271,7 @@ dual-format packages from being partially installed as bundles.
 
 Bundles have a narrower trust boundary than native plugins:
 
-- OpenClaw does **not** load arbitrary bundle runtime modules in-process
+- EVE does **not** load arbitrary bundle runtime modules in-process
 - Skills and hook-pack paths must stay inside the plugin root (boundary-checked)
 - Settings files are read with the same boundary checks
 - Supported stdio MCP servers may be launched as subprocesses
@@ -283,7 +283,7 @@ bundles as trusted content for the features they do expose.
 
 <AccordionGroup>
   <Accordion title="Bundle is detected but capabilities do not run">
-    Run `openclaw plugins inspect <id>`. If a capability is listed but marked as
+    Run `eve plugins inspect <id>`. If a capability is listed but marked as
     not wired, that is a product limit — not a broken install.
   </Accordion>
 
@@ -293,13 +293,13 @@ bundles as trusted content for the features they do expose.
   </Accordion>
 
   <Accordion title="Claude settings do not apply">
-    Only embedded OpenClaw settings from `settings.json` are supported. OpenClaw does
+    Only embedded EVE settings from `settings.json` are supported. EVE does
     not treat bundle settings as raw config patches.
   </Accordion>
 
   <Accordion title="Claude hooks do not execute">
     `hooks/hooks.json` is detect-only. If you need runnable hooks, use the
-    OpenClaw hook-pack layout or ship a native plugin.
+    EVE hook-pack layout or ship a native plugin.
   </Accordion>
 </AccordionGroup>
 

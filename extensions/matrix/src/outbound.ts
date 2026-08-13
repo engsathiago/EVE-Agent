@@ -1,11 +1,11 @@
 // Matrix plugin module implements outbound behavior.
-import { createReplyToFanout } from "openclaw/plugin-sdk/channel-outbound";
+import { createReplyToFanout } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   renderMessagePresentationFallbackText,
   type MessagePresentation,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { resolvePayloadMediaUrls } from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+} from "eve-agent/plugin-sdk/interactive-runtime";
+import { resolvePayloadMediaUrls } from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import { sendMessageMatrix, sendPollMatrix } from "./matrix/send.js";
 import type { MatrixExtraContentFields } from "./matrix/send/types.js";
 import {
@@ -14,8 +14,8 @@ import {
   type ChannelOutboundAdapter,
 } from "./runtime-api.js";
 
-const MATRIX_OPENCLAW_PRESENTATION_KEY = "com.openclaw.presentation" as const;
-const MATRIX_OPENCLAW_PRESENTATION_TYPE = "message.presentation" as const;
+const MATRIX_EVE_PRESENTATION_KEY = "com.eve.presentation" as const;
+const MATRIX_EVE_PRESENTATION_TYPE = "message.presentation" as const;
 const MATRIX_EMPTY_PRESENTATION_FALLBACK_TEXT = "---";
 
 type MatrixChannelData = {
@@ -37,7 +37,7 @@ function buildMatrixPresentationContent(presentation: MessagePresentation) {
   return {
     ...presentation,
     version: 1,
-    type: MATRIX_OPENCLAW_PRESENTATION_TYPE,
+    type: MATRIX_EVE_PRESENTATION_TYPE,
   };
 }
 
@@ -45,11 +45,11 @@ function resolveMatrixPresentationContent(
   payload: ReplyPayload,
 ): Record<string, unknown> | undefined {
   const extraContent = toRecord(resolveMatrixChannelData(payload).extraContent);
-  const presentation = toRecord(extraContent?.[MATRIX_OPENCLAW_PRESENTATION_KEY]);
+  const presentation = toRecord(extraContent?.[MATRIX_EVE_PRESENTATION_KEY]);
   if (
     !presentation ||
     presentation.version !== 1 ||
-    presentation.type !== MATRIX_OPENCLAW_PRESENTATION_TYPE
+    presentation.type !== MATRIX_EVE_PRESENTATION_TYPE
   ) {
     return undefined;
   }
@@ -74,7 +74,7 @@ function renderMatrixPresentationPayload(params: {
       matrix: {
         ...matrixData,
         extraContent: {
-          [MATRIX_OPENCLAW_PRESENTATION_KEY]: buildMatrixPresentationContent(params.presentation),
+          [MATRIX_EVE_PRESENTATION_KEY]: buildMatrixPresentationContent(params.presentation),
         },
       },
     },
@@ -91,7 +91,7 @@ function resolveMatrixPayloadText(payload: ReplyPayload): string {
 
 function resolveMatrixExtraContent(payload: ReplyPayload): MatrixExtraContentFields | undefined {
   const presentation = resolveMatrixPresentationContent(payload);
-  return presentation ? { [MATRIX_OPENCLAW_PRESENTATION_KEY]: presentation } : undefined;
+  return presentation ? { [MATRIX_EVE_PRESENTATION_KEY]: presentation } : undefined;
 }
 
 export const matrixOutbound: ChannelOutboundAdapter = {

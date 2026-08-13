@@ -3,7 +3,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CliDeps } from "../cli/deps.types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { CronServiceContract } from "../cron/service-contract.js";
 import type { GatewayCronState } from "./server-cron.js";
 
@@ -114,7 +114,7 @@ describe("createLazyGatewayCronState", () => {
   });
 
   it("preserves the startup cron enabled flag without loading cron runtime", () => {
-    vi.stubEnv("OPENCLAW_SKIP_CRON", "1");
+    vi.stubEnv("EVE_SKIP_CRON", "1");
 
     const lazy = createLazyGatewayCronState(createParams());
 
@@ -123,11 +123,11 @@ describe("createLazyGatewayCronState", () => {
   });
 });
 
-function createParams(overrides: Partial<OpenClawConfig> = {}) {
+function createParams(overrides: Partial<EVEConfig> = {}) {
   return {
     cfg: {
       ...overrides,
-    } as OpenClawConfig,
+    } as EVEConfig,
     deps: {} as CliDeps,
     broadcast: vi.fn(),
   };
@@ -136,7 +136,7 @@ function createParams(overrides: Partial<OpenClawConfig> = {}) {
 function createCronState(cron: CronServiceContract): GatewayCronState {
   return {
     cron,
-    storePath: "/tmp/openclaw-cron.json",
+    storePath: "/tmp/eve-cron.json",
     cronEnabled: true,
   } as GatewayCronState;
 }

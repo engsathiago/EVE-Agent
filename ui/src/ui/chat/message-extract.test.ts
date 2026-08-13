@@ -86,9 +86,9 @@ describe("extractTextCached", () => {
         {
           type: "text",
           text: [
-            "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+            "<<<BEGIN_EVE_INTERNAL_CONTEXT>>>",
             "internal subagent payload",
-            "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+            "<<<END_EVE_INTERNAL_CONTEXT>>>",
             "",
             "visible ask",
           ].join("\n"),

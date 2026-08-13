@@ -4,10 +4,10 @@ import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import {
   resolveSessionTranscriptsDirForAgent,
-  type OpenClawConfig,
+  type EVEConfig,
   type ResolvedMemorySearchConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import type { MemorySource } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "eve-agent/plugin-sdk/memory-core-host-engine-foundation";
+import type { MemorySource } from "eve-agent/plugin-sdk/memory-core-host-engine-storage";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { buildSessionEntryMock } = vi.hoisted(() => ({
@@ -27,7 +27,7 @@ vi.mock("undici", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/memory-core-host-engine-qmd", () => {
+vi.mock("eve-agent/plugin-sdk/memory-core-host-engine-qmd", () => {
   const basename = (filePath: string) => filePath.split(/[\\/]/).pop() ?? filePath;
   return {
     buildSessionEntry: buildSessionEntryMock,
@@ -68,9 +68,9 @@ function createDbMock(): DatabaseSync {
 }
 
 class SessionSyncYieldHarness extends MemoryManagerSyncOps {
-  protected readonly cfg = {} as OpenClawConfig;
+  protected readonly cfg = {} as EVEConfig;
   protected readonly agentId = "main";
-  protected readonly workspaceDir = "/tmp/openclaw-test-workspace";
+  protected readonly workspaceDir = "/tmp/eve-test-workspace";
   protected readonly settings = {
     sync: {
       sessions: {
@@ -152,7 +152,7 @@ class SessionSyncYieldHarness extends MemoryManagerSyncOps {
 
 describe("session sync responsiveness", () => {
   beforeEach(() => {
-    vi.stubEnv("OPENCLAW_STATE_DIR", path.join(os.tmpdir(), "openclaw-session-sync-yield"));
+    vi.stubEnv("EVE_STATE_DIR", path.join(os.tmpdir(), "eve-session-sync-yield"));
     buildSessionEntryMock.mockImplementation(async (absPath: string) => {
       const name = path.basename(absPath);
       return {

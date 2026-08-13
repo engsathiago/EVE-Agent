@@ -1,7 +1,7 @@
 // Public media-understanding runtime API types for file-based image/audio/video
 // helpers and direct structured extraction.
 import type { AuthProfileStore } from "../agents/auth-profiles/types.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { EVEConfig } from "../config/types.js";
 import type { ActiveMediaModel } from "../../packages/media-understanding-common/src/active-model.js";
 import type {
   MediaUnderstandingDecision,
@@ -14,7 +14,7 @@ export type RunMediaUnderstandingFileParams = {
   capability: "image" | "audio" | "video";
   filePath: string;
   mediaUrl?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   mime?: string;
@@ -41,7 +41,7 @@ export type RunMediaUnderstandingFileResult = {
 export type DescribeImageFileParams = {
   filePath: string;
   mediaUrl?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   mime?: string;
@@ -54,7 +54,7 @@ export type DescribeImageFileParams = {
 export type DescribeImageFileWithModelParams = {
   filePath: string;
   mediaUrl?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   mime?: string;
@@ -76,7 +76,7 @@ export type ExtractStructuredWithModelParams = {
   schemaName?: string;
   jsonSchema?: unknown;
   jsonMode?: boolean;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   provider: string;
   model: string;
@@ -92,7 +92,7 @@ type ExtractStructuredWithModelResult = Awaited<
 
 export type DescribeVideoFileParams = {
   filePath: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   mime?: string;
@@ -101,7 +101,7 @@ export type DescribeVideoFileParams = {
 
 export type TranscribeAudioFileParams = {
   filePath: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   mime?: string;

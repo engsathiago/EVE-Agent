@@ -1,24 +1,24 @@
 // Telegram plugin module implements outbound adapter behavior.
-import type { OutboundDeliveryFormattingOptions } from "openclaw/plugin-sdk/channel-outbound";
+import type { OutboundDeliveryFormattingOptions } from "eve-agent/plugin-sdk/channel-outbound";
 import {
   resolveOutboundSendDep,
   type OutboundSendDeps,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { ChannelOutboundAdapter } from "openclaw/plugin-sdk/channel-send-result";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import type { ChannelOutboundAdapter } from "eve-agent/plugin-sdk/channel-send-result";
 import {
   attachChannelToResult,
   createAttachedChannelResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
+} from "eve-agent/plugin-sdk/channel-send-result";
 import {
   normalizeMessagePresentation,
   renderMessagePresentationFallbackText,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { chunkMarkdownTextWithMode } from "openclaw/plugin-sdk/reply-chunking";
+} from "eve-agent/plugin-sdk/interactive-runtime";
+import { chunkMarkdownTextWithMode } from "eve-agent/plugin-sdk/reply-chunking";
 import {
   resolvePayloadMediaUrls,
   sendPayloadMediaSequenceOrFallback,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-runtime";
 import type { TelegramInlineButtons } from "./button-types.js";
 import { resolveTelegramInlineButtons } from "./button-types.js";
 import { splitTelegramHtmlChunks } from "./format.js";

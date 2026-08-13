@@ -1,10 +1,10 @@
 // Doctor helpers for installing plugins required by configured agent runtimes.
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
 import {
   collectConfiguredAgentHarnessRuntimes,
   type ConfiguredAgentHarnessRuntimeOptions,
 } from "../../../agents/harness-runtimes.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import type { PluginPackageInstall } from "../../../plugins/manifest.js";
 
 type ConfiguredRuntimePluginInstallCandidate = {
@@ -27,14 +27,14 @@ export const CONFIGURED_RUNTIME_PLUGIN_INSTALL_CANDIDATES: readonly ConfiguredRu
     {
       pluginId: "acpx",
       label: "ACPX Runtime",
-      npmSpec: "@openclaw/acpx",
+      npmSpec: "@eve/acpx",
       trustedSourceLinkedOfficialInstall: true,
     },
     // Runtime-only configs do not have a provider/channel integration catalog entry.
     {
       pluginId: "codex",
       label: "Codex",
-      npmSpec: "@openclaw/codex",
+      npmSpec: "@eve/codex",
       trustedSourceLinkedOfficialInstall: true,
     },
   ];
@@ -48,7 +48,7 @@ export function resolveConfiguredRuntimePluginInstallCandidate(
   );
 }
 
-function acpxRuntimeIsConfigured(cfg: OpenClawConfig): boolean {
+function acpxRuntimeIsConfigured(cfg: EVEConfig): boolean {
   const acp = asOptionalRecord(cfg.acp);
   const backend = typeof acp?.backend === "string" ? acp.backend.trim().toLowerCase() : "";
   return (
@@ -61,7 +61,7 @@ function acpxRuntimeIsConfigured(cfg: OpenClawConfig): boolean {
 
 /** Collect runtime plugin ids implied by configured harness runtimes and ACPX settings. */
 export function collectConfiguredRuntimePluginIds(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options?: ConfiguredAgentHarnessRuntimeOptions,
 ): string[] {
   const ids = new Set(collectConfiguredAgentHarnessRuntimes(cfg, options));

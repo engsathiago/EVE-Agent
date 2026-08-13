@@ -2,12 +2,12 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { bundledPluginRootAt, repoInstallSpec } from "openclaw/plugin-sdk/test-fixtures";
+import { bundledPluginRootAt, repoInstallSpec } from "eve-agent/plugin-sdk/test-fixtures";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { hashConfigIncludeRaw } from "../config/includes.js";
 import type { ConfigWriteOptions } from "../config/io.js";
-import type { ConfigFileSnapshot } from "../config/types.openclaw.js";
+import type { ConfigFileSnapshot } from "../config/types.eve.js";
 import {
   resolvePluginInstallRequestContext,
   type PluginInstallRequestContext,
@@ -76,10 +76,10 @@ function makeSnapshot(overrides: Partial<ConfigFileSnapshot> = {}): ConfigFileSn
     raw: '{ "plugins": {} }',
     parsed: { plugins: {} },
     sourceConfig: { plugins: {} } as ConfigFileSnapshot["sourceConfig"],
-    resolved: { plugins: {} } as OpenClawConfig,
+    resolved: { plugins: {} } as EVEConfig,
     valid: false,
     runtimeConfig: { plugins: {} } as ConfigFileSnapshot["runtimeConfig"],
-    config: { plugins: {} } as OpenClawConfig,
+    config: { plugins: {} } as EVEConfig,
     hash: "abc",
     issues: [{ path: "plugins.installs.discord", message: "stale path" }],
     warnings: [],
@@ -90,8 +90,8 @@ function makeSnapshot(overrides: Partial<ConfigFileSnapshot> = {}): ConfigFileSn
 
 describe("loadConfigForInstall", () => {
   const discordNpmRequest = {
-    rawSpec: "@openclaw/discord",
-    normalizedSpec: "@openclaw/discord",
+    rawSpec: "@eve/discord",
+    normalizedSpec: "@eve/discord",
     installKind: "plugin",
     bundledPluginId: "discord",
     allowInvalidConfigRecovery: true,
@@ -115,7 +115,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("returns the source config and base hash when the snapshot is valid", async () => {
-    const cfg = { plugins: { entries: { discord: { enabled: true } } } } as OpenClawConfig;
+    const cfg = { plugins: { entries: { discord: { enabled: true } } } } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         valid: true,
@@ -137,7 +137,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("returns valid source config unchanged", async () => {
-    const cfg = { plugins: {} } as OpenClawConfig;
+    const cfg = { plugins: {} } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         valid: true,
@@ -154,7 +154,7 @@ describe("loadConfigForInstall", () => {
   it("falls back to snapshot config for explicit bundled-plugin reinstall when issues match the known upgrade failure", async () => {
     const snapshotCfg = {
       plugins: { installs: { discord: { source: "path", installPath: "/gone" } } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { discord: {} } } },
@@ -180,7 +180,7 @@ describe("loadConfigForInstall", () => {
   it("allows versioned npm:-prefixed bundled-plugin reinstall recovery", async () => {
     const snapshotCfg = {
       plugins: { installs: { discord: { source: "path", installPath: "/gone" } } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { discord: {} } } },
@@ -193,7 +193,7 @@ describe("loadConfigForInstall", () => {
     );
 
     const request = resolvePluginInstallRequestContext({
-      rawSpec: "npm:@openclaw/discord@2026.5.22",
+      rawSpec: "npm:@eve/discord@2026.5.22",
     });
     if (!request.ok) {
       throw new Error(request.error);
@@ -211,7 +211,7 @@ describe("loadConfigForInstall", () => {
     });
   });
 
-  it.each(["file:@openclaw/discord", "FILE:@openclaw/discord"])(
+  it.each(["file:@eve/discord", "FILE:@eve/discord"])(
     "does not treat %s as an official plugin recovery request",
     (rawSpec) => {
       const request = resolvePluginInstallRequestContext({ rawSpec });
@@ -243,7 +243,7 @@ describe("loadConfigForInstall", () => {
         load: { paths: ["/gone", "/keep"] },
       },
       channels: { discord: { token: "preserve-me" } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { discord: {} }, load: { paths: ["/gone", "/keep"] } } },
@@ -256,7 +256,7 @@ describe("loadConfigForInstall", () => {
     );
 
     const request = resolvePluginInstallRequestContext({
-      rawSpec: "@openclaw/discord@2026.5.22",
+      rawSpec: "@eve/discord@2026.5.22",
     });
     if (!request.ok) {
       throw new Error(request.error);
@@ -283,7 +283,7 @@ describe("loadConfigForInstall", () => {
   it("uses the canonical plugin install record to own a stale recovery load path", async () => {
     const snapshotCfg = {
       plugins: { load: { paths: ["/gone", "/keep"] } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     loadInstalledPluginIndexInstallRecordsMock.mockResolvedValue({
       discord: { source: "npm", installPath: "/gone" },
     });
@@ -308,7 +308,7 @@ describe("loadConfigForInstall", () => {
         installs: { discord: { source: "npm", installPath: "/gone" } },
         load: { paths: ["/gone"] },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     loadInstalledPluginIndexInstallRecordsMock.mockResolvedValue({
       discord: { source: "npm", installPath: "/canonical" },
     });
@@ -337,7 +337,7 @@ describe("loadConfigForInstall", () => {
     const staleBundledPath = "/app/extensions/discord";
     const snapshotCfg = {
       plugins: { load: { paths: [staleBundledPath, "/keep"] } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     listPersistedBundledPluginRecoveryLocationsMock.mockResolvedValue([
       {
         pluginId: "discord",
@@ -368,7 +368,7 @@ describe("loadConfigForInstall", () => {
       plugins: {
         load: { paths: [operatorCheckoutPath] },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     listPersistedBundledPluginRecoveryLocationsMock.mockResolvedValue([
       {
         pluginId: "discord",
@@ -404,7 +404,7 @@ describe("loadConfigForInstall", () => {
         installs: { discord: { source: "npm", installPath: 1 } },
         load: { paths: ["/gone"] },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { discord: {} }, load: { paths: ["/gone"] } } },
@@ -424,7 +424,7 @@ describe("loadConfigForInstall", () => {
   it("rejects unattributed source-only runtime failures during official plugin recovery", async () => {
     const snapshotCfg = {
       plugins: { installs: { discord: { source: "npm", installPath: "/bad/discord" } } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { discord: {} } } },
@@ -440,7 +440,7 @@ describe("loadConfigForInstall", () => {
     );
 
     const request = resolvePluginInstallRequestContext({
-      rawSpec: "npm:@openclaw/discord",
+      rawSpec: "npm:@eve/discord",
     });
     if (!request.ok) {
       throw new Error(request.error);
@@ -454,7 +454,7 @@ describe("loadConfigForInstall", () => {
   it("allows Brave official plugin reinstall recovery from source-only runtime shadows", async () => {
     const snapshotCfg = {
       plugins: { installs: { brave: { source: "clawhub", installPath: "/bad/brave" } } },
-    } as unknown as OpenClawConfig;
+    } as unknown as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: { plugins: { installs: { brave: {} } } },
@@ -468,14 +468,14 @@ describe("loadConfigForInstall", () => {
           {
             path: "tools.web.search.provider",
             message:
-              'web_search provider is not available: brave (install or enable plugin "brave", then run openclaw doctor --fix)',
+              'web_search provider is not available: brave (install or enable plugin "brave", then run eve doctor --fix)',
           },
         ],
       }),
     );
 
     const request = resolvePluginInstallRequestContext({
-      rawSpec: "@openclaw/brave-plugin",
+      rawSpec: "@eve/brave-plugin",
     });
     if (!request.ok) {
       throw new Error(request.error);
@@ -493,7 +493,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("allows explicit repo-checkout bundled-plugin reinstall recovery", async () => {
-    const snapshotCfg = { plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { plugins: {} } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         config: snapshotCfg,
@@ -516,7 +516,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("allows recovery through an exact single-file top-level plugins include", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-include-"));
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-include-"));
     const configPath = path.join(tempRoot, "config.json5");
     const pluginsPath = path.join(tempRoot, "plugins.json5");
     const pluginsRaw = `${JSON.stringify({ entries: {} }, null, 2)}\n`;
@@ -527,7 +527,7 @@ describe("loadConfigForInstall", () => {
     includeFileTargetsForWriteMock.mockReturnValue({
       [pluginsPath]: fs.realpathSync(pluginsPath),
     });
-    const snapshotCfg = { plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { plugins: {} } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         path: configPath,
@@ -548,10 +548,10 @@ describe("loadConfigForInstall", () => {
   it("rejects recovery installs through an external plugins include", async () => {
     const externalPluginsPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "plugins.json5",
     );
-    const snapshotCfg = { plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { plugins: {} } as EVEConfig;
     includeFileTargetsForWriteMock.mockReturnValue({
       [externalPluginsPath]: externalPluginsPath,
     });
@@ -573,7 +573,7 @@ describe("loadConfigForInstall", () => {
     const configPath = path.join(process.cwd(), "config.json5");
     const externalPluginsPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "plugins.json5",
     );
     includeFileTargetsForWriteMock.mockReturnValue({
@@ -583,7 +583,7 @@ describe("loadConfigForInstall", () => {
       makeSnapshot({
         path: configPath,
         parsed: { plugins: { $include: externalPluginsPath } },
-        config: { plugins: {} } as OpenClawConfig,
+        config: { plugins: {} } as EVEConfig,
         issues: [{ path: "channels.discord", message: "unknown channel id: discord" }],
       }),
     );
@@ -596,10 +596,10 @@ describe("loadConfigForInstall", () => {
   it("carries a plugin-mutation block for ambiguous installs through external plugin includes", async () => {
     const externalPluginsPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "plugins.json5",
     );
-    const snapshotCfg = { plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { plugins: {} } as EVEConfig;
     includeFileTargetsForWriteMock.mockReturnValue({
       [externalPluginsPath]: externalPluginsPath,
     });
@@ -629,10 +629,10 @@ describe("loadConfigForInstall", () => {
   it("blocks known plugins through external includes", async () => {
     const externalPluginsPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "plugins.json5",
     );
-    const snapshotCfg = { plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { plugins: {} } as EVEConfig;
     includeFileTargetsForWriteMock.mockReturnValue({
       [externalPluginsPath]: externalPluginsPath,
     });
@@ -654,10 +654,10 @@ describe("loadConfigForInstall", () => {
   it("carries a hook-mutation block through an external hooks include", async () => {
     const externalHooksPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "hooks.json5",
     );
-    const snapshotCfg = { hooks: { internal: {} } } as OpenClawConfig;
+    const snapshotCfg = { hooks: { internal: {} } } as EVEConfig;
     includeFileTargetsForWriteMock.mockReturnValue({
       [externalHooksPath]: externalHooksPath,
     });
@@ -685,7 +685,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("blocks config mutations when plugins and hooks share one canonical include target", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-shared-include-"));
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-shared-include-"));
     const configPath = path.join(tempRoot, "config.json5");
     const sharedPath = path.join(tempRoot, "shared.json5");
     const sharedRaw = "{}\n";
@@ -696,7 +696,7 @@ describe("loadConfigForInstall", () => {
     includeFileTargetsForWriteMock.mockReturnValue({
       [sharedPath]: fs.realpathSync(sharedPath),
     });
-    const snapshotCfg = { hooks: {}, plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { hooks: {}, plugins: {} } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         path: configPath,
@@ -731,12 +731,12 @@ describe("loadConfigForInstall", () => {
   });
 
   it("blocks both mutations when an external include aliases the other section target", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-aliased-include-"));
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-aliased-include-"));
     const configPath = path.join(tempRoot, "config.json5");
     const sharedPath = path.join(tempRoot, "shared.json5");
     const externalHooksPath = path.join(
       path.parse(process.cwd()).root,
-      "external-openclaw",
+      "external-eve",
       "hooks.json5",
     );
     const sharedRaw = "{}\n";
@@ -748,7 +748,7 @@ describe("loadConfigForInstall", () => {
       [sharedPath]: fs.realpathSync(sharedPath),
       [externalHooksPath]: fs.realpathSync(sharedPath),
     });
-    const snapshotCfg = { hooks: {}, plugins: {} } as OpenClawConfig;
+    const snapshotCfg = { hooks: {}, plugins: {} } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         path: configPath,
@@ -783,7 +783,7 @@ describe("loadConfigForInstall", () => {
   });
 
   it("blocks nested plugins includes before plugin installation", async () => {
-    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-nested-include-"));
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-nested-include-"));
     const configPath = path.join(tempRoot, "config.json5");
     const pluginsPath = path.join(tempRoot, "plugins.json5");
     const pluginsRaw = `${JSON.stringify({ entries: { $include: "./entries.json5" } }, null, 2)}\n`;
@@ -794,7 +794,7 @@ describe("loadConfigForInstall", () => {
     includeFileTargetsForWriteMock.mockReturnValue({
       [pluginsPath]: fs.realpathSync(pluginsPath),
     });
-    const snapshotCfg = { plugins: { entries: {} } } as OpenClawConfig;
+    const snapshotCfg = { plugins: { entries: {} } } as EVEConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         path: configPath,
@@ -856,7 +856,7 @@ describe("loadConfigForInstall", () => {
       readConfigFileSnapshotMock.mockResolvedValue(
         makeSnapshot({
           parsed,
-          config: { plugins: {} } as OpenClawConfig,
+          config: { plugins: {} } as EVEConfig,
           issues: [{ path: "channels.discord", message: "unknown channel id: discord" }],
         }),
       );
@@ -870,7 +870,7 @@ describe("loadConfigForInstall", () => {
   it.each(unsupportedPluginIncludeShapes)(
     "marks valid ambiguous installs through an unsupported $label as plugin-blocked",
     async ({ parsed, scope }) => {
-      const snapshotCfg = { plugins: {} } as OpenClawConfig;
+      const snapshotCfg = { plugins: {} } as EVEConfig;
       readConfigFileSnapshotMock.mockResolvedValue(
         makeSnapshot({
           valid: true,
@@ -897,7 +897,7 @@ describe("loadConfigForInstall", () => {
   it.each(unsupportedPluginIncludeShapes)(
     "blocks valid known plugins through an unsupported $label",
     async ({ parsed }) => {
-      const snapshotCfg = { plugins: {} } as OpenClawConfig;
+      const snapshotCfg = { plugins: {} } as EVEConfig;
       readConfigFileSnapshotMock.mockResolvedValue(
         makeSnapshot({
           valid: true,
@@ -934,19 +934,19 @@ describe("loadConfigForInstall", () => {
         rawSpec: "alpha",
         normalizedSpec: "alpha",
       }),
-    ).rejects.toThrow("Config invalid; run `openclaw doctor --fix` before installing plugins.");
+    ).rejects.toThrow("Config invalid; run `eve doctor --fix` before installing plugins.");
   });
 
   it("throws when invalid snapshot parsed is empty", async () => {
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
         parsed: {},
-        config: {} as OpenClawConfig,
+        config: {} as EVEConfig,
       }),
     );
 
     await expect(loadConfigForInstall(discordNpmRequest)).rejects.toThrow(
-      "Config file could not be parsed; run `openclaw doctor` to repair it.",
+      "Config file could not be parsed; run `eve doctor` to repair it.",
     );
   });
 
@@ -954,7 +954,7 @@ describe("loadConfigForInstall", () => {
     readConfigFileSnapshotMock.mockResolvedValue(makeSnapshot({ exists: false, parsed: {} }));
 
     await expect(loadConfigForInstall(discordNpmRequest)).rejects.toThrow(
-      "Config file could not be parsed; run `openclaw doctor` to repair it.",
+      "Config file could not be parsed; run `eve doctor` to repair it.",
     );
   });
 });

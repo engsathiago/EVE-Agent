@@ -1,7 +1,7 @@
 /**
  * Bundled channel entry metadata for the ClickClack plugin.
  */
-import { defineBundledChannelEntry } from "openclaw/plugin-sdk/channel-entry-contract";
+import { defineBundledChannelEntry } from "eve-agent/plugin-sdk/channel-entry-contract";
 
 export default defineBundledChannelEntry({
   id: "clickclack",

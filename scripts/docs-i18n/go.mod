@@ -1,4 +1,4 @@
-module github.com/openclaw/openclaw/scripts/docs-i18n
+module github.com/engsathiago/eve-agent/scripts/docs-i18n
 
 go 1.25.0
 

@@ -3,20 +3,20 @@ import { mkdtemp, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { ChannelType } from "discord-api-types/v10";
-import * as commandRegistryModule from "openclaw/plugin-sdk/command-auth-native";
+import * as commandRegistryModule from "eve-agent/plugin-sdk/command-auth-native";
 import type {
   ChatCommandDefinition,
   CommandArgsParsing,
-} from "openclaw/plugin-sdk/command-auth-native";
-import type { ModelsProviderData } from "openclaw/plugin-sdk/command-auth-native";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import * as globalsModule from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/command-auth-native";
+import type { ModelsProviderData } from "eve-agent/plugin-sdk/command-auth-native";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import * as globalsModule from "eve-agent/plugin-sdk/runtime-env";
 import {
   loadSessionStore,
   resolveStorePath,
   upsertSessionEntry,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import * as commandTextModule from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/session-store-runtime";
+import * as commandTextModule from "eve-agent/plugin-sdk/text-utility-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineThrowingDiscordChannelGetter } from "../test-support/partial-channel.js";
 import { resolveDiscordChannelContext } from "./agent-components-helpers.js";
@@ -73,7 +73,7 @@ function createModelPickerContext(): ModelPickerContext {
         },
       },
     },
-  } as unknown as OpenClawConfig;
+  } as unknown as EVEConfig;
 
   return {
     cfg,
@@ -288,7 +288,7 @@ function createBoundThreadBindingManager(params: {
 
 describe("Discord model picker interactions", () => {
   beforeEach(async () => {
-    tempDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-discord-model-picker-"));
+    tempDir = await mkdtemp(path.join(os.tmpdir(), "eve-discord-model-picker-"));
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -420,7 +420,7 @@ describe("Discord model picker interactions", () => {
         "openai",
         [
           { id: "codex", label: "Codex", description: "Use Codex." },
-          { id: "openclaw", label: "OpenClaw Default", description: "Use OpenClaw." },
+          { id: "eve", label: "EVE Default", description: "Use EVE." },
         ],
       ],
     ]);
@@ -468,7 +468,7 @@ describe("Discord model picker interactions", () => {
         "openai",
         [
           { id: "codex", label: "Codex", description: "Use Codex." },
-          { id: "openclaw", label: "OpenClaw Default", description: "Use OpenClaw." },
+          { id: "eve", label: "EVE Default", description: "Use EVE." },
         ],
       ],
     ]);
@@ -513,7 +513,7 @@ describe("Discord model picker interactions", () => {
       [
         "anthropic",
         [
-          { id: "openclaw", label: "OpenClaw Default", description: "Use OpenClaw." },
+          { id: "eve", label: "EVE Default", description: "Use EVE." },
           { id: "claude-cli", label: "Claude CLI", description: "Use Claude CLI." },
         ],
       ],
@@ -960,7 +960,7 @@ describe("Discord model picker interactions", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await replyWithDiscordModelPickerProviders({
       interaction: interaction as never,

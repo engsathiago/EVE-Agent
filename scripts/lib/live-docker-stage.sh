@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-openclaw_live_stage_source_tree() {
+eve_live_stage_source_tree() {
   local dest_dir="${1:?destination directory required}"
-  local stage_mode="${OPENCLAW_LIVE_DOCKER_SOURCE_STAGE_MODE:-copy}"
+  local stage_mode="${EVE_LIVE_DOCKER_SOURCE_STAGE_MODE:-copy}"
 
   if [ "$stage_mode" = "symlink" ]; then
-    echo "OPENCLAW_LIVE_DOCKER_SOURCE_STAGE_MODE=symlink is disabled; using copy staging." >&2
+    echo "EVE_LIVE_DOCKER_SOURCE_STAGE_MODE=symlink is disabled; using copy staging." >&2
   fi
 
   set +e
@@ -22,7 +22,7 @@ openclaw_live_stage_source_tree() {
     --exclude=.tmp \
     --exclude=.tmp-precommit-venv \
     --exclude=.worktrees \
-    --exclude=__openclaw_vitest__ \
+    --exclude=__eve_vitest__ \
     --exclude=relay.sock \
     --exclude='*.sock' \
     --exclude='*/*.sock' \
@@ -39,7 +39,7 @@ openclaw_live_stage_source_tree() {
   fi
 }
 
-openclaw_live_link_runtime_tree() {
+eve_live_link_runtime_tree() {
   local dest_dir="${1:?destination directory required}"
 
   if [ ! -e "$dest_dir/node_modules" ]; then
@@ -47,13 +47,13 @@ openclaw_live_link_runtime_tree() {
   fi
   ln -s /app/dist "$dest_dir/dist"
   if [ -d /app/dist-runtime/extensions ]; then
-    export OPENCLAW_BUNDLED_PLUGINS_DIR=/app/dist-runtime/extensions
+    export EVE_BUNDLED_PLUGINS_DIR=/app/dist-runtime/extensions
   elif [ -d /app/dist/extensions ]; then
-    export OPENCLAW_BUNDLED_PLUGINS_DIR=/app/dist/extensions
+    export EVE_BUNDLED_PLUGINS_DIR=/app/dist/extensions
   fi
 }
 
-openclaw_live_stage_node_modules() {
+eve_live_stage_node_modules() {
   local dest_dir="${1:?destination directory required}"
   local target_dir="$dest_dir/node_modules"
 
@@ -63,9 +63,9 @@ openclaw_live_stage_node_modules() {
   mkdir -p "$target_dir/.vite-temp"
 }
 
-openclaw_live_scrub_staged_plugin_index() {
+eve_live_scrub_staged_plugin_index() {
   local dest_dir="${1:?destination directory required}"
-  local db_path="$dest_dir/state/openclaw.sqlite"
+  local db_path="$dest_dir/state/eve.sqlite"
 
   if [ ! -f "$db_path" ]; then
     return 0
@@ -93,9 +93,9 @@ try {
 NODE
 }
 
-openclaw_live_stage_state_dir() {
+eve_live_stage_state_dir() {
   local dest_dir="${1:?destination directory required}"
-  local source_dir="${HOME}/.openclaw"
+  local source_dir="${HOME}/.eve"
 
   mkdir -p "$dest_dir"
   if [ -d "$source_dir" ]; then
@@ -121,22 +121,22 @@ openclaw_live_stage_state_dir() {
       return "$status"
     fi
     chmod -R u+rwX "$dest_dir" || true
-    openclaw_live_scrub_staged_plugin_index "$dest_dir"
+    eve_live_scrub_staged_plugin_index "$dest_dir"
     if [ -d "$source_dir/workspace" ] && [ ! -e "$dest_dir/workspace" ]; then
       ln -s "$source_dir/workspace" "$dest_dir/workspace"
     fi
   fi
 
-  export OPENCLAW_STATE_DIR="$dest_dir"
-  export OPENCLAW_CONFIG_PATH="$dest_dir/openclaw.json"
+  export EVE_STATE_DIR="$dest_dir"
+  export EVE_CONFIG_PATH="$dest_dir/eve.json"
 }
 
-openclaw_live_prepare_staged_config() {
-  if [ ! -f "${OPENCLAW_CONFIG_PATH:-}" ]; then
+eve_live_prepare_staged_config() {
+  if [ ! -f "${EVE_CONFIG_PATH:-}" ]; then
     return 0
   fi
 
-  local scripts_dir="${OPENCLAW_LIVE_DOCKER_SCRIPTS_DIR:-/src/scripts}"
+  local scripts_dir="${EVE_LIVE_DOCKER_SCRIPTS_DIR:-/src/scripts}"
   (
     cd /app
     node --import tsx "$scripts_dir/live-docker-normalize-config.ts"

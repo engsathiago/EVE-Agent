@@ -1,6 +1,6 @@
 // Agent session helper tests cover explicit session resolution through config and session stores.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { resolveSessionKeyForRequest } from "./session.js";
 
 const mocks = vi.hoisted(() => ({
@@ -34,7 +34,7 @@ vi.mock("../../agents/agent-scope.js", async () => {
   );
   return {
     listAgentIds: mocks.listAgentIds,
-    resolveDefaultAgentId: (cfg: OpenClawConfig) => {
+    resolveDefaultAgentId: (cfg: EVEConfig) => {
       const agents = cfg.agents?.list ?? [];
       return normalizeAgentId(agents.find((agent) => agent?.default)?.id ?? agents[0]?.id);
     },
@@ -70,7 +70,7 @@ describe("resolveSessionKeyForRequest", () => {
     mocks.resolveExplicitAgentSessionKey.mockReturnValue(undefined);
   });
 
-  const baseCfg: OpenClawConfig = {};
+  const baseCfg: EVEConfig = {};
 
   it("returns sessionKey when --to resolves a session key via context", () => {
     mocks.resolveStorePath.mockReturnValue(MAIN_STORE_PATH);
@@ -86,7 +86,7 @@ describe("resolveSessionKeyForRequest", () => {
   });
 
   it("uses an agent-scoped --to value as the requested session key", () => {
-    const sessionKey = "agent:main:openclaw-weixin:direct:o9cq802hhmfc@im.wechat";
+    const sessionKey = "agent:main:eve-weixin:direct:o9cq802hhmfc@im.wechat";
     mocks.resolveStorePath.mockReturnValue(MAIN_STORE_PATH);
     mocks.loadSessionStore.mockReturnValue({
       [sessionKey]: { sessionId: "wechat-session", updatedAt: 0 },
@@ -110,7 +110,7 @@ describe("resolveSessionKeyForRequest", () => {
     const result = resolveSessionKeyForRequest({
       cfg: {
         agents: { list: [{ id: "mybot", default: true }] },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       to: "+15551234567",
     });
 
@@ -132,7 +132,7 @@ describe("resolveSessionKeyForRequest", () => {
     const result = resolveSessionKeyForRequest({
       cfg: {
         agents: { list: [{ id: "mybot", default: true }] },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       to: "+15551234567",
     });
 
@@ -154,7 +154,7 @@ describe("resolveSessionKeyForRequest", () => {
       cfg: {
         agents: { list: [{ id: "mybot", default: true }] },
         session: { store: SHARED_STORE_PATH },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       to: "+15551234567",
     });
 
@@ -181,7 +181,7 @@ describe("resolveSessionKeyForRequest", () => {
     const result = resolveSessionKeyForRequest({
       cfg: {
         agents: { list: [{ id: "mybot", default: true }] },
-      } satisfies OpenClawConfig,
+      } satisfies EVEConfig,
       to: "+15551234567",
     });
 

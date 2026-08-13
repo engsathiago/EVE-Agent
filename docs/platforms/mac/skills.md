@@ -6,17 +6,17 @@ read_when:
 title: "Skills (macOS)"
 ---
 
-The macOS app surfaces OpenClaw skills via the gateway; it does not parse skills locally.
+The macOS app surfaces EVE skills via the gateway; it does not parse skills locally.
 
 ## Data source
 
 - `skills.status` (gateway) returns all skills plus eligibility and missing requirements
   (including allowlist blocks for bundled skills).
-- Requirements are derived from `metadata.openclaw.requires` in each `SKILL.md`.
+- Requirements are derived from `metadata.eve.requires` in each `SKILL.md`.
 
 ## Install actions
 
-- `metadata.openclaw.install` defines install options (brew/node/go/uv).
+- `metadata.eve.install` defines install options (brew/node/go/uv).
 - The app calls `skills.install` to run installers on the gateway host.
 - Operator-owned `security.installPolicy` can block gateway-backed skill
   installs before installer metadata runs. Install-time built-in dangerous-code
@@ -32,7 +32,7 @@ The macOS app surfaces OpenClaw skills via the gateway; it does not parse skills
 
 ## Env/API keys
 
-- The app stores keys in `~/.openclaw/openclaw.json` under `skills.entries.<skillKey>`.
+- The app stores keys in `~/.eve/eve.json` under `skills.entries.<skillKey>`.
 - `skills.update` patches `enabled`, `apiKey`, and `env`.
 
 ## Remote mode

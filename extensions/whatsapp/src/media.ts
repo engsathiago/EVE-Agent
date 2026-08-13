@@ -7,5 +7,5 @@ export {
   optimizeImageToJpeg,
   optimizeImageToPng,
   type WebMediaResult,
-} from "openclaw/plugin-sdk/web-media";
-export type { LocalMediaAccessErrorCode } from "openclaw/plugin-sdk/web-media";
+} from "eve-agent/plugin-sdk/web-media";
+export type { LocalMediaAccessErrorCode } from "eve-agent/plugin-sdk/web-media";

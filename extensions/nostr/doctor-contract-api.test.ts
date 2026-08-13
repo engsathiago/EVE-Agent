@@ -5,11 +5,11 @@ import path from "node:path";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import type {
   OpenKeyedStoreOptions,
   PluginDoctorStateMigrationContext,
-} from "openclaw/plugin-sdk/runtime-doctor";
+} from "eve-agent/plugin-sdk/runtime-doctor";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stateMigrations } from "./doctor-contract-api.js";
 
@@ -30,8 +30,8 @@ describe("nostr doctor state migration", () => {
 
   beforeEach(async () => {
     resetPluginStateStoreForTests();
-    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-nostr-doctor-"));
-    env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-nostr-doctor-"));
+    env = { ...process.env, EVE_STATE_DIR: stateDir };
   });
 
   afterEach(async () => {

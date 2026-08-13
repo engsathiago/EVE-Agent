@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { resetPluginStateStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
+import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createNextcloudTalkReplayGuard } from "./replay-guard.js";
 
@@ -69,7 +69,7 @@ describe("nextcloud-talk doctor", () => {
       ok: false,
       code: "missing_response_feature",
       message:
-        'Nextcloud Talk bot "OpenClaw" (1) is missing the response feature (features=9); outbound replies will fail.',
+        'Nextcloud Talk bot "EVE" (1) is missing the response feature (features=9); outbound replies will fail.',
     });
 
     await expect(
@@ -85,15 +85,15 @@ describe("nextcloud-talk doctor", () => {
             },
           },
         } as never,
-        doctorFixCommand: "openclaw doctor --fix",
+        doctorFixCommand: "eve doctor --fix",
       }),
     ).resolves.toEqual([
-      '- channels.nextcloud-talk.default: Nextcloud Talk bot "OpenClaw" (1) is missing the response feature (features=9); outbound replies will fail.',
+      '- channels.nextcloud-talk.default: Nextcloud Talk bot "EVE" (1) is missing the response feature (features=9); outbound replies will fail.',
     ]);
   });
 
   it("migrates legacy replay dedupe JSON into SQLite during doctor repair", async () => {
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-nextcloud-doctor-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-nextcloud-doctor-"));
     const legacyDir = path.join(stateDir, "nextcloud-talk", "replay-dedupe");
     const legacyPath = path.join(legacyDir, "account-a.json");
     await fs.mkdir(legacyDir, { recursive: true });
@@ -117,8 +117,8 @@ describe("nextcloud-talk doctor", () => {
           },
         },
       } as never,
-      doctorFixCommand: "openclaw doctor --fix",
-      env: { ...process.env, OPENCLAW_STATE_DIR: stateDir },
+      doctorFixCommand: "eve doctor --fix",
+      env: { ...process.env, EVE_STATE_DIR: stateDir },
     });
 
     expect(mutation?.changes.join("\n")).toContain(

@@ -1,12 +1,12 @@
-# OpenClaw Qianfan Provider
+# EVE Qianfan Provider
 
-Official OpenClaw provider plugin for Qianfan.
+Official EVE provider plugin for Qianfan.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugins install @openclaw/qianfan-provider
-openclaw gateway restart
+eve plugins install @eve/qianfan-provider
+eve gateway restart
 ```
 
-See <https://docs.openclaw.ai/providers/qianfan> for setup and configuration.
+See <https://docs.eve.ai/providers/qianfan> for setup and configuration.

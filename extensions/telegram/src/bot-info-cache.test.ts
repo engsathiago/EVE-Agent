@@ -12,8 +12,8 @@ import type { TelegramBotInfo } from "./bot-info.js";
 const botInfo: TelegramBotInfo = {
   id: 123456,
   is_bot: true,
-  first_name: "OpenClaw",
-  username: "openclaw_bot",
+  first_name: "EVE",
+  username: "eve_bot",
   can_join_groups: true,
   can_read_all_group_messages: false,
   can_manage_bots: false,

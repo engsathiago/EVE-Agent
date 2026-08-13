@@ -6,7 +6,7 @@ read_when:
 title: "Agent send"
 ---
 
-`openclaw agent` runs a single agent turn from the command line without needing
+`eve agent` runs a single agent turn from the command line without needing
 an inbound chat message. Use it for scripted workflows, testing, and
 programmatic delivery.
 
@@ -15,7 +15,7 @@ programmatic delivery.
 <Steps>
   <Step title="Run a simple agent turn">
     ```bash
-    openclaw agent --agent main --message "What is the weather today?"
+    eve agent --agent main --message "What is the weather today?"
     ```
 
     This sends the message through the Gateway and prints the reply.
@@ -25,16 +25,16 @@ programmatic delivery.
   <Step title="Target a specific agent or session">
     ```bash
     # Target a specific agent
-    openclaw agent --agent ops --message "Summarize logs"
+    eve agent --agent ops --message "Summarize logs"
 
     # Target a phone number (derives session key)
-    openclaw agent --to +15555550123 --message "Status update"
+    eve agent --to +15555550123 --message "Status update"
 
     # Reuse an existing session
-    openclaw agent --session-id abc123 --message "Continue the task"
+    eve agent --session-id abc123 --message "Continue the task"
 
     # Target an exact session key
-    openclaw agent --session-key agent:ops:incident-42 --message "Summarize status"
+    eve agent --session-key agent:ops:incident-42 --message "Summarize status"
     ```
 
   </Step>
@@ -42,10 +42,10 @@ programmatic delivery.
   <Step title="Deliver the reply to a channel">
     ```bash
     # Deliver to WhatsApp (default channel)
-    openclaw agent --to +15555550123 --message "Report ready" --deliver
+    eve agent --to +15555550123 --message "Report ready" --deliver
 
     # Deliver to Slack
-    openclaw agent --agent ops --message "Generate report" \
+    eve agent --agent ops --message "Generate report" \
       --deliver --reply-channel slack --reply-to "#reports"
     ```
 
@@ -97,26 +97,26 @@ programmatic delivery.
 
 ```bash
 # Simple turn with JSON output
-openclaw agent --to +15555550123 --message "Trace logs" --verbose on --json
+eve agent --to +15555550123 --message "Trace logs" --verbose on --json
 
 # Turn with thinking level
-openclaw agent --session-id 1234 --message "Summarize inbox" --thinking medium
+eve agent --session-id 1234 --message "Summarize inbox" --thinking medium
 
 # Exact session key
-openclaw agent --session-key agent:ops:incident-42 --message "Summarize status"
+eve agent --session-key agent:ops:incident-42 --message "Summarize status"
 
 # Legacy key scoped to an agent
-openclaw agent --agent ops --session-key incident-42 --message "Summarize status"
+eve agent --agent ops --session-key incident-42 --message "Summarize status"
 
 # Deliver to a different channel than the session
-openclaw agent --agent ops --message "Alert" --deliver --reply-channel telegram --reply-to "@admin"
+eve agent --agent ops --message "Alert" --deliver --reply-channel telegram --reply-to "@admin"
 ```
 
 ## Related
 
 <CardGroup cols={2}>
   <Card title="Agent CLI reference" href="/cli/agent" icon="terminal">
-    Full `openclaw agent` flag and option reference.
+    Full `eve agent` flag and option reference.
   </Card>
   <Card title="Sub-agents" href="/tools/subagents" icon="users">
     Background sub-agent spawning.

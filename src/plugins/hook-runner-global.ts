@@ -28,7 +28,7 @@ type HookRunnerGlobalState = {
   registry: GlobalHookRunnerRegistry | null;
 };
 
-const hookRunnerGlobalStateKey = Symbol.for("openclaw.plugins.hook-runner-global-state");
+const hookRunnerGlobalStateKey = Symbol.for("eve.plugins.hook-runner-global-state");
 const getState = () =>
   resolveGlobalSingleton<HookRunnerGlobalState>(hookRunnerGlobalStateKey, () => ({
     hookRunner: null,

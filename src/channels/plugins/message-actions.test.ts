@@ -1,7 +1,7 @@
 // Message action tests cover channel message action schema and invocation behavior.
 import { Type } from "typebox";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { setActivePluginRegistry } from "../../plugins/runtime.js";
 import { defaultRuntime } from "../../runtime.js";
 import {
@@ -82,12 +82,12 @@ describe("message action capability checks", () => {
   it("aggregates capabilities across plugins", () => {
     activateMessageActionTestRegistry();
 
-    expect(listChannelMessageCapabilities({} as OpenClawConfig).toSorted()).toEqual([
+    expect(listChannelMessageCapabilities({} as EVEConfig).toSorted()).toEqual([
       "delivery-pin",
       "presentation",
     ]);
-    expect(channelSupportsMessageCapability({} as OpenClawConfig, "presentation")).toBe(true);
-    expect(channelSupportsMessageCapability({} as OpenClawConfig, "delivery-pin")).toBe(true);
+    expect(channelSupportsMessageCapability({} as EVEConfig, "presentation")).toBe(true);
+    expect(channelSupportsMessageCapability({} as EVEConfig, "delivery-pin")).toBe(true);
   });
 
   it("checks per-channel capabilities", () => {
@@ -95,42 +95,42 @@ describe("message action capability checks", () => {
 
     expect(
       listChannelMessageCapabilitiesForChannel({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-buttons",
       }),
     ).toEqual(["presentation"]);
     expect(
       listChannelMessageCapabilitiesForChannel({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-cards",
       }),
     ).toEqual(["delivery-pin"]);
     expect(
       channelSupportsMessageCapabilityForChannel(
-        { cfg: {} as OpenClawConfig, channel: "demo-buttons" },
+        { cfg: {} as EVEConfig, channel: "demo-buttons" },
         "presentation",
       ),
     ).toBe(true);
     expect(
       channelSupportsMessageCapabilityForChannel(
-        { cfg: {} as OpenClawConfig, channel: "demo-cards" },
+        { cfg: {} as EVEConfig, channel: "demo-cards" },
         "presentation",
       ),
     ).toBe(false);
     expect(
       channelSupportsMessageCapabilityForChannel(
-        { cfg: {} as OpenClawConfig, channel: "demo-buttons" },
+        { cfg: {} as EVEConfig, channel: "demo-buttons" },
         "delivery-pin",
       ),
     ).toBe(false);
     expect(
       channelSupportsMessageCapabilityForChannel(
-        { cfg: {} as OpenClawConfig, channel: "demo-cards" },
+        { cfg: {} as EVEConfig, channel: "demo-cards" },
         "delivery-pin",
       ),
     ).toBe(true);
     expect(
-      channelSupportsMessageCapabilityForChannel({ cfg: {} as OpenClawConfig }, "delivery-pin"),
+      channelSupportsMessageCapabilityForChannel({ cfg: {} as EVEConfig }, "delivery-pin"),
     ).toBe(false);
   });
 
@@ -151,7 +151,7 @@ describe("message action capability checks", () => {
 
     expect(
       listChannelMessageCapabilitiesForChannel({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-cards-alias",
       }),
     ).toEqual(["delivery-pin"]);
@@ -183,10 +183,10 @@ describe("message action capability checks", () => {
       createTestRegistry([{ pluginId: "demo-unified", source: "test", plugin: unifiedPlugin }]),
     );
 
-    expect(listChannelMessageCapabilities({} as OpenClawConfig)).toEqual(["presentation"]);
+    expect(listChannelMessageCapabilities({} as EVEConfig)).toEqual(["presentation"]);
     expect(
       resolveChannelMessageToolSchemaProperties({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-unified",
       }),
     ).toHaveProperty("components");
@@ -225,7 +225,7 @@ describe("message action capability checks", () => {
     );
 
     const properties = resolveChannelMessageToolSchemaProperties({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       channel: "demo-contrib",
     });
     // Regression: required leakage made every message tool call fail validation
@@ -264,7 +264,7 @@ describe("message action capability checks", () => {
 
     expect(
       listCrossChannelSchemaSupportedMessageActions({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-scoped-schema",
       }),
     ).toEqual(["read", "list-pins"]);
@@ -299,7 +299,7 @@ describe("message action capability checks", () => {
 
     expect(
       listCrossChannelSchemaSupportedMessageActions({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-unscoped-schema",
       }),
     ).toStrictEqual([]);
@@ -339,7 +339,7 @@ describe("message action capability checks", () => {
 
     expect(
       listCrossChannelSchemaSupportedMessageActions({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         channel: "demo-empty-scoped-schema",
       }),
     ).toEqual(["read", "list-pins"]);
@@ -377,14 +377,14 @@ describe("message action capability checks", () => {
 
     expect(
       resolveChannelMessageToolMediaSourceParamKeys({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         action: "set-profile",
         channel: "demo-media",
       }),
     ).toEqual(["avatarUrl", "avatarPath"]);
     expect(
       resolveChannelMessageToolMediaSourceParamKeys({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         action: "send",
         channel: "demo-media",
       }),
@@ -414,7 +414,7 @@ describe("message action capability checks", () => {
 
     expect(
       resolveChannelMessageToolMediaSourceParamKeys({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         action: "set-profile",
         channel: "demo-media-flat",
       }),
@@ -441,10 +441,10 @@ describe("message action capability checks", () => {
       createTestRegistry([{ pluginId: "demo-crashing", source: "test", plugin: crashingPlugin }]),
     );
 
-    expect(listChannelMessageCapabilities({} as OpenClawConfig)).toStrictEqual([]);
+    expect(listChannelMessageCapabilities({} as EVEConfig)).toStrictEqual([]);
     expect(errorSpy).toHaveBeenCalledTimes(1);
 
-    expect(listChannelMessageCapabilities({} as OpenClawConfig)).toStrictEqual([]);
+    expect(listChannelMessageCapabilities({} as EVEConfig)).toStrictEqual([]);
     expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 });

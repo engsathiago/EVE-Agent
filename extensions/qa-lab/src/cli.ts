@@ -1,6 +1,6 @@
 // Qa Lab plugin module implements cli behavior.
 import type { Command } from "commander";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
 import { collectString } from "./cli-options.js";
 import type {
   QaLabSelfCheckCommandOptions,
@@ -492,7 +492,7 @@ export function registerQaLabCli(program: Command) {
     )
     .option("--memory <size>", "Multipass memory size")
     .option("--disk <size>", "Multipass disk size")
-    .option("--runtime-pair <pair>", "Run each scenario under both runtimes, e.g. openclaw,codex")
+    .option("--runtime-pair <pair>", "Run each scenario under both runtimes, e.g. eve,codex")
     .option(
       "--runtime-parity-tier <tier>",
       "Add scenarios tagged with runtimeParityTier (standard, optional, live-only, soak; repeatable or comma-separated)",
@@ -633,7 +633,7 @@ export function registerQaLabCli(program: Command) {
       "Directory of curated JSONL transcripts",
       "qa/scenarios/jsonl-replay",
     )
-    .option("--runtime-pair <pair>", "Runtime pair label, e.g. openclaw,codex", "openclaw,codex")
+    .option("--runtime-pair <pair>", "Runtime pair label, e.g. eve,codex", "eve,codex")
     .option(
       "--provider-mode <mode>",
       `Provider mode (${formatQaProviderModeHelp()})`,
@@ -755,8 +755,8 @@ export function registerQaLabCli(program: Command) {
   credentials
     .command("doctor")
     .description("Check Convex credential broker env and admin reachability")
-    .option("--site-url <url>", "Override OPENCLAW_QA_CONVEX_SITE_URL")
-    .option("--endpoint-prefix <path>", "Override OPENCLAW_QA_CONVEX_ENDPOINT_PREFIX")
+    .option("--site-url <url>", "Override EVE_QA_CONVEX_SITE_URL")
+    .option("--endpoint-prefix <path>", "Override EVE_QA_CONVEX_ENDPOINT_PREFIX")
     .option("--actor-id <id>", "Optional admin actor id to include in broker audit events")
     .option("--json", "Emit machine-readable JSON output", false)
     .action(
@@ -777,8 +777,8 @@ export function registerQaLabCli(program: Command) {
     .requiredOption("--payload-file <path>", "JSON object file containing the credential payload")
     .option("--repo-root <path>", "Repository root for resolving relative payload-file paths")
     .option("--note <text>", "Optional note stored with this credential row")
-    .option("--site-url <url>", "Override OPENCLAW_QA_CONVEX_SITE_URL")
-    .option("--endpoint-prefix <path>", "Override OPENCLAW_QA_CONVEX_ENDPOINT_PREFIX")
+    .option("--site-url <url>", "Override EVE_QA_CONVEX_SITE_URL")
+    .option("--endpoint-prefix <path>", "Override EVE_QA_CONVEX_ENDPOINT_PREFIX")
     .option("--actor-id <id>", "Optional admin actor id to include in broker audit events")
     .option("--json", "Emit machine-readable JSON output", false)
     .action(
@@ -800,8 +800,8 @@ export function registerQaLabCli(program: Command) {
     .command("remove")
     .description("Remove one credential from active use by disabling it")
     .requiredOption("--credential-id <id>", "Credential row id from the Convex pool")
-    .option("--site-url <url>", "Override OPENCLAW_QA_CONVEX_SITE_URL")
-    .option("--endpoint-prefix <path>", "Override OPENCLAW_QA_CONVEX_ENDPOINT_PREFIX")
+    .option("--site-url <url>", "Override EVE_QA_CONVEX_SITE_URL")
+    .option("--endpoint-prefix <path>", "Override EVE_QA_CONVEX_ENDPOINT_PREFIX")
     .option("--actor-id <id>", "Optional admin actor id to include in broker audit events")
     .option("--json", "Emit machine-readable JSON output", false)
     .action(
@@ -825,8 +825,8 @@ export function registerQaLabCli(program: Command) {
       parseQaCliPositiveIntegerOption(value, "--limit"),
     )
     .option("--show-secrets", "Include credential payload JSON in output", false)
-    .option("--site-url <url>", "Override OPENCLAW_QA_CONVEX_SITE_URL")
-    .option("--endpoint-prefix <path>", "Override OPENCLAW_QA_CONVEX_ENDPOINT_PREFIX")
+    .option("--site-url <url>", "Override EVE_QA_CONVEX_SITE_URL")
+    .option("--endpoint-prefix <path>", "Override EVE_QA_CONVEX_ENDPOINT_PREFIX")
     .option("--actor-id <id>", "Optional admin actor id to include in broker audit events")
     .option("--json", "Emit machine-readable JSON output", false)
     .action(
@@ -897,7 +897,7 @@ export function registerQaLabCli(program: Command) {
       parseQaCliPositiveIntegerOption(value, "--qa-lab-port"),
     )
     .option("--provider-base-url <url>", "Provider base URL for the QA gateway")
-    .option("--image <name>", "Prebaked image name", "openclaw:qa-local-prebaked")
+    .option("--image <name>", "Prebaked image name", "eve:qa-local-prebaked")
     .option("--use-prebuilt-image", "Use image: instead of build: in docker-compose", false)
     .option(
       "--bind-ui-dist",
@@ -922,7 +922,7 @@ export function registerQaLabCli(program: Command) {
   qa.command("docker-build-image")
     .description("Build the prebaked QA Docker image with qa-channel + qa-lab bundled")
     .option("--repo-root <path>", "Repository root to target when running from a neutral cwd")
-    .option("--image <name>", "Image tag", "openclaw:qa-local-prebaked")
+    .option("--image <name>", "Image tag", "eve:qa-local-prebaked")
     .action(async (opts: { repoRoot?: string; image?: string }) => {
       await runQaDockerBuildImage(opts);
     });
@@ -938,7 +938,7 @@ export function registerQaLabCli(program: Command) {
       parseQaCliPositiveIntegerOption(value, "--qa-lab-port"),
     )
     .option("--provider-base-url <url>", "Provider base URL for the QA gateway")
-    .option("--image <name>", "Image tag", "openclaw:qa-local-prebaked")
+    .option("--image <name>", "Image tag", "eve:qa-local-prebaked")
     .option("--use-prebuilt-image", "Use image: instead of build: in docker-compose", false)
     .option(
       "--bind-ui-dist",

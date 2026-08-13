@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { captureEnv } from "../test-utils/env.js";
 import {
   resolveConfiguredTtsMode,
@@ -19,7 +19,7 @@ describe("shouldAttemptTtsPayload", () => {
   let caseId = 0;
 
   beforeAll(() => {
-    root = mkdtempSync(path.join(tmpdir(), "openclaw-tts-config-"));
+    root = mkdtempSync(path.join(tmpdir(), "eve-tts-config-"));
   });
 
   afterAll(() => {
@@ -29,11 +29,11 @@ describe("shouldAttemptTtsPayload", () => {
   });
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_TTS_PREFS"]);
+    envSnapshot = captureEnv(["EVE_TTS_PREFS"]);
     dir = path.join(root, `case-${caseId++}`);
     mkdirSync(dir, { recursive: true });
     prefsPath = path.join(dir, "tts.json");
-    process.env.OPENCLAW_TTS_PREFS = prefsPath;
+    process.env.EVE_TTS_PREFS = prefsPath;
   });
 
   afterEach(() => {
@@ -42,13 +42,13 @@ describe("shouldAttemptTtsPayload", () => {
   });
 
   it("skips TTS when config, prefs, and session state leave auto mode off", () => {
-    expect(shouldAttemptTtsPayload({ cfg: {} as OpenClawConfig })).toBe(false);
+    expect(shouldAttemptTtsPayload({ cfg: {} as EVEConfig })).toBe(false);
   });
 
   it("does not infer automatic TTS from a dashboard text turn without opt-in state", () => {
     expect(
       shouldAttemptTtsPayload({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         agentId: "main",
         channelId: "webchat",
         accountId: "dashboard",
@@ -58,21 +58,21 @@ describe("shouldAttemptTtsPayload", () => {
 
   it("honors session auto state before prefs and config", () => {
     writeFileSync(prefsPath, JSON.stringify({ tts: { auto: "off" } }));
-    const cfg = { messages: { tts: { auto: "off" } } } as OpenClawConfig;
+    const cfg = { messages: { tts: { auto: "off" } } } as EVEConfig;
 
     expect(shouldAttemptTtsPayload({ cfg, ttsAuto: "always" })).toBe(true);
     expect(shouldAttemptTtsPayload({ cfg, ttsAuto: "off" })).toBe(false);
   });
 
   it("uses local prefs before config auto mode", () => {
-    const cfg = { messages: { tts: { auto: "off" } } } as OpenClawConfig;
+    const cfg = { messages: { tts: { auto: "off" } } } as EVEConfig;
 
     writeFileSync(prefsPath, JSON.stringify({ tts: { enabled: true } }));
     expect(shouldAttemptTtsPayload({ cfg })).toBe(true);
 
     writeFileSync(prefsPath, JSON.stringify({ tts: { auto: "off" } }));
     expect(
-      shouldAttemptTtsPayload({ cfg: { messages: { tts: { enabled: true } } } as OpenClawConfig }),
+      shouldAttemptTtsPayload({ cfg: { messages: { tts: { enabled: true } } } as EVEConfig }),
     ).toBe(false);
   });
 
@@ -95,7 +95,7 @@ describe("shouldAttemptTtsPayload", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     expect(shouldAttemptTtsPayload({ cfg, agentId: "voice" })).toBe(true);
     expect(resolveConfiguredTtsMode(cfg, "voice")).toBe("all");
@@ -151,7 +151,7 @@ describe("shouldAttemptTtsPayload", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     const resolved = resolveEffectiveTtsConfig(cfg, {
       agentId: "reader",

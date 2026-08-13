@@ -1,11 +1,11 @@
 ---
 name: crabbox
-description: Use the Crabbox wrapper for OpenClaw remote validation across Linux, macOS, Windows, and WSL2, including delegated Blacksmith Testbox proof. Report the actual provider and id.
+description: Use the Crabbox wrapper for EVE remote validation across Linux, macOS, Windows, and WSL2, including delegated Blacksmith Testbox proof. Report the actual provider and id.
 ---
 
 # Crabbox
 
-Use the Crabbox wrapper when OpenClaw needs remote Linux proof for broad tests,
+Use the Crabbox wrapper when EVE needs remote Linux proof for broad tests,
 CI-parity checks, secrets, hosted services, Docker/E2E/package lanes, warmed
 reusable boxes, sync timing, logs/results, cache inspection, or lease cleanup.
 
@@ -16,7 +16,7 @@ Crabbox is the transport/orchestration surface. The actual backend can be:
 - Blacksmith Testbox through Crabbox: delegated provider,
   `provider=blacksmith-testbox`, ids like `tbx_...`, `syncDelegated=true`
 
-For OpenClaw maintainer broad `pnpm` gates, Blacksmith Testbox through the
+For EVE maintainer broad `pnpm` gates, Blacksmith Testbox through the
 Crabbox wrapper is acceptable and often preferred when the standing Testbox
 rules apply. Do not describe those runs as "AWS Crabbox"; report them as
 Testbox-through-Crabbox with the `tbx_...` id and Actions run.
@@ -24,7 +24,7 @@ Testbox-through-Crabbox with the `tbx_...` id and Actions run.
 Use the repo `.crabbox.yaml` brokered AWS path when the task specifically needs
 direct AWS Crabbox behavior, persistent direct-provider leases, `--fresh-pr`,
 `--full-resync`, environment forwarding, capture/download support, or provider
-comparison. Use `--provider blacksmith-testbox` when the task needs OpenClaw
+comparison. Use `--provider blacksmith-testbox` when the task needs EVE
 maintainer Testbox proof, prepared CI environment, broad/heavy pnpm gates, or
 the user asks for Testbox/Blacksmith.
 
@@ -41,7 +41,7 @@ pnpm crabbox:run -- --help | sed -n '1,120p'
 ../crabbox/bin/crabbox webvnc --help
 ```
 
-- OpenClaw scripts prefer `../crabbox/bin/crabbox` when present. The user PATH
+- EVE scripts prefer `../crabbox/bin/crabbox` when present. The user PATH
   shim can be stale.
 - Check `.crabbox.yaml` for direct-provider defaults. Omitting `--provider`
   means brokered AWS for normal Linux/macOS paths; the wrapper selects Azure
@@ -50,8 +50,8 @@ pnpm crabbox:run -- --help | sed -n '1,120p'
 - The brokered AWS default is a Linux developer image in `eu-west-1`; the repo
   config pins hot `eu-west-1a/b/c` placement so Fast Snapshot Restore can apply.
   If warmup drifts well past the minute-scale path, verify image promotion,
-  region/AZ placement, and FSR state before blaming OpenClaw.
-- For broad OpenClaw maintainer `pnpm` gates, prefer the repo wrapper with
+  region/AZ placement, and FSR state before blaming EVE.
+- For broad EVE maintainer `pnpm` gates, prefer the repo wrapper with
   `--provider blacksmith-testbox` or the repo Testbox helpers when the standing
   Testbox policy applies.
 - Cold Testbox acquisition and hydration often take tens of seconds. When broad
@@ -77,17 +77,17 @@ pnpm crabbox:run -- --help | sed -n '1,120p'
   a fake key.
 - Prefer local targeted tests for tight edit loops. Broad gates belong remote.
 - Do not treat inherited shell env as operator intent. In particular,
-  `OPENCLAW_LOCAL_CHECK_MODE=throttled` from the local shell is not permission
+  `EVE_LOCAL_CHECK_MODE=throttled` from the local shell is not permission
   to move broad `pnpm check:changed`, `pnpm test:changed`, full `pnpm test`, or
   lint/typecheck fan-out onto the laptop.
-- Only use `OPENCLAW_LOCAL_CHECK_MODE=throttled|full` when the user explicitly
+- Only use `EVE_LOCAL_CHECK_MODE=throttled|full` when the user explicitly
   asks for local proof in the current task. If Testbox is queued or capacity is
   constrained, report the blocker and keep only targeted local edit-loop checks
   running.
 
 ## macOS And Windows Targets
 
-Use these only when the task needs an existing non-Linux host. OpenClaw broad
+Use these only when the task needs an existing non-Linux host. EVE broad
 Linux validation uses the repo Crabbox config unless a provider is explicitly
 requested.
 
@@ -120,7 +120,7 @@ crabbox admin hosts allocate --provider aws --target macos --region eu-west-1 --
 CRABBOX_MACOS_TYPES=all scripts/macos-host-region-preflight.sh
 ```
 
-Do not silently substitute AWS macOS for normal OpenClaw Linux proof. Report
+Do not silently substitute AWS macOS for normal EVE Linux proof. Report
 paid-host blockers as quota, IAM, coordinator deployment, or host availability
 instead of falling back to local macOS.
 
@@ -204,13 +204,13 @@ cleanup when a run fails, is interrupted, or the command output is unclear:
 
 ## Blacksmith Testbox Through Crabbox
 
-Use this for OpenClaw maintainer broad/heavy `pnpm` gates when the prepared CI
+Use this for EVE maintainer broad/heavy `pnpm` gates when the prepared CI
 environment is the right proof surface:
 
 ```sh
 node scripts/crabbox-wrapper.mjs run \
   --provider blacksmith-testbox \
-  --blacksmith-org openclaw \
+  --blacksmith-org eve \
   --blacksmith-workflow .github/workflows/ci-check-testbox.yml \
   --blacksmith-job check \
   --blacksmith-ref main \
@@ -236,7 +236,7 @@ checkout state. On Blacksmith, Crabbox forwards them as sticky disks:
 ```sh
 node scripts/crabbox-wrapper.mjs run \
   --provider blacksmith-testbox \
-  --cache-volume pnpm-store=openclaw-node24-pnpm-lock:/tmp/openclaw-pnpm-store \
+  --cache-volume pnpm-store=eve-node24-pnpm-lock:/tmp/eve-pnpm-store \
   --timing-json \
   -- \
   corepack pnpm check:changed
@@ -339,7 +339,7 @@ opening a PR for a user-visible bug.
 
 When the user says "test in Crabbox", do not simply copy tests to the remote
 box and run them there. Crabbox is for remote real-scenario proof: copy or
-install OpenClaw as the user would, run the same setup/update/CLI/Gateway/API
+install EVE as the user would, run the same setup/update/CLI/Gateway/API
 call that failed, and capture behavior from that entrypoint. For regressions or
 bug reports, prove the broken state first when feasible, then run the same
 scenario after the fix.
@@ -389,7 +389,7 @@ Keep it efficient:
   remote workdir or sync fingerprint appears stale.
 - Use one-shot Crabbox for a single proof; use a reusable Testbox only when
   several commands must share built images, installed packages, or live state.
-- Prefer `OPENCLAW_CURRENT_PACKAGE_TGZ` with Docker/package lanes when testing a
+- Prefer `EVE_CURRENT_PACKAGE_TGZ` with Docker/package lanes when testing a
   candidate tarball; prefer the repo's package helper instead of direct source
   execution when the bug might be packaging/install related.
 - Keep secrets redacted. It is fine to report key presence, source, and length;
@@ -431,18 +431,18 @@ Interactive CLI/onboarding:
   searchable selects. Raw `send-keys -l openai` may not trigger filtering in a
   tmux pane; inspect option order locally or on-box and send exact Down/Enter
   sequences.
-- Isolate mutable state with `OPENCLAW_STATE_DIR=$(mktemp -d)`. Plugin npm
+- Isolate mutable state with `EVE_STATE_DIR=$(mktemp -d)`. Plugin npm
   installs live under that state dir (`npm/node_modules/...`), not under
-  `OPENCLAW_CONFIG_DIR`. Verify downloads by checking the state dir, package
+  `EVE_CONFIG_DIR`. Verify downloads by checking the state dir, package
   lock, and installed package metadata.
 - To test automatic setup installs against local package artifacts, use
-  `OPENCLAW_ALLOW_PLUGIN_INSTALL_OVERRIDES=1` plus
-  `OPENCLAW_PLUGIN_INSTALL_OVERRIDES='{"plugin-id":"npm-pack:/tmp/plugin.tgz"}'`.
-  Pack with `npm pack`, set an isolated `OPENCLAW_STATE_DIR`, and verify the
+  `EVE_ALLOW_PLUGIN_INSTALL_OVERRIDES=1` plus
+  `EVE_PLUGIN_INSTALL_OVERRIDES='{"plugin-id":"npm-pack:/tmp/plugin.tgz"}'`.
+  Pack with `npm pack`, set an isolated `EVE_STATE_DIR`, and verify the
   package under `npm/node_modules`. Overrides are test-only and must not be
   treated as official/trusted-source installs.
 - For OpenAI/Codex onboarding proof, the useful markers are the UI line
-  `Installed Codex plugin`, `npm/node_modules/@openclaw/codex`, and the
+  `Installed Codex plugin`, `npm/node_modules/@eve/codex`, and the
   package-lock entry showing the bundled `@openai/codex` dependency. A dummy
   OpenAI-shaped key can prove only UI/install behavior; it is not live auth.
 
@@ -549,7 +549,7 @@ Common Crabbox-only failures:
 - Provider missing or old CLI: use `../crabbox/bin/crabbox` from the sibling
   repo, or update/install Crabbox before retrying.
 - Bad local config: inspect `.crabbox.yaml`, `crabbox config show`, and
-  `crabbox whoami`; normal OpenClaw proof should use brokered AWS without
+  `crabbox whoami`; normal EVE proof should use brokered AWS without
   asking for cloud keys.
 - Slug/claim confusion: use the raw `cbx_...` / `tbx_...` id, or run one-shot
   without `--id`.
@@ -584,7 +584,7 @@ pnpm crabbox:run -- --debug --timing-json -- \
 Auth fallback, only when `blacksmith` says auth is missing:
 
 ```sh
-blacksmith auth login --non-interactive --organization openclaw
+blacksmith auth login --non-interactive --organization eve
 ```
 
 Raw Blacksmith footguns:
@@ -605,7 +605,7 @@ delegated-provider outage.
 
 Crabbox Blacksmith backend delegates setup to:
 
-- org: `openclaw`
+- org: `eve`
 - workflow: `.github/workflows/ci-check-testbox.yml`
 - job: `check`
 - ref: `main` unless testing a branch/tag intentionally
@@ -633,12 +633,12 @@ Important Blacksmith footguns:
 - If auth is missing and browser auth is acceptable:
 
 ```sh
-blacksmith auth login --non-interactive --organization openclaw
+blacksmith auth login --non-interactive --organization eve
 ```
 
 ## Brokered AWS
 
-Use AWS for normal OpenClaw remote proof. The repo `.crabbox.yaml` already
+Use AWS for normal EVE remote proof. The repo `.crabbox.yaml` already
 selects brokered AWS, so omit `--provider` unless you are testing a different
 provider deliberately.
 
@@ -652,8 +652,8 @@ pnpm crabbox:stop -- <cbx_id-or-slug>
 Install/auth for owned Crabbox if needed:
 
 ```sh
-brew install openclaw/tap/crabbox
-crabbox login --url https://crabbox.openclaw.ai --provider aws
+brew install eve/tap/crabbox
+crabbox login --url https://crabbox.eve.ai --provider aws
 ```
 
 New users should self-resolve broker auth before anyone asks for AWS keys:
@@ -664,15 +664,15 @@ crabbox doctor
 crabbox whoami
 ```
 
-- If broker auth is missing, run `crabbox login --url https://crabbox.openclaw.ai --provider aws`.
+- If broker auth is missing, run `crabbox login --url https://crabbox.eve.ai --provider aws`.
 - If the CLI asks for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, or AWS
-  profile setup during normal OpenClaw validation, assume the agent selected
+  profile setup during normal EVE validation, assume the agent selected
   the wrong path. Use brokered `crabbox login` or an existing brokered lease
   before asking the user for cloud credentials.
 - Ask for AWS keys only for explicit direct-provider/account administration,
-  not for normal brokered OpenClaw proof.
+  not for normal brokered EVE proof.
 - Trusted automation may still use
-  `printf '%s' "$CRABBOX_COORDINATOR_TOKEN" | crabbox login --url https://crabbox.openclaw.ai --provider aws --token-stdin`.
+  `printf '%s' "$CRABBOX_COORDINATOR_TOKEN" | crabbox login --url https://crabbox.eve.ai --provider aws --token-stdin`.
 
 macOS config lives at:
 
@@ -681,7 +681,7 @@ macOS config lives at:
 ```
 
 It should include `broker.url`, `broker.token`, and usually `provider: aws`
-for OpenClaw lanes. Let that config drive normal validation.
+for EVE lanes. Let that config drive normal validation.
 
 ### Interactive Desktop / WebVNC
 
@@ -735,6 +735,6 @@ Use `--market spot|on-demand` only on AWS warmup/one-shot runs.
 
 ## Boundary
 
-Do not add OpenClaw-specific setup to Crabbox itself. Put repo setup in the
+Do not add EVE-specific setup to Crabbox itself. Put repo setup in the
 hydration workflow and keep Crabbox generic around lease, sync, command
 execution, logs/results, timing, and cleanup.

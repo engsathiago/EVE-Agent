@@ -120,7 +120,7 @@ function buildAssistantStreamMessage(
     role: "assistant",
     content: [{ type: "text", text: stream }],
     timestamp,
-    openclawStreamFallback: {
+    eveStreamFallback: {
       replacementText,
     },
   };
@@ -130,7 +130,7 @@ function streamFallbackReplacementText(message: unknown): string | null {
   if (!message || typeof message !== "object") {
     return null;
   }
-  const fallback = (message as { openclawStreamFallback?: unknown }).openclawStreamFallback;
+  const fallback = (message as { eveStreamFallback?: unknown }).eveStreamFallback;
   if (!fallback || typeof fallback !== "object") {
     return null;
   }

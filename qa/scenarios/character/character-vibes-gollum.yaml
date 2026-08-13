@@ -86,7 +86,7 @@ scenario:
         - internal error
         - tool failed
         - /var/folders
-        - openclaw-qa-suite
+        - eve-qa-suite
 
 flow:
   steps:

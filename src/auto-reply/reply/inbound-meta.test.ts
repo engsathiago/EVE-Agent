@@ -99,7 +99,7 @@ describe("buildInboundMetaSystemPrompt", () => {
     } as TemplateContext);
 
     const payload = parseInboundMetaPayload(prompt);
-    expect(payload["schema"]).toBe("openclaw.inbound_meta.v2");
+    expect(payload["schema"]).toBe("eve.inbound_meta.v2");
     expect(payload["chat_id"]).toBeUndefined();
     expect(payload["account_id"]).toBe("work");
     expect(payload["channel"]).toBe("telegram");
@@ -254,7 +254,7 @@ describe("buildInboundUserContextPrefix", () => {
   it("omits conversation label block for direct chats", () => {
     const text = buildInboundUserContextPrefix({
       ChatType: "direct",
-      ConversationLabel: "openclaw-tui",
+      ConversationLabel: "eve-tui",
     } as TemplateContext);
 
     expect(text).toBe("");
@@ -369,14 +369,14 @@ describe("buildInboundUserContextPrefix", () => {
   it("does not treat group chats as direct based on sender id", () => {
     const text = buildInboundUserContextPrefix({
       ChatType: "group",
-      SenderId: "openclaw-control-ui",
+      SenderId: "eve-control-ui",
       MessageSid: "123",
       ConversationLabel: "some-label",
     } as TemplateContext);
 
     const conversationInfo = parseConversationInfoPayload(text);
     expect(conversationInfo["message_id"]).toBe("123");
-    expect(conversationInfo["sender_id"]).toBe("openclaw-control-ui");
+    expect(conversationInfo["sender_id"]).toBe("eve-control-ui");
     expect(conversationInfo["conversation_label"]).toBe("some-label");
   });
 
@@ -899,7 +899,7 @@ describe("buildInboundUserContextPrefix", () => {
                   sender: "Bot",
                   body: "Earlier technical answer",
                   media_type: "image/png",
-                  media_path: "/home/user/.openclaw/media/inbound/sticker.webp",
+                  media_path: "/home/user/.eve/media/inbound/sticker.webp",
                   media_ref: "telegram:file/old-provider-ref",
                   is_reply_target: true,
                 },
@@ -928,7 +928,7 @@ describe("buildInboundUserContextPrefix", () => {
       "#1200 [reply target] Bot: Earlier technical answer [image/png media://inbound/sticker.webp]",
     );
     expect(text).not.toContain("telegram:file/old-provider-ref");
-    expect(text).not.toContain("/home/user/.openclaw/media/inbound/sticker.webp");
+    expect(text).not.toContain("/home/user/.eve/media/inbound/sticker.webp");
     expect(text).not.toContain("Current local chat window (untrusted metadata):");
     expect(text).not.toContain('"message_id": "34273"');
   });
@@ -1217,7 +1217,7 @@ describe("buildInboundUserContextPrefix", () => {
           messageId: "m-1",
           media: [
             {
-              path: "/tmp/openclaw-secret-image.png",
+              path: "/tmp/eve-secret-image.png",
               url: "https://cdn.example.test/private-token",
               contentType: "image/png",
               kind: "image",
@@ -1249,7 +1249,7 @@ describe("buildInboundUserContextPrefix", () => {
         ],
       },
     ]);
-    expect(text).not.toContain("/tmp/openclaw-secret-image.png");
+    expect(text).not.toContain("/tmp/eve-secret-image.png");
     expect(text).not.toContain("private-token");
   });
 });

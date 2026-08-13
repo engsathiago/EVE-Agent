@@ -4,7 +4,7 @@
 // precedence over sessionKey, like delivery preview) so a session-scoped cron is not misread as
 // keyless. The resolver seam is mocked so this exercises the run-layer wiring in isolation.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import type { CronJob } from "../types.js";
 
 const resolveDeliveryTargetMock = vi.hoisted(() => vi.fn());
@@ -19,7 +19,7 @@ const ISOLATED_JOB = {
   sessionTarget: "isolated",
   payload: { kind: "agentTurn" },
 } as unknown as CronJob;
-const CFG = {} as OpenClawConfig;
+const CFG = {} as EVEConfig;
 
 describe("resolveCronDeliveryContext — issue #91613 keyless-inherited wiring", () => {
   it("passes through the resolver's ok:false refusal for a keyless-inherited target", async () => {

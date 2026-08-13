@@ -61,13 +61,13 @@ export async function fetchCodexUsage(
   timeoutMs: number,
   fetchFn: typeof fetch,
 ): Promise<ProviderUsageSnapshot> {
-  const version = process.env.OPENCLAW_VERSION?.trim();
+  const version = process.env.EVE_VERSION?.trim();
   const defaultHeaders: Record<string, string> = {
     Authorization: `Bearer ${token}`,
     Accept: "application/json",
-    originator: "openclaw",
+    originator: "eve",
     ...(version ? { version } : {}),
-    "User-Agent": `openclaw/${version || "dev"}`,
+    "User-Agent": `eve/${version || "dev"}`,
   };
   if (accountId) {
     defaultHeaders["ChatGPT-Account-Id"] = accountId;

@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/twitch",
+  "name": "@eve/twitch",
   "version": "2026.6.8",
-  "description": "OpenClaw Twitch channel plugin for chat and moderation workflows.",
+  "description": "EVE Twitch channel plugin for chat and moderation workflows.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -14,15 +14,15 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "setupEntry": "./setup-entry.ts",
     "install": {
-      "npmSpec": "@openclaw/twitch",
+      "npmSpec": "@eve/twitch",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -30,7 +30,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8"
+      "eveVersion": "2026.6.8"
     },
     "channel": {
       "id": "twitch",

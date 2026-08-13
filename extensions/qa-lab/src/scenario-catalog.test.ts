@@ -60,7 +60,7 @@ describe("qa scenario catalog", () => {
         "channel-message-flows",
         "control-ui-chat-flow-playwright",
         "gateway-smoke",
-        "package-openclaw-for-docker",
+        "package-eve-for-docker",
         "plugin-lifecycle-probe",
         "qa-otel-smoke",
         "ux-matrix-evidence-dashboard",
@@ -219,9 +219,9 @@ describe("qa scenario catalog", () => {
     expect(readQaScenarioExecutionConfig(webSearch.id)).toMatchObject({
       toolName: "web_search",
       toolCoverage: {
-        bucket: "openclaw-dynamic-integration",
-        expectedLayer: "openclaw-dynamic",
-        capabilityLayer: "openclaw-dynamic-direct",
+        bucket: "eve-dynamic-integration",
+        expectedLayer: "eve-dynamic",
+        capabilityLayer: "eve-dynamic-direct",
         required: true,
       },
     });
@@ -238,9 +238,9 @@ describe("qa scenario catalog", () => {
     expect(readQaScenarioExecutionConfig(imageGenerate.id)).toMatchObject({
       toolName: "image_generate",
       toolCoverage: {
-        bucket: "openclaw-dynamic-integration",
-        expectedLayer: "openclaw-dynamic",
-        capabilityLayer: "openclaw-dynamic-direct",
+        bucket: "eve-dynamic-integration",
+        expectedLayer: "eve-dynamic",
+        capabilityLayer: "eve-dynamic-direct",
         required: false,
       },
     });
@@ -343,7 +343,7 @@ describe("qa scenario catalog", () => {
     expect(scenario.coverage?.primary).toContain("runtime.update-run");
     expect(scenario.coverage?.secondary).toContain("runtime.package-update");
     expect(config?.requiredProviderMode).toBe("live-frontier");
-    expect(config?.allowEnv).toBe("OPENCLAW_QA_ALLOW_UPDATE_RUN_SELF");
+    expect(config?.allowEnv).toBe("EVE_QA_ALLOW_UPDATE_RUN_SELF");
     expect(config?.sourceVersion).toBe("2026.4.26");
     expect(config?.targetTag).toBe("latest");
     expect(scenario.execution.flow?.steps.map((step) => step.name)).toEqual([
@@ -479,8 +479,8 @@ describe("qa scenario catalog", () => {
     expect(scenario.sourcePath).toBe("qa/scenarios/plugins/kitchen-sink-live-openai.yaml");
     expect(config?.requiredProviderMode).toBe("live-frontier");
     expect(config?.requiredProvider).toBe("openai");
-    expect(config?.pluginSpec).toBe("npm:@openclaw/kitchen-sink@latest");
-    expect(config?.pluginId).toBe("openclaw-kitchen-sink-fixture");
+    expect(config?.pluginSpec).toBe("npm:@eve/kitchen-sink@latest");
+    expect(config?.pluginId).toBe("eve-kitchen-sink-fixture");
     expect(config?.pluginPersonality).toBe("conformance");
     expect(config?.adversarialPersonality).toBe("adversarial");
     expect(config?.expectedSurfaceIds?.webSearchProviderIds).toContain(

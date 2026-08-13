@@ -1,15 +1,15 @@
 // Verifies memory-search config resolution across providers, sync, and batching.
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   clearMemoryEmbeddingProviders,
   registerMemoryEmbeddingProvider,
 } from "../plugins/memory-embedding-providers.js";
 import { MAX_TIMER_TIMEOUT_MS } from "../shared/number-coercion.js";
-import { resolveOpenClawAgentSqlitePath } from "../state/openclaw-agent-db.paths.js";
+import { resolveEVEAgentSqlitePath } from "../state/eve-agent-db.paths.js";
 import { resolveMemorySearchConfig, resolveMemorySearchSyncConfig } from "./memory-search.js";
 
-const asConfig = (cfg: OpenClawConfig): OpenClawConfig => cfg;
+const asConfig = (cfg: EVEConfig): EVEConfig => cfg;
 
 function registerBaseMemoryEmbeddingProviders(options?: { includeGemini?: boolean }): void {
   // Register provider contracts locally so config tests do not depend on the
@@ -75,7 +75,7 @@ describe("memory search config", () => {
     clearMemoryEmbeddingProviders();
   });
 
-  function configWithDefaultProvider(provider: string): OpenClawConfig {
+  function configWithDefaultProvider(provider: string): EVEConfig {
     return asConfig({
       agents: {
         defaults: {
@@ -205,7 +205,7 @@ describe("memory search config", () => {
     expect(resolved?.provider).toBe("openai");
     expect(resolved?.model).toBe("text-embedding-3-small");
     expect(resolved?.fallback).toBe("none");
-    expect(resolved?.store.databasePath).toBe(resolveOpenClawAgentSqlitePath({ agentId: "main" }));
+    expect(resolved?.store.databasePath).toBe(resolveEVEAgentSqlitePath({ agentId: "main" }));
   });
 
   it("normalizes legacy auto provider config to openai", () => {

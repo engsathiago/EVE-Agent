@@ -1,13 +1,13 @@
 // Googlechat plugin module implements google auth behavior.
 import fs from "node:fs/promises";
 import type { ConnectionOptions } from "node:tls";
-import { parseMediaContentLength } from "openclaw/plugin-sdk/media-runtime";
-import type { PinnedDispatcherPolicy } from "openclaw/plugin-sdk/ssrf-dispatcher";
+import { parseMediaContentLength } from "eve-agent/plugin-sdk/media-runtime";
+import type { PinnedDispatcherPolicy } from "eve-agent/plugin-sdk/ssrf-dispatcher";
 import {
   buildHostnameAllowlistPolicyFromSuffixAllowlist,
   fetchWithSsrFGuard,
-} from "openclaw/plugin-sdk/ssrf-runtime";
-import { resolveUserPath } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "eve-agent/plugin-sdk/ssrf-runtime";
+import { resolveUserPath } from "eve-agent/plugin-sdk/text-utility-runtime";
 import type { ResolvedGoogleChatAccount } from "./accounts.js";
 
 type ProxyRule = RegExp | URL | string;

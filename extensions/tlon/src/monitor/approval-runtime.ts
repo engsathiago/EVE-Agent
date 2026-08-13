@@ -1,5 +1,5 @@
 // Tlon plugin module implements approval runtime behavior.
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime";
 import type { PendingApproval, TlonSettingsStore } from "../settings.js";
 import { normalizeShip } from "../targets.js";
 import { sendDm } from "../urbit/send.js";

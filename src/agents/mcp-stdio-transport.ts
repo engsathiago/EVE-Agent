@@ -1,5 +1,5 @@
 /**
- * OpenClaw stdio transport wrapper for MCP server subprocesses.
+ * EVE stdio transport wrapper for MCP server subprocesses.
  */
 import { spawn, type ChildProcess } from "node:child_process";
 import process from "node:process";
@@ -11,7 +11,7 @@ import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { killProcessTree, signalProcessTree } from "../process/kill-tree.js";
 import { prepareOomScoreAdjustedSpawn } from "../process/linux-oom-score.js";
 
-type OpenClawStdioServerParameters = {
+type EVEStdioServerParameters = {
   command: string;
   args?: string[];
   env?: Record<string, string>;
@@ -28,7 +28,7 @@ function delay(ms: number) {
   });
 }
 
-export class OpenClawStdioClientTransport implements Transport {
+export class EVEStdioClientTransport implements Transport {
   onclose?: () => void;
   onerror?: (error: Error) => void;
   onmessage?: (message: JSONRPCMessage) => void;
@@ -37,7 +37,7 @@ export class OpenClawStdioClientTransport implements Transport {
   private readonly stderrStream: PassThrough | null = null;
   private process?: ChildProcess;
 
-  constructor(private readonly serverParams: OpenClawStdioServerParameters) {
+  constructor(private readonly serverParams: EVEStdioServerParameters) {
     if (serverParams.stderr === "pipe" || serverParams.stderr === "overlapped") {
       this.stderrStream = new PassThrough();
     }
@@ -46,7 +46,7 @@ export class OpenClawStdioClientTransport implements Transport {
   async start(): Promise<void> {
     if (this.process) {
       throw new Error(
-        "OpenClawStdioClientTransport already started; Client.connect() starts transports automatically.",
+        "EVEStdioClientTransport already started; Client.connect() starts transports automatically.",
       );
     }
 

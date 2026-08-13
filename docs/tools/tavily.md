@@ -8,7 +8,7 @@ read_when:
 title: "Tavily"
 ---
 
-[Tavily](https://tavily.com) is a search API designed for AI applications. OpenClaw exposes it in two ways:
+[Tavily](https://tavily.com) is a search API designed for AI applications. EVE exposes it in two ways:
 
 - as the `web_search` provider for the generic search tool
 - as explicit plugin tools: `tavily_search` and `tavily_extract`
@@ -60,7 +60,7 @@ Tavily returns structured results optimized for LLM consumption with configurabl
 </Steps>
 
 <Tip>
-Choosing Tavily in onboarding or `openclaw configure --section web` enables the bundled Tavily plugin automatically.
+Choosing Tavily in onboarding or `eve configure --section web` enables the bundled Tavily plugin automatically.
 </Tip>
 
 ## Tool reference

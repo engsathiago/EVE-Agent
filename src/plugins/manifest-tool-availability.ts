@@ -1,7 +1,7 @@
 // Normalizes tool availability metadata from plugin manifests.
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { isRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { EVEConfig } from "../config/types.eve.js";
 import { coerceSecretRef, type SecretRef } from "../config/types.secrets.js";
 import { resolveDefaultSecretProviderAlias } from "../secrets/ref-contract.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
@@ -37,7 +37,7 @@ function readStringAtPath(root: unknown, path: string): string | undefined {
 }
 
 function readEffectiveConfigs(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   rootPath: string;
   overlayPath?: string;
   overlayMapPath?: string;
@@ -63,7 +63,7 @@ function readEffectiveConfigs(params: {
 }
 
 function hasConfiguredSecretRefInConfigPath(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   ref: SecretRef;
 }): boolean {
@@ -82,7 +82,7 @@ function hasConfiguredSecretRefInConfigPath(params: {
 }
 
 function hasConfiguredValue(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   value: unknown;
 }): boolean {
@@ -110,7 +110,7 @@ function hasConfiguredValue(params: {
 }
 
 export function manifestConfigSignalPasses(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   signal: ManifestConfigAvailabilitySignal;
 }): boolean {
@@ -134,7 +134,7 @@ export function manifestConfigSignalPasses(params: {
 }
 
 function manifestEffectiveConfigSignalPasses(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   effectiveConfig: Record<string, unknown>;
   signal: ManifestConfigAvailabilitySignal;
@@ -185,7 +185,7 @@ function normalizeBaseUrlForManifestGuard(value: string): string {
 }
 
 export function manifestProviderBaseUrlGuardPasses(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   guard: ManifestAuthAvailabilitySignal["providerBaseUrl"];
 }): boolean {
   const guard = params.guard;
@@ -239,7 +239,7 @@ function listToolAuthSignals(metadata: ToolMetadata): ManifestAuthAvailabilitySi
 function toolMetadataPasses(params: {
   plugin: PluginManifestRecord;
   metadata: ToolMetadata;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   hasAuthForProvider?: (providerId: string) => boolean;
 }): boolean {
@@ -285,7 +285,7 @@ function toolMetadataPasses(params: {
 export function hasManifestToolAvailability(params: {
   plugin: PluginManifestRecord;
   toolNames: readonly string[];
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
   hasAuthForProvider?: (providerId: string) => boolean;
 }): boolean {

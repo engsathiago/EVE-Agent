@@ -1,7 +1,7 @@
 // Message action security tests cover channel message action authorization and validation.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { jsonResult } from "../../agents/tools/common.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { EVEConfig } from "../../config/config.js";
 import { setActivePluginRegistry } from "../../plugins/runtime.js";
 import {
   createChannelTestPluginBase,
@@ -49,7 +49,7 @@ describe("dispatchChannelMessageAction trusted sender guard", () => {
       dispatchChannelMessageAction({
         channel: "discord",
         action: "kick",
-        cfg: {} as OpenClawConfig,
+        cfg: {} as EVEConfig,
         params: { guildId: "g1", userId: "u1" },
         toolContext: { currentChannelProvider: "discord" },
       }),
@@ -61,7 +61,7 @@ describe("dispatchChannelMessageAction trusted sender guard", () => {
     await dispatchChannelMessageAction({
       channel: "discord",
       action: "kick",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       params: { guildId: "g1", userId: "u1" },
       requesterSenderId: "trusted-user",
       toolContext: { currentChannelProvider: "discord" },
@@ -74,7 +74,7 @@ describe("dispatchChannelMessageAction trusted sender guard", () => {
     await dispatchChannelMessageAction({
       channel: "discord",
       action: "kick",
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       params: { guildId: "g1", userId: "u1" },
     });
 

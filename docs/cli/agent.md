@@ -1,11 +1,11 @@
 ---
-summary: "CLI reference for `openclaw agent` (send one agent turn via the Gateway)"
+summary: "CLI reference for `eve agent` (send one agent turn via the Gateway)"
 read_when:
   - You want to run one agent turn from scripts (optionally deliver reply)
 title: "Agent"
 ---
 
-# `openclaw agent`
+# `eve agent`
 
 Run an agent turn via the Gateway (use `--local` for embedded).
 Use `--agent <id>` to target a configured agent directly.
@@ -43,15 +43,15 @@ Related:
 ## Examples
 
 ```bash
-openclaw agent --to +15555550123 --message "status update" --deliver
-openclaw agent --agent ops --message "Summarize logs"
-openclaw agent --agent ops --model openai/gpt-5.4 --message "Summarize logs"
-openclaw agent --session-key agent:ops:incident-42 --message "Summarize status"
-openclaw agent --agent ops --session-key incident-42 --message "Summarize status"
-openclaw agent --session-id 1234 --message "Summarize inbox" --thinking medium
-openclaw agent --to +15555550123 --message "Trace logs" --verbose on --json
-openclaw agent --agent ops --message "Generate report" --deliver --reply-channel slack --reply-to "#reports"
-openclaw agent --agent ops --message "Run locally" --local
+eve agent --to +15555550123 --message "status update" --deliver
+eve agent --agent ops --message "Summarize logs"
+eve agent --agent ops --model openai/gpt-5.4 --message "Summarize logs"
+eve agent --session-key agent:ops:incident-42 --message "Summarize status"
+eve agent --agent ops --session-key incident-42 --message "Summarize status"
+eve agent --session-id 1234 --message "Summarize inbox" --thinking medium
+eve agent --to +15555550123 --message "Trace logs" --verbose on --json
+eve agent --agent ops --message "Generate report" --deliver --reply-channel slack --reply-to "#reports"
+eve agent --agent ops --message "Run locally" --local
 ```
 
 ## Notes
@@ -65,9 +65,9 @@ openclaw agent --agent ops --message "Run locally" --local
 - `--json` keeps stdout reserved for the JSON response. Gateway, plugin, and embedded-fallback diagnostics are routed to stderr so scripts can parse stdout directly.
 - Embedded fallback JSON includes `meta.transport: "embedded"` and `meta.fallbackFrom: "gateway"` so scripts can distinguish fallback runs from Gateway runs.
 - If the Gateway accepts an agent run but the CLI times out waiting for the final reply, embedded fallback uses a fresh explicit `gateway-fallback-*` session/run id and reports `meta.fallbackReason: "gateway_timeout"` plus the fallback session fields. This avoids racing the Gateway-owned transcript lock or silently replacing the original routed conversation session.
-- For Gateway-backed runs, `SIGTERM` and `SIGINT` interrupt the waiting CLI request. If the Gateway has already accepted the run, the CLI also sends `chat.abort` for that accepted run id before exiting. Local `--local` runs and embedded fallback runs receive the same abort signal, but do not send `chat.abort`. If a duplicate `--run-id` reaches the Gateway while the original agent run is still active, the duplicate response reports `status: "in_flight"` and the non-JSON CLI prints a stderr diagnostic instead of an empty reply. For external cron/systemd wrappers, keep an outer hard-kill backstop such as `timeout -k 60 600 openclaw agent ...` so the supervisor can still reap the process if shutdown cannot drain.
+- For Gateway-backed runs, `SIGTERM` and `SIGINT` interrupt the waiting CLI request. If the Gateway has already accepted the run, the CLI also sends `chat.abort` for that accepted run id before exiting. Local `--local` runs and embedded fallback runs receive the same abort signal, but do not send `chat.abort`. If a duplicate `--run-id` reaches the Gateway while the original agent run is still active, the duplicate response reports `status: "in_flight"` and the non-JSON CLI prints a stderr diagnostic instead of an empty reply. For external cron/systemd wrappers, keep an outer hard-kill backstop such as `timeout -k 60 600 eve agent ...` so the supervisor can still reap the process if shutdown cannot drain.
 - When this command triggers `models.json` regeneration, SecretRef-managed provider credentials are persisted as non-secret markers (for example env var names, `secretref-env:ENV_VAR_NAME`, or `secretref-managed`), not resolved secret plaintext.
-- Marker writes are source-authoritative: OpenClaw persists markers from the active source config snapshot, not from resolved runtime secret values.
+- Marker writes are source-authoritative: EVE persists markers from the active source config snapshot, not from resolved runtime secret values.
 
 ## JSON delivery status
 

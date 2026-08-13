@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 import { resolvePathEnvKey } from "./windows-cmd-helpers.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ignoreRepoBinary = process.env.OPENCLAW_CRABBOX_WRAPPER_IGNORE_REPO_BINARY === "1";
+const ignoreRepoBinary = process.env.EVE_CRABBOX_WRAPPER_IGNORE_REPO_BINARY === "1";
 const repoLocal = ignoreRepoBinary ? null : resolveCrabboxBinary(process.env, process.platform);
 const pathLocal = resolvePathBinary("crabbox", process.env, process.platform);
 const binary =
@@ -155,8 +155,8 @@ const shellControlCommandPrefixes = new Set([
 const shellCommandExecutionPrefixes = new Set(["exec"]);
 const shellInlineCommandInterpreters = new Set(["bash", "dash", "ksh", "sh", "zsh"]);
 const remoteChangedGateEnv = [
-  "OPENCLAW_CHECK_CHANGED_REMOTE_CHILD=1",
-  "OPENCLAW_CHANGED_LANES_RAW_SYNC=1",
+  "EVE_CHECK_CHANGED_REMOTE_CHILD=1",
+  "EVE_CHANGED_LANES_RAW_SYNC=1",
   "CI=1",
 ];
 const shellInlineCommandOptionsWithNextValue = new Set([
@@ -585,7 +585,7 @@ function selectedProvider(commandArgs, advertisedProviders = []) {
 }
 
 function shouldRequireBrokeredAws(commandArgs, providerName) {
-  if (process.env.OPENCLAW_CRABBOX_ALLOW_DIRECT_AWS === "1") {
+  if (process.env.EVE_CRABBOX_ALLOW_DIRECT_AWS === "1") {
     return false;
   }
   const canonicalProvider = providerAliases.get(providerName) ?? providerName;
@@ -621,9 +621,9 @@ function enforceBrokeredAws(commandArgs, providerName) {
   }
   console.error(
     [
-      "[crabbox] provider=aws requires a configured Crabbox broker for OpenClaw proof.",
-      "[crabbox] run `crabbox login --url https://crabbox.openclaw.ai --provider aws`, then retry.",
-      "[crabbox] for intentional direct AWS provider debugging, set OPENCLAW_CRABBOX_ALLOW_DIRECT_AWS=1.",
+      "[crabbox] provider=aws requires a configured Crabbox broker for EVE proof.",
+      "[crabbox] run `crabbox login --url https://crabbox.eve.ai --provider aws`, then retry.",
+      "[crabbox] for intentional direct AWS provider debugging, set EVE_CRABBOX_ALLOW_DIRECT_AWS=1.",
     ].join("\n"),
   );
   process.exit(2);
@@ -1699,17 +1699,17 @@ function mergeBaseForChangedGate() {
 function remoteGitBootstrapForChangedGate(changedGateBase) {
   const quotedBase = shellQuote(changedGateBase);
   return [
-    "openclaw_changed_gate_base=${OPENCLAW_CHANGED_GATE_BASE:-" + quotedBase + "};",
-    'if ! command -v git >/dev/null 2>&1; then echo "git is required for OpenClaw remote changed-gate sync" >&2; exit 2; fi;',
-    'openclaw_changed_gate_remote_base="$(git rev-parse --verify refs/remotes/origin/main 2>/dev/null || true)";',
-    'if ! git status --short >/dev/null 2>&1 || [ "$openclaw_changed_gate_remote_base" != "$openclaw_changed_gate_base" ]; then',
+    "eve_changed_gate_base=${EVE_CHANGED_GATE_BASE:-" + quotedBase + "};",
+    'if ! command -v git >/dev/null 2>&1; then echo "git is required for EVE remote changed-gate sync" >&2; exit 2; fi;',
+    'eve_changed_gate_remote_base="$(git rev-parse --verify refs/remotes/origin/main 2>/dev/null || true)";',
+    'if ! git status --short >/dev/null 2>&1 || [ "$eve_changed_gate_remote_base" != "$eve_changed_gate_base" ]; then',
     "rm -rf .git;",
     "git init -q;",
-    "git remote add origin https://github.com/openclaw/openclaw.git 2>/dev/null || git remote set-url origin https://github.com/openclaw/openclaw.git;",
-    'git fetch -q --depth=1 origin "$openclaw_changed_gate_base:refs/remotes/origin/main";',
+    "git remote add origin https://github.com/engsathiago/eve-agent.git 2>/dev/null || git remote set-url origin https://github.com/engsathiago/eve-agent.git;",
+    'git fetch -q --depth=1 origin "$eve_changed_gate_base:refs/remotes/origin/main";',
     "git reset --mixed --quiet refs/remotes/origin/main;",
     "git add -A;",
-    "if ! git diff --cached --quiet; then git -c user.name=OpenClaw -c user.email=ci@openclaw.local commit -q --no-gpg-sign -m remote-changed-gate-tree; fi;",
+    "if ! git diff --cached --quiet; then git -c user.name=EVE -c user.email=ci@eve.local commit -q --no-gpg-sign -m remote-changed-gate-tree; fi;",
     "fi",
   ].join(" ");
 }
@@ -1808,13 +1808,13 @@ function isAwsMacosRemoteTarget(commandArgs, providerName) {
 
 function remoteWindowsHydratedNodeModulesBootstrap() {
   return [
-    "$openclawModulesDir = $env:PNPM_CONFIG_MODULES_DIR",
-    "if ($openclawModulesDir) {",
-    'if (-not (Test-Path $openclawModulesDir)) { throw "PNPM_CONFIG_MODULES_DIR does not exist: $openclawModulesDir" }',
-    '$openclawWorkspaceModules = Join-Path (Get-Location).Path "node_modules"',
-    '$openclawSelfModules = Join-Path $openclawModulesDir "node_modules"',
-    'if (-not (Test-Path $openclawSelfModules)) { cmd /c mklink /J "$openclawSelfModules" "$openclawModulesDir" | Out-Host; if ($LASTEXITCODE -ne 0) { throw "failed to link hydrated pnpm node_modules" } }',
-    'if (-not (Test-Path $openclawWorkspaceModules)) { cmd /c mklink /J "$openclawWorkspaceModules" "$openclawModulesDir" | Out-Host; if ($LASTEXITCODE -ne 0) { throw "failed to link workspace node_modules" } }',
+    "$eveModulesDir = $env:PNPM_CONFIG_MODULES_DIR",
+    "if ($eveModulesDir) {",
+    'if (-not (Test-Path $eveModulesDir)) { throw "PNPM_CONFIG_MODULES_DIR does not exist: $eveModulesDir" }',
+    '$eveWorkspaceModules = Join-Path (Get-Location).Path "node_modules"',
+    '$eveSelfModules = Join-Path $eveModulesDir "node_modules"',
+    'if (-not (Test-Path $eveSelfModules)) { cmd /c mklink /J "$eveSelfModules" "$eveModulesDir" | Out-Host; if ($LASTEXITCODE -ne 0) { throw "failed to link hydrated pnpm node_modules" } }',
+    'if (-not (Test-Path $eveWorkspaceModules)) { cmd /c mklink /J "$eveWorkspaceModules" "$eveModulesDir" | Out-Host; if ($LASTEXITCODE -ne 0) { throw "failed to link workspace node_modules" } }',
     "}",
   ].join("; ");
 }
@@ -1889,14 +1889,14 @@ function injectRemoteChangedGateGitBootstrap(commandArgs, changedGateBase) {
 }
 
 function remoteAwsMacosJsBootstrap({ packageManager = false, bun = false } = {}) {
-  const nodeVersion = process.env.OPENCLAW_CRABBOX_MACOS_NODE_VERSION?.trim() || "24.15.0";
+  const nodeVersion = process.env.EVE_CRABBOX_MACOS_NODE_VERSION?.trim() || "24.15.0";
   const bootstrap = [
-    "openclaw_crabbox_bootstrap_macos_js() {",
-    'tool_root="${OPENCLAW_CRABBOX_MACOS_TOOLCHAIN_DIR:-$HOME/.openclaw-crabbox-toolchain}";',
+    "eve_crabbox_bootstrap_macos_js() {",
+    'tool_root="${EVE_CRABBOX_MACOS_TOOLCHAIN_DIR:-$HOME/.eve-crabbox-toolchain}";',
     `node_version=${shellQuote(nodeVersion)};`,
     'arch="$(uname -m)";',
     'case "$arch" in arm64) node_arch=arm64 ;; x86_64) node_arch=x64 ;; *) echo "unsupported macOS arch: $arch" >&2; return 2 ;; esac;',
-    'macos_locale="${OPENCLAW_CRABBOX_MACOS_LOCALE:-en_US.UTF-8}";',
+    'macos_locale="${EVE_CRABBOX_MACOS_LOCALE:-en_US.UTF-8}";',
     'case "${LANG:-}" in C.UTF-8|C.utf8|c.UTF-8|c.utf8) export LANG="$macos_locale" ;; esac;',
     'case "${LC_ALL:-}" in C.UTF-8|C.utf8|c.UTF-8|c.utf8) export LC_ALL="$macos_locale" ;; esac;',
     'case "${LC_CTYPE:-}" in C.UTF-8|C.utf8|c.UTF-8|c.utf8) export LC_CTYPE="$macos_locale" ;; esac;',
@@ -1904,7 +1904,7 @@ function remoteAwsMacosJsBootstrap({ packageManager = false, bun = false } = {})
     'if [ ! -d "$TMPDIR" ]; then mkdir -p "$TMPDIR" 2>/dev/null || export TMPDIR="/tmp"; fi;',
     'if [ ! -d "$TMPDIR" ]; then echo "usable TMPDIR not found: $TMPDIR" >&2; return 1; fi;',
     'node_dir="$tool_root/node-v${node_version}-darwin-${node_arch}";',
-    'ready_marker="$node_dir/.openclaw-crabbox-node-ready";',
+    'ready_marker="$node_dir/.eve-crabbox-node-ready";',
     'export PATH="$node_dir/bin:$PATH";',
     'if [ ! -x "$node_dir/bin/node" ] || [ ! -f "$ready_marker" ]; then',
     'mkdir -p "$tool_root" || { status=$?; return "$status"; };',
@@ -1939,25 +1939,25 @@ function remoteAwsMacosJsBootstrap({ packageManager = false, bun = false } = {})
     "release_install_lock;",
     "fi;",
     "node --version >&2 || return 1;",
-    "openclaw_crabbox_env() {",
-    "openclaw_env_args=();",
-    "openclaw_env_ignore=0;",
-    "openclaw_env_path_seen=0;",
+    "eve_crabbox_env() {",
+    "eve_env_args=();",
+    "eve_env_ignore=0;",
+    "eve_env_path_seen=0;",
     'while [ "$#" -gt 0 ]; do',
     'case "$1" in',
-    '-i|--ignore-environment) openclaw_env_ignore=1; openclaw_env_args+=("$1"); shift ;;',
-    '-S|--split-string|-S*|--split-string=*) command env "${openclaw_env_args[@]}" "$@"; return ;;',
-    '-[!-]*i*) openclaw_env_ignore=1; openclaw_env_args+=("$1"); shift ;;',
-    '-u|--unset|-C|--chdir) openclaw_env_args+=("$1"); shift; if [ "$#" -gt 0 ]; then openclaw_env_args+=("$1"); shift; fi ;;',
-    '--unset=*|--chdir=*) openclaw_env_args+=("$1"); shift ;;',
-    'PATH=*) if [ "$openclaw_env_ignore" = "1" ]; then openclaw_env_args+=("PATH=$PATH:${1#PATH=}"); else openclaw_env_args+=("$1"); fi; openclaw_env_path_seen=1; shift ;;',
-    '[A-Za-z_]*=*) openclaw_env_args+=("$1"); shift ;;',
-    '--) openclaw_env_args+=("--"); shift; break ;;',
+    '-i|--ignore-environment) eve_env_ignore=1; eve_env_args+=("$1"); shift ;;',
+    '-S|--split-string|-S*|--split-string=*) command env "${eve_env_args[@]}" "$@"; return ;;',
+    '-[!-]*i*) eve_env_ignore=1; eve_env_args+=("$1"); shift ;;',
+    '-u|--unset|-C|--chdir) eve_env_args+=("$1"); shift; if [ "$#" -gt 0 ]; then eve_env_args+=("$1"); shift; fi ;;',
+    '--unset=*|--chdir=*) eve_env_args+=("$1"); shift ;;',
+    'PATH=*) if [ "$eve_env_ignore" = "1" ]; then eve_env_args+=("PATH=$PATH:${1#PATH=}"); else eve_env_args+=("$1"); fi; eve_env_path_seen=1; shift ;;',
+    '[A-Za-z_]*=*) eve_env_args+=("$1"); shift ;;',
+    '--) eve_env_args+=("--"); shift; break ;;',
     "*) break ;;",
     "esac;",
     "done;",
-    'if [ "$openclaw_env_ignore" = "1" ] && [ "$openclaw_env_path_seen" = "0" ]; then openclaw_env_args+=("PATH=$PATH"); fi;',
-    'command env "${openclaw_env_args[@]}" "$@";',
+    'if [ "$eve_env_ignore" = "1" ] && [ "$eve_env_path_seen" = "0" ]; then eve_env_args+=("PATH=$PATH"); fi;',
+    'command env "${eve_env_args[@]}" "$@";',
     "};",
   ];
   if (packageManager) {
@@ -1975,7 +1975,7 @@ function remoteAwsMacosJsBootstrap({ packageManager = false, bun = false } = {})
     bootstrap.push(
       `bun_version=${shellQuote(awsMacosBunVersion)};`,
       'bun_root="$tool_root/bun-v${bun_version}";',
-      'bun_ready_marker="$bun_root/.openclaw-crabbox-bun-ready";',
+      'bun_ready_marker="$bun_root/.eve-crabbox-bun-ready";',
       'export PATH="$bun_root/bin:$PATH";',
       'if [ ! -x "$bun_root/bin/bun" ] || [ ! -f "$bun_ready_marker" ]; then',
       'mkdir -p "$tool_root" || { status=$?; return "$status"; };',
@@ -2006,7 +2006,7 @@ function remoteAwsMacosJsBootstrap({ packageManager = false, bun = false } = {})
       "bun --version >&2 || return 1;",
     );
   }
-  bootstrap.push("};", "openclaw_crabbox_bootstrap_macos_js");
+  bootstrap.push("};", "eve_crabbox_bootstrap_macos_js");
   return bootstrap.join(" ");
 }
 
@@ -2032,7 +2032,7 @@ function scopedAwsMacosEnvCommand(commandArgs) {
     runtimeEntrypoint: targetEntrypoint,
     packageManager: awsMacosCorepackEntrypoints.has(targetEntrypoint),
     bun: awsMacosBunEntrypoints.has(targetEntrypoint),
-    shellCommand: `openclaw_crabbox_env ${shellJoin(commandArgs.slice(1))}`,
+    shellCommand: `eve_crabbox_env ${shellJoin(commandArgs.slice(1))}`,
   };
 }
 
@@ -2121,7 +2121,7 @@ function prepareAwsMacosScriptStdinBootstrap(commandArgs, providerName) {
     return { args: commandArgs, cleanup: () => {}, prepared: false };
   }
 
-  const scriptRoot = mkdtempSync(resolve(tmpdir(), "openclaw-crabbox-macos-script-"));
+  const scriptRoot = mkdtempSync(resolve(tmpdir(), "eve-crabbox-macos-script-"));
   const scriptPath = resolve(scriptRoot, "script.sh");
   const script = readFileSync(0, "utf8");
   writeFileSync(scriptPath, createAwsMacosScriptStdinWrapper(script), "utf8");
@@ -2141,9 +2141,9 @@ function createAwsMacosScriptStdinWrapper(script) {
   const delimiterValue = uniqueHereDocDelimiter(script);
   return [
     `${remoteAwsMacosJsBootstrap(requirements)} || exit $?`,
-    'tmp_script="$(mktemp "${TMPDIR:-/tmp}/openclaw-crabbox-script.XXXXXX")" || exit $?',
-    'cleanup_openclaw_crabbox_script() { rm -f "$tmp_script"; }',
-    "trap cleanup_openclaw_crabbox_script EXIT",
+    'tmp_script="$(mktemp "${TMPDIR:-/tmp}/eve-crabbox-script.XXXXXX")" || exit $?',
+    'cleanup_eve_crabbox_script() { rm -f "$tmp_script"; }',
+    "trap cleanup_eve_crabbox_script EXIT",
     `cat >"$tmp_script" <<'${delimiterValue}'`,
     script.endsWith("\n") ? script.slice(0, -1) : script,
     delimiterValue,
@@ -2175,7 +2175,7 @@ function awsMacosScriptBootstrapRequirements(script) {
 function uniqueHereDocDelimiter(script) {
   let index = 0;
   for (;;) {
-    const delimiterLocal = `OPENCLAW_CRABBOX_SCRIPT_${index}`;
+    const delimiterLocal = `EVE_CRABBOX_SCRIPT_${index}`;
     if (!new RegExp(`^${delimiterLocal}$`, "mu").test(script)) {
       return delimiterLocal;
     }
@@ -2213,13 +2213,13 @@ function shouldUseFullCheckoutForCleanRemoteSync(commandArgs, _providerName) {
 function defaultFullCheckoutSyncRoot() {
   const home = homedir();
   if (home) {
-    return resolve(home, ".cache", "openclaw", "crabbox-sync");
+    return resolve(home, ".cache", "eve", "crabbox-sync");
   }
-  return resolve(tmpdir(), "openclaw-crabbox-sync");
+  return resolve(tmpdir(), "eve-crabbox-sync");
 }
 
 function fullCheckoutSyncRoot() {
-  const configured = process.env.OPENCLAW_CRABBOX_SYNC_TMPDIR?.trim();
+  const configured = process.env.EVE_CRABBOX_SYNC_TMPDIR?.trim();
   const root = configured ? resolve(configured) : defaultFullCheckoutSyncRoot();
   mkdirSync(root, { recursive: true });
   return root;
@@ -2258,7 +2258,7 @@ function formatByteCount(bytes) {
 
 function assertFullCheckoutSyncDisk(root) {
   const requiredBytes = parseNonNegativeIntegerEnv(
-    "OPENCLAW_CRABBOX_SYNC_MIN_FREE_BYTES",
+    "EVE_CRABBOX_SYNC_MIN_FREE_BYTES",
     1024 * 1024 * 1024,
     "byte count",
   );
@@ -2276,7 +2276,7 @@ function assertFullCheckoutSyncDisk(root) {
       `root=${root}`,
       `free=${formatByteCount(freeBytes)}`,
       `required=${formatByteCount(requiredBytes)}`,
-      "set OPENCLAW_CRABBOX_SYNC_TMPDIR to a roomier filesystem or lower OPENCLAW_CRABBOX_SYNC_MIN_FREE_BYTES if you know this checkout fits",
+      "set EVE_CRABBOX_SYNC_TMPDIR to a roomier filesystem or lower EVE_CRABBOX_SYNC_MIN_FREE_BYTES if you know this checkout fits",
     ].join("; "),
   );
 }
@@ -2284,7 +2284,7 @@ function assertFullCheckoutSyncDisk(root) {
 function prepareFullCheckoutForSync(options = {}) {
   const syncRoot = fullCheckoutSyncRoot();
   assertFullCheckoutSyncDisk(syncRoot);
-  const dir = mkdtempSync(resolve(syncRoot, "openclaw-crabbox-sync-"));
+  const dir = mkdtempSync(resolve(syncRoot, "eve-crabbox-sync-"));
   let active = false;
 
   function create() {
@@ -2391,7 +2391,7 @@ function startFullCheckoutKeepalive(checkout, options = {}) {
 
 function fullCheckoutKeepaliveIntervalMs() {
   return parseNonNegativeIntegerEnv(
-    "OPENCLAW_CRABBOX_SYNC_KEEPALIVE_MS",
+    "EVE_CRABBOX_SYNC_KEEPALIVE_MS",
     5000,
     "millisecond interval",
   );
@@ -2562,7 +2562,7 @@ if (canonicalProvider === "blacksmith-testbox") {
       [
         `[crabbox] provider=blacksmith-testbox requires Crabbox >= ${formatVersionTuple(minimumBlacksmithCrabboxVersion)} for current Testbox sync, queue, and cleanup behavior.`,
         `[crabbox] selected binary reported version=${version.text || "unknown"}.`,
-        "[crabbox] if using ../crabbox, rebuild it: version=$(git -C ../crabbox describe --tags --always --dirty | sed 's/^v//') && go build -C ../crabbox -trimpath -ldflags \"-s -w -X github.com/openclaw/crabbox/internal/cli.version=${version}\" -o bin/crabbox ./cmd/crabbox",
+        "[crabbox] if using ../crabbox, rebuild it: version=$(git -C ../crabbox describe --tags --always --dirty | sed 's/^v//') && go build -C ../crabbox -trimpath -ldflags \"-s -w -X github.com/eve/crabbox/internal/cli.version=${version}\" -o bin/crabbox ./cmd/crabbox",
       ].join("\n"),
     );
     process.exit(2);
@@ -2648,7 +2648,7 @@ if (
       ? `pnpm crabbox:hydrate -- --id ${id}`
       : "pnpm crabbox:warmup, then pnpm crabbox:hydrate -- --id <id>";
     console.error(
-      `[crabbox] warning: provider=aws raw boxes may lack Node/Corepack/pnpm/Bun for ${runtimeEntrypoint}; hydrate first (${hydrate}) or pass --provider blacksmith-testbox for OpenClaw CI-like proof; not switching providers automatically`,
+      `[crabbox] warning: provider=aws raw boxes may lack Node/Corepack/pnpm/Bun for ${runtimeEntrypoint}; hydrate first (${hydrate}) or pass --provider blacksmith-testbox for EVE CI-like proof; not switching providers automatically`,
     );
   }
 }
@@ -2661,7 +2661,7 @@ if (
 ) {
   childEnv.CRABBOX_LOCAL_CONTAINER_DOCKER_SOCKET = "1";
   console.error(
-    "[crabbox] provider=docker enabling host Docker socket pass-through for OpenClaw Docker tests",
+    "[crabbox] provider=docker enabling host Docker socket pass-through for EVE Docker tests",
   );
 }
 if (
@@ -2670,9 +2670,9 @@ if (
   !childEnv.CRABBOX_LOCAL_CONTAINER_WORK_ROOT &&
   !hasOption(normalizedArgs, "--local-container-work-root")
 ) {
-  childEnv.CRABBOX_LOCAL_CONTAINER_WORK_ROOT = "/tmp/openclaw-crabbox-docker-work";
+  childEnv.CRABBOX_LOCAL_CONTAINER_WORK_ROOT = "/tmp/eve-crabbox-docker-work";
   console.error(
-    "[crabbox] provider=docker using short host-visible work root for OpenClaw Docker tests",
+    "[crabbox] provider=docker using short host-visible work root for EVE Docker tests",
   );
 }
 

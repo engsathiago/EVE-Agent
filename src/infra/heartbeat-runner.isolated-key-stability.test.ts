@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as replyModule from "../auto-reply/reply.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import { resolveMainSessionKey } from "../config/sessions.js";
 import { runHeartbeatOnce } from "./heartbeat-runner.js";
 import { seedSessionStore, withTempHeartbeatSandbox } from "./heartbeat-runner.test-utils.js";
@@ -47,7 +47,7 @@ describe("runHeartbeatOnce – isolated session key stability (#59493)", () => {
   async function runIsolatedHeartbeat(params: {
     tmpDir: string;
     storePath: string;
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     sessionKey: string;
   }) {
     await seedSessionStore(params.storePath, params.sessionKey, {
@@ -72,7 +72,7 @@ describe("runHeartbeatOnce – isolated session key stability (#59493)", () => {
     return replyCall(replySpy);
   }
 
-  function makeIsolatedHeartbeatConfig(tmpDir: string, storePath: string): OpenClawConfig {
+  function makeIsolatedHeartbeatConfig(tmpDir: string, storePath: string): EVEConfig {
     return {
       agents: {
         defaults: {
@@ -93,7 +93,7 @@ describe("runHeartbeatOnce – isolated session key stability (#59493)", () => {
     tmpDir: string,
     storePath: string,
     heartbeatSession: string,
-  ): OpenClawConfig {
+  ): EVEConfig {
     return {
       agents: {
         defaults: {
@@ -392,7 +392,7 @@ describe("runHeartbeatOnce – isolated session key stability (#59493)", () => {
 
   it("does not create an isolated session when task-based heartbeat skips for no-tasks-due", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: EVEConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,

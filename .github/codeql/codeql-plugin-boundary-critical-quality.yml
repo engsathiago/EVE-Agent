@@ -1,4 +1,4 @@
-name: openclaw-codeql-plugin-boundary-critical-quality
+name: eve-codeql-plugin-boundary-critical-quality
 
 disable-default-queries: true
 

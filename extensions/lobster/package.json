@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/lobster",
+  "name": "@eve/lobster",
   "version": "2026.6.8",
   "description": "Lobster workflow tool plugin for typed pipelines and resumable approvals.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -12,14 +12,14 @@
     "typebox": "1.1.39"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@eve/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/lobster",
+      "npmSpec": "@eve/lobster",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.25"
     },
@@ -27,7 +27,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8"
+      "eveVersion": "2026.6.8"
     },
     "release": {
       "publishToClawHub": true,

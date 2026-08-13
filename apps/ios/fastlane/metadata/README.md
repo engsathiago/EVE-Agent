@@ -33,7 +33,7 @@ The `ios metadata` lane uses App Store Connect API key auth from `apps/ios/fastl
 - Keychain-backed (recommended on macOS):
   - `APP_STORE_CONNECT_KEY_ID`
   - `APP_STORE_CONNECT_ISSUER_ID`
-  - `APP_STORE_CONNECT_KEYCHAIN_SERVICE` (default: `openclaw-app-store-connect-key`)
+  - `APP_STORE_CONNECT_KEYCHAIN_SERVICE` (default: `eve-app-store-connect-key`)
   - `APP_STORE_CONNECT_KEYCHAIN_ACCOUNT` (default: current user)
 - File/path fallback:
   - `APP_STORE_CONNECT_KEY_ID`
@@ -49,7 +49,7 @@ Or set `APP_STORE_CONNECT_API_KEY_PATH`.
 - Release notes resolve from `## <pinned iOS version>` first, then fall back to `## Unreleased` while a TestFlight train is still in progress.
 - When starting a new production release train, pin the iOS version first with `pnpm ios:version:pin -- --from-gateway`.
 - The release upload flow uploads release notes and screenshots before the IPA, and never submits for App Review.
-- `privacy_url.txt` is set to `https://openclaw.ai/privacy`.
+- `privacy_url.txt` is set to `https://eve.ai/privacy`.
 - If app lookup fails in `deliver`, set one of:
   - `APP_STORE_CONNECT_APP_IDENTIFIER` (bundle ID)
   - `APP_STORE_CONNECT_APP_ID` (numeric App Store Connect app ID, e.g. from `/apps/<id>/...` URL)

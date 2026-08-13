@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/discord",
+  "name": "@eve/discord",
   "version": "2026.6.8",
-  "description": "OpenClaw Discord channel plugin for channels, DMs, commands, and app events.",
+  "description": "EVE Discord channel plugin for channels, DMs, commands, and app events.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw"
+    "url": "https://github.com/engsathiago/eve-agent"
   },
   "type": "module",
   "dependencies": {
@@ -16,18 +16,18 @@
     "ws": "8.21.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "2026.5.28"
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.8"
+    "eve-agent": ">=2026.6.8"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "eve-agent": {
       "optional": true
     }
   },
-  "openclaw": {
+  "eve": {
     "extensions": [
       "./index.ts"
     ],
@@ -61,7 +61,7 @@
       }
     },
     "install": {
-      "npmSpec": "@openclaw/discord",
+      "npmSpec": "@eve/discord",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.26",
       "allowInvalidConfigRecovery": true
@@ -70,7 +70,7 @@
       "pluginApi": ">=2026.6.8"
     },
     "build": {
-      "openclawVersion": "2026.6.8"
+      "eveVersion": "2026.6.8"
     },
     "release": {
       "publishToClawHub": true,

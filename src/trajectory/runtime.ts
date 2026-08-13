@@ -6,7 +6,7 @@ import type {
   QueuedFileWriter,
   QueuedFileWriterDiagnostics,
 } from "../agents/queued-file-writer.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { assertNoSymlinkParents, writeSiblingTempFile } from "../infra/fs-safe-advanced.js";
 import { readRegularFileSync } from "../infra/fs-safe.js";
 import { redactSecrets } from "../logging/redact.js";
@@ -23,7 +23,7 @@ import {
 import type { TrajectoryEvent, TrajectoryToolDefinition } from "./types.js";
 
 type TrajectoryRuntimeInit = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   maxRuntimeFileBytes?: number;
   runId?: string;
@@ -91,7 +91,7 @@ function writeTrajectoryPointerBestEffort(params: {
         fd,
         `${JSON.stringify(
           {
-            traceSchema: "openclaw-trajectory-pointer",
+            traceSchema: "eve-trajectory-pointer",
             schemaVersion: 1,
             sessionId: params.sessionId,
             runtimeFile: params.filePath,
@@ -337,7 +337,7 @@ async function replaceTrajectoryWindow(params: {
     dir,
     chmodDir: false,
     mode: 0o600,
-    tempPrefix: ".openclaw-trajectory-",
+    tempPrefix: ".eve-trajectory-",
     writeTemp: async (tempPath) => {
       await fs.promises.writeFile(tempPath, lines.join(""), {
         encoding: "utf8",
@@ -470,8 +470,8 @@ export function createTrajectoryRuntimeRecorder(
 ): TrajectoryRuntimeRecorder | null {
   const env = params.env ?? process.env;
   // Trajectory capture is now default-on. The env var remains as an explicit
-  // override so operators can still disable recording with OPENCLAW_TRAJECTORY=0.
-  const enabled = parseBooleanValue(env.OPENCLAW_TRAJECTORY) ?? true;
+  // override so operators can still disable recording with EVE_TRAJECTORY=0.
+  const enabled = parseBooleanValue(env.EVE_TRAJECTORY) ?? true;
   if (!enabled) {
     return null;
   }
@@ -503,7 +503,7 @@ export function createTrajectoryRuntimeRecorder(
     const nextSeq = seq + 1;
     const sourceSeq = writer.nextSourceSeq?.() ?? nextSeq;
     const event: TrajectoryEvent = {
-      traceSchema: "openclaw-trajectory",
+      traceSchema: "eve-trajectory",
       schemaVersion: 1,
       traceId,
       source: "runtime",

@@ -259,7 +259,7 @@ describe("scanStatusJsonFast", () => {
     await withTemporaryEnv(
       {
         ...clearStatusJsonChannelEnv(),
-        OPENCLAW_TWITCH_ACCESS_TOKEN: undefined,
+        EVE_TWITCH_ACCESS_TOKEN: undefined,
         TELEGRAM_BOT_TOKEN: undefined,
         VITEST: undefined,
         VITEST_POOL_ID: undefined,
@@ -278,7 +278,7 @@ describe("scanStatusJsonFast", () => {
     await withTemporaryEnv(
       {
         ...clearStatusJsonChannelEnv(),
-        OPENCLAW_TWITCH_ACCESS_TOKEN: "token",
+        EVE_TWITCH_ACCESS_TOKEN: "token",
         VITEST: undefined,
         VITEST_POOL_ID: undefined,
         NODE_ENV: undefined,

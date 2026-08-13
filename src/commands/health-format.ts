@@ -1,5 +1,5 @@
-/** Formatting helpers for `openclaw health` failures and channel summaries. */
-import { asNullableRecord } from "@openclaw/normalization-core/record-coerce";
+/** Formatting helpers for `eve health` failures and channel summaries. */
+import { asNullableRecord } from "@eve/normalization-core/record-coerce";
 import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text.js";
 import { colorize, isRich, theme } from "../../packages/terminal-core/src/theme.js";
 import { formatChannelStatusState } from "../channels/plugins/status-state.js";

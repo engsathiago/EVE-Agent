@@ -2,8 +2,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import * as querystring from "node:querystring";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { readRequestBodyWithLimit } from "openclaw/plugin-sdk/webhook-ingress";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
+import { readRequestBodyWithLimit } from "eve-agent/plugin-sdk/webhook-ingress";
 import type { ResolvedSmsAccount, SmsInboundMessage, SmsSendResult } from "./types.js";
 
 const TWILIO_ACCOUNTS_URL = "https://api.twilio.com/2010-04-01/Accounts";

@@ -25,18 +25,18 @@ import {
 
 describe("resolveGatewayInstallEntrypointCandidates", () => {
   it("prefers index.js before legacy entry.js", () => {
-    expect(resolveGatewayInstallEntrypointCandidates("/tmp/openclaw-root")).toEqual([
-      path.join("/tmp/openclaw-root", "dist", "index.js"),
-      path.join("/tmp/openclaw-root", "dist", "index.mjs"),
-      path.join("/tmp/openclaw-root", "dist", "entry.js"),
-      path.join("/tmp/openclaw-root", "dist", "entry.mjs"),
+    expect(resolveGatewayInstallEntrypointCandidates("/tmp/eve-root")).toEqual([
+      path.join("/tmp/eve-root", "dist", "index.js"),
+      path.join("/tmp/eve-root", "dist", "index.mjs"),
+      path.join("/tmp/eve-root", "dist", "entry.js"),
+      path.join("/tmp/eve-root", "dist", "entry.mjs"),
     ]);
   });
 });
 
 describe("resolveGatewayInstallEntrypoint", () => {
   it("prefers dist/index.js over dist/entry.js when both exist", async () => {
-    const root = "/tmp/openclaw-root";
+    const root = "/tmp/eve-root";
     const indexPath = path.join(root, "dist", "index.js");
     const entryPath = path.join(root, "dist", "entry.js");
 
@@ -49,7 +49,7 @@ describe("resolveGatewayInstallEntrypoint", () => {
   });
 
   it("falls back to dist/entry.js when index.js is missing", async () => {
-    const root = "/tmp/openclaw-root";
+    const root = "/tmp/eve-root";
     const entryPath = path.join(root, "dist", "entry.js");
 
     await expect(
@@ -122,8 +122,8 @@ describe("resolveUpdatedGatewayRestartPort", () => {
     expect(
       resolveUpdatedGatewayRestartPort({
         config: { gateway: { port: 19000 } } as never,
-        processEnv: { OPENCLAW_GATEWAY_PORT: "19001" },
-        serviceEnv: { OPENCLAW_GATEWAY_PORT: "19002" },
+        processEnv: { EVE_GATEWAY_PORT: "19001" },
+        serviceEnv: { EVE_GATEWAY_PORT: "19002" },
       }),
     ).toBe(19002);
   });
@@ -142,12 +142,12 @@ describe("resolveUpdatedGatewayRestartPort", () => {
 describe("resolvePostUpdateServiceStateReadEnv", () => {
   it("keeps package restart preparation anchored to the pre-update service env", () => {
     const processEnv = {
-      OPENCLAW_STATE_DIR: "/source/state",
-      OPENCLAW_CONFIG_PATH: "/source/openclaw.json",
+      EVE_STATE_DIR: "/source/state",
+      EVE_CONFIG_PATH: "/source/eve.json",
     } as NodeJS.ProcessEnv;
     const prePackageServiceEnv = {
-      OPENCLAW_STATE_DIR: "/managed/state",
-      OPENCLAW_CONFIG_PATH: "/managed/openclaw.json",
+      EVE_STATE_DIR: "/managed/state",
+      EVE_CONFIG_PATH: "/managed/eve.json",
     } as NodeJS.ProcessEnv;
 
     expect(
@@ -160,8 +160,8 @@ describe("resolvePostUpdateServiceStateReadEnv", () => {
   });
 
   it("keeps git updates tied to the caller environment", () => {
-    const processEnv = { OPENCLAW_STATE_DIR: "/source/state" } as NodeJS.ProcessEnv;
-    const prePackageServiceEnv = { OPENCLAW_STATE_DIR: "/managed/state" } as NodeJS.ProcessEnv;
+    const processEnv = { EVE_STATE_DIR: "/source/state" } as NodeJS.ProcessEnv;
+    const prePackageServiceEnv = { EVE_STATE_DIR: "/managed/state" } as NodeJS.ProcessEnv;
 
     expect(
       resolvePostUpdateServiceStateReadEnv({
@@ -173,8 +173,8 @@ describe("resolvePostUpdateServiceStateReadEnv", () => {
   });
 
   it("uses the managed service environment for git updates stopped by this updater", () => {
-    const processEnv = { OPENCLAW_STATE_DIR: "/source/state" } as NodeJS.ProcessEnv;
-    const preManagedServiceEnv = { OPENCLAW_STATE_DIR: "/managed/state" } as NodeJS.ProcessEnv;
+    const processEnv = { EVE_STATE_DIR: "/source/state" } as NodeJS.ProcessEnv;
+    const preManagedServiceEnv = { EVE_STATE_DIR: "/managed/state" } as NodeJS.ProcessEnv;
 
     expect(
       resolvePostUpdateServiceStateReadEnv({
@@ -189,61 +189,61 @@ describe("resolvePostUpdateServiceStateReadEnv", () => {
 describe("resolvePostInstallDoctorEnv", () => {
   it("uses the managed service profile paths for post-install doctor", () => {
     const env = resolvePostInstallDoctorEnv({
-      invocationCwd: "/srv/openclaw",
+      invocationCwd: "/srv/eve",
       baseEnv: {
         PATH: "/bin",
-        OPENCLAW_STATE_DIR: "/wrong/state",
-        OPENCLAW_CONFIG_PATH: "/wrong/openclaw.json",
-        OPENCLAW_PROFILE: "wrong",
+        EVE_STATE_DIR: "/wrong/state",
+        EVE_CONFIG_PATH: "/wrong/eve.json",
+        EVE_PROFILE: "wrong",
       },
       serviceEnv: {
-        OPENCLAW_STATE_DIR: "daemon-state",
-        OPENCLAW_CONFIG_PATH: "daemon-state/openclaw.json",
-        OPENCLAW_PROFILE: "work",
+        EVE_STATE_DIR: "daemon-state",
+        EVE_CONFIG_PATH: "daemon-state/eve.json",
+        EVE_PROFILE: "work",
       },
     });
 
     expect(env.PATH).toBe("/bin");
     expect(env.NODE_DISABLE_COMPILE_CACHE).toBe("1");
-    expect(env.OPENCLAW_STATE_DIR).toBe(path.join("/srv/openclaw", "daemon-state"));
-    expect(env.OPENCLAW_CONFIG_PATH).toBe(
-      path.join("/srv/openclaw", "daemon-state", "openclaw.json"),
+    expect(env.EVE_STATE_DIR).toBe(path.join("/srv/eve", "daemon-state"));
+    expect(env.EVE_CONFIG_PATH).toBe(
+      path.join("/srv/eve", "daemon-state", "eve.json"),
     );
-    expect(env.OPENCLAW_PROFILE).toBe("work");
+    expect(env.EVE_PROFILE).toBe("work");
   });
 
   it("keeps the caller env when no managed service env is available", () => {
     const env = resolvePostInstallDoctorEnv({
       baseEnv: {
         PATH: "/bin",
-        OPENCLAW_STATE_DIR: "/caller/state",
-        OPENCLAW_PROFILE: "caller",
+        EVE_STATE_DIR: "/caller/state",
+        EVE_PROFILE: "caller",
       },
     });
 
     expect(env.PATH).toBe("/bin");
     expect(env.NODE_DISABLE_COMPILE_CACHE).toBe("1");
-    expect(env.OPENCLAW_STATE_DIR).toBe("/caller/state");
-    expect(env.OPENCLAW_PROFILE).toBe("caller");
+    expect(env.EVE_STATE_DIR).toBe("/caller/state");
+    expect(env.EVE_PROFILE).toBe("caller");
   });
 });
 
 describe("collectMissingPluginInstallPayloads", () => {
   it("reports tracked npm install records whose package payload is absent", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-plugin-payload-"));
-    const presentDir = path.join(tmpDir, "state", "npm", "node_modules", "@openclaw", "present");
-    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@openclaw", "missing");
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-update-plugin-payload-"));
+    const presentDir = path.join(tmpDir, "state", "npm", "node_modules", "@eve", "present");
+    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@eve", "missing");
     const noPackageJsonDir = path.join(
       tmpDir,
       "state",
       "npm",
       "node_modules",
-      "@openclaw",
+      "@eve",
       "no-package-json",
     );
     try {
       await fs.mkdir(presentDir, { recursive: true });
-      await fs.writeFile(path.join(presentDir, "package.json"), '{"name":"@openclaw/present"}\n');
+      await fs.writeFile(path.join(presentDir, "package.json"), '{"name":"@eve/present"}\n');
       await fs.mkdir(noPackageJsonDir, { recursive: true });
 
       await expect(
@@ -252,22 +252,22 @@ describe("collectMissingPluginInstallPayloads", () => {
           records: {
             present: {
               source: "npm",
-              spec: "@openclaw/present@beta",
+              spec: "@eve/present@beta",
               installPath: presentDir,
             },
             missing: {
               source: "npm",
-              spec: "@openclaw/missing@beta",
+              spec: "@eve/missing@beta",
               installPath: missingDir,
             },
             "no-package-json": {
               source: "npm",
-              spec: "@openclaw/no-package-json@beta",
+              spec: "@eve/no-package-json@beta",
               installPath: noPackageJsonDir,
             },
             "missing-install-path": {
               source: "npm",
-              spec: "@openclaw/missing-install-path@beta",
+              spec: "@eve/missing-install-path@beta",
             },
             local: {
               source: "path",
@@ -298,8 +298,8 @@ describe("collectMissingPluginInstallPayloads", () => {
   });
 
   it("skips disabled tracked records when requested", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-plugin-payload-"));
-    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@openclaw", "missing");
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-update-plugin-payload-"));
+    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@eve", "missing");
     try {
       await expect(
         collectMissingPluginInstallPayloads({
@@ -317,7 +317,7 @@ describe("collectMissingPluginInstallPayloads", () => {
           records: {
             missing: {
               source: "npm",
-              spec: "@openclaw/missing@beta",
+              spec: "@eve/missing@beta",
               installPath: missingDir,
             },
           },
@@ -329,8 +329,8 @@ describe("collectMissingPluginInstallPayloads", () => {
   });
 
   it("keeps disabled trusted official npm records eligible for payload repair when requested", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-plugin-payload-"));
-    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@openclaw", "codex");
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-update-plugin-payload-"));
+    const missingDir = path.join(tmpDir, "state", "npm", "node_modules", "@eve", "codex");
     try {
       await expect(
         collectMissingPluginInstallPayloads({
@@ -349,9 +349,9 @@ describe("collectMissingPluginInstallPayloads", () => {
           records: {
             codex: {
               source: "npm",
-              spec: "@openclaw/codex@2026.5.3",
-              resolvedName: "@openclaw/codex",
-              resolvedSpec: "@openclaw/codex@2026.5.3",
+              spec: "@eve/codex@2026.5.3",
+              resolvedName: "@eve/codex",
+              resolvedSpec: "@eve/codex@2026.5.3",
               installPath: missingDir,
             },
           },
@@ -369,7 +369,7 @@ describe("collectMissingPluginInstallPayloads", () => {
   });
 
   it("keeps disabled trusted official ClawHub records eligible for payload repair when requested", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-update-plugin-payload-"));
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-update-plugin-payload-"));
     const missingDir = path.join(tmpDir, "state", "clawhub", "diagnostics-otel");
     try {
       await expect(
@@ -389,7 +389,7 @@ describe("collectMissingPluginInstallPayloads", () => {
           records: {
             "diagnostics-otel": {
               source: "clawhub",
-              spec: "clawhub:@openclaw/diagnostics-otel@2026.5.3",
+              spec: "clawhub:@eve/diagnostics-otel@2026.5.3",
               installPath: missingDir,
             },
           },
@@ -432,9 +432,9 @@ describe("formatPostUpdateGatewayRecoveryInstructions", () => {
     const [line] = formatPostUpdateGatewayRecoveryInstructions(result, "linux");
 
     expect(line).toContain("the systemd user service");
-    expect(line).toContain("openclaw gateway restart");
-    expect(line).toContain("openclaw gateway install --force");
-    expect(line).toContain("openclaw gateway status --deep");
+    expect(line).toContain("eve gateway restart");
+    expect(line).toContain("eve gateway install --force");
+    expect(line).toContain("eve gateway status --deep");
     expect(line).not.toContain("Linux reports");
     expect(line).not.toContain("macOS");
     expect(line).not.toContain("LaunchAgent");
@@ -468,8 +468,8 @@ describe("formatPostUpdateGatewayRecoveryInstructions", () => {
 describe("recoverInstalledLaunchAgentAfterUpdate", () => {
   it("re-bootstraps an installed-but-not-loaded macOS LaunchAgent after update", async () => {
     const service = {} as never;
-    const serviceEnv = { OPENCLAW_PROFILE: "stomme" } as NodeJS.ProcessEnv;
-    const recoveredEnv = { ...serviceEnv, OPENCLAW_PORT: "18790" } as NodeJS.ProcessEnv;
+    const serviceEnv = { EVE_PROFILE: "stomme" } as NodeJS.ProcessEnv;
+    const recoveredEnv = { ...serviceEnv, EVE_PORT: "18790" } as NodeJS.ProcessEnv;
     const readState = vi.fn(async () => ({
       installed: true,
       loaded: false,
@@ -528,7 +528,7 @@ describe("recoverInstalledLaunchAgentAfterUpdate", () => {
       installed: true,
       loaded: true,
       running: true,
-      env: { OPENCLAW_PROFILE: "stomme" } as NodeJS.ProcessEnv,
+      env: { EVE_PROFILE: "stomme" } as NodeJS.ProcessEnv,
       command: null,
       runtime: { status: "running" },
     }));
@@ -553,7 +553,7 @@ describe("recoverInstalledLaunchAgentAfterUpdate", () => {
       installed: true,
       loaded: false,
       running: false,
-      env: { OPENCLAW_PROFILE: "stomme" } as NodeJS.ProcessEnv,
+      env: { EVE_PROFILE: "stomme" } as NodeJS.ProcessEnv,
       command: null,
       runtime: { status: "unknown", missingSupervision: true },
     }));
@@ -608,7 +608,7 @@ describe("recoverLaunchAgentAndRecheckGatewayHealth", () => {
         service,
         port: 18790,
         expectedVersion: "2026.5.3",
-        env: { OPENCLAW_PROFILE: "stomme", OPENCLAW_PORT: "18790" },
+        env: { EVE_PROFILE: "stomme", EVE_PORT: "18790" },
         deps: { recoverLaunchAgent, waitForHealthy },
       }),
     ).resolves.toEqual({
@@ -625,7 +625,7 @@ describe("recoverLaunchAgentAndRecheckGatewayHealth", () => {
       service,
       port: 18790,
       expectedVersion: "2026.5.3",
-      env: { OPENCLAW_PROFILE: "stomme", OPENCLAW_PORT: "18790" },
+      env: { EVE_PROFILE: "stomme", EVE_PORT: "18790" },
     });
   });
 
@@ -668,7 +668,7 @@ describe("resolvePostCoreUpdateChildStdio", () => {
   it('returns "pipe" on Windows so the child never inherits the parent console handles', () => {
     // On Windows, stdio:"inherit" passes the parent's console HANDLE to the child process.
     // PowerShell/CMD will not return the prompt until every holder of those handles exits,
-    // causing the terminal to hang after `openclaw update` completes (#78445).
+    // causing the terminal to hang after `eve update` completes (#78445).
     expect(resolvePostCoreUpdateChildStdio("win32")).toBe("pipe");
   });
 
@@ -686,7 +686,7 @@ describe("updatePluginsAfterCoreUpdate (invalid config end-to-end)", () => {
     // config is sufficient to prove the gate fires end-to-end. We pass
     // `json: true` to suppress logging side-effects without mocking.
     const result = await updatePluginsAfterCoreUpdate({
-      root: "/tmp/openclaw-test",
+      root: "/tmp/eve-test",
       channel: "stable",
       configSnapshot: {
         valid: false,
@@ -707,8 +707,8 @@ describe("updatePluginsAfterCoreUpdate (invalid config end-to-end)", () => {
         message:
           "Plugin post-update convergence skipped because the config is invalid; refusing to restart the gateway with an unverified plugin set.",
         guidance: [
-          "Run `openclaw doctor` to inspect the config validation errors.",
-          "Once the config parses, rerun `openclaw update repair`.",
+          "Run `eve doctor` to inspect the config validation errors.",
+          "Once the config parses, rerun `eve update repair`.",
         ],
       },
     ]);
@@ -726,8 +726,8 @@ describe("buildInvalidConfigPostCoreUpdateResult", () => {
   it("surfaces actionable repair guidance in both the structural warnings and the message string", () => {
     const built = buildInvalidConfigPostCoreUpdateResult();
     expect(built.guidance).toStrictEqual([
-      "Run `openclaw doctor` to inspect the config validation errors.",
-      "Once the config parses, rerun `openclaw update repair`.",
+      "Run `eve doctor` to inspect the config validation errors.",
+      "Once the config parses, rerun `eve update repair`.",
     ]);
     expect(built.result.warnings).toStrictEqual([
       {

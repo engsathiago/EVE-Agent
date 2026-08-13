@@ -6,17 +6,17 @@ import {
   buildChannelOutboundSessionRoute,
   buildThreadAwareOutboundSessionRoute,
   createChatChannelPlugin,
-} from "openclaw/plugin-sdk/channel-core";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
+} from "eve-agent/plugin-sdk/channel-core";
+import type { ChannelPlugin } from "eve-agent/plugin-sdk/channel-core";
 import {
   createMessageReceiptFromOutboundResults,
   defineChannelMessageAdapter,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { getChatChannelMeta } from "openclaw/plugin-sdk/channel-plugin-common";
+} from "eve-agent/plugin-sdk/channel-outbound";
+import { getChatChannelMeta } from "eve-agent/plugin-sdk/channel-plugin-common";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "eve-agent/plugin-sdk/status-helpers";
 import {
   DEFAULT_ACCOUNT_ID,
   listClickClackAccountIds,

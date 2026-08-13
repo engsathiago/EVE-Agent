@@ -17,14 +17,14 @@ import {
   addTimerTimeoutGraceMs,
   parseStrictPositiveInteger,
   resolveNonNegativeIntegerOption,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   normalizeOptionalString,
   readStringValue,
   uniqueStrings,
   uniqueValues,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 import { redactToolPayloadText } from "../logging/redact.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { asRecord } from "../record-shared.js";
@@ -735,7 +735,7 @@ async function createRealSession(
   });
   const client = new Client(
     {
-      name: "openclaw-browser",
+      name: "eve-browser",
       version: "0.0.0",
     },
     {},
@@ -1322,7 +1322,7 @@ async function callTool(
 }
 
 async function withTempFile<T>(fn: (filePath: string) => Promise<T>): Promise<T> {
-  const dir = await fs.mkdtemp(path.join(resolvePreferredOpenClawTmpDir(), "openclaw-chrome-mcp-"));
+  const dir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-chrome-mcp-"));
   const filePath = path.join(dir, randomUUID());
   try {
     return await fn(filePath);

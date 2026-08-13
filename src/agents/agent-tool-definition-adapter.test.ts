@@ -3,7 +3,7 @@
  * Exercises result coercion, error wrapping, client delegation, and conflict
  * detection at the ToolDefinition boundary.
  */
-import type { AgentTool } from "openclaw/plugin-sdk/agent-core";
+import type { AgentTool } from "eve-agent/plugin-sdk/agent-core";
 import { Type } from "typebox";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -288,7 +288,7 @@ describe("client tool name conflict checks", () => {
     ).toEqual(["Weather", "weather"]);
   });
 
-  it("detects collisions with reserved OpenClaw built-in tool names", () => {
+  it("detects collisions with reserved EVE built-in tool names", () => {
     expect(
       findClientToolNameConflicts({
         tools: [makeClientTool("Bash"), makeClientTool("grep")],

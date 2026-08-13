@@ -1,5 +1,5 @@
 // Discord plugin module implements message handler.routing preflight behavior.
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { resolveDiscordConversationIdentity } from "../conversation-identity.js";
 import type { User } from "../internal/discord.js";
 import type { DiscordMessagePreflightParams } from "./message-handler.preflight.types.js";
@@ -11,11 +11,11 @@ import {
 } from "./route-resolution.js";
 
 let conversationRuntimePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/conversation-binding-runtime")>
+  | Promise<typeof import("eve-agent/plugin-sdk/conversation-binding-runtime")>
   | undefined;
 
 async function loadConversationRuntime() {
-  conversationRuntimePromise ??= import("openclaw/plugin-sdk/conversation-binding-runtime");
+  conversationRuntimePromise ??= import("eve-agent/plugin-sdk/conversation-binding-runtime");
   return await conversationRuntimePromise;
 }
 

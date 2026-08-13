@@ -2,7 +2,7 @@
  * Gateway server model catalog tests.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { GatewayModelChoice } from "./server-model-catalog.js";
 import {
   resetModelCatalogCacheForTest,
@@ -19,7 +19,7 @@ function model(id: string): GatewayModelChoice {
   return { id, name: id, provider: "openai" } as GatewayModelChoice;
 }
 
-const getConfig = () => ({}) as OpenClawConfig;
+const getConfig = () => ({}) as EVEConfig;
 
 function createRefreshingCatalogLoader(
   firstCatalog: GatewayModelChoice[],

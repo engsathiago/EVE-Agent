@@ -1,5 +1,5 @@
 /** Denylist checks for unsafe packages in plugin manifests and installed dependency trees. */
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 
 const BLOCKED_INSTALL_DEPENDENCY_PACKAGE_NAMES = ["plain-crypto-js"] as const;
 

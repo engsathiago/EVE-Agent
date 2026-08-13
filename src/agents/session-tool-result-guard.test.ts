@@ -1,6 +1,6 @@
 // Verifies session tool-result guard inserts, truncates, and repairs tool results.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
-import { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
+import { SessionManager } from "eve-agent/plugin-sdk/agent-sessions";
 import { describe, expect, it } from "vitest";
 import { installSessionToolResultGuard } from "./session-tool-result-guard.js";
 import { castAgentMessage } from "./test-helpers/agent-message-fixtures.js";

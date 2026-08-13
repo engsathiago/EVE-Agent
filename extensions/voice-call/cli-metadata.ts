@@ -1,5 +1,5 @@
 // Voice Call plugin module implements cli metadata behavior.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "eve-agent/plugin-sdk/plugin-entry";
 
 // Lightweight CLI metadata entry for exposing the voicecall command.
 

@@ -9,12 +9,12 @@ import {
   type OpenAiCompatibleVideoPayload,
   type VideoDescriptionRequest,
   type VideoDescriptionResult,
-} from "openclaw/plugin-sdk/media-understanding";
+} from "eve-agent/plugin-sdk/media-understanding";
 import {
   assertOkOrThrowHttpError,
   postJsonRequest,
   resolveProviderHttpRequestConfig,
-} from "openclaw/plugin-sdk/provider-http";
+} from "eve-agent/plugin-sdk/provider-http";
 import { MOONSHOT_DEFAULT_MODEL_ID } from "./provider-catalog.js";
 
 const DEFAULT_MOONSHOT_VIDEO_BASE_URL = "https://api.moonshot.ai/v1";

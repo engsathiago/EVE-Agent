@@ -2,7 +2,7 @@
 import type { Command } from "commander";
 import { hasFlag } from "../argv.js";
 
-const jsonModeSymbol = Symbol("openclaw.cli.jsonMode");
+const jsonModeSymbol = Symbol("eve.cli.jsonMode");
 
 type JsonMode = "output" | "parse-only";
 type JsonModeCommand = Command & {

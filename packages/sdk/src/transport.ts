@@ -1,11 +1,11 @@
-// OpenClaw SDK module implements transport behavior.
-import { GatewayClient } from "@openclaw/gateway-client";
+// EVE SDK module implements transport behavior.
+import { GatewayClient } from "@eve/gateway-client";
 import { EventHub } from "./event-hub.js";
 import type {
-  ConnectableOpenClawTransport,
+  ConnectableEVETransport,
   GatewayEvent,
   GatewayRequestOptions,
-  OpenClawTransport,
+  EVETransport,
 } from "./types.js";
 
 // Gateway transport adapter that converts the lower-level GatewayClient into the
@@ -70,8 +70,8 @@ function toGatewayEvent(event: unknown): GatewayEvent {
   };
 }
 
-/** Connectable SDK transport backed by @openclaw/gateway-client. */
-export class GatewayClientTransport implements ConnectableOpenClawTransport {
+/** Connectable SDK transport backed by @eve/gateway-client. */
+export class GatewayClientTransport implements ConnectableEVETransport {
   private readonly eventsHub = new EventHub<GatewayEvent>({
     replayLimit: RAW_EVENT_REPLAY_LIMIT,
   });
@@ -175,7 +175,7 @@ export class GatewayClientTransport implements ConnectableOpenClawTransport {
 
 /** Narrow an SDK transport to one that supports explicit connect. */
 export function isConnectableTransport(
-  transport: OpenClawTransport,
-): transport is ConnectableOpenClawTransport {
+  transport: EVETransport,
+): transport is ConnectableEVETransport {
   return typeof (transport as { connect?: unknown }).connect === "function";
 }

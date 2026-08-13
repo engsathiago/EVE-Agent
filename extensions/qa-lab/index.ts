@@ -1,4 +1,4 @@
-// Qa Lab plugin entrypoint registers its OpenClaw integration.
+// Qa Lab plugin entrypoint registers its EVE integration.
 import { definePluginEntry } from "./runtime-api.js";
 import { registerQaLabCli } from "./src/cli.js";
 import { createQaLabWebSearchProvider } from "./src/qa-web-search-provider.js";

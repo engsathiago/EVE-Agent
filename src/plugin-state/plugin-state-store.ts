@@ -1,5 +1,5 @@
 // Plugin state store exposes persisted per-plugin state operations.
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import {
   clearPluginStateDatabaseForTests,
   closePluginStateDatabase,
@@ -488,7 +488,7 @@ export function clearPluginStateStoreForTests(): void {
 export function resetPluginStateStoreForTests(options: { closeDatabase?: boolean } = {}): void {
   if (options.closeDatabase !== false) {
     closePluginStateDatabase();
-    closeOpenClawStateDatabaseForTest();
+    closeEVEStateDatabaseForTest();
   }
   namespaceOptionSignatures.clear();
 }

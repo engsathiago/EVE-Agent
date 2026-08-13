@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 import {
   createInMemoryAcpEventLedger,
@@ -12,7 +12,7 @@ import {
 
 describe("ACP event ledger", () => {
   afterEach(() => {
-    closeOpenClawStateDatabaseForTest();
+    closeEVEStateDatabaseForTest();
   });
 
   it("records complete in-memory session updates in sequence", async () => {
@@ -117,8 +117,8 @@ describe("ACP event ledger", () => {
   });
 
   it("persists SQLite-backed replay state across ledger instances", async () => {
-    await withTempDir({ prefix: "openclaw-acp-ledger-" }, async (dir) => {
-      const databasePath = path.join(dir, "openclaw.sqlite");
+    await withTempDir({ prefix: "eve-acp-ledger-" }, async (dir) => {
+      const databasePath = path.join(dir, "eve.sqlite");
       const first = createSqliteAcpEventLedger({ path: databasePath, now: () => 1000 });
       await first.startSession({
         sessionId: "session-1",
@@ -136,7 +136,7 @@ describe("ACP event ledger", () => {
         },
       });
 
-      closeOpenClawStateDatabaseForTest();
+      closeEVEStateDatabaseForTest();
       const second = createSqliteAcpEventLedger({ path: databasePath });
       const replay = await second.readReplay({
         sessionId: "session-1",
@@ -153,9 +153,9 @@ describe("ACP event ledger", () => {
   });
 
   it("imports legacy file-backed replay state into SQLite", async () => {
-    await withTempDir({ prefix: "openclaw-acp-ledger-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-acp-ledger-" }, async (dir) => {
       const filePath = path.join(dir, "acp", "event-ledger.json");
-      const databasePath = path.join(dir, "openclaw.sqlite");
+      const databasePath = path.join(dir, "eve.sqlite");
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await fs.writeFile(
         filePath,
@@ -215,9 +215,9 @@ describe("ACP event ledger", () => {
   });
 
   it("marks SQLite-backed replay incomplete when event retention truncates history", async () => {
-    await withTempDir({ prefix: "openclaw-acp-ledger-" }, async (dir) => {
+    await withTempDir({ prefix: "eve-acp-ledger-" }, async (dir) => {
       const ledger = createSqliteAcpEventLedger({
-        path: path.join(dir, "openclaw.sqlite"),
+        path: path.join(dir, "eve.sqlite"),
         maxEventsPerSession: 1,
       });
       await ledger.startSession({

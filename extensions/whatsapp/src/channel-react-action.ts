@@ -1,5 +1,5 @@
 // Whatsapp plugin module implements channel react action behavior.
-import { jsonResult } from "openclaw/plugin-sdk/channel-actions";
+import { jsonResult } from "eve-agent/plugin-sdk/channel-actions";
 import {
   isWhatsAppGroupJid,
   resolveAuthorizedWhatsAppOutboundTarget,
@@ -11,7 +11,7 @@ import {
   readStringOrNumberParam,
   readStringParam,
   sendMessageWhatsApp,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "./channel-react-action.runtime.js";
 
 const WHATSAPP_CHANNEL = "whatsapp" as const;
@@ -19,7 +19,7 @@ const WHATSAPP_CHANNEL = "whatsapp" as const;
 type WhatsAppMessageActionParams = {
   action: string;
   params: Record<string, unknown>;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string | null;
   requesterSenderId?: string | null;
   mediaAccess?: {

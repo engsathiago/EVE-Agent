@@ -1,5 +1,5 @@
 // Google plugin module implements oauth token shared behavior.
-import { readStringValue } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { readStringValue } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type GoogleOauthApiKeyCredential = {
   type?: string;

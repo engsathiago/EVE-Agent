@@ -3,9 +3,9 @@
  * Converts selected auth profiles into provider API keys, refreshes OAuth
  * credentials, resolves SecretRefs, and maintains runtime store snapshots.
  */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { getRuntimeConfig } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { coerceSecretRef } from "../../config/types.secrets.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import {
@@ -97,7 +97,7 @@ const isCompatibleModeType = (mode: string | undefined, type: string | undefined
 };
 
 function isProfileConfigCompatible(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   profileId: string;
   provider: string;
   mode: "api_key" | "token" | "oauth";
@@ -116,7 +116,7 @@ function isProfileConfigCompatible(params: {
 async function buildOAuthApiKey(
   provider: string,
   credentials: OAuthCredential,
-  context: { cfg?: OpenClawConfig },
+  context: { cfg?: EVEConfig },
 ): Promise<string> {
   const formatted = await formatProviderAuthProfileApiKeyWithPlugin({
     provider,
@@ -180,14 +180,14 @@ export function isRefreshTokenReusedError(error: unknown): boolean {
 }
 
 type ResolveApiKeyForProfileParams = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   store: AuthProfileStore;
   profileId: string;
   agentDir?: string;
   forceRefresh?: boolean;
 };
 
-type SecretDefaults = NonNullable<OpenClawConfig["secrets"]>["defaults"];
+type SecretDefaults = NonNullable<EVEConfig["secrets"]>["defaults"];
 
 async function refreshOAuthCredential(
   credential: OAuthCredential,
@@ -298,7 +298,7 @@ async function resolveProfileSecretString(params: {
   value: string | undefined;
   valueRef: unknown;
   refDefaults: SecretDefaults | undefined;
-  configForRefResolution: OpenClawConfig;
+  configForRefResolution: EVEConfig;
   cache: SecretRefResolveCache;
   inlineFailureMessage: string;
   refFailureMessage: string;

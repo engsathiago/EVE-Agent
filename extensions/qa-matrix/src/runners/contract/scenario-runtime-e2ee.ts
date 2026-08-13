@@ -3,8 +3,8 @@ import { randomUUID } from "node:crypto";
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import type { MatrixVerificationSummary } from "@openclaw/matrix/test-api.js";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import type { MatrixVerificationSummary } from "@eve/matrix/test-api.js";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { createMatrixQaClient } from "../../substrate/client.js";
 import {
   createMatrixQaE2eeScenarioClient,
@@ -32,8 +32,8 @@ import {
 import {
   formatMatrixQaCliCommand,
   redactMatrixQaCliOutput,
-  runMatrixQaOpenClawCli,
-  startMatrixQaOpenClawCli,
+  runMatrixQaEVECli,
+  startMatrixQaEVECli,
   type MatrixQaCliSession,
   type MatrixQaCliRunResult,
 } from "./scenario-runtime-cli.js";
@@ -139,7 +139,7 @@ function requireMatrixQaCliRuntimeEnv(context: MatrixQaScenarioContext) {
 }
 
 function requireMatrixQaGatewayConfigPath(context: MatrixQaScenarioContext) {
-  const configPath = requireMatrixQaCliRuntimeEnv(context).OPENCLAW_CONFIG_PATH?.trim();
+  const configPath = requireMatrixQaCliRuntimeEnv(context).EVE_CONFIG_PATH?.trim();
   if (!configPath) {
     throw new Error("Matrix CLI QA scenarios require the gateway config path");
   }
@@ -563,7 +563,7 @@ async function createMatrixQaCliSelfVerificationRuntime(params: {
 }) {
   const outputDir = requireMatrixQaE2eeOutputDir(params.context);
   const rootDir = await mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-matrix-cli-qa-"),
+    path.join(resolvePreferredEVETmpDir(), "eve-matrix-cli-qa-"),
   );
   const artifactDir = path.join(
     outputDir,
@@ -621,19 +621,19 @@ async function createMatrixQaCliSelfVerificationRuntime(params: {
     ...requireMatrixQaCliRuntimeEnv(params.context),
     FORCE_COLOR: "0",
     NO_COLOR: "1",
-    OPENCLAW_CONFIG_PATH: configPath,
-    OPENCLAW_DISABLE_AUTO_UPDATE: "1",
-    OPENCLAW_STATE_DIR: stateDir,
+    EVE_CONFIG_PATH: configPath,
+    EVE_DISABLE_AUTO_UPDATE: "1",
+    EVE_STATE_DIR: stateDir,
   };
   const run = async (args: string[], timeoutMs = params.context.timeoutMs, stdin?: string) =>
-    await runMatrixQaOpenClawCli({
+    await runMatrixQaEVECli({
       args,
       env,
       stdin,
       timeoutMs,
     });
   const start = (args: string[], timeoutMs = params.context.timeoutMs) =>
-    startMatrixQaOpenClawCli({
+    startMatrixQaEVECli({
       args,
       env,
       timeoutMs,
@@ -657,7 +657,7 @@ async function createMatrixQaCliE2eeSetupRuntime(params: {
 }) {
   const outputDir = requireMatrixQaE2eeOutputDir(params.context);
   const rootDir = await mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-matrix-e2ee-setup-qa-"),
+    path.join(resolvePreferredEVETmpDir(), "eve-matrix-e2ee-setup-qa-"),
   );
   const artifactDir = path.join(
     outputDir,
@@ -684,18 +684,18 @@ async function createMatrixQaCliE2eeSetupRuntime(params: {
     ...requireMatrixQaCliRuntimeEnv(params.context),
     FORCE_COLOR: "0",
     NO_COLOR: "1",
-    OPENCLAW_CONFIG_PATH: configPath,
-    OPENCLAW_DISABLE_AUTO_UPDATE: "1",
-    OPENCLAW_STATE_DIR: stateDir,
+    EVE_CONFIG_PATH: configPath,
+    EVE_DISABLE_AUTO_UPDATE: "1",
+    EVE_STATE_DIR: stateDir,
   };
   const run = async (args: string[], timeoutMs = params.context.timeoutMs) =>
-    await runMatrixQaOpenClawCli({
+    await runMatrixQaEVECli({
       args,
       env,
       timeoutMs,
     });
   const start = (args: string[], timeoutMs = params.context.timeoutMs) =>
-    startMatrixQaOpenClawCli({
+    startMatrixQaEVECli({
       args,
       env,
       timeoutMs,
@@ -729,10 +729,10 @@ async function createMatrixQaCliGatewayRuntime(params: {
     ...requireMatrixQaCliRuntimeEnv(params.context),
     FORCE_COLOR: "0",
     NO_COLOR: "1",
-    OPENCLAW_DISABLE_AUTO_UPDATE: "1",
+    EVE_DISABLE_AUTO_UPDATE: "1",
   };
   const run = async (args: string[], timeoutMs = params.context.timeoutMs) =>
-    await runMatrixQaOpenClawCli({
+    await runMatrixQaEVECli({
       args,
       env,
       timeoutMs,
@@ -1193,7 +1193,7 @@ async function withMatrixQaIsolatedE2eeDriverRoom<T>(
   const originalGroupPolicy = accountConfig.groupPolicy;
   const driverAccount = await registerMatrixQaE2eeScenarioAccount({
     context,
-    deviceName: "OpenClaw Matrix QA Isolated E2EE Driver",
+    deviceName: "EVE Matrix QA Isolated E2EE Driver",
     localpartPrefix: "qa-e2ee-driver",
     scenarioId,
   });
@@ -1591,7 +1591,7 @@ export async function runMatrixQaE2eeRecoveryKeyLifecycleScenario(
         baseUrl: context.baseUrl,
       });
       const recoveryDevice = await loginClient.loginWithPassword({
-        deviceName: "OpenClaw Matrix QA Recovery Restore Device",
+        deviceName: "EVE Matrix QA Recovery Restore Device",
         password: driverPassword,
         userId: context.driverUserId,
       });
@@ -1715,7 +1715,7 @@ export async function runMatrixQaE2eeRecoveryOwnerVerificationRequiredScenario(
         baseUrl: context.baseUrl,
       });
       const recoveryDevice = await loginClient.loginWithPassword({
-        deviceName: "OpenClaw Matrix QA Owner Verification Required Device",
+        deviceName: "EVE Matrix QA Owner Verification Required Device",
         password: driverPassword,
         userId: context.driverUserId,
       });
@@ -1915,7 +1915,7 @@ export async function runMatrixQaE2eeCliAccountAddEnableE2eeScenario(
   const accountId = "cli-add-e2ee";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Account Add Owner",
+    deviceName: "EVE Matrix QA CLI Account Add Owner",
     scenarioId: "matrix-e2ee-cli-account-add-enable-e2ee",
   });
   const cli = await createMatrixQaCliE2eeSetupRuntime({
@@ -1938,7 +1938,7 @@ export async function runMatrixQaE2eeCliAccountAddEnableE2eeScenario(
       "--password",
       account.password,
       "--device-name",
-      "OpenClaw Matrix QA CLI Account Add E2EE",
+      "EVE Matrix QA CLI Account Add E2EE",
       "--allow-private-network",
       "--enable-e2ee",
       "--json",
@@ -2016,14 +2016,14 @@ export async function runMatrixQaE2eeCliEncryptionSetupScenario(
   const accountId = "cli-encryption-setup";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Encryption Setup Owner",
+    deviceName: "EVE Matrix QA CLI Encryption Setup Owner",
     scenarioId: "matrix-e2ee-cli-encryption-setup",
   });
   const loginClient = createMatrixQaClient({
     baseUrl: context.baseUrl,
   });
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Encryption Setup Device",
+    deviceName: "EVE Matrix QA CLI Encryption Setup Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2118,14 +2118,14 @@ export async function runMatrixQaE2eeCliEncryptionSetupIdempotentScenario(
   const accountId = "cli-encryption-idempotent";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Encryption Idempotent Owner",
+    deviceName: "EVE Matrix QA CLI Encryption Idempotent Owner",
     scenarioId: "matrix-e2ee-cli-encryption-setup-idempotent",
   });
   const loginClient = createMatrixQaClient({
     baseUrl: context.baseUrl,
   });
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Encryption Idempotent Device",
+    deviceName: "EVE Matrix QA CLI Encryption Idempotent Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2219,14 +2219,14 @@ export async function runMatrixQaE2eeCliEncryptionSetupBootstrapFailureScenario(
   const accountId = "cli-encryption-failure";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Encryption Failure Owner",
+    deviceName: "EVE Matrix QA CLI Encryption Failure Owner",
     scenarioId: "matrix-e2ee-cli-encryption-setup-bootstrap-failure",
   });
   const loginClient = createMatrixQaClient({
     baseUrl: context.baseUrl,
   });
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Encryption Failure Device",
+    deviceName: "EVE Matrix QA CLI Encryption Failure Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2307,7 +2307,7 @@ export async function runMatrixQaE2eeCliRecoveryKeySetupScenario(
   const accountId = "cli-recovery-key-setup";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Recovery Key Owner",
+    deviceName: "EVE Matrix QA CLI Recovery Key Owner",
     scenarioId: "matrix-e2ee-cli-recovery-key-setup",
   });
   const owner = await createMatrixQaE2eeCliOwnerClient({
@@ -2328,7 +2328,7 @@ export async function runMatrixQaE2eeCliRecoveryKeySetupScenario(
     throw new Error("Matrix E2EE CLI recovery-key setup did not expose a recovery key");
   }
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Recovery Key Setup Device",
+    deviceName: "EVE Matrix QA CLI Recovery Key Setup Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2425,7 +2425,7 @@ export async function runMatrixQaE2eeCliRecoveryKeyInvalidScenario(
   const invalidRecoveryKey = "not-a-valid-matrix-recovery-key";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Invalid Recovery Key Owner",
+    deviceName: "EVE Matrix QA CLI Invalid Recovery Key Owner",
     scenarioId: "matrix-e2ee-cli-recovery-key-invalid",
   });
   const owner = await createMatrixQaE2eeCliOwnerClient({
@@ -2445,7 +2445,7 @@ export async function runMatrixQaE2eeCliRecoveryKeyInvalidScenario(
     baseUrl: context.baseUrl,
   });
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Invalid Recovery Key Device",
+    deviceName: "EVE Matrix QA CLI Invalid Recovery Key Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2539,14 +2539,14 @@ export async function runMatrixQaE2eeCliEncryptionSetupMultiAccountScenario(
   const decoyAccountId = "cli-multi-decoy";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Multi Account Owner",
+    deviceName: "EVE Matrix QA CLI Multi Account Owner",
     scenarioId: "matrix-e2ee-cli-encryption-setup-multi-account",
   });
   const loginClient = createMatrixQaClient({
     baseUrl: context.baseUrl,
   });
   const cliDevice = await loginClient.loginWithPassword({
-    deviceName: "OpenClaw Matrix QA CLI Multi Account Target Device",
+    deviceName: "EVE Matrix QA CLI Multi Account Target Device",
     password: account.password,
     userId: account.userId,
   });
@@ -2676,12 +2676,12 @@ export async function runMatrixQaE2eeCliSetupThenGatewayReplyScenario(
   const roomKey = buildMatrixQaE2eeScenarioRoomKey(scenarioId);
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Setup Gateway",
+    deviceName: "EVE Matrix QA CLI Setup Gateway",
     scenarioId,
   });
   const driverAccount = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Setup Driver",
+    deviceName: "EVE Matrix QA CLI Setup Driver",
     scenarioId,
   });
   const driverApi = createMatrixQaClient({
@@ -2883,7 +2883,7 @@ export async function runMatrixQaE2eeCliSelfVerificationScenario(
   const accountId = "cli";
   const account = await registerMatrixQaCliE2eeAccount({
     context,
-    deviceName: "OpenClaw Matrix QA CLI Self Verification Owner",
+    deviceName: "EVE Matrix QA CLI Self Verification Owner",
     scenarioId: "matrix-e2ee-cli-self-verification",
   });
   const owner = await createMatrixQaE2eeCliOwnerClient({
@@ -2904,7 +2904,7 @@ export async function runMatrixQaE2eeCliSelfVerificationScenario(
       baseUrl: context.baseUrl,
     });
     const cliDevice = await loginClient.loginWithPassword({
-      deviceName: "OpenClaw Matrix QA CLI Self Verification Device",
+      deviceName: "EVE Matrix QA CLI Self Verification Device",
       password: account.password,
       userId: account.userId,
     });
@@ -2995,7 +2995,7 @@ export async function runMatrixQaE2eeCliSelfVerificationScenario(
         );
         const cliSas = parseMatrixQaCliSasText(
           sasOutput.text,
-          "interactive openclaw matrix verify self",
+          "interactive eve matrix verify self",
         );
         const ownerSas = await waitForMatrixQaVerificationSummary({
           client: owner,
@@ -3091,7 +3091,7 @@ export async function runMatrixQaE2eeCliSelfVerificationScenario(
             secondaryDeviceId: cliDevice.deviceId,
           },
           details: [
-            "Matrix CLI self-verification established full Matrix identity trust through interactive openclaw matrix verify self",
+            "Matrix CLI self-verification established full Matrix identity trust through interactive eve matrix verify self",
             "cli secret config cleaned after run: yes",
             `cli backup restore stdout: ${restoreArtifacts.stdoutPath}`,
             `cli backup restore stderr: ${restoreArtifacts.stderrPath}`,
@@ -3321,7 +3321,7 @@ export async function runMatrixQaE2eeStaleDeviceHygieneScenario(
         baseUrl: context.baseUrl,
       });
       const secondary = await loginClient.loginWithPassword({
-        deviceName: "OpenClaw Matrix QA Stale Device",
+        deviceName: "EVE Matrix QA Stale Device",
         password: driverPassword,
         userId: context.driverUserId,
       });
@@ -3560,7 +3560,7 @@ export async function runMatrixQaE2eeArtifactRedactionScenario(
         },
         details: [
           "decrypted E2EE payload reached in-memory assertions only",
-          "observed-event artifacts redact body/formatted_body unless OPENCLAW_QA_MATRIX_CAPTURE_CONTENT=1",
+          "observed-event artifacts redact body/formatted_body unless EVE_QA_MATRIX_CAPTURE_CONTENT=1",
           `encrypted room id: ${result.roomId}`,
           `isolated driver user: ${driverUserId}`,
           ...buildMatrixReplyDetails("E2EE reply", result.reply),

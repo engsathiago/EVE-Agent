@@ -1,32 +1,32 @@
 ---
-summary: "CLI reference for `openclaw tasks` (background task ledger and Task Flow state)"
+summary: "CLI reference for `eve tasks` (background task ledger and Task Flow state)"
 read_when:
   - You want to inspect, audit, or cancel background task records
-  - You are documenting Task Flow commands under `openclaw tasks flow`
-title: "`openclaw tasks`"
+  - You are documenting Task Flow commands under `eve tasks flow`
+title: "`eve tasks`"
 ---
 
 Inspect durable background tasks and Task Flow state. With no subcommand,
-`openclaw tasks` is equivalent to `openclaw tasks list`.
+`eve tasks` is equivalent to `eve tasks list`.
 
 See [Background Tasks](/automation/tasks) for the lifecycle and delivery model.
 
 ## Usage
 
 ```bash
-openclaw tasks
-openclaw tasks list
-openclaw tasks list --runtime acp
-openclaw tasks list --status running
-openclaw tasks show <lookup>
-openclaw tasks notify <lookup> state_changes
-openclaw tasks cancel <lookup>
-openclaw tasks audit
-openclaw tasks maintenance
-openclaw tasks maintenance --apply
-openclaw tasks flow list
-openclaw tasks flow show <lookup>
-openclaw tasks flow cancel <lookup>
+eve tasks
+eve tasks list
+eve tasks list --runtime acp
+eve tasks list --status running
+eve tasks show <lookup>
+eve tasks notify <lookup> state_changes
+eve tasks cancel <lookup>
+eve tasks audit
+eve tasks maintenance
+eve tasks maintenance --apply
+eve tasks flow list
+eve tasks flow show <lookup>
+eve tasks flow cancel <lookup>
 ```
 
 ## Root Options
@@ -40,7 +40,7 @@ openclaw tasks flow cancel <lookup>
 ### `list`
 
 ```bash
-openclaw tasks list [--runtime <name>] [--status <name>] [--json]
+eve tasks list [--runtime <name>] [--status <name>] [--json]
 ```
 
 Lists tracked background tasks newest first.
@@ -48,7 +48,7 @@ Lists tracked background tasks newest first.
 ### `show`
 
 ```bash
-openclaw tasks show <lookup> [--json]
+eve tasks show <lookup> [--json]
 ```
 
 Shows one task by task ID, run ID, or session key.
@@ -56,7 +56,7 @@ Shows one task by task ID, run ID, or session key.
 ### `notify`
 
 ```bash
-openclaw tasks notify <lookup> <done_only|state_changes|silent>
+eve tasks notify <lookup> <done_only|state_changes|silent>
 ```
 
 Changes the notification policy for a running task.
@@ -64,7 +64,7 @@ Changes the notification policy for a running task.
 ### `cancel`
 
 ```bash
-openclaw tasks cancel <lookup>
+eve tasks cancel <lookup>
 ```
 
 Cancels a running background task.
@@ -72,7 +72,7 @@ Cancels a running background task.
 ### `audit`
 
 ```bash
-openclaw tasks audit [--severity <warn|error>] [--code <name>] [--limit <n>] [--json]
+eve tasks audit [--severity <warn|error>] [--code <name>] [--limit <n>] [--json]
 ```
 
 Surfaces stale, lost, delivery-failed, or otherwise inconsistent task and Task Flow records. Lost tasks retained until `cleanupAfter` are warnings; expired or unstamped lost tasks are errors.
@@ -80,7 +80,7 @@ Surfaces stale, lost, delivery-failed, or otherwise inconsistent task and Task F
 ### `maintenance`
 
 ```bash
-openclaw tasks maintenance [--apply] [--json]
+eve tasks maintenance [--apply] [--json]
 ```
 
 Previews or applies task and Task Flow reconciliation, cleanup stamping, pruning,
@@ -98,9 +98,9 @@ non-cron session rows untouched.
 ### `flow`
 
 ```bash
-openclaw tasks flow list [--status <name>] [--json]
-openclaw tasks flow show <lookup> [--json]
-openclaw tasks flow cancel <lookup>
+eve tasks flow list [--status <name>] [--json]
+eve tasks flow show <lookup> [--json]
+eve tasks flow cancel <lookup>
 ```
 
 Inspects or cancels durable Task Flow state under the task ledger.

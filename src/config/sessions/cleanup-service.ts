@@ -6,7 +6,7 @@ import path from "node:path";
 import { resolveDefaultAgentId } from "../../agents/agent-scope.js";
 import { getLogger } from "../../logging/logger.js";
 import { normalizeAgentId, parseAgentSessionKey } from "../../routing/session-key.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+import type { EVEConfig } from "../types.eve.js";
 import {
   enforceSessionDiskBudget,
   pruneUnreferencedSessionArtifacts,
@@ -193,7 +193,7 @@ export function resolveSessionCleanupAction(params: {
 }
 
 function isMainScopeStaleDirectSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   targetAgentId: string;
   key: string;
   activeKey?: string;
@@ -217,7 +217,7 @@ function isMainScopeStaleDirectSessionKey(params: {
 }
 
 function retireMainScopeDirectSessionEntries(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   store: Record<string, SessionEntry>;
   targetAgentId: string;
   activeKey?: string;
@@ -318,7 +318,7 @@ function addEntryArtifactPathsToSet(params: {
 }
 
 async function previewStoreCleanup(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   target: SessionStoreTarget;
   maintenance: ResolvedSessionMaintenanceConfig;
   mode: ResolvedSessionMaintenanceConfig["mode"];
@@ -457,7 +457,7 @@ async function previewStoreCleanup(params: {
 
 /** Runs session cleanup preview/apply for the selected store targets. */
 export async function runSessionsCleanup(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   opts: SessionsCleanupOptions;
   targets?: SessionStoreTarget[];
 }): Promise<SessionsCleanupRunResult> {
@@ -623,7 +623,7 @@ export async function runSessionsCleanup(params: {
 
 /** Purge session store entries for a deleted agent (#65524). Best-effort. */
 export async function purgeAgentSessionStoreEntries(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   agentId: string,
 ): Promise<void> {
   try {

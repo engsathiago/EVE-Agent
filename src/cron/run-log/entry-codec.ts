@@ -1,5 +1,5 @@
 /** Parses and normalizes persisted cron run-log entry payloads. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { FailoverReason } from "../../agents/embedded-agent-helpers/types.js";
 import { resolveFailoverReasonFromError } from "../../agents/failover-error.js";
 import { normalizeCronRunDiagnostics } from "../run-diagnostics.js";

@@ -9,22 +9,22 @@ import {
   resolveEnvelopeFormatOptions,
   toLocationContext,
   type NormalizedLocation,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { isAbortRequestText } from "openclaw/plugin-sdk/command-primitives-runtime";
-import { normalizeCommandBody } from "openclaw/plugin-sdk/command-surface";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { isAbortRequestText } from "eve-agent/plugin-sdk/command-primitives-runtime";
+import { normalizeCommandBody } from "eve-agent/plugin-sdk/command-surface";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type {
   TelegramDirectConfig,
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-import { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
-import { timestampMsToIsoString } from "openclaw/plugin-sdk/number-runtime";
-import { createChannelHistoryWindow, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { ResolvedAgentRoute } from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { evaluateSupplementalContextVisibility } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/config-contracts";
+import { resolveChannelContextVisibilityMode } from "eve-agent/plugin-sdk/context-visibility-runtime";
+import { timestampMsToIsoString } from "eve-agent/plugin-sdk/number-runtime";
+import { createChannelHistoryWindow, type HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
+import type { ResolvedAgentRoute } from "eve-agent/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { evaluateSupplementalContextVisibility } from "eve-agent/plugin-sdk/security-runtime";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { NormalizedAllowFrom } from "./bot-access.js";
 import { isSenderAllowed, normalizeAllowFrom } from "./bot-access.js";
 import type {
@@ -103,7 +103,7 @@ async function loadTelegramMessageContextSessionRuntime(
 }
 
 export async function resolveTelegramMessageContextStorePath(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   sessionRuntime?: TelegramMessageContextSessionRuntimeOverrides;
 }): Promise<string> {
@@ -167,7 +167,7 @@ function formatReplyChainEntry(entry: TelegramReplyChainEntry, index: number): s
 }
 
 export async function buildTelegramInboundContextPayload(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   primaryCtx: TelegramContext;
   msg: TelegramContext["message"];
   allMedia: TelegramMediaRef[];

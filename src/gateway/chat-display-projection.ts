@@ -1,10 +1,10 @@
 // Gateway chat display projection.
 // Converts raw transcript messages into bounded Control UI/history display records.
 import { createHash } from "node:crypto";
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { asOptionalRecord as readRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../agents/internal-runtime-context.js";
+import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
+import { asOptionalRecord as readRecord } from "@eve/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import { EVE_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../agents/internal-runtime-context.js";
 import { STREAM_ERROR_FALLBACK_TEXT } from "../agents/stream-message-shared.js";
 import { isHeartbeatOkResponse, isHeartbeatUserMessage } from "../auto-reply/heartbeat-filter.js";
 import { HEARTBEAT_PROMPT } from "../auto-reply/heartbeat.js";
@@ -19,7 +19,7 @@ import {
   parseAssistantTextSignature,
   resolveAssistantMessagePhase,
 } from "../shared/chat-message-content.js";
-import { isOpenClawDeliveryMirrorAssistantMessage } from "../shared/transcript-only-openclaw-assistant.js";
+import { isEVEDeliveryMirrorAssistantMessage } from "../shared/transcript-only-eve-assistant.js";
 import { stripInlineDirectiveTagsForDisplay } from "../utils/directive-tags.js";
 import { stripEnvelopeFromMessages } from "./chat-sanitize.js";
 import { isSuppressedControlReplyText } from "./control-reply-text.js";
@@ -303,8 +303,8 @@ function sanitizeChatHistoryContentBlock(
     delete entry.thinkingSignature;
     changed = true;
   }
-  if ("openclawReasoningReplay" in entry) {
-    delete entry.openclawReasoningReplay;
+  if ("eveReasoningReplay" in entry) {
+    delete entry.eveReasoningReplay;
     changed = true;
   }
   const type = typeof entry.type === "string" ? entry.type : "";
@@ -916,7 +916,7 @@ function buildMessageToolVisibleReplyMirror(
   const mirror: Record<string, unknown> = {
     role: "assistant",
     content: [{ type: "text", text: pending.text }],
-    openclawMessageToolMirror: {
+    eveMessageToolMirror: {
       toolName: "message",
       ...(pending.toolCallId ? { toolCallId: pending.toolCallId } : {}),
     },
@@ -926,9 +926,9 @@ function buildMessageToolVisibleReplyMirror(
       mirror[field] = pending.anchor[field];
     }
   }
-  const transcriptMeta = readRecord((pending.completionAnchor ?? pending.anchor)["__openclaw"]);
+  const transcriptMeta = readRecord((pending.completionAnchor ?? pending.anchor)["__eve"]);
   if (transcriptMeta) {
-    mirror["__openclaw"] = { ...transcriptMeta };
+    mirror["__eve"] = { ...transcriptMeta };
   }
   return mirror;
 }
@@ -937,7 +937,7 @@ function readMessageToolDeliveryMirrorText(message: Record<string, unknown>): st
   // Delivery mirrors can arrive between a successful message-tool result and
   // the final NO_REPLY. The pending mirror is the display row; the raw mirror
   // would duplicate that same send.
-  if (!isOpenClawDeliveryMirrorAssistantMessage(message)) {
+  if (!isEVEDeliveryMirrorAssistantMessage(message)) {
     return undefined;
   }
   return displayTextForDuplicateCheck(message);
@@ -1194,7 +1194,7 @@ function digestTtsSupplementText(text: string): string {
 function readTtsSupplementMarker(
   message: Record<string, unknown>,
 ): { textSha256?: string; spokenText?: string } | undefined {
-  const marker = message.openclawTtsSupplement;
+  const marker = message.eveTtsSupplement;
   if (!marker || typeof marker !== "object" || Array.isArray(marker)) {
     return undefined;
   }
@@ -1332,7 +1332,7 @@ function isSubagentAnnounceInterSessionUserMessage(message: Record<string, unkno
 }
 
 function readChatHistoryRecordTimestampMs(message: unknown): number | undefined {
-  const meta = readRecord(readRecord(message)?.["__openclaw"]);
+  const meta = readRecord(readRecord(message)?.["__eve"]);
   const value = meta?.recordTimestampMs;
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;
@@ -1416,7 +1416,7 @@ function isDisplayHiddenProjectedMessage(message: Record<string, unknown>): bool
   if (message.display === false) {
     return true;
   }
-  return message.role === "custom" && message.customType === OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE;
+  return message.role === "custom" && message.customType === EVE_RUNTIME_CONTEXT_CUSTOM_TYPE;
 }
 
 function shouldHideProjectedHistoryMessage(message: Record<string, unknown>): boolean {
@@ -1449,9 +1449,9 @@ function shouldHideProjectedHistoryMessage(message: Record<string, unknown>): bo
   return isHeartbeatOkResponse(roleContent);
 }
 
-function openclawAssistantModel(message: Record<string, unknown>): string | undefined {
+function eveAssistantModel(message: Record<string, unknown>): string | undefined {
   return message.role === "assistant" &&
-    message.provider === "openclaw" &&
+    message.provider === "eve" &&
     typeof message.model === "string"
     ? message.model
     : undefined;
@@ -1470,8 +1470,8 @@ function isDuplicateAcpGatewayInjectedMessage(
     return false;
   }
   if (
-    openclawAssistantModel(previousVisible) !== "acp-runtime" ||
-    openclawAssistantModel(current) !== "gateway-injected"
+    eveAssistantModel(previousVisible) !== "acp-runtime" ||
+    eveAssistantModel(current) !== "gateway-injected"
   ) {
     return false;
   }

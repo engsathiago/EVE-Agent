@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { initializeGlobalHookRunner, resetGlobalHookRunner } from "./hook-runner-global.js";
 import { createMockPluginRegistry } from "./hooks.test-helpers.js";
@@ -22,7 +22,7 @@ vi.mock("../process/exec.js", () => ({
   runCommandWithTimeout: vi.fn(),
 }));
 
-const suiteTempRootTracker = createSuiteTempRootTracker("openclaw-plugin-install-path");
+const suiteTempRootTracker = createSuiteTempRootTracker("eve-plugin-install-path");
 const setupBundleInstallFixture = createBundleInstallFixtureFactory(
   suiteTempRootTracker.makeTempDir,
 );
@@ -45,12 +45,12 @@ function setupNativePluginInstallFixture() {
     JSON.stringify({
       name: "symlink-plugin",
       version: "1.0.0",
-      openclaw: { extensions: ["./dist/index.js"] },
+      eve: { extensions: ["./dist/index.js"] },
     }),
     "utf-8",
   );
   fs.writeFileSync(
-    path.join(pluginDir, "openclaw.plugin.json"),
+    path.join(pluginDir, "eve.plugin.json"),
     JSON.stringify({
       id: "symlink-plugin",
       configSchema: { type: "object", properties: {} },
@@ -62,7 +62,7 @@ function setupNativePluginInstallFixture() {
 }
 
 async function installFromFileWithWarnings(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   extensionsDir: string;
   filePath: string;
   dangerouslyForceUnsafeInstall?: boolean;
@@ -226,7 +226,7 @@ describe("installPluginFromPath", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const result = await installPluginFromFile({
       config,
@@ -264,7 +264,7 @@ describe("installPluginFromPath", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies EVEConfig;
 
     const { result, warnings } = await installFromFileWithWarnings({
       config,
@@ -313,7 +313,7 @@ describe("installPluginFromPath", () => {
     }
     expect(result.code).toBe(PLUGIN_INSTALL_ERROR_CODE.UNSUPPORTED_PLAIN_FILE_PLUGIN);
     expect(result.error).toBe(
-      "Plain file plugin installs are not supported. Install a plugin directory or archive that contains openclaw.plugin.json, or list standalone plugin files in plugins.load.paths.",
+      "Plain file plugin installs are not supported. Install a plugin directory or archive that contains eve.plugin.json, or list standalone plugin files in plugins.load.paths.",
     );
   });
 

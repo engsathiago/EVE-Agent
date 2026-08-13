@@ -3,8 +3,8 @@ import {
   AllowFromListSchema,
   DmPolicySchema,
   MarkdownConfigSchema,
-} from "openclaw/plugin-sdk/channel-config-primitives";
-import { buildSecretInputSchema } from "openclaw/plugin-sdk/secret-input";
+} from "eve-agent/plugin-sdk/channel-config-primitives";
+import { buildSecretInputSchema } from "eve-agent/plugin-sdk/secret-input";
 import { z } from "zod";
 
 /**

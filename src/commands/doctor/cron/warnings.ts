@@ -5,7 +5,7 @@ import { normalizeOptionalString } from "../../../../packages/normalization-core
 import { note } from "../../../../packages/terminal-core/src/note.js";
 import { formatCliCommand } from "../../../cli/command-format.js";
 import { resolveAgentModelPrimaryValue } from "../../../config/model-input.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import { shortenHomePath } from "../../../utils.js";
 
 type CrontabReader = () => Promise<{ stdout?: unknown; stderr?: unknown }>;
@@ -64,7 +64,7 @@ function formatProviderCounts(counts: Map<string, number>): string {
 
 /** Emit a note when cron jobs pin models instead of inheriting the default model. */
 export function noteCronModelOverrides(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   jobs: Array<Record<string, unknown>>;
   storePath: string;
 }) {
@@ -115,7 +115,7 @@ export function noteCronModelOverrides(params: {
     lines.push(`- Examples: ${mismatchExamples.join(", ")}`);
   }
   lines.push(
-    `Review with ${formatCliCommand("openclaw cron list")} and ${formatCliCommand("openclaw cron show <job-id>")}; remove \`payload.model\` from jobs that should inherit the default.`,
+    `Review with ${formatCliCommand("eve cron list")} and ${formatCliCommand("eve cron show <job-id>")}; remove \`payload.model\` from jobs that should inherit the default.`,
   );
 
   note(lines.join("\n"), "Cron");
@@ -178,8 +178,8 @@ export async function collectLegacyWhatsAppCrontabHealthWarning(
 
   return [
     "Legacy WhatsApp crontab health check detected.",
-    "`~/.openclaw/bin/ensure-whatsapp.sh` is not maintained by current OpenClaw and can misreport `Gateway inactive` from cron when the systemd user bus environment is missing.",
-    `Remove the stale crontab entry with ${formatCliCommand("crontab -e")}; use ${formatCliCommand("openclaw channels status --probe")}, ${formatCliCommand("openclaw doctor")}, and ${formatCliCommand("openclaw gateway status")} for current health checks.`,
+    "`~/.eve/bin/ensure-whatsapp.sh` is not maintained by current EVE and can misreport `Gateway inactive` from cron when the systemd user bus environment is missing.",
+    `Remove the stale crontab entry with ${formatCliCommand("crontab -e")}; use ${formatCliCommand("eve channels status --probe")}, ${formatCliCommand("eve doctor")}, and ${formatCliCommand("eve gateway status")} for current health checks.`,
     `Matched ${pluralize(legacyLines.length, "entry")}.`,
   ].join("\n");
 }

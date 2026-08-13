@@ -324,8 +324,8 @@ vi.mock("../plugins/loader.js", async () => {
     await vi.importActual<typeof import("../plugins/loader.js")>("../plugins/loader.js");
   return {
     ...actual,
-    loadOpenClawPlugins: () => getTestPluginRegistry(),
+    loadEVEPlugins: () => getTestPluginRegistry(),
   };
 });
-process.env.OPENCLAW_SKIP_CHANNELS = "1";
-process.env.OPENCLAW_SKIP_CRON = "1";
+process.env.EVE_SKIP_CHANNELS = "1";
+process.env.EVE_SKIP_CRON = "1";

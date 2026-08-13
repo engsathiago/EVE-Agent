@@ -1,6 +1,6 @@
 // Defines core dangerous config flag metadata for security audits.
 import { DANGEROUS_SANDBOX_DOCKER_BOOLEAN_KEYS } from "../agents/sandbox/config.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { isRecord } from "../utils.js";
 import { collectCoreInsecureOrDangerousFlags } from "./core-dangerous-config-flags.js";
 
@@ -69,7 +69,7 @@ function collectExactPluginConfigContractMatches({
  * The returned strings are stable audit/report labels, not user-edited config paths.
  */
 export function collectEnabledInsecureOrDangerousFlagsFromContracts(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   inputs: DangerousConfigFlagContractInputs = {},
 ): string[] {
   const enabledFlags = collectCoreInsecureOrDangerousFlags(cfg);

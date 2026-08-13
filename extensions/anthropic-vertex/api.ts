@@ -2,7 +2,7 @@
  * Public Anthropic Vertex API barrel. It exposes lightweight discovery helpers
  * and lazy stream factories without eagerly importing the Vertex SDK runtime.
  */
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
 import type { AnthropicVertexStreamDeps } from "./stream-runtime.js";
 
 export {

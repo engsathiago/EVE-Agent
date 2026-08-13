@@ -1,7 +1,7 @@
 // Chutes OAuth login flow with loopback callback handling and manual paste fallback.
 import { randomBytes } from "node:crypto";
 import { createServer } from "node:http";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { ChutesOAuthAppConfig } from "../agents/chutes-oauth.js";
 import {
   CHUTES_AUTHORIZE_ENDPOINT,
@@ -118,7 +118,7 @@ async function waitForLocalCallback(params: {
             "<!doctype html>",
             "<html><head><meta charset='utf-8' /></head>",
             "<body><h2>Chutes OAuth complete</h2>",
-            "<p>You can close this window and return to OpenClaw.</p></body></html>",
+            "<p>You can close this window and return to EVE.</p></body></html>",
           ].join(""),
         );
         if (timeout) {

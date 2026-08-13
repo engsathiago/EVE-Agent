@@ -1,7 +1,7 @@
 // Gateway connection auth tests document token/password precedence for local,
 // remote, CLI override, env override, and config-secret connection flows.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 import {
   resolveGatewayConnectionAuth,
   type GatewayConnectionAuthOptions,
@@ -11,14 +11,14 @@ type ResolvedAuth = { token?: string; password?: string };
 
 type ConnectionAuthCase = {
   name: string;
-  cfgLocal: OpenClawConfig;
+  cfgLocal: EVEConfig;
   env: NodeJS.ProcessEnv;
   options?: Partial<Omit<GatewayConnectionAuthOptions, "config" | "env">>;
   expected: ResolvedAuth;
 };
 
-function cfg(input: Partial<OpenClawConfig>): OpenClawConfig {
-  return input as OpenClawConfig;
+function cfg(input: Partial<EVEConfig>): EVEConfig {
+  return input as EVEConfig;
 }
 
 function createRemoteModeConfig() {
@@ -39,8 +39,8 @@ function createRemoteModeConfig() {
 }
 
 const DEFAULT_ENV = {
-  OPENCLAW_GATEWAY_TOKEN: "env-token",
-  OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+  EVE_GATEWAY_TOKEN: "env-token",
+  EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
 } as NodeJS.ProcessEnv;
 
 describe("resolveGatewayConnectionAuth", () => {
@@ -194,7 +194,7 @@ describe("resolveGatewayConnectionAuth", () => {
     expect(asyncResolved).toEqual(expected);
   });
 
-  it("resolves local SecretRef token when OPENCLAW env is absent", async () => {
+  it("resolves local SecretRef token when EVE env is absent", async () => {
     const config = cfg({
       gateway: {
         mode: "local",
@@ -222,7 +222,7 @@ describe("resolveGatewayConnectionAuth", () => {
     });
   });
 
-  it("resolves config-first token SecretRef even when OPENCLAW env token exists", async () => {
+  it("resolves config-first token SecretRef even when EVE env token exists", async () => {
     const config = cfg({
       gateway: {
         mode: "local",
@@ -237,7 +237,7 @@ describe("resolveGatewayConnectionAuth", () => {
       },
     });
     const env = {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      EVE_GATEWAY_TOKEN: "env-token",
       CONFIG_FIRST_TOKEN: "config-first-token",
     } as NodeJS.ProcessEnv;
 
@@ -252,7 +252,7 @@ describe("resolveGatewayConnectionAuth", () => {
     });
   });
 
-  it("resolves config-first password SecretRef even when OPENCLAW env password exists", async () => {
+  it("resolves config-first password SecretRef even when EVE env password exists", async () => {
     const config = cfg({
       gateway: {
         mode: "local",
@@ -268,7 +268,7 @@ describe("resolveGatewayConnectionAuth", () => {
       },
     });
     const env = {
-      OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+      EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
       CONFIG_FIRST_PASSWORD: "config-first-password", // pragma: allowlist secret
     } as NodeJS.ProcessEnv;
 
@@ -298,7 +298,7 @@ describe("resolveGatewayConnectionAuth", () => {
       },
     });
     const env = {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      EVE_GATEWAY_TOKEN: "env-token",
     } as NodeJS.ProcessEnv;
 
     await expect(
@@ -326,7 +326,7 @@ describe("resolveGatewayConnectionAuth", () => {
       },
     });
     const env = {
-      OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+      EVE_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
     } as NodeJS.ProcessEnv;
 
     await expect(

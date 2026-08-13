@@ -2,7 +2,7 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@eve/normalization-core/record-coerce";
 import {
   migrateSessionEntries,
   type FileEntry as SessionFileEntry,
@@ -50,13 +50,13 @@ async function loadTemplate(fileName: string): Promise<string> {
 function replaceHtmlPlaceholder(template: string, name: string, value: string): string {
   let replaced = false;
   const placeholder = new RegExp(
-    `(<(?:script|style)\\b(?=[^>]*\\bdata-openclaw-export-placeholder="${name}")[^>]*>)(</(?:script|style)>)`,
+    `(<(?:script|style)\\b(?=[^>]*\\bdata-eve-export-placeholder="${name}")[^>]*>)(</(?:script|style)>)`,
   );
   const next = template.replace(
     placeholder,
     (_match: string, openTag: string, closeTag: string) => {
       replaced = true;
-      const finalOpenTag = openTag.replace(/\sdata-openclaw-export-placeholder="[^"]*"/, "");
+      const finalOpenTag = openTag.replace(/\sdata-eve-export-placeholder="[^"]*"/, "");
       return `${finalOpenTag}${value}${closeTag}`;
     },
   );
@@ -319,7 +319,7 @@ export async function buildExportSessionReply(params: HandleCommandsParams): Pro
 
   // 6. Determine output path
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const defaultFileName = `openclaw-session-${entry.sessionId.slice(0, 8)}-${timestamp}.html`;
+  const defaultFileName = `eve-session-${entry.sessionId.slice(0, 8)}-${timestamp}.html`;
   let outputPath = args.outputPath
     ? path.resolve(
         args.outputPath.startsWith("~")

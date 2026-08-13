@@ -5,7 +5,7 @@
  * records per-skill API keys entered during setup.
  */
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveBrewExecutable } from "../infra/brew.js";
 import { isContainerEnvironment } from "../infra/container-environment.js";
 import type { RuntimeEnv } from "../runtime.js";
@@ -58,11 +58,11 @@ function isBrewOnlyInstallableSkill(skill: {
 
 /** Runs the interactive skills setup step and returns the updated config. */
 export async function setupSkills(
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   workspaceDir: string,
   runtime: RuntimeEnv,
   prompter: WizardPrompter,
-): Promise<OpenClawConfig> {
+): Promise<EVEConfig> {
   const report = buildWorkspaceSkillStatus(workspaceDir, { config: cfg });
   const eligible = report.skills.filter((s) => s.eligible);
   const unsupportedOs = report.skills.filter(
@@ -115,13 +115,13 @@ export async function setupSkills(
       );
     }
   }
-  let next: OpenClawConfig = cfg;
+  let next: EVEConfig = cfg;
   if (installable.length === 0 && missing.length === 0) {
     await prompter.note(
       [
         "No missing skill dependencies to install.",
-        `To inspect available skills, run: ${formatCliCommand("openclaw skills list --verbose")}`,
-        `To check skill status, run: ${formatCliCommand("openclaw skills check")}`,
+        `To inspect available skills, run: ${formatCliCommand("eve skills list --verbose")}`,
+        `To check skill status, run: ${formatCliCommand("eve skills check")}`,
       ].join("\n"),
       t("wizard.skills.allReadyTitle") ?? "All skills ready",
     );
@@ -210,7 +210,7 @@ export async function setupSkills(
         continue;
       }
       // Onboarding installs the primary recipe only; alternative recipes remain
-      // visible through `openclaw skills list --verbose`.
+      // visible through `eve skills list --verbose`.
       const spin = prompter.progress(t("wizard.skills.installing", { name }));
       const result = await installSkill({
         workspaceDir,
@@ -244,7 +244,7 @@ export async function setupSkills(
         runtime.log(result.stdout.trim());
       }
       runtime.log(
-        `Tip: run \`${formatCliCommand("openclaw doctor")}\` to review skills + requirements.`,
+        `Tip: run \`${formatCliCommand("eve doctor")}\` to review skills + requirements.`,
       );
       runtime.log(t("wizard.skills.docsLine"));
     }

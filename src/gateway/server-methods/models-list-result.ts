@@ -1,6 +1,6 @@
 // Model list result building resolves visible model catalogs for an agent and
 // strips runtime-only provider params before sending the browse API payload.
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import {
   resolveAgentDir,
   resolveAgentEffectiveModelPrimary,
@@ -25,7 +25,7 @@ import {
 } from "../../agents/model-catalog-visibility.js";
 import type { ModelCatalogEntry } from "../../agents/model-catalog.types.js";
 import { resolveDefaultAgentWorkspaceDir } from "../../agents/workspace.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { isSecretRef } from "../../config/types.secrets.js";
 import type { GatewayRequestContext } from "./types.js";
 
@@ -133,7 +133,7 @@ function profileHasReadOnlyAvailableAuth(params: {
 function hasReadOnlyAvailableProfileAuth(params: {
   provider: string;
   modelApi?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   store: AuthProfileStore;
 }): ModelsListAvailability {
   const now = Date.now();
@@ -164,7 +164,7 @@ function hasReadOnlyAvailableProfileAuth(params: {
 }
 
 function createModelsListProviderAuthChecker(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   workspaceDir: string;
 }): ModelsListProviderAuthChecker {
@@ -224,7 +224,7 @@ async function buildPublicModelsListEntry(params: {
 
 async function buildPublicModelsListEntries(params: {
   catalog: ModelCatalogEntry[];
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   workspaceDir: string;
 }): Promise<ModelsListEntry[]> {

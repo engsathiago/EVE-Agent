@@ -1,7 +1,7 @@
 // Telegram plugin module implements delivery.resolve media behavior.
 import path from "node:path";
 import { GrammyError } from "grammy";
-import { root as fsRoot } from "openclaw/plugin-sdk/file-access-runtime";
+import { root as fsRoot } from "eve-agent/plugin-sdk/file-access-runtime";
 import type { TelegramTransport } from "../fetch.js";
 import { cacheSticker, getCachedSticker } from "../sticker-cache.js";
 import {

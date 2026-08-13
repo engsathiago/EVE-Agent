@@ -8,16 +8,16 @@ describe("scripts/check-deprecated-api-usage", () => {
     const specifiers = new Set(buildDeprecatedPluginSdkModuleSpecifiers());
 
     for (const subpath of deprecatedPublicPluginSdkSubpaths) {
-      expect(specifiers.has(`openclaw/plugin-sdk/${subpath}`), subpath).toBe(true);
+      expect(specifiers.has(`eve-agent/plugin-sdk/${subpath}`), subpath).toBe(true);
     }
   });
 
   it("keeps root and private compatibility aliases explicit", () => {
     expect(buildDeprecatedPluginSdkModuleSpecifiers()).toEqual(
       expect.arrayContaining([
-        "openclaw/plugin-sdk",
-        "openclaw/plugin-sdk/agent-dir-compat",
-        "openclaw/plugin-sdk/test-utils",
+        "eve-agent/plugin-sdk",
+        "eve-agent/plugin-sdk/agent-dir-compat",
+        "eve-agent/plugin-sdk/test-utils",
       ]),
     );
   });

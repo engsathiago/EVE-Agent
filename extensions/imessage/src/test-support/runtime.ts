@@ -4,21 +4,21 @@ import path from "node:path";
 import type {
   OpenKeyedStoreOptions,
   PluginStateSyncKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import type { PluginRuntime } from "eve-agent/plugin-sdk/runtime-store";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { setIMessageRuntime } from "../runtime.js";
 
 function createIMessageTestEnv(): NodeJS.ProcessEnv {
   const stateDir = fs.mkdtempSync(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-imessage-state-"),
+    path.join(resolvePreferredEVETmpDir(), "eve-imessage-state-"),
   );
-  return { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+  return { ...process.env, EVE_STATE_DIR: stateDir };
 }
 
 let imessageTestEnv = createIMessageTestEnv();

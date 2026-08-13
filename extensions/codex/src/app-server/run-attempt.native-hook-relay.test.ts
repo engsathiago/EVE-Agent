@@ -4,7 +4,7 @@ import {
   abortAgentHarnessRun,
   invokeNativeHookRelay,
   nativeHookRelayTesting,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { describe, expect, it, vi } from "vitest";
 import * as approvalBridge from "./approval-bridge.js";
 import {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Verifies published plugin npm packages include built runtime entries and
-// metadata expected by OpenClaw.
+// metadata expected by EVE.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -101,23 +101,23 @@ export function collectPluginNpmPublishedRuntimeErrors(params) {
   const errors = [];
   const extensionsResult = readPackageStringList(
     packageLabel,
-    "openclaw.extensions",
-    packageJson.openclaw?.extensions,
+    "eve.extensions",
+    packageJson.eve?.extensions,
   );
   const runtimeExtensionsResult = readPackageStringList(
     packageLabel,
-    "openclaw.runtimeExtensions",
-    packageJson.openclaw?.runtimeExtensions,
+    "eve.runtimeExtensions",
+    packageJson.eve?.runtimeExtensions,
   );
   const setupEntryResult = readOptionalPackageString(
     packageLabel,
-    "openclaw.setupEntry",
-    packageJson.openclaw?.setupEntry,
+    "eve.setupEntry",
+    packageJson.eve?.setupEntry,
   );
   const runtimeSetupEntryResult = readOptionalPackageString(
     packageLabel,
-    "openclaw.runtimeSetupEntry",
-    packageJson.openclaw?.runtimeSetupEntry,
+    "eve.runtimeSetupEntry",
+    packageJson.eve?.runtimeSetupEntry,
   );
   errors.push(
     ...extensionsResult.errors,
@@ -135,7 +135,7 @@ export function collectPluginNpmPublishedRuntimeErrors(params) {
 
   if (runtimeExtensions.length > 0 && runtimeExtensions.length !== extensions.length) {
     errors.push(
-      `${packageLabel} package.json openclaw.runtimeExtensions length (${runtimeExtensions.length}) must match openclaw.extensions length (${extensions.length})`,
+      `${packageLabel} package.json eve.runtimeExtensions length (${runtimeExtensions.length}) must match eve.extensions length (${extensions.length})`,
     );
     return errors;
   }
@@ -163,7 +163,7 @@ export function collectPluginNpmPublishedRuntimeErrors(params) {
 
   if (runtimeSetupEntry && !setupEntry) {
     errors.push(
-      `${packageLabel} package.json openclaw.runtimeSetupEntry requires openclaw.setupEntry`,
+      `${packageLabel} package.json eve.runtimeSetupEntry requires eve.setupEntry`,
     );
     return errors;
   }
@@ -227,13 +227,13 @@ export function readPluginNpmCommandOptions(env = process.env) {
     encoding: "utf8",
     killSignal: "SIGKILL",
     maxBuffer: readPositiveIntEnv(
-      "OPENCLAW_PLUGIN_NPM_COMMAND_MAX_BUFFER_BYTES",
+      "EVE_PLUGIN_NPM_COMMAND_MAX_BUFFER_BYTES",
       DEFAULT_NPM_COMMAND_MAX_BUFFER_BYTES,
       env,
     ),
     stdio: ["ignore", "pipe", "pipe"],
     timeout: readPositiveIntEnv(
-      "OPENCLAW_PLUGIN_NPM_COMMAND_TIMEOUT_MS",
+      "EVE_PLUGIN_NPM_COMMAND_TIMEOUT_MS",
       DEFAULT_NPM_COMMAND_TIMEOUT_MS,
       env,
     ),
@@ -278,8 +278,8 @@ function sleep(ms) {
 }
 
 async function packPublishedPackage(spec, destinationDir) {
-  const attempts = readPositiveIntEnv("OPENCLAW_PLUGIN_NPM_VERIFY_ATTEMPTS", 90);
-  const delayMs = readPositiveIntEnv("OPENCLAW_PLUGIN_NPM_VERIFY_DELAY_MS", 10000);
+  const attempts = readPositiveIntEnv("EVE_PLUGIN_NPM_VERIFY_ATTEMPTS", 90);
+  const delayMs = readPositiveIntEnv("EVE_PLUGIN_NPM_VERIFY_DELAY_MS", 10000);
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
@@ -298,8 +298,8 @@ async function packPublishedPackage(spec, destinationDir) {
 }
 
 async function verifyPublishedPackageReadme(spec) {
-  const attempts = readPositiveIntEnv("OPENCLAW_PLUGIN_NPM_README_VERIFY_ATTEMPTS", 6);
-  const delayMs = readPositiveIntEnv("OPENCLAW_PLUGIN_NPM_README_VERIFY_DELAY_MS", 10000);
+  const attempts = readPositiveIntEnv("EVE_PLUGIN_NPM_README_VERIFY_ATTEMPTS", 6);
+  const delayMs = readPositiveIntEnv("EVE_PLUGIN_NPM_README_VERIFY_DELAY_MS", 10000);
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
@@ -381,7 +381,7 @@ export function parseVerifyPublishedPluginRuntimeArgs(argv) {
 }
 
 export async function verifyPublishedPluginRuntime(spec) {
-  const workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-plugin-npm-runtime."));
+  const workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-plugin-npm-runtime."));
   try {
     const tarballPath = await packPublishedPackage(spec, workingDir);
     const extractDir = path.join(workingDir, "extract");

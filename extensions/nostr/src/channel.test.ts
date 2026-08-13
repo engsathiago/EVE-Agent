@@ -3,10 +3,10 @@ import {
   createPluginSetupWizardConfigure,
   createTestWizardPrompter,
   runSetupWizardConfigure,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import type { WizardPrompter } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-test-runtime";
+import type { WizardPrompter } from "eve-agent/plugin-sdk/plugin-test-runtime";
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { EVEConfig } from "../runtime-api.js";
 import { nostrSetupWizard } from "./setup-surface.js";
 import {
   TEST_HEX_PRIVATE_KEY,
@@ -24,7 +24,7 @@ function normalizeNostrTestEntry(entry: string): string {
 }
 
 function resolveNostrTestDmPolicy(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   account: ReturnType<typeof resolveNostrAccount>;
 }) {
   return {
@@ -49,7 +49,7 @@ const nostrTestPlugin = {
   },
   config: {
     listAccountIds: listNostrAccountIds,
-    resolveAccount: (cfg: OpenClawConfig, accountId?: string | null) =>
+    resolveAccount: (cfg: EVEConfig, accountId?: string | null) =>
       resolveNostrAccount({ cfg, accountId }),
   },
   messaging: {
@@ -87,7 +87,7 @@ const nostrTestPlugin = {
       cfg,
       accountId,
     }: {
-      cfg: OpenClawConfig;
+      cfg: EVEConfig;
       accountId?: string;
       input: unknown;
     }) => accountId?.trim() || resolveDefaultNostrAccountId(cfg),
@@ -308,7 +308,7 @@ describe("nostr setup wizard", () => {
 
     const result = await runSetupWizardConfigure({
       configure: nostrConfigure,
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       prompter,
       options: {},
     });
@@ -334,7 +334,7 @@ describe("nostr setup wizard", () => {
 
     const result = await runSetupWizardConfigure({
       configure: nostrConfigure,
-      cfg: {} as OpenClawConfig,
+      cfg: {} as EVEConfig,
       prompter,
       options: {},
       accountOverrides: {
@@ -350,7 +350,7 @@ describe("nostr setup wizard", () => {
   it("uses configured defaultAccount when setup accountId is omitted", () => {
     expect(
       nostrTestPlugin.setup?.resolveAccountId?.({
-        cfg: createConfiguredNostrCfg({ defaultAccount: "work" }) as OpenClawConfig,
+        cfg: createConfiguredNostrCfg({ defaultAccount: "work" }) as EVEConfig,
         accountId: undefined,
         input: {},
       } as never),

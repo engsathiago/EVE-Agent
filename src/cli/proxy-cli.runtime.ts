@@ -29,8 +29,8 @@ export async function runDebugProxyStartCommand(opts: { host?: string; port?: nu
     id: settings.sessionId,
     startedAt: Date.now(),
     mode: "proxy-start",
-    sourceScope: "openclaw",
-    sourceProcess: "openclaw",
+    sourceScope: "eve",
+    sourceProcess: "eve",
     proxyUrl: settings.proxyUrl,
   });
   initializeDebugProxyCapture("proxy-start", settings);
@@ -83,8 +83,8 @@ export async function runDebugProxyRunCommand(opts: {
     id: sessionId,
     startedAt: Date.now(),
     mode: "proxy-run",
-    sourceScope: "openclaw",
-    sourceProcess: "openclaw",
+    sourceScope: "eve",
+    sourceProcess: "eve",
     proxyUrl: undefined,
   });
   const server = await startDebugProxyServer({
@@ -188,7 +188,7 @@ function formatProxyValidationNextSteps(result: ProxyValidationResult): string[]
   }
   if (result.config.errors.some((error) => error.includes("proxy.enabled"))) {
     return [
-      "Enable proxy.enabled with proxy.proxyUrl or OPENCLAW_PROXY_URL, or pass --proxy-url for an explicit one-off validation.",
+      "Enable proxy.enabled with proxy.proxyUrl or EVE_PROXY_URL, or pass --proxy-url for an explicit one-off validation.",
     ];
   }
   if (result.config.errors.some((error) => error.includes("proxy CA file could not be read"))) {
@@ -198,7 +198,7 @@ function formatProxyValidationNextSteps(result: ProxyValidationResult): string[]
   }
   if (result.config.errors.length > 0) {
     return [
-      "Fix proxy.proxyUrl, OPENCLAW_PROXY_URL, or --proxy-url so it uses a reachable http:// or https:// proxy.",
+      "Fix proxy.proxyUrl, EVE_PROXY_URL, or --proxy-url so it uses a reachable http:// or https:// proxy.",
     ];
   }
   if (result.checks.some((check) => !check.ok && check.kind === "allowed")) {

@@ -1,7 +1,7 @@
 // Model Catalog Core module implements configured model refs behavior.
 import { normalizeProviderId } from "./provider-id.js";
 
-// Collects configured model references from OpenClaw config-shaped objects.
+// Collects configured model references from EVE config-shaped objects.
 
 /** Narrow unknown values to plain records. */
 function isRecord(value: unknown): value is Record<string, unknown> {

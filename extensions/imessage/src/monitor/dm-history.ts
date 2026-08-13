@@ -2,8 +2,8 @@
 import {
   formatInboundEnvelope,
   type resolveEnvelopeFormatOptions,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { IMessageRpcClient } from "../client.js";
 import { normalizeIMessageHandle } from "../targets.js";
 import { parseIMessageNotification } from "./parse-notification.js";

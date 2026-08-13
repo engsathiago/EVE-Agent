@@ -1,7 +1,7 @@
 /** Auth probe planning and execution helpers for model diagnostics. */
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
-import { normalizeUniqueStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
 import {
   resolveAgentDir,
   resolveAgentWorkspaceDir,
@@ -30,7 +30,7 @@ import {
   resolveSessionTranscriptPath,
   resolveSessionTranscriptsDirForAgent,
 } from "../../config/sessions/paths.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { coerceSecretRef, normalizeSecretInputString } from "../../config/types.secrets.js";
 import { type SecretRefResolveCache, resolveSecretRefString } from "../../secrets/resolve.js";
 import { createLazyImportLoader } from "../../shared/lazy-promise.js";
@@ -243,7 +243,7 @@ function formatMissingCredentialProbeError(reasonCode: AuthProbeReasonCode): str
   return `${legacyLine}\n↳ Auth reason [ineligible_profile]: profile is incompatible with provider config.`;
 }
 
-function resolveProbeSecretRef(profile: AuthProfileCredential, cfg: OpenClawConfig) {
+function resolveProbeSecretRef(profile: AuthProfileCredential, cfg: EVEConfig) {
   const defaults = cfg.secrets?.defaults;
   if (profile.type === "api_key") {
     if (normalizeSecretInputString(profile.key) !== undefined) {
@@ -266,7 +266,7 @@ function formatUnresolvedRefProbeError(refLabel: string): string {
 }
 
 async function maybeResolveUnresolvedRefIssue(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   profile?: AuthProfileCredential;
   cache: SecretRefResolveCache;
 }): Promise<{ reasonCode: "unresolved_ref"; error: string } | null> {
@@ -294,7 +294,7 @@ async function maybeResolveUnresolvedRefIssue(params: {
 
 /** Builds probe targets plus preflight failures for missing/invalid credentials. */
 export async function buildProbeTargets(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   providers: string[];
@@ -477,7 +477,7 @@ export async function buildProbeTargets(params: {
 }
 
 async function probeTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId: string;
   agentDir: string;
   workspaceDir: string;
@@ -554,7 +554,7 @@ async function probeTarget(params: {
 }
 
 async function runTargetsWithConcurrency(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   agentDir?: string;
   workspaceDir?: string;
@@ -617,7 +617,7 @@ async function runTargetsWithConcurrency(params: {
 
 /** Runs all auth probes with bounded concurrency and returns a summary. */
 export async function runAuthProbes(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   agentId?: string;
   agentDir?: string;
   workspaceDir?: string;

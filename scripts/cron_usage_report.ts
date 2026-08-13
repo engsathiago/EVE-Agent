@@ -1,4 +1,4 @@
-// Cron Usage Report script supports OpenClaw repository automation.
+// Cron Usage Report script supports EVE repository automation.
 import fs from "node:fs/promises";
 import path from "node:path";
 

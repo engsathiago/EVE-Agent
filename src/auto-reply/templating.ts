@@ -211,7 +211,7 @@ export type MsgContext = {
   SkipStickerMediaUnderstanding?: boolean;
   OutputDir?: string;
   OutputBase?: string;
-  /** Remote host for SCP when media lives on a different machine (e.g., openclaw@192.168.64.3). */
+  /** Remote host for SCP when media lives on a different machine (e.g., eve@192.168.64.3). */
   MediaRemoteHost?: string;
   Transcript?: string;
   MediaUnderstanding?: MediaUnderstandingOutput[];

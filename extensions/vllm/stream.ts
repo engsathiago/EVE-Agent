@@ -1,11 +1,11 @@
 // Vllm plugin module implements stream behavior.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
+import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
+import type { ProviderWrapStreamFnContext } from "eve-agent/plugin-sdk/plugin-entry";
+import { normalizeProviderId } from "eve-agent/plugin-sdk/provider-model-shared";
 import {
   createPayloadPatchStreamWrapper,
   isOpenAICompatibleThinkingEnabled,
-} from "openclaw/plugin-sdk/provider-stream-shared";
+} from "eve-agent/plugin-sdk/provider-stream-shared";
 import {
   resolveVllmQwenThinkingFormatFromCompat,
   type VllmQwenThinkingFormat,

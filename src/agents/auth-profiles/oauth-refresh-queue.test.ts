@@ -43,7 +43,7 @@ describe("OAuth refresh in-process queue", () => {
   let caseIndex = 0;
 
   beforeAll(async () => {
-    tempRoot = await createOAuthTestTempRoot("openclaw-oauth-queue-");
+    tempRoot = await createOAuthTestTempRoot("eve-oauth-queue-");
   });
 
   beforeEach(async () => {

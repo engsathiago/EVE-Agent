@@ -1,9 +1,9 @@
 // Imessage plugin module implements approval reaction poller behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "eve-agent/plugin-sdk/number-runtime";
 import {
   extractIMessageApprovalPromptBinding,
   handleIMessageApprovalReaction,
@@ -226,7 +226,7 @@ function bindObservedApprovalPrompt(params: {
 
 export async function pollPendingIMessageApprovalReactions(params: {
   client: IMessageRpcClient;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId: string;
   allowRecentChatDiscovery?: boolean;
   logVerboseMessage?: (message: string) => void;

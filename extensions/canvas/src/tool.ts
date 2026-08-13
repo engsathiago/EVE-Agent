@@ -9,20 +9,20 @@ import {
   callGatewayTool,
   listNodes,
   resolveNodeIdFromList,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   imageResultFromFile,
   jsonResult,
   readStringParam,
-} from "openclaw/plugin-sdk/channel-actions";
-import { readFiniteNumberParam, readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { AnyAgentTool, OpenClawConfig } from "openclaw/plugin-sdk/plugin-entry";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "eve-agent/plugin-sdk/channel-actions";
+import { readFiniteNumberParam, readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import type { AnyAgentTool, EVEConfig } from "eve-agent/plugin-sdk/plugin-entry";
+import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { normalizeCanvasSnapshotFileExtension, parseCanvasSnapshotPayload } from "./cli-helpers.js";
 import { CanvasToolSchema } from "./tool-schema.js";
 
 type CanvasToolOptions = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 };
 
@@ -47,10 +47,10 @@ async function resolveNodeId(
 }
 
 async function writeBase64ToTempFile(params: { base64: string; ext: string }): Promise<string> {
-  const dir = resolvePreferredOpenClawTmpDir();
+  const dir = resolvePreferredEVETmpDir();
   await fs.mkdir(dir, { recursive: true, mode: 0o700 });
   const ext = `.${normalizeCanvasSnapshotFileExtension(params.ext)}`;
-  const filePath = path.join(dir, `openclaw-canvas-snapshot-${randomUUID()}${ext}`);
+  const filePath = path.join(dir, `eve-canvas-snapshot-${randomUUID()}${ext}`);
   await fs.writeFile(filePath, Buffer.from(params.base64, "base64"));
   return filePath;
 }
@@ -80,7 +80,7 @@ async function readJsonlFromPath(jsonlPath: string, workspaceDir?: string): Prom
 }
 
 function resolveCanvasImageSanitizationLimits(
-  config?: OpenClawConfig,
+  config?: EVEConfig,
 ): CanvasImageSanitizationLimits {
   const configured = config?.agents?.defaults?.imageMaxDimensionPx;
   if (typeof configured !== "number" || !Number.isFinite(configured)) {

@@ -41,7 +41,7 @@ describe("recurring error backoff floor persistence", () => {
     let persistedJob: CronJob | undefined;
     resetTaskRegistryForTests();
     try {
-      await withEnvAsync({ OPENCLAW_STATE_DIR: stateRoot }, async () => {
+      await withEnvAsync({ EVE_STATE_DIR: stateRoot }, async () => {
         await writeCronStoreSnapshot({ storePath, jobs: [job] });
 
         const state = createCronServiceState({

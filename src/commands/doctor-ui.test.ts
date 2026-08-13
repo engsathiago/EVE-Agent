@@ -15,17 +15,17 @@ const tempRoots: string[] = [];
 function issue(overrides: Partial<UiProtocolFreshnessIssue> = {}): UiProtocolFreshnessIssue {
   return {
     kind: "missing-assets",
-    root: "/repo/openclaw",
-    uiIndexPath: "/repo/openclaw/dist/control-ui/index.html",
+    root: "/repo/eve",
+    uiIndexPath: "/repo/eve/dist/control-ui/index.html",
     canBuild: true,
     ...overrides,
   } as UiProtocolFreshnessIssue;
 }
 
-async function createOpenClawRoot(): Promise<string> {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-doctor-ui-"));
+async function createEVERoot(): Promise<string> {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-doctor-ui-"));
   tempRoots.push(root);
-  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "openclaw" }));
+  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve" }));
   await fs.mkdir(path.join(root, "packages/gateway-protocol/src"), { recursive: true });
   await fs.writeFile(path.join(root, "packages/gateway-protocol/src/schema.ts"), "export {};\n");
   return root;
@@ -51,15 +51,15 @@ describe("UI protocol freshness health mapping", () => {
       expect.objectContaining({
         checkId: "core/doctor/ui-protocol-freshness",
         severity: "warning",
-        path: "/repo/openclaw/dist/control-ui/index.html",
-        fixHint: expect.stringContaining("openclaw doctor --fix"),
+        path: "/repo/eve/dist/control-ui/index.html",
+        fixHint: expect.stringContaining("eve doctor --fix"),
       }),
     );
     expect(uiProtocolFreshnessIssueToRepairEffects(current)).toEqual([
       {
         kind: "process",
         action: "would-build-control-ui",
-        target: "/repo/openclaw",
+        target: "/repo/eve",
         dryRunSafe: false,
       },
     ]);
@@ -73,12 +73,12 @@ describe("UI protocol freshness health mapping", () => {
     const finding = uiProtocolFreshnessIssueToHealthFinding(current);
 
     expect(finding.message).toContain("abc123 schema change");
-    expect(finding.fixHint).toContain("openclaw doctor --fix --force");
+    expect(finding.fixHint).toContain("eve doctor --fix --force");
     expect(uiProtocolFreshnessIssueToRepairEffects(current)).toEqual([
       {
         kind: "process",
         action: "would-rebuild-control-ui",
-        target: "/repo/openclaw",
+        target: "/repo/eve",
         dryRunSafe: false,
       },
     ]);
@@ -89,7 +89,7 @@ describe("UI protocol freshness health mapping", () => {
   });
 
   it("does not report stale assets when git finds no schema changes", async () => {
-    const root = await createOpenClawRoot();
+    const root = await createEVERoot();
     const schemaPath = path.join(root, "packages/gateway-protocol/src/schema.ts");
     const uiIndexPath = path.join(root, "dist/control-ui/index.html");
     await touch(uiIndexPath, new Date("2026-01-01T00:00:00.000Z"));
@@ -106,7 +106,7 @@ describe("UI protocol freshness health mapping", () => {
   });
 
   it("does not report stale assets when git history is unavailable", async () => {
-    const root = await createOpenClawRoot();
+    const root = await createEVERoot();
     const schemaPath = path.join(root, "packages/gateway-protocol/src/schema.ts");
     const uiIndexPath = path.join(root, "dist/control-ui/index.html");
     await touch(uiIndexPath, new Date("2026-01-01T00:00:00.000Z"));

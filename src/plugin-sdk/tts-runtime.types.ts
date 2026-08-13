@@ -1,5 +1,5 @@
 // TTS runtime types define plugin-facing text-to-speech synthesis hooks and results.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { ResolvedTtsPersona, TtsAutoMode, TtsProvider } from "../config/types.tts.js";
 import type {
   SpeechProviderConfig,
@@ -71,7 +71,7 @@ export type ResolveTtsAutoModeParams = {
 
 /** Inputs for explicit provider/model/voice overrides parsed from user or tool directives. */
 export type ResolveExplicitTtsOverridesParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   provider?: string;
   modelId?: string;
@@ -84,7 +84,7 @@ export type ResolveExplicitTtsOverridesParams = {
 /** Standard text-to-speech request for file or stream synthesis. */
 export type TtsRequestParams = {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   channel?: string;
   overrides?: TtsDirectiveOverrides;
@@ -97,7 +97,7 @@ export type TtsRequestParams = {
 /** Telephony-specific synthesis request where output format is constrained by the caller. */
 export type TtsTelephonyRequestParams = {
   text: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   prefsPath?: string;
   overrides?: TtsDirectiveOverrides;
 };
@@ -105,7 +105,7 @@ export type TtsTelephonyRequestParams = {
 /** Inputs for listing voices from a speech provider with optional resolved config. */
 export type ListSpeechVoicesParams = {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   config?: ResolvedTtsConfig;
   apiKey?: string;
   baseUrl?: string;
@@ -114,7 +114,7 @@ export type ListSpeechVoicesParams = {
 /** Inputs for attaching synthesized speech to an outbound reply payload when enabled. */
 export type MaybeApplyTtsToPayloadParams = {
   payload: ReplyPayload;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   channel?: string;
   kind?: "tool" | "block" | "final";
   inboundAudio?: boolean;
@@ -140,7 +140,7 @@ export type TtsTestFacade = {
   getResolvedSpeechProviderConfig: (
     config: ResolvedTtsConfig,
     providerId: string,
-    cfg?: OpenClawConfig,
+    cfg?: EVEConfig,
   ) => SpeechProviderConfig;
   formatTtsProviderError: (provider: TtsProvider, err: unknown) => string;
   sanitizeTtsErrorForLog: (err: unknown) => string;
@@ -236,12 +236,12 @@ export type TtsRuntimeFacade = {
   /** @deprecated Use `testApi`. */
   _test: TtsTestFacade;
   testApi: TtsTestFacade;
-  buildTtsSystemPromptHint: (cfg: OpenClawConfig, agentId?: string) => string | undefined;
+  buildTtsSystemPromptHint: (cfg: EVEConfig, agentId?: string) => string | undefined;
   getLastTtsAttempt: () => TtsStatusEntry | undefined;
   getResolvedSpeechProviderConfig: (
     config: ResolvedTtsConfig,
     providerId: string,
-    cfg?: OpenClawConfig,
+    cfg?: EVEConfig,
   ) => SpeechProviderConfig;
   getTtsMaxLength: (prefsPath: string) => number;
   getTtsPersona: (config: ResolvedTtsConfig, prefsPath: string) => ResolvedTtsPersona | undefined;
@@ -251,7 +251,7 @@ export type TtsRuntimeFacade = {
   isTtsProviderConfigured: (
     config: ResolvedTtsConfig,
     provider: TtsProvider,
-    cfg?: OpenClawConfig,
+    cfg?: EVEConfig,
   ) => boolean;
   listSpeechVoices: ListSpeechVoices;
   listTtsPersonas: (config: ResolvedTtsConfig) => ResolvedTtsPersona[];
@@ -259,11 +259,11 @@ export type TtsRuntimeFacade = {
   resolveExplicitTtsOverrides: (params: ResolveExplicitTtsOverridesParams) => TtsDirectiveOverrides;
   resolveTtsAutoMode: (params: ResolveTtsAutoModeParams) => TtsAutoMode;
   resolveTtsConfig: (
-    cfg: OpenClawConfig,
+    cfg: EVEConfig,
     contextOrAgentId?: string | TtsConfigResolutionContext,
   ) => ResolvedTtsConfig;
   resolveTtsPrefsPath: (config: ResolvedTtsConfig) => string;
-  resolveTtsProviderOrder: (primary: TtsProvider, cfg?: OpenClawConfig) => TtsProvider[];
+  resolveTtsProviderOrder: (primary: TtsProvider, cfg?: EVEConfig) => TtsProvider[];
   setLastTtsAttempt: (entry: TtsStatusEntry | undefined) => void;
   setSummarizationEnabled: (prefsPath: string, enabled: boolean) => void;
   setTtsAutoMode: (prefsPath: string, mode: TtsAutoMode) => void;

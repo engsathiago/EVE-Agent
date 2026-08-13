@@ -83,10 +83,10 @@ export function registerStreamingCommands(registry: SlashCommandRegistry): void 
           ``,
           `\`\`\`shell`,
           `# 1. 开启流式消息`,
-          `openclaw config set channels.qqbot.streaming true`,
+          `eve config set channels.qqbot.streaming true`,
           ``,
           `# 2. 重启网关使配置生效`,
-          `openclaw gateway restart`,
+          `eve gateway restart`,
           `\`\`\``,
         ].join("\n");
       }

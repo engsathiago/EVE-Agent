@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig, SecurityConfig } from "../config/types.openclaw.js";
+import type { EVEConfig, SecurityConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
   forceKillChildProcessTree,
@@ -66,7 +66,7 @@ export type InstallPolicySource = {
     | "npm"
     | "upload"
     | "workspace";
-  authority: "openclaw" | "official" | "third-party" | "unknown" | "user";
+  authority: "eve" | "official" | "third-party" | "unknown" | "user";
   mutable: boolean;
   network: boolean;
 };
@@ -427,7 +427,7 @@ function isTargetEnabled(params: {
 }
 
 function resolvePolicy(
-  config: OpenClawConfig | undefined,
+  config: EVEConfig | undefined,
   targetType: InstallPolicyTarget,
 ):
   | { kind: "disabled" }
@@ -459,7 +459,7 @@ function resolveConfiguredTargets(
 }
 
 export async function validateInstallPolicyStatic(
-  config: OpenClawConfig | undefined,
+  config: EVEConfig | undefined,
 ): Promise<InstallPolicyStaticValidation> {
   const policy = config?.security?.installPolicy;
   if (!policy || policy.enabled !== true) {
@@ -703,7 +703,7 @@ function parsePolicyResponse(stdout: string): InstallPolicyResult {
 }
 
 export async function runInstallPolicy(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env?: NodeJS.ProcessEnv;
   logger?: {
     debug?: (message: string) => void;
@@ -728,7 +728,7 @@ export async function runInstallPolicy(params: {
       const { getRuntimeConfig } = await import("../config/io.js");
       config = getRuntimeConfig({ skipPluginValidation: true });
     } catch (err) {
-      return failClosed(`could not load OpenClaw config (${formatErrorMessage(err)})`);
+      return failClosed(`could not load EVE config (${formatErrorMessage(err)})`);
     }
   }
 
@@ -742,7 +742,7 @@ export async function runInstallPolicy(params: {
 
   const input = JSON.stringify({
     protocolVersion: 1,
-    openclawVersion: resolveRuntimeServiceVersion(params.env ?? process.env),
+    eveVersion: resolveRuntimeServiceVersion(params.env ?? process.env),
     ...params.request,
   });
   if (Buffer.byteLength(input, "utf8") > DEFAULT_MAX_REQUEST_BYTES) {
@@ -841,7 +841,7 @@ function formatDecisionContext(request: InstallPolicyRequest): string {
 }
 
 export async function probeInstallPolicy(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   env?: NodeJS.ProcessEnv;
   logger?: {
     debug?: (message: string) => void;

@@ -1,7 +1,7 @@
 // Doctor workspace status tests cover workspace inspection and status output.
 import { describe, expect, it, vi } from "vitest";
 import * as noteModule from "../../packages/terminal-core/src/note.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginVersionDriftReport } from "../plugins/plugin-version-drift.js";
 import {
   createPluginLoadResult,
@@ -48,13 +48,13 @@ async function runNoteWorkspaceStatusForTest(
   loadResult: ReturnType<typeof createPluginLoadResult>,
   compatibilityWarnings: string[] = [],
   opts?: {
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
     pluginVersionDrift?: PluginVersionDriftReport;
     flows?: unknown[];
     tasksByFlowId?: (flowId: string) => unknown[];
   },
 ) {
-  const cfg: OpenClawConfig = opts?.cfg ?? {};
+  const cfg: EVEConfig = opts?.cfg ?? {};
   mocks.resolveDefaultAgentId.mockReturnValue("default");
   mocks.resolveAgentWorkspaceDir.mockReturnValue("/workspace");
   mocks.buildWorkspaceSkillStatus.mockReturnValue({
@@ -196,10 +196,10 @@ describe("noteWorkspaceStatus", () => {
       const driftCalls = noteSpy.mock.calls.filter(([, title]) => title === "Plugin version drift");
       expect(driftCalls).toHaveLength(1);
       const [[body]] = driftCalls;
-      expect(body).toContain("1 active official plugin not on OpenClaw 2026.6.1");
+      expect(body).toContain("1 active official plugin not on EVE 2026.6.1");
       expect(body).toContain("codex: 2026.5.30-beta.1 (npm) -> expected 2026.6.1");
-      expect(body).toContain("openclaw plugins update codex");
-      expect(body).toContain("openclaw gateway restart");
+      expect(body).toContain("eve plugins update codex");
+      expect(body).toContain("eve gateway restart");
     } finally {
       noteSpy.mockRestore();
     }
@@ -318,7 +318,7 @@ describe("noteWorkspaceStatus", () => {
       expect(recoveryCalls).toHaveLength(1);
       const [[body]] = recoveryCalls;
       expect(body).toContain("flow-123");
-      expect(body).toContain("openclaw tasks flow show <flow-id>");
+      expect(body).toContain("eve tasks flow show <flow-id>");
     } finally {
       noteSpy.mockRestore();
     }

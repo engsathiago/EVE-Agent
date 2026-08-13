@@ -1,24 +1,24 @@
 ---
-summary: "Run OpenClaw through inferrs (OpenAI-compatible local server)"
+summary: "Run EVE through inferrs (OpenAI-compatible local server)"
 read_when:
-  - You want to run OpenClaw against a local inferrs server
+  - You want to run EVE against a local inferrs server
   - You are serving Gemma or another model through inferrs
-  - You need the exact OpenClaw compat flags for inferrs
+  - You need the exact EVE compat flags for inferrs
 title: "Inferrs"
 ---
 
-[inferrs](https://github.com/ericcurtin/inferrs) can serve local models behind an OpenAI-compatible `/v1` API. OpenClaw works with `inferrs` through the generic `openai-completions` path.
+[inferrs](https://github.com/ericcurtin/inferrs) can serve local models behind an OpenAI-compatible `/v1` API. EVE works with `inferrs` through the generic `openai-completions` path.
 
 | Property           | Value                                                              |
 | ------------------ | ------------------------------------------------------------------ |
 | Provider id        | `inferrs` (custom; configure under `models.providers.inferrs`)     |
-| Plugin             | none — `inferrs` is not a bundled OpenClaw provider plugin         |
+| Plugin             | none — `inferrs` is not a bundled EVE provider plugin         |
 | Auth env var       | Optional. Any value works if your inferrs server has no auth       |
 | API                | OpenAI-compatible (`openai-completions`)                           |
 | Suggested base URL | `http://127.0.0.1:8080/v1` (or wherever your inferrs server lives) |
 
 <Note>
-  `inferrs` is currently best treated as a custom self-hosted OpenAI-compatible backend, not a dedicated OpenClaw provider plugin. You configure it through `models.providers.inferrs` rather than an onboarding choice flag. If you need a true bundled plugin with auto-discovery, see [SGLang](/providers/sglang) or [vLLM](/providers/vllm).
+  `inferrs` is currently best treated as a custom self-hosted OpenAI-compatible backend, not a dedicated EVE provider plugin. You configure it through `models.providers.inferrs` rather than an onboarding choice flag. If you need a true bundled plugin with auto-discovery, see [SGLang](/providers/sglang) or [vLLM](/providers/vllm).
 </Note>
 
 ## Getting started
@@ -38,7 +38,7 @@ title: "Inferrs"
     curl http://127.0.0.1:8080/v1/models
     ```
   </Step>
-  <Step title="Add an OpenClaw provider entry">
+  <Step title="Add an EVE provider entry">
     Add an explicit provider entry and point your default model at it. See the full config example below.
   </Step>
 </Steps>
@@ -88,7 +88,7 @@ This example uses Gemma 4 on a local `inferrs` server.
 
 ## On-demand startup
 
-Inferrs can also be started by OpenClaw only when an `inferrs/...` model is
+Inferrs can also be started by EVE only when an `inferrs/...` model is
 selected. Add `localService` to the same provider entry:
 
 ```json5
@@ -148,7 +148,7 @@ path in config. For the full field reference, see
     `messages[].content`, not structured content-part arrays.
 
     <Warning>
-    If OpenClaw runs fail with an error like:
+    If EVE runs fail with an error like:
 
     ```text
     messages[1].content: invalid type: sequence, expected a string
@@ -163,14 +163,14 @@ path in config. For the full field reference, see
     }
     ```
 
-    OpenClaw will flatten pure text content parts into plain strings before sending
+    EVE will flatten pure text content parts into plain strings before sending
     the request.
 
   </Accordion>
 
   <Accordion title="Gemma and tool-schema caveat">
     Some current `inferrs` + Gemma combinations accept small direct
-    `/v1/chat/completions` requests but still fail on full OpenClaw agent-runtime
+    `/v1/chat/completions` requests but still fail on full EVE agent-runtime
     turns.
 
     If that happens, try this first:
@@ -182,12 +182,12 @@ path in config. For the full field reference, see
     }
     ```
 
-    That disables OpenClaw's tool schema surface for the model and can reduce prompt
+    That disables EVE's tool schema surface for the model and can reduce prompt
     pressure on stricter local backends.
 
-    If tiny direct requests still work but normal OpenClaw agent turns continue to
+    If tiny direct requests still work but normal EVE agent turns continue to
     crash inside `inferrs`, the remaining issue is usually upstream model/server
-    behavior rather than OpenClaw's transport layer.
+    behavior rather than EVE's transport layer.
 
   </Accordion>
 
@@ -201,7 +201,7 @@ path in config. For the full field reference, see
     ```
 
     ```bash
-    openclaw infer model run \
+    eve infer model run \
       --model inferrs/google/gemma-4-E2B-it \
       --prompt "What is 2 + 2? Reply with one short sentence." \
       --json
@@ -218,7 +218,7 @@ path in config. For the full field reference, see
     - Native OpenAI-only request shaping does not apply here
     - No `service_tier`, no Responses `store`, no prompt-cache hints, and no
       OpenAI reasoning-compat payload shaping
-    - Hidden OpenClaw attribution headers (`originator`, `version`, `User-Agent`)
+    - Hidden EVE attribution headers (`originator`, `version`, `User-Agent`)
       are not injected on custom `inferrs` base URLs
 
   </Accordion>
@@ -238,13 +238,13 @@ path in config. For the full field reference, see
     `requiresStringContent` section above for details.
   </Accordion>
 
-  <Accordion title="Direct /v1/chat/completions calls pass but openclaw infer model run fails">
+  <Accordion title="Direct /v1/chat/completions calls pass but eve infer model run fails">
     Try setting `compat.supportsTools: false` to disable the tool schema surface.
     See the Gemma tool-schema caveat above.
   </Accordion>
 
   <Accordion title="inferrs still crashes on larger agent turns">
-    If OpenClaw no longer gets schema errors but `inferrs` still crashes on larger
+    If EVE no longer gets schema errors but `inferrs` still crashes on larger
     agent turns, treat it as an upstream `inferrs` or model limitation. Reduce
     prompt pressure or switch to a different local backend or model.
   </Accordion>
@@ -258,7 +258,7 @@ For general help, see [Troubleshooting](/help/troubleshooting) and [FAQ](/help/f
 
 <CardGroup cols={2}>
   <Card title="Local models" href="/gateway/local-models" icon="server">
-    Running OpenClaw against local model servers.
+    Running EVE against local model servers.
   </Card>
   <Card title="Local model services" href="/gateway/local-model-services" icon="play">
     Starting local model servers on demand for configured providers.

@@ -1,16 +1,16 @@
 // Github Copilot plugin module implements auth behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import {
   coerceSecretRef,
   ensureAuthProfileStore,
   listProfilesForProvider,
-} from "openclaw/plugin-sdk/provider-auth";
-import { resolveRequiredConfiguredSecretRefInputString } from "openclaw/plugin-sdk/secret-input-runtime";
+} from "eve-agent/plugin-sdk/provider-auth";
+import { resolveRequiredConfiguredSecretRefInputString } from "eve-agent/plugin-sdk/secret-input-runtime";
 import { PROVIDER_ID } from "./models.js";
 
 export async function resolveFirstGithubToken(params: {
   agentDir?: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   env: NodeJS.ProcessEnv;
 }): Promise<{
   githubToken: string;

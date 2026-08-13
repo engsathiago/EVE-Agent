@@ -75,7 +75,7 @@ function mergeObjectArraysById(
 }
 
 /**
- * Applies an RFC 7396-style object merge patch with OpenClaw config safeguards.
+ * Applies an RFC 7396-style object merge patch with EVE config safeguards.
  *
  * Non-object patches replace the base, `null` deletes keys, blocked prototype
  * keys are ignored, and id-keyed arrays may merge when the caller opts in.

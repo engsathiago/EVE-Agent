@@ -21,7 +21,7 @@ import { createScriptTestHarness } from "./test-helpers.js";
 const { createTempDir } = createScriptTestHarness();
 const NO_MEMORY_LIMIT = {
   cgroupMemoryLimitPaths: [],
-  procMeminfoPath: "/openclaw-test-missing-proc-meminfo",
+  procMeminfoPath: "/eve-test-missing-proc-meminfo",
 };
 
 async function expectPathMissing(targetPath: string) {
@@ -126,7 +126,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("routes Windows tsdown builds through the pnpm runner instead of shell=true", () => {
-    const rootDir = createTempDir("openclaw-pnpm-runner-");
+    const rootDir = createTempDir("eve-pnpm-runner-");
     const npmExecPath = path.join(rootDir, "pnpm.cjs");
     fs.writeFileSync(npmExecPath, "console.log('pnpm');\n");
 
@@ -269,7 +269,7 @@ describe("resolveTsdownBuildInvocation", () => {
     const result = resolveTsdownBuildInvocation({
       platform: "linux",
       nodeExecPath: "/usr/bin/node",
-      env: { OPENCLAW_BUILD_ALL_NO_PNPM: "1" },
+      env: { EVE_BUILD_ALL_NO_PNPM: "1" },
       ...NO_MEMORY_LIMIT,
     });
 
@@ -289,7 +289,7 @@ describe("resolveTsdownBuildInvocation", () => {
         windowsVerbatimArguments: undefined,
         env: {
           NODE_OPTIONS: "--max-old-space-size=12288",
-          OPENCLAW_BUILD_ALL_NO_PNPM: "1",
+          EVE_BUILD_ALL_NO_PNPM: "1",
         },
       },
     });
@@ -318,7 +318,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("prunes stale hashed root chunk files but keeps stable aliases and nested assets", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-build-");
+    const rootDir = createTempDir("eve-tsdown-build-");
     const distDir = path.join(rootDir, "dist");
     const distRuntimeDir = path.join(rootDir, "dist-runtime");
     await fsPromises.mkdir(path.join(distDir, "control-ui"), { recursive: true });
@@ -354,7 +354,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("cleans tsdown output roots before using tsdown --no-clean", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-clean-");
+    const rootDir = createTempDir("eve-tsdown-clean-");
     const distFile = path.join(rootDir, "dist", "stale.js");
     const pluginGeneratedFile = path.join(rootDir, "dist", "extensions", "telegram", "index.js");
     const distRuntimeFile = path.join(rootDir, "dist-runtime", "stale.js");
@@ -399,7 +399,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("removes CLI startup metadata during default tsdown clean", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-clean-metadata-default-");
+    const rootDir = createTempDir("eve-tsdown-clean-metadata-default-");
     const metadataFile = path.join(rootDir, "dist", "cli-startup-metadata.json");
     await fsPromises.mkdir(path.dirname(metadataFile), { recursive: true });
     await fsPromises.writeFile(metadataFile, '{"generatedBy":"test"}\n');
@@ -410,7 +410,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("preserves CLI startup metadata across opted-in build-all tsdown clean", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-clean-metadata-");
+    const rootDir = createTempDir("eve-tsdown-clean-metadata-");
     const metadataFile = path.join(rootDir, "dist", "cli-startup-metadata.json");
     const staleFile = path.join(rootDir, "dist", "stale.js");
     const nestedStaleFile = path.join(rootDir, "dist", "nested", "stale.js");
@@ -421,7 +421,7 @@ describe("resolveTsdownBuildInvocation", () => {
 
     cleanTsdownOutputRoots({
       cwd: rootDir,
-      env: { OPENCLAW_PRESERVE_CLI_STARTUP_METADATA: "1" },
+      env: { EVE_PRESERVE_CLI_STARTUP_METADATA: "1" },
     });
 
     await expect(fsPromises.readFile(metadataFile, "utf8")).resolves.toBe(
@@ -432,7 +432,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("preserves existing package declarations when tsdown DTS output is skipped", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-clean-skip-dts-");
+    const rootDir = createTempDir("eve-tsdown-clean-skip-dts-");
     const declarationFile = path.join(
       rootDir,
       "packages",
@@ -476,7 +476,7 @@ describe("resolveTsdownBuildInvocation", () => {
 
     cleanTsdownOutputRoots({
       cwd: rootDir,
-      env: { OPENCLAW_RUN_NODE_SKIP_DTS_BUILD: "1" },
+      env: { EVE_RUN_NODE_SKIP_DTS_BUILD: "1" },
     });
 
     await expect(fsPromises.readFile(declarationFile, "utf8")).resolves.toBe("export {};\n");
@@ -487,7 +487,7 @@ describe("resolveTsdownBuildInvocation", () => {
   });
 
   it("prunes untracked generated declaration files that shadow source entries", async () => {
-    const rootDir = createTempDir("openclaw-tsdown-source-dts-");
+    const rootDir = createTempDir("eve-tsdown-source-dts-");
     const signalDir = path.join(rootDir, "extensions", "signal");
     const signalSrcDir = path.join(signalDir, "src");
     await fsPromises.mkdir(signalSrcDir, { recursive: true });
@@ -539,7 +539,7 @@ describe("createTsdownOutputScanner", () => {
     scanner.append("[UNRESOLVED_IMPORT] extensions/telegram/src/index.ts\n");
     scanner.append("[UNRESOLVED_IMPORT] node_modules/example/index.js\n");
     scanner.append(
-      "[UNRESOLVED_IMPORT] ../../../../tmp/openclaw-pnpm-node-modules/baileys/lib/Utils/messages-media.js\n",
+      "[UNRESOLVED_IMPORT] ../../../../tmp/eve-pnpm-node-modules/baileys/lib/Utils/messages-media.js\n",
     );
 
     expect(scanner.finish().fatalUnresolvedImport).toBeNull();
@@ -578,7 +578,7 @@ describe("runTsdownBuildInvocation", () => {
       {
         stdout: output.sink,
         stderr: output.sink,
-        env: { ...process.env, OPENCLAW_TSDOWN_HEARTBEAT_MS: "0" },
+        env: { ...process.env, EVE_TSDOWN_HEARTBEAT_MS: "0" },
       },
     );
 
@@ -587,7 +587,7 @@ describe("runTsdownBuildInvocation", () => {
     expect(output.chunks.join("")).toContain("stdout-ok");
   });
 
-  it("rejects malformed OPENCLAW_TSDOWN_TIMEOUT_MS values", async () => {
+  it("rejects malformed EVE_TSDOWN_TIMEOUT_MS values", async () => {
     const invocation = {
       command: process.execPath,
       args: ["-e", "process.exit(0)"],
@@ -603,14 +603,14 @@ describe("runTsdownBuildInvocation", () => {
         runTsdownBuildInvocation(invocation, {
           env: {
             ...process.env,
-            OPENCLAW_TSDOWN_TIMEOUT_MS: value,
+            EVE_TSDOWN_TIMEOUT_MS: value,
           },
         }),
-      ).rejects.toThrow("OPENCLAW_TSDOWN_TIMEOUT_MS must be");
+      ).rejects.toThrow("EVE_TSDOWN_TIMEOUT_MS must be");
     }
   });
 
-  it("rejects malformed OPENCLAW_TSDOWN_HEARTBEAT_MS values", async () => {
+  it("rejects malformed EVE_TSDOWN_HEARTBEAT_MS values", async () => {
     const invocation = {
       command: process.execPath,
       args: ["-e", "process.exit(0)"],
@@ -626,14 +626,14 @@ describe("runTsdownBuildInvocation", () => {
         runTsdownBuildInvocation(invocation, {
           env: {
             ...process.env,
-            OPENCLAW_TSDOWN_HEARTBEAT_MS: value,
+            EVE_TSDOWN_HEARTBEAT_MS: value,
           },
         }),
-      ).rejects.toThrow("OPENCLAW_TSDOWN_HEARTBEAT_MS must be");
+      ).rejects.toThrow("EVE_TSDOWN_HEARTBEAT_MS must be");
     }
   });
 
-  it("terminates the child when OPENCLAW_TSDOWN_TIMEOUT_MS elapses", async () => {
+  it("terminates the child when EVE_TSDOWN_TIMEOUT_MS elapses", async () => {
     const output = createWriteSink();
     const result = await runTsdownBuildInvocation(
       {
@@ -650,8 +650,8 @@ describe("runTsdownBuildInvocation", () => {
         stderr: output.sink,
         env: {
           ...process.env,
-          OPENCLAW_TSDOWN_HEARTBEAT_MS: "0",
-          OPENCLAW_TSDOWN_TIMEOUT_MS: "50",
+          EVE_TSDOWN_HEARTBEAT_MS: "0",
+          EVE_TSDOWN_TIMEOUT_MS: "50",
         },
       },
     );
@@ -665,7 +665,7 @@ describe("runTsdownBuildInvocation", () => {
   it.skipIf(process.platform === "win32")(
     "kills timed-out tsdown process groups when the wrapper exits first",
     async () => {
-      const rootDir = createTempDir("openclaw-tsdown-timeout-");
+      const rootDir = createTempDir("eve-tsdown-timeout-");
       const childPidPath = path.join(rootDir, "child.pid");
       const timeoutMs = 1_000;
       let childPid = 0;
@@ -696,8 +696,8 @@ describe("runTsdownBuildInvocation", () => {
             stderr: output.sink,
             env: {
               ...process.env,
-              OPENCLAW_TSDOWN_HEARTBEAT_MS: "0",
-              OPENCLAW_TSDOWN_TIMEOUT_MS: String(timeoutMs),
+              EVE_TSDOWN_HEARTBEAT_MS: "0",
+              EVE_TSDOWN_TIMEOUT_MS: String(timeoutMs),
             },
           },
         );
@@ -720,7 +720,7 @@ describe("runTsdownBuildInvocation", () => {
   it.skipIf(process.platform === "win32")(
     "preserves timeout grace when descendant processes exit cleanly",
     async () => {
-      const rootDir = createTempDir("openclaw-tsdown-timeout-clean-");
+      const rootDir = createTempDir("eve-tsdown-timeout-clean-");
       const readyPath = path.join(rootDir, "child.ready");
       const cleanupPath = path.join(rootDir, "child.cleanup");
       const childPidPath = path.join(rootDir, "child.pid");
@@ -762,8 +762,8 @@ describe("runTsdownBuildInvocation", () => {
             stderr: output.sink,
             env: {
               ...process.env,
-              OPENCLAW_TSDOWN_HEARTBEAT_MS: "0",
-              OPENCLAW_TSDOWN_TIMEOUT_MS: "1000",
+              EVE_TSDOWN_HEARTBEAT_MS: "0",
+              EVE_TSDOWN_TIMEOUT_MS: "1000",
             },
           },
         );
@@ -787,7 +787,7 @@ describe("runTsdownBuildInvocation", () => {
   it.skipIf(process.platform === "win32")(
     "cleans process-group descendants before forwarding parent SIGTERM",
     async () => {
-      const rootDir = createTempDir("openclaw-tsdown-parent-signal-");
+      const rootDir = createTempDir("eve-tsdown-parent-signal-");
       const childPidPath = path.join(rootDir, "child.pid");
       const readyPath = path.join(rootDir, "child.ready");
       const scriptUrl = pathToFileURL(path.resolve("scripts/tsdown-build.mjs")).href;
@@ -812,7 +812,7 @@ describe("runTsdownBuildInvocation", () => {
           `import { runTsdownBuildInvocation } from ${JSON.stringify(scriptUrl)};`,
           "await runTsdownBuildInvocation(",
           `  { command: process.execPath, args: ['-e', ${JSON.stringify(parentScript)}], options: { stdio: ['ignore', 'pipe', 'pipe'], shell: false, env: process.env } },`,
-          "  { env: { ...process.env, OPENCLAW_TSDOWN_HEARTBEAT_MS: '0' } },",
+          "  { env: { ...process.env, EVE_TSDOWN_HEARTBEAT_MS: '0' } },",
           ");",
         ].join("\n");
 

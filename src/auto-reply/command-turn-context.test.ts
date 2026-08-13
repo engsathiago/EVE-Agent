@@ -1,6 +1,6 @@
 /** Tests command-turn context normalization and source/kind conversions. */
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import {
   createCommandTurnContext,
   isAuthorizedTextSlashCommandTurn,
@@ -11,7 +11,7 @@ import {
 } from "./command-turn-context.js";
 import { isExplicitCommandTurnContext } from "./command-turn-detection.js";
 
-const emptyConfig = {} as const satisfies OpenClawConfig;
+const emptyConfig = {} as const satisfies EVEConfig;
 
 describe("resolveCommandTurnContext", () => {
   it("derives native command turns from legacy context fields", () => {
@@ -110,8 +110,8 @@ describe("resolveCommandTurnContext", () => {
             body: "/reset",
           },
           CommandAuthorized: true,
-          Body: "/reset@openclaw",
-          RawBody: "/reset@openclaw",
+          Body: "/reset@eve",
+          RawBody: "/reset@eve",
           CommandBody: "/reset",
         },
         emptyConfig,
@@ -127,13 +127,13 @@ describe("resolveCommandTurnContext", () => {
             kind: "normal",
             source: "message",
             authorized: false,
-            body: "/reset@openclaw",
+            body: "/reset@eve",
           },
           CommandAuthorized: true,
-          Body: "/reset@openclaw",
-          RawBody: "/reset@openclaw",
-          CommandBody: "/reset@openclaw",
-          BotUsername: "openclaw",
+          Body: "/reset@eve",
+          RawBody: "/reset@eve",
+          CommandBody: "/reset@eve",
+          BotUsername: "eve",
         },
         emptyConfig,
       ),

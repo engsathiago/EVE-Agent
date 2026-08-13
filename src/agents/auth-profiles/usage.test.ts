@@ -4,7 +4,7 @@
  * persistence hooks without contacting real providers.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { MAX_DATE_TIMESTAMP_MS } from "../../shared/number-coercion.js";
 import type { AuthProfileStore, ProfileUsageStats } from "./types.js";
 import {
@@ -705,7 +705,7 @@ describe("clearAuthProfileCooldown", () => {
 });
 
 describe("markAuthProfileFailure — active windows do not extend on retry", () => {
-  // Regression for https://github.com/openclaw/openclaw/issues/23516
+  // Regression for https://github.com/engsathiago/eve-agent/issues/23516
   // When all providers are at saturation backoff (60 min) and retries fire every 30 min,
   // each retry was resetting cooldownUntil to now+60m, preventing recovery.
   type WindowStats = ProfileUsageStats;
@@ -714,7 +714,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
     store: ReturnType<typeof makeStore>;
     now: number;
     reason: "rate_limit" | "billing" | "auth_permanent";
-    cfg?: OpenClawConfig;
+    cfg?: EVEConfig;
   }): Promise<void> {
     const dateNowSpy = vi.spyOn(Date, "now").mockReturnValue(params.now);
     try {
@@ -889,7 +889,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
             billingBackoffHours: 0.0166667,
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(store.usageStats?.["anthropic:default"]?.disabledUntil).toBe(now + 60_000);
@@ -1049,8 +1049,8 @@ describe("markAuthProfileFailure — WHAM-aware Codex cooldowns", () => {
     const headers = init.headers as Record<string, string>;
     expect(headers.Authorization).toBe("Bearer codex-access-token");
     expect(headers["ChatGPT-Account-Id"]).toBe("acct_test_123");
-    expect(headers.originator).toBe("openclaw");
-    expect(headers["User-Agent"]).toMatch(/^openclaw\//);
+    expect(headers.originator).toBe("eve");
+    expect(headers["User-Agent"]).toMatch(/^eve\//);
     const stats = store.usageStats?.["openai:default"];
     if (exactBlocked) {
       expect(stats?.blockedUntil).toBe(now + expectedMs);

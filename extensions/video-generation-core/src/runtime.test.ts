@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   listRuntimeVideoGenerationProviders: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/video-generation-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/video-generation-runtime", () => ({
   generateVideo: mocks.generateVideo,
   listRuntimeVideoGenerationProviders: mocks.listRuntimeVideoGenerationProviders,
 }));

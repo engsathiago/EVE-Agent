@@ -1,5 +1,5 @@
 // Provider entry contracts define provider plugin hooks, model catalogs, and runtime adapters.
-import type { UnifiedModelCatalogEntry } from "@openclaw/model-catalog-core/model-catalog-types";
+import type { UnifiedModelCatalogEntry } from "@eve/model-catalog-core/model-catalog-types";
 import {
   normalizeStringEntries,
   uniqueStrings,
@@ -18,9 +18,9 @@ import type {
 import { copyArrayEntries, isRecord, readRecordValue } from "../shared/safe-record.js";
 import { definePluginEntry } from "./plugin-entry.js";
 import type {
-  OpenClawPluginApi,
-  OpenClawPluginConfigSchema,
-  OpenClawPluginDefinition,
+  EVEPluginApi,
+  EVEPluginConfigSchema,
+  EVEPluginDefinition,
 } from "./plugin-entry.js";
 import { buildSingleProviderApiKeyCatalog } from "./provider-catalog-shared.js";
 
@@ -101,15 +101,15 @@ export type SingleProviderPluginOptions = {
    */
   description: string;
   /**
-   * @deprecated Declare exclusive plugin kind in `openclaw.plugin.json` via
+   * @deprecated Declare exclusive plugin kind in `eve.plugin.json` via
    * manifest `kind`. Runtime-entry `kind` remains only as a compatibility
    * fallback for older plugins.
    */
-  kind?: OpenClawPluginDefinition["kind"];
+  kind?: EVEPluginDefinition["kind"];
   /**
    * Optional plugin configuration schema or lazy schema factory.
    */
-  configSchema?: OpenClawPluginConfigSchema | (() => OpenClawPluginConfigSchema);
+  configSchema?: EVEPluginConfigSchema | (() => EVEPluginConfigSchema);
   /**
    * Primary provider registration. Extra provider fields are forwarded after
    * the helper-owned id/auth/catalog fields are normalized.
@@ -154,7 +154,7 @@ export type SingleProviderPluginOptions = {
   /**
    * Optional hook for registering companion capabilities with the same plugin entry.
    */
-  register?: (api: OpenClawPluginApi) => void;
+  register?: (api: EVEPluginApi) => void;
 };
 
 function resolveWizardSetup(params: {

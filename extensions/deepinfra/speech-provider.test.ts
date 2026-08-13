@@ -21,7 +21,7 @@ const {
   })),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
+vi.mock("eve-agent/plugin-sdk/provider-http", () => ({
   assertOkOrThrowHttpError: assertOkOrThrowHttpErrorMock,
   postJsonRequest: postJsonRequestMock,
   readProviderBinaryResponse: readProviderBinaryResponseMock,
@@ -29,7 +29,7 @@ vi.mock("openclaw/plugin-sdk/provider-http", () => ({
 }));
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/provider-http");
+  vi.doUnmock("eve-agent/plugin-sdk/provider-http");
   vi.resetModules();
 });
 

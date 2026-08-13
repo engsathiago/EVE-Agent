@@ -4,26 +4,26 @@ import type { Bot } from "grammy";
 import {
   appendSessionTranscriptMessage,
   emitSessionTranscriptUpdate,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   DEFAULT_TIMING,
   logAckFailure,
   logTypingFailure,
   removeAckReactionAfterReply,
-} from "openclaw/plugin-sdk/channel-feedback";
+} from "eve-agent/plugin-sdk/channel-feedback";
 import {
   formatInboundEnvelope,
   resolveEnvelopeFormatOptions,
   runChannelInboundEvent,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { CURRENT_MESSAGE_MARKER } from "openclaw/plugin-sdk/channel-mention-gating";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { CURRENT_MESSAGE_MARKER } from "eve-agent/plugin-sdk/channel-mention-gating";
 import {
   createChannelMessageReplyPipeline,
   createPreviewMessageReceipt,
   createOutboundPayloadPlan,
   deriveDurableFinalDeliveryRequirements,
   projectOutboundPayloadPlanForDelivery,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLine,
   buildChannelProgressDraftLineForEntry,
@@ -32,29 +32,29 @@ import {
   createChannelProgressDraftCompositor,
   resolveChannelStreamingBlockEnabled,
   resolveTranscriptBackedChannelFinalText,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import type {
-  OpenClawConfig,
+  EVEConfig,
   ReplyToMode,
   TelegramAccountConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { normalizeMessagePresentation } from "openclaw/plugin-sdk/interactive-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { createChannelHistoryWindow } from "openclaw/plugin-sdk/reply-history";
+} from "eve-agent/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { normalizeMessagePresentation } from "eve-agent/plugin-sdk/interactive-runtime";
+import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { createChannelHistoryWindow } from "eve-agent/plugin-sdk/reply-history";
 import {
   isReplyPayloadNonTerminalToolErrorWarning,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
-import type { BlockReplyContext } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "eve-agent/plugin-sdk/reply-payload";
+import type { BlockReplyContext } from "eve-agent/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import {
   createSubsystemLogger,
   danger,
   logVerbose,
   sleepWithAbort,
-} from "openclaw/plugin-sdk/runtime-env";
+} from "eve-agent/plugin-sdk/runtime-env";
 import { resolveTelegramConfigReasoningDefault } from "./agent-config.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import type { TelegramBotDeps } from "./bot-deps.js";
@@ -192,7 +192,7 @@ function hasExecApprovalPayload(payload: ReplyPayload): boolean {
   return payload.channelData?.execApproval !== undefined;
 }
 
-async function resolveStickerVisionSupport(cfg: OpenClawConfig, agentId: string) {
+async function resolveStickerVisionSupport(cfg: EVEConfig, agentId: string) {
   try {
     const catalog = await loadModelCatalog({ config: cfg });
     const defaultModel = resolveDefaultModelForAgent({ cfg, agentId });
@@ -225,7 +225,7 @@ function includeStickerDescription(body: string | undefined, formattedDescriptio
 type DispatchTelegramMessageParams = {
   context: TelegramMessageContext;
   bot: Bot;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   runtime: RuntimeEnv;
   replyToMode: ReplyToMode;
   streamMode: TelegramStreamMode;
@@ -253,7 +253,7 @@ type FreshTelegramSessionStoreLoader = ((agentId: string) => {
 };
 
 function createFreshTelegramSessionStoreLoader(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   telegramDeps: TelegramBotDeps;
 }): FreshTelegramSessionStoreLoader {
   const storesByPath = new Map<string, TelegramSessionStore>();
@@ -274,7 +274,7 @@ function createFreshTelegramSessionStoreLoader(params: {
 }
 
 function resolveTelegramReasoningLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   sessionKey?: string;
   agentId: string;
   loadFreshSessionStore: FreshTelegramSessionStoreLoader;
@@ -316,7 +316,7 @@ function resolveTelegramMirroredTranscriptText(
 }
 
 async function mirrorTelegramAssistantReplyToTranscript(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   route: TelegramMessageContext["route"];
   sessionKey: string;
   loadFreshSessionStore: FreshTelegramSessionStoreLoader;
@@ -347,7 +347,7 @@ async function mirrorTelegramAssistantReplyToTranscript(params: {
     role: "assistant" as const,
     content: [{ type: "text" as const, text }],
     api: "openai-responses",
-    provider: "openclaw",
+    provider: "eve",
     model: "delivery-mirror",
     usage: {
       input: 0,
@@ -568,7 +568,7 @@ function includesRecoveredTelegramGroupHistoryContext(context: TelegramMessageCo
 }
 
 function buildRecoveredTelegramBody(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: TelegramMessageContext;
   currentMessage: string;
   historyKey?: string;
@@ -678,7 +678,7 @@ function migrateRecoveredTelegramRoomEventHistory(params: {
 }
 
 function resolveDispatchTelegramContext(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   context: TelegramMessageContext;
 }): TelegramMessageContext {
   const threadSpec = resolveDispatchTelegramThreadSpec({

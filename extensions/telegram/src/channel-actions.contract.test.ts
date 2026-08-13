@@ -1,6 +1,6 @@
 // Telegram tests cover channel actions.contract plugin behavior.
-import { installChannelActionsContractSuite } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { installChannelActionsContractSuite } from "eve-agent/plugin-sdk/channel-test-helpers";
+import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import { telegramPlugin } from "../api.js";
 
@@ -16,7 +16,7 @@ describe("telegram actions contract", () => {
               botToken: "123:telegram-test-token",
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
         expectedActions: ["send", "poll", "react", "delete", "edit", "topic-create", "topic-edit"],
         expectedCapabilities: ["delivery-pin", "presentation"],
       },
@@ -36,7 +36,7 @@ describe("telegram actions contract", () => {
             richMessages,
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(capabilities).toContain("inlineButtons");
@@ -57,7 +57,7 @@ describe("telegram actions contract", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
       accountId: "ops",
     });
 
@@ -74,7 +74,7 @@ describe("telegram actions contract", () => {
               richMessages: true,
             },
           },
-        } as OpenClawConfig,
+        } as EVEConfig,
       }),
     ).not.toThrow();
   });
@@ -97,7 +97,7 @@ describe("telegram actions contract", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as EVEConfig,
     });
 
     expect(capabilities).toContain("richText");

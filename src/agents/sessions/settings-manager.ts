@@ -998,7 +998,7 @@ export class SettingsManager {
     if (this.settings.terminal?.clearOnShrink !== undefined) {
       return this.settings.terminal.clearOnShrink;
     }
-    return process.env.OPENCLAW_CLEAR_ON_SHRINK === "1";
+    return process.env.EVE_CLEAR_ON_SHRINK === "1";
   }
 
   setClearOnShrink(enabled: boolean): void {
@@ -1082,7 +1082,7 @@ export class SettingsManager {
   }
 
   getShowHardwareCursor(): boolean {
-    return this.settings.showHardwareCursor ?? process.env.OPENCLAW_HARDWARE_CURSOR === "1";
+    return this.settings.showHardwareCursor ?? process.env.EVE_HARDWARE_CURSOR === "1";
   }
 
   setShowHardwareCursor(enabled: boolean): void {

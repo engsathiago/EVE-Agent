@@ -41,10 +41,10 @@ vi.mock("../../plugins/official-external-plugin-repair-hints.js", () => ({
           pluginId: channelId,
           channelId,
           label: channelId === "whatsapp" ? "WhatsApp" : "Feishu",
-          installSpec: `@openclaw/${channelId}`,
-          installCommand: `openclaw plugins install @openclaw/${channelId}`,
-          doctorFixCommand: "openclaw doctor --fix",
-          repairHint: `Install the official external plugin with: openclaw plugins install @openclaw/${channelId}, or run: openclaw doctor --fix.`,
+          installSpec: `@eve/${channelId}`,
+          installCommand: `eve plugins install @eve/${channelId}`,
+          doctorFixCommand: "eve doctor --fix",
+          repairHint: `Install the official external plugin with: eve plugins install @eve/${channelId}, or run: eve doctor --fix.`,
         }
       : null,
 }));
@@ -299,12 +299,12 @@ describe("resolveMessageChannelSelection", () => {
         channel: "feishu",
       },
       expectedMessage:
-        "Channel is unavailable: feishu. Install the official external plugin with: openclaw plugins install @openclaw/feishu, or run: openclaw doctor --fix.",
+        "Channel is unavailable: feishu. Install the official external plugin with: eve plugins install @eve/feishu, or run: eve doctor --fix.",
     },
     {
       params: { cfg: {} as never },
       expectedMessage:
-        "Channel is required (no configured channels detected). Run openclaw channels add to configure one",
+        "Channel is required (no configured channels detected). Run eve channels add to configure one",
     },
     {
       setup: () => {
@@ -313,7 +313,7 @@ describe("resolveMessageChannelSelection", () => {
       },
       params: { cfg: { channels: { whatsapp: { enabled: true } } } as never },
       expectedMessage:
-        "Channel is required (no available channels detected). Configured official external channel WhatsApp is missing its plugin. Install the official external plugin with: openclaw plugins install @openclaw/whatsapp, or run: openclaw doctor --fix.",
+        "Channel is required (no available channels detected). Configured official external channel WhatsApp is missing its plugin. Install the official external plugin with: eve plugins install @eve/whatsapp, or run: eve doctor --fix.",
     },
     {
       setup: () => {
@@ -326,7 +326,7 @@ describe("resolveMessageChannelSelection", () => {
       },
       params: { cfg: { channels: { whatsapp: { enabled: true } } } as never },
       expectedMessage:
-        "Channel is required (no configured channels detected). Run openclaw channels add to configure one",
+        "Channel is required (no configured channels detected). Run eve channels add to configure one",
     },
     {
       setup: () => {

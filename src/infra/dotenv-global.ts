@@ -130,11 +130,11 @@ export function loadGlobalRuntimeDotEnvFiles(opts?: GlobalRuntimeDotEnvOptions) 
   const globalEnvPaths = [...new Set([stateEnvPath, ...(opts?.additionalEnvPaths ?? [])])];
   const defaultStateEnvPath = path.join(
     resolveRequiredHomeDir(process.env, os.homedir),
-    ".openclaw",
+    ".eve",
     ".env",
   );
   const hasExplicitNonDefaultStateDir =
-    process.env.OPENCLAW_STATE_DIR?.trim() !== undefined &&
+    process.env.EVE_STATE_DIR?.trim() !== undefined &&
     path.resolve(stateEnvPath) !== path.resolve(defaultStateEnvPath);
   const globalEnvs = globalEnvPaths.map((filePath) =>
     readGlobalRuntimeDotEnvFile({ entryFilter: opts?.entryFilter, filePath, quiet }),
@@ -147,7 +147,7 @@ export function loadGlobalRuntimeDotEnvFiles(opts?: GlobalRuntimeDotEnvOptions) 
       filePath: path.join(
         resolveRequiredHomeDir(process.env, os.homedir),
         ".config",
-        "openclaw",
+        "eve",
         "gateway.env",
       ),
       quiet,

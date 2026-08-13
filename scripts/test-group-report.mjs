@@ -772,15 +772,15 @@ function withUniqueLabels(plans) {
 }
 
 function buildFullSuiteLeafRunPlans() {
-  const previousLeafShards = process.env.OPENCLAW_TEST_PROJECTS_LEAF_SHARDS;
-  process.env.OPENCLAW_TEST_PROJECTS_LEAF_SHARDS = "1";
+  const previousLeafShards = process.env.EVE_TEST_PROJECTS_LEAF_SHARDS;
+  process.env.EVE_TEST_PROJECTS_LEAF_SHARDS = "1";
   try {
     return buildFullSuiteVitestRunPlans([], process.cwd());
   } finally {
     if (previousLeafShards === undefined) {
-      delete process.env.OPENCLAW_TEST_PROJECTS_LEAF_SHARDS;
+      delete process.env.EVE_TEST_PROJECTS_LEAF_SHARDS;
     } else {
-      process.env.OPENCLAW_TEST_PROJECTS_LEAF_SHARDS = previousLeafShards;
+      process.env.EVE_TEST_PROJECTS_LEAF_SHARDS = previousLeafShards;
     }
   }
 }
@@ -815,14 +815,14 @@ export function resolveRunPlans(args) {
 export function resolveFullSuiteVitestEnv(args, env = process.env, label = "") {
   if (
     !args.fullSuite ||
-    env.OPENCLAW_VITEST_MAX_WORKERS?.trim() ||
-    env.OPENCLAW_TEST_WORKERS?.trim()
+    env.EVE_VITEST_MAX_WORKERS?.trim() ||
+    env.EVE_TEST_WORKERS?.trim()
   ) {
     return {};
   }
 
   return {
-    OPENCLAW_VITEST_MAX_WORKERS: label === "commands" ? "1" : "2",
+    EVE_VITEST_MAX_WORKERS: label === "commands" ? "1" : "2",
   };
 }
 

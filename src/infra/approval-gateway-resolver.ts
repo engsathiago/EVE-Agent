@@ -1,11 +1,11 @@
 // Resolves exec and plugin approvals through the gateway client.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { withOperatorApprovalsGatewayClient } from "../gateway/operator-approvals-client.js";
 import { isApprovalNotFoundError } from "./approval-errors.js";
 import type { ExecApprovalDecision } from "./exec-approvals.js";
 
 type ResolveApprovalOverGatewayParams = {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   approvalId: string;
   decision: ExecApprovalDecision;
   senderId?: string | null;

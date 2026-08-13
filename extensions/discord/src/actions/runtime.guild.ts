@@ -1,6 +1,6 @@
 // Discord plugin module implements runtime.guild behavior.
 import { ChannelType, PermissionFlagsBits } from "discord-api-types/v10";
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
+import type { AgentToolResult } from "eve-agent/plugin-sdk/agent-core";
 import { resolveDefaultDiscordAccountId } from "../accounts.js";
 import { getPresence } from "../monitor/presence-cache.js";
 import {
@@ -10,7 +10,7 @@ import {
   readStringArrayParam,
   readStringParam,
   type DiscordActionConfig,
-  type OpenClawConfig,
+  type EVEConfig,
 } from "../runtime-api.js";
 import {
   addRoleDiscord,
@@ -70,7 +70,7 @@ export const discordGuildActionRuntime = {
   uploadStickerDiscord,
 };
 
-type DiscordRoleMutationOpts = { cfg: OpenClawConfig; accountId?: string };
+type DiscordRoleMutationOpts = { cfg: EVEConfig; accountId?: string };
 type DiscordRoleMutation = (
   params: {
     guildId: string;
@@ -179,7 +179,7 @@ function assertGuildAdminActionEnabled(
 async function resolveGuildIdForGuildAdminAction(params: {
   values: Record<string, unknown>;
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }): Promise<string | undefined> {
   const guildId = readStringParam(params.values, "guildId");
   if (guildId) {
@@ -213,7 +213,7 @@ async function resolveGuildAdminActionPermissions(params: {
   action: string;
   values: Record<string, unknown>;
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   guard: GuildAdminActionGuard;
 }) {
   if (params.action !== "channelEdit") {
@@ -255,7 +255,7 @@ async function verifySenderGuildAdminPermission(params: {
   action: string;
   values: Record<string, unknown>;
   accountId?: string;
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
 }) {
   const guard = guildAdminActionGuards[params.action];
   const senderUserId = readStringParam(params.values, "senderUserId");
@@ -330,7 +330,7 @@ async function verifySenderGuildAdminPermission(params: {
 }
 
 async function runRoleMutation(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   accountId?: string;
   values: Record<string, unknown>;
   mutate: DiscordRoleMutation;
@@ -355,7 +355,7 @@ export async function handleDiscordGuildAction(
   action: string,
   params: Record<string, unknown>,
   isActionEnabled: ActionGate<DiscordActionConfig>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   options?: { mediaLocalRoots?: readonly string[] },
 ): Promise<AgentToolResult<unknown>> {
   const accountId = readStringParam(params, "accountId");

@@ -9,7 +9,7 @@ const SCRIPT_PATH = "scripts/e2e/lib/parallels-package/log-progress-extract.mjs"
 const tempRoots: string[] = [];
 
 function makeTempRoot(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "openclaw-parallels-progress-"));
+  const root = mkdtempSync(path.join(tmpdir(), "eve-parallels-progress-"));
   tempRoots.push(root);
   return root;
 }

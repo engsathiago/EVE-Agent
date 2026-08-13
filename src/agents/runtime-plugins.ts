@@ -2,7 +2,7 @@
  * Ensures runtime plugin registries are loaded for agent execution. Startup
  * plugin IDs from metadata scope the load when available.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { normalizePluginsConfig } from "../plugins/config-state.js";
 import { getCurrentPluginMetadataSnapshot } from "../plugins/current-plugin-metadata-snapshot.js";
 import { getActivePluginRuntimeSubagentMode } from "../plugins/runtime.js";
@@ -18,7 +18,7 @@ type StartupScopedPluginSnapshot = NonNullable<
 };
 
 function resolveStartupPluginIdsFromCurrentSnapshot(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string;
 }): string[] | undefined {
   const snapshot = getCurrentPluginMetadataSnapshot({
@@ -34,7 +34,7 @@ function resolveStartupPluginIdsFromCurrentSnapshot(params: {
 
 /** Ensure standalone runtime plugins are loaded for the current agent context. */
 export function ensureRuntimePluginsLoaded(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   workspaceDir?: string | null;
   allowGatewaySubagentBinding?: boolean;
 }): void {

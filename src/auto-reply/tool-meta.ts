@@ -1,5 +1,5 @@
 /** Formats compact tool metadata labels for auto-reply progress/status messages. */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { resolveToolDisplay } from "../agents/tool-display.js";
 import { shortenHomeInString } from "../utils.js";
 

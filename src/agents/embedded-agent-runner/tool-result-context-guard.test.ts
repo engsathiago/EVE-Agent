@@ -1,6 +1,6 @@
 // Tool-result context guard tests cover live replay truncation, mid-turn
 // prechecks, and context-engine loop hooks for oversized tool outputs.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { describe, expect, it, vi } from "vitest";
 import type { ContextEngine, ContextEngineRuntimeSettings } from "../../context-engine/types.js";
 import { sanitizeToolUseResultPairing } from "../session-transcript-repair.js";
@@ -143,7 +143,7 @@ async function applyMidTurnPrecheckGuardToContext(
   return await agent.transformContext?.(contextForNextCall, new AbortController().signal);
 }
 
-function expectOpenClawTruncation(text: string): void {
+function expectEVETruncation(text: string): void {
   expect(text).toContain(CONTEXT_LIMIT_TRUNCATION_NOTICE);
   expect(text).toMatch(
     /\[\.\.\. \d+ more characters truncated; rerun with narrower args if needed\]$/,
@@ -215,7 +215,7 @@ describe("installToolResultContextGuard", () => {
     expect(transformed).not.toBe(contextForNextCall);
     const newResultText = getToolResultText(transformed[0]);
     expect(newResultText.length).toBeLessThan(5_000);
-    expectOpenClawTruncation(newResultText);
+    expectEVETruncation(newResultText);
     expect(getToolResultText(contextForNextCall[0])).toBe("z".repeat(5_000));
   });
 
@@ -232,7 +232,7 @@ describe("installToolResultContextGuard", () => {
     const transformed = (await applyGuardToContext(agent, contextForNextCall)) as AgentMessage[];
 
     expect(transformed).not.toBe(contextForNextCall);
-    expectOpenClawTruncation(getToolResultText(transformed[0]));
+    expectEVETruncation(getToolResultText(transformed[0]));
   });
 
   it("handles legacy role=tool string outputs with truncation wording", async () => {
@@ -243,7 +243,7 @@ describe("installToolResultContextGuard", () => {
     const newResultText = getToolResultText(transformed[0]);
 
     expect(typeof (transformed[0] as { content?: unknown }).content).toBe("string");
-    expectOpenClawTruncation(newResultText);
+    expectEVETruncation(newResultText);
   });
 
   it("drops oversized tool-result details when truncating once", async () => {
@@ -256,7 +256,7 @@ describe("installToolResultContextGuard", () => {
     const result = transformed[0] as { details?: unknown };
     const newResultText = getToolResultText(transformed[0]);
 
-    expectOpenClawTruncation(newResultText);
+    expectEVETruncation(newResultText);
     expect(result.details).toBeUndefined();
     const originalDetails = (contextForNextCall[0] as { details?: { truncation?: unknown } })
       .details;
@@ -322,7 +322,7 @@ describe("installToolResultContextGuard", () => {
       100_000,
     )) as AgentMessage[];
 
-    expectOpenClawTruncation(getToolResultText(transformed[0]));
+    expectEVETruncation(getToolResultText(transformed[0]));
   });
 
   it("raises a structured mid-turn precheck signal after a new tool result overflows", async () => {
@@ -731,17 +731,17 @@ describe("installContextEngineLoopHook", () => {
     const transformedMessage = (transformed as AgentMessage[])[0];
 
     expect(afterTurnMessage).toMatchObject({ role: "user", content: "visible prompt" });
-    expect(JSON.stringify(afterTurnMessage)).not.toContain("__openclawTranscriptPromptText");
+    expect(JSON.stringify(afterTurnMessage)).not.toContain("__eveTranscriptPromptText");
     expect(assembleMessage).toMatchObject({
       role: "user",
       content: "model-only hook context\n\nvisible prompt",
     });
-    expect(JSON.stringify(assembleMessage)).not.toContain("__openclawTranscriptPromptText");
+    expect(JSON.stringify(assembleMessage)).not.toContain("__eveTranscriptPromptText");
     expect(transformedMessage).toMatchObject({
       role: "user",
       content: "model-only hook context\n\nvisible prompt",
     });
-    expect(JSON.stringify(transformedMessage)).not.toContain("__openclawTranscriptPromptText");
+    expect(JSON.stringify(transformedMessage)).not.toContain("__eveTranscriptPromptText");
   });
 
   it("calls afterTurn and assemble when new messages are appended after the first call", async () => {

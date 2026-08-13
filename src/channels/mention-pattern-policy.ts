@@ -3,15 +3,15 @@
  *
  * Applies provider and conversation allow/deny rules to mention pattern matching.
  */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import type { MentionPatternsMode, MentionPatternsPolicyConfig } from "../config/types.messages.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 /**
  * Inputs for resolving whether mention-pattern matching is enabled in a conversation.
  */
 export type ResolveMentionPatternPolicyParams = {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider?: string;
   conversationId?: string | null;
   providerPolicy?: MentionPatternsPolicyConfig;
@@ -48,7 +48,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function resolveProviderMentionPatternsPolicy(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string | undefined,
 ): MentionPatternsPolicyConfig | undefined {
   if (!cfg || !provider) {

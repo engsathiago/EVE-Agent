@@ -2,10 +2,10 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@eve/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { listAgentWorkspaceDirs } from "../../agents/workspace-dirs.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { NodeRegistry } from "../../gateway/node-registry.js";
 import { listNodePairing, updatePairedNodeMetadata } from "../../infra/node-pairing.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
@@ -318,7 +318,7 @@ export async function refreshRemoteNodeBins(params: {
   platform?: string;
   deviceFamily?: string;
   commands?: string[];
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   timeoutMs?: number;
 }) {
   const existing = remoteBinProbeInflight.get(params.nodeId);
@@ -340,7 +340,7 @@ async function refreshRemoteNodeBinsUncoalesced(params: {
   platform?: string;
   deviceFamily?: string;
   commands?: string[];
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   timeoutMs?: number;
 }) {
   if (!remoteRegistry) {
@@ -481,7 +481,7 @@ export function getRemoteSkillEligibility(options?: {
   };
 }
 
-export async function refreshRemoteBinsForConnectedNodes(cfg: OpenClawConfig) {
+export async function refreshRemoteBinsForConnectedNodes(cfg: EVEConfig) {
   if (!remoteRegistry) {
     return;
   }

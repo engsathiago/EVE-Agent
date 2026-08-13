@@ -10,7 +10,7 @@ title: "LLM task"
 returns structured output (optionally validated against JSON Schema).
 
 This is ideal for workflow engines like Lobster: you can add a single LLM step
-without writing custom OpenClaw code for each workflow.
+without writing custom EVE code for each workflow.
 
 ## Enable the plugin
 
@@ -76,7 +76,7 @@ outside the list is rejected.
 - `maxTokens` (number, optional)
 - `timeoutMs` (number, optional)
 
-`thinking` accepts the standard OpenClaw reasoning presets, such as `low` or `medium`.
+`thinking` accepts the standard EVE reasoning presets, such as `low` or `medium`.
 
 ## Output
 
@@ -87,23 +87,23 @@ Returns `details.json` containing the parsed JSON (and validates against
 
 ### Important limitation
 
-The example below assumes the **standalone Lobster CLI** is running in an environment where `openclaw.invoke` already has the correct gateway URL/auth context.
+The example below assumes the **standalone Lobster CLI** is running in an environment where `eve.invoke` already has the correct gateway URL/auth context.
 
-For the bundled **embedded** Lobster runner inside OpenClaw, this nested CLI pattern is **not currently reliable**:
+For the bundled **embedded** Lobster runner inside EVE, this nested CLI pattern is **not currently reliable**:
 
 ```lobster
-openclaw.invoke --tool llm-task --action json --args-json '{ ... }'
+eve.invoke --tool llm-task --action json --args-json '{ ... }'
 ```
 
 Until embedded Lobster has a supported bridge for this flow, prefer either:
 
 - direct `llm-task` tool calls outside Lobster, or
-- Lobster steps that do not rely on nested `openclaw.invoke` calls.
+- Lobster steps that do not rely on nested `eve.invoke` calls.
 
 Standalone Lobster CLI example:
 
 ```lobster
-openclaw.invoke --tool llm-task --action json --args-json '{
+eve.invoke --tool llm-task --action json --args-json '{
   "prompt": "Given the input email, return intent and draft.",
   "thinking": "low",
   "input": {

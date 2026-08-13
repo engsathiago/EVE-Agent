@@ -3,7 +3,7 @@
  *
  * Accepts provider-specific tool-call and tool-result shapes used by transcript repair and announce capture.
  */
-import { asOptionalRecord } from "@openclaw/normalization-core/record-coerce";
+import { asOptionalRecord } from "@eve/normalization-core/record-coerce";
 
 function readToolName(value: unknown): string | undefined {
   const record = asOptionalRecord(value);

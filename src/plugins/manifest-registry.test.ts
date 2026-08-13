@@ -9,7 +9,7 @@ import {
   __testing as manifestRegistryTesting,
   loadPluginManifestRegistry,
 } from "./manifest-registry.js";
-import type { OpenClawPackageManifest } from "./manifest.js";
+import type { EVEPackageManifest } from "./manifest.js";
 import { cleanupTrackedTempDirs, makeTrackedTempDir } from "./test-helpers/fs-fixtures.js";
 
 vi.unmock("../version.js");
@@ -33,19 +33,19 @@ function mkdirSafe(dir: string) {
 }
 
 function makeTempDir() {
-  return makeTrackedTempDir("openclaw-manifest-registry", tempDirs);
+  return makeTrackedTempDir("eve-manifest-registry", tempDirs);
 }
 
-function makeOpenClawDevSourceRoot() {
+function makeEVEDevSourceRoot() {
   const root = makeTempDir();
-  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "openclaw" }), "utf-8");
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf-8");
   mkdirSafe(path.join(root, "src"));
   mkdirSafe(path.join(root, "extensions"));
   return root;
 }
 
 function writeManifest(dir: string, manifest: Record<string, unknown>) {
-  fs.writeFileSync(path.join(dir, "openclaw.plugin.json"), JSON.stringify(manifest), "utf-8");
+  fs.writeFileSync(path.join(dir, "eve.plugin.json"), JSON.stringify(manifest), "utf-8");
 }
 
 function writeTextFile(rootDir: string, relativePath: string, value: string) {
@@ -76,11 +76,11 @@ function createPluginCandidate(params: {
   rootDir: string;
   sourceName?: string;
   origin: "bundled" | "global" | "workspace" | "config";
-  format?: "openclaw" | "bundle";
+  format?: "eve" | "bundle";
   bundleFormat?: "codex" | "claude" | "cursor";
   packageName?: string;
   packageVersion?: string;
-  packageManifest?: OpenClawPackageManifest;
+  packageManifest?: EVEPackageManifest;
   packageDir?: string;
   bundledManifest?: PluginCandidate["bundledManifest"];
   bundledManifestPath?: string;
@@ -109,8 +109,8 @@ function loadRegistry(candidates: PluginCandidate[]) {
 
 function hermeticEnv(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return {
-    OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
-    OPENCLAW_VERSION: undefined,
+    EVE_BUNDLED_PLUGINS_DIR: undefined,
+    EVE_VERSION: undefined,
     VITEST: "true",
     ...overrides,
   };
@@ -202,8 +202,8 @@ function prepareLinkedManifestFixture(params: { id: string; mode: "symlink" | "h
 } {
   const rootDir = makeTempDir();
   const outsideDir = makeTempDir();
-  const outsideManifest = path.join(outsideDir, "openclaw.plugin.json");
-  const linkedManifest = path.join(rootDir, "openclaw.plugin.json");
+  const outsideManifest = path.join(outsideDir, "eve.plugin.json");
+  const linkedManifest = path.join(rootDir, "eve.plugin.json");
   fs.writeFileSync(path.join(rootDir, "index.ts"), "export default function () {}", "utf-8");
   fs.writeFileSync(
     outsideManifest,
@@ -258,7 +258,7 @@ function loadRegistryForMinHostVersionCase(params: {
         origin: "global",
         packageManifest: {
           install: {
-            npmSpec: "@openclaw/synology-chat",
+            npmSpec: "@eve/synology-chat",
             minHostVersion: params.minHostVersion,
           },
         },
@@ -284,7 +284,7 @@ function loadRegistryForPluginApiCase(params: {
         origin: params.origin ?? "global",
         packageManifest: {
           install: {
-            npmSpec: "@openclaw/synology-chat",
+            npmSpec: "@eve/synology-chat",
             minHostVersion: ">=2026.4.25",
           },
           compat: {
@@ -421,19 +421,19 @@ describe("loadPluginManifestRegistry", () => {
     fs.writeFileSync(
       path.join(pluginDir, "package.json"),
       JSON.stringify({
-        name: "@openclaw/cached-manifest",
-        openclaw: { extensions: ["./index.js"] },
+        name: "@eve/cached-manifest",
+        eve: { extensions: ["./index.js"] },
       }),
       "utf-8",
     );
-    const manifestPath = path.join(pluginDir, "openclaw.plugin.json");
+    const manifestPath = path.join(pluginDir, "eve.plugin.json");
     writeManifest(pluginDir, {
       id: "cached-manifest",
       name: "Before",
       configSchema: { type: "object" },
     });
     const env = hermeticEnv({
-      OPENCLAW_STATE_DIR: stateDir,
+      EVE_STATE_DIR: stateDir,
     });
 
     const first = loadPluginManifestRegistry({ env });
@@ -606,7 +606,7 @@ describe("loadPluginManifestRegistry", () => {
   });
 
   it("prefers dev source bundled plugins over installed globals with the same id", () => {
-    const devSourceRoot = makeOpenClawDevSourceRoot();
+    const devSourceRoot = makeEVEDevSourceRoot();
     const bundledDir = path.join(devSourceRoot, "extensions", "codex");
     const globalDir = makeTempDir();
     const manifest = { id: "codex", configSchema: { type: "object" } };
@@ -615,7 +615,7 @@ describe("loadPluginManifestRegistry", () => {
     writeManifest(globalDir, manifest);
 
     const registry = loadPluginManifestRegistry({
-      env: hermeticEnv({ OPENCLAW_DEV_SOURCE_ROOT: devSourceRoot }),
+      env: hermeticEnv({ EVE_DEV_SOURCE_ROOT: devSourceRoot }),
       installRecords: {
         codex: {
           source: "npm",
@@ -682,7 +682,7 @@ describe("loadPluginManifestRegistry", () => {
         "diagnostics-prometheus": {
           source: "npm",
           installPath: dir,
-          resolvedName: "@openclaw/diagnostics-prometheus",
+          resolvedName: "@eve/diagnostics-prometheus",
           resolvedVersion: "2026.5.3",
         },
       },
@@ -690,7 +690,7 @@ describe("loadPluginManifestRegistry", () => {
         createPluginCandidate({
           idHint: "diagnostics-prometheus",
           rootDir: dir,
-          packageName: "@openclaw/diagnostics-prometheus",
+          packageName: "@eve/diagnostics-prometheus",
           origin: "global",
         }),
       ],
@@ -707,18 +707,18 @@ describe("loadPluginManifestRegistry", () => {
       installRecords: {
         "diagnostics-otel": {
           source: "npm",
-          spec: "@openclaw/diagnostics-otel",
+          spec: "@eve/diagnostics-otel",
           installPath: dir,
-          resolvedName: "@openclaw/diagnostics-otel",
+          resolvedName: "@eve/diagnostics-otel",
           resolvedVersion: "2026.5.18",
-          resolvedSpec: "@openclaw/diagnostics-otel@2026.5.18",
+          resolvedSpec: "@eve/diagnostics-otel@2026.5.18",
         },
       },
       candidates: [
         createPluginCandidate({
           idHint: "diagnostics-otel",
           rootDir: dir,
-          packageName: "@openclaw/diagnostics-otel",
+          packageName: "@eve/diagnostics-otel",
           origin: "config",
         }),
       ],
@@ -740,7 +740,7 @@ describe("loadPluginManifestRegistry", () => {
         "diagnostics-prometheus": {
           source: "npm",
           installPath: dir,
-          resolvedName: "@openclaw/diagnostics-prometheus",
+          resolvedName: "@eve/diagnostics-prometheus",
           resolvedVersion: "2026.5.3",
         },
       },
@@ -748,13 +748,13 @@ describe("loadPluginManifestRegistry", () => {
         createPluginCandidate({
           idHint: "diagnostics-prometheus",
           rootDir: dir,
-          packageName: "@openclaw/diagnostics-prometheus",
+          packageName: "@eve/diagnostics-prometheus",
           origin: "global",
         }),
         createPluginCandidate({
           idHint: "diagnostics-prometheus",
           rootDir: dir,
-          packageName: "@openclaw/diagnostics-prometheus",
+          packageName: "@eve/diagnostics-prometheus",
           origin: "config",
         }),
       ],
@@ -777,7 +777,7 @@ describe("loadPluginManifestRegistry", () => {
         createPluginCandidate({
           idHint: "diagnostics-prometheus",
           rootDir: dir,
-          packageName: "@openclaw/diagnostics-prometheus",
+          packageName: "@eve/diagnostics-prometheus",
           origin: "global",
         }),
       ],
@@ -1236,7 +1236,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "external-openai",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerAuthEnvVars is deprecated compatibility metadata",
     });
   });
@@ -1313,7 +1313,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "external-chat",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "without channelConfigs metadata",
     });
   });
@@ -1378,17 +1378,17 @@ describe("loadPluginManifestRegistry", () => {
   it("hydrates supplemental official external catalog contracts for lagging npm manifests", () => {
     const dir = makeTempDir();
     writeManifest(dir, {
-      id: "wecom-openclaw-plugin",
+      id: "wecom-eve-plugin",
       channels: ["wecom"],
       configSchema: { type: "object" },
     });
 
     const registry = loadRegistry([
       createPluginCandidate({
-        idHint: "wecom-openclaw-plugin",
+        idHint: "wecom-eve-plugin",
         rootDir: dir,
         origin: "global",
-        packageName: "@wecom/wecom-openclaw-plugin",
+        packageName: "@wecom/wecom-eve-plugin",
       }),
     ]);
 
@@ -1407,7 +1407,7 @@ describe("loadPluginManifestRegistry", () => {
   it("fills missing official external catalog descriptors for partial npm channel configs", () => {
     const dir = makeTempDir();
     writeManifest(dir, {
-      id: "wecom-openclaw-plugin",
+      id: "wecom-eve-plugin",
       channels: ["wecom"],
       configSchema: { type: "object" },
       channelConfigs: {
@@ -1425,10 +1425,10 @@ describe("loadPluginManifestRegistry", () => {
 
     const registry = loadRegistry([
       createPluginCandidate({
-        idHint: "wecom-openclaw-plugin",
+        idHint: "wecom-eve-plugin",
         rootDir: dir,
         origin: "global",
-        packageName: "@wecom/wecom-openclaw-plugin",
+        packageName: "@wecom/wecom-eve-plugin",
       }),
     ]);
 
@@ -1452,7 +1452,7 @@ describe("loadPluginManifestRegistry", () => {
     const dir = makeTempDir();
     writeTextFile(
       dir,
-      "openclaw.plugin.json",
+      "eve.plugin.json",
       JSON.stringify({
         id: "external-chat",
         channels: ["safe-chat"],
@@ -1551,7 +1551,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "outside-provider",
-      source: path.join(pluginDir, "openclaw.plugin.json"),
+      source: path.join(pluginDir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1578,7 +1578,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "absolute-provider",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1605,7 +1605,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "absolute-catalog",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1641,7 +1641,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "symlink-provider",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1677,7 +1677,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "fallback-symlink-provider",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1716,7 +1716,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "hardlink-provider",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -1755,7 +1755,7 @@ describe("loadPluginManifestRegistry", () => {
     expectDiagnosticFields(registry, {
       level: "warn",
       pluginId: "fallback-hardlink-provider",
-      source: path.join(dir, "openclaw.plugin.json"),
+      source: path.join(dir, "eve.plugin.json"),
       messageIncludes: "providerCatalogEntry must resolve inside the plugin root",
     });
   });
@@ -2031,7 +2031,7 @@ describe("loadPluginManifestRegistry", () => {
     writeManifest(dir, {
       id: "workflow-harness",
       contracts: {
-        agentToolResultMiddleware: ["openclaw", "codex"],
+        agentToolResultMiddleware: ["eve", "codex"],
         trustedToolPolicies: ["workflow-budget"],
       },
       configSchema: { type: "object" },
@@ -2044,7 +2044,7 @@ describe("loadPluginManifestRegistry", () => {
     });
 
     expect(registry.plugins[0]?.contracts).toEqual({
-      agentToolResultMiddleware: ["openclaw", "codex"],
+      agentToolResultMiddleware: ["eve", "codex"],
       trustedToolPolicies: ["workflow-budget"],
     });
   });
@@ -2052,7 +2052,7 @@ describe("loadPluginManifestRegistry", () => {
   it("preserves host-trusted plugin contracts from catalog overlays", () => {
     const contracts = manifestRegistryTesting.mergeManifestContracts(
       {
-        agentToolResultMiddleware: ["openclaw"],
+        agentToolResultMiddleware: ["eve"],
       },
       {
         agentToolResultMiddleware: ["codex"],
@@ -2061,7 +2061,7 @@ describe("loadPluginManifestRegistry", () => {
     );
 
     expect(contracts).toEqual({
-      agentToolResultMiddleware: ["openclaw", "codex"],
+      agentToolResultMiddleware: ["eve", "codex"],
       trustedToolPolicies: ["workflow-budget"],
     });
   });
@@ -2176,7 +2176,7 @@ describe("loadPluginManifestRegistry", () => {
         idHint: "telegram",
         rootDir: dir,
         origin: "bundled",
-        bundledManifestPath: path.join(dir, "openclaw.plugin.json"),
+        bundledManifestPath: path.join(dir, "eve.plugin.json"),
         bundledManifest: {
           id: "telegram",
           configSchema: { type: "object" },
@@ -2300,27 +2300,27 @@ describe("loadPluginManifestRegistry", () => {
     {
       name: "skips plugins whose minHostVersion is newer than the current host",
       minHostVersion: ">=2026.3.22",
-      env: { OPENCLAW_VERSION: "2026.3.21" } as NodeJS.ProcessEnv,
-      expectedMessage: "plugin requires OpenClaw >=2026.3.22, but this host is 2026.3.21",
+      env: { EVE_VERSION: "2026.3.21" } as NodeJS.ProcessEnv,
+      expectedMessage: "plugin requires EVE >=2026.3.22, but this host is 2026.3.21",
       expectWarn: true,
     },
     {
       name: "skips plugins whose beta minHostVersion is newer than the current host",
       minHostVersion: ">=2026.5.1-beta.1",
-      env: { OPENCLAW_VERSION: "2026.4.30" } as NodeJS.ProcessEnv,
-      expectedMessage: "plugin requires OpenClaw >=2026.5.1-beta.1, but this host is 2026.4.30",
+      env: { EVE_VERSION: "2026.4.30" } as NodeJS.ProcessEnv,
+      expectedMessage: "plugin requires EVE >=2026.5.1-beta.1, but this host is 2026.4.30",
       expectWarn: true,
     },
     {
       name: "rejects invalid minHostVersion metadata",
       minHostVersion: "2026.3.22",
-      expectedMessage: "plugin manifest invalid | openclaw.install.minHostVersion must use",
+      expectedMessage: "plugin manifest invalid | eve.install.minHostVersion must use",
       expectWarn: false,
     },
     {
       name: "warns distinctly when host version cannot be determined",
       minHostVersion: ">=2026.3.22",
-      env: { OPENCLAW_VERSION: "unknown" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "unknown" } as NodeJS.ProcessEnv,
       expectedMessage: "host version could not be determined",
       expectWarn: true,
     },
@@ -2360,7 +2360,7 @@ describe("loadPluginManifestRegistry", () => {
           origin: "global",
           packageManifest: {
             install: {
-              npmSpec: "@openclaw/codex",
+              npmSpec: "@eve/codex",
               minHostVersion: "2026.3.22",
             },
           },
@@ -2369,7 +2369,7 @@ describe("loadPluginManifestRegistry", () => {
     });
 
     expect(registry.plugins.map((plugin) => plugin.id)).toEqual(["codex"]);
-    expectNoRegistryDiagnosticContains(registry, "openclaw.install.minHostVersion must use");
+    expectNoRegistryDiagnosticContains(registry, "eve.install.minHostVersion must use");
   });
 
   it("does not runtime-gate bundled source plugins by install minHostVersion", () => {
@@ -2385,17 +2385,17 @@ describe("loadPluginManifestRegistry", () => {
           origin: "bundled",
           packageManifest: {
             install: {
-              npmSpec: "@openclaw/codex",
+              npmSpec: "@eve/codex",
               minHostVersion: ">=2026.5.1-beta.1",
             },
           },
         }),
       ],
-      env: { OPENCLAW_VERSION: "2026.4.30" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "2026.4.30" } as NodeJS.ProcessEnv,
     });
 
     expect(registry.plugins.map((plugin) => plugin.id)).toContain("codex");
-    expectNoRegistryDiagnosticContains(registry, "requires OpenClaw");
+    expectNoRegistryDiagnosticContains(registry, "requires EVE");
   });
 
   it("skips installed plugins whose package plugin API range is newer than the current host", () => {
@@ -2405,7 +2405,7 @@ describe("loadPluginManifestRegistry", () => {
     const registry = loadRegistryForPluginApiCase({
       rootDir: dir,
       pluginApi: ">=2026.5.27",
-      env: { OPENCLAW_VERSION: "2026.5.10-beta.1" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "2026.5.10-beta.1" } as NodeJS.ProcessEnv,
     });
 
     expect(registry.plugins).toStrictEqual([]);
@@ -2423,13 +2423,13 @@ describe("loadPluginManifestRegistry", () => {
     const registry = loadRegistryForPluginApiCase({
       rootDir: dir,
       pluginApi: 20260527,
-      env: { OPENCLAW_VERSION: "2026.5.27" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "2026.5.27" } as NodeJS.ProcessEnv,
     });
 
     expect(registry.plugins).toStrictEqual([]);
     expectRegistryDiagnosticContains(
       registry,
-      "plugin manifest invalid | package.json openclaw.compat.pluginApi must be a string",
+      "plugin manifest invalid | package.json eve.compat.pluginApi must be a string",
     );
     expect(registry.diagnostics.map((diag) => diag.level)).toContain("error");
   });
@@ -2441,7 +2441,7 @@ describe("loadPluginManifestRegistry", () => {
     const registry = loadRegistryForPluginApiCase({
       rootDir: dir,
       pluginApi: ">=2026.5.27",
-      env: { OPENCLAW_VERSION: "2026.5.27-beta.1" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "2026.5.27-beta.1" } as NodeJS.ProcessEnv,
     });
 
     expect(registry.plugins.map((plugin) => plugin.id)).toEqual(["synology-chat"]);
@@ -2457,7 +2457,7 @@ describe("loadPluginManifestRegistry", () => {
       pluginApi: ">=2026.5.27",
       origin: "bundled",
       idHint: "codex",
-      env: { OPENCLAW_VERSION: "2026.5.10-beta.1" } as NodeJS.ProcessEnv,
+      env: { EVE_VERSION: "2026.5.10-beta.1" } as NodeJS.ProcessEnv,
     });
 
     expect(registry.plugins.map((plugin) => plugin.id)).toContain("codex");
@@ -2548,23 +2548,23 @@ describe("loadPluginManifestRegistry", () => {
   it("suppresses duplicate warning when global candidates come from the same package artifact", () => {
     const firstDir = makeTempDir();
     const secondDir = makeTempDir();
-    const manifest = { id: "opik-openclaw", configSchema: { type: "object" } };
+    const manifest = { id: "opik-eve", configSchema: { type: "object" } };
     writeManifest(firstDir, manifest);
     writeManifest(secondDir, manifest);
 
     const candidates: PluginCandidate[] = [
       createPluginCandidate({
-        idHint: "opik-openclaw",
+        idHint: "opik-eve",
         rootDir: firstDir,
         origin: "global",
-        packageName: "@opik/opik-openclaw",
+        packageName: "@opik/opik-eve",
         packageVersion: "0.2.14",
       }),
       createPluginCandidate({
-        idHint: "opik-openclaw",
+        idHint: "opik-eve",
         rootDir: secondDir,
         origin: "global",
-        packageName: "@opik/opik-openclaw",
+        packageName: "@opik/opik-eve",
         packageVersion: "0.2.14",
       }),
     ];
@@ -2759,7 +2759,7 @@ describe("loadPluginManifestRegistry", () => {
       return;
     }
     const registry = loadPluginManifestRegistry({
-      env: hermeticEnv({ OPENCLAW_NIX_MODE: "1" }),
+      env: hermeticEnv({ EVE_NIX_MODE: "1" }),
       candidates: [
         createPluginCandidate({
           idHint: "unsafe-config-hardlink",
@@ -2818,16 +2818,16 @@ describe("loadPluginManifestRegistry", () => {
       config,
       env: hermeticEnv({
         HOME: homeA,
-        OPENCLAW_HOME: undefined,
-        OPENCLAW_STATE_DIR: path.join(homeA, ".state"),
+        EVE_HOME: undefined,
+        EVE_STATE_DIR: path.join(homeA, ".state"),
       }),
     });
     const second = loadPluginManifestRegistry({
       config,
       env: hermeticEnv({
         HOME: homeB,
-        OPENCLAW_HOME: undefined,
-        OPENCLAW_STATE_DIR: path.join(homeB, ".state"),
+        EVE_HOME: undefined,
+        EVE_STATE_DIR: path.join(homeB, ".state"),
       }),
     });
 
@@ -2852,7 +2852,7 @@ describe("loadPluginManifestRegistry", () => {
         origin: "global",
         packageManifest: {
           install: {
-            npmSpec: "@openclaw/synology-chat",
+            npmSpec: "@eve/synology-chat",
             minHostVersion: ">=2026.3.22",
           },
         },
@@ -2862,13 +2862,13 @@ describe("loadPluginManifestRegistry", () => {
     const olderHost = loadPluginManifestRegistry({
       candidates,
       env: hermeticEnv({
-        OPENCLAW_VERSION: "2026.3.21",
+        EVE_VERSION: "2026.3.21",
       }),
     });
     const newerHost = loadPluginManifestRegistry({
       candidates,
       env: hermeticEnv({
-        OPENCLAW_VERSION: "2026.3.22",
+        EVE_VERSION: "2026.3.22",
       }),
     });
 

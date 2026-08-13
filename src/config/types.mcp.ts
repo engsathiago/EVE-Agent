@@ -2,7 +2,7 @@
 export type McpCodexToolApprovalMode = "auto" | "prompt" | "approve";
 
 export type McpServerCodexConfig = {
-  /** OpenClaw agent ids that should receive this server in Codex app-server threads. */
+  /** EVE agent ids that should receive this server in Codex app-server threads. */
   agents?: string[];
   /** Codex MCP tool approval mode emitted as default_tools_approval_mode. */
   defaultToolsApprovalMode?: McpCodexToolApprovalMode;
@@ -50,7 +50,7 @@ export type McpServerConfig = {
   timeout?: number;
   /** Whether this server can safely handle concurrent tool calls. */
   supportsParallelToolCalls?: boolean;
-  /** HTTP OAuth mode. Tokens are stored in OpenClaw state, not in config. */
+  /** HTTP OAuth mode. Tokens are stored in EVE state, not in config. */
   auth?: "oauth";
   /** Optional OAuth client metadata overrides for HTTP MCP servers. */
   oauth?: {
@@ -70,7 +70,7 @@ export type McpServerConfig = {
   clientKey?: string;
   /** Alias for clientKey. */
   client_key?: string;
-  /** Optional per-server OpenClaw MCP tool selection. */
+  /** Optional per-server EVE MCP tool selection. */
   toolFilter?: McpServerToolFilterConfig;
   /** Codex-specific projection controls for Codex app-server/runtime config. */
   codex?: McpServerCodexConfig;
@@ -78,7 +78,7 @@ export type McpServerConfig = {
 };
 
 export type McpConfig = {
-  /** Named MCP server definitions managed by OpenClaw. */
+  /** Named MCP server definitions managed by EVE. */
   servers?: Record<string, McpServerConfig>;
   /**
    * Idle TTL for session-scoped bundled MCP runtimes, in milliseconds.

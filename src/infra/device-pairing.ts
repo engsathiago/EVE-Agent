@@ -1,6 +1,6 @@
 // Manages device pairing requests, approvals, and token issuance.
 import { randomUUID } from "node:crypto";
-import { normalizeUniqueSingleOrTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
+import { normalizeUniqueSingleOrTrimmedStringList } from "@eve/normalization-core/string-normalization";
 import { normalizeDeviceAuthScopes } from "../shared/device-auth.js";
 import {
   resolveBootstrapProfileScopesForRole,
@@ -163,7 +163,7 @@ const PENDING_TTL_MS = 5 * 60 * 1000;
 const OPERATOR_ROLE = "operator";
 const OPERATOR_SCOPE_PREFIX = "operator.";
 const SHARED_GATEWAY_AUTH_ISSUER_KIND = "shared-gateway-auth";
-const BROWSER_DEVICE_CLIENT_IDS = new Set(["openclaw-control-ui", "webchat-ui"]);
+const BROWSER_DEVICE_CLIENT_IDS = new Set(["eve-control-ui", "webchat-ui"]);
 const BROWSER_DEVICE_CLIENT_MODE = "webchat";
 
 const withLock = createAsyncLock();

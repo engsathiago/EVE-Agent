@@ -59,9 +59,9 @@ const buildGatewayInstallPlan = vi.fn(
     programArguments: ["/bin/node", "cli", "gateway", "--port", String(params.port)],
     workingDirectory: process.cwd(),
     environment: {
-      OPENCLAW_GATEWAY_PORT: String(params.port),
-      ...(params.wrapperPath ? { OPENCLAW_WRAPPER: params.wrapperPath } : {}),
-      ...(params.token ? { OPENCLAW_GATEWAY_TOKEN: params.token } : {}),
+      EVE_GATEWAY_PORT: String(params.port),
+      ...(params.wrapperPath ? { EVE_WRAPPER: params.wrapperPath } : {}),
+      ...(params.token ? { EVE_GATEWAY_TOKEN: params.token } : {}),
     },
   }),
 );
@@ -83,9 +83,9 @@ vi.mock("../gateway/probe-auth.js", () => ({
 }));
 
 vi.mock("../daemon/program-args.js", () => ({
-  OPENCLAW_WRAPPER_ENV_KEY: "OPENCLAW_WRAPPER",
+  EVE_WRAPPER_ENV_KEY: "EVE_WRAPPER",
   resolveGatewayProgramArguments: (opts: unknown) => resolveGatewayProgramArguments(opts),
-  resolveOpenClawWrapperPath: async (value: string | undefined) => value?.trim() || undefined,
+  resolveEVEWrapperPath: async (value: string | undefined) => value?.trim() || undefined,
 }));
 
 vi.mock("../daemon/service.js", async () => {
@@ -184,17 +184,17 @@ describe("daemon-cli coverage", () => {
 
   beforeEach(() => {
     daemonProgram = createDaemonProgram();
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-daemon-cli-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-daemon-cli-"));
     envSnapshot = captureEnv([
-      "OPENCLAW_STATE_DIR",
-      "OPENCLAW_CONFIG_PATH",
-      "OPENCLAW_GATEWAY_PORT",
-      "OPENCLAW_PROFILE",
+      "EVE_STATE_DIR",
+      "EVE_CONFIG_PATH",
+      "EVE_GATEWAY_PORT",
+      "EVE_PROFILE",
     ]);
-    process.env.OPENCLAW_STATE_DIR = tmpDir;
-    process.env.OPENCLAW_CONFIG_PATH = path.join(tmpDir, "openclaw.json");
-    delete process.env.OPENCLAW_GATEWAY_PORT;
-    delete process.env.OPENCLAW_PROFILE;
+    process.env.EVE_STATE_DIR = tmpDir;
+    process.env.EVE_CONFIG_PATH = path.join(tmpDir, "eve.json");
+    delete process.env.EVE_GATEWAY_PORT;
+    delete process.env.EVE_PROFILE;
     serviceReadCommand.mockResolvedValue(null);
     resolveGatewayProbeAuthSafeWithSecretInputs.mockClear();
     findExtraGatewayServices.mockClear();
@@ -229,12 +229,12 @@ describe("daemon-cli coverage", () => {
     serviceReadCommand.mockResolvedValueOnce({
       programArguments: ["/bin/node", "cli", "gateway", "--port", "19001"],
       environment: {
-        OPENCLAW_PROFILE: "dev",
-        OPENCLAW_STATE_DIR: "/tmp/openclaw-daemon-state",
-        OPENCLAW_CONFIG_PATH: "/tmp/openclaw-daemon-state/openclaw.json",
-        OPENCLAW_GATEWAY_PORT: "19001",
+        EVE_PROFILE: "dev",
+        EVE_STATE_DIR: "/tmp/eve-daemon-state",
+        EVE_CONFIG_PATH: "/tmp/eve-daemon-state/eve.json",
+        EVE_GATEWAY_PORT: "19001",
       },
-      sourcePath: "/tmp/ai.openclaw.gateway.plist",
+      sourcePath: "/tmp/ai.eve.gateway.plist",
     });
 
     await runDaemonCommand(["daemon", "status", "--json"]);
@@ -303,12 +303,12 @@ describe("daemon-cli coverage", () => {
     serviceReadCommand.mockResolvedValueOnce({
       programArguments: ["/bin/node", "cli", "gateway", "--port", "18789"],
       environment: {
-        OPENCLAW_WRAPPER: "/usr/local/bin/openclaw-doppler",
+        EVE_WRAPPER: "/usr/local/bin/eve-doppler",
         PATH: "/custom/go/bin:/usr/bin",
         GOPATH: "/Users/test/.local/gopath",
         GOBIN: "/Users/test/.local/gopath/bin",
       },
-      sourcePath: "/tmp/ai.openclaw.gateway.plist",
+      sourcePath: "/tmp/ai.eve.gateway.plist",
     });
 
     await runDaemonCommand(["daemon", "install", "--force", "--json"]);
@@ -319,12 +319,12 @@ describe("daemon-cli coverage", () => {
     );
     expect(installPlanParams.existingEnvironment).toEqual({
       PATH: "/custom/go/bin:/usr/bin",
-      OPENCLAW_WRAPPER: "/usr/local/bin/openclaw-doppler",
+      EVE_WRAPPER: "/usr/local/bin/eve-doppler",
       GOPATH: "/Users/test/.local/gopath",
       GOBIN: "/Users/test/.local/gopath/bin",
     });
-    expect((installPlanParams.env as NodeJS.ProcessEnv).OPENCLAW_WRAPPER).toBe(
-      "/usr/local/bin/openclaw-doppler",
+    expect((installPlanParams.env as NodeJS.ProcessEnv).EVE_WRAPPER).toBe(
+      "/usr/local/bin/eve-doppler",
     );
   });
 
@@ -336,12 +336,12 @@ describe("daemon-cli coverage", () => {
       "daemon",
       "install",
       "--wrapper",
-      "/usr/local/bin/openclaw-doppler",
+      "/usr/local/bin/eve-doppler",
       "--json",
     ]);
 
     expect(requireMockCallArg(buildGatewayInstallPlan, "buildGatewayInstallPlan").wrapperPath).toBe(
-      "/usr/local/bin/openclaw-doppler",
+      "/usr/local/bin/eve-doppler",
     );
   });
 

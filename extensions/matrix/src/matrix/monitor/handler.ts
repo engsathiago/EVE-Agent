@@ -2,15 +2,15 @@
 import {
   buildChannelInboundEventContext,
   toInboundMediaFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { hasFinalInboundReplyDispatch } from "openclaw/plugin-sdk/channel-inbound";
-import type { ChannelBotLoopProtectionFacts } from "openclaw/plugin-sdk/channel-inbound";
+} from "eve-agent/plugin-sdk/channel-inbound";
+import { hasFinalInboundReplyDispatch } from "eve-agent/plugin-sdk/channel-inbound";
+import type { ChannelBotLoopProtectionFacts } from "eve-agent/plugin-sdk/channel-inbound";
 import {
   createPreviewMessageReceipt,
   defineFinalizableLivePreviewAdapter,
   deliverWithFinalizableLivePreviewAdapter,
   type MessageReceipt,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLineForEntry,
   createChannelProgressDraftGate,
@@ -21,30 +21,30 @@ import {
   mergeChannelProgressDraftLine,
   normalizeChannelProgressDraftLineIdentity,
   resolveChannelProgressDraftMaxLines,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "eve-agent/plugin-sdk/channel-outbound";
 import {
   evaluateSupplementalContextVisibility,
   resolveChannelContextVisibilityMode,
-} from "openclaw/plugin-sdk/context-visibility-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
+} from "eve-agent/plugin-sdk/context-visibility-runtime";
+import { isDangerousNameMatchingEnabled } from "eve-agent/plugin-sdk/dangerous-name-runtime";
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { mergePairLoopGuardConfig } from "openclaw/plugin-sdk/pair-loop-guard-runtime";
-import { buildInboundHistoryFromEntries } from "openclaw/plugin-sdk/reply-history";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { mergePairLoopGuardConfig } from "eve-agent/plugin-sdk/pair-loop-guard-runtime";
+import { buildInboundHistoryFromEntries } from "eve-agent/plugin-sdk/reply-history";
 import {
   buildTtsSupplementMediaPayload,
   getReplyPayloadTtsSupplement,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { GetReplyOptions } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
+} from "eve-agent/plugin-sdk/reply-payload";
+import type { GetReplyOptions } from "eve-agent/plugin-sdk/reply-runtime";
+import { resolveInboundLastRouteSessionKey } from "eve-agent/plugin-sdk/routing";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
 import {
   loadSessionStore,
   resolveSessionStoreEntry,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/session-store-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type {
   CoreConfig,
   MatrixConfig,
@@ -74,7 +74,7 @@ import {
   parsePollStartContent,
 } from "../poll-types.js";
 import type { LocationMessageEventContent, MatrixClient } from "../sdk.js";
-import { MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY } from "../send/types.js";
+import { MATRIX_EVE_FINALIZED_PREVIEW_KEY } from "../send/types.js";
 import { resolveMatrixStoredSessionMeta } from "../session-store-metadata.js";
 import {
   resolveMatrixMonitorAccessState,
@@ -129,10 +129,10 @@ const PAIRING_REPLY_COOLDOWN_MS = 5 * 60_000;
 const MATRIX_TOOL_PROGRESS_MAX_CHARS = 300;
 let matrixSendModulePromise: Promise<typeof import("../send.js")> | undefined;
 let acpBindingRuntimePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/acp-binding-runtime")>
+  | Promise<typeof import("eve-agent/plugin-sdk/acp-binding-runtime")>
   | undefined;
 let sessionBindingRuntimePromise:
-  | Promise<typeof import("openclaw/plugin-sdk/session-binding-runtime")>
+  | Promise<typeof import("eve-agent/plugin-sdk/session-binding-runtime")>
   | undefined;
 let matrixReactionEventsPromise: Promise<typeof import("./reaction-events.js")> | undefined;
 let matrixDraftStreamPromise: Promise<typeof import("../draft-stream.js")> | undefined;
@@ -143,16 +143,16 @@ function loadMatrixSendModule(): Promise<typeof import("../send.js")> {
 }
 
 function loadAcpBindingRuntime(): Promise<
-  typeof import("openclaw/plugin-sdk/acp-binding-runtime")
+  typeof import("eve-agent/plugin-sdk/acp-binding-runtime")
 > {
-  acpBindingRuntimePromise ??= import("openclaw/plugin-sdk/acp-binding-runtime");
+  acpBindingRuntimePromise ??= import("eve-agent/plugin-sdk/acp-binding-runtime");
   return acpBindingRuntimePromise;
 }
 
 function loadSessionBindingRuntime(): Promise<
-  typeof import("openclaw/plugin-sdk/session-binding-runtime")
+  typeof import("eve-agent/plugin-sdk/session-binding-runtime")
 > {
-  sessionBindingRuntimePromise ??= import("openclaw/plugin-sdk/session-binding-runtime");
+  sessionBindingRuntimePromise ??= import("eve-agent/plugin-sdk/session-binding-runtime");
   return sessionBindingRuntimePromise;
 }
 
@@ -205,7 +205,7 @@ async function redactMatrixDraftEvent(
 }
 
 function buildMatrixFinalizedPreviewContent(): Record<string, unknown> {
-  return { [MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY]: true };
+  return { [MATRIX_EVE_FINALIZED_PREVIEW_KEY]: true };
 }
 
 export type MatrixMonitorHandlerParams = {

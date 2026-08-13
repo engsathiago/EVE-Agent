@@ -1,9 +1,9 @@
 // Imessage helper module supports normalize behavior.
-import { normalizeE164 } from "openclaw/plugin-sdk/account-resolution";
+import { normalizeE164 } from "eve-agent/plugin-sdk/account-resolution";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 const SERVICE_PREFIXES = ["imessage:", "sms:", "auto:"] as const;
 const CHAT_TARGET_PREFIX_RE =

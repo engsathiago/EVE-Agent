@@ -75,7 +75,7 @@ function evidenceCredentialSource(summary) {
 function legacyTelegramSummaryToEvidenceSummary(summary) {
   const scenarios = Array.isArray(summary.scenarios) ? summary.scenarios : [];
   return {
-    kind: "openclaw.qa.evidence-summary",
+    kind: "eve.qa.evidence-summary",
     schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     entries: scenarios.map((scenario) => ({

@@ -42,14 +42,14 @@ Supported top-level fields:
 | -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `discovery`                | enabled                  | Model discovery settings for Codex app-server `model/list`.                                                                               |
 | `appServer`                | managed stdio app-server | Transport, command, auth, approval, sandbox, and timeout settings.                                                                        |
-| `codexDynamicToolsLoading` | `"searchable"`           | Use `"direct"` to put OpenClaw dynamic tools directly in the initial Codex tool context.                                                  |
-| `codexDynamicToolsExclude` | `[]`                     | Additional OpenClaw dynamic tool names to omit from Codex app-server turns.                                                               |
+| `codexDynamicToolsLoading` | `"searchable"`           | Use `"direct"` to put EVE dynamic tools directly in the initial Codex tool context.                                                  |
+| `codexDynamicToolsExclude` | `[]`                     | Additional EVE dynamic tool names to omit from Codex app-server turns.                                                               |
 | `codexPlugins`             | disabled                 | Native Codex plugin/app support for migrated source-installed curated plugins. See [Native Codex plugins](/plugins/codex-native-plugins). |
 | `computerUse`              | disabled                 | Codex Computer Use setup. See [Codex Computer Use](/plugins/codex-computer-use).                                                          |
 
 ## App-server transport
 
-By default, OpenClaw starts the managed Codex binary shipped with the bundled
+By default, EVE starts the managed Codex binary shipped with the bundled
 plugin:
 
 ```bash
@@ -93,25 +93,25 @@ Supported `appServer` fields:
 | `url`                                         | unset                                                  | WebSocket app-server URL.                                                                                                                                                                                                                                                                                                                                                                       |
 | `authToken`                                   | unset                                                  | Bearer token for WebSocket transport. Accepts a literal string or SecretInput such as `${CODEX_APP_SERVER_TOKEN}`.                                                                                                                                                                                                                                                                              |
 | `headers`                                     | `{}`                                                   | Extra WebSocket headers. Header values accept literal strings or SecretInput values, for example `x-codex-client-session-token: "${CODEX_CLIENT_SESSION_TOKEN}"`.                                                                                                                                                                                                                               |
-| `clearEnv`                                    | `[]`                                                   | Extra environment variable names removed from the spawned stdio app-server process after OpenClaw builds its inherited environment.                                                                                                                                                                                                                                                             |
-| `remoteWorkspaceRoot`                         | unset                                                  | Remote Codex app-server workspace root. When set, OpenClaw infers the local workspace root from the resolved OpenClaw workspace, preserves the current cwd suffix under this remote root, and sends only the final app-server cwd to Codex. If the cwd is outside the resolved OpenClaw workspace root, OpenClaw fails closed instead of sending a gateway-local path to the remote app-server. |
+| `clearEnv`                                    | `[]`                                                   | Extra environment variable names removed from the spawned stdio app-server process after EVE builds its inherited environment.                                                                                                                                                                                                                                                             |
+| `remoteWorkspaceRoot`                         | unset                                                  | Remote Codex app-server workspace root. When set, EVE infers the local workspace root from the resolved EVE workspace, preserves the current cwd suffix under this remote root, and sends only the final app-server cwd to Codex. If the cwd is outside the resolved EVE workspace root, EVE fails closed instead of sending a gateway-local path to the remote app-server. |
 | `requestTimeoutMs`                            | `60000`                                                | Timeout for app-server control-plane calls.                                                                                                                                                                                                                                                                                                                                                     |
-| `turnCompletionIdleTimeoutMs`                 | `60000`                                                | Quiet window after Codex accepts a turn or after a turn-scoped app-server request while OpenClaw waits for `turn/completed`.                                                                                                                                                                                                                                                                    |
-| `postToolRawAssistantCompletionIdleTimeoutMs` | `300000`                                               | Completion-idle and progress guard used after a tool handoff, native tool completion, post-tool raw assistant progress, raw reasoning completion, or reasoning progress while OpenClaw waits for `turn/completed`. Use this for trusted or heavy workloads where post-tool synthesis can legitimately stay quiet longer than the final assistant release budget.                                |
+| `turnCompletionIdleTimeoutMs`                 | `60000`                                                | Quiet window after Codex accepts a turn or after a turn-scoped app-server request while EVE waits for `turn/completed`.                                                                                                                                                                                                                                                                    |
+| `postToolRawAssistantCompletionIdleTimeoutMs` | `300000`                                               | Completion-idle and progress guard used after a tool handoff, native tool completion, post-tool raw assistant progress, raw reasoning completion, or reasoning progress while EVE waits for `turn/completed`. Use this for trusted or heavy workloads where post-tool synthesis can legitimately stay quiet longer than the final assistant release budget.                                |
 | `mode`                                        | `"yolo"` unless local Codex requirements disallow YOLO | Preset for YOLO or guardian-reviewed execution.                                                                                                                                                                                                                                                                                                                                                 |
 | `approvalPolicy`                              | `"never"` or an allowed guardian approval policy       | Native Codex approval policy sent to thread start, resume, and turn.                                                                                                                                                                                                                                                                                                                            |
-| `sandbox`                                     | `"danger-full-access"` or an allowed guardian sandbox  | Native Codex sandbox mode sent to thread start and resume. Active OpenClaw sandboxes narrow `danger-full-access` turns to Codex `workspace-write`; the turn network flag follows OpenClaw sandbox egress.                                                                                                                                                                                       |
+| `sandbox`                                     | `"danger-full-access"` or an allowed guardian sandbox  | Native Codex sandbox mode sent to thread start and resume. Active EVE sandboxes narrow `danger-full-access` turns to Codex `workspace-write`; the turn network flag follows EVE sandbox egress.                                                                                                                                                                                       |
 | `approvalsReviewer`                           | `"user"` or an allowed guardian reviewer               | Use `"auto_review"` to let Codex review native approval prompts when allowed.                                                                                                                                                                                                                                                                                                                   |
 | `defaultWorkspaceDir`                         | current process directory                              | Workspace used by `/codex bind` when `--cwd` is omitted.                                                                                                                                                                                                                                                                                                                                        |
 | `serviceTier`                                 | unset                                                  | Optional Codex app-server service tier. `"priority"` enables fast-mode routing, `"flex"` requests flex processing, and `null` clears the override. Legacy `"fast"` is accepted as `"priority"`.                                                                                                                                                                                                 |
-| `networkProxy`                                | disabled                                               | Opt into Codex permissions-profile networking for app-server commands. OpenClaw defines the selected `permissions.<profile>.network` config and selects it with `default_permissions` instead of sending `sandbox`.                                                                                                                                                                             |
-| `experimental.sandboxExecServer`              | `false`                                                | Preview opt-in that registers an OpenClaw sandbox-backed Codex environment with Codex app-server 0.132.0 or newer so native Codex execution can run inside the active OpenClaw sandbox.                                                                                                                                                                                                         |
+| `networkProxy`                                | disabled                                               | Opt into Codex permissions-profile networking for app-server commands. EVE defines the selected `permissions.<profile>.network` config and selects it with `default_permissions` instead of sending `sandbox`.                                                                                                                                                                             |
+| `experimental.sandboxExecServer`              | `false`                                                | Preview opt-in that registers an EVE sandbox-backed Codex environment with Codex app-server 0.132.0 or newer so native Codex execution can run inside the active EVE sandbox.                                                                                                                                                                                                         |
 
 `appServer.networkProxy` is explicit because it changes the Codex sandbox
-contract. When enabled, OpenClaw also sets `features.network_proxy.enabled` and
+contract. When enabled, EVE also sets `features.network_proxy.enabled` and
 `default_permissions` in the Codex thread config so the generated permission
-profile can start Codex managed networking. By default, OpenClaw generates a
-collision-resistant `openclaw-network-<fingerprint>` profile name from the
+profile can start Codex managed networking. By default, EVE generates a
+collision-resistant `eve-network-<fingerprint>` profile name from the
 profile body; use `profileName` only when a stable local name is required.
 
 ```js
@@ -147,16 +147,16 @@ so a full-access profile would not protect outbound traffic.
 The plugin blocks older or unversioned app-server handshakes. Codex app-server
 must report stable version `0.125.0` or newer.
 
-OpenClaw treats non-loopback WebSocket app-server URLs as remote and requires
+EVE treats non-loopback WebSocket app-server URLs as remote and requires
 identity-bearing WebSocket auth through `appServer.authToken` or an
 `Authorization` header. `appServer.authToken` and each `appServer.headers.*`
 value can be a SecretInput; the secrets runtime resolves SecretRefs and env
-shorthand before OpenClaw builds app-server start options, and unresolved
+shorthand before EVE builds app-server start options, and unresolved
 structured SecretRefs fail before any token or header is sent. When native Codex
-plugins are configured, OpenClaw uses the connected app-server's plugin control
+plugins are configured, EVE uses the connected app-server's plugin control
 plane to install or refresh those plugins and then refreshes app inventory so
-plugin-owned apps are visible to the Codex thread. Only connect OpenClaw to
-remote app-servers that are trusted to accept OpenClaw-managed plugin installs
+plugin-owned apps are visible to the Codex thread. Only connect EVE to
+remote app-servers that are trusted to accept EVE-managed plugin installs
 and app inventory refreshes.
 
 ## Approval and sandbox modes
@@ -164,11 +164,11 @@ and app inventory refreshes.
 Local stdio app-server sessions default to YOLO mode:
 `approvalPolicy: "never"`, `approvalsReviewer: "user"`, and
 `sandbox: "danger-full-access"`. This trusted local operator posture lets
-unattended OpenClaw turns and heartbeats make progress without native approval
+unattended EVE turns and heartbeats make progress without native approval
 prompts that nobody is around to answer.
 
 If Codex's local system requirements file disallows implicit YOLO approval,
-reviewer, or sandbox values, OpenClaw treats the implicit default as guardian
+reviewer, or sandbox values, EVE treats the implicit default as guardian
 instead and selects allowed guardian permissions. `tools.exec.mode: "auto"`
 also forces guardian-reviewed Codex approvals and does not preserve unsafe
 legacy `approvalPolicy: "never"` or `sandbox: "danger-full-access"` overrides;
@@ -203,20 +203,20 @@ values are allowed. Individual policy fields override `mode`. The older
 `guardian_subagent` reviewer value is still accepted as a compatibility alias,
 but new configs should use `auto_review`.
 
-When an OpenClaw sandbox is active, the local Codex app-server process still
-runs on the Gateway host. OpenClaw therefore disables Codex native Code Mode,
+When an EVE sandbox is active, the local Codex app-server process still
+runs on the Gateway host. EVE therefore disables Codex native Code Mode,
 user MCP servers, and app-backed plugin execution for that turn instead of
-treating Codex host-side sandboxing as equivalent to the OpenClaw sandbox
-backend. Shell access is exposed through OpenClaw sandbox-backed dynamic tools
+treating Codex host-side sandboxing as equivalent to the EVE sandbox
+backend. Shell access is exposed through EVE sandbox-backed dynamic tools
 such as `sandbox_exec` and `sandbox_process` when the normal exec/process tools
 are available.
 
 On Ubuntu/AppArmor hosts, Codex bwrap can fail under `workspace-write` before
 the shell command starts when you intentionally run native Codex
-`workspace-write` without active OpenClaw sandboxing. If you see
+`workspace-write` without active EVE sandboxing. If you see
 `bwrap: setting up uid map: Permission denied` or
 `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`, run
-`openclaw doctor` and fix the reported host namespace policy for the OpenClaw
+`eve doctor` and fix the reported host namespace policy for the EVE
 service user rather than granting broader Docker container privileges. Prefer
 a scoped AppArmor profile for the service process; the
 `kernel.apparmor_restrict_unprivileged_userns=0` fallback is host-wide and has
@@ -224,10 +224,10 @@ security tradeoffs.
 
 ## Sandboxed native execution
 
-The stable default is fail-closed: active OpenClaw sandboxing disables native
+The stable default is fail-closed: active EVE sandboxing disables native
 Codex execution surfaces that would otherwise run from the Codex app-server
 host. Use `appServer.experimental.sandboxExecServer: true` only when you want to
-try Codex's remote environment support with OpenClaw's sandbox backend. This
+try Codex's remote environment support with EVE's sandbox backend. This
 preview path requires Codex app-server 0.132.0 or newer.
 
 ```json5
@@ -249,27 +249,27 @@ preview path requires Codex app-server 0.132.0 or newer.
 }
 ```
 
-When the flag is on and the current OpenClaw session is sandboxed, OpenClaw
+When the flag is on and the current EVE session is sandboxed, EVE
 starts a local loopback exec-server backed by the active sandbox, registers it
 with Codex app-server, and starts the Codex thread and turn with that
-OpenClaw-owned environment. If the app-server cannot register the environment,
+EVE-owned environment. If the app-server cannot register the environment,
 the run fails closed instead of silently falling back to host execution.
 
 This preview path is local-only. A remote WebSocket app-server cannot reach the
-loopback exec-server unless it is running on the same host, so OpenClaw rejects
+loopback exec-server unless it is running on the same host, so EVE rejects
 that combination.
 
 ## Auth and environment isolation
 
 Auth is selected in this order:
 
-1. An explicit OpenClaw Codex auth profile for the agent.
+1. An explicit EVE Codex auth profile for the agent.
 2. The app-server's existing account in that agent's Codex home.
 3. For local stdio app-server launches only, `CODEX_API_KEY`, then
    `OPENAI_API_KEY`, when no app-server account is present and OpenAI auth is
    still required.
 
-When OpenClaw sees a ChatGPT subscription-style Codex auth profile, it removes
+When EVE sees a ChatGPT subscription-style Codex auth profile, it removes
 `CODEX_API_KEY` and `OPENAI_API_KEY` from the spawned Codex child process. That
 keeps Gateway-level API keys available for embeddings or direct OpenAI models
 without making native Codex app-server turns bill through the API by accident.
@@ -279,27 +279,27 @@ login instead of inherited child-process env. WebSocket app-server connections
 do not receive Gateway env API-key fallback; use an explicit auth profile or the
 remote app-server's own account.
 
-Stdio app-server launches inherit OpenClaw's process environment by default.
-OpenClaw owns the Codex app-server account bridge and sets `CODEX_HOME` to a
-per-agent directory under that agent's OpenClaw state. That keeps Codex config,
-accounts, plugin cache/data, and thread state scoped to the OpenClaw agent
+Stdio app-server launches inherit EVE's process environment by default.
+EVE owns the Codex app-server account bridge and sets `CODEX_HOME` to a
+per-agent directory under that agent's EVE state. That keeps Codex config,
+accounts, plugin cache/data, and thread state scoped to the EVE agent
 instead of leaking in from the operator's personal `~/.codex` home.
 
-OpenClaw does not rewrite `HOME` for normal local app-server launches. Codex-run
-subprocesses such as `openclaw`, `gh`, `git`, cloud CLIs, and shell commands see
+EVE does not rewrite `HOME` for normal local app-server launches. Codex-run
+subprocesses such as `eve`, `gh`, `git`, cloud CLIs, and shell commands see
 the normal process home and can find user-home config and tokens. Codex may also
 discover `$HOME/.agents/skills` and `$HOME/.agents/plugins/marketplace.json`;
 that `.agents` discovery is intentionally shared with the operator home and is
 separate from isolated `~/.codex` state.
 
-OpenClaw plugins and OpenClaw skill snapshots still flow through OpenClaw's own
+EVE plugins and EVE skill snapshots still flow through EVE's own
 plugin registry and skill loader. Personal Codex `~/.codex` assets do not. If
 you have useful Codex CLI skills or plugins from a Codex home that should become
-part of an OpenClaw agent, inventory them explicitly:
+part of an EVE agent, inventory them explicitly:
 
 ```bash
-openclaw migrate codex --dry-run
-openclaw migrate apply codex --yes
+eve migrate codex --dry-run
+eve migrate apply codex --yes
 ```
 
 If a deployment needs additional environment isolation, add those variables to
@@ -323,13 +323,13 @@ If a deployment needs additional environment isolation, add those variables to
 ```
 
 `appServer.clearEnv` only affects the spawned Codex app-server child process.
-OpenClaw removes `CODEX_HOME` and `HOME` from this list during local launch
+EVE removes `CODEX_HOME` and `HOME` from this list during local launch
 normalization: `CODEX_HOME` stays per-agent, and `HOME` stays inherited so
 subprocesses can use normal user-home state.
 
 ## Dynamic tools
 
-Codex dynamic tools default to `searchable` loading. OpenClaw does not expose
+Codex dynamic tools default to `searchable` loading. EVE does not expose
 dynamic tools that duplicate Codex-native workspace operations:
 
 - `read`
@@ -340,14 +340,14 @@ dynamic tools that duplicate Codex-native workspace operations:
 - `process`
 - `update_plan`
 
-Most remaining OpenClaw integration tools, such as messaging, media, cron,
+Most remaining EVE integration tools, such as messaging, media, cron,
 browser, nodes, gateway, `heartbeat_respond`, and `web_search`, are available
-through Codex tool search under the `openclaw` namespace. This keeps the initial
+through Codex tool search under the `eve` namespace. This keeps the initial
 model context smaller. `sessions_yield` and message-tool-only source replies
 stay direct because those are turn-control contracts. `sessions_spawn` stays
 searchable so Codex's native `spawn_agent` remains the primary Codex subagent
-surface, while explicit OpenClaw or ACP delegation is still available through
-the `openclaw` dynamic tool namespace.
+surface, while explicit EVE or ACP delegation is still available through
+the `eve` dynamic tool namespace.
 
 Set `codexDynamicToolsLoading: "direct"` only when connecting to a custom Codex
 app-server that cannot search deferred dynamic tools or when debugging the full
@@ -355,7 +355,7 @@ tool payload.
 
 ## Timeouts
 
-OpenClaw-owned dynamic tool calls are bounded independently from
+EVE-owned dynamic tool calls are bounded independently from
 `appServer.requestTimeoutMs`. Each Codex `item/tool/call` request uses the first
 available timeout in this order:
 
@@ -371,21 +371,21 @@ available timeout in this order:
 
 This watchdog is the outer dynamic `item/tool/call` budget. Provider-specific
 request timeouts run inside that call and keep their own timeout semantics.
-Dynamic tool budgets are capped at 600000 ms. On timeout, OpenClaw aborts the
+Dynamic tool budgets are capped at 600000 ms. On timeout, EVE aborts the
 tool signal where supported and returns a failed dynamic-tool response to Codex
 so the turn can continue instead of leaving the session in `processing`.
 
-After Codex accepts a turn, and after OpenClaw responds to a turn-scoped
+After Codex accepts a turn, and after EVE responds to a turn-scoped
 app-server request, the harness expects Codex to make current-turn progress and
 eventually finish the native turn with `turn/completed`. If the app-server goes
-quiet for `appServer.turnCompletionIdleTimeoutMs`, OpenClaw best-effort
+quiet for `appServer.turnCompletionIdleTimeoutMs`, EVE best-effort
 interrupts the Codex turn, records a diagnostic timeout, and releases the
-OpenClaw session lane so follow-up chat messages are not queued behind a stale
+EVE session lane so follow-up chat messages are not queued behind a stale
 native turn.
 
 Most non-terminal notifications for the same turn disarm that short watchdog
 because Codex has proven the turn is still alive. Tool handoffs use a longer
-post-tool idle budget: after OpenClaw returns an `item/tool/call` response, after
+post-tool idle budget: after EVE returns an `item/tool/call` response, after
 native tool items such as `commandExecution` complete, after raw
 `custom_tool_call_output` completions, and after post-tool raw assistant
 progress, raw reasoning completions, or reasoning progress. The guard uses
@@ -398,11 +398,11 @@ be followed by an automatic final reply, so they use the post-progress reply
 guard instead of releasing the session lane immediately. Only
 final/non-commentary completed `agentMessage` items and pre-tool raw assistant
 completions arm the assistant-output release: if Codex then goes quiet without
-`turn/completed`, OpenClaw best-effort interrupts the native turn and releases
+`turn/completed`, EVE best-effort interrupts the native turn and releases
 the session lane. Replay-safe stdio app-server failures, including
 turn-completion idle timeouts without assistant, tool, active-item, or
 side-effect evidence, are retried once on a fresh app-server attempt. Unsafe
-timeouts still retire the stuck app-server client and release the OpenClaw
+timeouts still retire the stuck app-server client and release the EVE
 session lane. They also clear the stale native thread binding instead of being
 replayed automatically. Completion-watch timeouts surface Codex-specific timeout
 text: replay-safe cases say the response may be incomplete, while unsafe cases
@@ -416,13 +416,13 @@ tool content.
 ## Model discovery
 
 By default, the Codex plugin asks the app-server for available models. Model
-availability is owned by Codex app-server, so the list can change when OpenClaw
+availability is owned by Codex app-server, so the list can change when EVE
 upgrades the bundled `@openai/codex` version or when a deployment points
 `appServer.command` at a different Codex binary. Availability can also be
 account-scoped. Use `/codex models` on a running gateway to see the live catalog
 for that harness and account.
 
-If discovery fails or times out, OpenClaw uses a bundled fallback catalog for:
+If discovery fails or times out, EVE uses a bundled fallback catalog for:
 
 - GPT-5.5
 - GPT-5.4 mini
@@ -484,15 +484,15 @@ fallback catalog:
 
 ## Workspace bootstrap files
 
-Codex handles `AGENTS.md` itself through native project-doc discovery. OpenClaw
+Codex handles `AGENTS.md` itself through native project-doc discovery. EVE
 does not write synthetic Codex project-doc files or depend on Codex fallback
 filenames for persona files, because Codex fallbacks only apply when
 `AGENTS.md` is missing.
 
-For OpenClaw workspace parity, the Codex harness resolves the other bootstrap
+For EVE workspace parity, the Codex harness resolves the other bootstrap
 files. `SOUL.md`, `IDENTITY.md`, `TOOLS.md`, and `USER.md` are forwarded as
-OpenClaw Codex developer instructions because they define the active agent,
-available workspace guidance, and user profile. The compact OpenClaw skills
+EVE Codex developer instructions because they define the active agent,
+available workspace guidance, and user profile. The compact EVE skills
 list is forwarded as turn-scoped collaboration developer instructions.
 `HEARTBEAT.md` content is not injected; heartbeat turns get a collaboration-mode
 pointer to read the file when it exists and is non-empty. `MEMORY.md` content
@@ -503,25 +503,25 @@ instructions and Codex should use `memory_search` or `memory_get` when durable
 memory is relevant. If tools are disabled, memory search is unavailable, or the
 active workspace differs from the agent memory workspace, `MEMORY.md` uses the
 normal bounded turn-context path.
-`BOOTSTRAP.md` when present is forwarded as OpenClaw turn input reference
+`BOOTSTRAP.md` when present is forwarded as EVE turn input reference
 context.
 
 ## Environment overrides
 
 Environment overrides remain available for local testing:
 
-- `OPENCLAW_CODEX_APP_SERVER_BIN`
-- `OPENCLAW_CODEX_APP_SERVER_ARGS`
-- `OPENCLAW_CODEX_APP_SERVER_MODE=yolo|guardian`
-- `OPENCLAW_CODEX_APP_SERVER_APPROVAL_POLICY`
-- `OPENCLAW_CODEX_APP_SERVER_SANDBOX`
+- `EVE_CODEX_APP_SERVER_BIN`
+- `EVE_CODEX_APP_SERVER_ARGS`
+- `EVE_CODEX_APP_SERVER_MODE=yolo|guardian`
+- `EVE_CODEX_APP_SERVER_APPROVAL_POLICY`
+- `EVE_CODEX_APP_SERVER_SANDBOX`
 
-`OPENCLAW_CODEX_APP_SERVER_BIN` bypasses the managed binary when
+`EVE_CODEX_APP_SERVER_BIN` bypasses the managed binary when
 `appServer.command` is unset.
 
-`OPENCLAW_CODEX_APP_SERVER_GUARDIAN=1` was removed. Use
+`EVE_CODEX_APP_SERVER_GUARDIAN=1` was removed. Use
 `plugins.entries.codex.config.appServer.mode: "guardian"` instead, or
-`OPENCLAW_CODEX_APP_SERVER_MODE=guardian` for one-off local testing. Config is
+`EVE_CODEX_APP_SERVER_MODE=guardian` for one-off local testing. Config is
 preferred for repeatable deployments because it keeps the plugin behavior in the
 same reviewed file as the rest of the Codex harness setup.
 

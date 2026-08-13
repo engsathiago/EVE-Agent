@@ -63,25 +63,25 @@ describe("runCommandWithRuntime", () => {
 
 describe("shouldSkipRespawnForArgv", () => {
   it.each([
-    { argv: ["node", "openclaw", "--help"] },
-    { argv: ["node", "openclaw", "-V"] },
-    { argv: ["node", "openclaw", "tui"] },
-    { argv: ["node", "openclaw", "terminal"] },
-    { argv: ["node", "openclaw", "chat"] },
-    { argv: ["node", "openclaw", "gateway"] },
-    { argv: ["node", "openclaw", "gateway", "--port", "14720", "--bind", "loopback"] },
-    { argv: ["node", "openclaw", "gateway", "run", "--port=14720", "--bind", "loopback"] },
+    { argv: ["node", "eve", "--help"] },
+    { argv: ["node", "eve", "-V"] },
+    { argv: ["node", "eve", "tui"] },
+    { argv: ["node", "eve", "terminal"] },
+    { argv: ["node", "eve", "chat"] },
+    { argv: ["node", "eve", "gateway"] },
+    { argv: ["node", "eve", "gateway", "--port", "14720", "--bind", "loopback"] },
+    { argv: ["node", "eve", "gateway", "run", "--port=14720", "--bind", "loopback"] },
     {
-      argv: ["node", "openclaw", "--profile", "server", "gateway", "run", "--allow-unconfigured"],
+      argv: ["node", "eve", "--profile", "server", "gateway", "run", "--allow-unconfigured"],
     },
   ] as const)("skips respawn for argv %j", ({ argv }) => {
     expect(shouldSkipRespawnForArgv([...argv]), argv.join(" ")).toBe(true);
   });
 
   it.each([
-    { argv: ["node", "openclaw", "status"] },
-    { argv: ["node", "openclaw", "gateway", "status"] },
-    { argv: ["node", "openclaw", "gateway", "call", "health"] },
+    { argv: ["node", "eve", "status"] },
+    { argv: ["node", "eve", "gateway", "status"] },
+    { argv: ["node", "eve", "gateway", "call", "health"] },
   ] as const)("keeps respawn path for argv %j", ({ argv }) => {
     expect(shouldSkipRespawnForArgv([...argv]), argv.join(" ")).toBe(false);
   });
@@ -89,18 +89,18 @@ describe("shouldSkipRespawnForArgv", () => {
 
 describe("shouldSkipStartupEnvironmentRespawnForArgv", () => {
   it.each([
-    { argv: ["node", "openclaw", "--help"] },
-    { argv: ["node", "openclaw", "gateway"] },
-    { argv: ["node", "openclaw", "gateway", "run", "--port=14720"] },
+    { argv: ["node", "eve", "--help"] },
+    { argv: ["node", "eve", "gateway"] },
+    { argv: ["node", "eve", "gateway", "run", "--port=14720"] },
   ] as const)("skips startup env respawn for argv %j", ({ argv }) => {
     expect(shouldSkipStartupEnvironmentRespawnForArgv([...argv]), argv.join(" ")).toBe(true);
   });
 
   it.each([
-    { argv: ["node", "openclaw", "tui"] },
-    { argv: ["node", "openclaw", "terminal"] },
-    { argv: ["node", "openclaw", "chat"] },
-    { argv: ["node", "openclaw", "status"] },
+    { argv: ["node", "eve", "tui"] },
+    { argv: ["node", "eve", "terminal"] },
+    { argv: ["node", "eve", "chat"] },
+    { argv: ["node", "eve", "status"] },
   ] as const)("allows startup env respawn for argv %j", ({ argv }) => {
     expect(shouldSkipStartupEnvironmentRespawnForArgv([...argv]), argv.join(" ")).toBe(false);
   });
@@ -112,10 +112,10 @@ describe("dns cli", () => {
     try {
       const program = new Command();
       registerDnsCli(program);
-      await program.parseAsync(["dns", "setup", "--domain", "openclaw.internal"], { from: "user" });
+      await program.parseAsync(["dns", "setup", "--domain", "eve.internal"], { from: "user" });
       const output = log.mock.calls.map((call) => call.join(" ")).join("\\n");
       expect(output).toContain("DNS setup");
-      expect(output).toContain("openclaw.internal");
+      expect(output).toContain("eve.internal");
     } finally {
       log.mockRestore();
     }

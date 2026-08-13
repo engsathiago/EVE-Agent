@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
+} from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveMatrixAccountStorageRoot } from "../../storage-paths.js";
 import { installMatrixTestRuntime } from "../../test-runtime.js";
@@ -25,7 +25,7 @@ import {
 const createBackupArchiveMock = vi.hoisted(() =>
   vi.fn(async (_params: unknown) => ({
     createdAt: "2026-03-17T00:00:00.000Z",
-    archiveRoot: "2026-03-17-openclaw-backup",
+    archiveRoot: "2026-03-17-eve-backup",
     archivePath: "/tmp/matrix-migration-snapshot.tar.gz",
     dryRun: false,
     includeWorkspace: false,
@@ -64,7 +64,7 @@ describe("matrix client storage paths", () => {
     createBackupArchiveMock.mockReset();
     createBackupArchiveMock.mockImplementation(async (_params: unknown) => ({
       createdAt: "2026-03-17T00:00:00.000Z",
-      archiveRoot: "2026-03-17-openclaw-backup",
+      archiveRoot: "2026-03-17-eve-backup",
       archivePath: "/tmp/matrix-migration-snapshot.tar.gz",
       dryRun: false,
       includeWorkspace: false,
@@ -92,8 +92,8 @@ describe("matrix client storage paths", () => {
       },
     },
   ): string {
-    const homeDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-matrix-storage-"));
-    const stateDir = path.join(homeDir, ".openclaw");
+    const homeDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-matrix-storage-"));
+    const stateDir = path.join(homeDir, ".eve");
     fs.mkdirSync(stateDir, { recursive: true });
     tempDirs.push(homeDir);
     installMatrixTestRuntime({
@@ -113,9 +113,9 @@ describe("matrix client storage paths", () => {
   function createMigrationEnv(stateDir: string): NodeJS.ProcessEnv {
     return {
       HOME: path.dirname(stateDir),
-      OPENCLAW_HOME: path.dirname(stateDir),
-      OPENCLAW_STATE_DIR: stateDir,
-      OPENCLAW_TEST_FAST: "1",
+      EVE_HOME: path.dirname(stateDir),
+      EVE_STATE_DIR: stateDir,
+      EVE_TEST_FAST: "1",
     } as NodeJS.ProcessEnv;
   }
 
@@ -313,7 +313,7 @@ describe("matrix client storage paths", () => {
     const stateDir = setupStateDir();
     const storagePaths = resolveMatrixStoragePaths({
       ...defaultStorageAuth,
-      env: { ...process.env, OPENCLAW_STATE_DIR: stateDir },
+      env: { ...process.env, EVE_STATE_DIR: stateDir },
     });
     expect(
       writeStorageMeta({
@@ -706,7 +706,7 @@ describe("matrix client storage paths", () => {
     });
 
     expect(rotatedStoragePaths.rootDir).toBe(oldStoragePaths.rootDir);
-    expect(fs.existsSync(path.join(oldStoragePaths.rootDir, "state", "openclaw.sqlite"))).toBe(
+    expect(fs.existsSync(path.join(oldStoragePaths.rootDir, "state", "eve.sqlite"))).toBe(
       false,
     );
   });

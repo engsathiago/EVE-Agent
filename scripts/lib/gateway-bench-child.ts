@@ -1,4 +1,4 @@
-// Gateway Bench Child script supports OpenClaw repository automation.
+// Gateway Bench Child script supports EVE repository automation.
 import { spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 
 const TEARDOWN_GRACE_MS = 2_000;

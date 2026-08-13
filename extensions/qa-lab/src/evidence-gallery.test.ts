@@ -48,7 +48,7 @@ function vitestArtifactEvidence(params: {
   artifact: { kind: string; path: string };
 }): QaEvidenceSummaryJson {
   return {
-    kind: "openclaw.qa.evidence-summary",
+    kind: "eve.qa.evidence-summary",
     schemaVersion: 2,
     generatedAt: "2026-06-17T12:00:00.000Z",
     evidenceMode: "full",
@@ -87,7 +87,7 @@ describe("evidence gallery", () => {
         { kind: "log", path: "runner/output.log" },
       ],
       env: {
-        OPENCLAW_QA_REF: "gallery-test",
+        EVE_QA_REF: "gallery-test",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-17T12:00:00.000Z",
       primaryModel: "mock-openai/gpt-5.5",
@@ -178,7 +178,7 @@ describe("evidence gallery", () => {
         status: "blocked",
         failure: {
           class: "blocked",
-          reason: `Command failed at ${repoRoot}/openclaw.mjs and file://${repoRoot}/trace.log`,
+          reason: `Command failed at ${repoRoot}/eve.mjs and file://${repoRoot}/trace.log`,
         },
       },
     };
@@ -190,7 +190,7 @@ describe("evidence gallery", () => {
     });
 
     expect(model.entries[0].failureReason).toBe(
-      "Command failed at <repo-root>/openclaw.mjs and file://<repo-root>/trace.log",
+      "Command failed at <repo-root>/eve.mjs and file://<repo-root>/trace.log",
     );
     expect(JSON.stringify(model)).not.toContain(repoRoot);
   });
@@ -352,7 +352,7 @@ describe("evidence gallery", () => {
           coverageIds: [`${repoRoot}/ui.control`],
           runner: {
             availability: "local",
-            command: `${repoRoot}/openclaw.mjs qa suite --scenario ux-matrix-evidence-dashboard`,
+            command: `${repoRoot}/eve.mjs qa suite --scenario ux-matrix-evidence-dashboard`,
             lane: "web-ui-playwright",
             workflow: `${repoRoot}/.github/workflows/ux-matrix-qa.yml#ux-matrix-local`,
           },
@@ -364,7 +364,7 @@ describe("evidence gallery", () => {
           coverageIds: ["cli.entrypoint"],
           runner: {
             availability: "local",
-            command: "pnpm openclaw qa suite --scenario ux-matrix-evidence-dashboard",
+            command: "pnpm eve qa suite --scenario ux-matrix-evidence-dashboard",
             lane: "cli-status",
             workflow: ".github/workflows/ux-matrix-qa.yml#ux-matrix-local",
           },
@@ -393,7 +393,7 @@ describe("evidence gallery", () => {
     );
 
     await writeJson(path.join(suiteDir, QA_EVIDENCE_FILENAME), {
-      kind: "openclaw.qa.evidence-summary",
+      kind: "eve.qa.evidence-summary",
       schemaVersion: 2,
       generatedAt: "2026-06-17T12:00:00.000Z",
       evidenceMode: "full",
@@ -517,7 +517,7 @@ describe("evidence gallery", () => {
         coverageIds: ["<repo-root>/ui.control"],
         runner: {
           availability: "local",
-          command: "<repo-root>/openclaw.mjs qa suite --scenario ux-matrix-evidence-dashboard",
+          command: "<repo-root>/eve.mjs qa suite --scenario ux-matrix-evidence-dashboard",
           lane: "web-ui-playwright",
           workflow: "<repo-root>/.github/workflows/ux-matrix-qa.yml#ux-matrix-local",
         },
@@ -533,7 +533,7 @@ describe("evidence gallery", () => {
         coverageIds: ["cli.entrypoint"],
         runner: {
           availability: "local",
-          command: "pnpm openclaw qa suite --scenario ux-matrix-evidence-dashboard",
+          command: "pnpm eve qa suite --scenario ux-matrix-evidence-dashboard",
           lane: "cli-status",
           workflow: ".github/workflows/ux-matrix-qa.yml#ux-matrix-local",
         },
@@ -694,7 +694,7 @@ describe("evidence gallery", () => {
       }),
     ).rejects.toThrow("Evidence artifact not found.");
     await expect(
-      resolveQaEvidenceFile({ inputPath: "/tmp/not-openclaw-evidence.json", repoRoot }),
+      resolveQaEvidenceFile({ inputPath: "/tmp/not-eve-evidence.json", repoRoot }),
     ).rejects.toThrow("Evidence path not found.");
   });
 });

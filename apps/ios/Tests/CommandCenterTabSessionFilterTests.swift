@@ -1,5 +1,5 @@
 import Testing
-@testable import OpenClaw
+@testable import EVE
 
 struct CommandCenterTabSessionFilterTests {
     @Test func `hides direct agent device sessions`() {

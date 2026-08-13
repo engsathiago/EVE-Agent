@@ -1,5 +1,5 @@
 // Feishu API module exposes the plugin public contract.
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/channel-entry-contract";
+import type { EVEPluginApi } from "eve-agent/plugin-sdk/channel-entry-contract";
 
 type FeishuSubagentHooksModule = typeof import("./src/subagent-hooks.js");
 
@@ -10,7 +10,7 @@ function loadFeishuSubagentHooksModule() {
   return feishuSubagentHooksPromise;
 }
 
-export function registerFeishuSubagentHooks(api: OpenClawPluginApi): void {
+export function registerFeishuSubagentHooks(api: EVEPluginApi): void {
   api.on("subagent_delivery_target", async (event) => {
     const { handleFeishuSubagentDeliveryTarget } = await loadFeishuSubagentHooksModule();
     return handleFeishuSubagentDeliveryTarget(event);

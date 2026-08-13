@@ -3,7 +3,7 @@
  * this module to merge implicit provider discovery, explicit config, and
  * preserved secrets before touching models.json.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.js";
 import { isRecord } from "../utils.js";
 import {
@@ -25,12 +25,12 @@ import {
   resolvePluginModelCatalogOwnerPluginId,
 } from "./plugin-model-catalog.js";
 
-type ModelsConfig = NonNullable<OpenClawConfig["models"]>;
+type ModelsConfig = NonNullable<EVEConfig["models"]>;
 
 /** Dependency hook for resolving implicit model providers while planning models.json. */
 export type ResolveImplicitProvidersForModelsJson = (params: {
   agentDir: string;
-  config: OpenClawConfig;
+  config: EVEConfig;
   env: NodeJS.ProcessEnv;
   workspaceDir?: string;
   explicitProviders: Record<string, ProviderConfig>;
@@ -94,7 +94,7 @@ function buildPluginCatalogWrites(
 /** Resolves providers for models.json with injectable implicit-provider discovery. */
 export async function resolveProvidersForModelsJsonWithDeps(
   params: {
-    cfg: OpenClawConfig;
+    cfg: EVEConfig;
     agentDir: string;
     env: NodeJS.ProcessEnv;
     workspaceDir?: string;
@@ -194,10 +194,10 @@ function filterWritableProviders(
 }
 
 /** Plans root and plugin-owned model catalog writes with injectable provider discovery. */
-export async function planOpenClawModelsJsonWithDeps(
+export async function planEVEModelsJsonWithDeps(
   params: {
-    cfg: OpenClawConfig;
-    sourceConfigForSecrets?: OpenClawConfig;
+    cfg: EVEConfig;
+    sourceConfigForSecrets?: EVEConfig;
     agentDir: string;
     env: NodeJS.ProcessEnv;
     workspaceDir?: string;
@@ -305,8 +305,8 @@ export async function planOpenClawModelsJsonWithDeps(
 }
 
 /** Plans root and plugin-owned model catalog writes for the current runtime. */
-export async function planOpenClawModelsJson(
-  params: Parameters<typeof planOpenClawModelsJsonWithDeps>[0],
+export async function planEVEModelsJson(
+  params: Parameters<typeof planEVEModelsJsonWithDeps>[0],
 ): Promise<ModelsJsonPlan> {
-  return planOpenClawModelsJsonWithDeps(params);
+  return planEVEModelsJsonWithDeps(params);
 }

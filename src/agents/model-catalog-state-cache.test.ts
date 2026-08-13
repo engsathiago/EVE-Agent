@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { captureEnv, setTestEnvValue } from "../test-utils/env.js";
 import {
   buildAgentModelCatalogCacheKey,
@@ -32,13 +32,13 @@ function configuredModel(id: string) {
 
 describe("model catalog state cache", () => {
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_STATE_DIR"]);
-    stateDir = mkdtempSync(join(tmpdir(), "openclaw-model-catalog-state-"));
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
+    envSnapshot = captureEnv(["EVE_STATE_DIR"]);
+    stateDir = mkdtempSync(join(tmpdir(), "eve-model-catalog-state-"));
+    setTestEnvValue("EVE_STATE_DIR", stateDir);
   });
 
   afterEach(() => {
-    closeOpenClawStateDatabaseForTest();
+    closeEVEStateDatabaseForTest();
     envSnapshot.restore();
     rmSync(stateDir, { recursive: true, force: true });
   });

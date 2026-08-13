@@ -1,6 +1,6 @@
 // Provides channel plugin fixtures for security audit tests.
 import type { ChannelPlugin } from "../channels/plugins/types.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { EVEConfig } from "../config/config.js";
 
 /** Build a minimal channel plugin stub for security audit unit tests. */
 export function stubAuditChannelPlugin(params: {
@@ -8,9 +8,9 @@ export function stubAuditChannelPlugin(params: {
   label: string;
   commands: ChannelPlugin["commands"];
   collectAuditFindings: NonNullable<ChannelPlugin["security"]>["collectAuditFindings"];
-  resolveAccount: (cfg: OpenClawConfig, accountId: string | null | undefined) => unknown;
-  inspectAccount?: (cfg: OpenClawConfig, accountId: string | null | undefined) => unknown;
-  isConfigured?: (account: unknown, cfg: OpenClawConfig) => boolean;
+  resolveAccount: (cfg: EVEConfig, accountId: string | null | undefined) => unknown;
+  inspectAccount?: (cfg: EVEConfig, accountId: string | null | undefined) => unknown;
+  isConfigured?: (account: unknown, cfg: EVEConfig) => boolean;
 }): ChannelPlugin {
   return {
     id: params.id,

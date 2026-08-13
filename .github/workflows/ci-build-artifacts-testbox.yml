@@ -120,7 +120,7 @@ jobs:
           {
             echo "restore-keys<<EOF"
             for dist_tag in beta latest; do
-              version="$(npm view "openclaw@${dist_tag}" version 2>/dev/null || true)"
+              version="$(npm view "eve@${dist_tag}" version 2>/dev/null || true)"
               if [[ -z "$version" ]]; then
                 echo "Could not resolve npm dist-tag ${dist_tag}; skipping cache seed." >&2
                 continue
@@ -230,11 +230,11 @@ jobs:
           MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}
-          OPENCLAW_LIVE_BROWSER_CDP_URL: ${{ secrets.OPENCLAW_LIVE_BROWSER_CDP_URL }}
-          OPENCLAW_LIVE_SETUP_TOKEN: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN }}
-          OPENCLAW_LIVE_SETUP_TOKEN_MODEL: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_MODEL }}
-          OPENCLAW_LIVE_SETUP_TOKEN_PROFILE: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_PROFILE }}
-          OPENCLAW_LIVE_SETUP_TOKEN_VALUE: ${{ secrets.OPENCLAW_LIVE_SETUP_TOKEN_VALUE }}
+          EVE_LIVE_BROWSER_CDP_URL: ${{ secrets.EVE_LIVE_BROWSER_CDP_URL }}
+          EVE_LIVE_SETUP_TOKEN: ${{ secrets.EVE_LIVE_SETUP_TOKEN }}
+          EVE_LIVE_SETUP_TOKEN_MODEL: ${{ secrets.EVE_LIVE_SETUP_TOKEN_MODEL }}
+          EVE_LIVE_SETUP_TOKEN_PROFILE: ${{ secrets.EVE_LIVE_SETUP_TOKEN_PROFILE }}
+          EVE_LIVE_SETUP_TOKEN_VALUE: ${{ secrets.EVE_LIVE_SETUP_TOKEN_VALUE }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -250,13 +250,13 @@ jobs:
           BYTEPLUS_ACCESS_KEY_ID: ${{ secrets.BYTEPLUS_ACCESS_KEY_ID }}
           BYTEPLUS_SECRET_ACCESS_KEY: ${{ secrets.BYTEPLUS_SECRET_ACCESS_KEY }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          OPENCLAW_CODEX_AUTH_JSON: ${{ secrets.OPENCLAW_CODEX_AUTH_JSON }}
-          OPENCLAW_CODEX_CONFIG_TOML: ${{ secrets.OPENCLAW_CODEX_CONFIG_TOML }}
-          OPENCLAW_CLAUDE_JSON: ${{ secrets.OPENCLAW_CLAUDE_JSON }}
-          OPENCLAW_CLAUDE_CREDENTIALS_JSON: ${{ secrets.OPENCLAW_CLAUDE_CREDENTIALS_JSON }}
-          OPENCLAW_CLAUDE_SETTINGS_JSON: ${{ secrets.OPENCLAW_CLAUDE_SETTINGS_JSON }}
-          OPENCLAW_CLAUDE_SETTINGS_LOCAL_JSON: ${{ secrets.OPENCLAW_CLAUDE_SETTINGS_LOCAL_JSON }}
-          OPENCLAW_GEMINI_SETTINGS_JSON: ${{ secrets.OPENCLAW_GEMINI_SETTINGS_JSON }}
+          EVE_CODEX_AUTH_JSON: ${{ secrets.EVE_CODEX_AUTH_JSON }}
+          EVE_CODEX_CONFIG_TOML: ${{ secrets.EVE_CODEX_CONFIG_TOML }}
+          EVE_CLAUDE_JSON: ${{ secrets.EVE_CLAUDE_JSON }}
+          EVE_CLAUDE_CREDENTIALS_JSON: ${{ secrets.EVE_CLAUDE_CREDENTIALS_JSON }}
+          EVE_CLAUDE_SETTINGS_JSON: ${{ secrets.EVE_CLAUDE_SETTINGS_JSON }}
+          EVE_CLAUDE_SETTINGS_LOCAL_JSON: ${{ secrets.EVE_CLAUDE_SETTINGS_LOCAL_JSON }}
+          EVE_GEMINI_SETTINGS_JSON: ${{ secrets.EVE_GEMINI_SETTINGS_JSON }}
         run: bash scripts/ci-hydrate-testbox-env.sh
 
       - name: Run Testbox

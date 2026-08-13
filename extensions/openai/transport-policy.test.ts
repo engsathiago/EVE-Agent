@@ -1,5 +1,5 @@
 // Openai tests cover transport policy plugin behavior.
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/plugin-entry";
 import { describe, expect, it } from "vitest";
 import {
   resolveOpenAITransportTurnState,
@@ -38,13 +38,13 @@ describe("openai transport policy", () => {
       transport: "websocket",
     });
     expect(state?.headers?.["x-client-request-id"]).toBe("session-123");
-    expect(state?.headers?.["x-openclaw-session-id"]).toBe("session-123");
-    expect(state?.headers?.["x-openclaw-turn-id"]).toBe("turn-123");
-    expect(state?.headers?.["x-openclaw-turn-attempt"]).toBe("2");
-    expect(state?.metadata?.openclaw_session_id).toBe("session-123");
-    expect(state?.metadata?.openclaw_turn_id).toBe("turn-123");
-    expect(state?.metadata?.openclaw_turn_attempt).toBe("2");
-    expect(state?.metadata?.openclaw_transport).toBe("websocket");
+    expect(state?.headers?.["x-eve-session-id"]).toBe("session-123");
+    expect(state?.headers?.["x-eve-turn-id"]).toBe("turn-123");
+    expect(state?.headers?.["x-eve-turn-attempt"]).toBe("2");
+    expect(state?.metadata?.eve_session_id).toBe("session-123");
+    expect(state?.metadata?.eve_turn_id).toBe("turn-123");
+    expect(state?.metadata?.eve_turn_attempt).toBe("2");
+    expect(state?.metadata?.eve_transport).toBe("websocket");
   });
 
   it("skips turn state for proxy-like OpenAI routes", () => {
@@ -77,9 +77,9 @@ describe("openai transport policy", () => {
       transport: "stream",
     });
     expect(state?.headers?.["x-client-request-id"]).toBe("session-123");
-    expect(state?.headers?.["x-openclaw-session-id"]).toBe("session-123");
-    expect(state?.headers?.["x-openclaw-turn-id"]).toBe("turn-123");
-    expect(state?.headers?.["x-openclaw-turn-attempt"]).toBe("2");
+    expect(state?.headers?.["x-eve-session-id"]).toBe("session-123");
+    expect(state?.headers?.["x-eve-turn-id"]).toBe("turn-123");
+    expect(state?.headers?.["x-eve-turn-attempt"]).toBe("2");
   });
 
   it("returns websocket session headers and cooldown for native routes", () => {
@@ -90,7 +90,7 @@ describe("openai transport policy", () => {
       sessionId: "session-123",
     });
     expect(policy?.headers?.["x-client-request-id"]).toBe("session-123");
-    expect(policy?.headers?.["x-openclaw-session-id"]).toBe("session-123");
+    expect(policy?.headers?.["x-eve-session-id"]).toBe("session-123");
     expect(policy?.degradeCooldownMs).toBe(60_000);
   });
 
@@ -106,7 +106,7 @@ describe("openai transport policy", () => {
       sessionId: "session-123",
     });
     expect(policy?.headers?.["x-client-request-id"]).toBe("session-123");
-    expect(policy?.headers?.["x-openclaw-session-id"]).toBe("session-123");
+    expect(policy?.headers?.["x-eve-session-id"]).toBe("session-123");
     expect(policy?.degradeCooldownMs).toBe(60_000);
   });
 
@@ -123,7 +123,7 @@ describe("openai transport policy", () => {
       sessionId: "session-123",
     });
     expect(policy?.headers?.["x-client-request-id"]).toBe("session-123");
-    expect(policy?.headers?.["x-openclaw-session-id"]).toBe("session-123");
+    expect(policy?.headers?.["x-eve-session-id"]).toBe("session-123");
     expect(policy?.degradeCooldownMs).toBe(60_000);
   });
 });

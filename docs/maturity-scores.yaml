@@ -1828,7 +1828,7 @@ surfaces:
     status: complete
     completed_at: '2026-06-01'
     by: codex
-    source_ref: openclaw@29dd7847fd
+    source_ref: eve@29dd7847fd
     process_version: 3
   categories:
   - name: Gateway API
@@ -3228,7 +3228,7 @@ surfaces:
     status: complete
     completed_at: '2026-06-01'
     by: codex
-    source_ref: openclaw@29dd7847fd
+    source_ref: eve@29dd7847fd
     process_version: 3
   categories:
   - name: Deployment Setup

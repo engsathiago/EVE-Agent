@@ -5,9 +5,9 @@ import {
   listChatCommands,
   type ChatCommandDefinition,
   type CommandArgs,
-} from "openclaw/plugin-sdk/command-auth-native";
-import type { ModelsProviderData } from "openclaw/plugin-sdk/models-provider-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/command-auth-native";
+import type { ModelsProviderData } from "eve-agent/plugin-sdk/models-provider-runtime";
+import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   Button,
   StringSelectMenu,
@@ -237,7 +237,7 @@ function resolveDiscordModelPickerRuntimeForProvider(params: {
   }
   const choices = params.data.runtimeChoicesByProvider?.get(params.provider);
   if (!choices?.length) {
-    return runtime === "openclaw" ? runtime : undefined;
+    return runtime === "eve" ? runtime : undefined;
   }
   return choices.some((choice) => choice.id === runtime) ? runtime : undefined;
 }

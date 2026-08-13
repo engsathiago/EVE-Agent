@@ -4,7 +4,7 @@
  * Image, video, and music generation use this to track tasks, wake sessions, and deliver generated media.
  */
 import crypto from "node:crypto";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { clearAgentRunContext, registerAgentRunContext } from "../../infra/agent-events.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
@@ -100,7 +100,7 @@ type FailMediaGenerationTaskRunParams = {
 };
 
 type WakeMediaGenerationTaskCompletionParams = {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   handle: MediaGenerationTaskHandle | null;
   status: "ok" | "error";
   statusLabel: string;
@@ -386,7 +386,7 @@ export function scheduleMediaGenerationTaskCompletion<
   handle: MediaGenerationTaskHandle | null;
   scheduleBackgroundWork: MediaGenerateBackgroundScheduler;
   progressSummary: string;
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   toolName: string;
   run: () => Promise<T>;
   onWakeFailure: (message: string, meta?: Record<string, unknown>) => void;
@@ -507,7 +507,7 @@ export function scheduleMediaGenerationTaskCompletion<
 }
 
 async function wakeMediaGenerationTaskCompletion(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   handle: MediaGenerationTaskHandle | null;
   status: "ok" | "error";
   statusLabel: string;
@@ -630,7 +630,7 @@ async function wakeMediaGenerationTaskCompletion(params: {
 }
 
 async function tryDeliverMediaGenerationDirect(params: {
-  config?: OpenClawConfig;
+  config?: EVEConfig;
   handle: MediaGenerationTaskHandle;
   toolName: string;
   content: string;

@@ -4,7 +4,7 @@ import type {
   TelegramDirectConfig,
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-contracts";
+} from "eve-agent/plugin-sdk/config-contracts";
 import { firstDefined } from "./bot-access.js";
 
 export function resolveTelegramScopedGroupConfig(

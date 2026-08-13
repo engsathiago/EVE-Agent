@@ -1,7 +1,7 @@
 // Usage gateway methods aggregate provider and session cost/token metrics from
 // caches, logs, session stores, and discovered transcript files.
 import fs from "node:fs";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import {
   ErrorCodes,
   errorShape,
@@ -14,7 +14,7 @@ import {
   resolveSessionFilePathOptions,
 } from "../../config/sessions/paths.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import { loadProviderUsageSummary } from "../../infra/provider-usage.js";
 import type {
   CostUsageSummary,
@@ -132,9 +132,9 @@ function setCostUsageCache(cacheKey: string, entry: CostUsageCacheEntry): void {
 function resolveSessionUsageFileOrRespond(
   key: string,
   respond: RespondFn,
-  config: OpenClawConfig,
+  config: EVEConfig,
 ): {
-  config: OpenClawConfig;
+  config: EVEConfig;
   entry: SessionEntry | undefined;
   agentId: string | undefined;
   sessionId: string;
@@ -424,7 +424,7 @@ function buildStoreBySessionId(
 }
 
 function filterSessionStoreByAgent(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   store: Record<string, SessionEntry>;
   agentId: string;
 }): Record<string, SessionEntry> {
@@ -443,7 +443,7 @@ function filterSessionStoreByAgent(params: {
 }
 
 async function discoverAllSessionsForUsage(params: {
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentId?: string;
   startMs: number;
   endMs: number;
@@ -788,7 +788,7 @@ function mergeDailyModelRows(
 async function loadCostUsageSummaryCached(params: {
   startMs: number;
   endMs: number;
-  config: OpenClawConfig;
+  config: EVEConfig;
   agentId?: string;
   agentScope?: "all";
 }): Promise<CostUsageSummary> {
@@ -862,7 +862,7 @@ async function loadCostUsageSummaryCached(params: {
 async function loadAllAgentCostUsageSummary(params: {
   startMs: number;
   endMs: number;
-  config: OpenClawConfig;
+  config: EVEConfig;
 }): Promise<CostUsageSummary> {
   const agentIds = listAgentsForGateway(params.config).agents.map((agent) =>
     normalizeAgentId(agent.id),

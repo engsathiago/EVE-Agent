@@ -126,7 +126,7 @@ describe("sentinel guard cross-kind", () => {
   });
 
   it("partial sentinel substring does NOT trigger guard", () => {
-    const raw = '{ "x": "OPENCLAW_REDACTED" }';
+    const raw = '{ "x": "EVE_REDACTED" }';
     const ast = parseJsonc(raw).ast;
     expect(() => emitJsonc(ast)).not.toThrow();
   });

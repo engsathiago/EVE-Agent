@@ -25,24 +25,24 @@ describe("gateway handshake timeouts", () => {
     expect(clampConnectChallengeTimeoutMs(30_000, 30_000)).toBe(30_000);
   });
 
-  test("prefers OPENCLAW_HANDSHAKE_TIMEOUT_MS and falls back on the test-only env", () => {
+  test("prefers EVE_HANDSHAKE_TIMEOUT_MS and falls back on the test-only env", () => {
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "75",
-        OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS: "20",
+        EVE_HANDSHAKE_TIMEOUT_MS: "75",
+        EVE_TEST_HANDSHAKE_TIMEOUT_MS: "20",
       }),
     ).toBe(75);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "",
-        OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS: "20",
+        EVE_HANDSHAKE_TIMEOUT_MS: "",
+        EVE_TEST_HANDSHAKE_TIMEOUT_MS: "20",
         VITEST: "1",
       }),
     ).toBe(20);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: " +75 ",
-        OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS: "20",
+        EVE_HANDSHAKE_TIMEOUT_MS: " +75 ",
+        EVE_TEST_HANDSHAKE_TIMEOUT_MS: "20",
         VITEST: "1",
       }),
     ).toBe(75);
@@ -51,7 +51,7 @@ describe("gateway handshake timeouts", () => {
   test("resolves preauth handshake timeout with env over config over default", () => {
     expect(
       resolvePreauthHandshakeTimeoutMs({
-        env: { OPENCLAW_HANDSHAKE_TIMEOUT_MS: "75000" },
+        env: { EVE_HANDSHAKE_TIMEOUT_MS: "75000" },
         configuredTimeoutMs: 30_000,
       }),
     ).toBe(75_000);
@@ -63,7 +63,7 @@ describe("gateway handshake timeouts", () => {
     ).toBe(30_000);
     expect(
       resolvePreauthHandshakeTimeoutMs({
-        env: { OPENCLAW_HANDSHAKE_TIMEOUT_MS: "garbage" },
+        env: { EVE_HANDSHAKE_TIMEOUT_MS: "garbage" },
         configuredTimeoutMs: 30_000,
       }),
     ).toBe(30_000);
@@ -75,7 +75,7 @@ describe("gateway handshake timeouts", () => {
   test("caps preauth handshake timeout env and config values to the safe timer range", () => {
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "3000000000",
+        EVE_HANDSHAKE_TIMEOUT_MS: "3000000000",
       }),
     ).toBe(MAX_SAFE_TIMEOUT_DELAY_MS);
     expect(
@@ -89,7 +89,7 @@ describe("gateway handshake timeouts", () => {
   test("resolves preauth handshake timeout from the test-only env before config", () => {
     expect(
       resolvePreauthHandshakeTimeoutMs({
-        env: { VITEST: "1", OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS: "50" },
+        env: { VITEST: "1", EVE_TEST_HANDSHAKE_TIMEOUT_MS: "50" },
         configuredTimeoutMs: 30_000,
       }),
     ).toBe(50);
@@ -98,61 +98,61 @@ describe("gateway handshake timeouts", () => {
   test("ignores invalid handshake timeout overrides and falls back safely", () => {
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "abc",
+        EVE_HANDSHAKE_TIMEOUT_MS: "abc",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "-1",
+        EVE_HANDSHAKE_TIMEOUT_MS: "-1",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "0",
+        EVE_HANDSHAKE_TIMEOUT_MS: "0",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: " ",
-        OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS: "20",
+        EVE_HANDSHAKE_TIMEOUT_MS: " ",
+        EVE_TEST_HANDSHAKE_TIMEOUT_MS: "20",
         VITEST: "1",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "1e3",
+        EVE_HANDSHAKE_TIMEOUT_MS: "1e3",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
     expect(
       getPreauthHandshakeTimeoutMsFromEnv({
-        OPENCLAW_HANDSHAKE_TIMEOUT_MS: "0x10",
+        EVE_HANDSHAKE_TIMEOUT_MS: "0x10",
       }),
     ).toBe(DEFAULT_PREAUTH_HANDSHAKE_TIMEOUT_MS);
   });
 
-  test("getConnectChallengeTimeoutMsFromEnv reads OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS", () => {
+  test("getConnectChallengeTimeoutMsFromEnv reads EVE_CONNECT_CHALLENGE_TIMEOUT_MS", () => {
     expect(getConnectChallengeTimeoutMsFromEnv({})).toBeUndefined();
     expect(
-      getConnectChallengeTimeoutMsFromEnv({ OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "15000" }),
+      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "15000" }),
     ).toBe(15_000);
     expect(
-      getConnectChallengeTimeoutMsFromEnv({ OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: " 015000 " }),
+      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: " 015000 " }),
     ).toBe(15_000);
     expect(
-      getConnectChallengeTimeoutMsFromEnv({ OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "garbage" }),
+      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "garbage" }),
     ).toBeUndefined();
     expect(
-      getConnectChallengeTimeoutMsFromEnv({ OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "1e3" }),
+      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "1e3" }),
     ).toBeUndefined();
     expect(
-      getConnectChallengeTimeoutMsFromEnv({ OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "0x10" }),
+      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "0x10" }),
     ).toBeUndefined();
   });
 
   test("caps connect challenge timeout env and explicit values to the safe timer range", () => {
     expect(
       getConnectChallengeTimeoutMsFromEnv({
-        OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "3000000000",
+        EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "3000000000",
       }),
     ).toBe(MAX_SAFE_TIMEOUT_DELAY_MS);
     expect(
@@ -163,32 +163,32 @@ describe("gateway handshake timeouts", () => {
     ).toBe(MAX_SAFE_TIMEOUT_DELAY_MS);
     expect(
       resolveConnectChallengeTimeoutMs(undefined, {
-        env: { OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS: "3000000000" },
+        env: { EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "3000000000" },
       }),
     ).toBe(MAX_SAFE_TIMEOUT_DELAY_MS);
   });
 
   test("resolveConnectChallengeTimeoutMs falls back to env override", () => {
-    const original = process.env.OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS;
-    const originalHandshake = process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS;
+    const original = process.env.EVE_CONNECT_CHALLENGE_TIMEOUT_MS;
+    const originalHandshake = process.env.EVE_HANDSHAKE_TIMEOUT_MS;
     try {
-      process.env.OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS = "5000";
+      process.env.EVE_CONNECT_CHALLENGE_TIMEOUT_MS = "5000";
       expect(resolveConnectChallengeTimeoutMs()).toBe(5_000);
       // Explicit value still takes precedence over env
       expect(resolveConnectChallengeTimeoutMs(3_000)).toBe(3_000);
-      process.env.OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS = "";
-      process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS = "30000";
+      process.env.EVE_CONNECT_CHALLENGE_TIMEOUT_MS = "";
+      process.env.EVE_HANDSHAKE_TIMEOUT_MS = "30000";
       expect(resolveConnectChallengeTimeoutMs()).toBe(30_000);
     } finally {
       if (original === undefined) {
-        delete process.env.OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS;
+        delete process.env.EVE_CONNECT_CHALLENGE_TIMEOUT_MS;
       } else {
-        process.env.OPENCLAW_CONNECT_CHALLENGE_TIMEOUT_MS = original;
+        process.env.EVE_CONNECT_CHALLENGE_TIMEOUT_MS = original;
       }
       if (originalHandshake === undefined) {
-        delete process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS;
+        delete process.env.EVE_HANDSHAKE_TIMEOUT_MS;
       } else {
-        process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS = originalHandshake;
+        process.env.EVE_HANDSHAKE_TIMEOUT_MS = originalHandshake;
       }
     }
   });

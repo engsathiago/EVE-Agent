@@ -1,5 +1,5 @@
 ---
-summary: "Adds Volcengine, Volcengine Plan model provider support to OpenClaw."
+summary: "Adds Volcengine, Volcengine Plan model provider support to EVE."
 read_when:
   - You are installing, configuring, or auditing the volcengine plugin
 title: "Volcengine plugin"
@@ -7,12 +7,12 @@ title: "Volcengine plugin"
 
 # Volcengine plugin
 
-Adds Volcengine, Volcengine Plan model provider support to OpenClaw.
+Adds Volcengine, Volcengine Plan model provider support to EVE.
 
 ## Distribution
 
-- Package: `@openclaw/volcengine-provider`
-- Install route: included in OpenClaw
+- Package: `@eve/volcengine-provider`
+- Install route: included in EVE
 
 ## Surface
 

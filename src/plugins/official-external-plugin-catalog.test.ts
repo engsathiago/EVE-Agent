@@ -22,25 +22,25 @@ function expectCatalogEntry(id: string): OfficialExternalPluginCatalogEntry {
 describe("official external plugin catalog", () => {
   it("lists the externalized provider and capability plugins with install metadata", () => {
     const providers = [
-      ["arcee", "@openclaw/arcee-provider"],
-      ["cerebras", "@openclaw/cerebras-provider"],
-      ["chutes", "@openclaw/chutes-provider"],
-      ["cloudflare-ai-gateway", "@openclaw/cloudflare-ai-gateway-provider"],
-      ["deepinfra", "@openclaw/deepinfra-provider"],
-      ["deepseek", "@openclaw/deepseek-provider"],
-      ["groq", "@openclaw/groq-provider"],
-      ["kilocode", "@openclaw/kilocode-provider"],
-      ["kimi", "@openclaw/kimi-provider"],
-      ["qianfan", "@openclaw/qianfan-provider"],
-      ["qwen", "@openclaw/qwen-provider"],
+      ["arcee", "@eve/arcee-provider"],
+      ["cerebras", "@eve/cerebras-provider"],
+      ["chutes", "@eve/chutes-provider"],
+      ["cloudflare-ai-gateway", "@eve/cloudflare-ai-gateway-provider"],
+      ["deepinfra", "@eve/deepinfra-provider"],
+      ["deepseek", "@eve/deepseek-provider"],
+      ["groq", "@eve/groq-provider"],
+      ["kilocode", "@eve/kilocode-provider"],
+      ["kimi", "@eve/kimi-provider"],
+      ["qianfan", "@eve/qianfan-provider"],
+      ["qwen", "@eve/qwen-provider"],
     ] as const;
     const plugins = [
-      ["exa", "@openclaw/exa-plugin"],
-      ["firecrawl", "@openclaw/firecrawl-plugin"],
-      ["gradium", "@openclaw/gradium-speech"],
-      ["inworld", "@openclaw/inworld-speech"],
-      ["parallel", "@openclaw/parallel-plugin"],
-      ["perplexity", "@openclaw/perplexity-plugin"],
+      ["exa", "@eve/exa-plugin"],
+      ["firecrawl", "@eve/firecrawl-plugin"],
+      ["gradium", "@eve/gradium-speech"],
+      ["inworld", "@eve/inworld-speech"],
+      ["parallel", "@eve/parallel-plugin"],
+      ["perplexity", "@eve/perplexity-plugin"],
     ] as const;
 
     for (const [id, npmSpec] of [...providers, ...plugins]) {
@@ -55,7 +55,7 @@ describe("official external plugin catalog", () => {
 
   it("keeps StepFun npm-only because its ClawHub package name is unavailable", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("stepfun"))).toEqual({
-      npmSpec: "@openclaw/stepfun-provider",
+      npmSpec: "@eve/stepfun-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -63,40 +63,40 @@ describe("official external plugin catalog", () => {
 
   it("resolves third-party channel lookup aliases to published plugin ids", () => {
     const wecomByChannel = expectCatalogEntry("wecom");
-    const wecomByPlugin = expectCatalogEntry("wecom-openclaw-plugin");
+    const wecomByPlugin = expectCatalogEntry("wecom-eve-plugin");
     const yuanbaoByChannel = expectCatalogEntry("yuanbao");
 
-    expect(resolveOfficialExternalPluginId(wecomByChannel)).toBe("wecom-openclaw-plugin");
-    expect(resolveOfficialExternalPluginId(wecomByPlugin)).toBe("wecom-openclaw-plugin");
+    expect(resolveOfficialExternalPluginId(wecomByChannel)).toBe("wecom-eve-plugin");
+    expect(resolveOfficialExternalPluginId(wecomByPlugin)).toBe("wecom-eve-plugin");
     expect(resolveOfficialExternalPluginInstall(wecomByChannel)?.npmSpec).toBe(
-      "@wecom/wecom-openclaw-plugin@2026.5.7",
+      "@wecom/wecom-eve-plugin@2026.5.7",
     );
-    expect(resolveOfficialExternalPluginId(yuanbaoByChannel)).toBe("openclaw-plugin-yuanbao");
+    expect(resolveOfficialExternalPluginId(yuanbaoByChannel)).toBe("eve-plugin-yuanbao");
     expect(resolveOfficialExternalPluginInstall(yuanbaoByChannel)?.npmSpec).toBe(
-      "openclaw-plugin-yuanbao@2.13.1",
+      "eve-plugin-yuanbao@2.13.1",
     );
   });
 
   it("keeps official launch package specs on the production package names", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("acpx"))?.npmSpec).toBe(
-      "@openclaw/acpx",
+      "@eve/acpx",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("googlechat"))?.npmSpec).toBe(
-      "@openclaw/googlechat",
+      "@eve/googlechat",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("line"))?.npmSpec).toBe(
-      "@openclaw/line",
+      "@eve/line",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("diffs-language-pack"))).toEqual(
       {
-        npmSpec: "@openclaw/diffs-language-pack",
-        clawhubSpec: "clawhub:@openclaw/diffs-language-pack",
+        npmSpec: "@eve/diffs-language-pack",
+        clawhubSpec: "clawhub:@eve/diffs-language-pack",
         defaultChoice: "npm",
         minHostVersion: ">=2026.5.27",
       },
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("llama-cpp"))?.npmSpec).toBe(
-      "@openclaw/llama-cpp-provider",
+      "@eve/llama-cpp-provider",
     );
   });
 
@@ -106,8 +106,8 @@ describe("official external plugin catalog", () => {
     expect(resolveOfficialExternalPluginId(gmi)).toBe("gmi");
     expect(getOfficialExternalPluginCatalogEntry("gmi-cloud")).toBe(gmi);
     expect(resolveOfficialExternalPluginInstall(gmi)).toEqual({
-      clawhubSpec: "clawhub:@openclaw/gmi-provider",
-      npmSpec: "@openclaw/gmi-provider",
+      clawhubSpec: "clawhub:@eve/gmi-provider",
+      npmSpec: "@eve/gmi-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -118,8 +118,8 @@ describe("official external plugin catalog", () => {
 
     expect(resolveOfficialExternalPluginId(cohere)).toBe("cohere");
     expect(resolveOfficialExternalPluginInstall(cohere)).toEqual({
-      clawhubSpec: "clawhub:@openclaw/cohere-provider",
-      npmSpec: "@openclaw/cohere-provider",
+      clawhubSpec: "clawhub:@eve/cohere-provider",
+      npmSpec: "@eve/cohere-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -212,7 +212,7 @@ describe("official external plugin catalog", () => {
 
   it("keeps Groq available through the cold-install auth catalog", () => {
     const groq = expectCatalogEntry("groq");
-    const authChoice = groq.openclaw?.providers?.find((provider) => provider.id === "groq")
+    const authChoice = groq.eve?.providers?.find((provider) => provider.id === "groq")
       ?.authChoices?.[0];
 
     expect(authChoice).toMatchObject({
@@ -225,15 +225,15 @@ describe("official external plugin catalog", () => {
 
   it("allows invalid-config recovery for externalized stock plugins", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("brave"))).toMatchObject({
-      npmSpec: "@openclaw/brave-plugin",
+      npmSpec: "@eve/brave-plugin",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("slack"))).toMatchObject({
-      npmSpec: "@openclaw/slack",
+      npmSpec: "@eve/slack",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("discord"))).toMatchObject({
-      npmSpec: "@openclaw/discord",
+      npmSpec: "@eve/discord",
       allowInvalidConfigRecovery: true,
     });
   });
@@ -250,8 +250,8 @@ describe("official external plugin catalog", () => {
     expect(ids.has("matrix")).toBe(true);
     expect(ids.has("mattermost")).toBe(false);
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("matrix"))).toEqual({
-      clawhubSpec: "clawhub:@openclaw/matrix",
-      npmSpec: "@openclaw/matrix",
+      clawhubSpec: "clawhub:@eve/matrix",
+      npmSpec: "@eve/matrix",
       defaultChoice: "clawhub",
       minHostVersion: ">=2026.4.10",
       allowInvalidConfigRecovery: true,

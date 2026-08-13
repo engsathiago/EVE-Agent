@@ -2,8 +2,8 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { GetReplyOptions, MsgContext } from "openclaw/plugin-sdk/reply-runtime";
-import type { waitForTransportReady } from "openclaw/plugin-sdk/transport-ready-runtime";
+import type { GetReplyOptions, MsgContext } from "eve-agent/plugin-sdk/reply-runtime";
+import type { waitForTransportReady } from "eve-agent/plugin-sdk/transport-ready-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { createIMessageRpcClient } from "./client.js";
 import { monitorIMessageProvider } from "./monitor.js";
@@ -45,12 +45,12 @@ const debouncerControl = vi.hoisted(() => ({
   },
 }));
 
-vi.mock("openclaw/plugin-sdk/transport-ready-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/transport-ready-runtime", () => ({
   waitForTransportReady: waitForTransportReadyMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/conversation-runtime")>();
+vi.mock("eve-agent/plugin-sdk/conversation-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/conversation-runtime")>();
   return {
     ...actual,
     readChannelAllowFromStore: readChannelAllowFromStoreMock,
@@ -59,8 +59,8 @@ vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/channel-inbound", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/channel-inbound")>();
+vi.mock("eve-agent/plugin-sdk/channel-inbound", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/channel-inbound")>();
   return {
     ...actual,
     createChannelInboundDebouncer: vi.fn((opts) => ({
@@ -82,8 +82,8 @@ vi.mock("openclaw/plugin-sdk/channel-inbound", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/reply-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/reply-runtime")>();
+vi.mock("eve-agent/plugin-sdk/reply-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/reply-runtime")>();
   return {
     ...actual,
     dispatchInboundMessage: dispatchInboundMessageMock,
@@ -787,7 +787,7 @@ describe("iMessage monitor last-route updates", () => {
           imessage: {
             // Unreadable dbPath => no startup rowid watermark, so this test
             // isolates the age-fence behavior on the live path.
-            dbPath: path.join(os.tmpdir(), `openclaw-missing-chat-${Date.now()}.db`),
+            dbPath: path.join(os.tmpdir(), `eve-missing-chat-${Date.now()}.db`),
             dmPolicy: "allowlist",
             allowFrom: ["+15550001111"],
           },
@@ -815,7 +815,7 @@ describe("iMessage monitor last-route updates", () => {
     // Regression guard: the watermark is captured before the transport-ready
     // probe so messages that land during the startup window are not skipped by
     // imsg's self-fence at subscribe time.
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-startup-rowid-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-startup-rowid-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -883,7 +883,7 @@ describe("iMessage monitor last-route updates", () => {
   });
 
   it("preserves enabled legacy catchup as the startup replay path", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-catchup-window-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-catchup-window-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -939,7 +939,7 @@ describe("iMessage monitor last-route updates", () => {
 
   it("recovers downtime messages: replays from the cursor and delivers replay rows older than the live fence", async () => {
     advanceIMessageRecoveryCursor("default", 4990);
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-recovery-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-recovery-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -1026,7 +1026,7 @@ describe("iMessage monitor last-route updates", () => {
   });
 
   it("does not treat startup-boundary rows as recovery replay without a prior cursor", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-first-run-boundary-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-first-run-boundary-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -1091,7 +1091,7 @@ describe("iMessage monitor last-route updates", () => {
   });
 
   it("records a suppressed live row so a later replay of the same row is deduped, not delivered", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-suppress-record-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-suppress-record-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -1172,7 +1172,7 @@ describe("iMessage monitor last-route updates", () => {
   it("does not advance the recovery cursor past a failed replay row", async () => {
     advanceIMessageRecoveryCursor("default", 4990);
     debouncerControl.holdEntries = true;
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-recovery-failed-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-recovery-failed-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -1248,7 +1248,7 @@ describe("iMessage monitor last-route updates", () => {
   it("advances the recovery cursor after lower pending replay rows complete", async () => {
     advanceIMessageRecoveryCursor("default", 4990);
     debouncerControl.holdEntries = true;
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-recovery-ordered-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-recovery-ordered-"));
     tempDirs.push(stateDir);
     const dbPath = path.join(stateDir, "chat.db");
     const { DatabaseSync } = await import("node:sqlite");
@@ -1315,9 +1315,9 @@ describe("iMessage monitor last-route updates", () => {
   });
 
   it("repairs anchorless group watch payloads before routing or cursor updates", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-imsg-anchor-repair-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-imsg-anchor-repair-"));
     tempDirs.push(stateDir);
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    vi.stubEnv("EVE_STATE_DIR", stateDir);
 
     let onNotification: ((message: { method: string; params: unknown }) => void) | undefined;
     const client = {
@@ -1357,7 +1357,7 @@ describe("iMessage monitor last-route updates", () => {
               chat_id: 0,
               sender: "+15550001111",
               is_from_me: false,
-              text: "@openclaw check this https://example.com",
+              text: "@eve check this https://example.com",
               is_group: false,
               chat_guid: "",
               chat_identifier: "",
@@ -1389,7 +1389,7 @@ describe("iMessage monitor last-route updates", () => {
           },
         },
         messages: {
-          groupChat: { mentionPatterns: ["@openclaw"] },
+          groupChat: { mentionPatterns: ["@eve"] },
           inbound: { debounceMs: 0 },
         },
         session: { mainKey: "main" },
@@ -1413,7 +1413,7 @@ describe("iMessage monitor last-route updates", () => {
     // split-send arrives as two fieldless rows. We cannot structurally tell that
     // apart from separate sends, so we preserve the pre-metadata merge rather
     // than regress split-send users to two turns. Removed once imsg coalesces
-    // upstream (openclaw/imsg#141, tracked by #91243).
+    // upstream (eve/imsg#141, tracked by #91243).
     debouncerControl.holdEntries = true;
 
     let onNotification: ((message: { method: string; params: unknown }) => void) | undefined;

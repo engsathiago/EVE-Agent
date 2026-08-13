@@ -2,18 +2,18 @@
 import { existsSync } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
 import path from "node:path";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import {
   listExplicitlyDisabledChannelIdsForConfig,
   listPotentialConfiguredChannelIds,
 } from "../../../channels/config-presence.js";
 import { listRawChannelPluginCatalogEntries } from "../../../channels/plugins/catalog.js";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { EVEConfig } from "../../../config/types.eve.js";
 import type { PluginInstallRecord } from "../../../config/types.plugins.js";
 import { parseClawHubPluginSpec } from "../../../infra/clawhub-spec.js";
 import {
-  compareOpenClawReleaseVersions,
-  isOpenClawOrgNpmSpec,
+  compareEVEReleaseVersions,
+  isEVEOrgNpmSpec,
   parseRegistryNpmSpec,
 } from "../../../infra/npm-registry-spec.js";
 import {
@@ -98,15 +98,15 @@ const REPAIRABLE_PACKAGE_ENTRY_DIAGNOSTIC_MARKERS = [
   "requires compiled runtime output",
 ] as const;
 const VERSION_BOUND_RUNTIME_PLUGIN_IDS = new Set(["codex"]);
-const OPENCLAW_BETA_COMPANION_VERSION_RE = /^(\d{4}\.[1-9]\d?\.[1-9]\d?)-beta\.[1-9]\d*$/;
-const OPENCLAW_STABLE_OR_BETA_COMPANION_VERSION_RE =
+const EVE_BETA_COMPANION_VERSION_RE = /^(\d{4}\.[1-9]\d?\.[1-9]\d?)-beta\.[1-9]\d*$/;
+const EVE_STABLE_OR_BETA_COMPANION_VERSION_RE =
   /^(\d{4}\.[1-9]\d?\.[1-9]\d?)(?:-beta\.[1-9]\d*)?$/;
 
 function shouldFallbackClawHubToNpm(params: {
   result: { ok: false; code?: string };
   npmSpec?: string;
 }): boolean {
-  if (!isOpenClawOrgNpmSpec(params.npmSpec)) {
+  if (!isEVEOrgNpmSpec(params.npmSpec)) {
     return false;
   }
   return (
@@ -135,7 +135,7 @@ function addConfiguredPluginId(ids: Set<string>, value: unknown): void {
   }
 }
 
-function addConfiguredAgentRuntimePluginIds(ids: Set<string>, cfg: OpenClawConfig): void {
+function addConfiguredAgentRuntimePluginIds(ids: Set<string>, cfg: EVEConfig): void {
   for (const runtime of collectConfiguredRuntimePluginIds(cfg)) {
     addConfiguredPluginId(ids, runtime);
   }
@@ -143,7 +143,7 @@ function addConfiguredAgentRuntimePluginIds(ids: Set<string>, cfg: OpenClawConfi
 
 function addConfiguredMemoryEmbeddingProviderPluginIds(
   ids: Set<string>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
 ): void {
   const configuredProviderIds = collectConfiguredMemoryEmbeddingProviderIds(cfg);
   if (configuredProviderIds.size === 0) {
@@ -159,7 +159,7 @@ function addConfiguredMemoryEmbeddingProviderPluginIds(
   }
 }
 
-function addConfiguredSpeechProviderPluginIds(ids: Set<string>, cfg: OpenClawConfig): void {
+function addConfiguredSpeechProviderPluginIds(ids: Set<string>, cfg: EVEConfig): void {
   for (const pluginId of resolveOfficialExternalProviderContractPluginIds({
     contract: "speechProviders",
     providerIds: collectConfiguredSpeechProviderIds(cfg),
@@ -168,7 +168,7 @@ function addConfiguredSpeechProviderPluginIds(ids: Set<string>, cfg: OpenClawCon
   }
 }
 
-function addConfiguredWebFetchProviderPluginIds(ids: Set<string>, cfg: OpenClawConfig): void {
+function addConfiguredWebFetchProviderPluginIds(ids: Set<string>, cfg: EVEConfig): void {
   const webFetch = cfg.tools?.web?.fetch;
   if (webFetch?.enabled === false) {
     return;
@@ -187,7 +187,7 @@ function addConfiguredWebFetchProviderPluginIds(ids: Set<string>, cfg: OpenClawC
 
 function addEnvWebFetchProviderPluginIds(
   ids: Set<string>,
-  cfg: OpenClawConfig,
+  cfg: EVEConfig,
   env?: NodeJS.ProcessEnv,
 ): void {
   if (cfg.tools?.web?.fetch?.enabled === false) {
@@ -201,7 +201,7 @@ function addEnvWebFetchProviderPluginIds(
   }
 }
 
-function collectConfiguredPluginIds(cfg: OpenClawConfig, env?: NodeJS.ProcessEnv): Set<string> {
+function collectConfiguredPluginIds(cfg: EVEConfig, env?: NodeJS.ProcessEnv): Set<string> {
   const ids = new Set<string>();
   const plugins = asObjectRecord(cfg.plugins);
   if (plugins?.enabled === false) {
@@ -238,7 +238,7 @@ function collectConfiguredPluginIds(cfg: OpenClawConfig, env?: NodeJS.ProcessEnv
   return ids;
 }
 
-function collectBlockedPluginIds(cfg: OpenClawConfig): Set<string> {
+function collectBlockedPluginIds(cfg: EVEConfig): Set<string> {
   const ids = new Set<string>();
   const deny = cfg.plugins?.deny;
   if (Array.isArray(deny)) {
@@ -257,7 +257,7 @@ function collectBlockedPluginIds(cfg: OpenClawConfig): Set<string> {
   return ids;
 }
 
-function collectConfiguredChannelIds(cfg: OpenClawConfig, env?: NodeJS.ProcessEnv): Set<string> {
+function collectConfiguredChannelIds(cfg: EVEConfig, env?: NodeJS.ProcessEnv): Set<string> {
   const ids = new Set<string>();
   if (asObjectRecord(cfg.plugins)?.enabled === false) {
     return ids;
@@ -280,7 +280,7 @@ function collectConfiguredChannelIds(cfg: OpenClawConfig, env?: NodeJS.ProcessEn
 }
 
 function collectEffectiveConfiguredChannelOwnerPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   snapshot: PluginMetadataSnapshot;
   configuredChannelIds: ReadonlySet<string>;
@@ -312,7 +312,7 @@ function collectEffectiveConfiguredChannelOwnerPluginIds(params: {
 }
 
 function collectDownloadableInstallCandidates(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   missingPluginIds: ReadonlySet<string>;
   configuredPluginIds?: ReadonlySet<string>;
@@ -492,7 +492,7 @@ function addLegacyNpmDeclarationInstallCandidate(params: {
 }
 
 function collectLegacyNpmDeclarationInstallCandidates(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   configuredPluginIds: ReadonlySet<string>;
   missingPluginIds: ReadonlySet<string>;
@@ -541,7 +541,7 @@ function collectLegacyNpmDeclarationInstallCandidates(params: {
 }
 
 function collectUpdateDeferredPluginIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   configuredPluginIds: ReadonlySet<string>;
   configuredChannelIds: ReadonlySet<string>;
@@ -640,7 +640,7 @@ function installedRuntimePackageVersionIsStale(params: {
   ) {
     return false;
   }
-  const comparison = compareOpenClawReleaseVersions(params.installedVersion, params.currentVersion);
+  const comparison = compareEVEReleaseVersions(params.installedVersion, params.currentVersion);
   return comparison === null ? params.installedVersion !== params.currentVersion : comparison < 0;
 }
 
@@ -648,8 +648,8 @@ function betaCompanionMatchesCurrentStableVersion(params: {
   installedVersion: string;
   currentVersion: string;
 }): boolean {
-  const installedBase = OPENCLAW_BETA_COMPANION_VERSION_RE.exec(params.installedVersion)?.[1];
-  const currentBase = OPENCLAW_STABLE_OR_BETA_COMPANION_VERSION_RE.exec(params.currentVersion)?.[1];
+  const installedBase = EVE_BETA_COMPANION_VERSION_RE.exec(params.installedVersion)?.[1];
+  const currentBase = EVE_STABLE_OR_BETA_COMPANION_VERSION_RE.exec(params.currentVersion)?.[1];
   return Boolean(installedBase && currentBase && installedBase === currentBase);
 }
 
@@ -714,7 +714,7 @@ function isConfiguredPluginRepairTarget(params: {
 }
 
 function collectOfficialReplacementInstallCandidates(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env: NodeJS.ProcessEnv;
   repairablePluginIds: ReadonlySet<string>;
   configuredPluginIds: ReadonlySet<string>;
@@ -1257,9 +1257,9 @@ export type RepairMissingPluginInstallsResult = {
   records: Record<string, PluginInstallRecord>;
 };
 
-/** Repair missing installs inferred from the current OpenClaw config. */
+/** Repair missing installs inferred from the current EVE config. */
 export async function repairMissingConfiguredPluginInstalls(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   env?: NodeJS.ProcessEnv;
   /**
    * Optional pre-seeded records. When provided, this map is used instead of
@@ -1282,7 +1282,7 @@ export async function repairMissingConfiguredPluginInstalls(params: {
 
 /** Repair missing installs for an explicit plugin/channel id set. */
 export async function repairMissingPluginInstallsForIds(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   pluginIds: Iterable<string>;
   channelIds?: Iterable<string>;
   blockedPluginIds?: Iterable<string>;
@@ -1310,7 +1310,7 @@ export async function repairMissingPluginInstallsForIds(params: {
 }
 
 async function repairMissingPluginInstalls(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   pluginIds: ReadonlySet<string>;
   channelIds: ReadonlySet<string>;
   blockedPluginIds?: ReadonlySet<string>;
@@ -1424,7 +1424,7 @@ async function repairMissingPluginInstalls(params: {
       if (!record || !isInstalledRecordMissingOnDisk(record, env)) {
         continue;
       }
-      const detail = `Skipped package-manager repair for configured plugin "${pluginId}" during package update; rerun "openclaw doctor --fix" after the update completes.`;
+      const detail = `Skipped package-manager repair for configured plugin "${pluginId}" during package update; rerun "eve doctor --fix" after the update completes.`;
       changes.push(detail);
       deferredRepairDetails.push(detail);
     }

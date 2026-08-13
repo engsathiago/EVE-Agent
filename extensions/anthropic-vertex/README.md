@@ -1,11 +1,11 @@
-# OpenClaw Anthropic Vertex Provider
+# EVE Anthropic Vertex Provider
 
-Official OpenClaw provider plugin for Claude models hosted through Google Vertex AI.
+Official EVE provider plugin for Claude models hosted through Google Vertex AI.
 
-Install from OpenClaw:
+Install from EVE:
 
 ```bash
-openclaw plugin add @openclaw/anthropic-vertex-provider
+eve plugin add @eve/anthropic-vertex-provider
 ```
 
-Configure Google Cloud credentials and the target Vertex project/region in OpenClaw, then select Claude models with the Anthropic Vertex provider.
+Configure Google Cloud credentials and the target Vertex project/region in EVE, then select Claude models with the Anthropic Vertex provider.

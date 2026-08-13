@@ -1,9 +1,9 @@
 // Crestodian rescue policy tests cover eligibility and safety decisions.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { resolveCrestodianRescuePolicy } from "./rescue-policy.js";
 
-function decide(cfg: OpenClawConfig, overrides = {}) {
+function decide(cfg: EVEConfig, overrides = {}) {
   return resolveCrestodianRescuePolicy({
     cfg,
     senderIsOwner: true,

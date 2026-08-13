@@ -6,10 +6,10 @@ import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { registerTranscriptsCli } from "./register.transcripts.js";
 
-const originalStateDir = process.env.OPENCLAW_STATE_DIR;
+const originalStateDir = process.env.EVE_STATE_DIR;
 
 async function makeStateDir(): Promise<string> {
-  return await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-transcripts-cli-"));
+  return await fs.mkdtemp(path.join(os.tmpdir(), "eve-transcripts-cli-"));
 }
 
 async function writeSession(
@@ -50,7 +50,7 @@ async function runTranscriptsCli(args: string[]): Promise<string> {
   }) as typeof process.stdout.write);
   try {
     const program = new Command();
-    program.name("openclaw");
+    program.name("eve");
     registerTranscriptsCli(program);
     await program.parseAsync(["transcripts", ...args], { from: "user" });
     return output;
@@ -64,14 +64,14 @@ describe("transcripts CLI", () => {
 
   beforeEach(async () => {
     stateDir = await makeStateDir();
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+    process.env.EVE_STATE_DIR = stateDir;
   });
 
   afterEach(() => {
     if (originalStateDir === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.EVE_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = originalStateDir;
+      process.env.EVE_STATE_DIR = originalStateDir;
     }
   });
 

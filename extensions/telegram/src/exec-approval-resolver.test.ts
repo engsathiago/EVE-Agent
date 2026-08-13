@@ -1,12 +1,12 @@
 // Telegram tests cover exec approval resolver plugin behavior.
-import type { ExecApprovalReplyDecision } from "openclaw/plugin-sdk/approval-reply-runtime";
+import type { ExecApprovalReplyDecision } from "eve-agent/plugin-sdk/approval-reply-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const approvalGatewayRuntimeHoisted = vi.hoisted(() => ({
   resolveApprovalOverGatewaySpy: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/approval-gateway-runtime", () => ({
+vi.mock("eve-agent/plugin-sdk/approval-gateway-runtime", () => ({
   resolveApprovalOverGateway: (...args: unknown[]) =>
     approvalGatewayRuntimeHoisted.resolveApprovalOverGatewaySpy(...args),
 }));

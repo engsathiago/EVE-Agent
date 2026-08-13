@@ -1,12 +1,12 @@
 // Doctor WhatsApp responsiveness tests cover warning heuristics and note output for stale connections.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 
 const noteMock = vi.hoisted(() => vi.fn());
 const spawnSyncMock = vi.hoisted(() => vi.fn());
 
 vi.mock("node:child_process", async () => {
-  const { mockNodeChildProcessSpawnSync } = await import("openclaw/plugin-sdk/test-node-mocks");
+  const { mockNodeChildProcessSpawnSync } = await import("eve-agent/plugin-sdk/test-node-mocks");
   return mockNodeChildProcessSpawnSync(spawnSyncMock, () =>
     vi.importActual<typeof import("node:child_process")>("node:child_process"),
   );
@@ -28,21 +28,21 @@ describe("doctor WhatsApp responsiveness", () => {
     spawnSyncMock.mockReturnValue({
       status: 0,
       stdout: [
-        " 101 openclaw-tui",
-        " 102 /usr/bin/node /usr/lib/node_modules/openclaw/dist/index.js gateway --port 18789",
-        " 103 openclaw channels",
-        " 104 openclaw tui --local",
-        " 105 /usr/bin/openclaw chat",
-        " 106 helper --note 'openclaw tui'",
-        " 107 openclaw-helper openclaw terminal",
-        " 108 openclaw --flag tui",
+        " 101 eve-tui",
+        " 102 /usr/bin/node /usr/lib/node_modules/eve/dist/index.js gateway --port 18789",
+        " 103 eve channels",
+        " 104 eve tui --local",
+        " 105 /usr/bin/eve chat",
+        " 106 helper --note 'eve tui'",
+        " 107 eve-helper eve terminal",
+        " 108 eve --flag tui",
       ].join("\n"),
     });
 
     expect(listLocalTuiProcesses()).toEqual([
-      { pid: 101, command: "openclaw-tui" },
-      { pid: 104, command: "openclaw tui --local" },
-      { pid: 105, command: "/usr/bin/openclaw chat" },
+      { pid: 101, command: "eve-tui" },
+      { pid: 104, command: "eve tui --local" },
+      { pid: 105, command: "/usr/bin/eve chat" },
     ]);
   });
 
@@ -68,7 +68,7 @@ describe("doctor WhatsApp responsiveness", () => {
 
     await expect(
       terminateLocalTuiProcesses({
-        processes: [{ pid: 101, command: "openclaw-tui" }],
+        processes: [{ pid: 101, command: "eve-tui" }],
         controller,
         graceMs: 0,
       }),
@@ -83,7 +83,7 @@ describe("doctor WhatsApp responsiveness", () => {
 
   it("warns and repairs local TUI pressure when WhatsApp is enabled and the gateway is degraded", async () => {
     const terminate = vi.fn().mockResolvedValue({ stopped: [101], failed: [] });
-    const cfg = { channels: { whatsapp: { enabled: true } } } as OpenClawConfig;
+    const cfg = { channels: { whatsapp: { enabled: true } } } as EVEConfig;
 
     await noteWhatsappResponsivenessHealth({
       cfg,
@@ -99,12 +99,12 @@ describe("doctor WhatsApp responsiveness", () => {
         },
       },
       shouldRepair: true,
-      listLocalTuiProcesses: () => [{ pid: 101, command: "openclaw-tui" }],
+      listLocalTuiProcesses: () => [{ pid: 101, command: "eve-tui" }],
       terminateLocalTuiProcesses: terminate,
     });
 
     expect(terminate).toHaveBeenCalledWith({
-      processes: [{ pid: 101, command: "openclaw-tui" }],
+      processes: [{ pid: 101, command: "eve-tui" }],
     });
     expect(noteMock).toHaveBeenCalledWith(
       [
@@ -122,7 +122,7 @@ describe("doctor WhatsApp responsiveness", () => {
     const cfg = {
       channels: { whatsapp: { enabled: true } },
       agents: { defaults: { model: { primary: "openai-codex/gpt-5.5" } } },
-    } as OpenClawConfig;
+    } as EVEConfig;
 
     await noteWhatsappResponsivenessHealth({
       cfg,

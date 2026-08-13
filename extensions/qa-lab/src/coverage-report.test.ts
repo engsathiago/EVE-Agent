@@ -228,7 +228,7 @@ describe("qa coverage report", () => {
     });
 
     expect(report).toContain(
-      "- Suite command: `pnpm openclaw qa suite --scenario control-ui-chat-flow-playwright`",
+      "- Suite command: `pnpm eve qa suite --scenario control-ui-chat-flow-playwright`",
     );
     expect(report).toContain("  - execution: playwright ui/src/ui/e2e/chat-flow.e2e.test.ts");
     expect(report).not.toContain("Native test refs");
@@ -281,9 +281,9 @@ describe("qa coverage report", () => {
     });
 
     expect(report).toContain("- Suite commands:");
-    expect(report).toContain("  - flow: `pnpm openclaw qa suite --scenario flow-proof`");
+    expect(report).toContain("  - flow: `pnpm eve qa suite --scenario flow-proof`");
     expect(report).toContain(
-      "  - playwright: `pnpm openclaw qa suite --scenario playwright-proof`",
+      "  - playwright: `pnpm eve qa suite --scenario playwright-proof`",
     );
   });
 
@@ -450,7 +450,7 @@ describe("qa coverage report", () => {
         scenarioWithCoverage({
           primary: [TEST_EXECUTABLE_COVERAGE_ID],
           executionKind: "playwright",
-          executionPath: "../outside-openclaw.test.ts",
+          executionPath: "../outside-eve.test.ts",
         }),
       ],
     });

@@ -10,9 +10,9 @@ import type {
 import {
   resolveExpiresAtMsFromDurationMs,
   timestampMsToIsoString,
-} from "openclaw/plugin-sdk/number-runtime";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { loadWebMediaRaw } from "openclaw/plugin-sdk/web-media";
+} from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import { loadWebMediaRaw } from "eve-agent/plugin-sdk/web-media";
 import {
   addGuildMemberRole,
   createGuildBan,

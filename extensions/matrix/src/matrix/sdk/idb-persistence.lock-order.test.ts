@@ -3,7 +3,7 @@ import "fake-indexeddb/auto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { resetPluginStateStoreForTests } from "openclaw/plugin-sdk/plugin-state-test-runtime";
+import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { installMatrixTestRuntime } from "../../test-runtime.js";
 import {
@@ -18,9 +18,9 @@ const { withFileLockMock } = vi.hoisted(() => ({
   ),
 }));
 
-vi.mock("openclaw/plugin-sdk/file-lock", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/file-lock")>(
-    "openclaw/plugin-sdk/file-lock",
+vi.mock("eve-agent/plugin-sdk/file-lock", async () => {
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/file-lock")>(
+    "eve-agent/plugin-sdk/file-lock",
   );
   return {
     ...actual,
@@ -32,7 +32,7 @@ let persistIdbToDisk: typeof import("./idb-persistence.js").persistIdbToDisk;
 let restoreIdbFromDisk: typeof import("./idb-persistence.js").restoreIdbFromDisk;
 type CapturedLockOptions =
   typeof import("./idb-persistence-lock.js").MATRIX_IDB_SNAPSHOT_LOCK_OPTIONS;
-const DATABASE_PREFIX = "openclaw-matrix-lock-order-test";
+const DATABASE_PREFIX = "eve-matrix-lock-order-test";
 const cryptoDatabaseName = `${DATABASE_PREFIX}::matrix-sdk-crypto`;
 
 beforeAll(async () => {

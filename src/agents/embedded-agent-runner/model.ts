@@ -1,10 +1,10 @@
 /**
  * Resolves embedded-agent provider/model selections from config, registry, and catalogs.
  */
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type { ModelCompatConfig, ModelMediaInputConfig } from "../../config/types.models.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 import type { ModelRegistry as CoreModelRegistry } from "../../llm/model-registry.js";
 import type { Api, Model } from "../../llm/types.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
@@ -152,7 +152,7 @@ function resolveRuntimeHooks(params?: {
 
 function discoverCachedAgentStoresForAgent(
   resolvedAgentDir: string,
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   workspaceDir: string | undefined,
 ): {
   authStorage: AuthStorage;
@@ -183,7 +183,7 @@ function canonicalizeLegacyResolvedModel(params: { provider: string; model: Mode
 
 function applyResolvedTransportFallback(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   runtimeHooks: ProviderRuntimeHooks;
   model: Model;
@@ -220,7 +220,7 @@ function applyResolvedTransportFallback(params: {
 function normalizeResolvedModel(params: {
   provider: string;
   model: Model;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -319,7 +319,7 @@ function resolveProviderTransport(params: {
   modelId?: string;
   api?: Api | null;
   baseUrl?: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
 }): {
@@ -351,7 +351,7 @@ function resolveProviderTransport(params: {
 function resolveConfiguredProviderDefaultApi(params: {
   provider: string;
   providerConfig: InlineProviderConfig | undefined;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
 }): Api | undefined {
@@ -458,7 +458,7 @@ function findInlineModelMatch(params: {
 export { buildInlineProviderModels };
 
 function resolveConfiguredProviderConfig(
-  cfg: OpenClawConfig | undefined,
+  cfg: EVEConfig | undefined,
   provider: string,
 ): InlineProviderConfig | undefined {
   const configuredProviders = cfg?.models?.providers;
@@ -551,7 +551,7 @@ function mergeModelParams(
 }
 
 function findConfiguredAgentModelParams(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   modelId: string;
 }): Record<string, unknown> | undefined {
@@ -593,7 +593,7 @@ function findConfiguredAgentModelParams(params: {
 }
 
 function mergeConfiguredRuntimeModelParams(params: {
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   provider: string;
   modelId: string;
   discoveredParams?: unknown;
@@ -617,7 +617,7 @@ function applyConfiguredProviderOverrides(params: {
   discoveredModel: ProviderRuntimeModel;
   providerConfig?: InlineProviderConfig;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   runtimeHooks?: ProviderRuntimeHooks;
   preferDiscoveredModelMetadata?: boolean;
   preferDiscoveredTransport?: boolean;
@@ -860,7 +860,7 @@ type ExplicitModelResolution =
 function shouldSuppressInlineConfiguredModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
   baseUrl?: string;
 }): boolean {
@@ -893,7 +893,7 @@ function resolveExplicitModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1069,7 +1069,7 @@ function resolveExplicitModelWithRegistry(params: {
 
 function resolveDynamicModelAuthProfile(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   authProfileId?: string;
   preferredProfile?: string;
@@ -1124,7 +1124,7 @@ function resolvePluginDynamicModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1198,7 +1198,7 @@ function resolveRuntimePreferredSuppressedModel(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1236,7 +1236,7 @@ function shouldDropRuntimePreferredExplicitMiss(params: {
 function resolveConfiguredFallbackModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1393,7 +1393,7 @@ function resolveConfiguredFallbackModel(params: {
 function shouldCompareProviderRuntimeResolvedModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks: ProviderRuntimeHooks;
@@ -1487,7 +1487,7 @@ function mergeModelCompat(
 function normalizeProviderModelRef(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   workspaceDir?: string;
 }): { provider: string; model: string } {
   const provider = canonicalizeManifestModelCatalogProviderAlias({
@@ -1505,7 +1505,7 @@ export function resolveModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1565,7 +1565,7 @@ export function resolveModel(
   provider: string,
   modelId: string,
   agentDir?: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   options?: {
     authStorage?: AuthStorage;
     modelRegistry?: ModelRegistry;
@@ -1628,7 +1628,7 @@ export async function resolveModelAsync(
   provider: string,
   modelId: string,
   agentDir?: string,
-  cfg?: OpenClawConfig,
+  cfg?: EVEConfig,
   options?: {
     authStorage?: AuthStorage;
     modelRegistry?: ModelRegistry;
@@ -1859,12 +1859,12 @@ export async function resolveModelAsync(
  * providers before setup, the raw `Unknown model` error is too vague. Provider
  * plugins can append a targeted recovery hint here.
  *
- * See: https://github.com/openclaw/openclaw/issues/17328
+ * See: https://github.com/engsathiago/eve-agent/issues/17328
  */
 function buildUnknownModelError(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1908,7 +1908,7 @@ function buildUnknownModelError(params: {
 function buildMissingProviderModelRegistrationHint(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: EVEConfig;
 }): string | undefined {
   const configuredModels = params.cfg?.agents?.defaults?.models;
   if (!configuredModels) {
@@ -1936,5 +1936,5 @@ function buildMissingProviderModelRegistrationHint(params: {
   if (hasProviderModel) {
     return undefined;
   }
-  return `Found agents.defaults.models["${agentModelKey}"], but no matching models.providers["${params.provider}"].models[] entry. Add { "id": "${params.modelId}", "name": "${params.modelId}" } to models.providers["${params.provider}"].models[] to register this provider model. For custom or proxy providers, also set api and baseUrl so requests route to the intended endpoint. See https://docs.openclaw.ai/concepts/model-providers.`;
+  return `Found agents.defaults.models["${agentModelKey}"], but no matching models.providers["${params.provider}"].models[] entry. Add { "id": "${params.modelId}", "name": "${params.modelId}" } to models.providers["${params.provider}"].models[] to register this provider model. For custom or proxy providers, also set api and baseUrl so requests route to the intended endpoint. See https://docs.eve.ai/concepts/model-providers.`;
 }

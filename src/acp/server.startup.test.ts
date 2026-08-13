@@ -529,7 +529,7 @@ describe("serveAcpGateway startup", () => {
       method: "session/new",
       params: {
         protocolVersion: "2025-11-25",
-        cwd: "/tmp/openclaw",
+        cwd: "/tmp/eve",
       },
     };
 

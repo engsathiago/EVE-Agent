@@ -1,6 +1,6 @@
 // Amazon Bedrock tests cover stream plugin behavior.
 import { BedrockRuntimeClient, ConversationRole } from "@aws-sdk/client-bedrock-runtime";
-import { onLlmRequestActivity } from "openclaw/plugin-sdk/provider-stream-shared";
+import { onLlmRequestActivity } from "eve-agent/plugin-sdk/provider-stream-shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { streamBedrock, streamSimpleBedrock, testing } from "./stream.runtime.js";
 

@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/inworld-speech",
+  "name": "@eve/inworld-speech",
   "version": "2026.6.8",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/inworld-speech",
+      "name": "@eve/inworld-speech",
       "version": "2026.6.8"
     }
   }

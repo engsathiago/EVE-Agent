@@ -1,6 +1,6 @@
 // Browser residue doctor tests cover detection of stale browser state.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import { CORE_HEALTH_CHECKS } from "./doctor-core-checks.js";
 import type { HealthRepairContext } from "./health-checks.js";
 
@@ -18,9 +18,9 @@ vi.mock("../commands/doctor-browser.js", () => ({
 }));
 
 const residue = {
-  legacyProfileDir: "/tmp/openclaw-home/browser/clawd",
-  legacyUserDataDir: "/tmp/openclaw-home/browser/clawd/user-data",
-  canonicalUserDataDir: "/tmp/openclaw-home/browser/openclaw/user-data",
+  legacyProfileDir: "/tmp/eve-home/browser/clawd",
+  legacyUserDataDir: "/tmp/eve-home/browser/clawd/user-data",
+  canonicalUserDataDir: "/tmp/eve-home/browser/eve/user-data",
 };
 
 function runtime() {
@@ -46,18 +46,18 @@ describe("browser clawd profile residue health check", () => {
 
   it("reports legacy clawd profile residue through doctor lint", async () => {
     browserMocks.detectLegacyClawdBrowserProfileResidue.mockResolvedValueOnce(residue);
-    const cfg: OpenClawConfig = { browser: { profiles: { openclaw: { color: "#FF4500" } } } };
+    const cfg: EVEConfig = { browser: { profiles: { eve: { color: "#FF4500" } } } };
     const check = requireBrowserResidueCheck();
 
     const findings = await check.detect({
       mode: "lint",
       runtime: runtime(),
       cfg,
-      configPath: "/tmp/openclaw-home/openclaw.json",
+      configPath: "/tmp/eve-home/eve.json",
     });
 
     expect(browserMocks.detectLegacyClawdBrowserProfileResidue).toHaveBeenCalledWith(cfg, {
-      configDir: "/tmp/openclaw-home",
+      configDir: "/tmp/eve-home",
     });
     expect(findings).toEqual([
       expect.objectContaining({
@@ -75,19 +75,19 @@ describe("browser clawd profile residue health check", () => {
       changes: ["Archived legacy clawd managed browser profile residue."],
       warnings: [],
     });
-    const cfg: OpenClawConfig = { browser: { profiles: { openclaw: { color: "#FF4500" } } } };
+    const cfg: EVEConfig = { browser: { profiles: { eve: { color: "#FF4500" } } } };
     const check = requireBrowserResidueCheck();
     const ctx: HealthRepairContext = {
       mode: "fix",
       runtime: runtime(),
       cfg,
-      configPath: "/tmp/openclaw-home/openclaw.json",
+      configPath: "/tmp/eve-home/eve.json",
     };
 
     const result = await check.repair?.(ctx, []);
 
     expect(browserMocks.maybeArchiveLegacyClawdBrowserProfileResidue).toHaveBeenCalledWith(cfg, {
-      configDir: "/tmp/openclaw-home",
+      configDir: "/tmp/eve-home",
     });
     expect(result).toMatchObject({
       changes: ["Archived legacy clawd managed browser profile residue."],
@@ -111,7 +111,7 @@ describe("browser clawd profile residue health check", () => {
         mode: "fix",
         runtime: runtime(),
         cfg: {},
-        configPath: "/tmp/openclaw-home/openclaw.json",
+        configPath: "/tmp/eve-home/eve.json",
         dryRun: true,
       },
       [],

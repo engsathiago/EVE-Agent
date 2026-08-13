@@ -1,8 +1,8 @@
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { EVEConfig } from "../../config/types.eve.js";
 
 export type GatewayRunRuntimeHooks = {
   releaseManagedProxy?: () => Promise<void> | void;
-  refreshManagedProxy?: (config: OpenClawConfig["proxy"]) => Promise<void> | void;
+  refreshManagedProxy?: (config: EVEConfig["proxy"]) => Promise<void> | void;
 };
 
 let activeGatewayRunRuntimeHooks: GatewayRunRuntimeHooks = {};

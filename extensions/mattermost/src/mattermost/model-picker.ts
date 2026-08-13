@@ -3,15 +3,15 @@ import { createHash } from "node:crypto";
 import {
   resolveStoredModelOverride,
   type ModelsProviderData,
-} from "openclaw/plugin-sdk/command-auth-native";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
-import { parseStrictInteger } from "openclaw/plugin-sdk/number-runtime";
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
-import { loadSessionStore, resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
+} from "eve-agent/plugin-sdk/command-auth-native";
+import type { EVEConfig } from "eve-agent/plugin-sdk/core";
+import { parseStrictInteger } from "eve-agent/plugin-sdk/number-runtime";
+import { normalizeProviderId } from "eve-agent/plugin-sdk/provider-model-shared";
+import { loadSessionStore, resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
 import {
   normalizeOptionalString,
   normalizeStringifiedOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { MattermostInteractiveButtonInput } from "./interactions.js";
 
 const MATTERMOST_MODEL_PICKER_CONTEXT_KEY = "oc_model_picker";
@@ -234,7 +234,7 @@ export function buildMattermostAllowedModelRefs(data: ModelsProviderData): Set<s
 }
 
 export function resolveMattermostModelPickerCurrentModel(params: {
-  cfg: OpenClawConfig;
+  cfg: EVEConfig;
   route: { agentId: string; sessionKey: string };
   data: ModelsProviderData;
   skipCache?: boolean;

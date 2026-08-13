@@ -1,4 +1,4 @@
-// Check File Utils helper supports OpenClaw script workflows.
+// Check File Utils helper supports EVE script workflows.
 import fs from "node:fs";
 import path from "node:path";
 

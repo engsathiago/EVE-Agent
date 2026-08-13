@@ -127,7 +127,7 @@ describe("cli credentials", () => {
   );
 
   it("does not let no-keychain Claude cache misses poison keychain reads", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-claude-cache-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-claude-cache-"));
     vi.setSystemTime(new Date("2025-01-01T00:00:00Z"));
 
     const withoutKeychain = readClaudeCliCredentialsCached({
@@ -159,7 +159,7 @@ describe("cli credentials", () => {
   });
 
   it("keeps no-prompt Claude reads on the file credential path after a keychain read", () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-claude-cache-"));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-claude-cache-"));
     vi.setSystemTime(new Date("2025-01-01T00:00:00Z"));
     mockClaudeCliCredentialRead();
 
@@ -188,7 +188,7 @@ describe("cli credentials", () => {
   });
 
   it("reads Codex credentials from keychain when available", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-"));
     process.env.CODEX_HOME = tempHome;
     const expSeconds = Math.floor(Date.parse("2026-03-23T00:48:49Z") / 1000);
 
@@ -220,7 +220,7 @@ describe("cli credentials", () => {
   });
 
   it("falls back when Codex keychain JWT expiry is outside Date range", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-"));
     process.env.CODEX_HOME = tempHome;
     const lastRefresh = Date.parse("2026-01-01T00:00:00Z");
     const fallbackExpiry = lastRefresh + 60 * 60 * 1000;
@@ -249,7 +249,7 @@ describe("cli credentials", () => {
   });
 
   it("rejects Codex keychain fallback expiry when the process clock is invalid", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-"));
     process.env.CODEX_HOME = tempHome;
     const accountHash = "cli|";
     const dateNowSpy = vi.spyOn(Date, "now").mockReturnValue(Number.NaN);
@@ -273,7 +273,7 @@ describe("cli credentials", () => {
   });
 
   it("falls back to Codex auth.json when keychain is unavailable", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-"));
     process.env.CODEX_HOME = tempHome;
     const expSeconds = Math.floor(Date.parse("2026-03-24T12:34:56Z") / 1000);
     execSyncMock.mockImplementation(() => {
@@ -306,7 +306,7 @@ describe("cli credentials", () => {
   });
 
   it("rejects Codex auth.json fallback expiry when stat and process clock are invalid", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-invalid-clock-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-invalid-clock-"));
     process.env.CODEX_HOME = tempHome;
     const authPath = path.join(tempHome, "auth.json");
     fs.mkdirSync(tempHome, { recursive: true, mode: 0o700 });
@@ -336,7 +336,7 @@ describe("cli credentials", () => {
   });
 
   it("uses Codex auth.json fallback expiry when file mtime has fractional milliseconds", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-fractional-mtime-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-fractional-mtime-"));
     process.env.CODEX_HOME = tempHome;
     const authPath = path.join(tempHome, "auth.json");
     fs.mkdirSync(tempHome, { recursive: true, mode: 0o700 });
@@ -369,7 +369,7 @@ describe("cli credentials", () => {
   });
 
   it("does not read Codex keychain when keychain prompts are disabled", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-no-prompt-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-no-prompt-"));
     process.env.CODEX_HOME = tempHome;
     const expSeconds = Math.floor(Date.parse("2026-03-24T12:34:56Z") / 1000);
     const authPath = path.join(tempHome, "auth.json");
@@ -401,7 +401,7 @@ describe("cli credentials", () => {
   });
 
   it("does not let no-keychain Codex cache misses poison keychain reads", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-cache-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-cache-"));
     process.env.CODEX_HOME = tempHome;
     const expSeconds = Math.floor(Date.parse("2026-03-24T12:34:56Z") / 1000);
 
@@ -437,7 +437,7 @@ describe("cli credentials", () => {
   });
 
   it("keeps no-prompt Codex reads on auth.json after a keychain read", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-cache-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-cache-"));
     process.env.CODEX_HOME = tempHome;
     const keychainExpiry = Math.floor(Date.parse("2026-03-24T12:34:56Z") / 1000);
     const fileExpiry = Math.floor(Date.parse("2026-03-25T12:34:56Z") / 1000);
@@ -489,7 +489,7 @@ describe("cli credentials", () => {
   });
 
   it("invalidates cached Codex credentials when auth.json changes within the TTL window", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-codex-cache-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-codex-cache-"));
     process.env.CODEX_HOME = tempHome;
     const authPath = path.join(tempHome, "auth.json");
     const firstExpiry = Math.floor(Date.parse("2026-03-24T12:34:56Z") / 1000);
@@ -549,7 +549,7 @@ describe("cli credentials", () => {
   });
 
   it("lifts Google account identity from the Gemini id_token", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gemini-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gemini-"));
     try {
       const credPath = path.join(tempHome, ".gemini", "oauth_creds.json");
       fs.mkdirSync(path.dirname(credPath), { recursive: true, mode: 0o700 });
@@ -584,7 +584,7 @@ describe("cli credentials", () => {
   });
 
   it("reads Gemini credentials without identity fields when id_token is absent", () => {
-    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-gemini-noid-"));
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gemini-noid-"));
     try {
       const credPath = path.join(tempHome, ".gemini", "oauth_creds.json");
       fs.mkdirSync(path.dirname(credPath), { recursive: true, mode: 0o700 });

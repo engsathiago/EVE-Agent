@@ -1,5 +1,5 @@
 #!/usr/bin/env -S node --import tsx
-// Release Check script supports OpenClaw repository automation.
+// Release Check script supports EVE repository automation.
 
 import { execFileSync } from "node:child_process";
 import {
@@ -51,7 +51,7 @@ import {
   normalizeInstalledBinaryVersion,
   resolveInstalledBinaryCommandInvocation,
   resolveInstalledBinaryPath,
-} from "./openclaw-npm-postpublish-verify.ts";
+} from "./eve-npm-postpublish-verify.ts";
 import { listStaticExtensionAssetOutputs } from "./runtime-postbuild.mjs";
 import { sparkleBuildFloorsFromShortVersion, type SparkleBuildFloors } from "./sparkle-build.ts";
 import { buildCmdExeCommandLine } from "./windows-cmd-helpers.mjs";
@@ -103,7 +103,7 @@ const requiredPathGroups = [
 const forbiddenPrefixes = [
   ...LOCAL_BUILD_METADATA_DIST_PATHS,
   "dist-runtime/",
-  "dist/OpenClaw.app/",
+  "dist/EVE.app/",
   "dist/extensions/qa-channel/",
   "dist/extensions/qa-lab/",
   "dist/plugin-sdk/extensions/qa-channel/",
@@ -148,11 +148,11 @@ const DEFAULT_RELEASE_CHECK_COMMAND_TIMEOUT_MS = 5 * 60 * 1000;
 const DEFAULT_RELEASE_CHECK_COMMAND_MAX_BUFFER_BYTES = 100 * 1024 * 1024;
 export const MAX_CRITICAL_PLUGIN_SDK_ENTRYPOINT_BYTES = 2 * 1024 * 1024;
 export const CRITICAL_PLUGIN_SDK_SIZE_CHECK_SPECIFIERS = [
-  "openclaw/plugin-sdk/core",
-  "openclaw/plugin-sdk/provider-entry",
-  "openclaw/plugin-sdk/runtime",
+  "eve-agent/plugin-sdk/core",
+  "eve-agent/plugin-sdk/provider-entry",
+  "eve-agent/plugin-sdk/runtime",
 ] as const;
-export const CRITICAL_PLUGIN_SDK_IMPORT_SMOKE_SPECIFIERS = ["openclaw/plugin-sdk/core"] as const;
+export const CRITICAL_PLUGIN_SDK_IMPORT_SMOKE_SPECIFIERS = ["eve-agent/plugin-sdk/core"] as const;
 export const PACKED_CLI_SMOKE_COMMANDS = [
   ["--help"],
   ["onboard", "--help"],
@@ -211,7 +211,7 @@ export function runReleaseCheckCommand(
     maxBuffer:
       options.maxBuffer ??
       positiveEnvInt(
-        "OPENCLAW_RELEASE_CHECK_COMMAND_MAX_BUFFER_BYTES",
+        "EVE_RELEASE_CHECK_COMMAND_MAX_BUFFER_BYTES",
         DEFAULT_RELEASE_CHECK_COMMAND_MAX_BUFFER_BYTES,
       ),
     shell: invocation.shell ?? options.shell,
@@ -219,7 +219,7 @@ export function runReleaseCheckCommand(
     timeout:
       options.timeoutMs ??
       positiveEnvInt(
-        "OPENCLAW_RELEASE_CHECK_COMMAND_TIMEOUT_MS",
+        "EVE_RELEASE_CHECK_COMMAND_TIMEOUT_MS",
         DEFAULT_RELEASE_CHECK_COMMAND_TIMEOUT_MS,
       ),
     windowsVerbatimArguments: invocation.windowsVerbatimArguments,
@@ -437,7 +437,7 @@ export function createPackedBundledPluginPostinstallEnv(
 ): NodeJS.ProcessEnv {
   return {
     ...env,
-    OPENCLAW_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
+    EVE_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
   };
 }
 
@@ -480,10 +480,10 @@ export function createPackedCliSmokeEnv(
     AWS_EC2_METADATA_DISABLED: "true",
     AWS_SHARED_CREDENTIALS_FILE: homeDir ? join(homeDir, ".aws", "credentials") : undefined,
     AWS_CONFIG_FILE: homeDir ? join(homeDir, ".aws", "config") : undefined,
-    OPENCLAW_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
-    OPENCLAW_NO_ONBOARD: "1",
-    OPENCLAW_SERVICE_REPAIR_POLICY: "external",
-    OPENCLAW_SUPPRESS_NOTES: "1",
+    EVE_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
+    EVE_NO_ONBOARD: "1",
+    EVE_SERVICE_REPAIR_POLICY: "external",
+    EVE_SUPPRESS_NOTES: "1",
     ...overrides,
   };
 }
@@ -495,8 +495,8 @@ export function createPackedCompletionSmokeEnv(
   return {
     ...env,
     ...overrides,
-    OPENCLAW_SUPPRESS_NOTES: "1",
-    OPENCLAW_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
+    EVE_SUPPRESS_NOTES: "1",
+    EVE_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
     [COMPLETION_SKIP_PLUGIN_COMMANDS_ENV]: "1",
   };
 }
@@ -533,7 +533,7 @@ export function collectPackedInstalledPackageVerificationErrors(params: {
     normalizeInstalledBinaryVersion(params.installedBinaryVersion) !== params.expectedVersion
   ) {
     errors.push(
-      `installed openclaw binary version mismatch: expected ${params.expectedVersion}, found ${params.installedBinaryVersion || "<missing>"}.`,
+      `installed eve binary version mismatch: expected ${params.expectedVersion}, found ${params.installedBinaryVersion || "<missing>"}.`,
     );
   }
   const rootAliasPath = join(params.packageRoot, "dist", "plugin-sdk", "root-alias.cjs");
@@ -588,11 +588,11 @@ export function createPackedPluginSdkTypescriptSmokeProject(params: {
     join(params.consumerDir, "package.json"),
     `${JSON.stringify(
       {
-        name: "openclaw-plugin-sdk-type-smoke",
+        name: "eve-plugin-sdk-type-smoke",
         private: true,
         type: "module",
         dependencies: {
-          openclaw: params.packageSpec,
+          eve: params.packageSpec,
         },
       },
       null,
@@ -637,10 +637,10 @@ function runPackedPluginSdkTypescriptSmoke(tarballPath: string, tmpRoot: string)
     stdio: "inherit",
   });
 
-  const installedOpenClawRoot = join(consumerDir, "node_modules", "openclaw");
+  const installedEVERoot = join(consumerDir, "node_modules", "eve");
   const tscPath = [
     join(consumerDir, "node_modules", "typescript", "bin", "tsc"),
-    join(installedOpenClawRoot, "node_modules", "typescript", "bin", "tsc"),
+    join(installedEVERoot, "node_modules", "typescript", "bin", "tsc"),
   ].find((candidate) => existsSync(candidate));
   if (!tscPath) {
     throw new Error("release-check: packed plugin SDK TypeScript smoke could not find tsc.");
@@ -655,8 +655,8 @@ function runPackedPluginSdkTypescriptSmoke(tarballPath: string, tmpRoot: string)
 }
 
 export function writePackedBundledPluginActivationConfig(homeDir: string): void {
-  const configPath = join(homeDir, ".openclaw", "openclaw.json");
-  mkdirSync(join(homeDir, ".openclaw"), { recursive: true });
+  const configPath = join(homeDir, ".eve", "eve.json");
+  mkdirSync(join(homeDir, ".eve"), { recursive: true });
   writeFileSync(
     configPath,
     `${JSON.stringify(
@@ -674,7 +674,7 @@ export function writePackedBundledPluginActivationConfig(homeDir: string): void 
         models: {
           providers: {
             openai: {
-              apiKey: "sk-openclaw-release-check",
+              apiKey: "sk-eve-release-check",
               baseUrl: "https://api.openai.com/v1",
               models: [],
             },
@@ -701,14 +701,14 @@ function runPackedBundledPluginActivationSmoke(packageRoot: string, tmpRoot: str
   mkdirSync(homeDir, { recursive: true });
   const env = createPackedCliSmokeEnv(process.env, {
     HOME: homeDir,
-    OPENAI_API_KEY: "sk-openclaw-release-check",
+    OPENAI_API_KEY: "sk-eve-release-check",
   });
 
   writePackedBundledPluginActivationConfig(homeDir);
   runReleaseCheckCommand(
     {
       command: process.execPath,
-      args: [join(packageRoot, "openclaw.mjs"), ...PACKED_BUNDLED_RUNTIME_DEPS_REPAIR_ARGS],
+      args: [join(packageRoot, "eve.mjs"), ...PACKED_BUNDLED_RUNTIME_DEPS_REPAIR_ARGS],
     },
     {
       cwd: packageRoot,
@@ -717,7 +717,7 @@ function runPackedBundledPluginActivationSmoke(packageRoot: string, tmpRoot: str
     },
   );
   runReleaseCheckCommand(
-    { command: process.execPath, args: [join(packageRoot, "openclaw.mjs"), "plugins", "doctor"] },
+    { command: process.execPath, args: [join(packageRoot, "eve.mjs"), "plugins", "doctor"] },
     {
       cwd: packageRoot,
       stdio: "inherit",
@@ -763,8 +763,8 @@ function runPackedCliSmoke(params: {
   const binaryPath = resolveInstalledBinaryPath(params.prefixDir);
   const env = createPackedCliSmokeEnv(process.env, {
     HOME: params.homeDir,
-    OPENCLAW_STATE_DIR: params.stateDir,
-    OPENAI_API_KEY: "sk-openclaw-release-check",
+    EVE_STATE_DIR: params.stateDir,
+    OPENAI_API_KEY: "sk-eve-release-check",
   });
   const windowsRoot = env.SystemRoot ?? env.WINDIR ?? "C:\\Windows";
   const trustedCmdPath = join(windowsRoot, "System32", "cmd.exe");
@@ -798,7 +798,7 @@ function runPackedCliSmoke(params: {
 }
 
 function runPackedBundledChannelEntrySmoke(): void {
-  const tmpRoot = mkdtempSync(join(tmpdir(), "openclaw-release-pack-smoke-"));
+  const tmpRoot = mkdtempSync(join(tmpdir(), "eve-release-pack-smoke-"));
   try {
     const expectedVersion = (
       JSON.parse(readFileSync(resolve("package.json"), "utf8")) as {
@@ -816,7 +816,7 @@ function runPackedBundledChannelEntrySmoke(): void {
     const prefixDir = join(tmpRoot, "prefix");
     installPackedTarball(prefixDir, tarballPath, tmpRoot);
 
-    const packageRoot = join(resolveGlobalRoot(prefixDir, tmpRoot), "openclaw");
+    const packageRoot = join(resolveGlobalRoot(prefixDir, tmpRoot), "eve");
     verifyPackedInstalledPackage({
       expectedVersion,
       packageRoot,
@@ -849,7 +849,7 @@ function runPackedBundledChannelEntrySmoke(): void {
         stdio: "inherit",
         env: {
           ...process.env,
-          OPENCLAW_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
+          EVE_DISABLE_BUNDLED_ENTRY_SOURCE_FALLBACK: "1",
         },
       },
     );
@@ -857,14 +857,14 @@ function runPackedBundledChannelEntrySmoke(): void {
     runReleaseCheckCommand(
       {
         command: process.execPath,
-        args: [join(packageRoot, "openclaw.mjs"), ...PACKED_COMPLETION_SMOKE_ARGS],
+        args: [join(packageRoot, "eve.mjs"), ...PACKED_COMPLETION_SMOKE_ARGS],
       },
       {
         cwd: packageRoot,
         stdio: "inherit",
         env: createPackedCompletionSmokeEnv(process.env, {
           HOME: homeDir,
-          OPENCLAW_STATE_DIR: stateDir,
+          EVE_STATE_DIR: stateDir,
         }),
       },
     );
@@ -921,8 +921,8 @@ export function collectForbiddenPackPaths(paths: Iterable<string>): string[] {
       (path) =>
         isLegacyPluginDependencyInstallStagePath(path) ||
         forbiddenPrefixes.some((prefix) => path.startsWith(prefix)) ||
-        /(^|\/)\.openclaw-runtime-deps-[^/]+(\/|$)/u.test(path) ||
-        path.endsWith("/.openclaw-runtime-deps-stamp.json") ||
+        /(^|\/)\.eve-runtime-deps-[^/]+(\/|$)/u.test(path) ||
+        path.endsWith("/.eve-runtime-deps-stamp.json") ||
         path.includes("node_modules/"),
     )
     .toSorted((left, right) => left.localeCompare(right));
@@ -1038,7 +1038,7 @@ function checkAppcastSparkleVersions() {
   }
 }
 
-// Critical functions that channel extension plugins import from openclaw/plugin-sdk.
+// Critical functions that channel extension plugins import from eve-agent/plugin-sdk.
 // If any are missing from the compiled output, plugins crash at runtime (#27569).
 const requiredPluginSdkExports = [
   "isDangerousNameMatchingEnabled",
@@ -1119,7 +1119,7 @@ async function checkPluginSdkExports() {
 export function collectCriticalPluginSdkEntrypointSizeErrors(rootDir = process.cwd()): string[] {
   const errors: string[] = [];
   for (const specifier of CRITICAL_PLUGIN_SDK_SIZE_CHECK_SPECIFIERS) {
-    const subpath = specifier.slice("openclaw/plugin-sdk/".length);
+    const subpath = specifier.slice("eve-agent/plugin-sdk/".length);
     const relativePath = `dist/plugin-sdk/${subpath}.js`;
     const filePath = resolve(rootDir, relativePath);
     if (!existsSync(filePath)) {
