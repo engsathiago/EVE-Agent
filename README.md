@@ -1,102 +1,177 @@
 # EVE Agent
 
-EVE is an independent, self-hosted AI agent platform. It keeps the complete
-multi-channel gateway, provider, tool, plugin, application, node, automation,
-and session runtime in one project, then adds EVE's own operational platform
-for projects, missions, durable work, evaluation, recovery, and offline use.
+EVE é uma plataforma independente de agentes de IA, auto-hospedada e preparada
+para operar em canais de mensagem, terminal, navegador, aplicativos e nós
+remotos. O projeto reúne o núcleo completo de gateway multi-canal do OpenClaw
+com uma camada operacional própria para trabalho persistente: projetos,
+missões, fluxos, avaliações, rastreabilidade, recuperação e operação offline.
 
-The npm package is `eve-agent`. The public command is `eve`, and persistent
-state lives under `~/.eve` unless `EVE_STATE_DIR` overrides it.
+> **Status da distribuição:** o código-fonte e a versão `2026.6.8` estão
+> publicados neste repositório. O pacote `eve-agent` **ainda não foi
+> publicado no npm**; por enquanto, a instalação recomendada é a partir do
+> código-fonte.
 
-## What EVE includes
+## Visão geral
 
-- terminal chat, WebChat, Control UI, macOS, iOS, Android, and headless nodes;
-- WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Matrix, Google Chat,
-  Microsoft Teams, IRC, LINE, Feishu, and the other bundled channel plugins;
-- OpenAI, Anthropic, Ollama, OpenRouter, Google, Bedrock, and compatible model
-  providers with profiles, fallbacks, streaming, and tool calling;
-- browser, shell, files, media, MCP, plugins, skills, cron, hooks, sessions,
-  subagents, goals, memory, and sandbox backends;
-- Mission Control and Workboard with projects, ownership, pause/resume/retry,
-  reassignment, automatic toolset hints, and completion evidence;
-- Trace Studio, Result Hub, trajectory-aware evaluations, durable flows,
-  adaptive routing, canary experiments, Model Lab, and distributed workers;
-- Docker environments with resource limits, expiration, persistence, network
-  control, and snapshots;
-- EVE Studio for versioned documents, presentations, spreadsheets, sites,
-  diagrams, notes, imports, downloads, and publication to Result Hub;
-- one integrations catalog for MCP servers, plugins, and channels;
-- transactional work packages, verified backup restore, offline bundles, and
-  a VPS installer;
-- Skill Workshop proposals with scanning, review, application, and safe
-  rollback that refuses to overwrite later edits.
+O objetivo do EVE é ser uma base completa para um agente que realmente
+executa trabalho: recebe uma solicitação em um canal, escolhe um provedor e
+ferramentas compatíveis, mantém o contexto da sessão e devolve evidências do
+resultado. A mesma instalação pode atender uma pessoa, uma equipe ou uma
+infraestrutura de automação, sem depender de um serviço central do projeto.
 
-See the [EVE platform overview](https://docs.eve.ai/concepts/eve-platform) for
-the complete capability map.
+O comando público é `eve`, o nome reservado do pacote é `eve-agent` e o estado
+persistente fica em `~/.eve` por padrão. A configuração principal é
+`~/.eve/eve.json`.
 
-## Phase-one owner policy
-
-EVE currently adds no project-owned behavioral restriction, refusal rule, or
-safety policy to the agent prompt. The first-party policy contract starts with
-zero rules and allows every action presented to it. `SOUL.md` also starts empty
-so the owner can design EVE's policy in a later phase.
-
-This does not bypass the rules of a selected model/provider or an external
-service. Authentication, sender pairing, filesystem boundaries, protocol
-validation, resource limits, and explicit tool availability remain technical
-runtime controls. See [Owner-controlled policy](https://docs.eve.ai/concepts/owner-policy).
-
-## Install
-
-EVE requires Node.js 22.19 or newer. Node.js 24 is recommended.
-
-### npm
-
-```bash
-npm install -g eve-agent@latest
-eve onboard --install-daemon
-eve gateway status
+```text
+Pessoa, canal ou aplicativo
+            │
+            ▼
+  Gateway EVE ── sessões, autenticação e roteamento
+            │
+            ├── provedores e modelos de IA
+            ├── ferramentas, MCP, skills e plugins
+            ├── navegador, arquivos, shell e nós remotos
+            └── projetos, missões, traces, resultados e backups
+            │
+            ▼
+      Resposta, evidência e estado persistente
 ```
 
-### Source checkout
+## O que o projeto entrega
+
+| Área | Capacidades principais |
+| --- | --- |
+| Comunicação | Terminal, WebChat, Control UI, macOS, iOS, Android e nós headless; integrações para WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Matrix, Google Chat, Microsoft Teams, IRC, LINE, Feishu e outros plugins de canal. |
+| Inteligência | OpenAI, Anthropic, Google, Ollama, OpenRouter, Bedrock e provedores compatíveis; perfis, fallback, streaming, tool calling, roteamento adaptativo e laboratório de modelos. |
+| Execução | Browser, shell, arquivos, mídia, MCP, plugins, skills, cron, hooks, sessões, subagentes, metas, memória e backends de sandbox. |
+| Operação | Mission Control, Workboard, projetos, pausa/retomada/retry, reatribuição, evidências de conclusão, workers distribuídos e ambientes isolados. |
+| Qualidade | Trace Studio, Result Hub, avaliações orientadas por trajetória, fluxos duráveis, experimentos canário e observabilidade operacional. |
+| Continuidade | Backups transacionais, restauração verificada, pacotes de trabalho e bundles offline com manifesto SHA-256. |
+| Produção de conteúdo | EVE Studio para documentos, apresentações, planilhas, sites, diagramas, notas, importação, download e publicação no Result Hub. |
+
+## Arquitetura do repositório
+
+O repositório é intencionalmente modular. O núcleo não fica amarrado a um canal
+ou provedor específico; extensões usam contratos públicos de plugin e SDK.
+
+```text
+eve-agent/
+├── src/             núcleo do gateway, agentes, CLI, ferramentas e configuração
+├── extensions/      canais, provedores, plugins e integrações opcionais
+├── packages/        contratos compartilhados e protocolo do gateway
+├── apps/            aplicativos e superfícies de usuário
+├── ui/              Control UI web
+├── docs/            documentação técnica publicada
+├── scripts/         build, validação, instalação e manutenção
+├── test/             testes de integração e infraestrutura de testes
+└── eve.mjs          ponto de entrada do comando `eve`
+```
+
+### Fluxo de uma solicitação
+
+1. Um canal, a CLI ou a interface web entrega a mensagem ao Gateway.
+2. O Gateway identifica o agente, a sessão, o destino e as capacidades
+   disponíveis.
+3. O runtime seleciona o modelo/provedor configurado, prepara o contexto e
+   disponibiliza ferramentas autorizadas pela instalação.
+4. O agente pode chamar ferramentas, skills, servidores MCP, navegador, shell
+   ou nós remotos, conforme a configuração local.
+5. A resposta é renderizada no canal de origem; sessões, resultados, traces e
+   estado operacional são mantidos para auditoria e continuidade.
+
+## Política de produto: fase inicial
+
+Nesta primeira fase, o EVE não acrescenta uma política comportamental própria
+ao prompt do agente: não há uma camada de recusas ou regras de conteúdo criada
+pelo projeto. `SOUL.md` também começa vazio. A política de produto será
+desenhada pelo proprietário em uma etapa posterior, como um módulo explícito e
+auditável do EVE.
+
+Isso não desativa limitações externas. Regras de um modelo/provedor, termos de
+serviços integrados e controles técnicos da instalação continuam existindo.
+Autenticação, pareamento de remetentes, limites de sistema de arquivos,
+validação de protocolo, limites de recursos e disponibilidade de ferramentas
+são controles de execução, não uma política comportamental proprietária do
+EVE. Consulte a documentação de
+[política controlada pelo proprietário](https://docs.eve.ai/concepts/owner-policy).
+
+## Instalação recomendada: código-fonte
+
+Pré-requisitos:
+
+- Node.js 22.19 ou superior; Node.js 24 é recomendado;
+- `corepack` habilitado;
+- `pnpm` gerenciado pelo Corepack;
+- Git.
 
 ```bash
 git clone https://github.com/engsathiago/eve-agent.git
 cd eve-agent
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm build
+pnpm eve --version
+```
+
+Para usar a CLI dentro do checkout, prefira `pnpm eve <comando>`:
+
+```bash
 pnpm eve onboard --install-daemon
+pnpm eve gateway status
+pnpm eve doctor
 ```
 
-### Linux VPS
+### Instalação nativa em uma VPS Linux
+
+O procedimento abaixo instala diretamente na máquina, sem Docker. Execute-o
+como o usuário que vai operar o Gateway. O `pnpm build` é obrigatório: o
+comando `eve` precisa do conteúdo gerado em `dist/`.
 
 ```bash
-git clone https://github.com/engsathiago/eve-agent.git
-cd eve-agent
-bash scripts/install-vps.sh --source-dir "$PWD" --interactive
-```
+git clone https://github.com/engsathiago/eve-agent.git /opt/eve
+cd /opt/eve
+corepack enable
+pnpm install --frozen-lockfile
+pnpm build
+sudo ln -sfn /opt/eve/eve.mjs /usr/local/bin/eve
 
-For a provider-neutral non-interactive installation:
-
-```bash
-bash scripts/install-vps.sh --source-dir "$PWD" --non-interactive
-```
-
-The VPS installer installs the `eve` command, configures the Gateway, installs
-the user service, runs `eve doctor`, and probes the service. Use loopback or a
-private tailnet unless you intentionally configure authenticated remote access.
-
-## First run
-
-```bash
+eve --version
 eve onboard --install-daemon
-eve dashboard
-eve status
-eve doctor
+eve gateway status --probe
 ```
 
-Useful operational commands:
+Se `eve` informar que falta `dist/entry.js` ou `dist/entry.mjs`, a instalação é
+um checkout sem build. Entre no diretório do projeto, execute `pnpm build` e
+repita `eve --version`. Não use um link simbólico apontando para uma pasta
+temporária de teste.
+
+Mantenha o Gateway em `loopback` ou em uma rede privada até configurar acesso
+remoto autenticado. O guia completo está em
+[Linux VPS](https://docs.eve.ai/vps).
+
+## Primeiros comandos
+
+```bash
+# Assistente de configuração, credenciais e serviço
+eve onboard --install-daemon
+
+# Diagnóstico e estado do Gateway
+eve doctor
+eve status
+eve gateway status --probe
+
+# Interfaces locais
+eve dashboard
+eve tui
+
+# Catálogos da instalação
+eve channels list
+eve plugins list
+eve models list
+```
+
+Os comandos operacionais adicionais incluem:
 
 ```bash
 eve mission status
@@ -116,89 +191,71 @@ eve integrations list
 eve packages list
 ```
 
-## Backup, restore, and offline use
+## Backup, restauração e operação offline
 
 ```bash
+# Cria e verifica um backup do estado EVE
 eve backup create
+
+# Primeiro valida a restauração; só depois aplica a troca de estado
 eve backup restore ./eve-backup.tar.gz
 eve backup restore ./eve-backup.tar.gz --apply
 
+# Prepara operação sem rede com um modelo local
 eve offline status
 eve offline configure --model qwen3:8b
-eve offline bundle --output /Volumes/USB/eve-offline
+eve offline bundle --output /mnt/eve-offline
 ```
 
-Restore defaults to a verified dry run. An applied restore creates a pre-restore
-backup before replacing state. Offline bundles include an exact SHA-256
-manifest and a network-free installer.
+A restauração é uma simulação verificada por padrão. Quando aplicada, ela cria
+um backup pré-restauração antes de substituir o estado. Bundles offline usam
+manifesto SHA-256 e instalador sem necessidade de rede.
 
-## Development
+## Desenvolvimento e contribuição
 
 ```bash
 corepack enable
-pnpm install
-pnpm eve setup
-pnpm gateway:watch
-```
-
-Build and focused validation:
-
-```bash
+pnpm install --frozen-lockfile
 pnpm build
-node scripts/run-vitest.mjs <test-file>
+
+# Teste unitário/integrado focalizado
+node scripts/run-vitest.mjs <arquivo-ou-filtro>
+
+# Verificação estrita de TypeScript por área
 node scripts/run-tsgo.mjs -p tsconfig.core.json
 node scripts/run-tsgo.mjs -p tsconfig.extensions.json
 ```
 
-## Data
+Antes de modificar o código, leia [CONTRIBUTING.md](CONTRIBUTING.md) e
+[AGENTS.md](AGENTS.md). Eles explicam a divisão entre núcleo e plugins, a
+forma correta de validar mudanças e as regras de contribuição.
 
-The default layout is:
+## Estado da validação
 
-```text
-~/.eve/
-├── eve.json
-├── agents/
-├── credentials/
-├── intelligence/
-├── logs/
-├── workboard/
-└── workspace/
-```
+O projeto foi verificado em instalação Linux nativa com build de produção,
+checagem de tipos, testes focados de inteligência, smoke do Gateway e fluxo
+end-to-end da Control UI. A publicação npm e a certificação completa de
+release são etapas separadas e ainda não foram executadas; por isso esta
+versão deve ser instalada a partir deste checkout até que os artefatos de
+distribuição sejam oficialmente liberados.
 
-Do not commit credentials or a live state directory. Use `eve backup` before
-upgrades, migrations, or restoration tests.
+## Documentação técnica
 
-## Documentation
-
-- [Getting started](https://docs.eve.ai/start/getting-started)
-- [EVE platform](https://docs.eve.ai/concepts/eve-platform)
-- [Owner-controlled policy](https://docs.eve.ai/concepts/owner-policy)
-- [Operational intelligence CLI](https://docs.eve.ai/cli/intelligence)
-- [Offline installation](https://docs.eve.ai/cli/offline)
+- [Começar agora](https://docs.eve.ai/start/getting-started)
+- [Plataforma EVE](https://docs.eve.ai/concepts/eve-platform)
+- [Política controlada pelo proprietário](https://docs.eve.ai/concepts/owner-policy)
+- [CLI de inteligência operacional](https://docs.eve.ai/cli/intelligence)
+- [Operação offline](https://docs.eve.ai/cli/offline)
 - [Linux VPS](https://docs.eve.ai/vps)
-- [Gateway configuration](https://docs.eve.ai/gateway/configuration)
-- [Channels](https://docs.eve.ai/channels)
-- [Plugins and skills](https://docs.eve.ai/tools)
+- [Configuração do Gateway](https://docs.eve.ai/gateway/configuration)
+- [Canais](https://docs.eve.ai/channels)
+- [Plugins e skills](https://docs.eve.ai/tools)
 
-## License and provenance
+## Licença e procedência
 
-EVE is distributed under the MIT license. The fork preserves upstream
-copyright notices and third-party license obligations in [LICENSE](LICENSE),
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and
-[EVE_FORK_SOURCES.md](EVE_FORK_SOURCES.md). Those notices document provenance;
-they do not define EVE's product identity or behavioral policy.
-
----
-
-## Resumo em português
-
-EVE é um agente independente e autocontido. O comando global é `eve`, o pacote
-é `eve-agent`, e o projeto reúne o núcleo completo de canais, ferramentas,
-provedores, plugins e aplicativos com as melhorias operacionais do Athena 0.4:
-Central de Missão, projetos, ambientes, Studio, integrações, traces, resultados,
-avaliações, fluxos, roteamento, experimentos, workers, Model Lab, pacotes,
-recuperação e modo offline.
-
-Na primeira fase, o EVE não injeta política comportamental própria. A política
-do projeto será escrita pelo proprietário em uma segunda fase, sem alterar as
-limitações externas do modelo ou do provedor escolhido.
+EVE é distribuído sob a licença MIT. O projeto preserva avisos de copyright e
+obrigações de licenças de terceiros em [LICENSE](LICENSE),
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) e
+[EVE_FORK_SOURCES.md](EVE_FORK_SOURCES.md). Esses arquivos registram a
+procedência do código derivado e não definem a identidade, a estratégia ou a
+política futura do EVE.
