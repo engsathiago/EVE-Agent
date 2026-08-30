@@ -333,8 +333,7 @@ export class VoiceCallWebhookServer {
    */
   private async initializeMediaStreaming(): Promise<void> {
     const streaming = this.config.streaming;
-    const pluginConfig =
-      this.fullConfig ?? (this.coreConfig as unknown as EVEConfig | undefined);
+    const pluginConfig = this.fullConfig ?? (this.coreConfig as unknown as EVEConfig | undefined);
     const { getRealtimeTranscriptionProvider, listRealtimeTranscriptionProviders } =
       await loadRealtimeTranscriptionRuntime();
     const resolution = resolveConfiguredCapabilityProvider({

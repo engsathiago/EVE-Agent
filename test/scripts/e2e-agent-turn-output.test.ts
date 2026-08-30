@@ -72,9 +72,9 @@ describe("scripts/e2e/lib/agent-turn-output", () => {
         ].join("\n"),
       );
 
-      expect(() =>
-        assertAgentReplyContainsMarker("EVE_E2E_OK_PROMPT_ECHO", outputPath),
-      ).toThrow(/agent reply payload did not contain marker/u);
+      expect(() => assertAgentReplyContainsMarker("EVE_E2E_OK_PROMPT_ECHO", outputPath)).toThrow(
+        /agent reply payload did not contain marker/u,
+      );
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -92,9 +92,9 @@ describe("scripts/e2e/lib/agent-turn-output", () => {
         ].join("\n"),
       );
 
-      expect(() =>
-        assertAgentReplyContainsMarker("EVE_E2E_OK_DIAGNOSTIC", outputPath),
-      ).toThrow(/agent reply payload did not contain marker/u);
+      expect(() => assertAgentReplyContainsMarker("EVE_E2E_OK_DIAGNOSTIC", outputPath)).toThrow(
+        /agent reply payload did not contain marker/u,
+      );
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -114,9 +114,9 @@ describe("scripts/e2e/lib/agent-turn-output", () => {
         }),
       );
 
-      expect(() =>
-        assertAgentReplyContainsMarker("EVE_E2E_OK_ERROR_PAYLOAD", outputPath),
-      ).toThrow(/agent reply payload did not contain marker/u);
+      expect(() => assertAgentReplyContainsMarker("EVE_E2E_OK_ERROR_PAYLOAD", outputPath)).toThrow(
+        /agent reply payload did not contain marker/u,
+      );
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -137,9 +137,9 @@ describe("scripts/e2e/lib/agent-turn-output", () => {
         }),
       );
 
-      expect(() =>
-        assertAgentReplyContainsMarker("EVE_E2E_OK_ERROR_META", outputPath),
-      ).toThrow(/agent reply payload did not contain marker/u);
+      expect(() => assertAgentReplyContainsMarker("EVE_E2E_OK_ERROR_META", outputPath)).toThrow(
+        /agent reply payload did not contain marker/u,
+      );
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

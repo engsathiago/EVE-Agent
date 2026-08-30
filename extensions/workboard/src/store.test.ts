@@ -346,6 +346,14 @@ describe("WorkboardStore", () => {
     });
   });
 
+  it("rejects mixing automatic and explicit toolsets", async () => {
+    const store = new WorkboardStore(createMemoryStore());
+
+    await expect(
+      store.create({ title: "Invalid toolsets", toolsets: ["auto", "research"] }),
+    ).rejects.toThrow("toolset 'auto' cannot be combined with explicit toolsets");
+  });
+
   it("moves cards and records lifecycle timestamps", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Ship workboard" });
@@ -1784,6 +1792,66 @@ describe("WorkboardStore", () => {
 
     expect(updated.metadata?.proof).toEqual([expect.objectContaining({ label: "CI" })]);
     expect(updated.metadata?.diagnostics).toBeUndefined();
+    expect(updated.metadata?.completionEvidence?.quality).toBe("verified");
+  });
+
+  it("records claimed, verified, and failed completion evidence", async () => {
+    const store = new WorkboardStore(createMemoryStore());
+    const claimed = await store.create({ title: "Claim only" });
+    const verified = await store.create({ title: "Verified" });
+    const failed = await store.create({ title: "Failed proof" });
+
+    await expect(store.complete(claimed.id, { summary: "Done" })).resolves.toMatchObject({
+      metadata: { completionEvidence: { mode: "record", quality: "claimed" } },
+    });
+    await expect(
+      store.complete(verified.id, { proof: { status: "passed", command: "pnpm test" } }),
+    ).resolves.toMatchObject({
+      metadata: { completionEvidence: { mode: "record", quality: "verified" } },
+    });
+    await expect(
+      store.complete(failed.id, { proof: { status: "failed", command: "pnpm test" } }),
+    ).resolves.toMatchObject({
+      metadata: { completionEvidence: { mode: "record", quality: "failed" } },
+    });
+  });
+
+  it("can require completion evidence without imposing that policy by default", async () => {
+    const store = new WorkboardStore(createMemoryStore(), {}, { completionEvidence: "require" });
+    const card = await store.create({ title: "Require evidence" });
+    await expect(store.complete(card.id, { summary: "Only a claim" })).rejects.toThrow(
+      "completion requires passed proof",
+    );
+    await expect(
+      store.complete(card.id, { proof: { status: "passed", label: "tests" } }),
+    ).resolves.toMatchObject({
+      status: "done",
+      metadata: { completionEvidence: { mode: "require", quality: "verified" } },
+    });
+  });
+
+  it("persists completion evidence in SQLite", async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-workboard-evidence-"));
+    const dbPath = path.join(root, "workboard.sqlite");
+    try {
+      const stores = createWorkboardSqliteStores({ dbPath });
+      const store = new WorkboardStore(stores.cards, {
+        boards: stores.boards,
+        subscriptions: stores.subscriptions,
+        attachments: stores.attachments,
+      });
+      const card = await store.create({ title: "Persist evidence" });
+      await store.complete(card.id, { proof: { status: "passed", label: "tests" } });
+      stores.close();
+
+      const reopened = createWorkboardSqliteStores({ dbPath });
+      await expect(reopened.cards.lookup(card.id)).resolves.toMatchObject({
+        card: { metadata: { completionEvidence: { mode: "record", quality: "verified" } } },
+      });
+      reopened.close();
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 
   it("clears resolved proof diagnostics when adding an artifact", async () => {

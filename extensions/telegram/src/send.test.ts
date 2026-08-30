@@ -1,12 +1,12 @@
 // Telegram tests cover send plugin behavior.
 import fs from "node:fs";
-import type { Bot } from "grammy";
 import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
 } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
+import type { Bot } from "grammy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { markdownToTelegramHtml } from "./format.js";
 import {

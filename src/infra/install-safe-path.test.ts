@@ -20,9 +20,7 @@ const directorySymlinkType = process.platform === "win32" ? "junction" : "dir";
 const canCreateDirectorySymlinks = (() => {
   let probeDir: string | undefined;
   try {
-    probeDir = fsSync.mkdtempSync(
-      path.join(os.tmpdir(), "eve-install-safe-dir-symlink-probe-"),
-    );
+    probeDir = fsSync.mkdtempSync(path.join(os.tmpdir(), "eve-install-safe-dir-symlink-probe-"));
     const targetDir = path.join(probeDir, "target");
     const linkDir = path.join(probeDir, "link");
     fsSync.mkdirSync(targetDir);

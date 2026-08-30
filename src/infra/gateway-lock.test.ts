@@ -410,11 +410,7 @@ describe("gateway lock", () => {
       staleMs: 10_000,
       platform: "win32",
       port: 18789,
-      readProcessCmdline: () => [
-        "C:\\Users\\me\\AppData\\Roaming\\npm\\eve.cmd",
-        "gateway",
-        "run",
-      ],
+      readProcessCmdline: () => ["C:\\Users\\me\\AppData\\Roaming\\npm\\eve.cmd", "gateway", "run"],
     });
     await expect(pending).rejects.toBeInstanceOf(GatewayLockError);
 

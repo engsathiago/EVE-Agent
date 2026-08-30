@@ -46,9 +46,7 @@ function collectExplicitlyAllowedClientToolNames(params: {
     );
 }
 
-function collectEVECapabilityToolNames(
-  tools: CollectAllowedToolNamesParams["tools"],
-): Set<string> {
+function collectEVECapabilityToolNames(tools: CollectAllowedToolNamesParams["tools"]): Set<string> {
   return collectAllowedToolNames({
     tools: tools.filter((tool) => getPluginToolMeta(tool)?.pluginId !== "bundle-mcp"),
   });

@@ -85,8 +85,7 @@ function assertAgentsDeleteResult([outputPath]) {
     "missing shared-with main marker",
   );
   assert(fs.existsSync(process.env.SHARED_WORKSPACE), "shared workspace was removed");
-  const remaining =
-    readJson(path.join(process.env.EVE_STATE_DIR, "eve.json"))?.agents?.list ?? [];
+  const remaining = readJson(path.join(process.env.EVE_STATE_DIR, "eve.json"))?.agents?.list ?? [];
   assert(Array.isArray(remaining), "agents list missing after delete");
   assert(!remaining.some((entry) => entry?.id === "ops"), "deleted agent remained in config");
   assert(

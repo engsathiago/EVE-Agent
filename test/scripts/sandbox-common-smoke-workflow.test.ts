@@ -15,8 +15,6 @@ describe("sandbox common smoke workflow", () => {
       "timeout --kill-after=30s 2m docker run --rm eve-sandbox-common-smoke:bookworm-slim",
     );
     expect(workflow).not.toMatch(/(^|\n)\s+docker build -t eve-sandbox-smoke-base/u);
-    expect(workflow).not.toContain(
-      'u="$(docker run --rm eve-sandbox-common-smoke:bookworm-slim',
-    );
+    expect(workflow).not.toContain('u="$(docker run --rm eve-sandbox-common-smoke:bookworm-slim');
   });
 });

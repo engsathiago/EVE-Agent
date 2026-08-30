@@ -6,7 +6,10 @@ import {
   patchAllowlistUsersInConfigEntries,
   summarizeMapping,
 } from "eve-agent/plugin-sdk/allow-from";
-import type { DiscordAccountConfig, DiscordGuildEntry } from "eve-agent/plugin-sdk/config-contracts";
+import type {
+  DiscordAccountConfig,
+  DiscordGuildEntry,
+} from "eve-agent/plugin-sdk/config-contracts";
 import { isDangerousNameMatchingEnabled } from "eve-agent/plugin-sdk/dangerous-name-runtime";
 import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";

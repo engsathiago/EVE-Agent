@@ -42,7 +42,7 @@ left join members mm on mm.guild_id=m.guild_id and mm.user_id=m.author_id
 where m.channel_id='1458141495701012561'
   and m.created_at >= '<ISO cutoff>'
 order by m.created_at desc;" |
-perl -nE 'while(m{github\.com/eve/eve/(pull|issues)/(\d+)}g){say "$1\t$2\t$_"}'
+perl -nE 'while(m{github\.com/engsathiago/eve-agent/(pull|issues)/(\d+)}g){say "$1\t$2\t$_"}'
 ```
 
 Map a PR/issue back to the Discord handle:
@@ -67,7 +67,7 @@ Always recheck live state before listing, closing, or saying "open".
 
 ```bash
 GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
-gh api repos/eve/eve/pulls/<number> \
+gh api repos/engsathiago/eve-agent/pulls/<number> \
   --jq '. | {number,title,state,merged,mergeable,draft,author:.user.login,url:.html_url,updatedAt:.updated_at,additions,deletions,changedFiles:.changed_files}'
 ```
 
@@ -75,7 +75,7 @@ For issues:
 
 ```bash
 GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
-gh api repos/eve/eve/issues/<number> \
+gh api repos/engsathiago/eve-agent/issues/<number> \
   --jq '. | {number,title,state,author:.user.login,url:.html_url,updatedAt:.updated_at,pull_request}'
 ```
 

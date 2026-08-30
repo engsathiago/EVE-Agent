@@ -119,12 +119,9 @@ describe("resolveGatewayConnection", () => {
     resolveStateDir.mockReset();
     resolveConfigPath.mockReset();
     resolveGatewayPort.mockReturnValue(18789);
-    resolveStateDir.mockImplementation(
-      (env: NodeJS.ProcessEnv) => env.EVE_STATE_DIR ?? "/tmp/eve",
-    );
+    resolveStateDir.mockImplementation((env: NodeJS.ProcessEnv) => env.EVE_STATE_DIR ?? "/tmp/eve");
     resolveConfigPath.mockImplementation(
-      (env: NodeJS.ProcessEnv, stateDir: string) =>
-        env.EVE_CONFIG_PATH ?? `${stateDir}/eve.json`,
+      (env: NodeJS.ProcessEnv, stateDir: string) => env.EVE_CONFIG_PATH ?? `${stateDir}/eve.json`,
     );
     delete process.env.EVE_GATEWAY_URL;
     delete process.env.EVE_GATEWAY_TOKEN;

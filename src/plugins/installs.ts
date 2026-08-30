@@ -35,10 +35,7 @@ export function resolveNpmInstallRecordSpec(params: {
 }
 
 /** Records or updates a plugin install record in EVE config. */
-export function recordPluginInstall(
-  cfg: EVEConfig,
-  update: PluginInstallUpdate,
-): EVEConfig {
+export function recordPluginInstall(cfg: EVEConfig, update: PluginInstallUpdate): EVEConfig {
   const { pluginId, ...record } = update;
   const installs = {
     ...cfg.plugins?.installs,

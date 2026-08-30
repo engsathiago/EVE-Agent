@@ -14,7 +14,10 @@ import {
   type AgentHarnessTaskRuntime,
   type AgentHarnessTaskRecord,
 } from "eve-agent/plugin-sdk/agent-harness-task-runtime";
-import { asFiniteNumber, normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import {
+  asFiniteNumber,
+  normalizeOptionalString,
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { CodexAppServerClient } from "./client.js";
 import {
   extractCodexNativeSubagentCompletions,

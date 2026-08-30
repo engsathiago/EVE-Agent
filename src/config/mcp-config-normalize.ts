@@ -16,9 +16,7 @@ function normalizeMcpString(value: unknown): string {
 }
 
 /** Maps CLI-native MCP type aliases to EVE HTTP transport names. */
-export function resolveEVEMcpTransportAlias(
-  value: unknown,
-): EVEMcpHttpTransport | undefined {
+export function resolveEVEMcpTransportAlias(value: unknown): EVEMcpHttpTransport | undefined {
   const mapped = CLI_MCP_TYPE_TO_EVE_TRANSPORT[normalizeMcpString(value)];
   return mapped === "sse" || mapped === "streamable-http" ? mapped : undefined;
 }

@@ -31,6 +31,17 @@ type OpencodeGoModelDefinition = ModelDefinitionConfig & {
   input: Array<"text" | "image" | "video">;
 };
 
+function normalizeOpencodeGoModel(model: OpencodeGoModelDefinition): OpencodeGoModelDefinition {
+  // The model catalog intentionally carries media-routing modalities beyond the
+  // text/image message payload type used by the LLM transport itself.
+  const normalized = normalizeModelCompat(model as unknown as ProviderRuntimeModel);
+  return {
+    ...model,
+    baseUrl: normalized.baseUrl,
+    compat: normalized.compat,
+  };
+}
+
 const OPENCODE_GO_MODELS = (
   [
     {
@@ -388,7 +399,7 @@ const OPENCODE_GO_MODELS = (
       maxTokens: 65_536,
     },
   ] satisfies OpencodeGoModelDefinition[]
-).map((model) => normalizeModelCompat(model) as OpencodeGoModelDefinition);
+).map(normalizeOpencodeGoModel);
 
 export type FetchOpencodeGoLiveModelIdsParams = {
   apiKey?: string;
@@ -447,7 +458,8 @@ export function listOpencodeGoModelCatalogEntries(): ModelCatalogEntry[] {
 
 export function resolveOpencodeGoModel(modelId: string): ProviderRuntimeModel | undefined {
   const normalizedModelId = modelId.trim().toLowerCase();
-  return OPENCODE_GO_MODELS.find((model) => model.id === normalizedModelId);
+  const model = OPENCODE_GO_MODELS.find((candidate) => candidate.id === normalizedModelId);
+  return model as unknown as ProviderRuntimeModel | undefined;
 }
 
 export function isOpencodeGoKimiNoReasoningModelId(modelId: unknown): boolean {

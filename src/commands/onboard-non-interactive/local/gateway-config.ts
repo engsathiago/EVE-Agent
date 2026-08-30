@@ -42,6 +42,17 @@ export function applyNonInteractiveGatewayConfig(params: {
 
   const port = gatewayPort ?? params.defaultPort;
   let bind = opts.gatewayBind ?? "loopback";
+  const customBindHost = normalizeOptionalString(opts.gatewayCustomBindHost ?? "");
+  if (bind === "custom" && !customBindHost) {
+    runtime.error("Missing --gateway-custom-bind-host for custom Gateway binding.");
+    runtime.exit(1);
+    return null;
+  }
+  if (bind !== "custom" && customBindHost) {
+    runtime.error("--gateway-custom-bind-host requires --gateway-bind custom.");
+    runtime.exit(1);
+    return null;
+  }
   const authModeRaw = opts.gatewayAuth ?? "token";
   if (authModeRaw !== "token" && authModeRaw !== "password") {
     runtime.error('Invalid --gateway-auth. Use "token" or "password".');
@@ -185,6 +196,7 @@ export function applyNonInteractiveGatewayConfig(params: {
       ...nextConfig.gateway,
       port,
       bind,
+      ...(bind === "custom" ? { customBindHost } : {}),
       tailscale: {
         ...nextConfig.gateway?.tailscale,
         mode: tailscaleMode,

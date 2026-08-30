@@ -2,6 +2,10 @@
 import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
+import type {
+  PluginStateKeyedStore,
+  PluginStateSyncKeyedStore,
+} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import {
   Category,
   MemoryStore,
@@ -11,10 +15,6 @@ import {
   type ISyncResponse,
   type IStoredClientOpts,
 } from "matrix-js-sdk/lib/matrix.js";
-import type {
-  PluginStateKeyedStore,
-  PluginStateSyncKeyedStore,
-} from "eve-agent/plugin-sdk/plugin-state-runtime";
 import { isRecord } from "../../record-shared.js";
 import { getMatrixRuntime } from "../../runtime.js";
 import { createAsyncLock } from "../async-lock.js";

@@ -1,3 +1,7 @@
+import {
+  resolveDateTimestampMs,
+  resolveTimestampMsToIsoString,
+} from "eve-agent/plugin-sdk/number-runtime";
 // Matrix plugin module implements verification manager behavior.
 import {
   VerificationPhase,
@@ -5,10 +9,6 @@ import {
   VerifierEvent,
 } from "matrix-js-sdk/lib/crypto-api/verification.js";
 import { VerificationMethod } from "matrix-js-sdk/lib/types.js";
-import {
-  resolveDateTimestampMs,
-  resolveTimestampMsToIsoString,
-} from "eve-agent/plugin-sdk/number-runtime";
 import { formatMatrixErrorMessage } from "../errors.js";
 
 export type MatrixVerificationMethod = "sas" | "show-qr" | "scan-qr";

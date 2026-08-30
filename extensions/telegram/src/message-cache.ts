@@ -1,12 +1,12 @@
 // Telegram plugin module implements message cache behavior.
 import { createHash } from "node:crypto";
 import fs from "node:fs";
-import type { Message } from "grammy/types";
 import { formatLocationText } from "eve-agent/plugin-sdk/channel-inbound";
 import { parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
 import type { MsgContext } from "eve-agent/plugin-sdk/reply-runtime";
 import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { isRecord } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { Message } from "grammy/types";
 import {
   resolveTelegramPrimaryMedia,
   resolveTelegramRichMessagePlaceholder,

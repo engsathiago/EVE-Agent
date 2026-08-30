@@ -318,10 +318,7 @@ describe("system events (session routing)", () => {
     expect(first).toBe(true);
     expect(interleaved).toBe(true);
     expect(failoverRetry).toBe(false);
-    expect(peekSystemEvents(key)).toEqual([
-      "exec approval: ps aux | grep eve",
-      "Node connected",
-    ]);
+    expect(peekSystemEvents(key)).toEqual(["exec approval: ps aux | grep eve", "Node connected"]);
   });
 
   it("allows non-consecutive unkeyed duplicate events", () => {

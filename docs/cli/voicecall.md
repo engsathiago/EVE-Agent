@@ -59,13 +59,13 @@ eve voicecall setup --json
 
 Runs the same readiness checks. It will not place a real phone call unless both `--to` and `--yes` are present.
 
-| Flag               | Default                           | Description                             |
-| ------------------ | --------------------------------- | --------------------------------------- |
-| `-t, --to <phone>` | (none)                            | Phone number to call for a live smoke.  |
+| Flag               | Default                      | Description                             |
+| ------------------ | ---------------------------- | --------------------------------------- |
+| `-t, --to <phone>` | (none)                       | Phone number to call for a live smoke.  |
 | `--message <text>` | `EVE voice call smoke test.` | Message to speak during the smoke call. |
-| `--mode <mode>`    | `notify`                          | Call mode: `notify` or `conversation`.  |
-| `--yes`            | `false`                           | Actually place the live outbound call.  |
-| `--json`           | `false`                           | Print machine-readable JSON.            |
+| `--mode <mode>`    | `notify`                     | Call mode: `notify` or `conversation`.  |
+| `--yes`            | `false`                      | Actually place the live outbound call.  |
+| `--json`           | `false`                      | Print machine-readable JSON.            |
 
 ```bash
 eve voicecall smoke

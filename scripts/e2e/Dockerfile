@@ -46,11 +46,11 @@ COPY --from=eve_package --chown=appuser:appuser eve-current.tgz /tmp/eve-current
 # Preserve package self-reference imports such as eve-agent/plugin-sdk/* after
 # copying the installed package out of npm's global node_modules tree.
 RUN npm install -g --prefix /tmp/eve-prefix /tmp/eve-current.tgz --no-fund --no-audit \
- && cp -a /tmp/eve-prefix/lib/node_modules/eve/. /app/ \
+ && cp -a /tmp/eve-prefix/lib/node_modules/eve-agent/. /app/ \
  && mkdir -p "$HOME/.local/bin" \
  && ln -sf /app/eve.mjs "$HOME/.local/bin/eve" \
- && rm -rf /app/node_modules/eve \
- && ln -sf /app /app/node_modules/eve \
+ && rm -rf /app/node_modules/eve-agent \
+ && ln -sf /app /app/node_modules/eve-agent \
  && rm -rf /tmp/eve-prefix /tmp/eve-current.tgz
 
 CMD ["bash"]

@@ -988,14 +988,14 @@ function Test-EVESourcePackageInstallSpec {
     }
 
     $normalizedTag = $RequestedTag.Trim().ToLowerInvariant()
-    if ($normalizedTag.StartsWith("eve@")) {
-        $normalizedTag = $normalizedTag.Substring("eve@".Length)
+    if ($normalizedTag.StartsWith("eve-agent@")) {
+        $normalizedTag = $normalizedTag.Substring("eve-agent@".Length)
     }
 
     if ($normalizedTag -eq "main") {
         return $true
     }
-    if ($normalizedTag -match '^github:eve/eve($|[#/])') {
+    if ($normalizedTag -match '^github:engsathiago/eve-agent($|[#/])') {
         return $true
     }
 
@@ -1003,10 +1003,10 @@ function Test-EVESourcePackageInstallSpec {
         $normalizedTag = $normalizedTag.Substring("git+".Length)
     }
     return (
-        $normalizedTag -match '^https?://github\.com/eve/eve(\.git)?($|[?#])' -or
-        $normalizedTag -match '^ssh://git@github\.com[:/]eve/eve(\.git)?($|[?#])' -or
-        $normalizedTag -match '^git://github\.com/eve/eve(\.git)?($|[?#])' -or
-        $normalizedTag -match '^git@github\.com:eve/eve(\.git)?($|[?#])'
+        $normalizedTag -match '^https?://github\.com/engsathiago/eve-agent(\.git)?($|[?#])' -or
+        $normalizedTag -match '^ssh://git@github\.com[:/]engsathiago/eve-agent(\.git)?($|[?#])' -or
+        $normalizedTag -match '^git://github\.com/engsathiago/eve-agent(\.git)?($|[?#])' -or
+        $normalizedTag -match '^git@github\.com:engsathiago/eve-agent(\.git)?($|[?#])'
     )
 }
 
@@ -1158,11 +1158,7 @@ function Install-EVE {
         return $false
     }
 
-    # Use eve package for beta, eve for stable
-    $packageName = "eve"
-    if ($Tag -eq "beta" -or $Tag -match "^beta\.") {
-        $packageName = "eve"
-    }
+    $packageName = "eve-agent"
     $installSpec = Resolve-NpmEVEInstallSpec -PackageName $packageName -RequestedTag $Tag
     Write-Host "[*] Installing EVE ($installSpec)..." -ForegroundColor Yellow
     $freshnessArgs = @("--min-release-age=0")

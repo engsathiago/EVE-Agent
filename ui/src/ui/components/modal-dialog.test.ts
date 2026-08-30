@@ -67,9 +67,7 @@ describe("eve-modal-dialog", () => {
     expect(descriptionId).toBe("eve-modal-dialog-description");
     expect(dialog.getRootNode()).toBe(modal.shadowRoot);
     expect(dialog.ownerDocument.querySelector(`#${labelId}`)).toBeNull();
-    expect(expectShadowElement(modal, "eve-modal-dialog-label").textContent).toBe(
-      "Confirm action",
-    );
+    expect(expectShadowElement(modal, "eve-modal-dialog-label").textContent).toBe("Confirm action");
     expect(expectShadowElement(modal, "eve-modal-dialog-description").textContent).toBe(
       "Review the operation before continuing.",
     );

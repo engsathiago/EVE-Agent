@@ -7,7 +7,11 @@ import { pipeline } from "node:stream/promises";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import { runPluginCommandWithTimeout } from "eve-agent/plugin-sdk/run-command";
 import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
-import { CONFIG_DIR, extractArchive, resolveBrewExecutable } from "eve-agent/plugin-sdk/setup-tools";
+import {
+  CONFIG_DIR,
+  extractArchive,
+  resolveBrewExecutable,
+} from "eve-agent/plugin-sdk/setup-tools";
 import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";

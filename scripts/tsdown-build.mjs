@@ -598,10 +598,7 @@ export async function runTsdownBuildInvocation(invocation, params = {}) {
   const stderr = params.stderr ?? process.stderr;
   const env = params.env ?? process.env;
   const scanner = params.scanner ?? createTsdownOutputScanner();
-  const timeoutMs = parsePositiveIntegerEnv(
-    env.EVE_TSDOWN_TIMEOUT_MS,
-    "EVE_TSDOWN_TIMEOUT_MS",
-  );
+  const timeoutMs = parsePositiveIntegerEnv(env.EVE_TSDOWN_TIMEOUT_MS, "EVE_TSDOWN_TIMEOUT_MS");
   const heartbeatMs =
     parseNonNegativeIntegerEnv(env.EVE_TSDOWN_HEARTBEAT_MS, "EVE_TSDOWN_HEARTBEAT_MS") ??
     DEFAULT_HEARTBEAT_MS;

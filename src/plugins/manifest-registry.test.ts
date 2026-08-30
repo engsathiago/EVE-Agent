@@ -38,7 +38,7 @@ function makeTempDir() {
 
 function makeEVEDevSourceRoot() {
   const root = makeTempDir();
-  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf-8");
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }), "utf-8");
   mkdirSafe(path.join(root, "src"));
   mkdirSafe(path.join(root, "extensions"));
   return root;

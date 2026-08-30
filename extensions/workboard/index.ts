@@ -2,6 +2,8 @@
 import { definePluginEntry } from "./api.js";
 import { registerWorkboardGatewayMethods } from "./runtime-api.js";
 import { registerWorkboardCommand } from "./src/command.js";
+import { registerProjectGatewayMethods } from "./src/project-gateway.js";
+import { ProjectStore } from "./src/project-store.js";
 import { WorkboardStore } from "./src/store.js";
 import { createWorkboardTools } from "./src/tools.js";
 
@@ -10,19 +12,40 @@ export default definePluginEntry({
   name: "Workboard",
   description: "Dashboard workboard for agent-owned issues and sessions.",
   register(api) {
-    const store = WorkboardStore.openSqlite();
+    const completionEvidence =
+      api.pluginConfig?.completionEvidence === "off" ||
+      api.pluginConfig?.completionEvidence === "require"
+        ? api.pluginConfig.completionEvidence
+        : "record";
+    const store = WorkboardStore.openSqlite({ completionEvidence });
+    const projects = new ProjectStore();
     registerWorkboardGatewayMethods({ api, store });
+    registerProjectGatewayMethods(api, projects);
     registerWorkboardCommand({ api, store });
     api.registerCli(
       async ({ program }) => {
         const { registerWorkboardCli } = await import("./src/cli.js");
+        const { registerMissionCli } = await import("./src/mission-cli.js");
+        const { registerProjectCli } = await import("./src/project-cli.js");
         registerWorkboardCli({ program, store });
+        registerMissionCli(program, store);
+        registerProjectCli(program, projects);
       },
       {
         descriptors: [
           {
             name: "workboard",
             description: "Manage Workboard cards and worker dispatch",
+            hasSubcommands: true,
+          },
+          {
+            name: "mission",
+            description: "Operate EVE Mission Control",
+            hasSubcommands: true,
+          },
+          {
+            name: "projects",
+            description: "Manage named multi-folder EVE projects",
             hasSubcommands: true,
           },
         ],
@@ -66,6 +89,11 @@ export default definePluginEntry({
         "workboard_unblock",
       ],
       optional: true,
+    });
+    api.lifecycle.registerRuntimeLifecycle({
+      id: "workboard-projects-database",
+      description: "Close the EVE projects database.",
+      cleanup: () => projects.close(),
     });
   },
 });

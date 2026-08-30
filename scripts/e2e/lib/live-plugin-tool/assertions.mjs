@@ -20,10 +20,7 @@ function readPositiveIntEnv(name, fallback) {
   return value;
 }
 
-const agentTurnTimeoutSeconds = readPositiveIntEnv(
-  "EVE_LIVE_PLUGIN_TOOL_TIMEOUT_SECONDS",
-  300,
-);
+const agentTurnTimeoutSeconds = readPositiveIntEnv("EVE_LIVE_PLUGIN_TOOL_TIMEOUT_SECONDS", 300);
 const SCAN_CHUNK_BYTES = 64 * 1024;
 const SCAN_CARRY_CHARS = 256;
 const SESSION_JSONL_LINE_MAX_BYTES = 1024 * 1024;

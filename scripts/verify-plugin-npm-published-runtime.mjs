@@ -162,9 +162,7 @@ export function collectPluginNpmPublishedRuntimeErrors(params) {
   }
 
   if (runtimeSetupEntry && !setupEntry) {
-    errors.push(
-      `${packageLabel} package.json eve.runtimeSetupEntry requires eve.setupEntry`,
-    );
+    errors.push(`${packageLabel} package.json eve.runtimeSetupEntry requires eve.setupEntry`);
     return errors;
   }
 

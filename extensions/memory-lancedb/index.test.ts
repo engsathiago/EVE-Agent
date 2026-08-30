@@ -3299,9 +3299,7 @@ describe("memory plugin e2e", () => {
       "I prefer dark mode",
     );
     expect(
-      sanitizeForMemoryCapture(
-        "[Discord EVE #dev channel id:456 +5m] Alice: I prefer dark mode",
-      ),
+      sanitizeForMemoryCapture("[Discord EVE #dev channel id:456 +5m] Alice: I prefer dark mode"),
     ).toBe("I prefer dark mode");
     expect(sanitizeForMemoryCapture("[Telegram EVE id:-100] Alice: I prefer dark mode")).toBe(
       "I prefer dark mode",

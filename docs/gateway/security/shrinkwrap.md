@@ -31,11 +31,11 @@ provenance, or install smoke tests.
 
 The short mental model:
 
-| File                  | Where it matters         | What it means                     |
-| --------------------- | ------------------------ | --------------------------------- |
-| `pnpm-lock.yaml`      | EVE source checkout | Maintainer dependency graph       |
-| `npm-shrinkwrap.json` | Published npm package    | npm install graph for users       |
-| `package-lock.json`   | Local npm apps           | Not the EVE publish contract |
+| File                  | Where it matters      | What it means                |
+| --------------------- | --------------------- | ---------------------------- |
+| `pnpm-lock.yaml`      | EVE source checkout   | Maintainer dependency graph  |
+| `npm-shrinkwrap.json` | Published npm package | npm install graph for users  |
+| `package-lock.json`   | Local npm apps        | Not the EVE publish contract |
 
 ## Why EVE uses it
 
@@ -96,8 +96,8 @@ validators reject `package-lock.json` for published EVE packages.
 To inspect a published root package:
 
 ```bash
-npm pack eve@<version> --json --pack-destination /tmp/eve-pack
-tar -tf /tmp/eve-pack/eve-<version>.tgz | grep '^package/npm-shrinkwrap.json$'
+npm pack eve-agent@<version> --json --pack-destination /tmp/eve-pack
+tar -tf /tmp/eve-pack/eve-agent-<version>.tgz | grep '^package/npm-shrinkwrap.json$'
 ```
 
 To inspect an EVE-owned plugin package:

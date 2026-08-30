@@ -71,11 +71,7 @@ describe("Control UI mount fallback", () => {
     installFallbackShell(frameWindow, await readIndexHtmlWithDelay(1));
     await waitForWindowTimeout(frameWindow, 10);
 
-    const fallback = requireElementById(
-      frameWindow,
-      "eve-mount-fallback",
-      frameWindow.HTMLElement,
-    );
+    const fallback = requireElementById(frameWindow, "eve-mount-fallback", frameWindow.HTMLElement);
     expect(fallback.hidden).toBe(false);
     expect([...frameWindow.document.body.classList]).toEqual(["eve-mount-fallback-active"]);
     expect(fallback.querySelector("h1")?.textContent?.trim()).toBe("Control UI did not start");
@@ -107,11 +103,7 @@ describe("Control UI mount fallback", () => {
     await frameWindow.customElements.whenDefined("eve-app");
     await waitForWindowTimeout(frameWindow, 35);
 
-    const fallback = requireElementById(
-      frameWindow,
-      "eve-mount-fallback",
-      frameWindow.HTMLElement,
-    );
+    const fallback = requireElementById(frameWindow, "eve-mount-fallback", frameWindow.HTMLElement);
     expect(fallback.hidden).toBe(true);
     expect([...frameWindow.document.body.classList]).toEqual([]);
   });

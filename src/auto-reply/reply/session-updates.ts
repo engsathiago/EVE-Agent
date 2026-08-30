@@ -3,10 +3,7 @@ import crypto from "node:crypto";
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
 import { canExecRequestNode } from "../../agents/exec-defaults.js";
-import {
-  resolveCompactionSessionFile,
-  type SessionEntry,
-} from "../../config/sessions.js";
+import { resolveCompactionSessionFile, type SessionEntry } from "../../config/sessions.js";
 import { patchSessionEntry, upsertSessionEntry } from "../../config/sessions/session-accessor.js";
 import type { EVEConfig } from "../../config/types.eve.js";
 import {

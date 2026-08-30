@@ -129,6 +129,7 @@ export const CORE_GATEWAY_METHOD_SPECS: readonly CoreGatewayMethodSpec[] = [
   { name: "skills.proposals.revise", scope: "operator.admin" },
   { name: "skills.proposals.requestRevision", scope: "operator.admin" },
   { name: "skills.proposals.apply", scope: "operator.admin" },
+  { name: "skills.proposals.rollback", scope: "operator.admin" },
   { name: "skills.proposals.reject", scope: "operator.admin" },
   { name: "skills.proposals.quarantine", scope: "operator.admin" },
   { name: "update.status", scope: "operator.admin" },

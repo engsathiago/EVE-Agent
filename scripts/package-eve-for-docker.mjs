@@ -90,7 +90,7 @@ function resolvePackedEVEFileName(value) {
   const filename = value.trim();
   if (
     !filename.endsWith(".tgz") ||
-    (!filename.startsWith("eve-") &&
+    (!filename.startsWith("eve-agent-") &&
       !filename.includes(":") &&
       !filename.includes("/") &&
       !filename.includes("\\"))
@@ -98,7 +98,7 @@ function resolvePackedEVEFileName(value) {
     return "";
   }
   if (
-    !/^eve-[A-Za-z0-9._-]+\.tgz$/u.test(filename) ||
+    !/^eve-agent-[A-Za-z0-9._-]+\.tgz$/u.test(filename) ||
     filename.includes("\0") ||
     filename !== path.basename(filename) ||
     filename !== path.win32.basename(filename)

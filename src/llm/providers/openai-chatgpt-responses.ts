@@ -1595,9 +1595,7 @@ function buildBaseCodexHeaders(
   headers.set("Authorization", `Bearer ${token}`);
   headers.set("chatgpt-account-id", accountId);
   headers.set("originator", "eve");
-  const userAgent = os
-    ? `eve (${os.platform()} ${os.release()}; ${os.arch()})`
-    : "eve (browser)";
+  const userAgent = os ? `eve (${os.platform()} ${os.release()}; ${os.arch()})` : "eve (browser)";
   headers.set("User-Agent", userAgent);
   return headers;
 }

@@ -143,10 +143,7 @@ vi.mock("./channel.deps.runtime.js", () => {
     PAIRING_APPROVED_MESSAGE: "approved",
     resolveChannelMediaMaxBytes: (params: {
       cfg: EVEConfig;
-      resolveChannelLimitMb: (args: {
-        cfg: EVEConfig;
-        accountId?: string;
-      }) => number | undefined;
+      resolveChannelLimitMb: (args: { cfg: EVEConfig; accountId?: string }) => number | undefined;
       accountId?: string;
     }) => {
       const limitMb = params.resolveChannelLimitMb({

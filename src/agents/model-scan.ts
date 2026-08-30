@@ -2,10 +2,7 @@
  * Scans remote provider model catalogs for configured providers.
  */
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
-import {
-  asDateTimestampMs,
-  resolveTimerTimeoutMs,
-} from "@eve/normalization-core/number-coercion";
+import { asDateTimestampMs, resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,

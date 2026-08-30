@@ -38,6 +38,7 @@ import {
   resolveAgentAvatar,
   resolvePublicAgentAvatarSource,
 } from "../../agents/identity-avatar.js";
+import { normalizeInheritedToolAllowlist } from "../../agents/inherited-tool-deny.js";
 import { AGENT_INTERNAL_EVENT_TYPE_TASK_COMPLETION } from "../../agents/internal-event-contract.js";
 import type { AgentInternalEvent } from "../../agents/internal-events.js";
 import { resolveProviderIdForAuth } from "../../agents/provider-auth-aliases.js";
@@ -97,6 +98,7 @@ import type { PluginHookSessionEndReason } from "../../plugins/hook-types.js";
 import {
   classifySessionKeyShape,
   isAcpSessionKey,
+  isSubagentSessionKey,
   normalizeAgentId,
   parseAgentSessionKey,
 } from "../../routing/session-key.js";
@@ -1111,6 +1113,7 @@ export const agentHandlers: GatewayRequestHandlers = {
       promptMode?: "full" | "minimal" | "none";
       bootstrapContextMode?: "full" | "lightweight";
       bootstrapContextRunKind?: "default" | "heartbeat" | "cron";
+      inheritedToolAllow?: string[];
       acpTurnSource?: "manual_spawn";
       internalRuntimeHandoffId?: string;
       execApprovalFollowupExpectedSessionId?: string;
@@ -1401,6 +1404,18 @@ export const agentHandlers: GatewayRequestHandlers = {
         ? requestedToRaw
         : undefined;
     const requestedSessionKeyRaw = requestedSessionKeyParam ?? sessionKeyFromTo;
+    if (request.inheritedToolAllow !== undefined && !isSubagentSessionKey(requestedSessionKeyRaw)) {
+      respond(
+        false,
+        undefined,
+        errorShape(
+          ErrorCodes.INVALID_REQUEST,
+          "inheritedToolAllow is only supported for subagent sessions.",
+        ),
+      );
+      return;
+    }
+    const requestedInheritedToolAllow = normalizeInheritedToolAllowlist(request.inheritedToolAllow);
     if (
       requestedSessionKeyRaw &&
       classifySessionKeyShape(requestedSessionKeyRaw) === "malformed_agent"
@@ -2110,6 +2125,9 @@ export const agentHandlers: GatewayRequestHandlers = {
             groupChannel: nextGroup.groupChannel,
             space: nextGroup.groupSpace,
             ...(pluginOwnerId ? { pluginOwnerId } : {}),
+            ...(requestedInheritedToolAllow.length > 0
+              ? { inheritedToolAllow: requestedInheritedToolAllow }
+              : {}),
             ...(shouldClearRotatedState
               ? {
                   status: undefined,

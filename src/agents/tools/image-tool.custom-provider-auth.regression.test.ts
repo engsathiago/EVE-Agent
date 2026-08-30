@@ -7,8 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { EVEConfig } from "../../config/config.js";
 import type { ModelDefinitionConfig } from "../../config/types.models.js";
 import type { ImageDescriptionRequest } from "../../plugin-sdk/media-understanding.js";
-import { getApiKeyForModel, hasUsableCustomProviderApiKey } from "../model-auth.js";
 import { resolveImageToolFactoryAvailable } from "../eve-tools.media-factory-plan.js";
+import { getApiKeyForModel, hasUsableCustomProviderApiKey } from "../model-auth.js";
 import { createImageTool, resolveImageModelConfigForTool, testing } from "./image-tool.js";
 import { hasProviderAuthForTool } from "./model-config.helpers.js";
 

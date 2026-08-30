@@ -706,9 +706,7 @@ describe("matrix client storage paths", () => {
     });
 
     expect(rotatedStoragePaths.rootDir).toBe(oldStoragePaths.rootDir);
-    expect(fs.existsSync(path.join(oldStoragePaths.rootDir, "state", "eve.sqlite"))).toBe(
-      false,
-    );
+    expect(fs.existsSync(path.join(oldStoragePaths.rootDir, "state", "eve.sqlite"))).toBe(false);
   });
 
   it.each(["thread-bindings.json", "recovery-key.json", "crypto-idb-snapshot.json"])(

@@ -253,11 +253,7 @@ describe("auditGatewayServiceConfig", () => {
       platform: "darwin",
       expectedServicePath,
       command: {
-        programArguments: [
-          "/opt/homebrew/opt/node/bin/node",
-          "/opt/eve/dist/index.js",
-          "gateway",
-        ],
+        programArguments: ["/opt/homebrew/opt/node/bin/node", "/opt/eve/dist/index.js", "gateway"],
         environment: { PATH: expectedServicePath },
       },
     });
@@ -284,11 +280,7 @@ describe("auditGatewayServiceConfig", () => {
       platform: "darwin",
       expectedServicePath,
       command: {
-        programArguments: [
-          "/opt/homebrew/opt/node/bin/node",
-          "/opt/eve/dist/index.js",
-          "gateway",
-        ],
+        programArguments: ["/opt/homebrew/opt/node/bin/node", "/opt/eve/dist/index.js", "gateway"],
         environment: { PATH: `${expectedServicePath}:/Users/testuser/.asdf/shims` },
       },
     });

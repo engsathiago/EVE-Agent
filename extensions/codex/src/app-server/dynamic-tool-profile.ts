@@ -43,8 +43,7 @@ export function isForcedPrivateQaCodexRuntime(
   env: CodexDynamicToolProfileEnv = process.env,
 ): boolean {
   return (
-    env.EVE_BUILD_PRIVATE_QA === "1" &&
-    env.EVE_QA_FORCE_RUNTIME?.trim().toLowerCase() === "codex"
+    env.EVE_BUILD_PRIVATE_QA === "1" && env.EVE_QA_FORCE_RUNTIME?.trim().toLowerCase() === "codex"
   );
 }
 

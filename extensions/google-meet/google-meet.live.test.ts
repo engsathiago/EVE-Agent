@@ -11,9 +11,7 @@ import { resolveGoogleMeetAccessToken } from "./src/oauth.js";
 
 const LIVE_MEETING = process.env.EVE_GOOGLE_MEET_LIVE_MEETING?.trim() ?? "";
 const CLIENT_ID =
-  process.env.EVE_GOOGLE_MEET_CLIENT_ID?.trim() ??
-  process.env.GOOGLE_MEET_CLIENT_ID?.trim() ??
-  "";
+  process.env.EVE_GOOGLE_MEET_CLIENT_ID?.trim() ?? process.env.GOOGLE_MEET_CLIENT_ID?.trim() ?? "";
 const CLIENT_SECRET =
   process.env.EVE_GOOGLE_MEET_CLIENT_SECRET?.trim() ??
   process.env.GOOGLE_MEET_CLIENT_SECRET?.trim();
@@ -22,8 +20,7 @@ const REFRESH_TOKEN =
   process.env.GOOGLE_MEET_REFRESH_TOKEN?.trim() ??
   "";
 const ACCESS_TOKEN =
-  process.env.EVE_GOOGLE_MEET_ACCESS_TOKEN?.trim() ??
-  process.env.GOOGLE_MEET_ACCESS_TOKEN?.trim();
+  process.env.EVE_GOOGLE_MEET_ACCESS_TOKEN?.trim() ?? process.env.GOOGLE_MEET_ACCESS_TOKEN?.trim();
 const EXPIRES_AT = Number(
   process.env.EVE_GOOGLE_MEET_ACCESS_TOKEN_EXPIRES_AT ??
     process.env.GOOGLE_MEET_ACCESS_TOKEN_EXPIRES_AT,

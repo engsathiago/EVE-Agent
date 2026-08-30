@@ -30,12 +30,12 @@ directly to existing EVE channel conversations, use
 
 ## Which page do I want?
 
-| You want to…                                                                                    | Use this                              | Notes                                                                                                                                                                                         |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bind or control Codex in the current conversation                                               | `/codex bind`, `/codex threads`       | Native Codex app-server path when the `codex` plugin is enabled; includes bound chat replies, image forwarding, model/fast/permissions, stop, and steer controls. ACP is an explicit fallback |
+| You want to…                                                                               | Use this                              | Notes                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------ | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bind or control Codex in the current conversation                                          | `/codex bind`, `/codex threads`       | Native Codex app-server path when the `codex` plugin is enabled; includes bound chat replies, image forwarding, model/fast/permissions, stop, and steer controls. ACP is an explicit fallback |
 | Run Claude Code, Gemini CLI, explicit Codex ACP, or another external harness _through_ EVE | This page                             | Chat-bound sessions, `/acp spawn`, `sessions_spawn({ runtime: "acp" })`, background tasks, runtime controls                                                                                   |
-| Expose an EVE Gateway session _as_ an ACP server for an editor or client                   | [`eve acp`](/cli/acp)            | Bridge mode. IDE/client talks ACP to EVE over stdio/WebSocket                                                                                                                            |
-| Reuse a local AI CLI as a text-only fallback model                                              | [CLI Backends](/gateway/cli-backends) | Not ACP. No EVE tools, no ACP controls, no harness runtime                                                                                                                               |
+| Expose an EVE Gateway session _as_ an ACP server for an editor or client                   | [`eve acp`](/cli/acp)                 | Bridge mode. IDE/client talks ACP to EVE over stdio/WebSocket                                                                                                                                 |
+| Reuse a local AI CLI as a text-only fallback model                                         | [CLI Backends](/gateway/cli-backends) | Not ACP. No EVE tools, no ACP controls, no harness runtime                                                                                                                                    |
 
 ## Does this work out of the box?
 
@@ -95,21 +95,21 @@ should call those tools directly.
 With the `acpx` backend, use these harness ids as `/acp spawn <id>`
 or `sessions_spawn({ runtime: "acp", agentId: "<id>" })` targets:
 
-| Harness id | Typical backend                                | Notes                                                                               |
-| ---------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `claude`   | Claude Code ACP adapter                        | Requires Claude Code auth on the host.                                              |
-| `codex`    | Codex ACP adapter                              | Explicit ACP fallback only when native `/codex` is unavailable or ACP is requested. |
-| `copilot`  | GitHub Copilot ACP adapter                     | Requires Copilot CLI/runtime auth.                                                  |
-| `cursor`   | Cursor CLI ACP (`cursor-agent acp`)            | Override the acpx command if a local install exposes a different ACP entrypoint.    |
-| `droid`    | Factory Droid CLI                              | Requires Factory/Droid auth or `FACTORY_API_KEY` in the harness environment.        |
-| `gemini`   | Gemini CLI ACP adapter                         | Requires Gemini CLI auth or API key setup.                                          |
-| `iflow`    | iFlow CLI                                      | Adapter availability and model control depend on the installed CLI.                 |
-| `kilocode` | Kilo Code CLI                                  | Adapter availability and model control depend on the installed CLI.                 |
-| `kimi`     | Kimi/Moonshot CLI                              | Requires Kimi/Moonshot auth on the host.                                            |
-| `kiro`     | Kiro CLI                                       | Adapter availability and model control depend on the installed CLI.                 |
-| `opencode` | OpenCode ACP adapter                           | Requires OpenCode CLI/provider auth.                                                |
-| `eve` | EVE Gateway bridge through `eve acp` | Lets an ACP-aware harness talk back to an EVE Gateway session.                 |
-| `qwen`     | Qwen Code / Qwen CLI                           | Requires Qwen-compatible auth on the host.                                          |
+| Harness id | Typical backend                      | Notes                                                                               |
+| ---------- | ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `claude`   | Claude Code ACP adapter              | Requires Claude Code auth on the host.                                              |
+| `codex`    | Codex ACP adapter                    | Explicit ACP fallback only when native `/codex` is unavailable or ACP is requested. |
+| `copilot`  | GitHub Copilot ACP adapter           | Requires Copilot CLI/runtime auth.                                                  |
+| `cursor`   | Cursor CLI ACP (`cursor-agent acp`)  | Override the acpx command if a local install exposes a different ACP entrypoint.    |
+| `droid`    | Factory Droid CLI                    | Requires Factory/Droid auth or `FACTORY_API_KEY` in the harness environment.        |
+| `gemini`   | Gemini CLI ACP adapter               | Requires Gemini CLI auth or API key setup.                                          |
+| `iflow`    | iFlow CLI                            | Adapter availability and model control depend on the installed CLI.                 |
+| `kilocode` | Kilo Code CLI                        | Adapter availability and model control depend on the installed CLI.                 |
+| `kimi`     | Kimi/Moonshot CLI                    | Requires Kimi/Moonshot auth on the host.                                            |
+| `kiro`     | Kiro CLI                             | Adapter availability and model control depend on the installed CLI.                 |
+| `opencode` | OpenCode ACP adapter                 | Requires OpenCode CLI/provider auth.                                                |
+| `eve`      | EVE Gateway bridge through `eve acp` | Lets an ACP-aware harness talk back to an EVE Gateway session.                      |
+| `qwen`     | Qwen Code / Qwen CLI                 | Requires Qwen-compatible auth on the host.                                          |
 
 Custom acpx agent aliases can be configured in acpx itself, but EVE
 policy still checks `acp.allowedAgents` and any
@@ -226,7 +226,7 @@ delegated runs.
 
 | Area          | ACP session                           | Sub-agent run                      |
 | ------------- | ------------------------------------- | ---------------------------------- |
-| Runtime       | ACP backend plugin (for example acpx) | EVE native sub-agent runtime  |
+| Runtime       | ACP backend plugin (for example acpx) | EVE native sub-agent runtime       |
 | Session key   | `agent:<agentId>:acp:<uuid>`          | `agent:<agentId>:subagent:<uuid>`  |
 | Main commands | `/acp ...`                            | `/subagents ...`                   |
 | Spawn tool    | `sessions_spawn` with `runtime:"acp"` | `sessions_spawn` (default runtime) |
@@ -803,15 +803,15 @@ roots.
 `/acp` has convenience commands and a generic setter. Equivalent
 operations:
 
-| Command                      | Maps to                              | Notes                                                                                                                                                                                                      |
-| ---------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Command                      | Maps to                              | Notes                                                                                                                                                                                                 |
+| ---------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/acp model <id>`            | runtime config key `model`           | For Codex ACP, EVE normalizes `openai/<model>` to the adapter model id and maps slash reasoning suffixes such as `openai/gpt-5.4/high` to `reasoning_effort`.                                         |
 | `/acp set thinking <level>`  | canonical option `thinking`          | EVE sends the backend-advertised equivalent when present, preferring `thinking`, then `effort`, `reasoning_effort`, or `thought_level`. For Codex ACP, the adapter maps values to `reasoning_effort`. |
 | `/acp permissions <profile>` | canonical option `permissionProfile` | EVE sends the backend-advertised equivalent when present, such as `approval_policy`, `permission_profile`, `permissions`, or `permission_mode`.                                                       |
 | `/acp timeout <seconds>`     | canonical option `timeoutSeconds`    | EVE sends the backend-advertised equivalent when present, such as `timeout` or `timeout_seconds`.                                                                                                     |
-| `/acp cwd <path>`            | runtime cwd override                 | Direct update.                                                                                                                                                                                             |
-| `/acp set <key> <value>`     | generic                              | `key=cwd` uses the cwd override path.                                                                                                                                                                      |
-| `/acp reset-options`         | clears all runtime overrides         | -                                                                                                                                                                                                          |
+| `/acp cwd <path>`            | runtime cwd override                 | Direct update.                                                                                                                                                                                        |
+| `/acp set <key> <value>`     | generic                              | `key=cwd` uses the cwd override path.                                                                                                                                                                 |
+| `/acp reset-options`         | clears all runtime overrides         | -                                                                                                                                                                                                     |
 
 ## acpx harness, plugin setup, and permissions
 
@@ -831,7 +831,7 @@ permission modes, see
 | `/acp doctor` reports backend not ready right after startup                 | Backend plugin is missing, disabled, blocked by allow/deny policy, or its configured executable is unavailable.        | Install/enable the backend plugin, rerun `/acp doctor`, and inspect the backend install or policy error if it stays unhealthy.                                           |
 | Harness command not found                                                   | Adapter CLI is not installed, the external plugin is missing, or first-run `npx` fetch failed for a non-Codex adapter. | Run `/acp doctor`, install/prewarm the adapter on the Gateway host, or configure the acpx agent command explicitly.                                                      |
 | Model-not-found from the harness                                            | Model id is valid for another provider/harness but not this ACP target.                                                | Use a model listed by that harness, configure the model in the harness, or omit the override.                                                                            |
-| Vendor auth error from the harness                                          | EVE is healthy, but the target CLI/provider is not logged in.                                                     | Log in or provide the required provider key on the Gateway host environment.                                                                                             |
+| Vendor auth error from the harness                                          | EVE is healthy, but the target CLI/provider is not logged in.                                                          | Log in or provide the required provider key on the Gateway host environment.                                                                                             |
 | `Unable to resolve session target: ...`                                     | Bad key/id/label token.                                                                                                | Run `/acp sessions`, copy exact key/label, retry.                                                                                                                        |
 | `--bind here requires running /acp spawn inside an active ... conversation` | `--bind here` used without an active bindable conversation.                                                            | Move to the target chat/channel and retry, or use unbound spawn.                                                                                                         |
 | `Conversation bindings are unavailable for <channel>.`                      | Adapter lacks current-conversation ACP binding capability.                                                             | Use `/acp spawn ... --thread ...` where supported, configure top-level `bindings[]`, or move to a supported channel.                                                     |
@@ -844,8 +844,8 @@ permission modes, see
 | Missing ACP metadata for bound session                                      | Stale/deleted ACP session metadata.                                                                                    | Recreate with `/acp spawn`, then rebind/focus thread.                                                                                                                    |
 | `AcpRuntimeError: Permission prompt unavailable in non-interactive mode`    | `permissionMode` blocks writes/exec in non-interactive ACP session.                                                    | Set `plugins.entries.acpx.config.permissionMode` to `approve-all` and restart gateway. See [Permission configuration](/tools/acp-agents-setup#permission-configuration). |
 | ACP session fails early with little output                                  | Permission prompts are blocked by `permissionMode`/`nonInteractivePermissions`.                                        | Check gateway logs for `AcpRuntimeError`. For full permissions, set `permissionMode=approve-all`; for graceful degradation, set `nonInteractivePermissions=deny`.        |
-| ACP session stalls indefinitely after completing work                       | Harness process finished but ACP session did not report completion.                                                    | Update EVE; current acpx cleanup reaps EVE-owned stale wrapper and adapter processes on close and Gateway startup.                                             |
-| Harness sees `<<<BEGIN_EVE_INTERNAL_CONTEXT>>>`                        | Internal event envelope leaked across the ACP boundary.                                                                | Update EVE and rerun the completion flow; external harnesses should receive plain completion prompts only.                                                          |
+| ACP session stalls indefinitely after completing work                       | Harness process finished but ACP session did not report completion.                                                    | Update EVE; current acpx cleanup reaps EVE-owned stale wrapper and adapter processes on close and Gateway startup.                                                       |
+| Harness sees `<<<BEGIN_EVE_INTERNAL_CONTEXT>>>`                             | Internal event envelope leaked across the ACP boundary.                                                                | Update EVE and rerun the completion flow; external harnesses should receive plain completion prompts only.                                                               |
 
 <Note>
 `Command blocked by PreToolUse hook: Native hook relay unavailable` belongs to

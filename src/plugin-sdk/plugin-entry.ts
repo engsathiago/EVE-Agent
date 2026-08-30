@@ -19,29 +19,23 @@ export type MigrationProviderContext = import("../plugins/types.js").MigrationPr
 export type MigrationProviderPlugin = import("../plugins/types.js").MigrationProviderPlugin;
 export type MigrationSummary = import("../plugins/types.js").MigrationSummary;
 export type EVEPluginApi = import("../plugins/types.js").EVEPluginApi;
-export type EVEPluginCommandDefinition =
-  import("../plugins/types.js").EVEPluginCommandDefinition;
+export type EVEPluginCommandDefinition = import("../plugins/types.js").EVEPluginCommandDefinition;
 export type EVEPluginConfigSchema = import("../plugins/types.js").EVEPluginConfigSchema;
 export type EVEPluginDefinition = import("../plugins/types.js").EVEPluginDefinition;
-export type EVEPluginHttpRouteHandler =
-  import("../plugins/types.js").EVEPluginHttpRouteHandler;
-export type EVEPluginNodeHostCommand =
-  import("../plugins/types.js").EVEPluginNodeHostCommand;
-export type EVEPluginNodeInvokePolicy =
-  import("../plugins/types.js").EVEPluginNodeInvokePolicy;
+export type EVEPluginHttpRouteHandler = import("../plugins/types.js").EVEPluginHttpRouteHandler;
+export type EVEPluginNodeHostCommand = import("../plugins/types.js").EVEPluginNodeHostCommand;
+export type EVEPluginNodeInvokePolicy = import("../plugins/types.js").EVEPluginNodeInvokePolicy;
 export type EVEPluginNodeInvokePolicyContext =
   import("../plugins/types.js").EVEPluginNodeInvokePolicyContext;
 export type EVEPluginNodeInvokePolicyResult =
   import("../plugins/types.js").EVEPluginNodeInvokePolicyResult;
-export type EVEPluginReloadRegistration =
-  import("../plugins/types.js").EVEPluginReloadRegistration;
+export type EVEPluginReloadRegistration = import("../plugins/types.js").EVEPluginReloadRegistration;
 export type EVEPluginSecurityAuditCollector =
   import("../plugins/types.js").EVEPluginSecurityAuditCollector;
 export type EVEPluginSecurityAuditContext =
   import("../plugins/types.js").EVEPluginSecurityAuditContext;
 export type EVEPluginService = import("../plugins/types.js").EVEPluginService;
-export type EVEPluginServiceContext =
-  import("../plugins/types.js").EVEPluginServiceContext;
+export type EVEPluginServiceContext = import("../plugins/types.js").EVEPluginServiceContext;
 export type EVEPluginToolContext = import("../plugins/types.js").EVEPluginToolContext;
 export type EVEPluginToolFactory = import("../plugins/types.js").EVEPluginToolFactory;
 export type PluginLogger = import("../plugins/types.js").PluginLogger;
@@ -136,8 +130,7 @@ export type UnifiedModelCatalogProviderPlugin =
   import("../plugins/types.js").UnifiedModelCatalogProviderPlugin;
 export type EVEGatewayDiscoveryAdvertiseContext =
   import("../plugins/types.js").EVEGatewayDiscoveryAdvertiseContext;
-export type EVEGatewayDiscoveryService =
-  import("../plugins/types.js").EVEGatewayDiscoveryService;
+export type EVEGatewayDiscoveryService = import("../plugins/types.js").EVEGatewayDiscoveryService;
 export type SpeechProviderPlugin = import("../plugins/types.js").SpeechProviderPlugin;
 export type PluginCommandContext = import("../plugins/types.js").PluginCommandContext;
 export type PluginCommandResult = import("../plugins/types.js").PluginCommandResult;
@@ -240,10 +233,7 @@ type DefinedPluginEntry = {
   description: string;
   configSchema: EVEPluginConfigSchema;
   register: NonNullable<EVEPluginDefinition["register"]>;
-} & Pick<
-  EVEPluginDefinition,
-  "kind" | "reload" | "nodeHostCommands" | "securityAuditCollectors"
->;
+} & Pick<EVEPluginDefinition, "kind" | "reload" | "nodeHostCommands" | "securityAuditCollectors">;
 
 /**
  * Canonical entry helper for non-channel plugins.

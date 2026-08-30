@@ -439,10 +439,7 @@ describe("handleCommands /plugins install", () => {
 
     await withTempHome("eve-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
-      const params = buildPluginsParams(
-        "/plugin add clawhub:@eve/alias-demo@1.0.0",
-        workspaceDir,
-      );
+      const params = buildPluginsParams("/plugin add clawhub:@eve/alias-demo@1.0.0", workspaceDir);
       const result = await handlePluginsCommand(params, true);
       if (result === null) {
         throw new Error("expected plugin install result");

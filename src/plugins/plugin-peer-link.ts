@@ -141,13 +141,13 @@ async function auditEVEPeerDependency(params: {
       return {
         packageName,
         packageDir: params.packageDir,
-        reason: `missing ${path.join(nodeModulesDir, "eve")}`,
+        reason: `missing ${path.join(nodeModulesDir, "eve-agent")}`,
       };
     }
     throw error;
   }
 
-  const linkPath = path.join(nodeModulesDir, "eve");
+  const linkPath = path.join(nodeModulesDir, "eve-agent");
   const currentTarget = await safeRealpath(linkPath);
   if (!currentTarget) {
     return {
@@ -252,9 +252,9 @@ async function linkEVEPeerDependency(params: {
     });
     if (existing) {
       if (!existing.isSymbolicLink()) {
-        if (params.peerName === "eve" && existing.isDirectory()) {
+        if (params.peerName === "eve-agent" && existing.isDirectory()) {
           const existingPackageName = await readPackageName(linkPath);
-          if (existingPackageName === "eve") {
+          if (existingPackageName === "eve-agent") {
             await fs.rm(linkPath, { recursive: true, force: true });
             await fs.symlink(params.hostRoot, linkPath, "junction");
             params.logger.info?.(
@@ -302,7 +302,7 @@ export async function linkEVEPeerDependencies(params: {
   peerDependencies: Record<string, string>;
   logger: PluginPeerLinkLogger;
 }): Promise<{ repaired: number; skipped: number }> {
-  const peers = Object.keys(params.peerDependencies).filter((name) => name === "eve");
+  const peers = Object.keys(params.peerDependencies).filter((name) => name === "eve-agent");
   if (peers.length === 0) {
     return { repaired: 0, skipped: 0 };
   }
@@ -314,7 +314,7 @@ export async function linkEVEPeerDependencies(params: {
   });
   if (!hostRoot) {
     params.logger.warn?.(
-      "Could not locate eve package root to symlink peerDependencies; plugin may fail to resolve eve at runtime.",
+      "Could not locate eve-agent package root to symlink peerDependencies; plugin may fail to resolve eve-agent at runtime.",
     );
     return { repaired: 0, skipped: peers.length };
   }
@@ -347,7 +347,7 @@ export async function relinkEVEPeerDependenciesInManagedNpmRoot(params: {
   let skipped = 0;
   for (const packageDir of await listManagedNpmRootPackageDirs(params.npmRoot)) {
     const peerDependencies = await readPackagePeerDependencies(packageDir);
-    if (!Object.hasOwn(peerDependencies, "eve")) {
+    if (!Object.hasOwn(peerDependencies, "eve-agent")) {
       continue;
     }
     checked += 1;
@@ -379,7 +379,7 @@ export async function auditEVEPeerDependenciesInManagedNpmRoot(params: {
   const issues: EVEPeerLinkAuditIssue[] = [];
   for (const packageDir of await listManagedNpmRootPackageDirs(params.npmRoot)) {
     const peerDependencies = await readPackagePeerDependencies(packageDir);
-    if (!Object.hasOwn(peerDependencies, "eve")) {
+    if (!Object.hasOwn(peerDependencies, "eve-agent")) {
       continue;
     }
     checked += 1;

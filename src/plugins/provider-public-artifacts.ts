@@ -1,7 +1,7 @@
 // Extracts provider public artifacts from plugin metadata.
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
-import type { ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderConfig } from "../config/types.js";
 import { resolveBundledPluginsDir } from "./bundled-dir.js";
 import { loadPluginManifestRegistry, type PluginManifestRegistry } from "./manifest-registry.js";
 import type {
@@ -21,9 +21,7 @@ const providerPolicySurfaceByPluginId = new Map<string, BundledProviderPolicySur
 /** Provider policy hooks loaded from bundled plugin public artifacts. */
 export type BundledProviderPolicySurface = {
   normalizeConfig?: (ctx: ProviderNormalizeConfigContext) => ModelProviderConfig | null | undefined;
-  applyConfigDefaults?: (
-    ctx: ProviderApplyConfigDefaultsContext,
-  ) => EVEConfig | null | undefined;
+  applyConfigDefaults?: (ctx: ProviderApplyConfigDefaultsContext) => EVEConfig | null | undefined;
   resolveConfigApiKey?: (ctx: ProviderResolveConfigApiKeyContext) => string | null | undefined;
   resolveThinkingProfile?: (
     ctx: ProviderDefaultThinkingPolicyContext,

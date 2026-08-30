@@ -8,10 +8,7 @@ import {
   getNodeSqliteKysely,
 } from "../infra/kysely-sync.js";
 import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
-import {
-  closeEVEStateDatabase,
-  openEVEStateDatabase,
-} from "../state/eve-state-db.js";
+import { closeEVEStateDatabase, openEVEStateDatabase } from "../state/eve-state-db.js";
 import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { captureEnv } from "../test-utils/env.js";
 import { withEVETestState } from "../test-utils/eve-test-state.js";
@@ -69,10 +66,7 @@ function createManagedTaskFlow(
   }
   return flow;
 }
-type TaskRegistryTestDatabase = Pick<
-  EVEStateKyselyDatabase,
-  "task_delivery_state" | "task_runs"
->;
+type TaskRegistryTestDatabase = Pick<EVEStateKyselyDatabase, "task_delivery_state" | "task_runs">;
 
 function requireFirstUpsertParams(upsertTaskWithDeliveryState: ReturnType<typeof vi.fn>): {
   task?: { taskId?: string };
@@ -523,47 +517,44 @@ describe("task-registry store runtime", () => {
   });
 
   it("persists executor and requester agent ids in sqlite task rows", async () => {
-    await withEVETestState(
-      { layout: "state-only", prefix: "eve-task-agent-id-" },
-      async () => {
-        const created = createTaskRecord({
-          runtime: "subagent",
-          requesterSessionKey: "global",
-          ownerKey: "global",
-          scopeKind: "session",
-          childSessionKey: "agent:worker:subagent:child",
-          requesterAgentId: "main",
-          runId: "run-worker-subagent-sqlite",
-          task: "Inspect worker state",
-          status: "running",
-          deliveryStatus: "pending",
-        });
+    await withEVETestState({ layout: "state-only", prefix: "eve-task-agent-id-" }, async () => {
+      const created = createTaskRecord({
+        runtime: "subagent",
+        requesterSessionKey: "global",
+        ownerKey: "global",
+        scopeKind: "session",
+        childSessionKey: "agent:worker:subagent:child",
+        requesterAgentId: "main",
+        runId: "run-worker-subagent-sqlite",
+        task: "Inspect worker state",
+        status: "running",
+        deliveryStatus: "pending",
+      });
 
-        const database = openEVEStateDatabase();
-        const db = getNodeSqliteKysely<TaskRegistryTestDatabase>(database.db);
-        const row = executeSqliteQueryTakeFirstSync(
-          database.db,
-          db
-            .selectFrom("task_runs")
-            .select(["agent_id", "requester_agent_id", "child_session_key", "owner_key"])
-            .where("task_id", "=", created.taskId),
-        );
+      const database = openEVEStateDatabase();
+      const db = getNodeSqliteKysely<TaskRegistryTestDatabase>(database.db);
+      const row = executeSqliteQueryTakeFirstSync(
+        database.db,
+        db
+          .selectFrom("task_runs")
+          .select(["agent_id", "requester_agent_id", "child_session_key", "owner_key"])
+          .where("task_id", "=", created.taskId),
+      );
 
-        expect(row).toEqual({
-          agent_id: "worker",
-          requester_agent_id: "main",
-          child_session_key: "agent:worker:subagent:child",
-          owner_key: "global",
-        });
+      expect(row).toEqual({
+        agent_id: "worker",
+        requester_agent_id: "main",
+        child_session_key: "agent:worker:subagent:child",
+        owner_key: "global",
+      });
 
-        resetTaskRegistryForTests({ persist: false });
-        expect(findTaskByRunId("run-worker-subagent-sqlite")).toMatchObject({
-          taskId: created.taskId,
-          agentId: "worker",
-          requesterAgentId: "main",
-        });
-      },
-    );
+      resetTaskRegistryForTests({ persist: false });
+      expect(findTaskByRunId("run-worker-subagent-sqlite")).toMatchObject({
+        taskId: created.taskId,
+        agentId: "worker",
+        requesterAgentId: "main",
+      });
+    });
   });
 
   it("persists requester origin atomically when creating sqlite tasks", async () => {
@@ -722,87 +713,78 @@ describe("task-registry store runtime", () => {
   });
 
   it("prunes large sqlite snapshots without binding every task id at once", async () => {
-    await withEVETestState(
-      { layout: "state-only", prefix: "eve-task-large-prune-" },
-      async () => {
-        const tasks = new Map<string, TaskRecord>();
-        const deliveryStates = new Map<string, TaskDeliveryState>();
-        for (let index = 0; index < 1_200; index++) {
-          const task: TaskRecord = {
-            ...createStoredTask(),
-            taskId: `task-large-${index}`,
-            runId: `run-large-${index}`,
-            createdAt: index,
-            lastEventAt: index,
-          };
-          tasks.set(task.taskId, task);
-          deliveryStates.set(task.taskId, {
-            taskId: task.taskId,
-            lastNotifiedEventAt: index,
-          });
-        }
-
-        saveTaskRegistryStateToSqlite({ tasks, deliveryStates });
-        const retainedTasks = new Map([...tasks].slice(100));
-        const retainedDeliveryStates = new Map([...deliveryStates].slice(100));
-        saveTaskRegistryStateToSqlite({
-          tasks: retainedTasks,
-          deliveryStates: retainedDeliveryStates,
+    await withEVETestState({ layout: "state-only", prefix: "eve-task-large-prune-" }, async () => {
+      const tasks = new Map<string, TaskRecord>();
+      const deliveryStates = new Map<string, TaskDeliveryState>();
+      for (let index = 0; index < 1_200; index++) {
+        const task: TaskRecord = {
+          ...createStoredTask(),
+          taskId: `task-large-${index}`,
+          runId: `run-large-${index}`,
+          createdAt: index,
+          lastEventAt: index,
+        };
+        tasks.set(task.taskId, task);
+        deliveryStates.set(task.taskId, {
+          taskId: task.taskId,
+          lastNotifiedEventAt: index,
         });
+      }
 
-        const restored = loadTaskRegistryStateFromSqlite();
-        expect(restored.tasks.size).toBe(1_100);
-        expect(restored.deliveryStates.size).toBe(1_100);
-        expect(restored.tasks.has("task-large-0")).toBe(false);
-        expect(restored.tasks.has("task-large-1199")).toBe(true);
-      },
-    );
+      saveTaskRegistryStateToSqlite({ tasks, deliveryStates });
+      const retainedTasks = new Map([...tasks].slice(100));
+      const retainedDeliveryStates = new Map([...deliveryStates].slice(100));
+      saveTaskRegistryStateToSqlite({
+        tasks: retainedTasks,
+        deliveryStates: retainedDeliveryStates,
+      });
+
+      const restored = loadTaskRegistryStateFromSqlite();
+      expect(restored.tasks.size).toBe(1_100);
+      expect(restored.deliveryStates.size).toBe(1_100);
+      expect(restored.tasks.has("task-large-0")).toBe(false);
+      expect(restored.tasks.has("task-large-1199")).toBe(true);
+    });
   });
 
   it("reopens after the shared state database is closed", async () => {
-    await withEVETestState(
-      { layout: "state-only", prefix: "eve-task-store-" },
-      async () => {
-        const task = createStoredTask();
-        saveTaskRegistryStateToSqlite({
-          tasks: new Map([[task.taskId, task]]),
-          deliveryStates: new Map(),
-        });
+    await withEVETestState({ layout: "state-only", prefix: "eve-task-store-" }, async () => {
+      const task = createStoredTask();
+      saveTaskRegistryStateToSqlite({
+        tasks: new Map([[task.taskId, task]]),
+        deliveryStates: new Map(),
+      });
 
-        closeEVEStateDatabase();
+      closeEVEStateDatabase();
 
-        const restored = loadTaskRegistryStateFromSqlite();
-        expect(restored.tasks.get(task.taskId)).toEqual(task);
-      },
-    );
+      const restored = loadTaskRegistryStateFromSqlite();
+      expect(restored.tasks.get(task.taskId)).toEqual(task);
+    });
   });
 
   it("hardens the sqlite task store directory and file modes", async () => {
     if (process.platform === "win32") {
       return;
     }
-    await withEVETestState(
-      { layout: "state-only", prefix: "eve-task-store-" },
-      async () => {
-        createTaskRecord({
-          runtime: "cron",
-          ownerKey: "agent:main:main",
-          scopeKind: "session",
-          sourceId: "job-456",
-          runId: "run-perms",
-          task: "Run secured cron",
-          status: "running",
-          deliveryStatus: "not_applicable",
-          notifyPolicy: "silent",
-        });
+    await withEVETestState({ layout: "state-only", prefix: "eve-task-store-" }, async () => {
+      createTaskRecord({
+        runtime: "cron",
+        ownerKey: "agent:main:main",
+        scopeKind: "session",
+        sourceId: "job-456",
+        runId: "run-perms",
+        task: "Run secured cron",
+        status: "running",
+        deliveryStatus: "not_applicable",
+        notifyPolicy: "silent",
+      });
 
-        const databasePath = resolveEVEStateSqlitePath(process.env);
-        const registryDir = path.dirname(databasePath);
-        expect(databasePath.endsWith(path.join("state", "eve.sqlite"))).toBe(true);
-        expect(statSync(registryDir).mode & 0o777).toBe(0o700);
-        expect(statSync(databasePath).mode & 0o777).toBe(0o600);
-      },
-    );
+      const databasePath = resolveEVEStateSqlitePath(process.env);
+      const registryDir = path.dirname(databasePath);
+      expect(databasePath.endsWith(path.join("state", "eve.sqlite"))).toBe(true);
+      expect(statSync(registryDir).mode & 0o777).toBe(0o700);
+      expect(statSync(databasePath).mode & 0o777).toBe(0o600);
+    });
   });
 
   it("does not throw or diverge sqlite-direct reads when an upsert persist fails", () => {

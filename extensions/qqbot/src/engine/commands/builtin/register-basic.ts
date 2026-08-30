@@ -2,7 +2,8 @@
 import type { SlashCommandRegistry } from "../slash-commands.js";
 import { getPluginVersionString, resolveRuntimeServiceVersion } from "./state.js";
 
-const QQBOT_PLUGIN_GITHUB_URL = "https://github.com/engsathiago/eve-agent/tree/main/extensions/qqbot";
+const QQBOT_PLUGIN_GITHUB_URL =
+  "https://github.com/engsathiago/eve-agent/tree/main/extensions/qqbot";
 const QQBOT_UPGRADE_GUIDE_URL = "https://q.qq.com/qqbot/eve/upgrade.html";
 
 export function registerBasicBotCommands(registry: SlashCommandRegistry): void {

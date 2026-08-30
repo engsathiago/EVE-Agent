@@ -165,9 +165,7 @@ export function shouldRunOxlintShardsSerial({
 }
 
 function isRemoteChangedGateEnv(env) {
-  return (
-    env.EVE_CHECK_CHANGED_REMOTE_CHILD === "1" || env.EVE_CHANGED_LANES_RAW_SYNC === "1"
-  );
+  return env.EVE_CHECK_CHANGED_REMOTE_CHILD === "1" || env.EVE_CHANGED_LANES_RAW_SYNC === "1";
 }
 
 function listExtensionEntries({ cwd, readDir }) {
@@ -541,22 +539,14 @@ export async function runShard({ env, extraArgs, runner, shard }) {
  * Reads the shard heartbeat interval.
  */
 export function resolveShardHeartbeatMs(env) {
-  return resolveNonNegativeEnvInt(
-    env,
-    "EVE_OXLINT_SHARD_HEARTBEAT_MS",
-    DEFAULT_SHARD_HEARTBEAT_MS,
-  );
+  return resolveNonNegativeEnvInt(env, "EVE_OXLINT_SHARD_HEARTBEAT_MS", DEFAULT_SHARD_HEARTBEAT_MS);
 }
 
 /**
  * Reads the per-shard timeout.
  */
 export function resolveShardTimeoutMs(env) {
-  return resolveNonNegativeEnvInt(
-    env,
-    "EVE_OXLINT_SHARD_TIMEOUT_MS",
-    DEFAULT_SHARD_TIMEOUT_MS,
-  );
+  return resolveNonNegativeEnvInt(env, "EVE_OXLINT_SHARD_TIMEOUT_MS", DEFAULT_SHARD_TIMEOUT_MS);
 }
 
 /**

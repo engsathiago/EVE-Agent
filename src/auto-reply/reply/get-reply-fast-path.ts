@@ -30,9 +30,7 @@ type ReplyConfigWithMarker = EVEConfig & {
 };
 
 function isSlowReplyTestAllowed(env: NodeJS.ProcessEnv = process.env): boolean {
-  return (
-    env.EVE_ALLOW_SLOW_REPLY_TESTS === "1" || env.EVE_STRICT_FAST_REPLY_CONFIG === "0"
-  );
+  return env.EVE_ALLOW_SLOW_REPLY_TESTS === "1" || env.EVE_STRICT_FAST_REPLY_CONFIG === "0";
 }
 
 function resolveFastSessionKey(params: {

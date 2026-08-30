@@ -20,9 +20,7 @@ import { DEFAULT_PLUGIN_TOOLS_ALLOWLIST_ENTRY } from "./tool-policy.js";
 import { loadCapabilityMetadataSnapshot } from "./tools/manifest-capability-availability.js";
 import * as pdfModelConfigModule from "./tools/pdf-tool.model-config.js";
 
-type CreateEVEToolsOptions = Parameters<
-  typeof import("./eve-tools.js").createEVETools
->[0];
+type CreateEVEToolsOptions = Parameters<typeof import("./eve-tools.js").createEVETools>[0];
 let createEVEToolsForTestModule: typeof import("./eve-tools.js").createEVETools;
 let legacyComfyToolNames: string[];
 
@@ -163,8 +161,7 @@ function installSnapshot(
 
 describe("optional media tool factory planning", () => {
   beforeAll(async () => {
-    ({ createEVETools: createEVEToolsForTestModule } =
-      await import("./eve-tools.js"));
+    ({ createEVETools: createEVEToolsForTestModule } = await import("./eve-tools.js"));
 
     const config = legacyModelProviderConfig({
       workflow: { "1": { inputs: {} } },

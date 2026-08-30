@@ -650,10 +650,7 @@ export function applyBaileysEncryptedStreamFinishHotfix(params = {}) {
   const createTempPath =
     params.createTempPath ??
     ((unsafeTargetPath) =>
-      join(
-        dirname(unsafeTargetPath),
-        `.${basename(unsafeTargetPath)}.eve-hotfix-${randomUUID()}`,
-      ));
+      join(dirname(unsafeTargetPath), `.${basename(unsafeTargetPath)}.eve-hotfix-${randomUUID()}`));
   const writeFile =
     params.writeFileSync ?? ((filePath, value) => writeFileSync(filePath, value, "utf8"));
   const targetPath = join(packageRoot, BAILEYS_MEDIA_FILE);

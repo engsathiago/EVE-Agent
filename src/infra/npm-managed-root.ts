@@ -8,10 +8,10 @@ import { normalizeOptionalString as readOptionalString } from "@eve/normalizatio
 import { parse as parseYaml } from "yaml";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { hasErrnoCode } from "./errors.js";
+import { resolveEVEPackageRootSync } from "./eve-root.js";
 import type { NpmSpecResolution } from "./install-source-utils.js";
 import { readJson, readJsonIfExists, writeJson } from "./json-files.js";
 import type { ParsedRegistryNpmSpec } from "./npm-registry-spec.js";
-import { resolveEVEPackageRootSync } from "./eve-root.js";
 import { createSafeNpmInstallArgs, createSafeNpmInstallEnv } from "./safe-package-install.js";
 
 // Managed npm roots are private package roots used for installed plugins. This
@@ -90,7 +90,7 @@ function isSafePackageName(name: string): boolean {
 }
 
 function isManagedNpmRootHostPeerPackageName(name: string): boolean {
-  return name === "eve";
+  return name === "eve-agent";
 }
 
 function readOverrideRecord(value: unknown): Record<string, unknown> {
@@ -125,9 +125,7 @@ function buildManagedEVEMetadata(params: {
   managedOverrideKeys: string[];
   managedPeerDependencyKeys?: string[];
 }): ManagedNpmRootEVEMetadata | undefined {
-  const metadata: ManagedNpmRootEVEMetadata = isRecord(params.current)
-    ? { ...params.current }
-    : {};
+  const metadata: ManagedNpmRootEVEMetadata = isRecord(params.current) ? { ...params.current } : {};
   if (params.managedOverrideKeys.length > 0) {
     metadata.managedOverrides = params.managedOverrideKeys;
   } else {
@@ -552,9 +550,9 @@ function scrubHostPeerFromLockPackage(value: unknown): boolean {
     return false;
   }
   let changed = false;
-  if (isRecord(value.peerDependencies) && "eve" in value.peerDependencies) {
+  if (isRecord(value.peerDependencies) && "eve-agent" in value.peerDependencies) {
     const peerDependencies = { ...value.peerDependencies };
-    delete peerDependencies.eve;
+    delete peerDependencies["eve-agent"];
     if (Object.keys(peerDependencies).length > 0) {
       value.peerDependencies = peerDependencies;
     } else {
@@ -562,9 +560,9 @@ function scrubHostPeerFromLockPackage(value: unknown): boolean {
     }
     changed = true;
   }
-  if (isRecord(value.peerDependenciesMeta) && "eve" in value.peerDependenciesMeta) {
+  if (isRecord(value.peerDependenciesMeta) && "eve-agent" in value.peerDependenciesMeta) {
     const peerDependenciesMeta = { ...value.peerDependenciesMeta };
-    delete peerDependenciesMeta.eve;
+    delete peerDependenciesMeta["eve-agent"];
     if (Object.keys(peerDependenciesMeta).length > 0) {
       value.peerDependenciesMeta = peerDependenciesMeta;
     } else {
@@ -614,7 +612,7 @@ function isHostPeerResolutionFailure(
   result: Awaited<ReturnType<ManagedNpmRootRunCommand>>,
 ): boolean {
   const output = `${result.stdout}\n${result.stderr}`;
-  return /(^|[^@\w.-])eve(?=$|[@\s:,"'])/i.test(output);
+  return /(^|[^@\w.-])eve-agent(?=$|[@\s:,"'])/i.test(output);
 }
 
 function createManagedNpmPeerPlanArgs(params?: {
@@ -655,7 +653,7 @@ async function collectNpmResolvedManagedNpmRootPeerDependencyPins(params: {
   }
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-managed-peer-plan-"));
   try {
-    delete dependencies.eve;
+    delete dependencies["eve-agent"];
     await writeJson(
       path.join(tempRoot, "package.json"),
       {
@@ -863,9 +861,9 @@ export async function repairManagedNpmRootEVEPeer(params: {
   const manifestPath = path.join(params.npmRoot, "package.json");
   const manifest = await readManagedNpmRootManifest(manifestPath);
   const dependencies = readDependencyRecord(manifest.dependencies);
-  const hasManifestDependency = "eve" in dependencies;
+  const hasManifestDependency = "eve-agent" in dependencies;
   const hasLockDependency = await managedNpmRootLockfileHasEVEPeer(params.npmRoot);
-  const hasPackageDir = await pathExists(path.join(params.npmRoot, "node_modules", "eve"));
+  const hasPackageDir = await pathExists(path.join(params.npmRoot, "node_modules", "eve-agent"));
   const preserveActiveHostLink = activeHostState === "linked-active-host";
   if (!hasManifestDependency && !hasLockDependency && (!hasPackageDir || preserveActiveHostLink)) {
     return false;
@@ -889,7 +887,7 @@ export async function repairManagedNpmRootEVEPeer(params: {
         "--ignore-scripts",
         "--no-audit",
         "--no-fund",
-        "eve",
+        "eve-agent",
       ]
     : [
         "npm",
@@ -913,12 +911,12 @@ export async function repairManagedNpmRootEVEPeer(params: {
     });
     if (result.code !== 0) {
       params.logger?.warn?.(
-        `npm ${hasManifestDependency ? "uninstall eve" : "prune"} failed while repairing managed npm root; falling back to direct cleanup: ${result.stderr.trim() || result.stdout.trim()}`,
+        `npm ${hasManifestDependency ? "uninstall eve-agent" : "prune"} failed while repairing managed npm root; falling back to direct cleanup: ${result.stderr.trim() || result.stdout.trim()}`,
       );
     }
   } catch (error) {
     params.logger?.warn?.(
-      `npm ${hasManifestDependency ? "uninstall eve" : "prune"} failed while repairing managed npm root; falling back to direct cleanup: ${String(error)}`,
+      `npm ${hasManifestDependency ? "uninstall eve-agent" : "prune"} failed while repairing managed npm root; falling back to direct cleanup: ${String(error)}`,
     );
   }
 
@@ -942,7 +940,7 @@ async function readManagedNpmRootEVEHostState(params: {
     return "none";
   }
 
-  const managedEVEPackageDir = path.join(params.npmRoot, "node_modules", "eve");
+  const managedEVEPackageDir = path.join(params.npmRoot, "node_modules", "eve-agent");
   const [hostPackageRoot, managedPackageRoot, managedPackageStat] = await Promise.all([
     realpathIfExists(packageRoot),
     realpathIfExists(managedEVEPackageDir),
@@ -963,15 +961,15 @@ async function managedNpmRootLockfileHasEVEPeer(npmRoot: string): Promise<boolea
       if (
         isRecord(rootPackage) &&
         isRecord(rootPackage.dependencies) &&
-        "eve" in rootPackage.dependencies
+        "eve-agent" in rootPackage.dependencies
       ) {
         return true;
       }
-      if ("node_modules/eve" in parsed.packages) {
+      if ("node_modules/eve-agent" in parsed.packages) {
         return true;
       }
     }
-    return isRecord(parsed.dependencies) && "eve" in parsed.dependencies;
+    return isRecord(parsed.dependencies) && "eve-agent" in parsed.dependencies;
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
       return false;
@@ -1021,8 +1019,8 @@ async function scrubManagedNpmRootEVEPeer(params: {
   const manifestPath = path.join(params.npmRoot, "package.json");
   const manifest = await readManagedNpmRootManifest(manifestPath);
   const dependencies = readDependencyRecord(manifest.dependencies);
-  if ("eve" in dependencies) {
-    const { eve: _removed, ...nextDependencies } = dependencies;
+  if ("eve-agent" in dependencies) {
+    const { "eve-agent": _removed, ...nextDependencies } = dependencies;
     await fs.writeFile(
       manifestPath,
       `${JSON.stringify({ ...manifest, private: true, dependencies: nextDependencies }, null, 2)}\n`,
@@ -1038,20 +1036,20 @@ async function scrubManagedNpmRootEVEPeer(params: {
       const rootPackage = parsed.packages[""];
       if (isRecord(rootPackage) && isRecord(rootPackage.dependencies)) {
         const dependenciesValue = { ...rootPackage.dependencies };
-        if ("eve" in dependenciesValue) {
-          delete dependenciesValue.eve;
+        if ("eve-agent" in dependenciesValue) {
+          delete dependenciesValue["eve-agent"];
           parsed.packages[""] = { ...rootPackage, dependencies: dependenciesValue };
           lockChanged = true;
         }
       }
-      if ("node_modules/eve" in parsed.packages) {
-        delete parsed.packages["node_modules/eve"];
+      if ("node_modules/eve-agent" in parsed.packages) {
+        delete parsed.packages["node_modules/eve-agent"];
         lockChanged = true;
       }
     }
-    if (isRecord(parsed.dependencies) && "eve" in parsed.dependencies) {
+    if (isRecord(parsed.dependencies) && "eve-agent" in parsed.dependencies) {
       const dependenciesLocal = { ...parsed.dependencies };
-      delete dependenciesLocal.eve;
+      delete dependenciesLocal["eve-agent"];
       parsed.dependencies = dependenciesLocal;
       lockChanged = true;
     }
@@ -1064,7 +1062,7 @@ async function scrubManagedNpmRootEVEPeer(params: {
     }
   }
 
-  const evePackageDir = path.join(params.npmRoot, "node_modules", "eve");
+  const evePackageDir = path.join(params.npmRoot, "node_modules", "eve-agent");
   if (!params.preservePackageDir && (await pathExists(evePackageDir))) {
     await fs.rm(evePackageDir, { recursive: true, force: true });
   }

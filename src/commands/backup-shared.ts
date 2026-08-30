@@ -244,7 +244,9 @@ export async function resolveBackupPlanFromPaths(params: {
     stateDir,
     configPath,
     oauthDir,
-    workspaceDirs: workspaceDirs.map((entry) => path.resolve(entry)),
+    workspaceDirs: await Promise.all(
+      workspaceDirs.map((entry) => canonicalizeExistingPath(path.resolve(entry))),
+    ),
     included,
     skipped,
   };

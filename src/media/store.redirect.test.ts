@@ -4,10 +4,7 @@ import path from "node:path";
 import { PassThrough } from "node:stream";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinnedLookup } from "../infra/net/ssrf.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import { saveMediaSource, setMediaStoreNetworkDepsForTest } from "./store.js";
 
 const mockRequest = vi.fn();

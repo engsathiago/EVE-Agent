@@ -6,19 +6,19 @@ import { collectFilesSync, isCodeFile, relativeToCwd } from "./check-file-utils.
 
 // Match exact monolithic-root specifier in any code path:
 // imports/exports, require/dynamic import, and test mocks (vi.mock/jest.mock).
-const ROOT_IMPORT_PATTERN = /["']eve\/plugin-sdk["']/;
-const LEGACY_COMPAT_IMPORT_PATTERN = /["']eve\/plugin-sdk\/compat["']/;
+const ROOT_IMPORT_PATTERN = /["']eve-agent\/plugin-sdk["']/;
+const LEGACY_COMPAT_IMPORT_PATTERN = /["']eve-agent\/plugin-sdk\/compat["']/;
 const LEGACY_BROAD_SUBPATH_PATTERNS = [
   {
-    pattern: /["']eve\/plugin-sdk\/channel-runtime["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/channel-runtime["']/,
     label: "eve-agent/plugin-sdk/channel-runtime",
   },
   {
-    pattern: /["']eve\/plugin-sdk\/config-runtime["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/config-runtime["']/,
     label: "eve-agent/plugin-sdk/config-runtime",
   },
   {
-    pattern: /["']eve\/plugin-sdk\/infra-runtime["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/infra-runtime["']/,
     label: "eve-agent/plugin-sdk/infra-runtime",
   },
 ] as const;

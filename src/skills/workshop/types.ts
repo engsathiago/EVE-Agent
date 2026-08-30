@@ -4,12 +4,17 @@ import type { SkillScanFinding } from "../security/scanner.js";
 
 /** Schema id for persisted skill workshop proposal records. */
 export const SKILL_WORKSHOP_SCHEMA = "eve.skill-workshop.proposal.v1" as const;
-export const SKILL_WORKSHOP_MANIFEST_SCHEMA =
-  "eve.skill-workshop.proposals-manifest.v1" as const;
+export const SKILL_WORKSHOP_MANIFEST_SCHEMA = "eve.skill-workshop.proposals-manifest.v1" as const;
 export const SKILL_WORKSHOP_ROLLBACK_SCHEMA = "eve.skill-workshop.rollback.v1" as const;
 
 type SkillProposalKind = "create" | "update";
-export type SkillProposalStatus = "pending" | "applied" | "rejected" | "quarantined" | "stale";
+export type SkillProposalStatus =
+  | "pending"
+  | "applied"
+  | "rolled_back"
+  | "rejected"
+  | "quarantined"
+  | "stale";
 type SkillProposalScannerState = "pending" | "clean" | "failed" | "quarantined";
 type SkillProposalSource = "skill-workshop" | "cli" | "gateway";
 
@@ -66,6 +71,7 @@ export type SkillProposalRecord = {
   goal?: string;
   evidence?: string;
   appliedAt?: string;
+  rolledBackAt?: string;
   rejectedAt?: string;
   quarantinedAt?: string;
   staleAt?: string;
@@ -163,6 +169,11 @@ export type SkillProposalReadResult = {
 };
 
 export type SkillProposalApplyResult = {
+  record: SkillProposalRecord;
+  targetSkillFile: string;
+};
+
+export type SkillProposalRollbackResult = {
   record: SkillProposalRecord;
   targetSkillFile: string;
 };

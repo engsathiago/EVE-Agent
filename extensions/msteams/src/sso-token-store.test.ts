@@ -39,9 +39,7 @@ describe("msteams sso token store (plugin state)", () => {
     expect(await store.get(second)).toEqual(second);
 
     await expect(fs.access(storePath)).rejects.toThrow();
-    await expect(
-      fs.access(path.join(stateDir, "state", "eve.sqlite")),
-    ).resolves.toBeUndefined();
+    await expect(fs.access(path.join(stateDir, "state", "eve.sqlite"))).resolves.toBeUndefined();
   });
 
   it("ignores legacy flat-key token files at runtime", async () => {

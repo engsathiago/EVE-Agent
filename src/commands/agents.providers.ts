@@ -5,8 +5,8 @@ import { normalizeChannelId } from "../channels/plugins/index.js";
 import { listReadOnlyChannelPluginsForConfig } from "../channels/plugins/read-only.js";
 import type { ChannelPlugin } from "../channels/plugins/types.plugin.js";
 import type { ChannelId } from "../channels/plugins/types.public.js";
-import type { AgentBinding } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { AgentBinding } from "../config/types.js";
 import { DEFAULT_ACCOUNT_ID } from "../routing/session-key.js";
 
 type ProviderAccountStatus = {

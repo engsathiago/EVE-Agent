@@ -235,9 +235,9 @@ function requirePluginsConfig(params: Record<string, unknown>): Record<string, u
 
 function expectScopedWebSearchCandidates(pluginIds: readonly string[]) {
   expect(loadInstalledPluginManifestRegistryMock).toHaveBeenCalled();
-  expect(
-    requireLastCallFirstArg(loadEVEPluginsMock, "loadEVEPlugins").onlyPluginIds,
-  ).toEqual([...pluginIds]);
+  expect(requireLastCallFirstArg(loadEVEPluginsMock, "loadEVEPlugins").onlyPluginIds).toEqual([
+    ...pluginIds,
+  ]);
 }
 
 function expectAutoEnabledWebSearchLoad(params: {
@@ -438,13 +438,11 @@ describe("resolvePluginWebSearchProviders", () => {
     loadPluginManifestRegistryMock.mockReturnValue(createManifestRegistryFixture());
     loadInstalledPluginManifestRegistryMock.mockReset();
     loadInstalledPluginManifestRegistryMock.mockReturnValue(createManifestRegistryFixture());
-    loadEVEPluginsMock = vi
-      .spyOn(loaderModule, "loadEVEPlugins")
-      .mockImplementation((params) => {
-        const registry = createEmptyPluginRegistry();
-        registry.webSearchProviders = buildMockedWebSearchProviders(params);
-        return registry;
-      });
+    loadEVEPluginsMock = vi.spyOn(loaderModule, "loadEVEPlugins").mockImplementation((params) => {
+      const registry = createEmptyPluginRegistry();
+      registry.webSearchProviders = buildMockedWebSearchProviders(params);
+      return registry;
+    });
     resetPluginRuntimeStateForTest();
     vi.useRealTimers();
   });

@@ -15,8 +15,7 @@ vi.mock("../../commands/doctor/shared/missing-configured-plugin-install.js", () 
   repairMissingConfiguredPluginInstalls: mocks.repairMissingConfiguredPluginInstalls,
 }));
 vi.mock("../../plugins/plugin-peer-link.js", () => ({
-  relinkEVEPeerDependenciesInManagedNpmRoot:
-    mocks.relinkEVEPeerDependenciesInManagedNpmRoot,
+  relinkEVEPeerDependenciesInManagedNpmRoot: mocks.relinkEVEPeerDependenciesInManagedNpmRoot,
 }));
 vi.mock("../../plugins/npm-project-roots.js", () => ({
   listManagedPluginNpmRoots: mocks.listManagedPluginNpmRoots,

@@ -4,8 +4,8 @@
  * Applies provider and conversation allow/deny rules to mention pattern matching.
  */
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
-import type { MentionPatternsMode, MentionPatternsPolicyConfig } from "../config/types.messages.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { MentionPatternsMode, MentionPatternsPolicyConfig } from "../config/types.messages.js";
 
 /**
  * Inputs for resolving whether mention-pattern matching is enabled in a conversation.

@@ -67,9 +67,7 @@ const resolveEnvApiKey = vi.hoisted(() =>
   ),
 );
 const hasUsableCustomProviderApiKey = vi.hoisted(() =>
-  vi.fn<(_cfg?: EVEConfig, _provider?: string, _env?: NodeJS.ProcessEnv) => boolean>(
-    () => false,
-  ),
+  vi.fn<(_cfg?: EVEConfig, _provider?: string, _env?: NodeJS.ProcessEnv) => boolean>(() => false),
 );
 const hasRuntimeAvailableProviderAuth = vi.hoisted(() =>
   vi.fn(

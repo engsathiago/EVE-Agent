@@ -655,7 +655,7 @@ describe("maybeRepairPluginRegistryState", () => {
       packageName: "codex-plugin",
       version: "2026.5.3",
       peerDependencies: {
-        eve: ">=2026.5.3",
+        "eve-agent": ">=2026.5.3",
       },
     });
     await writePersistedInstalledPluginIndex(
@@ -675,7 +675,7 @@ describe("maybeRepairPluginRegistryState", () => {
       prompter: { shouldRepair: true },
     });
 
-    const linkPath = path.join(managed.packageDir, "node_modules", "eve");
+    const linkPath = path.join(managed.packageDir, "node_modules", "eve-agent");
     expect(fs.lstatSync(linkPath).isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(linkPath)).toBe(fs.realpathSync(process.cwd()));
     expect(vi.mocked(note).mock.calls.join("\n")).toContain("Repaired EVE host peer link");
@@ -689,7 +689,7 @@ describe("maybeRepairPluginRegistryState", () => {
       packageName: "codex-plugin",
       version: "2026.5.3",
       peerDependencies: {
-        eve: ">=2026.5.3",
+        "eve-agent": ">=2026.5.3",
       },
     });
     await writePersistedInstalledPluginIndex(
@@ -709,7 +709,7 @@ describe("maybeRepairPluginRegistryState", () => {
       prompter: { shouldRepair: false },
     });
 
-    const linkPath = path.join(managed.packageDir, "node_modules", "eve");
+    const linkPath = path.join(managed.packageDir, "node_modules", "eve-agent");
     const notes = vi.mocked(note).mock.calls.join("\n");
     expect(notes).toContain("Managed npm EVE host peer links need repair");
     expect(notes).toContain("codex-plugin");

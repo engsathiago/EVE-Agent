@@ -407,9 +407,7 @@ export async function runConfigureWizard(
         }).readConfigFileSnapshotForWrite()
       ).snapshot;
     let currentBaseHash = snapshot.hash;
-    const baseConfig: EVEConfig = snapshot.valid
-      ? (snapshot.sourceConfig ?? snapshot.config)
-      : {};
+    const baseConfig: EVEConfig = snapshot.valid ? (snapshot.sourceConfig ?? snapshot.config) : {};
 
     if (snapshot.exists) {
       const title = snapshot.valid ? "Existing config detected" : "Invalid config";
@@ -816,9 +814,7 @@ export async function runConfigureWizard(
       const remoteUrl = normalizeOptionalString(nextConfig.gateway?.remote?.url);
       if (remoteUrl) {
         note(
-          ["Remote Gateway:", remoteUrl, "Docs: https://docs.eve.ai/gateway/remote"].join(
-            "\n",
-          ),
+          ["Remote Gateway:", remoteUrl, "Docs: https://docs.eve.ai/gateway/remote"].join("\n"),
           "Gateway",
         );
       }

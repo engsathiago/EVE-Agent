@@ -9,8 +9,7 @@ vi.mock("../plugins/bundled-dir.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../plugins/bundled-dir.js")>();
   return {
     ...actual,
-    resolveBundledPluginsDir: (env: NodeJS.ProcessEnv = process.env) =>
-      env.EVE_BUNDLED_PLUGINS_DIR,
+    resolveBundledPluginsDir: (env: NodeJS.ProcessEnv = process.env) => env.EVE_BUNDLED_PLUGINS_DIR,
   };
 });
 

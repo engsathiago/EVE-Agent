@@ -1,6 +1,9 @@
 // Mattermost plugin module implements monitor websocket behavior.
 import { randomUUID } from "node:crypto";
-import { safeParseJsonWithSchema, safeParseWithSchema } from "eve-agent/plugin-sdk/extension-shared";
+import {
+  safeParseJsonWithSchema,
+  safeParseWithSchema,
+} from "eve-agent/plugin-sdk/extension-shared";
 import {
   captureWsEvent,
   createDebugProxyWebSocketAgent,

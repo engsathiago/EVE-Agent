@@ -1,7 +1,7 @@
 // Verifies guarded provider fetch wiring, stream cleanup, proxy, and local service behavior.
 import { MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
-import { Stream } from "openai/streaming";
 import type { Model } from "eve-agent/plugin-sdk/llm";
+import { Stream } from "openai/streaming";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildGuardedModelFetch } from "./provider-transport-fetch.js";
 

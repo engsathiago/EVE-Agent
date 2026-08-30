@@ -1,13 +1,10 @@
 // Verifies message-action target requirements and alias detection, including
 // plugin aliases only when non-standard params are present.
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { actionHasTarget, actionRequiresTarget } from "./message-action-spec.js";
+import { createPinboardMessageActionBootstrapRegistryMock } from "./message-action-test-fixtures.js";
 
-vi.mock("../../channels/plugins/bootstrap-registry.js", async () => ({
-  getBootstrapChannelPlugin: (
-    await import("./message-action-test-fixtures.js")
-  ).createPinboardMessageActionBootstrapRegistryMock(),
-}));
+const resolveChannelPlugin = createPinboardMessageActionBootstrapRegistryMock();
 
 describe("actionRequiresTarget", () => {
   it.each([
@@ -88,6 +85,8 @@ describe("actionHasTarget", () => {
       expected: false,
     },
   ])("resolves target presence for %j", ({ action, params, ctx, expected }) => {
-    expect(actionHasTarget(action as never, params, ctx)).toBe(expected);
+    expect(actionHasTarget(action as never, params, { ...ctx, resolveChannelPlugin })).toBe(
+      expected,
+    );
   });
 });

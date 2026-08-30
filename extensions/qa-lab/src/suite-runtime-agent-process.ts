@@ -243,9 +243,7 @@ async function runQaCli(
     const timeoutMs = resolveTimerTimeoutMs(opts?.timeoutMs, 60_000);
     const timeout = setTimeout(() => {
       signalQaCliProcessTree(child, "SIGKILL");
-      reject(
-        new QaSuiteInfraError("qa_cli_timeout", `qa cli timed out: eve ${args.join(" ")}`),
-      );
+      reject(new QaSuiteInfraError("qa_cli_timeout", `qa cli timed out: eve ${args.join(" ")}`));
     }, timeoutMs);
     child.stdout.on("data", (chunk) => appendQaChildOutput(stdout, chunk));
     child.stderr.on("data", (chunk) => appendQaChildOutputTail(stderr, chunk));

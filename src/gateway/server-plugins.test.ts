@@ -229,10 +229,7 @@ function readRecordField(record: Record<string, unknown>, key: string, label: st
 }
 
 function getLastPluginLoadOptions(): Record<string, unknown> {
-  return requireRecord(
-    getLastMockFirstArg(loadEVEPlugins, "plugin load"),
-    "plugin load options",
-  );
+  return requireRecord(getLastMockFirstArg(loadEVEPlugins, "plugin load"), "plugin load options");
 }
 
 function getLastPluginLoadOption(key: string) {
@@ -954,6 +951,24 @@ describe("loadGatewayPlugins", () => {
     expect(params.lane).toBe("dreaming-narrative:s-light-context");
     expect(params.bootstrapContextMode).toBe("lightweight");
     expect(params.deliver).toBe(false);
+  });
+
+  test("forwards an inherited tool allowlist on subagent run", async () => {
+    const serverPlugins = serverPluginsModule;
+    const runtime = await createSubagentRuntime(serverPlugins);
+    serverPlugins.setFallbackGatewayContext(createTestContext("tool-allow-forward"));
+
+    await runtime.run({
+      sessionKey: "agent:main:subagent:workboard-card-1",
+      message: "research the card",
+      inheritedToolAllow: ["workboard_*", "group:web"],
+      deliver: false,
+    });
+
+    expect(getRequiredLastDispatchedParams().inheritedToolAllow).toEqual([
+      "workboard_*",
+      "group:web",
+    ]);
   });
 
   test("generates a non-empty idempotencyKey when the caller omits it", async () => {

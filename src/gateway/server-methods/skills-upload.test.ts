@@ -6,10 +6,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import JSZip from "jszip";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import type { GatewayRequestHandlers } from "./types.js";
 
 const agentScopeState = vi.hoisted(() => ({

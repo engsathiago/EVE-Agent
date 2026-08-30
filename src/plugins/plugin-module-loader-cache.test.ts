@@ -673,12 +673,9 @@ describe("getCachedPluginModuleLoader", () => {
 
     loader("C:\\Users\\alice\\eve\\dist\\extensions\\feishu\\api.js");
 
-    expectJitiOptions(
-      createJiti,
-      0,
-      "file:///C:/Users/alice/eve/dist/extensions/feishu/api.js",
-      { tryNative: true },
-    );
+    expectJitiOptions(createJiti, 0, "file:///C:/Users/alice/eve/dist/extensions/feishu/api.js", {
+      tryNative: true,
+    });
     expect(fromSourceTransformer).toHaveBeenCalledWith(
       "file:///C:/Users/alice/eve/dist/extensions/feishu/api.js",
     );

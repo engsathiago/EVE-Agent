@@ -27,6 +27,12 @@ import {
 } from "../src/infra/package-dist-inventory.ts";
 import { checkCliBootstrapExternalImports } from "./check-cli-bootstrap-imports.mjs";
 import {
+  collectInstalledPackageErrors,
+  normalizeInstalledBinaryVersion,
+  resolveInstalledBinaryCommandInvocation,
+  resolveInstalledBinaryPath,
+} from "./eve-npm-postpublish-verify.ts";
+import {
   collectBundledExtensionManifestErrors,
   type BundledExtension,
   type ExtensionPackageJson as PackageJson,
@@ -46,12 +52,6 @@ import {
   WORKSPACE_TEMPLATE_PACK_PATHS,
 } from "./lib/workspace-bootstrap-smoke.mjs";
 import { resolveNpmRunner } from "./npm-runner.mjs";
-import {
-  collectInstalledPackageErrors,
-  normalizeInstalledBinaryVersion,
-  resolveInstalledBinaryCommandInvocation,
-  resolveInstalledBinaryPath,
-} from "./eve-npm-postpublish-verify.ts";
 import { listStaticExtensionAssetOutputs } from "./runtime-postbuild.mjs";
 import { sparkleBuildFloorsFromShortVersion, type SparkleBuildFloors } from "./sparkle-build.ts";
 import { buildCmdExeCommandLine } from "./windows-cmd-helpers.mjs";
@@ -637,7 +637,7 @@ function runPackedPluginSdkTypescriptSmoke(tarballPath: string, tmpRoot: string)
     stdio: "inherit",
   });
 
-  const installedEVERoot = join(consumerDir, "node_modules", "eve");
+  const installedEVERoot = join(consumerDir, "node_modules", "eve-agent");
   const tscPath = [
     join(consumerDir, "node_modules", "typescript", "bin", "tsc"),
     join(installedEVERoot, "node_modules", "typescript", "bin", "tsc"),
@@ -816,7 +816,7 @@ function runPackedBundledChannelEntrySmoke(): void {
     const prefixDir = join(tmpRoot, "prefix");
     installPackedTarball(prefixDir, tarballPath, tmpRoot);
 
-    const packageRoot = join(resolveGlobalRoot(prefixDir, tmpRoot), "eve");
+    const packageRoot = join(resolveGlobalRoot(prefixDir, tmpRoot), "eve-agent");
     verifyPackedInstalledPackage({
       expectedVersion,
       packageRoot,

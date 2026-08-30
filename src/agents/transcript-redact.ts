@@ -46,11 +46,7 @@ function redactTranscriptText(value: string, cfg?: EVEConfig): string {
   return redactSensitiveText(value, redactTranscriptOptions(cfg));
 }
 
-function redactTranscriptStructuredFieldValue(
-  key: string,
-  value: string,
-  cfg?: EVEConfig,
-): string {
+function redactTranscriptStructuredFieldValue(key: string, value: string, cfg?: EVEConfig): string {
   if (cfg?.logging?.redactSensitive === "off") {
     return value;
   }
@@ -214,10 +210,7 @@ const ANTHROPIC_REASONING_APIS = new Set([
   "bedrock-converse-stream",
   "eve-anthropic-messages-transport",
 ]);
-const OPENAI_COMPLETIONS_APIS = new Set([
-  "openai-completions",
-  "eve-openai-completions-transport",
-]);
+const OPENAI_COMPLETIONS_APIS = new Set(["openai-completions", "eve-openai-completions-transport"]);
 const OPAQUE_REPLAY_TOKEN_RE = /^[A-Za-z0-9+/_-]+={0,2}$/;
 const OPENAI_REPLAY_CONTEXT_HASH_RE = /^[a-f0-9]{16}$/;
 

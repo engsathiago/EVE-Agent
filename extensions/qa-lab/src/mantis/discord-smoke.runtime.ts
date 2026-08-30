@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { formatErrorMessage } from "eve/plugin-sdk/error-runtime";
-import { fetchWithSsrFGuard } from "eve/plugin-sdk/ssrf-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { fetchWithSsrFGuard } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import { isTruthyOptIn, trimToValue } from "../mantis-options.runtime.js";
 

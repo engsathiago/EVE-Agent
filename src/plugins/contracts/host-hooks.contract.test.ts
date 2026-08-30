@@ -2934,56 +2934,53 @@ describe("host-hook fixture plugin contract", () => {
       },
     });
 
-    await withHostHookState(
-      "eve-host-hooks-restart-state-",
-      async ({ storePath, tempConfig }) => {
-        await updateSessionStore(storePath, (store) => {
-          store["agent:main:main"] = {
-            sessionId: "session-1",
-            updatedAt: Date.now(),
-            pluginExtensions: {
-              "restart-state-fixture": { workflow: { state: "waiting" } },
-            },
-            pluginNextTurnInjections: {
-              "restart-state-fixture": [
-                {
-                  id: "resume",
-                  pluginId: "restart-state-fixture",
-                  text: "resume",
-                  placement: "prepend_context",
-                  createdAt: 1,
-                },
-              ],
-            },
-          };
-          return undefined;
-        });
+    await withHostHookState("eve-host-hooks-restart-state-", async ({ storePath, tempConfig }) => {
+      await updateSessionStore(storePath, (store) => {
+        store["agent:main:main"] = {
+          sessionId: "session-1",
+          updatedAt: Date.now(),
+          pluginExtensions: {
+            "restart-state-fixture": { workflow: { state: "waiting" } },
+          },
+          pluginNextTurnInjections: {
+            "restart-state-fixture": [
+              {
+                id: "resume",
+                pluginId: "restart-state-fixture",
+                text: "resume",
+                placement: "prepend_context",
+                createdAt: 1,
+              },
+            ],
+          },
+        };
+        return undefined;
+      });
 
-        const cleanupResult = await runPluginHostCleanup({
-          cfg: tempConfig,
-          registry: registry.registry,
-          pluginId: "restart-state-fixture",
-          reason: "restart",
-        });
-        expect(cleanupResult.failures).toEqual([]);
+      const cleanupResult = await runPluginHostCleanup({
+        cfg: tempConfig,
+        registry: registry.registry,
+        pluginId: "restart-state-fixture",
+        reason: "restart",
+      });
+      expect(cleanupResult.failures).toEqual([]);
 
-        const stored = loadSessionStore(storePath, { skipCache: true });
-        expect(stored["agent:main:main"]?.pluginExtensions).toEqual({
-          "restart-state-fixture": { workflow: { state: "waiting" } },
-        });
-        expect(stored["agent:main:main"]?.pluginNextTurnInjections).toEqual({
-          "restart-state-fixture": [
-            {
-              id: "resume",
-              pluginId: "restart-state-fixture",
-              text: "resume",
-              placement: "prepend_context",
-              createdAt: 1,
-            },
-          ],
-        });
-      },
-    );
+      const stored = loadSessionStore(storePath, { skipCache: true });
+      expect(stored["agent:main:main"]?.pluginExtensions).toEqual({
+        "restart-state-fixture": { workflow: { state: "waiting" } },
+      });
+      expect(stored["agent:main:main"]?.pluginNextTurnInjections).toEqual({
+        "restart-state-fixture": [
+          {
+            id: "resume",
+            pluginId: "restart-state-fixture",
+            text: "resume",
+            placement: "prepend_context",
+            createdAt: 1,
+          },
+        ],
+      });
+    });
   });
 
   it("cleans pending injections for plugins that registered no host-hook callbacks", async () => {
@@ -2995,38 +2992,35 @@ describe("host-hook fixture plugin contract", () => {
         status: "loaded",
       }),
     );
-    await withHostHookState(
-      "eve-host-hooks-injection-only-",
-      async ({ storePath, tempConfig }) => {
-        await updateSessionStore(storePath, (store) => {
-          store["agent:main:main"] = {
-            sessionId: "session-1",
-            updatedAt: Date.now(),
-            pluginNextTurnInjections: {
-              "injection-only-fixture": [
-                {
-                  id: "resume",
-                  pluginId: "injection-only-fixture",
-                  text: "resume",
-                  placement: "prepend_context",
-                  createdAt: 1,
-                },
-              ],
-            },
-          };
-          return undefined;
-        });
+    await withHostHookState("eve-host-hooks-injection-only-", async ({ storePath, tempConfig }) => {
+      await updateSessionStore(storePath, (store) => {
+        store["agent:main:main"] = {
+          sessionId: "session-1",
+          updatedAt: Date.now(),
+          pluginNextTurnInjections: {
+            "injection-only-fixture": [
+              {
+                id: "resume",
+                pluginId: "injection-only-fixture",
+                text: "resume",
+                placement: "prepend_context",
+                createdAt: 1,
+              },
+            ],
+          },
+        };
+        return undefined;
+      });
 
-        const cleanupResult = await cleanupReplacedPluginHostRegistry({
-          cfg: tempConfig,
-          previousRegistry,
-          nextRegistry: createEmptyPluginRegistry(),
-        });
-        expect(cleanupResult.failures).toEqual([]);
+      const cleanupResult = await cleanupReplacedPluginHostRegistry({
+        cfg: tempConfig,
+        previousRegistry,
+        nextRegistry: createEmptyPluginRegistry(),
+      });
+      expect(cleanupResult.failures).toEqual([]);
 
-        const stored = loadSessionStore(storePath, { skipCache: true });
-        expect(stored["agent:main:main"]?.pluginNextTurnInjections).toBeUndefined();
-      },
-    );
+      const stored = loadSessionStore(storePath, { skipCache: true });
+      expect(stored["agent:main:main"]?.pluginNextTurnInjections).toBeUndefined();
+    });
   });
 });

@@ -126,10 +126,7 @@ type MultiAccountChannelConfigAdapterParams<
   resolveDefaultTo?: (account: AccessorAccount) => string | number | null | undefined;
 };
 
-type NamedAccountChannelConfigBaseParams<
-  ResolvedAccount,
-  Config extends EVEConfig = EVEConfig,
-> = {
+type NamedAccountChannelConfigBaseParams<ResolvedAccount, Config extends EVEConfig = EVEConfig> = {
   sectionKey: string;
   listAccountIds: (cfg: Config) => string[];
   resolveAccount: (cfg: Config, accountId?: string | null) => ResolvedAccount;
@@ -219,11 +216,7 @@ function createNamedAccountConfigBase<
   resolveAccount: (cfg: Config, accountId?: string | null) => ResolvedAccount;
   inspectAccount?: (cfg: Config, accountId?: string | null) => unknown;
   defaultAccountId: (cfg: Config) => string;
-  setAccountEnabled: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-    enabled: boolean;
-  }) => EVEConfig;
+  setAccountEnabled: (params: { cfg: EVEConfig; accountId: string; enabled: boolean }) => EVEConfig;
   deleteAccount: (params: { cfg: EVEConfig; accountId: string }) => EVEConfig;
 }): ChannelCrudConfigAdapter<ResolvedAccount> {
   return {
@@ -255,10 +248,7 @@ function createNamedAccountConfigBase<
   };
 }
 
-function resolveAccessorAccountWithFallback<
-  AccessorAccount,
-  Config extends EVEConfig = EVEConfig,
->(
+function resolveAccessorAccountWithFallback<AccessorAccount, Config extends EVEConfig = EVEConfig>(
   resolveAccessorAccount:
     | ((params: ChannelConfigAccessorParams<Config>) => AccessorAccount)
     | undefined,

@@ -149,6 +149,7 @@ export function registerOnboardCommand(program: Command): void {
     .option("--custom-text-input", "Mark the custom provider model as text-only")
     .option("--gateway-port <port>", "Gateway port")
     .option("--gateway-bind <mode>", "Gateway bind: loopback|tailnet|lan|auto|custom")
+    .option("--gateway-custom-bind-host <host>", "IPv4 host required for gateway bind=custom")
     .option("--gateway-auth <mode>", "Gateway auth: token|password")
     .option("--gateway-token <token>", "Gateway token (token auth)")
     .option(
@@ -232,6 +233,7 @@ export function registerOnboardCommand(program: Command): void {
                 : undefined,
           gatewayPort: gatewayPort ?? undefined,
           gatewayBind: opts.gatewayBind as GatewayBind | undefined,
+          gatewayCustomBindHost: opts.gatewayCustomBindHost as string | undefined,
           gatewayAuth: opts.gatewayAuth as GatewayAuthChoice | undefined,
           gatewayToken: opts.gatewayToken as string | undefined,
           gatewayTokenRefEnv: opts.gatewayTokenRefEnv as string | undefined,

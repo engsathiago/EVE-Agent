@@ -4,8 +4,8 @@
  * Defines receipts, live-message state, send contexts, and adapter capability contracts.
  */
 import type { ReplyPayload } from "../../auto-reply/reply-payload.js";
-import type { ReplyToMode } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ReplyToMode } from "../../config/types.js";
 import type { OutboundSendDeps } from "../../infra/outbound/send-deps.js";
 import type { OutboundMediaAccess } from "../../media/load-options.js";
 import type { PollInput } from "../../polls.js";

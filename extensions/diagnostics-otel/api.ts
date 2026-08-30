@@ -14,8 +14,5 @@ export {
   type DiagnosticTraceContext,
 } from "eve-agent/plugin-sdk/diagnostic-runtime";
 export { emptyPluginConfigSchema, type EVEPluginApi } from "eve-agent/plugin-sdk/plugin-entry";
-export type {
-  EVEPluginService,
-  EVEPluginServiceContext,
-} from "eve-agent/plugin-sdk/plugin-entry";
+export type { EVEPluginService, EVEPluginServiceContext } from "eve-agent/plugin-sdk/plugin-entry";
 export { redactSensitiveText } from "eve-agent/plugin-sdk/security-runtime";

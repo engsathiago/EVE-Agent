@@ -73,9 +73,7 @@ export function resolveCodexNativeWebSearchConfig(
 }
 
 /** Return concise prompt/status text for enabled Codex native search. */
-export function describeCodexNativeWebSearch(
-  config: EVEConfig | undefined,
-): string | undefined {
+export function describeCodexNativeWebSearch(config: EVEConfig | undefined): string | undefined {
   if (config?.tools?.web?.search?.enabled === false) {
     return undefined;
   }

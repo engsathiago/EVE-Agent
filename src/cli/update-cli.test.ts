@@ -297,8 +297,7 @@ vi.mock("../daemon/service.js", () => ({
 
 vi.mock("../daemon/launchd.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../daemon/launchd.js")>()),
-  disableCurrentEVEUpdateLaunchdJob:
-    launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob,
+  disableCurrentEVEUpdateLaunchdJob: launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob,
 }));
 
 vi.mock("../infra/ports.js", () => ({
@@ -460,8 +459,8 @@ describe("update-cli", () => {
 
   const stripEVEPackageAlias = (spec: string) => {
     const trimmed = spec.trim();
-    return trimmed.toLowerCase().startsWith("eve@")
-      ? trimmed.slice("eve@".length)
+    return trimmed.toLowerCase().startsWith("eve-agent@")
+      ? trimmed.slice("eve-agent@".length)
       : trimmed;
   };
 
@@ -594,7 +593,7 @@ describe("update-cli", () => {
       if (!packDir) {
         throw new Error("Expected package pack directory");
       }
-      installSpec = path.join(packDir, "eve-9999.0.0.tgz");
+      installSpec = path.join(packDir, "eve-agent-9999.0.0.tgz");
     } else {
       expect(packagePackCommandCall()).toBeUndefined();
     }
@@ -774,7 +773,7 @@ describe("update-cli", () => {
       if (argv[0] === "npm" && argv[1] === "pack") {
         const destination = argv[argv.indexOf("--pack-destination") + 1];
         if (destination) {
-          await fs.writeFile(path.join(destination, "eve-9999.0.0.tgz"), "packed\n", "utf8");
+          await fs.writeFile(path.join(destination, "eve-agent-9999.0.0.tgz"), "packed\n", "utf8");
         }
       }
       return {
@@ -789,7 +788,7 @@ describe("update-cli", () => {
     vi.spyOn(updateCliShared, "readPackageName").mockImplementation(readPackageName);
     vi.spyOn(updateCliShared, "readPackageVersion").mockImplementation(readPackageVersion);
     vi.spyOn(updateCliShared, "resolveGlobalManager").mockImplementation(resolveGlobalManager);
-    readPackageName.mockResolvedValue("eve");
+    readPackageName.mockResolvedValue("eve-agent");
     readPackageVersion.mockResolvedValue("1.0.0");
     resolveGlobalManager.mockResolvedValue("npm");
     serviceStop.mockResolvedValue(undefined);
@@ -1965,9 +1964,7 @@ describe("update-cli", () => {
         expect(runDaemonInstall).not.toHaveBeenCalled();
         expect(runRestartScript).not.toHaveBeenCalled();
         expect(runDaemonRestart).not.toHaveBeenCalled();
-        expect(
-          launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob,
-        ).not.toHaveBeenCalled();
+        expect(launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob).not.toHaveBeenCalled();
 
         const logs = vi.mocked(defaultRuntime.log).mock.calls.map((call) => String(call[0]));
         expect(logs.join("\n")).toContain("Update dry-run");
@@ -1984,9 +1981,7 @@ describe("update-cli", () => {
       assert: () => {
         expect(defaultRuntime.exit).not.toHaveBeenCalledWith(1);
         expect(runGatewayUpdate).not.toHaveBeenCalled();
-        expect(
-          launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob,
-        ).not.toHaveBeenCalled();
+        expect(launchdUpdateCleanupMocks.disableCurrentEVEUpdateLaunchdJob).not.toHaveBeenCalled();
       },
     },
   ] as const)("updateCommand dry-run behavior: $name", runUpdateCliScenario);
@@ -2112,7 +2107,7 @@ describe("update-cli", () => {
           expect(call?.tag).toBe(expectedTag);
         }
       } else {
-        expectPackageInstallSpec("eve@latest");
+        expectPackageInstallSpec("eve-agent@latest");
       }
 
       if (expectedPersistedChannel !== undefined) {
@@ -2139,7 +2134,7 @@ describe("update-cli", () => {
     });
     await updateCommand({});
 
-    expectPackageInstallSpec("eve@latest");
+    expectPackageInstallSpec("eve-agent@latest");
   });
 
   it("refreshes package-manager updates when the installed version already matches the target", async () => {
@@ -2180,7 +2175,7 @@ describe("update-cli", () => {
     const errors = vi.mocked(defaultRuntime.error).mock.calls.map((call) => String(call[0]));
     expect(errors.join("\n")).not.toContain("Downgrade confirmation required.");
     expect(defaultRuntime.exit).not.toHaveBeenCalled();
-    expectPackageInstallSpec("eve@latest");
+    expectPackageInstallSpec("eve-agent@latest");
   });
 
   it("blocks the package update when a non-latest dist-tag lookup is unresolved", async () => {
@@ -2214,12 +2209,12 @@ describe("update-cli", () => {
 
     await updateCommand({ yes: true });
 
-    expectPackageInstallSpec("eve@latest");
+    expectPackageInstallSpec("eve-agent@latest");
     const preflightParams = vi.mocked(fetchNpmPackageTargetStatus).mock.calls[0]?.[0];
     expect(preflightParams).toEqual(
       expect.objectContaining({
         target: "latest",
-        spec: "eve@latest",
+        spec: "eve-agent@latest",
         cwd: process.cwd(),
       }),
     );
@@ -2257,7 +2252,7 @@ describe("update-cli", () => {
         "Run `eve update` from a shell outside the gateway service, or stop the gateway service first and then update.",
       ].join("\n"),
     );
-    expectPackageInstallSpec("eve@latest");
+    expectPackageInstallSpec("eve-agent@latest");
   });
 
   it("refuses package updates from inherited gateway service env when --no-restart leaves the gateway running", async () => {
@@ -2438,7 +2433,7 @@ describe("update-cli", () => {
     const errors = vi.mocked(defaultRuntime.error).mock.calls.map((call) => String(call[0]));
     expect(errors.join("\n")).toContain("Node ");
     expect(errors.join("\n")).toContain(
-      "Bare `npm i -g eve` can silently install an older compatible release.",
+      "Bare `npm i -g eve-agent` can silently install an older compatible release.",
     );
   });
 
@@ -2449,7 +2444,7 @@ describe("update-cli", () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
         await updateCommand({ tag: "next" });
       },
-      expectedSpec: "eve@next",
+      expectedSpec: "eve-agent@next",
     },
     {
       name: "main shorthand",
@@ -2457,29 +2452,32 @@ describe("update-cli", () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
         await updateCommand({ yes: true, tag: "main" });
       },
-      expectedSpec: "github:eve/eve#main",
+      expectedSpec: "github:engsathiago/eve-agent#main",
     },
     {
       name: "explicit git package spec",
       run: async () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
-        await updateCommand({ yes: true, tag: "github:eve/eve#main" });
+        await updateCommand({ yes: true, tag: "github:engsathiago/eve-agent#main" });
       },
-      expectedSpec: "github:eve/eve#main",
+      expectedSpec: "github:engsathiago/eve-agent#main",
     },
     {
       name: "aliased git package spec",
       run: async () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
-        await updateCommand({ yes: true, tag: "EVE@github:eve/eve#main" });
+        await updateCommand({ yes: true, tag: "EVE@github:engsathiago/eve-agent#main" });
       },
-      expectedSpec: "EVE@github:eve/eve#main",
+      expectedSpec: "EVE@github:engsathiago/eve-agent#main",
     },
     {
       name: "full git URL package spec",
       run: async () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
-        await updateCommand({ yes: true, tag: "https://github.com/engsathiago/eve-agent.git#main" });
+        await updateCommand({
+          yes: true,
+          tag: "https://github.com/engsathiago/eve-agent.git#main",
+        });
       },
       expectedSpec: "https://github.com/engsathiago/eve-agent.git#main",
     },
@@ -2497,7 +2495,7 @@ describe("update-cli", () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
         await updateCommand({
           yes: true,
-          tag: "eve@https://github.com/engsathiago/eve-agent#main",
+          tag: "eve-agent@https://github.com/engsathiago/eve-agent#main",
         });
       },
       expectedSpec: "https://github.com/engsathiago/eve-agent#main",
@@ -2506,17 +2504,17 @@ describe("update-cli", () => {
       name: "GitHub shorthand package spec",
       run: async () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
-        await updateCommand({ yes: true, tag: "eve/eve#main" });
+        await updateCommand({ yes: true, tag: "engsathiago/eve-agent#main" });
       },
-      expectedSpec: "eve/eve#main",
+      expectedSpec: "engsathiago/eve-agent#main",
     },
     {
       name: "SCP-style SSH package spec",
       run: async () => {
         mockPackageInstallStatus(createCaseDir("eve-update"));
-        await updateCommand({ yes: true, tag: "git@github.com:eve/eve.git#main" });
+        await updateCommand({ yes: true, tag: "git@github.com:engsathiago/eve-agent.git#main" });
       },
-      expectedSpec: "git@github.com:eve/eve.git#main",
+      expectedSpec: "git@github.com:engsathiago/eve-agent.git#main",
     },
     {
       name: "EVE_UPDATE_PACKAGE_SPEC override",
@@ -2535,7 +2533,7 @@ describe("update-cli", () => {
     "resolves package install specs from tags and env overrides: $name",
     async ({ run, expectedSpec }) => {
       vi.clearAllMocks();
-      readPackageName.mockResolvedValue("eve");
+      readPackageName.mockResolvedValue("eve-agent");
       readPackageVersion.mockResolvedValue("1.0.0");
       resolveGlobalManager.mockResolvedValue("npm");
       vi.mocked(resolveEVEPackageRoot).mockResolvedValue(process.cwd());
@@ -2547,12 +2545,12 @@ describe("update-cli", () => {
   it("fails package updates when the installed correction version does not match the requested target", async () => {
     const tempDir = createCaseDir("eve-update");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     mockPackageInstallStatus(tempDir);
     await fs.mkdir(pkgRoot, { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.3.23" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.3.23" }),
       "utf-8",
     );
     for (const relativePath of TEST_BUNDLED_RUNTIME_SIDECAR_PATHS) {
@@ -2596,7 +2594,7 @@ describe("update-cli", () => {
     const tempDir = await createTrackedTempDir("eve-update-staged-fail-");
     const prefix = path.join(tempDir, "prefix");
     const nodeModules = path.join(prefix, "lib", "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     mockPackageInstallStatus(pkgRoot);
     readPackageVersion.mockResolvedValue("2026.4.20");
     vi.mocked(resolveNpmChannelTag).mockResolvedValue({
@@ -2606,7 +2604,7 @@ describe("update-cli", () => {
     await fs.mkdir(path.join(pkgRoot, "dist"), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.20" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.20" }),
       "utf-8",
     );
     await fs.writeFile(path.join(pkgRoot, "dist", "index.js"), "export {};\n", "utf-8");
@@ -2633,11 +2631,11 @@ describe("update-cli", () => {
         if (typeof stagePrefix !== "string") {
           throw new Error("missing stage prefix");
         }
-        const stageRoot = path.join(stagePrefix, "lib", "node_modules", "eve");
+        const stageRoot = path.join(stagePrefix, "lib", "node_modules", "eve-agent");
         await fs.mkdir(path.join(stageRoot, "dist"), { recursive: true });
         await fs.writeFile(
           path.join(stageRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2026.4.25" }),
+          JSON.stringify({ name: "eve-agent", version: "2026.4.25" }),
           "utf-8",
         );
         await fs.writeFile(path.join(stageRoot, "dist", "index.js"), "export {};\n", "utf-8");
@@ -2674,13 +2672,13 @@ describe("update-cli", () => {
   it("marks package post-update doctor as update-in-progress", async () => {
     const tempDir = await createTrackedTempDir("eve-update-package-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -2722,21 +2720,21 @@ describe("update-cli", () => {
     const doctorCall = doctorCommandCall();
     expect(doctorCall?.[0][0]).toContain("node");
     expect(doctorCall?.[0].slice(1)).toEqual([entryPath, "doctor", "--non-interactive", "--fix"]);
-    expect(
-      (doctorCall?.[1].env as NodeJS.ProcessEnv | undefined)?.EVE_UPDATE_IN_PROGRESS,
-    ).toBe("1");
+    expect((doctorCall?.[1].env as NodeJS.ProcessEnv | undefined)?.EVE_UPDATE_IN_PROGRESS).toBe(
+      "1",
+    );
   });
 
   it("continues package post-core work for explicit post-update doctor advisories", async () => {
     const tempDir = await createTrackedTempDir("eve-update-package-doctor-warning-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -2817,13 +2815,13 @@ describe("update-cli", () => {
   it("fails package updates when the post-update doctor is killed after verification", async () => {
     const tempDir = await createTrackedTempDir("eve-update-package-doctor-timeout-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -2889,13 +2887,13 @@ describe("update-cli", () => {
   it("runs package post-update doctor from the verified package root after a staged swap", async () => {
     const tempDir = await createTrackedTempDir("eve-update-staged-doctor-");
     const nodeModules = path.join(tempDir, "lib", "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -2935,13 +2933,13 @@ describe("update-cli", () => {
           requireValue(stagePrefix, "stage prefix"),
           "lib",
           "node_modules",
-          "eve",
+          "eve-agent",
         );
         const stageEntryPath = path.join(stagePackageRoot, "dist", "index.js");
         await fs.mkdir(path.dirname(stageEntryPath), { recursive: true });
         await fs.writeFile(
           path.join(stagePackageRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2026.5.14" }),
+          JSON.stringify({ name: "eve-agent", version: "2026.5.14" }),
           "utf-8",
         );
         await fs.writeFile(stageEntryPath, "export {};\n", "utf-8");
@@ -2977,13 +2975,13 @@ describe("update-cli", () => {
   it("stops a running managed gateway before package replacement", async () => {
     const tempDir = await createTrackedTempDir("eve-update-stop-service-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -3092,10 +3090,7 @@ describe("update-cli", () => {
   });
 
   it("stops a running managed git gateway when wrapper commands hide the service root", async () => {
-    const wrapperPath = path.join(
-      createCaseDir("eve-update-wrapper-service"),
-      "gateway-wrapper",
-    );
+    const wrapperPath = path.join(createCaseDir("eve-update-wrapper-service"), "gateway-wrapper");
     serviceReadCommand.mockResolvedValue({
       programArguments: [wrapperPath, "gateway", "run"],
       environment: {
@@ -3196,7 +3191,7 @@ describe("update-cli", () => {
     await fs.mkdir(path.dirname(serviceEntrypoint), { recursive: true });
     await fs.writeFile(
       path.join(gitRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(serviceEntrypoint, "export {};\n", "utf-8");
@@ -3241,12 +3236,12 @@ describe("update-cli", () => {
     await fs.mkdir(path.dirname(packageEntrypoint), { recursive: true });
     await fs.writeFile(
       path.join(gitRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(
       path.join(packageRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.20" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.20" }),
       "utf-8",
     );
     await fs.writeFile(packageEntrypoint, "export {};\n", "utf-8");
@@ -3289,7 +3284,7 @@ describe("update-cli", () => {
     await fs.mkdir(path.dirname(otherEntrypoint), { recursive: true });
     await fs.writeFile(
       path.join(otherRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(otherEntrypoint, "export {};\n", "utf-8");
@@ -3355,14 +3350,14 @@ describe("update-cli", () => {
   it("keeps managed service stop output off stdout during json package updates", async () => {
     const tempDir = await createTrackedTempDir("eve-update-json-stop-service-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     const stdoutWrite = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -3427,13 +3422,13 @@ describe("update-cli", () => {
   it("disarms legacy launchd updater jobs before stopping the gateway", async () => {
     const tempDir = await createTrackedTempDir("eve-update-launchd-loop-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -3494,7 +3489,7 @@ describe("update-cli", () => {
   it("refreshes package installs even when the current version already matches the target", async () => {
     const tempDir = await createTrackedTempDir("eve-update-current-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const entryPath = path.join(pkgRoot, "dist", "index.js");
     mockPackageInstallStatus(pkgRoot);
     readPackageVersion.mockResolvedValue("2026.4.23");
@@ -3505,7 +3500,7 @@ describe("update-cli", () => {
     await fs.mkdir(path.dirname(entryPath), { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.23" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.23" }),
       "utf-8",
     );
     await fs.writeFile(entryPath, "export {};\n", "utf-8");
@@ -3546,7 +3541,7 @@ describe("update-cli", () => {
 
     await updateCommand({ yes: true, restart: false });
 
-    expectPackageInstallSpec("eve@latest");
+    expectPackageInstallSpec("eve-agent@latest");
     const doctorCall = doctorCommandCall();
     expect(doctorCall?.[0][0]).toContain("node");
     expect(doctorCall?.[0].slice(1)).toEqual([entryPath, "doctor", "--non-interactive", "--fix"]);
@@ -3568,12 +3563,12 @@ describe("update-cli", () => {
   it("retries package updates without optional deps when npm global update fails", async () => {
     const tempDir = await createTrackedTempDir("eve-update-optional-");
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     mockPackageInstallStatus(pkgRoot);
     await fs.mkdir(pkgRoot, { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "1.0.0" }),
+      JSON.stringify({ name: "eve-agent", version: "1.0.0" }),
       "utf-8",
     );
 
@@ -3623,7 +3618,7 @@ describe("update-cli", () => {
         "npm",
         "i",
         "-g",
-        "eve@latest",
+        "eve-agent@latest",
         "--no-fund",
         "--no-audit",
         "--loglevel=error",
@@ -3633,7 +3628,7 @@ describe("update-cli", () => {
         "npm",
         "i",
         "-g",
-        "eve@latest",
+        "eve-agent@latest",
         "--omit=optional",
         "--no-fund",
         "--no-audit",
@@ -3648,7 +3643,7 @@ describe("update-cli", () => {
     const platformSpy = vi.spyOn(process, "platform", "get").mockReturnValue("darwin");
     const brewPrefix = createCaseDir("brew-prefix");
     const brewRoot = path.join(brewPrefix, "lib", "node_modules");
-    const pkgRoot = path.join(brewRoot, "eve");
+    const pkgRoot = path.join(brewRoot, "eve-agent");
     const brewNpm = path.join(brewPrefix, "bin", "npm");
     const win32PrefixNpm = path.join(brewPrefix, "npm.cmd");
     const pathNpmRoot = createCaseDir("nvm-root");
@@ -3712,7 +3707,7 @@ describe("update-cli", () => {
           isOwningNpmCommand(argv[0], brewPrefix) &&
           argv[1] === "i" &&
           argv[2] === "-g" &&
-          argv.includes("eve@latest"),
+          argv.includes("eve-agent@latest"),
       );
 
     const requiredInstallCall = requireValue(installCall, "brew npm install call");
@@ -3750,14 +3745,7 @@ describe("update-cli", () => {
       "mingw64",
       "bin",
     );
-    const portableGitUsr = path.join(
-      localAppData,
-      "EVE",
-      "deps",
-      "portable-git",
-      "usr",
-      "bin",
-    );
+    const portableGitUsr = path.join(localAppData, "EVE", "deps", "portable-git", "usr", "bin");
     await fs.mkdir(portableGitMingw, { recursive: true });
     await fs.mkdir(portableGitUsr, { recursive: true });
     mockPackageInstallStatus(tempDir);
@@ -3861,7 +3849,7 @@ describe("update-cli", () => {
     await fs.mkdir(path.join(serviceRoot, "dist"), { recursive: true });
     await fs.writeFile(
       path.join(serviceRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.18" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.18" }),
       "utf-8",
     );
     mockPackageInstallStatus(shellRoot);
@@ -3892,7 +3880,7 @@ describe("update-cli", () => {
     await fs.writeFile(serviceNode, "", "utf-8");
     await fs.writeFile(
       path.join(serviceRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.18" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.18" }),
       "utf-8",
     );
     mockPackageInstallStatus(shellRoot);
@@ -3943,7 +3931,7 @@ describe("update-cli", () => {
     const shellRoot = createCaseDir("eve-shell-root");
     const servicePrefix = await createTrackedTempDir("eve-service-prefix-");
     const nodeModules = path.join(servicePrefix, "lib", "node_modules");
-    const serviceRoot = path.join(nodeModules, "eve");
+    const serviceRoot = path.join(nodeModules, "eve-agent");
     const serviceNode = path.join(servicePrefix, "bin", "node");
     const serviceNpm = path.join(servicePrefix, "bin", "npm");
     const entrypoint = path.join(serviceRoot, "dist", "index.js");
@@ -3954,7 +3942,7 @@ describe("update-cli", () => {
     const serviceNpmReal = await fs.realpath(serviceNpm);
     await fs.writeFile(
       path.join(serviceRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.18" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.18" }),
       "utf-8",
     );
     await fs.writeFile(entrypoint, "", "utf-8");
@@ -4007,13 +3995,13 @@ describe("update-cli", () => {
           ? argv[argv.indexOf("--prefix") + 1]
           : undefined;
         const stageRoot = stagePrefix
-          ? path.join(stagePrefix, "lib", "node_modules", "eve")
+          ? path.join(stagePrefix, "lib", "node_modules", "eve-agent")
           : serviceRoot;
         const stageEntryPoint = path.join(stageRoot, "dist", "index.js");
         await fs.mkdir(path.dirname(stageEntryPoint), { recursive: true });
         await fs.writeFile(
           path.join(stageRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2026.5.20" }),
+          JSON.stringify({ name: "eve-agent", version: "2026.5.20" }),
           "utf-8",
         );
         await fs.writeFile(stageEntryPoint, "export {};\n", "utf-8");
@@ -4068,7 +4056,7 @@ describe("update-cli", () => {
   it("uses the managed service Node for follow-up commands when roots match but nodes differ", async () => {
     const servicePrefix = await createTrackedTempDir("eve-service-prefix-");
     const nodeModules = path.join(servicePrefix, "lib", "node_modules");
-    const root = path.join(nodeModules, "eve");
+    const root = path.join(nodeModules, "eve-agent");
     const serviceNode = path.join(servicePrefix, "bin", "node");
     const serviceNpm = path.join(servicePrefix, "bin", "npm");
     const entrypoint = path.join(root, "dist", "index.js");
@@ -4079,7 +4067,7 @@ describe("update-cli", () => {
     const serviceNpmReal = await fs.realpath(serviceNpm);
     await fs.writeFile(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.18" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.18" }),
       "utf-8",
     );
     await fs.writeFile(entrypoint, "", "utf-8");
@@ -4133,13 +4121,13 @@ describe("update-cli", () => {
           ? argv[argv.indexOf("--prefix") + 1]
           : undefined;
         const stageRoot = stagePrefix
-          ? path.join(stagePrefix, "lib", "node_modules", "eve")
+          ? path.join(stagePrefix, "lib", "node_modules", "eve-agent")
           : root;
         const stageEntryPoint = path.join(stageRoot, "dist", "index.js");
         await fs.mkdir(path.dirname(stageEntryPoint), { recursive: true });
         await fs.writeFile(
           path.join(stageRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2026.5.20" }),
+          JSON.stringify({ name: "eve-agent", version: "2026.5.20" }),
           "utf-8",
         );
         await fs.writeFile(stageEntryPoint, "export {};\n", "utf-8");
@@ -4169,7 +4157,7 @@ describe("update-cli", () => {
   it("pins package install to the service root when nodes differ and no owning npm exists at the prefix", async () => {
     const servicePrefix = await createTrackedTempDir("eve-no-npm-prefix-");
     const nodeModules = path.join(servicePrefix, "lib", "node_modules");
-    const root = path.join(nodeModules, "eve");
+    const root = path.join(nodeModules, "eve-agent");
     const serviceNode = path.join(servicePrefix, "bin", "node");
     const entrypoint = path.join(root, "dist", "index.js");
     // Create the node binary but intentionally do NOT create <prefix>/bin/npm
@@ -4180,7 +4168,7 @@ describe("update-cli", () => {
     // No npm binary at servicePrefix/bin/npm!
     await fs.writeFile(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.18" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.18" }),
       "utf-8",
     );
     await fs.writeFile(entrypoint, "", "utf-8");
@@ -4232,13 +4220,13 @@ describe("update-cli", () => {
         const prefixIdx = argv.indexOf("--prefix");
         const stagePrefix = prefixIdx >= 0 ? argv[prefixIdx + 1] : undefined;
         const stageRoot = stagePrefix
-          ? path.join(stagePrefix, "lib", "node_modules", "eve")
+          ? path.join(stagePrefix, "lib", "node_modules", "eve-agent")
           : root;
         const stageEntryPoint = path.join(stageRoot, "dist", "index.js");
         await fs.mkdir(path.dirname(stageEntryPoint), { recursive: true });
         await fs.writeFile(
           path.join(stageRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2026.5.20" }),
+          JSON.stringify({ name: "eve-agent", version: "2026.5.20" }),
           "utf-8",
         );
         await fs.writeFile(stageEntryPoint, "export {};\n", "utf-8");
@@ -5588,7 +5576,7 @@ describe("update-cli", () => {
     await fs.mkdir(updatedRoot, { recursive: true });
     await fs.writeFile(
       updatedPackageJson,
-      JSON.stringify({ name: "eve", version: "2026.4.24" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.24" }),
       "utf8",
     );
     setupUpdatedRootRefresh({
@@ -5659,12 +5647,12 @@ describe("update-cli", () => {
     await Promise.all([
       fs.writeFile(
         oldPackageJson,
-        JSON.stringify({ name: "eve", version: "2026.4.24" }),
+        JSON.stringify({ name: "eve-agent", version: "2026.4.24" }),
         "utf8",
       ),
       fs.writeFile(
         updatedPackageJson,
-        JSON.stringify({ name: "eve", version: "2026.4.24" }),
+        JSON.stringify({ name: "eve-agent", version: "2026.4.24" }),
         "utf8",
       ),
     ]);
@@ -6263,18 +6251,16 @@ describe("update-cli", () => {
       .mockResolvedValueOnce(preDoctorSnapshot)
       .mockResolvedValueOnce(postDoctorSnapshot);
     loadInstalledPluginIndexInstallRecords.mockResolvedValueOnce(postDoctorRecords);
-    syncPluginsForUpdateChannel.mockImplementationOnce(
-      async (params: { config?: EVEConfig }) => ({
-        changed: true,
-        config: params.config ?? baseConfig,
-        summary: {
-          switchedToBundled: [],
-          switchedToNpm: [],
-          warnings: [],
-          errors: [],
-        },
-      }),
-    );
+    syncPluginsForUpdateChannel.mockImplementationOnce(async (params: { config?: EVEConfig }) => ({
+      changed: true,
+      config: params.config ?? baseConfig,
+      summary: {
+        switchedToBundled: [],
+        switchedToNpm: [],
+        warnings: [],
+        errors: [],
+      },
+    }));
 
     await updateFinalizeCommand({ json: true, timeout: "9", restart: false });
 
@@ -6547,12 +6533,9 @@ describe("update-cli", () => {
   it("uses EVE_HOME for the default dev checkout directory", async () => {
     const homedirSpy = vi.spyOn(os, "homedir").mockReturnValue("/tmp/oc-home");
     try {
-      await withEnvAsync(
-        { EVE_GIT_DIR: undefined, EVE_HOME: "/srv/eve-home" },
-        async () => {
-          expect(resolveGitInstallDir()).toBe(path.posix.join("/srv/eve-home", "eve"));
-        },
-      );
+      await withEnvAsync({ EVE_GIT_DIR: undefined, EVE_HOME: "/srv/eve-home" }, async () => {
+        expect(resolveGitInstallDir()).toBe(path.posix.join("/srv/eve-home", "eve"));
+      });
     } finally {
       homedirSpy.mockRestore();
     }

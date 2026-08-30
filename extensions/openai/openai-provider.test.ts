@@ -6,12 +6,12 @@ import {
   type LiveModelCatalogFetchGuard,
 } from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import manifest from "./eve.plugin.json" with { type: "json" };
 import {
   buildOpenAICodexLiveProviderConfig,
   buildOpenAILiveProviderConfig,
   buildOpenAIProvider,
 } from "./openai-provider.js";
-import manifest from "./eve.plugin.json" with { type: "json" };
 
 const mocks = vi.hoisted(() => ({
   refreshOpenAICodexToken: vi.fn(),

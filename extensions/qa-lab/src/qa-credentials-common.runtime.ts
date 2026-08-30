@@ -43,9 +43,7 @@ export function normalizeQaCredentialConvexSiteUrl(params: {
   try {
     url = new URL(params.raw);
   } catch {
-    throw toError(
-      `EVE_QA_CONVEX_SITE_URL must be a valid URL, got "${params.raw || "<empty>"}".`,
-    );
+    throw toError(`EVE_QA_CONVEX_SITE_URL must be a valid URL, got "${params.raw || "<empty>"}".`);
   }
   if (url.protocol === "https:") {
     const text = url.toString();

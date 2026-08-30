@@ -80,25 +80,19 @@ describe("process reaper", () => {
         wrapperRoot: WRAPPER_ROOT,
       }),
     ).toBe(true);
-    expect(
-      isEVELeaseAwareAcpxProcessCommand({ command: LOCAL_NODE_MODULES_CODEX_COMMAND }),
-    ).toBe(false);
-    expect(isEVELeaseAwareAcpxProcessCommand({ command: PLUGIN_DEPS_CODEX_COMMAND })).toBe(
+    expect(isEVELeaseAwareAcpxProcessCommand({ command: LOCAL_NODE_MODULES_CODEX_COMMAND })).toBe(
       false,
     );
+    expect(isEVELeaseAwareAcpxProcessCommand({ command: PLUGIN_DEPS_CODEX_COMMAND })).toBe(false);
   });
 
   it("recognizes EVE plugin-runtime-deps ACP adapter children", () => {
     expect(isEVEOwnedAcpxProcessCommand({ command: PLUGIN_DEPS_CODEX_COMMAND })).toBe(true);
-    expect(isEVEOwnedAcpxProcessCommand({ command: "npx @zed-industries/codex-acp" })).toBe(
-      false,
-    );
+    expect(isEVEOwnedAcpxProcessCommand({ command: "npx @zed-industries/codex-acp" })).toBe(false);
   });
 
   it("recognizes plugin-local ACP adapter package paths without trusting arbitrary installs", () => {
-    expect(isEVEOwnedAcpxProcessCommand({ command: LOCAL_NODE_MODULES_CODEX_COMMAND })).toBe(
-      true,
-    );
+    expect(isEVEOwnedAcpxProcessCommand({ command: LOCAL_NODE_MODULES_CODEX_COMMAND })).toBe(true);
     expect(
       isEVEOwnedAcpxProcessCommand({
         command: "node /tmp/other-project/node_modules/@zed-industries/codex-acp/bin/codex-acp.js",

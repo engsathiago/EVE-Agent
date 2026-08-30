@@ -186,18 +186,12 @@ describe("installTestEnv", () => {
       preview: { chunk: { minChars: 120 } },
     });
 
-    expect(
-      fs.existsSync(path.join(testEnv.tempHome, ".eve", "credentials", "token.txt")),
-    ).toBe(true);
+    expect(fs.existsSync(path.join(testEnv.tempHome, ".eve", "credentials", "token.txt"))).toBe(
+      true,
+    );
     expect(
       fs.existsSync(
-        path.join(
-          testEnv.tempHome,
-          ".eve",
-          "external-plugins",
-          "glueclaw",
-          "eve.plugin.json",
-        ),
+        path.join(testEnv.tempHome, ".eve", "external-plugins", "glueclaw", "eve.plugin.json"),
       ),
     ).toBe(true);
     expect(

@@ -560,15 +560,15 @@ describe("scripts/lib/docker-e2e-plan", () => {
     const plan = planFor({
       selectedLaneNames: ["published-upgrade-survivor"],
       upgradeSurvivorBaselines:
-        "eve@2026.4.29 2026.4.23 eve@2026.4.23 eve@2026.3.13-1",
+        "eve-agent@2026.4.29 2026.4.23 eve-agent@2026.4.23 eve-agent@2026.3.13-1",
     });
 
     expect(plan.lanes.map(summarizeLane)).toEqual([
-      publishedUpgradeSurvivorLane("published-upgrade-survivor-2026.4.29", "eve@2026.4.29"),
-      publishedUpgradeSurvivorLane("published-upgrade-survivor-2026.4.23", "eve@2026.4.23"),
+      publishedUpgradeSurvivorLane("published-upgrade-survivor-2026.4.29", "eve-agent@2026.4.29"),
+      publishedUpgradeSurvivorLane("published-upgrade-survivor-2026.4.23", "eve-agent@2026.4.23"),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.3.13-1",
-        "eve@2026.3.13-1",
+        "eve-agent@2026.3.13-1",
       ),
     ]);
   });
@@ -583,32 +583,32 @@ describe("scripts/lib/docker-e2e-plan", () => {
     expect(plan.lanes.map(summarizeLane)).toEqual([
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.29",
-        "eve@2026.4.29",
+        "eve-agent@2026.4.29",
         "base",
       ),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.29-feishu-channel",
-        "eve@2026.4.29",
+        "eve-agent@2026.4.29",
         "feishu-channel",
       ),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.29-tilde-log-path",
-        "eve@2026.4.29",
+        "eve-agent@2026.4.29",
         "tilde-log-path",
       ),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.23",
-        "eve@2026.4.23",
+        "eve-agent@2026.4.23",
         "base",
       ),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.23-feishu-channel",
-        "eve@2026.4.23",
+        "eve-agent@2026.4.23",
         "feishu-channel",
       ),
       publishedUpgradeSurvivorLane(
         "published-upgrade-survivor-2026.4.23-tilde-log-path",
-        "eve@2026.4.23",
+        "eve-agent@2026.4.23",
         "tilde-log-path",
       ),
     ]);
@@ -670,8 +670,8 @@ describe("scripts/lib/docker-e2e-plan", () => {
     });
 
     expect(plan.lanes.map(summarizeLane)).toEqual([
-      updateMigrationLane("update-migration-2026.4.29-plugin-deps-cleanup", "eve@2026.4.29"),
-      updateMigrationLane("update-migration-2026.4.23-plugin-deps-cleanup", "eve@2026.4.23"),
+      updateMigrationLane("update-migration-2026.4.29-plugin-deps-cleanup", "eve-agent@2026.4.29"),
+      updateMigrationLane("update-migration-2026.4.23-plugin-deps-cleanup", "eve-agent@2026.4.23"),
     ]);
   });
 

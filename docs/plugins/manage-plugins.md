@@ -144,10 +144,10 @@ the install instead.
 
 ## Choose a source
 
-| Source      | Use when                                                                    | Example                                                        |
-| ----------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| ClawHub     | You want EVE-native discovery, scan summaries, versions, and hints     | `eve plugins install clawhub:<package>`                   |
-| npmjs.com   | You already ship JavaScript packages or need npm dist-tags/private registry | `eve plugins install npm:@acme/eve-plugin`           |
+| Source      | Use when                                                                    | Example                                                   |
+| ----------- | --------------------------------------------------------------------------- | --------------------------------------------------------- |
+| ClawHub     | You want EVE-native discovery, scan summaries, versions, and hints          | `eve plugins install clawhub:<package>`                   |
+| npmjs.com   | You already ship JavaScript packages or need npm dist-tags/private registry | `eve plugins install npm:@acme/eve-plugin`                |
 | git         | You want a branch, tag, or commit from a repository                         | `eve plugins install git:github.com/<owner>/<repo>@<ref>` |
 | local path  | You are developing or testing a plugin on the same machine                  | `eve plugins install --link ./my-plugin`                  |
 | npm pack    | You are proving a local package artifact through npm install semantics      | `eve plugins install npm-pack:<path.tgz>`                 |

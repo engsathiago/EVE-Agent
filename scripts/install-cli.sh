@@ -77,6 +77,7 @@ Usage: install-cli.sh [options]
   --npm                               Shortcut for --install-method npm
   --git, --github                     Shortcut for --install-method git
   --git-dir, --dir <path>             Checkout directory (default: ~/eve, or \$EVE_HOME/eve)
+  --no-git-update                     Build an existing checkout exactly as-is
   --version <ver>                     EVE version (default: latest)
   --node-version <ver>                Node version (default: 22.22.0)
   --onboard                           Run "eve onboard" after install
@@ -594,16 +595,16 @@ is_eve_source_package_install_spec() {
   local value="${1:-}"
   local normalized_value=""
   normalized_value="$(to_lowercase_ascii "$value")"
-  normalized_value="${normalized_value#eve@}"
+  normalized_value="${normalized_value#eve-agent@}"
 
   [[ "$normalized_value" == "main" ]] && return 0
-  [[ "$normalized_value" =~ ^github:eve/eve($|[#/]) ]] && return 0
+  [[ "$normalized_value" =~ ^github:engsathiago/eve-agent($|[#/]) ]] && return 0
 
   normalized_value="${normalized_value#git+}"
-  [[ "$normalized_value" =~ ^https?://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]eve/eve(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^git://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
-  [[ "$normalized_value" =~ ^git@github\.com:eve/eve(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^https?://github\.com/engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^git://github\.com/engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+  [[ "$normalized_value" =~ ^git@github\.com:engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
   return 1
 }
 
@@ -613,7 +614,7 @@ resolve_git_eve_ref() {
 
   case "$requested" in
     ""|latest)
-      resolved_version="$("$(npm_bin)" view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+      resolved_version="$("$(npm_bin)" view "eve-agent" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
       if [[ -n "$resolved_version" ]]; then
         echo "v${resolved_version}"
         return 0
@@ -622,7 +623,7 @@ resolve_git_eve_ref() {
       return 0
       ;;
     next|beta)
-      resolved_version="$("$(npm_bin)" view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+      resolved_version="$("$(npm_bin)" view "eve-agent" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
       if [[ -n "$resolved_version" ]]; then
         echo "v${resolved_version}"
         return 0
@@ -980,14 +981,14 @@ install_eve() {
   fi
 
   if [[ "${requested}" == "latest" ]]; then
-    if ! env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@latest"; then
-      log "npm install eve@latest failed; retrying eve@next"
+    if ! env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve-agent@latest"; then
+      log "npm install eve-agent@latest failed; retrying eve-agent@next"
       emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"retry\",\"version\":\"next\"}"
-      env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@next"
+      env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve-agent@next"
       requested="next"
     fi
   else
-    env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve@${requested}"
+    env -u NPM_CONFIG_BEFORE -u npm_config_before -u NPM_CONFIG_MIN_RELEASE_AGE -u npm_config_min_release_age -u npm_config_min-release-age "$(npm_bin)" install -g --prefix "$(node_dir)" "${npm_args[@]}" "eve-agent@${requested}"
   fi
 
   mkdir -p "${PREFIX}/bin"
@@ -995,7 +996,7 @@ install_eve() {
   cat > "${PREFIX}/bin/eve" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
-exec "${PREFIX}/tools/node/bin/node" "$(node_dir)/lib/node_modules/eve/dist/entry.js" "\$@"
+exec "${PREFIX}/tools/node/bin/node" "$(node_dir)/lib/node_modules/eve-agent/dist/entry.js" "\$@"
 EOF
   chmod +x "${PREFIX}/bin/eve"
   emit_json "{\"event\":\"step\",\"name\":\"eve\",\"status\":\"ok\",\"version\":\"${requested}\"}"
@@ -1070,7 +1071,10 @@ install_eve_from_git() {
 
   local git_ref
   git_ref="$(resolve_git_eve_ref)"
-  if [[ -z "$(git -C "$repo_dir" status --porcelain 2>/dev/null || true)" ]]; then
+  if [[ "$GIT_UPDATE" != "1" ]]; then
+    git_ref="$(git -C "$repo_dir" rev-parse HEAD)"
+    log "Using existing checkout as-is at commit: ${git_ref}"
+  elif [[ -z "$(git -C "$repo_dir" status --porcelain 2>/dev/null || true)" ]]; then
     log "Using git ref: ${git_ref}"
     checkout_git_eve_ref "$repo_dir" "$git_ref"
   else

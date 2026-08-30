@@ -314,7 +314,7 @@ describe("managed npm root", () => {
       path.join(packageRoot, "package.json"),
       `${JSON.stringify(
         {
-          name: "eve",
+          name: "eve-agent",
         },
         null,
         2,
@@ -341,7 +341,7 @@ describe("managed npm root", () => {
       path.join(packageRoot, "package.json"),
       `${JSON.stringify(
         {
-          name: "eve",
+          name: "eve-agent",
           dependencies: {
             "managed-runtime": "3.1024.0",
             "node-domexception": "npm:@nolyfill/domexception@1.0.28",
@@ -529,7 +529,7 @@ describe("managed npm root", () => {
                 peer: true,
                 version: "2.1.0",
               },
-              "node_modules/eve": {
+              "node_modules/eve-agent": {
                 peer: true,
                 version: "2026.5.12",
               },
@@ -537,7 +537,7 @@ describe("managed npm root", () => {
                 peerDependencies: {
                   "existing-root": "^1.0.0",
                   "new-peer": "^2.0.0",
-                  eve: ">=2026.5.0",
+                  "eve-agent": ">=2026.5.0",
                 },
                 version: "1.0.0",
               },
@@ -666,7 +666,7 @@ describe("managed npm root", () => {
         return {
           code: 1,
           stdout: "",
-          stderr: "npm ERR! notarget No matching version found for eve@2026.5.99-beta.1",
+          stderr: "npm ERR! notarget No matching version found for eve-agent@2026.5.99-beta.1",
           signal: null,
           killed: false,
           termination: "exit" as const,
@@ -685,7 +685,7 @@ describe("managed npm root", () => {
               },
               "node_modules/plugin": {
                 peerDependencies: {
-                  eve: "2026.5.99-beta.1",
+                  "eve-agent": "2026.5.99-beta.1",
                   "runtime-peer": "^2.0.0",
                 },
                 version: "1.0.0",
@@ -897,14 +897,14 @@ describe("managed npm root", () => {
 
   it("repairs stale managed eve peer state without dropping plugin packages", async () => {
     const npmRoot = await makeTempRoot();
-    await fs.mkdir(path.join(npmRoot, "node_modules", "eve"), { recursive: true });
+    await fs.mkdir(path.join(npmRoot, "node_modules", "eve-agent"), { recursive: true });
     await fs.writeFile(
       path.join(npmRoot, "package.json"),
       `${JSON.stringify(
         {
           private: true,
           dependencies: {
-            eve: "2026.5.4",
+            "eve-agent": "2026.5.4",
             "@eve/discord": "2026.5.4",
           },
         },
@@ -920,11 +920,11 @@ describe("managed npm root", () => {
           packages: {
             "": {
               dependencies: {
-                eve: "2026.5.4",
+                "eve-agent": "2026.5.4",
                 "@eve/discord": "2026.5.4",
               },
             },
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.4",
             },
             "node_modules/@eve/discord": {
@@ -932,7 +932,7 @@ describe("managed npm root", () => {
             },
           },
           dependencies: {
-            eve: {
+            "eve-agent": {
               version: "2026.5.4",
             },
           },
@@ -942,8 +942,8 @@ describe("managed npm root", () => {
       )}\n`,
     );
     await fs.writeFile(
-      path.join(npmRoot, "node_modules", "eve", "package.json"),
-      `${JSON.stringify({ name: "eve", version: "2026.5.4" })}\n`,
+      path.join(npmRoot, "node_modules", "eve-agent", "package.json"),
+      `${JSON.stringify({ name: "eve-agent", version: "2026.5.4" })}\n`,
     );
     await fs.mkdir(path.join(npmRoot, "node_modules", ".bin"), { recursive: true });
     await fs.writeFile(path.join(npmRoot, "node_modules", ".bin", "eve"), "shim");
@@ -955,7 +955,7 @@ describe("managed npm root", () => {
         {
           lockfileVersion: 3,
           packages: {
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.4",
             },
           },
@@ -978,7 +978,7 @@ describe("managed npm root", () => {
       "--ignore-scripts",
       "--no-audit",
       "--no-fund",
-      "eve",
+      "eve-agent",
     ]);
     expect(repairOptions?.cwd).toBe(npmRoot);
     expect(repairOptions?.timeoutMs).toBe(300_000);
@@ -999,10 +999,10 @@ describe("managed npm root", () => {
     expect(lockfile.packages?.[""]?.dependencies).toEqual({
       "@eve/discord": "2026.5.4",
     });
-    expect(lockfile.packages?.["node_modules/eve"]).toBeUndefined();
+    expect(lockfile.packages?.["node_modules/eve-agent"]).toBeUndefined();
     expect(lockfile.packages?.["node_modules/@eve/discord"]?.version).toBe("2026.5.4");
-    expect(lockfile.dependencies?.eve).toBeUndefined();
-    await expectPathMissing(path.join(npmRoot, "node_modules", "eve"));
+    expect(lockfile.dependencies?.["eve-agent"]).toBeUndefined();
+    await expectPathMissing(path.join(npmRoot, "node_modules", "eve-agent"));
     for (const binName of ["eve", "eve.cmd", "eve.ps1"]) {
       await expectPathMissing(path.join(npmRoot, "node_modules", ".bin", binName));
     }
@@ -1011,7 +1011,7 @@ describe("managed npm root", () => {
 
   it("does not repair the active EVE host package in a root-managed install", async () => {
     const npmRoot = await makeTempRoot();
-    const hostPackageRoot = path.join(npmRoot, "node_modules", "eve");
+    const hostPackageRoot = path.join(npmRoot, "node_modules", "eve-agent");
     await fs.mkdir(path.join(hostPackageRoot, "dist"), { recursive: true });
     await fs.writeFile(
       path.join(npmRoot, "package.json"),
@@ -1019,7 +1019,7 @@ describe("managed npm root", () => {
         {
           private: true,
           dependencies: {
-            eve: "2026.5.12-beta.6",
+            "eve-agent": "2026.5.12-beta.6",
             "@xdarkicex/eve-memory-libravdb": "1.4.69",
           },
         },
@@ -1035,11 +1035,11 @@ describe("managed npm root", () => {
           packages: {
             "": {
               dependencies: {
-                eve: "2026.5.12-beta.6",
+                "eve-agent": "2026.5.12-beta.6",
                 "@xdarkicex/eve-memory-libravdb": "1.4.69",
               },
             },
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.12-beta.6",
             },
           },
@@ -1050,7 +1050,7 @@ describe("managed npm root", () => {
     );
     await fs.writeFile(
       path.join(hostPackageRoot, "package.json"),
-      `${JSON.stringify({ name: "eve", version: "2026.5.12-beta.6" })}\n`,
+      `${JSON.stringify({ name: "eve-agent", version: "2026.5.12-beta.6" })}\n`,
     );
 
     const runCommand = vi.fn().mockResolvedValue(successfulSpawn);
@@ -1067,7 +1067,7 @@ describe("managed npm root", () => {
       fs.readFile(path.join(npmRoot, "package.json"), "utf8").then((raw) => JSON.parse(raw)),
     ).resolves.toMatchObject({
       dependencies: {
-        eve: "2026.5.12-beta.6",
+        "eve-agent": "2026.5.12-beta.6",
         "@xdarkicex/eve-memory-libravdb": "1.4.69",
       },
     });
@@ -1083,9 +1083,9 @@ describe("managed npm root", () => {
     await fs.mkdir(path.join(npmRoot, "node_modules", ".bin"), { recursive: true });
     await fs.writeFile(
       path.join(hostPackageRoot, "package.json"),
-      `${JSON.stringify({ name: "eve", version: "2026.5.12-beta.6" })}\n`,
+      `${JSON.stringify({ name: "eve-agent", version: "2026.5.12-beta.6" })}\n`,
     );
-    await fs.symlink(hostPackageRoot, path.join(npmRoot, "node_modules", "eve"), "dir");
+    await fs.symlink(hostPackageRoot, path.join(npmRoot, "node_modules", "eve-agent"), "dir");
     await fs.writeFile(path.join(npmRoot, "node_modules", ".bin", "eve"), "shim");
     await fs.writeFile(path.join(npmRoot, "node_modules", ".bin", "eve.cmd"), "cmd shim");
     await fs.writeFile(path.join(npmRoot, "node_modules", ".bin", "eve.ps1"), "ps1 shim");
@@ -1095,7 +1095,7 @@ describe("managed npm root", () => {
         {
           lockfileVersion: 3,
           packages: {
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.12-beta.6",
             },
           },
@@ -1110,7 +1110,7 @@ describe("managed npm root", () => {
         {
           private: true,
           dependencies: {
-            eve: "2026.5.12-beta.6",
+            "eve-agent": "2026.5.12-beta.6",
             "@xdarkicex/eve-memory-libravdb": "1.4.69",
           },
         },
@@ -1126,11 +1126,11 @@ describe("managed npm root", () => {
           packages: {
             "": {
               dependencies: {
-                eve: "2026.5.12-beta.6",
+                "eve-agent": "2026.5.12-beta.6",
                 "@xdarkicex/eve-memory-libravdb": "1.4.69",
               },
             },
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.12-beta.6",
             },
             "node_modules/@xdarkicex/eve-memory-libravdb": {
@@ -1138,7 +1138,7 @@ describe("managed npm root", () => {
             },
           },
           dependencies: {
-            eve: {
+            "eve-agent": {
               version: "2026.5.12-beta.6",
             },
           },
@@ -1158,7 +1158,7 @@ describe("managed npm root", () => {
     ).resolves.toBe(true);
 
     expect(runCommand).not.toHaveBeenCalled();
-    await expect(fs.realpath(path.join(npmRoot, "node_modules", "eve"))).resolves.toBe(
+    await expect(fs.realpath(path.join(npmRoot, "node_modules", "eve-agent"))).resolves.toBe(
       await fs.realpath(hostPackageRoot),
     );
     await expect(
@@ -1181,11 +1181,11 @@ describe("managed npm root", () => {
     expect(lockfile.packages?.[""]?.dependencies).toEqual({
       "@xdarkicex/eve-memory-libravdb": "1.4.69",
     });
-    expect(lockfile.packages?.["node_modules/eve"]).toBeUndefined();
+    expect(lockfile.packages?.["node_modules/eve-agent"]).toBeUndefined();
     expect(lockfile.packages?.["node_modules/@xdarkicex/eve-memory-libravdb"]?.version).toBe(
       "1.4.69",
     );
-    expect(lockfile.dependencies?.eve).toBeUndefined();
+    expect(lockfile.dependencies?.["eve-agent"]).toBeUndefined();
     for (const binName of ["eve", "eve.cmd", "eve.ps1"]) {
       await expectPathMissing(path.join(npmRoot, "node_modules", ".bin", binName));
     }

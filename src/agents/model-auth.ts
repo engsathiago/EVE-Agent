@@ -15,8 +15,8 @@ import {
   getRuntimeConfigSourceSnapshot,
   selectApplicableRuntimeConfig,
 } from "../config/config.js";
-import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
 import { coerceSecretRef } from "../config/types.secrets.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { getShellEnvAppliedKeys } from "../infra/shell-env.js";
@@ -658,10 +658,7 @@ function isManagedSecretRefApiKeyMarker(apiKey: string | undefined): boolean {
   return apiKey?.trim() === NON_ENV_SECRETREF_MARKER;
 }
 
-function hasManagedSecretRefProviderApiKey(
-  cfg: EVEConfig | undefined,
-  provider: string,
-): boolean {
+function hasManagedSecretRefProviderApiKey(cfg: EVEConfig | undefined, provider: string): boolean {
   const apiKey = resolveProviderConfig(cfg, provider)?.apiKey;
   const ref = coerceSecretRef(apiKey);
   if (ref) {
@@ -853,9 +850,7 @@ function resolveProviderSyntheticRuntimeAuth(params: {
     return { blockedOnManagedSecretRef: true };
   }
 
-  const resolveFromConfig = (
-    config: EVEConfig | undefined,
-  ): ResolvedProviderAuth | undefined => {
+  const resolveFromConfig = (config: EVEConfig | undefined): ResolvedProviderAuth | undefined => {
     const providerConfig = resolveProviderConfig(config, params.provider);
     return (
       resolveProviderSyntheticAuthWithPlugin({

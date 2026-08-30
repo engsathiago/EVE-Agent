@@ -808,13 +808,13 @@ jobs:
             fi
 
             release_version="${RELEASE_TAG#v}"
-            if ! npm view "eve@${release_version}" version >/dev/null 2>&1; then
+            if ! npm view "eve-agent@${release_version}" version >/dev/null 2>&1; then
               return 0
             fi
 
             release_url="https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG}"
             {
-              echo "eve@${release_version} is already published on npm."
+              echo "eve-agent@${release_version} is already published on npm."
               echo "Refusing to dispatch publish child workflows for an already-published version."
               echo "If this is recovery from a failed postpublish evidence or draft-release step, repair/finalize the existing draft or create a correction tag; do not rerun the publish workflow for the same npm version."
               echo "Release page, if present: ${release_url}"

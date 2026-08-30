@@ -132,9 +132,9 @@ describe("gateway handshake timeouts", () => {
 
   test("getConnectChallengeTimeoutMsFromEnv reads EVE_CONNECT_CHALLENGE_TIMEOUT_MS", () => {
     expect(getConnectChallengeTimeoutMsFromEnv({})).toBeUndefined();
-    expect(
-      getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "15000" }),
-    ).toBe(15_000);
+    expect(getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: "15000" })).toBe(
+      15_000,
+    );
     expect(
       getConnectChallengeTimeoutMsFromEnv({ EVE_CONNECT_CHALLENGE_TIMEOUT_MS: " 015000 " }),
     ).toBe(15_000);

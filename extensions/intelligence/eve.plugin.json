@@ -1,0 +1,132 @@
+{
+  "id": "intelligence",
+  "enabledByDefault": true,
+  "activation": {
+    "onStartup": true,
+    "onCommands": [
+      "intelligence",
+      "traces",
+      "results",
+      "flows",
+      "evals",
+      "router",
+      "experiments",
+      "workers",
+      "model-lab",
+      "environments",
+      "studio",
+      "integrations",
+      "packages"
+    ]
+  },
+  "name": "EVE Intelligence",
+  "description": "Trace Studio, durable flows, Result Hub, evals, adaptive routing, experiments, and distributed workers.",
+  "contracts": {
+    "tools": [
+      "eve_intelligence_status",
+      "eve_trace",
+      "eve_result",
+      "eve_flow",
+      "eve_route",
+      "eve_experiment",
+      "eve_worker",
+      "eve_environment",
+      "eve_studio",
+      "eve_package"
+    ]
+  },
+  "toolMetadata": {
+    "eve_intelligence_status": { "optional": true },
+    "eve_trace": { "optional": true },
+    "eve_result": { "optional": true },
+    "eve_flow": { "optional": true },
+    "eve_route": { "optional": true },
+    "eve_experiment": { "optional": true },
+    "eve_worker": { "optional": true },
+    "eve_environment": { "optional": true },
+    "eve_studio": { "optional": true },
+    "eve_package": { "optional": true }
+  },
+  "commandAliases": [
+    { "name": "intelligence", "kind": "cli" },
+    { "name": "traces", "kind": "cli" },
+    { "name": "results", "kind": "cli" },
+    { "name": "flows", "kind": "cli" },
+    { "name": "evals", "kind": "cli" },
+    { "name": "router", "kind": "cli" },
+    { "name": "experiments", "kind": "cli" },
+    { "name": "workers", "kind": "cli" },
+    { "name": "model-lab", "kind": "cli" },
+    { "name": "environments", "kind": "cli" },
+    { "name": "studio", "kind": "cli" },
+    { "name": "integrations", "kind": "cli" },
+    { "name": "packages", "kind": "cli" }
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "traceRetentionDays": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 3650,
+        "default": 30
+      },
+      "traceKeepLatest": {
+        "type": "integer",
+        "minimum": 100,
+        "maximum": 100000,
+        "default": 5000
+      },
+      "traceCaptureContent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicitly opt in to storing redacted prompt and assistant content in traces."
+      },
+      "adaptiveRoutingEnabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Choose a configured same-provider model for new sessions from observed trace outcomes."
+      },
+      "adaptiveRoutingCandidates": {
+        "type": "array",
+        "default": [],
+        "description": "Candidate models considered when adaptive routing is enabled. Cross-provider candidates remain recommendations only.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model"],
+          "properties": {
+            "model": { "type": "string", "minLength": 1 },
+            "provider": { "type": "string", "minLength": 1 },
+            "tasks": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "expectedLatencyMs": { "type": "number", "minimum": 0 },
+            "expectedCostUsd": { "type": "number", "minimum": 0 }
+          }
+        }
+      },
+      "environmentMaxRunning": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 128,
+        "default": 8
+      },
+      "environmentMaxTotalCpu": {
+        "type": "number",
+        "minimum": 0.1,
+        "maximum": 1024,
+        "default": 16
+      },
+      "environmentMaxTotalMemoryMb": {
+        "type": "integer",
+        "minimum": 128,
+        "maximum": 4194304,
+        "default": 32768
+      }
+    }
+  }
+}

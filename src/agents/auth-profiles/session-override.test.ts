@@ -7,10 +7,7 @@ import fs from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../../config/sessions/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
-import {
-  type EVETestState,
-  withEVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { type EVETestState, withEVETestState } from "../../test-utils/eve-test-state.js";
 import { resolveSessionAuthProfileOverride } from "./session-override.js";
 import type { AuthProfileStore } from "./types.js";
 

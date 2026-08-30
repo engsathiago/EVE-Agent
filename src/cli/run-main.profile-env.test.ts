@@ -132,9 +132,9 @@ describe("runCli profile env bootstrap", () => {
   });
 
   it("rejects --container combined with interleaved --dev", async () => {
-    await expect(
-      runCli(["node", "eve", "status", "--container", "demo", "--dev"]),
-    ).rejects.toThrow("--container cannot be combined with --profile/--dev");
+    await expect(runCli(["node", "eve", "status", "--container", "demo", "--dev"])).rejects.toThrow(
+      "--container cannot be combined with --profile/--dev",
+    );
   });
 
   it("does not let dotenv change container target resolution", async () => {
@@ -160,9 +160,7 @@ describe("runCli profile env bootstrap", () => {
   it("allows container mode when EVE_PROFILE is already set in env", async () => {
     setTestEnvValue("EVE_PROFILE", "work");
 
-    await expect(
-      runCli(["node", "eve", "--container", "demo", "status"]),
-    ).resolves.toBeUndefined();
+    await expect(runCli(["node", "eve", "--container", "demo", "status"])).resolves.toBeUndefined();
   });
 
   it.each([
@@ -173,24 +171,18 @@ describe("runCli profile env bootstrap", () => {
   ])("allows container mode when %s is set in env", async (key, value) => {
     setTestEnvValue(key, value);
 
-    await expect(
-      runCli(["node", "eve", "--container", "demo", "status"]),
-    ).resolves.toBeUndefined();
+    await expect(runCli(["node", "eve", "--container", "demo", "status"])).resolves.toBeUndefined();
   });
 
   it("allows container mode when only EVE_STATE_DIR is set in env", async () => {
     setTestEnvValue("EVE_STATE_DIR", "/tmp/eve-host-state");
 
-    await expect(
-      runCli(["node", "eve", "--container", "demo", "status"]),
-    ).resolves.toBeUndefined();
+    await expect(runCli(["node", "eve", "--container", "demo", "status"])).resolves.toBeUndefined();
   });
 
   it("allows container mode when only EVE_CONFIG_PATH is set in env", async () => {
     setTestEnvValue("EVE_CONFIG_PATH", "/tmp/eve-host-state/eve.json");
 
-    await expect(
-      runCli(["node", "eve", "--container", "demo", "status"]),
-    ).resolves.toBeUndefined();
+    await expect(runCli(["node", "eve", "--container", "demo", "status"])).resolves.toBeUndefined();
   });
 });

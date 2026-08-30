@@ -21,10 +21,7 @@ const CANVAS_NODE_COMMANDS = [
   "canvas.a2ui.reset",
 ];
 
-function createLazyCanvasTool(params: {
-  config?: EVEConfig;
-  workspaceDir?: string;
-}): AnyAgentTool {
+function createLazyCanvasTool(params: { config?: EVEConfig; workspaceDir?: string }): AnyAgentTool {
   let toolPromise: Promise<AnyAgentTool> | undefined;
   const loadTool = async () => {
     toolPromise ??= import("./src/tool.js").then(({ createCanvasTool }) =>

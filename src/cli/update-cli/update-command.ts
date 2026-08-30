@@ -174,11 +174,7 @@ const POST_CORE_UPDATE_INSTALL_RECORDS_PATH_ENV = "EVE_UPDATE_POST_CORE_INSTALL_
 const POST_CORE_UPDATE_STARTED_AT_ENV = "EVE_UPDATE_POST_CORE_STARTED_AT_MS";
 const POST_CORE_UPDATE_RESULT_POLL_MS = 100;
 const PRE_UPDATE_CONFIG_SNAPSHOT_MAX_AGE_MS = 6 * 60 * 60 * 1000;
-const SERVICE_REFRESH_PATH_ENV_KEYS = [
-  "EVE_HOME",
-  "EVE_STATE_DIR",
-  "EVE_CONFIG_PATH",
-] as const;
+const SERVICE_REFRESH_PATH_ENV_KEYS = ["EVE_HOME", "EVE_STATE_DIR", "EVE_CONFIG_PATH"] as const;
 const POST_INSTALL_DOCTOR_SERVICE_ENV_KEYS = [
   ...SERVICE_REFRESH_PATH_ENV_KEYS,
   "EVE_PROFILE",
@@ -751,14 +747,8 @@ export async function recoverLaunchAgentAndRecheckGatewayHealth(params: {
 
 function formatPostUpdateGatewayRecoveryLine(platform: NodeJS.Platform): string {
   const restartCommand = replaceCliName(formatCliCommand("eve gateway restart"), CLI_NAME);
-  const installCommand = replaceCliName(
-    formatCliCommand("eve gateway install --force"),
-    CLI_NAME,
-  );
-  const statusCommand = replaceCliName(
-    formatCliCommand("eve gateway status --deep"),
-    CLI_NAME,
-  );
+  const installCommand = replaceCliName(formatCliCommand("eve gateway install --force"), CLI_NAME);
+  const statusCommand = replaceCliName(formatCliCommand("eve gateway status --deep"), CLI_NAME);
   if (platform === "darwin") {
     return `Recovery: run \`${restartCommand}\`; if the LaunchAgent is installed but not loaded, run \`${installCommand}\` from the logged-in macOS user session, then rerun \`${statusCommand}\`.`;
   }
@@ -1084,13 +1074,13 @@ async function resolvePackageRuntimePreflightError(params: {
     ? `Node ${runtime.version ?? "unknown"} at ${runtime.nodeRunner}`
     : `Node ${runtime.version ?? "unknown"}`;
   return [
-    `${runtimeLabel} is too old for eve@${targetLabel}.`,
+    `${runtimeLabel} is too old for eve-agent@${targetLabel}.`,
     `The requested package requires ${status.nodeEngine}.`,
     runtime.nodeRunner
       ? "Upgrade the Node runtime that owns the managed Gateway service, then rerun `eve update`."
       : "Upgrade Node to 22.19+ or Node 24, then rerun `eve update`.",
-    "Bare `npm i -g eve` can silently install an older compatible release.",
-    "After upgrading Node, use `npm i -g eve@latest`.",
+    "Bare `npm i -g eve-agent` can silently install an older compatible release.",
+    "After upgrading Node, use `npm i -g eve-agent@latest`.",
   ].join("\n");
 }
 
@@ -3746,7 +3736,7 @@ async function updateCommandInternal(opts: UpdateCommandOptions): Promise<void> 
       );
       defaultRuntime.log(
         theme.muted(
-          `Examples: \`${replaceCliName("npm i -g eve@latest", CLI_NAME)}\` or \`${replaceCliName("pnpm add -g eve@latest", CLI_NAME)}\``,
+          `Examples: \`${replaceCliName("npm i -g eve-agent@latest", CLI_NAME)}\` or \`${replaceCliName("pnpm add -g eve-agent@latest", CLI_NAME)}\``,
         ),
       );
     }

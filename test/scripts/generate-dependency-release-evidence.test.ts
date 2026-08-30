@@ -67,7 +67,7 @@ describe("generate-dependency-release-evidence", () => {
       releaseRef: "v2026.5.13-beta.1",
       releaseSha: "abc123",
       npmDistTag: "beta",
-      packageName: "eve",
+      packageName: "eve-agent",
       packageVersion: "2026.5.13-beta.1",
       workflowRunId: "123",
       workflowRunAttempt: "2",

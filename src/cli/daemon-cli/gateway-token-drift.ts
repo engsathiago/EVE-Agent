@@ -8,10 +8,7 @@ function authModeDisablesToken(mode: string | undefined): boolean {
   return mode === "password" || mode === "none" || mode === "trusted-proxy";
 }
 
-function isPasswordFallbackActive(params: {
-  cfg: EVEConfig;
-  env: NodeJS.ProcessEnv;
-}): boolean {
+function isPasswordFallbackActive(params: { cfg: EVEConfig; env: NodeJS.ProcessEnv }): boolean {
   const plan = createGatewayCredentialPlan({
     config: params.cfg,
     env: params.env,

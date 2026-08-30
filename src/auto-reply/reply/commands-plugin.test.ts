@@ -12,10 +12,7 @@ vi.mock("../../plugins/commands.js", () => ({
   executePluginCommand: executePluginCommandMock,
 }));
 
-function buildPluginParams(
-  commandBodyNormalized: string,
-  cfg: EVEConfig,
-): HandleCommandsParams {
+function buildPluginParams(commandBodyNormalized: string, cfg: EVEConfig): HandleCommandsParams {
   return {
     cfg,
     ctx: {

@@ -1,10 +1,10 @@
-// Nostr plugin module implements nostr bus behavior.
-import { SimplePool, finalizeEvent, getPublicKey, verifyEvent, type Event } from "nostr-tools";
-import { decrypt, encrypt } from "nostr-tools/nip04";
 import {
   createDirectDmPreCryptoGuardPolicy,
   type DirectDmPreCryptoGuardPolicyOverrides,
 } from "eve-agent/plugin-sdk/direct-dm-guard-policy";
+// Nostr plugin module implements nostr bus behavior.
+import { SimplePool, finalizeEvent, getPublicKey, verifyEvent, type Event } from "nostr-tools";
+import { decrypt, encrypt } from "nostr-tools/nip04";
 import type { NostrProfile } from "./config-schema.js";
 import { DEFAULT_RELAYS } from "./default-relays.js";
 import {

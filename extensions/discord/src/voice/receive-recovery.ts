@@ -1,6 +1,6 @@
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 // Discord plugin module implements receive recovery behavior.
 import { OpusError } from "libopus-wasm";
-import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 
 const DECRYPT_FAILURE_WINDOW_MS = 30_000;
 const DECRYPT_FAILURE_RECONNECT_THRESHOLD = 3;

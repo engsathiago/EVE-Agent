@@ -17,7 +17,7 @@ export EVE_DISABLE_BUNDLED_PLUGINS=1
 export EVE_NO_ONBOARD=1
 export EVE_NO_PROMPT=1
 
-baseline="${EVE_UPDATE_CORRUPT_PLUGIN_BASELINE:-eve@latest}"
+baseline="${EVE_UPDATE_CORRUPT_PLUGIN_BASELINE:-eve-agent@latest}"
 update_timeout_seconds="$(eve_e2e_read_positive_int_env EVE_UPDATE_CORRUPT_PLUGIN_TIMEOUT_SECONDS 900)"
 echo "Installing baseline EVE package: $baseline"
 if ! eve_e2e_maybe_timeout "${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install -g --prefix /tmp/npm-prefix --omit=optional "$baseline" >/tmp/eve-update-corrupt-baseline-install.log 2>&1; then

@@ -507,10 +507,7 @@ describe("createVoiceCallRuntime lifecycle", () => {
     });
     expect(runEmbeddedAgent).toHaveBeenCalledOnce();
     const consultParams = requireRecord(
-      firstCallParam(
-        runEmbeddedAgent.mock.calls as unknown[][],
-        "per-call embedded EVE consult",
-      ),
+      firstCallParam(runEmbeddedAgent.mock.calls as unknown[][], "per-call embedded EVE consult"),
       "per-call embedded EVE consult params",
     );
     expect(consultParams.sessionKey).toBe("voice:call:call-1");
@@ -631,10 +628,7 @@ describe("createVoiceCallRuntime lifecycle", () => {
     expect(agentRuntime.resolveThinkingDefault).not.toHaveBeenCalled();
     expect(runEmbeddedAgent).toHaveBeenCalledOnce();
     const consultParams = requireRecord(
-      firstCallParam(
-        runEmbeddedAgent.mock.calls as unknown[][],
-        "configured embedded EVE consult",
-      ),
+      firstCallParam(runEmbeddedAgent.mock.calls as unknown[][], "configured embedded EVE consult"),
       "configured embedded EVE consult params",
     );
     expect(consultParams.thinkLevel).toBe("low");

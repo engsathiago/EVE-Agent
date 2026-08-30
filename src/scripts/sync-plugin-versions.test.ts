@@ -21,7 +21,7 @@ describe("syncPluginVersions", () => {
     const rootDir = makeTempDir(tempDirs, "eve-sync-plugin-versions-");
 
     writeJson(path.join(rootDir, "package.json"), {
-      name: "eve",
+      name: "eve-agent",
       version: "2026.4.1",
     });
     writeJson(path.join(rootDir, "extensions/imessage/package.json"), {
@@ -79,7 +79,7 @@ describe("syncPluginVersions", () => {
     const rootDir = makeTempDir(tempDirs, "eve-sync-plugin-versions-check-");
 
     writeJson(path.join(rootDir, "package.json"), {
-      name: "eve",
+      name: "eve-agent",
       version: "2026.4.2",
     });
     writeJson(path.join(rootDir, "extensions/discord/package.json"), {
@@ -118,7 +118,7 @@ describe("syncPluginVersions", () => {
     const rootDir = makeTempDir(tempDirs, "eve-sync-plugin-versions-beta-changelog-");
 
     writeJson(path.join(rootDir, "package.json"), {
-      name: "eve",
+      name: "eve-agent",
       version: "2026.5.3-beta.1",
     });
     writeJson(path.join(rootDir, "extensions/matrix/package.json"), {

@@ -1,3 +1,4 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Gateway startup runtime-config resolver.
 // Normalizes bind/auth/HTTP/Tailscale/hook settings before server construction.
 import type {
@@ -5,7 +6,6 @@ import type {
   GatewayBindMode,
   GatewayTailscaleConfig,
 } from "../config/types.gateway.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import {
   formatUnsafeGatewayTailscaleNoAuthMessage,
   isUnsafeGatewayTailscaleNoAuth,

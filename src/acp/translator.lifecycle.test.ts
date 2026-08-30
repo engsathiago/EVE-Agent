@@ -49,10 +49,7 @@ function createListSessionsRequest(params: {
   return request;
 }
 
-function createResumeSessionRequest(
-  sessionId: string,
-  cwd = "/tmp/eve",
-): ResumeSessionRequest {
+function createResumeSessionRequest(sessionId: string, cwd = "/tmp/eve"): ResumeSessionRequest {
   return {
     sessionId,
     cwd,

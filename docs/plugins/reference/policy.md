@@ -1,5 +1,5 @@
 ---
-summary: "Adds policy-backed doctor checks for workspace conformance."
+summary: "Exposes EVE's empty phase-one behavioral policy contract."
 read_when:
   - You are installing, configuring, or auditing the policy plugin
 title: "Policy plugin"
@@ -7,7 +7,7 @@ title: "Policy plugin"
 
 # Policy plugin
 
-Adds policy-backed doctor checks for workspace conformance.
+Exposes EVE's empty phase-one behavioral policy contract.
 
 ## Distribution
 
@@ -22,58 +22,24 @@ plugin
 
 ## Behavior
 
-The Policy plugin contributes doctor health checks for policy-managed EVE
-settings and governed workspace declarations. Policy currently covers channel
-conformance, governed tool metadata, MCP server posture, model-provider posture,
-private-network access posture, Gateway exposure posture, agent workspace/tool
-posture, configured global/per-agent tool posture, configured sandbox runtime
-posture, ingress/channel access posture, data-handling posture, and EVE config secret
-provider/auth profile posture.
+The plugin registers the optional `eve policy` CLI command. Its version 1
+contract has no rules and always returns `allow`. It does not add runtime hooks,
+doctor checks, prompt instructions, policy files, or behavioral restrictions.
 
-Policy stores authored requirements in `policy.jsonc`, observes existing
-EVE settings and workspace declarations as evidence, and reports drift
-through `eve policy check` and `eve doctor --lint`. A clean policy
-check emits policy, evidence, findings, and attestation hashes that operators
-can record for audit.
+Enable the plugin only when you want to inspect that explicit empty contract:
 
-`eve policy compare --baseline <file>` compares one policy file to another
-policy file. It is config-level conformance only: it uses policy rule metadata
-to verify that the checked policy is not missing or weaker than the authored
-baseline, and it does not inspect runtime state, credentials, or secret values.
+```bash
+eve plugins enable policy
+eve policy --json
+```
 
-Tool posture rules can require approved profiles, workspace-only filesystem
-tools, bounded exec security/ask/host settings, disabled elevated mode, exact
-`alsoAllow` entries, and required tool deny entries. The evidence records
-additive `alsoAllow` entries because they can widen effective tool posture.
-These checks observe config conformance only; they do not read runtime approval
-state or add runtime enforcement.
-
-Sandbox posture rules can require approved sandbox modes/backends, deny host
-container networking, deny container namespace joins, require read-only container
-mounts, deny container runtime socket mounts and unconfined container profiles,
-and require sandbox browser CDP source ranges.
-These checks observe config conformance only; they do not read runtime approval
-state, inspect live containers, or add runtime enforcement.
-
-Data-handling rules can require sensitive logging redaction, deny telemetry
-content capture, require session retention maintenance, and deny session
-transcript memory indexing. These checks observe config conformance only; they
-do not inspect raw logs, telemetry exports, transcripts, memory files, secrets,
-or personal data.
-
-Named policy scopes under `scopes.<scopeName>` can add stricter normal policy
-sections for the selector they list. `agentIds` supports `tools`,
-`agents.workspace`, `sandbox`, and `dataHandling.memory`; `channelIds` supports
-`ingress.channels`.
-Runtime agent ids that are not explicitly listed in `agents.list[]` are checked
-against inherited global/default posture rather than silently passing with no
-evidence. Every scope present in `policy.jsonc` must be valid and enforceable
-for its selector. Overlay rules are additional claims, so they do not weaken
-top-level policy and can produce their own findings when the same observed
-config violates both scopes.
+Technical authentication, capability, validation, resource, and
+operator-configured controls remain separate from this EVE-owned behavioral
+policy surface.
 
 <!-- eve-plugin-reference:manual-end -->
 
 ## Related docs
 
-- [policy](/cli/policy)
+- [Policy CLI](/cli/policy)
+- [Owner-controlled policy](/concepts/owner-policy)

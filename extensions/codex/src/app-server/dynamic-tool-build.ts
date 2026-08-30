@@ -19,10 +19,7 @@ import {
 } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import { resolveAgentDir } from "eve-agent/plugin-sdk/agent-runtime";
 import { isToolAllowed } from "eve-agent/plugin-sdk/sandbox";
-import {
-  readCodexPluginConfig,
-  type CodexPluginConfig,
-} from "./config.js";
+import { readCodexPluginConfig, type CodexPluginConfig } from "./config.js";
 import {
   filterCodexDynamicTools,
   isForcedPrivateQaCodexRuntime,
@@ -227,8 +224,7 @@ export async function buildDynamicTools(input: DynamicToolBuildParams) {
   const modelHasVision = params.model.input?.includes("image") ?? false;
   const agentDir = params.agentDir ?? resolveAgentDir(params.config ?? {}, input.sessionAgentId);
   const agentHarness = await import("eve-agent/plugin-sdk/agent-harness");
-  const createEVECodingTools =
-    eveCodingToolsFactoryForTests ?? agentHarness.createEVECodingTools;
+  const createEVECodingTools = eveCodingToolsFactoryForTests ?? agentHarness.createEVECodingTools;
   toolBuildStages.mark("load-agent-harness-tools");
   const sessionKeys = resolveEVECodingToolsSessionKeys(params, input.sandboxSessionKey);
   const nativeExecutionPolicy = resolveCodexNativeExecutionPolicyForDynamicTools(input);
@@ -593,9 +589,10 @@ export function resolveCodexAppServerExecutionCwd(params: {
   nativeToolSurfaceEnabled: boolean;
   remoteWorkspaceRoot?: string;
 }): string {
-  const cwd = params.environment && params.nativeToolSurfaceEnabled
-    ? params.environment.cwd
-    : params.effectiveCwd;
+  const cwd =
+    params.environment && params.nativeToolSurfaceEnabled
+      ? params.environment.cwd
+      : params.effectiveCwd;
   return mapCodexAppServerRemoteWorkspacePath({
     value: cwd,
     localWorkspaceRoot: params.localWorkspaceRoot,
@@ -652,9 +649,7 @@ export function resolveCodexExternalSandboxPolicyForEVESandbox(
   };
 }
 
-function codexNetworkAccessForEVESandbox(
-  sandbox: EVESandboxContext | undefined,
-): boolean {
+function codexNetworkAccessForEVESandbox(sandbox: EVESandboxContext | undefined): boolean {
   if (sandbox?.backendId !== "docker") {
     return true;
   }

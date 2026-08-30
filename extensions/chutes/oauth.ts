@@ -3,7 +3,10 @@
  */
 import { randomBytes } from "node:crypto";
 import { resolveExpiresAtMsFromDurationSeconds } from "eve-agent/plugin-sdk/number-runtime";
-import { generatePkceVerifierChallenge, toFormUrlEncoded } from "eve-agent/plugin-sdk/provider-auth";
+import {
+  generatePkceVerifierChallenge,
+  toFormUrlEncoded,
+} from "eve-agent/plugin-sdk/provider-auth";
 import {
   parseOAuthCallbackInput,
   waitForLocalOAuthCallback,

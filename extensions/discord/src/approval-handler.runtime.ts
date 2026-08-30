@@ -13,10 +13,7 @@ import type {
 import { createChannelApprovalNativeRuntimeAdapter } from "eve-agent/plugin-sdk/approval-handler-runtime";
 import type { ExecApprovalActionDescriptor } from "eve-agent/plugin-sdk/approval-reply-runtime";
 import type { ExecApprovalDecision } from "eve-agent/plugin-sdk/approval-runtime";
-import type {
-  DiscordExecApprovalConfig,
-  EVEConfig,
-} from "eve-agent/plugin-sdk/config-contracts";
+import type { DiscordExecApprovalConfig, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { logDebug, logError } from "eve-agent/plugin-sdk/logging-core";
 import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { shouldHandleDiscordApprovalRequest } from "./approval-shared.js";

@@ -546,8 +546,7 @@ export function createCopilotAgentHarness(
         if (disposed) {
           throw new Error("[copilot] harness was disposed while starting an attempt");
         }
-        const eveSessionId =
-          typeof params.sessionId === "string" ? params.sessionId : undefined;
+        const eveSessionId = typeof params.sessionId === "string" ? params.sessionId : undefined;
 
         // Dogfood finding #4: reuse the SDK session across turns within
         // the same EVE session so that the GitHub Copilot agent runtime's prompt
@@ -661,10 +660,7 @@ export function createCopilotAgentHarness(
                 resetBlockedStoredSessions.add(eveSessionId);
                 void cleanup.then((outcome) => {
                   const currentTracked = trackedSessions.get(eveSessionId);
-                  const currentStored = lookupStoredBinding(
-                    options?.sessionStore,
-                    eveSessionId,
-                  );
+                  const currentStored = lookupStoredBinding(options?.sessionStore, eveSessionId);
                   const stillOwnsTrackedSession = currentTracked?.sdkSessionId === sdkSessionId;
                   const stillOwnsStoredSession = currentStored?.sdkSessionId === sdkSessionId;
                   if (outcome === "completed") {

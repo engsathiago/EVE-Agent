@@ -146,7 +146,7 @@ describe("install.ps1 failure handling", () => {
     const npmInstallBody = extractFunctionBody(source, "Install-EVE");
     const sourceTargetBody = extractFunctionBody(source, "Test-EVESourcePackageInstallSpec");
     expect(sourceTargetBody).toContain('$normalizedTag -eq "main"');
-    expect(sourceTargetBody).toContain("^github:eve/eve");
+    expect(sourceTargetBody).toContain("^github:engsathiago/eve-agent");
     expect(npmInstallBody).toContain("Test-EVESourcePackageInstallSpec -RequestedTag $Tag");
     expect(npmInstallBody).toContain("npm installs do not support EVE GitHub source targets");
     expect(npmInstallBody).toContain("-InstallMethod git -Tag main");
@@ -453,9 +453,7 @@ describe("install.ps1 failure handling", () => {
     ]);
 
     expect(result.status).toBe(1);
-    expect(`${result.stdout}\n${result.stderr}`).toContain(
-      "eve onboard failed with exit code 17",
-    );
+    expect(`${result.stdout}\n${result.stderr}`).toContain("eve onboard failed with exit code 17");
   });
 
   runIfPowerShell("exits non-zero when run as a script file", () => {

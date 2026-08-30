@@ -265,9 +265,9 @@ describe("qa cli registration", () => {
     ["--allow-failures", []],
     ["--fast", []],
   ])("rejects qa run profile-only flag %s without --qa-profile", async (flag, values) => {
-    await expect(
-      program.parseAsync(["node", "eve", "qa", "run", flag, ...values]),
-    ).rejects.toThrow(`qa run ${flag} requires --qa-profile`);
+    await expect(program.parseAsync(["node", "eve", "qa", "run", flag, ...values])).rejects.toThrow(
+      `qa run ${flag} requires --qa-profile`,
+    );
 
     expect(runQaLabSelfCheckCommand).not.toHaveBeenCalled();
     expect(runQaProfileCommand).not.toHaveBeenCalled();
@@ -537,7 +537,7 @@ describe("qa cli registration", () => {
       "--lease-id",
       "cbx_123abc",
       "--fresh-pr",
-      "eve/eve#85141",
+      "engsathiago/eve-agent#85141",
       "--idle-timeout",
       "45m",
       "--ttl",
@@ -566,7 +566,7 @@ describe("qa cli registration", () => {
       credentialRole: "maintainer",
       credentialSource: "env",
       fastMode: true,
-      freshPr: "eve/eve#85141",
+      freshPr: "engsathiago/eve-agent#85141",
       gatewaySetup: undefined,
       idleTimeout: "45m",
       keepLease: true,
@@ -942,15 +942,7 @@ describe("qa cli registration", () => {
   });
 
   it("routes credential list defaults into the qa runtime command", async () => {
-    await program.parseAsync([
-      "node",
-      "eve",
-      "qa",
-      "credentials",
-      "list",
-      "--kind",
-      "telegram",
-    ]);
+    await program.parseAsync(["node", "eve", "qa", "credentials", "list", "--kind", "telegram"]);
 
     expect(runQaCredentialsListCommand).toHaveBeenCalledWith({
       kind: "telegram",

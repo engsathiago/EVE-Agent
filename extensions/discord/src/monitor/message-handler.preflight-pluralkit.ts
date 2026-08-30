@@ -6,9 +6,7 @@ import type { DiscordMessageEvent } from "./message-handler.preflight.types.js";
 export async function resolveDiscordPreflightPluralKitInfo(params: {
   message: DiscordMessageEvent["message"];
   config?: NonNullable<
-    NonNullable<
-      import("eve-agent/plugin-sdk/config-contracts").EVEConfig["channels"]
-    >["discord"]
+    NonNullable<import("eve-agent/plugin-sdk/config-contracts").EVEConfig["channels"]>["discord"]
   >["pluralkit"];
   abortSignal?: AbortSignal;
 }): Promise<Awaited<ReturnType<typeof import("../pluralkit.js").fetchPluralKitMessageInfo>>> {

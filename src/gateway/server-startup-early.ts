@@ -1,7 +1,7 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Gateway early-startup runtime helpers.
 // Starts discovery, remote skills, task maintenance, and delayed maintenance setup.
 import type { GatewayTailscaleMode } from "../config/types.gateway.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import { resolveCronJobsStorePath } from "../cron/store.js";
 import type { PluginRegistry } from "../plugins/registry-types.js";
 

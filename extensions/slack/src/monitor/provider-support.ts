@@ -308,8 +308,7 @@ export function createSlackBoltApp(params: {
   const socketModeReceiverOptions: SlackSocketModeReceiverOptions = {
     appToken: params.appToken ?? "",
     autoReconnectEnabled: true,
-    clientPingTimeout:
-      params.socketMode?.clientPingTimeout ?? EVE_SLACK_CLIENT_PING_TIMEOUT_MS,
+    clientPingTimeout: params.socketMode?.clientPingTimeout ?? EVE_SLACK_CLIENT_PING_TIMEOUT_MS,
     logger: socketModeLogger,
     installerOptions: {
       clientOptions: params.clientOptions,

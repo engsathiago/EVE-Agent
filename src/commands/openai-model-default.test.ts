@@ -14,10 +14,7 @@ function expectPrimaryModelChanged(
   expect(applied.next.agents?.defaults?.model).toEqual({ primary });
 }
 
-function expectConfigUnchanged(
-  applied: { changed: boolean; next: EVEConfig },
-  cfg: EVEConfig,
-) {
+function expectConfigUnchanged(applied: { changed: boolean; next: EVEConfig }, cfg: EVEConfig) {
   expect(applied.changed).toBe(false);
   expect(applied.next).toEqual(cfg);
 }

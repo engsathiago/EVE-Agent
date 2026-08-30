@@ -42,9 +42,7 @@ import { restoreLiveEnv, snapshotLiveEnv, type LiveEnvSnapshot } from "./live-en
 const LIVE = isLiveTestEnabled();
 const CODEX_HARNESS_LIVE = isTruthyEnvValue(process.env.EVE_LIVE_CODEX_HARNESS);
 const CODEX_HARNESS_DEBUG = isTruthyEnvValue(process.env.EVE_LIVE_CODEX_HARNESS_DEBUG);
-const CODEX_HARNESS_IMAGE_PROBE = isTruthyEnvValue(
-  process.env.EVE_LIVE_CODEX_HARNESS_IMAGE_PROBE,
-);
+const CODEX_HARNESS_IMAGE_PROBE = isTruthyEnvValue(process.env.EVE_LIVE_CODEX_HARNESS_IMAGE_PROBE);
 const CODEX_HARNESS_CHAT_IMAGE_PROBE = isTruthyEnvValue(
   process.env.EVE_LIVE_CODEX_HARNESS_CHAT_IMAGE_PROBE,
 );

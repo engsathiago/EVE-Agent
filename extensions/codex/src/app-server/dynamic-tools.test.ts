@@ -23,10 +23,7 @@ import {
   setActivePluginRegistry,
 } from "eve-agent/plugin-sdk/plugin-test-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
-  createCodexDynamicToolBridge,
-} from "./dynamic-tools.js";
+import { CODEX_EVE_DYNAMIC_TOOL_NAMESPACE, createCodexDynamicToolBridge } from "./dynamic-tools.js";
 import type { CodexDynamicToolFunctionSpec, CodexDynamicToolSpec, JsonValue } from "./protocol.js";
 
 function createTool(overrides: Partial<AnyAgentTool>): AnyAgentTool {
@@ -678,7 +675,7 @@ describe("createCodexDynamicToolBridge", () => {
       throw new Error("expected inputText tool result");
     }
     expect(firstItem.text.length).toBeLessThanOrEqual(32);
-    expect(firstItem.text).toBe("...(EVE truncated dynamic tool".slice(0, 32));
+    expect(firstItem.text).toBe("...(EVE truncated dynamic tool result)".slice(0, 32));
   });
 
   it("budgets configured truncation across all text result blocks", async () => {

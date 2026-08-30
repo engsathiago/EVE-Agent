@@ -22,10 +22,7 @@ export type PluginCommandEntrySpec = {
   nativeName?: string;
 };
 
-function resolvePluginNativeName(
-  command: EVEPluginCommandDefinition,
-  provider?: string,
-): string {
+function resolvePluginNativeName(command: EVEPluginCommandDefinition, provider?: string): string {
   const providerName = normalizeOptionalLowercaseString(provider);
   const providerOverride = providerName ? command.nativeNames?.[providerName] : undefined;
   if (typeof providerOverride === "string" && providerOverride.trim()) {

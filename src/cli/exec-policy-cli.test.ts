@@ -141,13 +141,13 @@ const mocks = vi.hoisted(() => {
         };
       },
     ),
-    readConfigFileSnapshot: vi.fn<
-      () => Promise<{ path: string; hash: string; config: EVEConfig }>
-    >(async () => ({
-      path: "/tmp/eve.json",
-      hash: "config-hash-1",
-      config: configState,
-    })),
+    readConfigFileSnapshot: vi.fn<() => Promise<{ path: string; hash: string; config: EVEConfig }>>(
+      async () => ({
+        path: "/tmp/eve.json",
+        hash: "config-hash-1",
+        config: configState,
+      }),
+    ),
     readExecApprovalsSnapshot: vi.fn<() => ExecApprovalsSnapshot>(() => ({
       path: "/tmp/exec-approvals.json",
       exists: true,

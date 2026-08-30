@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { EVE_CLI_ENV_VALUE } from "./eve-exec-env.js";
 import {
   isDangerousHostEnvOverrideVarName,
   isDangerousHostInheritedEnvVarName,
@@ -13,7 +14,6 @@ import {
   sanitizeHostExecEnvWithDiagnostics,
   sanitizeSystemRunEnvOverrides,
 } from "./host-env-security.js";
-import { EVE_CLI_ENV_VALUE } from "./eve-exec-env.js";
 
 function findSystemCommandPath(command: string) {
   if (process.platform === "win32") {
@@ -1706,10 +1706,7 @@ describe("git env exploit regression", () => {
       path.join(os.tmpdir(), `eve-git-exec-path-${process.pid}-${Date.now()}-`),
     );
     const helperPath = path.join(helperDir, "git-remote-https");
-    const marker = path.join(
-      os.tmpdir(),
-      `eve-git-exec-path-marker-${process.pid}-${Date.now()}`,
-    );
+    const marker = path.join(os.tmpdir(), `eve-git-exec-path-marker-${process.pid}-${Date.now()}`);
     try {
       clearMarker(marker);
       fs.writeFileSync(helperPath, `#!/bin/sh\ntouch ${JSON.stringify(marker)}\nexit 1\n`, "utf8");
@@ -1749,10 +1746,7 @@ describe("git env exploit regression", () => {
     const repoDir = fs.mkdtempSync(
       path.join(os.tmpdir(), `eve-git-template-source-${process.pid}-${Date.now()}-`),
     );
-    const cloneDir = path.join(
-      os.tmpdir(),
-      `eve-git-template-clone-${process.pid}-${Date.now()}`,
-    );
+    const cloneDir = path.join(os.tmpdir(), `eve-git-template-clone-${process.pid}-${Date.now()}`);
     const safeCloneDir = path.join(
       os.tmpdir(),
       `eve-git-template-safe-clone-${process.pid}-${Date.now()}`,
@@ -1761,10 +1755,7 @@ describe("git env exploit regression", () => {
       path.join(os.tmpdir(), `eve-git-template-dir-${process.pid}-${Date.now()}-`),
     );
     const hooksDir = path.join(templateDir, "hooks");
-    const marker = path.join(
-      os.tmpdir(),
-      `eve-git-template-marker-${process.pid}-${Date.now()}`,
-    );
+    const marker = path.join(os.tmpdir(), `eve-git-template-marker-${process.pid}-${Date.now()}`);
 
     try {
       fs.mkdirSync(hooksDir, { recursive: true });
@@ -1942,10 +1933,7 @@ describe("git env exploit regression", () => {
     }
 
     const repoDir = fs.mkdtempSync(
-      path.join(
-        os.tmpdir(),
-        `eve-git-protocol-from-user-source-${process.pid}-${Date.now()}-`,
-      ),
+      path.join(os.tmpdir(), `eve-git-protocol-from-user-source-${process.pid}-${Date.now()}-`),
     );
     const unsafeCloneDir = path.join(
       os.tmpdir(),

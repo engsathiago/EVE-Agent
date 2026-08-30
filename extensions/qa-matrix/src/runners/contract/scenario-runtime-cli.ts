@@ -369,9 +369,7 @@ export async function createMatrixQaEVECliRuntime(params: {
   runtimeEnv: NodeJS.ProcessEnv;
   userId: string;
 }) {
-  const rootDir = await mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-matrix-cli-qa-"),
-  );
+  const rootDir = await mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-matrix-cli-qa-"));
   const artifactDir = path.join(
     params.outputDir,
     params.artifactLabel.replace(/[^A-Za-z0-9_-]/g, "-"),

@@ -306,10 +306,7 @@ describe("codex web search provider", () => {
     const isolatedCodexHome = isolatedStartOptions?.env?.CODEX_HOME;
     expect(threadStartCwd).not.toBe("/tmp/eve-agent");
     expect(isolatedStartOptions?.args).toEqual(["app-server", "--listen", "stdio://"]);
-    expect(isolatedStartOptions?.clearEnv).toEqual([
-      "KEEP_CLEARED",
-      "EVE_CODEX_APP_SERVER_ARGS",
-    ]);
+    expect(isolatedStartOptions?.clearEnv).toEqual(["KEEP_CLEARED", "EVE_CODEX_APP_SERVER_ARGS"]);
     expect(isolatedCodexHome).toEqual(expect.any(String));
     if (!threadStartCwd || !isolatedCodexHome) {
       throw new Error("expected isolated Codex home and workspace");

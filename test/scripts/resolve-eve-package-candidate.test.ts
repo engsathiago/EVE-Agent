@@ -106,31 +106,31 @@ afterEach(async () => {
 describe("resolve-eve-package-candidate", () => {
   it("accepts only EVE release package specs for npm candidates", () => {
     for (const spec of [
-      "eve@beta",
-      "eve@alpha",
-      "eve@latest",
-      "eve@2026.4.27",
-      "eve@2026.4.27-1",
-      "eve@2026.4.27-beta.2",
-      "eve@2026.4.27-alpha.2",
+      "eve-agent@beta",
+      "eve-agent@alpha",
+      "eve-agent@latest",
+      "eve-agent@2026.4.27",
+      "eve-agent@2026.4.27-1",
+      "eve-agent@2026.4.27-beta.2",
+      "eve-agent@2026.4.27-alpha.2",
     ]) {
       expect(validateEVEPackageSpec(spec), spec).toBeUndefined();
     }
 
-    expect(() => validateEVEPackageSpec("@evil/eve@1.0.0")).toThrow(
-      "package_spec must be eve@alpha",
+    expect(() => validateEVEPackageSpec("@evil/eve-agent@1.0.0")).toThrow(
+      "package_spec must be eve-agent@alpha",
     );
-    expect(() => validateEVEPackageSpec("eve@canary")).toThrow(
-      "package_spec must be eve@alpha",
+    expect(() => validateEVEPackageSpec("eve-agent@canary")).toThrow(
+      "package_spec must be eve-agent@alpha",
     );
-    expect(() => validateEVEPackageSpec("eve@2026.04.27")).toThrow(
-      "package_spec must be eve@alpha",
+    expect(() => validateEVEPackageSpec("eve-agent@2026.04.27")).toThrow(
+      "package_spec must be eve-agent@alpha",
     );
-    expect(() => validateEVEPackageSpec("eve@npm:other-package")).toThrow(
-      "package_spec must be eve@alpha",
+    expect(() => validateEVEPackageSpec("eve-agent@npm:other-package")).toThrow(
+      "package_spec must be eve-agent@alpha",
     );
-    expect(() => validateEVEPackageSpec("eve@file:../other-package.tgz")).toThrow(
-      "package_spec must be eve@alpha",
+    expect(() => validateEVEPackageSpec("eve-agent@file:../other-package.tgz")).toThrow(
+      "package_spec must be eve-agent@alpha",
     );
   });
 
@@ -142,7 +142,7 @@ describe("resolve-eve-package-candidate", () => {
         "--package-ref",
         "release/2026.4.27",
         "--package-spec",
-        "eve@beta",
+        "eve-agent@beta",
         "--package-url",
         "",
         "--package-sha256",
@@ -160,7 +160,7 @@ describe("resolve-eve-package-candidate", () => {
       outputName: "eve-current.tgz",
       packageSha256: "",
       packageRef: "release/2026.4.27",
-      packageSpec: "eve@beta",
+      packageSpec: "eve-agent@beta",
       packageUrl: "",
       source: "npm",
       trustedSourceId: "",
@@ -190,7 +190,7 @@ describe("resolve-eve-package-candidate", () => {
     const npmCmdPath = path.win32.resolve(path.win32.dirname(execPath), "npm.cmd");
 
     const runner = resolveNpmPackageCandidatePackRunner(
-      "eve@2026.5.26-beta.1",
+      "eve-agent@2026.5.26-beta.1",
       "C:\\eve\\.artifacts\\docker-e2e-package",
       {
         comSpec: "C:\\Windows\\System32\\cmd.exe",
@@ -207,7 +207,7 @@ describe("resolve-eve-package-candidate", () => {
         "/d",
         "/s",
         "/c",
-        `${npmCmdPath} pack eve@2026.5.26-beta.1 --ignore-scripts --json --pack-destination C:\\eve\\.artifacts\\docker-e2e-package`,
+        `${npmCmdPath} pack eve-agent@2026.5.26-beta.1 --ignore-scripts --json --pack-destination C:\\eve\\.artifacts\\docker-e2e-package`,
       ],
       shell: false,
       windowsVerbatimArguments: true,
@@ -217,12 +217,12 @@ describe("resolve-eve-package-candidate", () => {
   it("keeps npm pack filenames inside the package candidate output directory", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "eve-package-npm-pack-"));
     tempDirs.push(dir);
-    await writeFile(path.join(dir, "eve-2026.6.17.tgz"), "package");
+    await writeFile(path.join(dir, "eve-agent-2026.6.17.tgz"), "package");
 
     await expect(
       moveNewestPackedTarballForTest(
         dir,
-        JSON.stringify([{ filename: "eve-2026.6.17.tgz" }]),
+        JSON.stringify([{ filename: "eve-agent-2026.6.17.tgz" }]),
         "eve-current.tgz",
       ),
     ).resolves.toBe(path.join(dir, "eve-current.tgz"));
@@ -234,12 +234,12 @@ describe("resolve-eve-package-candidate", () => {
     tempDirs.push(dir);
 
     const unsafeFilenames = [
-      "../eve-2026.6.17.tgz",
-      "nested/eve-2026.6.17.tgz",
-      "nested\\eve-2026.6.17.tgz",
-      "/tmp/eve-2026.6.17.tgz",
-      "C:\\temp\\eve-2026.6.17.tgz",
-      "eve-2026.6.17.tar.gz",
+      "../eve-agent-2026.6.17.tgz",
+      "nested/eve-agent-2026.6.17.tgz",
+      "nested\\eve-agent-2026.6.17.tgz",
+      "/tmp/eve-agent-2026.6.17.tgz",
+      "C:\\temp\\eve-agent-2026.6.17.tgz",
+      "eve-agent-2026.6.17.tar.gz",
     ];
 
     for (const filename of unsafeFilenames) {
@@ -252,15 +252,11 @@ describe("resolve-eve-package-candidate", () => {
   it("rejects unsafe text npm pack filenames instead of using loose stdout fallback", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "eve-package-npm-pack-"));
     tempDirs.push(dir);
-    await writeFile(path.join(dir, "eve-2026.6.17.tgz"), "safe fallback");
+    await writeFile(path.join(dir, "eve-agent-2026.6.17.tgz"), "safe fallback");
 
-    for (const filename of ["../eve-2026.6.17.tgz", "C:eve-2026.6.17.tgz"]) {
+    for (const filename of ["../eve-agent-2026.6.17.tgz", "C:eve-agent-2026.6.17.tgz"]) {
       await expect(
-        moveNewestPackedTarballForTest(
-          dir,
-          ["npm notice", filename].join("\n"),
-          "eve-current.tgz",
-        ),
+        moveNewestPackedTarballForTest(dir, ["npm notice", filename].join("\n"), "eve-current.tgz"),
       ).rejects.toThrow("npm pack reported unsafe EVE tarball filename");
     }
   });
@@ -268,16 +264,16 @@ describe("resolve-eve-package-candidate", () => {
   it("cleans stale package tarballs before npm fallback scanning", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "eve-package-npm-pack-stale-"));
     tempDirs.push(dir);
-    await writeFile(path.join(dir, "eve-9999.1.1.tgz"), "stale");
+    await writeFile(path.join(dir, "eve-agent-9999.1.1.tgz"), "stale");
     await writeFile(path.join(dir, "eve-C:evil.tgz"), "unsafe");
 
     await cleanPackedEVETarballsForTest(dir);
-    await writeFile(path.join(dir, "eve-2026.6.17.tgz"), "current");
+    await writeFile(path.join(dir, "eve-agent-2026.6.17.tgz"), "current");
 
     await expect(
       moveNewestPackedTarballForTest(dir, "npm notice\n", "eve-current.tgz"),
     ).resolves.toBe(path.join(dir, "eve-current.tgz"));
-    await expect(missing(path.join(dir, "eve-9999.1.1.tgz"))).resolves.toBe(true);
+    await expect(missing(path.join(dir, "eve-agent-9999.1.1.tgz"))).resolves.toBe(true);
     await expect(readFile(path.join(dir, "eve-C:evil.tgz"), "utf8")).resolves.toBe("unsafe");
     await expect(readFile(path.join(dir, "eve-current.tgz"), "utf8")).resolves.toBe("current");
   });
@@ -416,9 +412,7 @@ describe("resolve-eve-package-candidate", () => {
     const dir = await mkdtemp(path.join(tmpdir(), "eve-package-runner-signal-"));
     tempDirs.push(dir);
     const childPidPath = path.join(dir, "child.pid");
-    const scriptUrl = pathToFileURL(
-      path.resolve("scripts/resolve-eve-package-candidate.mjs"),
-    ).href;
+    const scriptUrl = pathToFileURL(path.resolve("scripts/resolve-eve-package-candidate.mjs")).href;
     let childPid: number | undefined;
     let runnerPid: number | undefined;
 
@@ -610,7 +604,7 @@ describe("resolve-eve-package-candidate", () => {
     };
     const requestedUrls: string[] = [];
 
-    await downloadUrl("https://packages.internal:8443/artifactory/eve/eve.tgz", target, {
+    await downloadUrl("https://packages.internal:8443/artifactory/eve/eve-agent.tgz", target, {
       fetchImpl: async (url: URL) => {
         requestedUrls.push(url.toString());
         return new Response(new Uint8Array([4, 5, 6]), {
@@ -623,13 +617,11 @@ describe("resolve-eve-package-candidate", () => {
       trustedSource,
     });
 
-    expect(requestedUrls).toEqual([
-      "https://packages.internal:8443/artifactory/eve/eve.tgz",
-    ]);
+    expect(requestedUrls).toEqual(["https://packages.internal:8443/artifactory/eve/eve-agent.tgz"]);
     await expect(readFile(target)).resolves.toEqual(Buffer.from([4, 5, 6]));
 
     await expect(
-      downloadUrl("https://evil.internal:8443/artifactory/eve/eve.tgz", target, {
+      downloadUrl("https://evil.internal:8443/artifactory/eve/eve-agent.tgz", target, {
         fetchImpl: unexpectedFetch,
         lookupHost: lookupAddresses([{ address: "10.0.0.9", family: 4 }]),
         trustedSource,
@@ -658,7 +650,7 @@ describe("resolve-eve-package-candidate", () => {
     };
 
     await expect(
-      downloadUrl("https://packages.internal:8443/artifactory/eve/eve.tgz", target, {
+      downloadUrl("https://packages.internal:8443/artifactory/eve/eve-agent.tgz", target, {
         fetchImpl: async () =>
           new Response(null, {
             headers: { location: "https://metadata.internal:8443/artifactory/eve/pwn.tgz" },
@@ -688,13 +680,13 @@ describe("resolve-eve-package-candidate", () => {
     const requestHeaders: Array<Record<string, string> | undefined> = [];
 
     try {
-      await downloadUrl("https://packages.internal:8443/artifactory/eve/eve.tgz", target, {
+      await downloadUrl("https://packages.internal:8443/artifactory/eve/eve-agent.tgz", target, {
         fetchImpl: async (_url: URL, init?: RequestInit) => {
           requestHeaders.push(init?.headers as Record<string, string> | undefined);
           if (requestHeaders.length === 1) {
             return new Response(null, {
               headers: {
-                location: "https://mirror.internal:8443/artifactory/eve/eve.tgz",
+                location: "https://mirror.internal:8443/artifactory/eve/eve-agent.tgz",
               },
               status: 302,
             });
@@ -1026,7 +1018,7 @@ describe("resolve-eve-package-candidate", () => {
     tempDirs.push(dir);
     const file = path.join(dir, "eve.tgz");
     await writeFile(file, "eve package bytes");
-    const digest = "ae0b98d18c80dbf9447fa48560a139195595db2d337ad33421ca2183b0dd3e99";
+    const digest = "4d5c8b70cbfe3f9aa0ef813e0fee48c9c7f22f525c0feec5c8f59c308051b418";
 
     await expect(assertExpectedSha256ForTest(file, digest.toUpperCase())).resolves.toBe(digest);
   });
@@ -1066,7 +1058,7 @@ describe("resolve-eve-package-candidate", () => {
     tempDirs.push(dir);
     const root = path.join(dir, "package");
     await mkdir(path.join(root, "dist"), { recursive: true });
-    await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve" }));
+    await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }));
     await writeFile(
       path.join(root, "dist", "build-info.json"),
       JSON.stringify({ commit: "66CE632B9B7C5C7FDD3E66C739687D51638AD6E2" }),

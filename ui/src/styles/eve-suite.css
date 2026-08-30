@@ -1,0 +1,525 @@
+.eve-suite {
+  display: grid;
+  gap: 20px;
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+
+.eve-suite__hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 2px 2px;
+}
+
+.eve-suite__hero h1 {
+  margin: 3px 0 4px;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  letter-spacing: -0.04em;
+}
+
+.eve-suite__hero p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.eve-suite__eyebrow {
+  color: var(--accent);
+  font: 600 0.68rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eve-suite__layout {
+  display: grid;
+  gap: 18px;
+}
+
+.eve-suite__layout--aside {
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.8fr);
+  align-items: start;
+}
+
+.eve-suite__stack,
+.eve-suite__grid {
+  display: grid;
+  gap: 14px;
+}
+
+.eve-suite__grid {
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+}
+
+.eve-suite__form {
+  display: grid;
+  gap: 14px;
+  position: sticky;
+  top: 16px;
+}
+
+.eve-suite__form--wide {
+  position: static;
+}
+
+.eve-suite__form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.eve-suite__field {
+  display: grid;
+  gap: 6px;
+}
+
+.eve-suite__field > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.eve-suite__field input,
+.eve-suite__field textarea,
+.eve-suite__title-input,
+.eve-suite__code {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.eve-suite__field input,
+.eve-suite__title-input {
+  min-height: 39px;
+  padding: 8px 10px;
+}
+
+.eve-suite__field textarea {
+  min-height: 92px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.eve-suite__field input:focus,
+.eve-suite__field textarea:focus,
+.eve-suite__title-input:focus,
+.eve-suite__code:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.eve-suite__checks,
+.eve-suite__actions,
+.eve-suite__template-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.eve-suite__file-input {
+  display: none;
+}
+
+.eve-suite__template-row .btn.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.eve-suite__checks {
+  gap: 18px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.eve-suite__checks label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.eve-suite__item {
+  display: grid;
+  gap: 13px;
+  min-width: 0;
+}
+
+.eve-suite__item.is-muted {
+  opacity: 0.63;
+}
+
+.eve-suite__item-head,
+.eve-suite__editor-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eve-suite__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 80%, var(--accent) 20%);
+  color: var(--muted);
+  font: 600 0.68rem/1 var(--mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.eve-suite__badge.is-running {
+  border-color: color-mix(in srgb, var(--ok) 50%, var(--border));
+  color: var(--ok);
+}
+
+.eve-suite__badge.is-failed,
+.eve-suite__badge.is-expired,
+.eve-suite__badge.is-missing {
+  color: var(--danger);
+}
+
+.eve-suite__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.eve-suite__facts div {
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--panel) 82%, var(--text) 3%);
+}
+
+.eve-suite__facts dt {
+  color: var(--muted);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.eve-suite__facts dd {
+  overflow: hidden;
+  margin: 3px 0 0;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eve-suite__paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eve-suite__paths code,
+.eve-suite__path {
+  overflow: hidden;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eve-suite__empty {
+  padding: 34px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.eve-suite__empty--large {
+  display: grid;
+  min-height: 390px;
+  place-items: center;
+}
+
+.eve-suite__studio {
+  display: grid;
+  grid-template-columns: minmax(210px, 300px) minmax(0, 1fr);
+  gap: 14px;
+  min-height: 620px;
+}
+
+.eve-suite__artifact-list {
+  align-content: start;
+  display: grid;
+  gap: 7px;
+  max-height: 75vh;
+  overflow: auto;
+}
+
+.eve-suite__artifact {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.eve-suite__artifact:hover,
+.eve-suite__artifact.is-selected {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--panel) 75%, var(--accent) 8%);
+}
+
+.eve-suite__artifact span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eve-suite__editor {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  min-width: 0;
+}
+
+.eve-suite__title-input {
+  border-color: transparent;
+  background: transparent;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.eve-suite__editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-height: 470px;
+}
+
+.eve-suite__editor-grid--preview-only {
+  grid-template-columns: 1fr;
+}
+
+.eve-suite__code {
+  min-height: 470px;
+  padding: 14px;
+  resize: none;
+  font: 0.78rem/1.55 var(--mono);
+}
+
+.eve-suite__preview {
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: #fff;
+}
+
+.eve-suite__preview-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 470px;
+  border: 0;
+}
+
+.eve-suite__preview-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 470px;
+  object-fit: contain;
+}
+
+.eve-suite__preview-player {
+  display: block;
+  width: min(680px, calc(100% - 32px));
+  margin: 48px auto;
+}
+
+.eve-suite__preview-text {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 470px;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  color: #111827;
+  font: 0.8rem/1.55 var(--mono);
+  white-space: pre-wrap;
+}
+
+.eve-suite__published {
+  color: var(--ok);
+  font-size: 0.75rem;
+}
+
+.eve-suite__versions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.eve-suite__versions span {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font: 0.68rem/1.2 var(--mono);
+}
+
+.eve-suite__integration-group {
+  display: grid;
+  gap: 10px;
+}
+
+.eve-suite__integration-group h2 {
+  margin: 8px 2px 0;
+  font-size: 1rem;
+}
+
+.eve-suite__integration-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  align-items: end;
+  gap: 14px;
+}
+
+.eve-suite__filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.eve-suite__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.eve-suite__metric {
+  display: grid;
+  gap: 6px;
+}
+
+.eve-suite__metric span {
+  color: var(--muted);
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.eve-suite__metric strong {
+  font-size: 1.5rem;
+}
+
+.eve-suite__intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.eve-suite__intelligence-card {
+  display: grid;
+  gap: 16px;
+  border-top: 2px solid var(--eve-card-accent);
+}
+
+.eve-suite__metric-number {
+  color: var(--eve-card-accent);
+  font-size: 1.4rem;
+  font-weight: 750;
+}
+
+.eve-suite__mini-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.eve-suite__mini-facts span {
+  display: grid;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+}
+
+.eve-suite__mini-facts b {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eve-suite__architecture {
+  display: grid;
+  gap: 14px;
+}
+
+.eve-suite__architecture p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.eve-suite__flowline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.eve-suite__flowline span {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--panel) 78%, var(--accent) 7%);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.eve-suite__flowline i {
+  color: var(--muted);
+  font-style: normal;
+}
+
+@media (max-width: 900px) {
+  .eve-suite__layout--aside,
+  .eve-suite__studio,
+  .eve-suite__editor-grid,
+  .eve-suite__integration-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .eve-suite__form {
+    position: static;
+  }
+
+  .eve-suite__studio,
+  .eve-suite__editor-grid {
+    min-height: auto;
+  }
+
+  .eve-suite__code,
+  .eve-suite__preview-frame,
+  .eve-suite__preview-media,
+  .eve-suite__preview-text {
+    min-height: 340px;
+  }
+}

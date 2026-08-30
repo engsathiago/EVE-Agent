@@ -1,8 +1,8 @@
 /** Control-plane provider discovery helpers that keep runtime imports lazy until catalog hooks run. */
 import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
 import { normalizeProviderId } from "../agents/model-selection.js";
-import type { ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderConfig } from "../config/types.js";
 import { createLazyImportLoader } from "../shared/lazy-promise.js";
 import { listManifestProviderContributionIds } from "./manifest-contribution-ids.js";
 import type { PluginMetadataRegistryView } from "./plugin-metadata-snapshot.types.js";

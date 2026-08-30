@@ -1505,26 +1505,23 @@ describe("startGatewayPostAttachRuntime", () => {
     const trace = createStartupTraceRecorder();
     const logChannels = { info: vi.fn(), error: vi.fn() };
 
-    await withEnvAsync(
-      { EVE_SKIP_CHANNELS: "1", EVE_SKIP_PROVIDERS: undefined },
-      async () => {
-        await startGatewaySidecars({
-          cfg: { hooks: { internal: { enabled: false } } } as never,
-          pluginRegistry: createPostAttachParams().pluginRegistry,
-          defaultWorkspaceDir: "/tmp/eve-workspace",
-          deps: {} as never,
-          startChannels: vi.fn(async () => {}),
-          log: { warn: vi.fn() },
-          logHooks: {
-            info: vi.fn(),
-            warn: vi.fn(),
-            error: vi.fn(),
-          },
-          logChannels,
-          startupTrace: trace.startupTrace,
-        });
-      },
-    );
+    await withEnvAsync({ EVE_SKIP_CHANNELS: "1", EVE_SKIP_PROVIDERS: undefined }, async () => {
+      await startGatewaySidecars({
+        cfg: { hooks: { internal: { enabled: false } } } as never,
+        pluginRegistry: createPostAttachParams().pluginRegistry,
+        defaultWorkspaceDir: "/tmp/eve-workspace",
+        deps: {} as never,
+        startChannels: vi.fn(async () => {}),
+        log: { warn: vi.fn() },
+        logHooks: {
+          info: vi.fn(),
+          warn: vi.fn(),
+          error: vi.fn(),
+        },
+        logChannels,
+        startupTrace: trace.startupTrace,
+      });
+    });
 
     expect(trace.measures).toContain("sidecars.channels");
     expect(trace.measures).toContain("sidecars.channel-skip");

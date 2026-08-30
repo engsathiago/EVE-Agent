@@ -164,15 +164,11 @@ function compileConfiguredBindingRegistry(params: {
   };
 }
 
-export function resolveCompiledBindingRegistry(
-  cfg: EVEConfig,
-): CompiledConfiguredBindingRegistry {
+export function resolveCompiledBindingRegistry(cfg: EVEConfig): CompiledConfiguredBindingRegistry {
   return compileConfiguredBindingRegistry({ cfg });
 }
 
-export function primeCompiledBindingRegistry(
-  cfg: EVEConfig,
-): CompiledConfiguredBindingRegistry {
+export function primeCompiledBindingRegistry(cfg: EVEConfig): CompiledConfiguredBindingRegistry {
   return compileConfiguredBindingRegistry({ cfg });
 }
 

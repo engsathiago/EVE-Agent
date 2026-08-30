@@ -1,9 +1,7 @@
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import type { EVEConfig } from "../config/types.eve.js";
 
-type ConfiguredModelProvider = NonNullable<
-  NonNullable<EVEConfig["models"]>["providers"]
->[string];
+type ConfiguredModelProvider = NonNullable<NonNullable<EVEConfig["models"]>["providers"]>[string];
 const OPENAI_COMPATIBLE_EMBEDDING_PROVIDER_ID = "openai-compatible";
 const OPENAI_COMPATIBLE_MODEL_APIS = new Set(["openai-completions", "openai-responses"]);
 

@@ -8,7 +8,7 @@ describe("shortenText", () => {
   });
 
   it("truncates and appends ellipsis when over limit", () => {
-    expect(shortenText("eve-status-output", 10)).toBe("eve-…");
+    expect(shortenText("eve-status-output", 10)).toBe("eve-statu…");
   });
 
   it("counts multi-byte characters correctly", () => {

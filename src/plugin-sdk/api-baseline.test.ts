@@ -29,7 +29,7 @@ describe("Plugin SDK API baseline", () => {
       "workspace",
       "eve",
       "node_modules",
-      "@eve",
+      "@openclaw",
       "fs-safe",
       "dist",
       "secret-file.d.ts",
@@ -38,9 +38,9 @@ describe("Plugin SDK API baseline", () => {
       repoRoot,
       "node_modules",
       ".pnpm",
-      "@eve+fs-safe@1.0.0",
+      "@openclaw+fs-safe@1.0.0",
       "node_modules",
-      "@eve",
+      "@openclaw",
       "fs-safe",
       "dist",
       "secret-file.d.ts",
@@ -55,7 +55,7 @@ describe("Plugin SDK API baseline", () => {
   });
 
   it("keeps repo source paths relative when a parent directory is named node_modules", () => {
-    const repoRoot = path.join(path.sep, "workspace", "node_modules", "eve");
+    const repoRoot = path.join(path.sep, "workspace", "node_modules", "eve-agent");
     const sourcePath = path.join(repoRoot, "src", "plugin-sdk", "core.ts");
 
     expect(normalizePluginSdkApiSourcePath(repoRoot, sourcePath)).toBe("src/plugin-sdk/core.ts");

@@ -7,8 +7,8 @@ import {
   findNormalizedProviderKey,
   normalizeProviderId,
 } from "@eve/model-catalog-core/provider-id";
-import type { AuthProfileConfig } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { AuthProfileConfig } from "../../config/types.js";
 import { resolveAuthProfileMetadata } from "./identity.js";
 import { dedupeProfileIds, listProfilesForProvider } from "./profile-list.js";
 import type { AuthProfileIdRepairResult, AuthProfileStore } from "./types.js";

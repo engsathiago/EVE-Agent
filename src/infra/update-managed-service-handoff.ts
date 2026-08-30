@@ -381,8 +381,7 @@ function resolveGatewayServiceRecovery(
     return { kind: "systemd", unit };
   }
   if (supervisor === "launchd") {
-    const label =
-      env.EVE_LAUNCHD_LABEL?.trim() || resolveGatewayLaunchAgentLabel(env.EVE_PROFILE);
+    const label = env.EVE_LAUNCHD_LABEL?.trim() || resolveGatewayLaunchAgentLabel(env.EVE_PROFILE);
     const uid = typeof process.getuid === "function" ? process.getuid() : 501;
     const home = env.HOME?.trim() || os.homedir();
     return {

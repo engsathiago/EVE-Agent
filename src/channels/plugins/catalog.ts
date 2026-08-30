@@ -11,9 +11,9 @@ import {
 } from "@eve/normalization-core/string-normalization";
 import { MANIFEST_KEY } from "../../compat/legacy-names.js";
 import type { PluginInstallRecord } from "../../config/types.plugins.js";
+import { resolveEVEPackageRootSync } from "../../infra/eve-root.js";
 import { tryReadJsonSync } from "../../infra/json-files.js";
 import { isPrereleaseSemverVersion, parseRegistryNpmSpec } from "../../infra/npm-registry-spec.js";
-import { resolveEVEPackageRootSync } from "../../infra/eve-root.js";
 import { listChannelCatalogEntries } from "../../plugins/channel-catalog-registry.js";
 import type { PluginDiscoveryResult } from "../../plugins/discovery.js";
 import {

@@ -103,9 +103,7 @@ describe("createConfigScopedPromiseLoader", () => {
   it("caches loads by config object", async () => {
     const firstConfig = { plugins: { load: { disabled: true } } } as EVEConfig;
     const secondConfig = { plugins: { load: { disabled: false } } } as EVEConfig;
-    const load = vi.fn(async (config?: EVEConfig) =>
-      config === firstConfig ? "first" : "second",
-    );
+    const load = vi.fn(async (config?: EVEConfig) => (config === firstConfig ? "first" : "second"));
     const loader = createConfigScopedPromiseLoader(load);
 
     await expect(loader.load(firstConfig)).resolves.toBe("first");

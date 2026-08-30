@@ -175,8 +175,8 @@ export async function markRestartAbortedMainSessions(params: {
       ? process.env
       : { ...process.env, EVE_STATE_DIR: params.stateDir };
   const stateDir = resolveStateDir(env);
-  const configs = [params.cfg, ...(params.additionalCfgs ?? [])].filter(
-    (cfg): cfg is EVEConfig => Boolean(cfg),
+  const configs = [params.cfg, ...(params.additionalCfgs ?? [])].filter((cfg): cfg is EVEConfig =>
+    Boolean(cfg),
   );
   for (const cfg of configs) {
     try {

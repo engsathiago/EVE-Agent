@@ -153,9 +153,7 @@ describe("perplexity web search provider", () => {
           throw new Error("Expected tool definition");
         }
 
-        await expect(tool.execute({ query: "EVE docs", [key]: value })).rejects.toThrow(
-          message,
-        );
+        await expect(tool.execute({ query: "EVE docs", [key]: value })).rejects.toThrow(message);
       },
     );
   });

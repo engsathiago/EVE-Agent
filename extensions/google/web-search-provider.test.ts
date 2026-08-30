@@ -4,9 +4,7 @@ import { withEnv, withEnvAsync, withFetchPreconnect } from "eve-agent/plugin-sdk
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { testing, createGeminiWebSearchProvider } from "./src/gemini-web-search-provider.js";
 
-type TestModelProviderConfig = NonNullable<
-  NonNullable<EVEConfig["models"]>["providers"]
->[string];
+type TestModelProviderConfig = NonNullable<NonNullable<EVEConfig["models"]>["providers"]>[string];
 
 function installGeminiFetch() {
   const mockFetch = vi.fn((_input?: RequestInfo | URL, _init?: RequestInit) =>

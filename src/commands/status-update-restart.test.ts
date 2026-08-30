@@ -70,9 +70,7 @@ describe("status update restart formatting", () => {
         ...basePayload,
         stats: { ...basePayload.stats, reason: "restart-health-pending" },
       }),
-    ).toContain(
-      "Update restart is still pending; run eve update status --json for handoff state.",
-    );
+    ).toContain("Update restart is still pending; run eve update status --json for handoff state.");
     expect(
       formatUpdateRestartActionLines({
         ...basePayload,

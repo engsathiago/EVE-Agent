@@ -1,5 +1,8 @@
 // Line plugin module implements outbound media behavior.
-import { resolvePinnedHostnameWithPolicy, type SsrFPolicy } from "eve-agent/plugin-sdk/ssrf-runtime";
+import {
+  resolvePinnedHostnameWithPolicy,
+  type SsrFPolicy,
+} from "eve-agent/plugin-sdk/ssrf-runtime";
 import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
 type LineOutboundMediaKind = "image" | "video" | "audio";

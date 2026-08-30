@@ -53,7 +53,7 @@ async function makeFakeGitRepo(
 
 async function makeFakeEVEPackage(root: string) {
   await fs.mkdir(path.join(root, "src"), { recursive: true });
-  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve" }));
+  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }));
 }
 
 describe("git commit resolution", () => {
@@ -179,11 +179,11 @@ describe("git commit resolution", () => {
     const hostRepo = path.join(temp, "host");
     await makeFakeGitRepo(hostRepo, { head: "abcdef1234567890abcdef1234567890abcdef12" });
 
-    const packageRoot = path.join(hostRepo, "node_modules", "eve");
+    const packageRoot = path.join(hostRepo, "node_modules", "eve-agent");
     await fs.mkdir(path.join(packageRoot, "dist"), { recursive: true });
     await fs.writeFile(
       path.join(packageRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.3.10" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.3.10" }),
       "utf-8",
     );
     const moduleUrl = pathToFileURL(path.join(packageRoot, "dist", "entry.js")).href;

@@ -54,7 +54,7 @@ type WorkflowRunSummary = {
   durationSeconds?: number;
 };
 
-const DEFAULT_REPO = "eve/eve";
+const DEFAULT_REPO = "engsathiago/eve-agent";
 const DEFAULT_CLAWHUB_REGISTRY = "https://clawhub.ai";
 const CLAWHUB_REQUEST_TIMEOUT_MS = 20_000;
 const CLAWHUB_RESPONSE_BODY_MAX_BYTES = 1024 * 1024;

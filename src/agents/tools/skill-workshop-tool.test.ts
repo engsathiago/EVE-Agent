@@ -3,10 +3,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import { createTrackedTempDirs } from "../../test-utils/tracked-temp-dirs.js";
 import { createEVETools } from "../eve-tools.js";
 import { createSkillWorkshopTool } from "./skill-workshop-tool.js";
@@ -305,6 +302,35 @@ describe("skill_workshop tool", () => {
         "utf8",
       ),
     ).resolves.toContain("Use weather API details.");
+
+    const rolledBack = await tool.execute("call-rollback", {
+      action: "rollback",
+      proposal_id: createdId,
+      reason: "restore the previous workspace state",
+    });
+    expect((rolledBack.content[0] as { text: string }).text).toBe(
+      `Rolled back skill proposal ${createdId}.`,
+    );
+    expect(rolledBack.details).toMatchObject({
+      id: createdId,
+      status: "rolled_back",
+      kind: "create",
+      skillKey: "weather-planner",
+    });
+    await expect(
+      fs.access(path.join(workspaceDir, "skills", "weather-planner", "SKILL.md")),
+    ).rejects.toThrow();
+
+    const recreated = await tool.execute("call-recreate", {
+      action: "create",
+      name: "Weather Planner",
+      description: "Plan around current weather",
+      proposal_content: "# Weather Planner\n\nCheck weather before outdoor recommendations.\n",
+    });
+    await tool.execute("call-reapply", {
+      action: "apply",
+      proposal_id: (recreated.details as { id: string }).id,
+    });
 
     const update = await tool.execute("call-update", {
       action: "update",

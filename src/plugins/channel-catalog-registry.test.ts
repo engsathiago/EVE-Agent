@@ -18,8 +18,7 @@ const RECORDS: Record<string, PluginInstallRecord> = {
   weixin: {
     source: "npm",
     spec: "@tencent-weixin/eve-weixin@2.3.7",
-    installPath:
-      "/tmp/eve-test-home/.eve/npm/node_modules/@tencent-weixin/eve-weixin",
+    installPath: "/tmp/eve-test-home/.eve/npm/node_modules/@tencent-weixin/eve-weixin",
   } as PluginInstallRecord,
 };
 

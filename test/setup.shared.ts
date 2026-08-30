@@ -1,4 +1,5 @@
 // Shared test setup installs common Vitest mocks and cleanup behavior.
+import path from "node:path";
 import { vi } from "vitest";
 
 const openAiCodexTokenRefreshTestHook = "__EVE_TEST_REFRESH_OPENAI_CODEX_TOKEN__";
@@ -41,6 +42,9 @@ vi.mock("@mariozechner/clipboard", () => ({
 
 // Ensure Vitest environment is properly set.
 process.env.VITEST = "true";
+// Metadata and compatibility tests must read the complete source manifest tree.
+// A prior local build can contain only the runtime-staged subset under dist/extensions.
+process.env.EVE_BUNDLED_PLUGINS_DIR ??= path.resolve(process.cwd(), "extensions");
 // Tests frequently point bundled plugin discovery at temp fixture roots. Production still rejects
 // arbitrary EVE_BUNDLED_PLUGINS_DIR overrides unless this Vitest-only opt-in is present.
 process.env.EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR ??= "1";

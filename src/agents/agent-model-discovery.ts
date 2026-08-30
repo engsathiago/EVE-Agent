@@ -165,12 +165,7 @@ export function discoverModels(
   agentDir: string,
   options?: DiscoverModelsOptions,
 ): AgentModelRegistry {
-  return createEVEModelRegistry(
-    authStorage,
-    path.join(agentDir, "models.json"),
-    agentDir,
-    options,
-  );
+  return createEVEModelRegistry(authStorage, path.join(agentDir, "models.json"), agentDir, options);
 }
 
 export {

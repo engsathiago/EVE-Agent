@@ -90,10 +90,7 @@ async function resolveDispatchDecision(params: {
   return { decision, groupHistories };
 }
 
-async function buildDispatchContextPayload(params: {
-  cfg: EVEConfig;
-  message: IMessagePayload;
-}) {
+async function buildDispatchContextPayload(params: { cfg: EVEConfig; message: IMessagePayload }) {
   const { cfg, message } = params;
   const { decision, groupHistories } = await resolveDispatchDecision({ cfg, message });
 

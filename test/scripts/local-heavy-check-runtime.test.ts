@@ -220,10 +220,7 @@ describe("local-heavy-check-runtime", () => {
 
   it("allows forcing the tsgo lock back on", () => {
     expect(
-      shouldAcquireLocalHeavyCheckLockForTsgo(
-        ["--help"],
-        makeEnv({ EVE_TSGO_FORCE_LOCK: "1" }),
-      ),
+      shouldAcquireLocalHeavyCheckLockForTsgo(["--help"], makeEnv({ EVE_TSGO_FORCE_LOCK: "1" })),
     ).toBe(true);
   });
 

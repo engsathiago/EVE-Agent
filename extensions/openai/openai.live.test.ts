@@ -2,7 +2,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import OpenAI from "openai";
 import type { ResolvedTtsConfig } from "eve-agent/plugin-sdk/agent-runtime";
 import { AuthStorage, ModelRegistry } from "eve-agent/plugin-sdk/agent-sessions";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
@@ -18,6 +17,7 @@ import {
   isServerErrorMessage,
   isTimeoutErrorMessage,
 } from "eve-agent/plugin-sdk/test-env";
+import OpenAI from "openai";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 

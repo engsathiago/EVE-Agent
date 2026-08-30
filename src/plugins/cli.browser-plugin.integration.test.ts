@@ -38,8 +38,7 @@ describe("registerPluginCliCommands browser plugin integration", () => {
       env: {
         ...process.env,
         EVE_DISABLE_BUNDLED_PLUGINS: undefined,
-        EVE_BUNDLED_PLUGINS_DIR:
-          bundledFixture?.rootDir ?? path.join(process.cwd(), "extensions"),
+        EVE_BUNDLED_PLUGINS_DIR: bundledFixture?.rootDir ?? path.join(process.cwd(), "extensions"),
       } as NodeJS.ProcessEnv,
     });
 
@@ -62,8 +61,7 @@ describe("registerPluginCliCommands browser plugin integration", () => {
       env: {
         ...process.env,
         EVE_DISABLE_BUNDLED_PLUGINS: undefined,
-        EVE_BUNDLED_PLUGINS_DIR:
-          bundledFixture?.rootDir ?? path.join(process.cwd(), "extensions"),
+        EVE_BUNDLED_PLUGINS_DIR: bundledFixture?.rootDir ?? path.join(process.cwd(), "extensions"),
       } as NodeJS.ProcessEnv,
     });
 

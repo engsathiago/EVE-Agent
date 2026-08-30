@@ -458,7 +458,7 @@ The local plugin registry is EVE's persisted cold read model for installed plugi
 
 Use `plugins registry` to inspect whether the persisted registry is present, current, or stale. Use `--refresh` to rebuild it from the persisted plugin index, config policy, and manifest/package metadata. This is a repair path, not a runtime activation path.
 
-`eve doctor --fix` also repairs registry-adjacent managed npm drift: if an orphaned or recovered `@eve/*` package under a managed plugin npm project or the legacy flat managed npm root shadows a bundled plugin, doctor removes that stale package and rebuilds the registry so startup validates against the bundled manifest. Doctor also relinks the host `eve` package into managed npm plugins that declare `peerDependencies.eve`, so package-local runtime imports such as `eve-agent/plugin-sdk/*` resolve after updates or npm repairs.
+`eve doctor --fix` also repairs registry-adjacent managed npm drift: if an orphaned or recovered `@eve/*` package under a managed plugin npm project or the legacy flat managed npm root shadows a bundled plugin, doctor removes that stale package and rebuilds the registry so startup validates against the bundled manifest. Doctor also relinks the host `eve` package into managed npm plugins that declare `peerDependencies["eve-agent"]`, so package-local runtime imports such as `eve-agent/plugin-sdk/*` resolve after updates or npm repairs.
 
 <Warning>
 `EVE_DISABLE_PERSISTED_PLUGIN_REGISTRY=1` is a deprecated break-glass compatibility switch for registry read failures. Prefer `plugins registry --refresh` or `eve doctor --fix`; the env fallback is only for emergency startup recovery while the migration rolls out.

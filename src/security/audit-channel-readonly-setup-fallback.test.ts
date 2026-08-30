@@ -16,9 +16,7 @@ const {
       title: "Telegram setup fallback audited",
     },
   ]),
-  collectEnabledInsecureOrDangerousFlagsMock: vi.fn(
-    (_configForTest: EVEConfig): string[] => [],
-  ),
+  collectEnabledInsecureOrDangerousFlagsMock: vi.fn((_configForTest: EVEConfig): string[] => []),
   listReadOnlyChannelPluginsForConfigMock: vi.fn(),
   hasConfiguredChannelsForReadOnlyScopeMock: vi.fn(),
 }));

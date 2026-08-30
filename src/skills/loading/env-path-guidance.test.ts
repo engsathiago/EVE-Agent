@@ -37,11 +37,7 @@ const CASES: GuidanceCase[] = [
   },
   {
     file: "skills/sherpa-onnx-tts/SKILL.md",
-    required: [
-      "EVE_STATE_DIR",
-      "EVE_CONFIG_PATH",
-      'STATE_DIR="${EVE_STATE_DIR:-$HOME/.eve}"',
-    ],
+    required: ["EVE_STATE_DIR", "EVE_CONFIG_PATH", 'STATE_DIR="${EVE_STATE_DIR:-$HOME/.eve}"'],
     forbidden: [
       'SHERPA_ONNX_RUNTIME_DIR: "~/.eve/tools/sherpa-onnx-tts/runtime"',
       'SHERPA_ONNX_MODEL_DIR: "~/.eve/tools/sherpa-onnx-tts/models/vits-piper-en_US-lessac-high"',
@@ -56,16 +52,13 @@ const CASES: GuidanceCase[] = [
 ];
 
 describe("bundled skill env-path guidance", () => {
-  it.each(CASES)(
-    "keeps $file aligned with EVE env overrides",
-    ({ file, required, forbidden }) => {
-      const content = fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
-      for (const needle of required ?? []) {
-        expect(content).toContain(needle);
-      }
-      for (const needle of forbidden ?? []) {
-        expect(content).not.toContain(needle);
-      }
-    },
-  );
+  it.each(CASES)("keeps $file aligned with EVE env overrides", ({ file, required, forbidden }) => {
+    const content = fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
+    for (const needle of required ?? []) {
+      expect(content).toContain(needle);
+    }
+    for (const needle of forbidden ?? []) {
+      expect(content).not.toContain(needle);
+    }
+  });
 });

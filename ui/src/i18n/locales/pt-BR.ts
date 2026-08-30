@@ -394,6 +394,7 @@ export const pt_BR: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Controle",
+    workspace: "Espaço de trabalho",
     agent: "Agente",
     settings: "Configurações",
     expand: "Expandir barra lateral",
@@ -405,6 +406,11 @@ export const pt_BR: TranslationMap = {
     activity: "Atividade",
     overview: "Visão Geral",
     workboard: "Quadro de trabalho",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Canais",
     instances: "Instâncias",
     sessions: "Sessões",
@@ -430,6 +436,11 @@ export const pt_BR: TranslationMap = {
     activity: "Resumos de atividade de ferramentas locais do navegador.",
     overview: "Status, entrada, saúde.",
     workboard: "Fila de trabalho do agente e transferência de sessão.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Canais e configurações.",
     instances: "Clientes e nós conectados.",
     sessions: "Sessões ativas e padrões.",
@@ -1316,8 +1327,7 @@ export const pt_BR: TranslationMap = {
         title: "Não foi possível conectar",
         summary:
           "O navegador não conseguiu concluir a conexão ao Gateway. Verifique o destino e o transporte antes de tentar credenciais novamente.",
-        stepGateway:
-          "Confirme que o Gateway está em execução com eve status ou eve gateway run.",
+        stepGateway: "Confirme que o Gateway está em execução com eve status ou eve gateway run.",
         stepUrl:
           "Verifique o URL de WebSocket e use wss:// quando o Gateway estiver atrás de HTTPS/Tailscale Serve.",
         stepDashboard:

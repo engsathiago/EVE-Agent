@@ -9,10 +9,7 @@ import {
 import type { EVEConfig } from "../config/types.eve.js";
 import { closeEVEAgentDatabasesForTest } from "../state/eve-agent-db.js";
 import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import {
   collectOpenAICodexAuthProfileStoreIdMap,
   maybeMigrateAuthProfileJsonStoresToSqlite,

@@ -61,7 +61,7 @@ async function waitForExit(
   timeoutMs: number,
 ): Promise<{ code: number | null; signal: NodeJS.Signals | null }> {
   if (child.exitCode !== null || child.signalCode !== null) {
-    return { code: child.exitCode, signal: child.signalCode as NodeJS.Signals | null };
+    return { code: child.exitCode, signal: child.signalCode };
   }
   return await new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
@@ -248,11 +248,7 @@ describe("telegram user credential IO", () => {
     expect(credentialModule.optionalPositiveInteger(undefined, 30_000)).toBe(30_000);
     expect(credentialModule.optionalPositiveInteger(" 120000 ", 30_000)).toBe(120_000);
     expect(() =>
-      credentialModule.optionalPositiveInteger(
-        "1e3",
-        30_000,
-        "EVE_QA_CREDENTIAL_LEASE_TTL_MS",
-      ),
+      credentialModule.optionalPositiveInteger("1e3", 30_000, "EVE_QA_CREDENTIAL_LEASE_TTL_MS"),
     ).toThrow('EVE_QA_CREDENTIAL_LEASE_TTL_MS must be a positive integer. Got: "1e3".');
     expect(() =>
       credentialModule.optionalPositiveInteger(

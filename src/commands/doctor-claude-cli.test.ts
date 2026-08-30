@@ -61,9 +61,7 @@ describe("resolveClaudeCliProjectDirForWorkspace", () => {
         workspaceDir: "/Users/vincentkoc/GIT/_Perso/eve/.eve/workspace",
         homeDir: "/Users/vincentkoc",
       }),
-    ).toBe(
-      "/Users/vincentkoc/.claude/projects/-Users-vincentkoc-GIT--Perso-eve--eve-workspace",
-    );
+    ).toBe("/Users/vincentkoc/.claude/projects/-Users-vincentkoc-GIT--Perso-eve--eve-workspace");
   });
 });
 
@@ -125,9 +123,7 @@ describe("noteClaudeCliHealth", () => {
       const body = noteBody(noteFn);
       expect(body).toContain("Binary: /opt/homebrew/bin/claude.");
       expect(body).toContain("Headless Claude auth: OK (oauth).");
-      expect(body).toContain(
-        `EVE auth profile: ${CLAUDE_CLI_PROFILE_ID} (provider claude-cli).`,
-      );
+      expect(body).toContain(`EVE auth profile: ${CLAUDE_CLI_PROFILE_ID} (provider claude-cli).`);
       expect(body).toContain("Workspace:");
       expect(body).toContain("(writable).");
       expect(body).toContain("Claude project dir:");

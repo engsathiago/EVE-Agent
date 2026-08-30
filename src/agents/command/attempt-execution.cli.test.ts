@@ -288,10 +288,7 @@ describe("CLI attempt execution", () => {
     );
   }
 
-  function makeClaudeCliSessionEntry(
-    eveSessionId: string,
-    cliSessionId: string,
-  ): SessionEntry {
+  function makeClaudeCliSessionEntry(eveSessionId: string, cliSessionId: string): SessionEntry {
     return {
       sessionId: eveSessionId,
       updatedAt: Date.now(),

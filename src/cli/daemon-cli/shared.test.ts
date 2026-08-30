@@ -62,9 +62,7 @@ describe("renderGatewayServiceStartHints", () => {
       renderGatewayServiceStartHints({
         EVE_CONTAINER: "eve-demo-container",
       } as NodeJS.ProcessEnv),
-    ).toContain(
-      "Restart the container or the service that manages it for eve-demo-container.",
-    );
+    ).toContain("Restart the container or the service that manages it for eve-demo-container.");
   });
 
   it("prepends a single container restart hint when EVE_CONTAINER_HINT is set", () => {
@@ -72,9 +70,7 @@ describe("renderGatewayServiceStartHints", () => {
       renderGatewayServiceStartHints({
         EVE_CONTAINER_HINT: "eve-demo-container",
       } as NodeJS.ProcessEnv),
-    ).toContain(
-      "Restart the container or the service that manages it for eve-demo-container.",
-    );
+    ).toContain("Restart the container or the service that manages it for eve-demo-container.");
   });
 });
 

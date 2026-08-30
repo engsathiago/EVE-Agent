@@ -83,8 +83,8 @@ cat ~/.eve/eve.json
 `eve doctor --fix`. Both use doctor health checks, but their posture is
 different:
 
-| Mode                     | Prompts   | Writes config/state     | Output                 | Use it for                      |
-| ------------------------ | --------- | ----------------------- | ---------------------- | ------------------------------- |
+| Mode                | Prompts   | Writes config/state     | Output                 | Use it for                      |
+| ------------------- | --------- | ----------------------- | ---------------------- | ------------------------------- |
 | `eve doctor`        | yes       | no                      | friendly health report | a human checking status         |
 | `eve doctor --fix`  | sometimes | yes, with repair policy | friendly repair log    | applying approved repairs       |
 | `eve doctor --lint` | no        | no                      | structured findings    | CI, preflight, and review gates |
@@ -426,7 +426,7 @@ That stages grounded durable candidates into the short-term dreaming store while
     When sandboxing is enabled, doctor checks Docker images and offers to build or switch to legacy names if the current image is missing.
   </Accordion>
   <Accordion title="7b. Plugin install cleanup">
-    Doctor removes legacy EVE-generated plugin dependency staging state in `eve doctor --fix` / `eve doctor --repair` mode. This covers stale generated dependency roots, old install-stage directories, package-local debris from earlier bundled-plugin dependency repair code, and orphaned or recovered managed npm copies of bundled `@eve/*` plugins that can shadow the current bundled manifest. Doctor also relinks the host `eve` package into managed npm plugins that declare `peerDependencies.eve`, so package-local runtime imports such as `eve-agent/plugin-sdk/*` keep resolving after updates or npm repairs.
+    Doctor removes legacy EVE-generated plugin dependency staging state in `eve doctor --fix` / `eve doctor --repair` mode. This covers stale generated dependency roots, old install-stage directories, package-local debris from earlier bundled-plugin dependency repair code, and orphaned or recovered managed npm copies of bundled `@eve/*` plugins that can shadow the current bundled manifest. Doctor also relinks the host `eve` package into managed npm plugins that declare `peerDependencies["eve-agent"]`, so package-local runtime imports such as `eve-agent/plugin-sdk/*` keep resolving after updates or npm repairs.
 
     Doctor can also reinstall missing downloadable plugins when config references them but the local plugin registry cannot find them. Examples include material `plugins.entries`, configured channel/provider/search settings, and configured agent runtimes. During package updates, doctor avoids running package-manager plugin repair while the core package is being swapped; run `eve doctor --fix` again after the update if a configured plugin still needs recovery. Gateway startup and config reload do not run package managers; plugin installs remain explicit doctor/install/update work.
 

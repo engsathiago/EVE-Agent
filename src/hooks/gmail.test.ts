@@ -21,9 +21,7 @@ const baseConfig = {
 } satisfies EVEConfig;
 
 describe("gmail hook config", () => {
-  function resolveWithGmailOverrides(
-    overrides: Partial<NonNullable<EVEConfig["hooks"]>["gmail"]>,
-  ) {
+  function resolveWithGmailOverrides(overrides: Partial<NonNullable<EVEConfig["hooks"]>["gmail"]>) {
     return resolveGmailHookRuntimeConfig(
       {
         hooks: {

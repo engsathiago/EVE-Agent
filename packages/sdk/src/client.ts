@@ -425,10 +425,7 @@ export class EVE {
     return this.iterateEvents(filter);
   }
 
-  runEvents(
-    runId: string,
-    filter?: (event: EVEEvent) => boolean,
-  ): AsyncIterable<EVEEvent> {
+  runEvents(runId: string, filter?: (event: EVEEvent) => boolean): AsyncIterable<EVEEvent> {
     return this.iterateRunEvents(runId, filter);
   }
 
@@ -443,9 +440,7 @@ export class EVE {
     }
   }
 
-  private async *iterateEvents(
-    filter?: (event: EVEEvent) => boolean,
-  ): AsyncIterable<EVEEvent> {
+  private async *iterateEvents(filter?: (event: EVEEvent) => boolean): AsyncIterable<EVEEvent> {
     await this.connect();
     this.assertOpen();
     for await (const event of this.normalizedEvents.stream(filter)) {

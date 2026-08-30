@@ -73,9 +73,7 @@ describe("workspace skills bridge mount policy", () => {
         path.join(skillsWorkspaceDir, "skills", "demo", "SKILL.md"),
       );
       expect(resolve("/workspace/skills/demo/SKILL.md").writable).toBe(false);
-      expect(resolve("/workspace/.eve/sandbox-skills/skills/demo/SKILL.md").writable).toBe(
-        false,
-      );
+      expect(resolve("/workspace/.eve/sandbox-skills/skills/demo/SKILL.md").writable).toBe(false);
     });
   });
 

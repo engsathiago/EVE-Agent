@@ -251,9 +251,7 @@ describe("scripts/restart-mac.sh", () => {
     );
 
     expect(cleanupBlock).toContain("ps axww -o pid=,command=");
-    expect(cleanupBlock).toContain(
-      '"${ROOT_DIR}/dist/EVE.app/${APP_EXECUTABLE_RELATIVE_PATH}"',
-    );
+    expect(cleanupBlock).toContain('"${ROOT_DIR}/dist/EVE.app/${APP_EXECUTABLE_RELATIVE_PATH}"');
     expect(cleanupBlock).toContain('"/Applications/EVE.app/${APP_EXECUTABLE_RELATIVE_PATH}"');
     expect(cleanupBlock).toContain('"${DEBUG_PROCESS_PATTERN}"');
     expect(cleanupBlock).toContain('"${LOCAL_PROCESS_PATTERN}"');
@@ -348,10 +346,9 @@ describe("scripts/restart-mac.sh", () => {
 
   it("does not kill unrelated EVE app bundles", () => {
     const { killCalls, result } = runCleanupFunction(
-      [
-        "#!/usr/bin/env bash",
-        "printf '%s\\n' '  654 /tmp/Other/EVE.app/Contents/MacOS/EVE'",
-      ].join("\n"),
+      ["#!/usr/bin/env bash", "printf '%s\\n' '  654 /tmp/Other/EVE.app/Contents/MacOS/EVE'"].join(
+        "\n",
+      ),
     );
 
     expect(result.status).toBe(0);

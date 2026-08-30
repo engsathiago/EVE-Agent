@@ -53,9 +53,7 @@ describe("codex app-server protocol source resolver", () => {
   });
 
   it("allows an explicit local disk headroom override", () => {
-    expect(resolveCodexProtocolMinFreeBytes({ EVE_CODEX_PROTOCOL_MIN_FREE_BYTES: "0" })).toBe(
-      0,
-    );
+    expect(resolveCodexProtocolMinFreeBytes({ EVE_CODEX_PROTOCOL_MIN_FREE_BYTES: "0" })).toBe(0);
     expect(() =>
       validateCodexProtocolGenerationHeadroom({
         freeBytes: 1,

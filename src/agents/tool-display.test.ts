@@ -174,9 +174,7 @@ describe("tool display details", () => {
           },
         }),
       ),
-    ).toBe(
-      'for "Find the EVE repository on GitHub", "eve github", "eve repository" (top 5)',
-    );
+    ).toBe('for "Find the EVE repository on GitHub", "eve github", "eve repository" (top 5)');
   });
 
   it("summarizes exec commands with context", () => {

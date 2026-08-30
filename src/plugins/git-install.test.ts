@@ -151,9 +151,7 @@ describe("installPluginFromGitSpec", () => {
     installPluginFromInstalledPackageDirMock.mockReset();
     preflightPluginGitInstallPolicyMock.mockReset();
     preflightPluginGitInstallPolicyMock.mockResolvedValue(null);
-    const globalConfigRoot = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-git-install-npmrc-"),
-    );
+    const globalConfigRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eve-git-install-npmrc-"));
     tempDirs.push(globalConfigRoot);
     const globalConfig = path.join(globalConfigRoot, "global-npmrc");
     await fs.writeFile(globalConfig, "", "utf8");

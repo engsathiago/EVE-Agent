@@ -2,7 +2,7 @@
 // Synchronizes GitHub label colors to the EVE taxonomy policy.
 import { execFileSync } from "node:child_process";
 
-const REPO = "eve/eve";
+const REPO = "engsathiago/eve-agent";
 const APPLY = process.argv.includes("--apply");
 
 const COLORS = {

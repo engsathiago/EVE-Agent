@@ -10,10 +10,7 @@ import {
   shouldIgnoreStaleDiscordRouteBinding,
 } from "./route-resolution.js";
 
-function buildWorkerBindingConfig(peer: {
-  kind: "channel" | "direct";
-  id: string;
-}): EVEConfig {
+function buildWorkerBindingConfig(peer: { kind: "channel" | "direct"; id: string }): EVEConfig {
   return {
     agents: {
       list: [{ id: "worker" }],

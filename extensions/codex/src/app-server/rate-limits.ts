@@ -12,7 +12,10 @@ import {
   type ProviderUsageSnapshot,
   type UsageWindow,
 } from "eve-agent/plugin-sdk/provider-usage";
-import { asFiniteNumber, parseStrictFiniteNumber } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import {
+  asFiniteNumber,
+  parseStrictFiniteNumber,
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { isJsonObject, type JsonObject, type JsonValue } from "./protocol.js";
 
 const CODEX_LIMIT_ID = "codex";

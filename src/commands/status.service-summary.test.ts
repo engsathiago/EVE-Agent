@@ -120,7 +120,7 @@ describe("readServiceStatusSummary", () => {
       await fs.mkdir(path.join(root, "dist"), { recursive: true });
       await fs.writeFile(
         path.join(root, "package.json"),
-        JSON.stringify({ name: "eve", version: "0.0.0-test" }),
+        JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }),
         "utf8",
       );
       const entrypoint = path.join(root, "dist", "index.js");

@@ -434,9 +434,7 @@ exit 0
       expect(content).toContain("function Invoke-EVEStartupLauncher");
       expect(content).toContain("Get-ScheduledTask -TaskName $TaskName");
       expect(content).toContain("eve restart skipped schtasks end");
-      expect(content).toContain(
-        '$launcherPath = Join-Path $env:USERPROFILE ".eve\\gateway.cmd"',
-      );
+      expect(content).toContain('$launcherPath = Join-Path $env:USERPROFILE ".eve\\gateway.cmd"');
       expect(content).toContain("eve restart launched startup fallback");
       expectWindowsRestartWaitOrdering(content);
       expect(content).toContain('del "%~f0" >nul 2>&1');

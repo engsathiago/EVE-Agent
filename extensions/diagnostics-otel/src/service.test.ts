@@ -696,12 +696,13 @@ describe("diagnostics-otel service", () => {
       "eve.channel": "telegram",
       "eve.webhook": "telegram-post",
     });
-    expect(
-      telemetryState.histograms.get("eve.webhook.duration_ms")?.record,
-    ).toHaveBeenCalledWith(120, {
-      "eve.channel": "telegram",
-      "eve.webhook": "telegram-post",
-    });
+    expect(telemetryState.histograms.get("eve.webhook.duration_ms")?.record).toHaveBeenCalledWith(
+      120,
+      {
+        "eve.channel": "telegram",
+        "eve.webhook": "telegram-post",
+      },
+    );
     expect(telemetryState.counters.get("eve.message.queued")?.add).toHaveBeenCalledWith(1, {
       "eve.channel": "telegram",
       "eve.source": "telegram",
@@ -726,21 +727,21 @@ describe("diagnostics-otel service", () => {
       "eve.channel": "unknown",
       "eve.source": "unknown",
     });
-    expect(
-      telemetryState.counters.get("eve.message.dispatch.started")?.add,
-    ).toHaveBeenCalledWith(1, {
-      "eve.channel": "telegram",
-      "eve.source": "webhook",
-    });
-    expect(
-      telemetryState.counters.get("eve.message.dispatch.started")?.add,
-    ).toHaveBeenCalledWith(1, {
-      "eve.channel": "unknown",
-      "eve.source": "unknown",
-    });
-    expect(
-      telemetryState.counters.get("eve.message.dispatch.completed")?.add,
-    ).toHaveBeenCalledWith(
+    expect(telemetryState.counters.get("eve.message.dispatch.started")?.add).toHaveBeenCalledWith(
+      1,
+      {
+        "eve.channel": "telegram",
+        "eve.source": "webhook",
+      },
+    );
+    expect(telemetryState.counters.get("eve.message.dispatch.started")?.add).toHaveBeenCalledWith(
+      1,
+      {
+        "eve.channel": "unknown",
+        "eve.source": "unknown",
+      },
+    );
+    expect(telemetryState.counters.get("eve.message.dispatch.completed")?.add).toHaveBeenCalledWith(
       1,
       expect.objectContaining({
         "eve.channel": "telegram",
@@ -748,9 +749,7 @@ describe("diagnostics-otel service", () => {
         "eve.source": "webhook",
       }),
     );
-    expect(
-      telemetryState.counters.get("eve.message.dispatch.completed")?.add,
-    ).toHaveBeenCalledWith(
+    expect(telemetryState.counters.get("eve.message.dispatch.completed")?.add).toHaveBeenCalledWith(
       1,
       expect.objectContaining({
         "eve.channel": "unknown",
@@ -778,27 +777,26 @@ describe("diagnostics-otel service", () => {
         "eve.source": "unknown",
       }),
     );
-    expect(
-      telemetryState.histograms.get("eve.message.duration_ms")?.record,
-    ).toHaveBeenCalledWith(55, {
-      "eve.channel": "telegram",
-      "eve.outcome": "completed",
-    });
-    expect(telemetryState.histograms.get("eve.queue.wait_ms")?.record).toHaveBeenCalledWith(
-      10,
+    expect(telemetryState.histograms.get("eve.message.duration_ms")?.record).toHaveBeenCalledWith(
+      55,
       {
-        "eve.lane": "main",
+        "eve.channel": "telegram",
+        "eve.outcome": "completed",
       },
     );
+    expect(telemetryState.histograms.get("eve.queue.wait_ms")?.record).toHaveBeenCalledWith(10, {
+      "eve.lane": "main",
+    });
     expect(telemetryState.counters.get("eve.session.stuck")?.add).toHaveBeenCalledTimes(1);
     expect(telemetryState.counters.get("eve.session.stuck")?.add).toHaveBeenCalledWith(1, {
       "eve.state": "processing",
     });
-    expect(
-      telemetryState.histograms.get("eve.session.stuck_age_ms")?.record,
-    ).toHaveBeenCalledWith(125_000, {
-      "eve.state": "processing",
-    });
+    expect(telemetryState.histograms.get("eve.session.stuck_age_ms")?.record).toHaveBeenCalledWith(
+      125_000,
+      {
+        "eve.state": "processing",
+      },
+    );
     expect(telemetryState.counters.get("eve.run.attempt")?.add).toHaveBeenCalledWith(1, {
       "eve.attempt": 2,
     });
@@ -810,14 +808,11 @@ describe("diagnostics-otel service", () => {
       channel: "telegram",
       trigger: "user",
     });
-    expect(telemetryState.counters.get("eve.session.turn.created")?.add).toHaveBeenCalledWith(
-      1,
-      {
-        "eve.agent": "agent.default",
-        "eve.channel": "telegram",
-        "eve.trigger": "user",
-      },
-    );
+    expect(telemetryState.counters.get("eve.session.turn.created")?.add).toHaveBeenCalledWith(1, {
+      "eve.agent": "agent.default",
+      "eve.channel": "telegram",
+      "eve.trigger": "user",
+    });
 
     const spanNames = telemetryState.tracer.startSpan.mock.calls.map((call) => call[0]);
     expect(spanNames).toContain("eve.webhook.processed");
@@ -987,14 +982,15 @@ describe("diagnostics-otel service", () => {
       expect(event?.status).toBe("started");
       expect(event?.reason).toBe("configured");
     }
-    expect(
-      telemetryState.counters.get("eve.telemetry.exporter.events")?.add,
-    ).toHaveBeenCalledWith(1, {
-      "eve.exporter": "diagnostics-otel",
-      "eve.signal": "logs",
-      "eve.status": "started",
-      "eve.reason": "configured",
-    });
+    expect(telemetryState.counters.get("eve.telemetry.exporter.events")?.add).toHaveBeenCalledWith(
+      1,
+      {
+        "eve.exporter": "diagnostics-otel",
+        "eve.signal": "logs",
+        "eve.status": "started",
+        "eve.reason": "configured",
+      },
+    );
 
     unsubscribe();
     await service.stop?.(ctx);
@@ -1237,9 +1233,7 @@ describe("diagnostics-otel service", () => {
       "eve.liveness.reason": "event_loop_delay:cpu",
     });
     const livenessSpanOptions = startedSpanOptions("eve.liveness.warning");
-    expect(livenessSpanOptions?.attributes?.["eve.liveness.reason"]).toBe(
-      "event_loop_delay:cpu",
-    );
+    expect(livenessSpanOptions?.attributes?.["eve.liveness.reason"]).toBe("event_loop_delay:cpu");
     expect(livenessSpanOptions?.attributes?.["eve.liveness.active"]).toBe(2);
     expect(livenessSpanOptions?.attributes?.["eve.liveness.queued"]).toBe(4);
     const span = telemetryState.spans.find((item) => item.name === "eve.liveness.warning");
@@ -1275,15 +1269,16 @@ describe("diagnostics-otel service", () => {
       "eve.plugin": "none",
       "eve.reason": "body-too-large",
     });
-    expect(
-      telemetryState.histograms.get("eve.payload.large_bytes")?.record,
-    ).toHaveBeenCalledWith(2048, {
-      "eve.payload.action": "rejected",
-      "eve.payload.surface": "gateway.frame",
-      "eve.channel": "web",
-      "eve.plugin": "none",
-      "eve.reason": "body-too-large",
-    });
+    expect(telemetryState.histograms.get("eve.payload.large_bytes")?.record).toHaveBeenCalledWith(
+      2048,
+      {
+        "eve.payload.action": "rejected",
+        "eve.payload.surface": "gateway.frame",
+        "eve.channel": "web",
+        "eve.plugin": "none",
+        "eve.reason": "body-too-large",
+      },
+    );
 
     await service.stop?.(ctx);
   });
@@ -1317,15 +1312,16 @@ describe("diagnostics-otel service", () => {
     expect(failureEvent?.status).toBe("failure");
     expect(failureEvent?.reason).toBe("emit_failed");
     expect(failureEvent?.errorCategory).toBe("TypeError");
-    expect(
-      telemetryState.counters.get("eve.telemetry.exporter.events")?.add,
-    ).toHaveBeenCalledWith(1, {
-      "eve.exporter": "diagnostics-otel",
-      "eve.signal": "logs",
-      "eve.status": "failure",
-      "eve.reason": "emit_failed",
-      "eve.errorCategory": "TypeError",
-    });
+    expect(telemetryState.counters.get("eve.telemetry.exporter.events")?.add).toHaveBeenCalledWith(
+      1,
+      {
+        "eve.exporter": "diagnostics-otel",
+        "eve.signal": "logs",
+        "eve.status": "failure",
+        "eve.reason": "emit_failed",
+        "eve.errorCategory": "TypeError",
+      },
+    );
 
     unsubscribe();
     await service.stop?.(ctx);
@@ -2005,9 +2001,9 @@ describe("diagnostics-otel service", () => {
       "eve.model": "gpt-5.4",
       "eve.token": "input",
     });
-    expect(
-      JSON.stringify(telemetryState.counters.get("eve.tokens")?.add.mock.calls),
-    ).not.toContain("sk-test-secret-value");
+    expect(JSON.stringify(telemetryState.counters.get("eve.tokens")?.add.mock.calls)).not.toContain(
+      "sk-test-secret-value",
+    );
     await service.stop?.(ctx);
   });
 
@@ -2032,9 +2028,9 @@ describe("diagnostics-otel service", () => {
       "eve.model": "gpt-5.4",
       "eve.token": "input",
     });
-    expect(
-      JSON.stringify(telemetryState.counters.get("eve.tokens")?.add.mock.calls),
-    ).not.toContain("Agent:qa:otel-trace-smoke");
+    expect(JSON.stringify(telemetryState.counters.get("eve.tokens")?.add.mock.calls)).not.toContain(
+      "Agent:qa:otel-trace-smoke",
+    );
     await service.stop?.(ctx);
   });
 
@@ -2050,12 +2046,9 @@ describe("diagnostics-otel service", () => {
     });
     await flushDiagnosticEvents();
 
-    expect(telemetryState.counters.get("eve.queue.lane.enqueue")?.add).toHaveBeenCalledWith(
-      1,
-      {
-        "eve.lane": "session",
-      },
-    );
+    expect(telemetryState.counters.get("eve.queue.lane.enqueue")?.add).toHaveBeenCalledWith(1, {
+      "eve.lane": "session",
+    });
     expect(
       JSON.stringify(telemetryState.counters.get("eve.queue.lane.enqueue")?.add.mock.calls),
     ).not.toContain("Agent:qa:otel-trace-smoke");
@@ -2074,12 +2067,9 @@ describe("diagnostics-otel service", () => {
     });
     await flushDiagnosticEvents();
 
-    expect(telemetryState.counters.get("eve.queue.lane.enqueue")?.add).toHaveBeenCalledWith(
-      1,
-      {
-        "eve.lane": "dreaming-narrative",
-      },
-    );
+    expect(telemetryState.counters.get("eve.queue.lane.enqueue")?.add).toHaveBeenCalledWith(1, {
+      "eve.lane": "dreaming-narrative",
+    });
     expect(
       JSON.stringify(telemetryState.counters.get("eve.queue.lane.enqueue")?.add.mock.calls),
     ).not.toContain("session-main");
@@ -2661,9 +2651,9 @@ describe("diagnostics-otel service", () => {
 
     const modelCallOptions = startedSpanOptions("eve.model.call");
     expect(modelCallOptions?.attributes?.["eve.failureKind"]).toBe("terminated");
-    expect(
-      Object.hasOwn(modelCallOptions?.attributes ?? {}, "eve.upstreamRequestIdHash"),
-    ).toBe(false);
+    expect(Object.hasOwn(modelCallOptions?.attributes ?? {}, "eve.upstreamRequestIdHash")).toBe(
+      false,
+    );
     expect(modelCallOptions?.startTime).toBeTypeOf("number");
     const span = telemetryState.spans.find((candidate) => candidate.name === "eve.model.call");
     expect(span?.addEvent).toHaveBeenCalledWith("eve.provider.request", {
@@ -2672,9 +2662,7 @@ describe("diagnostics-otel service", () => {
     const modelCallDuration = lastHistogramRecord("eve.model_call.duration_ms");
     expect(modelCallDuration?.[0]).toBe(40);
     expect(modelCallDuration?.[1]?.["eve.failureKind"]).toBe("terminated");
-    expect(Object.hasOwn(modelCallDuration?.[1] ?? {}, "eve.upstreamRequestIdHash")).toBe(
-      false,
-    );
+    expect(Object.hasOwn(modelCallDuration?.[1] ?? {}, "eve.upstreamRequestIdHash")).toBe(false);
     await service.stop?.(ctx);
   });
 
@@ -2856,9 +2844,7 @@ describe("diagnostics-otel service", () => {
     expect(pressureOptions?.attributes?.["eve.memory.threshold_bytes"]).toBe(512);
     expect(pressureOptions?.attributes?.["eve.memory.rss_growth_bytes"]).toBe(256);
     expect(pressureOptions?.attributes?.["eve.memory.window_ms"]).toBe(60_000);
-    const pressureSpan = telemetryState.spans.find(
-      (span) => span.name === "eve.memory.pressure",
-    );
+    const pressureSpan = telemetryState.spans.find((span) => span.name === "eve.memory.pressure");
     expect(pressureSpan?.setStatus).toHaveBeenCalledWith({
       code: 2,
       message: "rss_growth",
@@ -4104,19 +4090,13 @@ describe("diagnostics-otel service", () => {
       telemetryState.tracer.startSpan.mock.calls.filter((call) => call[0] === "eve.run"),
     ).toHaveLength(1);
     expect(
-      telemetryState.tracer.startSpan.mock.calls.filter(
-        (call) => call[0] === "eve.model.call",
-      ),
+      telemetryState.tracer.startSpan.mock.calls.filter((call) => call[0] === "eve.model.call"),
     ).toHaveLength(1);
     expect(
-      telemetryState.tracer.startSpan.mock.calls.filter(
-        (call) => call[0] === "eve.tool.execution",
-      ),
+      telemetryState.tracer.startSpan.mock.calls.filter((call) => call[0] === "eve.tool.execution"),
     ).toHaveLength(1);
     expect(
-      telemetryState.tracer.startSpan.mock.calls.filter(
-        (call) => call[0] === "eve.harness.run",
-      ),
+      telemetryState.tracer.startSpan.mock.calls.filter((call) => call[0] === "eve.harness.run"),
     ).toHaveLength(1);
     await service.stop?.(ctx);
   });
@@ -4198,12 +4178,13 @@ describe("diagnostics-otel service", () => {
     });
     await flushDiagnosticEvents();
 
-    expect(
-      telemetryState.counters.get("eve.message.delivery.started")?.add,
-    ).toHaveBeenCalledWith(1, {
-      "eve.channel": "matrix",
-      "eve.delivery.kind": "text",
-    });
+    expect(telemetryState.counters.get("eve.message.delivery.started")?.add).toHaveBeenCalledWith(
+      1,
+      {
+        "eve.channel": "matrix",
+        "eve.delivery.kind": "text",
+      },
+    );
     const deliveryDurationRecords = telemetryState.histograms.get(
       "eve.message.delivery.duration_ms",
     )?.record.mock.calls as Array<[unknown, Record<string, unknown>]>;
@@ -4418,21 +4399,15 @@ describe("diagnostics-otel service", () => {
     await flushDiagnosticEvents();
 
     const modelOptions = startedSpanOptions("eve.model.call");
-    expect(Object.hasOwn(modelOptions?.attributes ?? {}, "eve.content.input_messages")).toBe(
-      false,
-    );
+    expect(Object.hasOwn(modelOptions?.attributes ?? {}, "eve.content.input_messages")).toBe(false);
     expect(Object.hasOwn(modelOptions?.attributes ?? {}, "eve.content.output_messages")).toBe(
       false,
     );
-    expect(Object.hasOwn(modelOptions?.attributes ?? {}, "eve.content.system_prompt")).toBe(
-      false,
-    );
+    expect(Object.hasOwn(modelOptions?.attributes ?? {}, "eve.content.system_prompt")).toBe(false);
     expect(modelOptions?.startTime).toBeTypeOf("number");
     const toolOptions = startedSpanOptions("eve.tool.execution");
     expect(Object.hasOwn(toolOptions?.attributes ?? {}, "eve.content.tool_input")).toBe(false);
-    expect(Object.hasOwn(toolOptions?.attributes ?? {}, "eve.content.tool_output")).toBe(
-      false,
-    );
+    expect(Object.hasOwn(toolOptions?.attributes ?? {}, "eve.content.tool_output")).toBe(false);
     expect(toolOptions?.startTime).toBeTypeOf("number");
     await service.stop?.(ctx);
   });

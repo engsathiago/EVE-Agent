@@ -20,10 +20,7 @@ import {
   writePersistedInstalledPluginIndex,
 } from "../plugins/installed-plugin-index-store.js";
 import type { InstalledPluginInstallRecordInfo } from "../plugins/installed-plugin-index.js";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "../state/eve-state-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "../state/eve-state-db.js";
 import { loadTaskFlowRegistryStateFromSqlite } from "../tasks/task-flow-registry.store.sqlite.js";
 import { loadTaskRegistryStateFromSqlite } from "../tasks/task-registry.store.sqlite.js";
 import {
@@ -66,10 +63,7 @@ vi.mock("../channels/plugins/bundled.js", async () => {
     return boundAccountId ?? cfg.channels?.telegram?.defaultAccount ?? "default";
   }
 
-  function detectTelegramAllowFromMigration(params: {
-    cfg: EVEConfig;
-    env: NodeJS.ProcessEnv;
-  }) {
+  function detectTelegramAllowFromMigration(params: { cfg: EVEConfig; env: NodeJS.ProcessEnv }) {
     const root = params.env.EVE_STATE_DIR;
     if (!root) {
       return [];

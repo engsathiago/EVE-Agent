@@ -190,9 +190,7 @@ describe("renderAndroidVersionProperties", () => {
     });
     const version = resolveAndroidVersion(rootDir);
 
-    expect(renderAndroidVersionProperties(version)).toContain(
-      "EVE_ANDROID_VERSION_NAME=2026.6.2",
-    );
+    expect(renderAndroidVersionProperties(version)).toContain("EVE_ANDROID_VERSION_NAME=2026.6.2");
     expect(renderAndroidVersionProperties(version)).toContain(
       "EVE_ANDROID_VERSION_CODE=2026060201",
     );
@@ -250,10 +248,7 @@ describe("renderAndroidReleaseNotes", () => {
     const version = resolveAndroidVersion(rootDir);
 
     expect(() =>
-      renderAndroidReleaseNotes(
-        version,
-        "# EVE Android Changelog\n\n## 2026.6.1\n\nOld notes.\n",
-      ),
+      renderAndroidReleaseNotes(version, "# EVE Android Changelog\n\n## 2026.6.1\n\nOld notes.\n"),
     ).toThrow("Unable to find Android changelog notes for 2026.6.2");
   });
 

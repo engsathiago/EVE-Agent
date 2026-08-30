@@ -893,9 +893,9 @@ describe("video-generation runtime", () => {
     ];
     providers = registryProviders;
 
-    expect(
-      listRuntimeVideoGenerationProviders({ config: {} as EVEConfig }, runtimeDeps),
-    ).toEqual(registryProviders);
+    expect(listRuntimeVideoGenerationProviders({ config: {} as EVEConfig }, runtimeDeps)).toEqual(
+      registryProviders,
+    );
     expect(listedConfigs).toEqual([{} as EVEConfig]);
   });
 

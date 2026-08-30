@@ -3,9 +3,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { resolveGlobalSingleton } from "../shared/global-singleton.js";
 
 const PLUGIN_REGISTRY_STATE = Symbol.for("eve.pluginRegistryState");
-const PINNED_PLUGIN_REGISTRY_WORKSPACE_KEY = Symbol.for(
-  "eve.pinnedPluginRegistryWorkspaceDir",
-);
+const PINNED_PLUGIN_REGISTRY_WORKSPACE_KEY = Symbol.for("eve.pinnedPluginRegistryWorkspaceDir");
 
 type GlobalRegistryWorkspaceState = typeof globalThis & {
   [PLUGIN_REGISTRY_STATE]?: {

@@ -662,18 +662,17 @@ describe("runCodexAppServerSideQuestion", () => {
   });
 
   it("preserves managed web_search while planning hosted search for Responses side questions", async () => {
-    createEVECodingToolsMock.mockImplementation(
-      (options: { suppressManagedWebSearch?: boolean }) =>
-        options.suppressManagedWebSearch === false
-          ? [
-              {
-                name: "web_search",
-                description: "Search the web",
-                parameters: { type: "object", properties: {} },
-                execute: toolExecuteMock,
-              },
-            ]
-          : [],
+    createEVECodingToolsMock.mockImplementation((options: { suppressManagedWebSearch?: boolean }) =>
+      options.suppressManagedWebSearch === false
+        ? [
+            {
+              name: "web_search",
+              description: "Search the web",
+              parameters: { type: "object", properties: {} },
+              execute: toolExecuteMock,
+            },
+          ]
+        : [],
     );
 
     const { forkConfig, toolResponse } = await runSideQuestionWithManagedWebSearchCall(

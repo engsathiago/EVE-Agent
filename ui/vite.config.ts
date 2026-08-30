@@ -78,8 +78,7 @@ function readGitShortSha(): string | null {
 }
 
 function resolveControlUiBuildId(): string {
-  const explicit =
-    process.env.EVE_CONTROL_UI_BUILD_ID?.trim() || process.env.EVE_VERSION?.trim();
+  const explicit = process.env.EVE_CONTROL_UI_BUILD_ID?.trim() || process.env.EVE_VERSION?.trim();
   if (explicit) {
     return normalizeBuildId(explicit);
   }
@@ -228,7 +227,8 @@ function controlUiServiceWorkerBuildIdPlugin(buildId: string): Plugin {
 export default function controlUiViteConfig(): UserConfig {
   const envBase = process.env.EVE_CONTROL_UI_BASE_PATH?.trim();
   const base = envBase ? normalizeBase(envBase) : "./";
-  const bootstrapConfigPath = base === "./" ? "/control-ui-config.json" : `${base}control-ui-config.json`;
+  const bootstrapConfigPath =
+    base === "./" ? "/control-ui-config.json" : `${base}control-ui-config.json`;
   const controlUiBuildId = resolveControlUiBuildId();
   return {
     base,

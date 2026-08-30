@@ -36,9 +36,9 @@ changing config.
 | ---------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- |
 | ChatGPT/Codex subscription with native Codex runtime | `openai/gpt-5.5`                                         | Default OpenAI agent setup. Sign in with Codex auth.                  |
 | Direct API-key billing for agent models              | `openai/gpt-5.5` plus a Codex-compatible API-key profile | Use `auth.order.openai` to place the backup after subscription auth.  |
-| Direct API-key billing through explicit EVE     | `openai/gpt-5.5` plus provider/model runtime `eve`  | Select a normal `openai` API-key profile.                             |
+| Direct API-key billing through explicit EVE          | `openai/gpt-5.5` plus provider/model runtime `eve`       | Select a normal `openai` API-key profile.                             |
 | Latest ChatGPT Instant API alias                     | `openai/chat-latest`                                     | Direct API-key only. Moving alias for experiments, not the default.   |
-| ChatGPT/Codex subscription auth through EVE     | `openai/gpt-5.5` plus provider/model runtime `eve`  | Select an `openai` OAuth profile for the compatibility route.         |
+| ChatGPT/Codex subscription auth through EVE          | `openai/gpt-5.5` plus provider/model runtime `eve`       | Select an `openai` OAuth profile for the compatibility route.         |
 | Image generation or editing                          | `openai/gpt-image-2`                                     | Works with either `OPENAI_API_KEY` or OpenAI Codex OAuth.             |
 | Transparent-background images                        | `openai/gpt-image-1.5`                                   | Use `outputFormat=png` or `webp` and `openai.background=transparent`. |
 
@@ -46,14 +46,14 @@ changing config.
 
 The names are similar but not interchangeable:
 
-| Name you see                            | Layer             | Meaning                                                                                           |
-| --------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
-| `openai`                                | Provider prefix   | Canonical OpenAI model route; agent turns use the Codex runtime.                                  |
+| Name you see                            | Layer             | Meaning                                                                                      |
+| --------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------- |
+| `openai`                                | Provider prefix   | Canonical OpenAI model route; agent turns use the Codex runtime.                             |
 | legacy OpenAI Codex prefix              | Legacy prefix     | Older model/profile namespace. `eve doctor --fix` migrates it to `openai`.                   |
 | `codex` plugin                          | Plugin            | Bundled EVE plugin that provides native Codex app-server runtime and `/codex` chat controls. |
-| provider/model `agentRuntime.id: codex` | Agent runtime     | Force the native Codex app-server harness for matching embedded turns.                            |
-| `/codex ...`                            | Chat command set  | Bind/control Codex app-server threads from a conversation.                                        |
-| `runtime: "acp", agentId: "codex"`      | ACP session route | Explicit fallback path that runs Codex through ACP/acpx.                                          |
+| provider/model `agentRuntime.id: codex` | Agent runtime     | Force the native Codex app-server harness for matching embedded turns.                       |
+| `/codex ...`                            | Chat command set  | Bind/control Codex app-server threads from a conversation.                                   |
+| `runtime: "acp", agentId: "codex"`      | ACP session route | Explicit fallback path that runs Codex through ACP/acpx.                                     |
 
 This means a config can intentionally contain `openai/*` model refs while auth
 profiles point at either API-key or ChatGPT/Codex OAuth credentials. Use
@@ -81,7 +81,7 @@ explicit runtime config.
 
 ## EVE feature coverage
 
-| OpenAI capability         | EVE surface                                                                              | Status                                                                 |
+| OpenAI capability         | EVE surface                                                                                   | Status                                                                 |
 | ------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Chat / Responses          | `openai/<model>` model provider                                                               | Yes                                                                    |
 | Codex subscription models | `openai/<model>` with OpenAI OAuth                                                            | Yes                                                                    |

@@ -1,11 +1,11 @@
 // Coordinates active plugin runtime registries and event hooks.
 import { onAgentEvent } from "../infra/agent-events.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
+import { cleanupReplacedPluginHostRegistry } from "./host-hook-cleanup.js";
 import {
   clearPluginHostRuntimeState,
   dispatchPluginAgentEventSubscriptions,
 } from "./host-hook-runtime.js";
-import { cleanupReplacedPluginHostRegistry } from "./host-hook-cleanup.js";
 import { clearPluginMetadataLifecycleCaches } from "./plugin-metadata-lifecycle.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { markPluginRegistryActive, markPluginRegistryRetired } from "./registry-lifecycle.js";

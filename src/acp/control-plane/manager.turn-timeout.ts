@@ -12,10 +12,7 @@ const ACP_TURN_TIMEOUT_CLEANUP_GRACE_MS = 2_000;
 const ACP_TURN_TIMEOUT_REASON = "turn-timeout";
 
 /** Resolves the effective ACP turn timeout from session runtime options or agent defaults. */
-export function resolveTurnTimeoutMs(params: {
-  cfg: EVEConfig;
-  meta: SessionAcpMeta;
-}): number {
+export function resolveTurnTimeoutMs(params: { cfg: EVEConfig; meta: SessionAcpMeta }): number {
   const runtimeTimeoutSeconds = resolveRuntimeOptionsFromMeta(params.meta).timeoutSeconds;
   if (
     typeof runtimeTimeoutSeconds === "number" &&

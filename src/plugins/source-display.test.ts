@@ -6,7 +6,15 @@ import { resolveBundledPluginsDir } from "./bundled-dir.js";
 import { formatPluginSourceForTable, resolvePluginSourceRoots } from "./source-display.js";
 
 const PLUGIN_SOURCE_ROOTS = {
-  stock: path.resolve(path.sep, "opt", "homebrew", "lib", "node_modules", "eve", "extensions"),
+  stock: path.resolve(
+    path.sep,
+    "opt",
+    "homebrew",
+    "lib",
+    "node_modules",
+    "eve-agent",
+    "extensions",
+  ),
   global: path.resolve(path.sep, "Users", "x", ".eve", "extensions"),
   workspace: path.resolve(path.sep, "Users", "x", "ws", ".eve", "extensions"),
 };

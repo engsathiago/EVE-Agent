@@ -221,9 +221,7 @@ describe("plugin npm package manifest staging", () => {
 
     const originalText = readFileSync(join(packageDir, "eve.plugin.json"), "utf8");
     withAugmentedPluginNpmManifestForPackage({ repoRoot: repoDir, packageDir }, () => {
-      const stagedManifest = JSON.parse(
-        readFileSync(join(packageDir, "eve.plugin.json"), "utf8"),
-      );
+      const stagedManifest = JSON.parse(readFileSync(join(packageDir, "eve.plugin.json"), "utf8"));
       expect(stagedManifest.channelConfigs.twitch.description).toBe("Twitch chat integration");
     });
     expect(readFileSync(join(packageDir, "eve.plugin.json"), "utf8")).toBe(originalText);
@@ -266,10 +264,10 @@ describe("plugin npm package manifest staging", () => {
         "skills/**",
       ],
       peerDependencies: {
-        eve: ">=2026.4.30",
+        "eve-agent": ">=2026.4.30",
       },
       peerDependenciesMeta: {
-        eve: {
+        "eve-agent": {
           optional: true,
         },
       },
@@ -303,8 +301,8 @@ describe("plugin npm package manifest staging", () => {
         expect(stagedPackageJson.files).toContain("dist/**");
         expect(stagedPackageJson.files).toContain("npm-shrinkwrap.json");
         expect(stagedPackageJson.files).toContain("skills/**");
-        expect(stagedPackageJson.peerDependencies.eve).toBe(">=2026.4.30");
-        expect(stagedPackageJson.peerDependenciesMeta.eve.optional).toBe(true);
+        expect(stagedPackageJson.peerDependencies["eve-agent"]).toBe(">=2026.4.30");
+        expect(stagedPackageJson.peerDependenciesMeta["eve-agent"].optional).toBe(true);
       },
     );
     expect(readFileSync(join(packageDir, "package.json"), "utf8")).toBe(originalText);

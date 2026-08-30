@@ -1,10 +1,7 @@
 // Imported CLI history merge helpers.
 // Deduplicates external history messages against local EVE transcripts.
 import { asFiniteNumber } from "@eve/normalization-core/number-coercion";
-import {
-  normalizeOptionalString,
-  readStringValue,
-} from "@eve/normalization-core/string-coerce";
+import { normalizeOptionalString, readStringValue } from "@eve/normalization-core/string-coerce";
 import { stripInboundMetadata } from "../auto-reply/reply/strip-inbound-meta.js";
 
 const DEDUPE_TIMESTAMP_WINDOW_MS = 5 * 60 * 1000;

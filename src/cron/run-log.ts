@@ -7,10 +7,7 @@ import {
 import { uniqueValues } from "@eve/normalization-core/string-normalization";
 import { parseByteSize } from "../cli/parse-bytes.js";
 import type { CronConfig } from "../config/types.cron.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../state/eve-state-db.js";
 import type { CronRunLogEntry } from "./run-log-types.js";
 import {
   countCronRunLogRows,

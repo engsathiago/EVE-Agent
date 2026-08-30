@@ -1,5 +1,5 @@
-import type { Direction } from "matrix-js-sdk/lib/models/event-timeline.js";
 import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { Direction } from "matrix-js-sdk/lib/models/event-timeline.js";
 import { fetchMatrixPollMessageSummary, resolveMatrixPollRootEventId } from "../poll-summary.js";
 import { isPollEventType, isPollStartType } from "../poll-types.js";
 import { editMessageMatrix, sendMessageMatrix } from "../send.js";

@@ -21,15 +21,13 @@ describe("parseGitUrl", () => {
       ref: "v1.2.3",
       pinned: true,
     });
-    expect(parseGitUrl("git:git@github.com:eve/example-plugin.git@feature/foo")).toMatchObject(
-      {
-        host: "github.com",
-        path: "eve/example-plugin",
-        repo: "git@github.com:eve/example-plugin.git",
-        ref: "feature/foo",
-        pinned: true,
-      },
-    );
+    expect(parseGitUrl("git:git@github.com:eve/example-plugin.git@feature/foo")).toMatchObject({
+      host: "github.com",
+      path: "eve/example-plugin",
+      repo: "git@github.com:eve/example-plugin.git",
+      ref: "feature/foo",
+      pinned: true,
+    });
     expect(parseGitUrl("git:example.com/eve/example-plugin@main")).toMatchObject({
       host: "example.com",
       path: "eve/example-plugin",

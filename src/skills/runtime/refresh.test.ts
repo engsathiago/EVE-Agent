@@ -353,9 +353,7 @@ describe("ensureSkillsWatcher", () => {
 
   it.runIf(process.platform !== "win32")("watches symlinked skill root targets", async () => {
     const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-root-link-"));
-    const targetSkillsDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-watch-root-link-target-"),
-    );
+    const targetSkillsDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-root-link-target-"));
     try {
       await fs.writeFile(
         path.join(targetSkillsDir, "SKILL.md"),
@@ -381,13 +379,9 @@ describe("ensureSkillsWatcher", () => {
   it.runIf(process.platform !== "win32")(
     "does not watch untrusted companion skills symlink targets",
     async () => {
-      const workspaceDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "eve-watch-untrusted-link-"),
-      );
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-untrusted-link-"));
       const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-untrusted-repo-"));
-      const outsideDir = await fs.mkdtemp(
-        path.join(os.tmpdir(), "eve-watch-untrusted-target-"),
-      );
+      const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-watch-untrusted-target-"));
       try {
         await fs.writeFile(
           path.join(outsideDir, "SKILL.md"),
@@ -644,9 +638,7 @@ describe("ensureSkillsWatcher", () => {
   });
 
   it("watches plugin skills folders for first nested skill creation", async () => {
-    const pluginDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-plugin-skills-watch-create-"),
-    );
+    const pluginDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-plugin-skills-watch-create-"));
     try {
       const pluginSkills = await import("../loading/plugin-skills.js");
       vi.mocked(pluginSkills.resolvePluginSkillDirs).mockReturnValueOnce([pluginDir]);

@@ -12,10 +12,10 @@ Security work is shared across a number of EVE maintainers, including engineers 
 
 Report vulnerabilities directly to the repository where the issue lives:
 
-- **Core CLI and gateway** — [eve/eve](https://github.com/engsathiago/eve-agent)
-- **macOS desktop app** — [eve/eve](https://github.com/engsathiago/eve-agent) (apps/macos)
-- **iOS app** — [eve/eve](https://github.com/engsathiago/eve-agent) (apps/ios)
-- **Android app** — [eve/eve](https://github.com/engsathiago/eve-agent) (apps/android)
+- **Core CLI and gateway** — [engsathiago/eve-agent](https://github.com/engsathiago/eve-agent)
+- **macOS desktop app** — [engsathiago/eve-agent](https://github.com/engsathiago/eve-agent) (apps/macos)
+- **iOS app** — [engsathiago/eve-agent](https://github.com/engsathiago/eve-agent) (apps/ios)
+- **Android app** — [engsathiago/eve-agent](https://github.com/engsathiago/eve-agent) (apps/android)
 - **ClawHub** — [eve/clawhub](https://github.com/eve/clawhub)
 - **Trust and threat model** — [eve/trust](https://github.com/eve/trust)
 
@@ -340,7 +340,7 @@ Example secure Docker run:
 ```bash
 docker run --read-only --cap-drop=ALL \
   -v eve-data:/app/data \
-  eve/eve:latest
+  engsathiago/eve-agent:latest
 ```
 
 ## Security Scanning

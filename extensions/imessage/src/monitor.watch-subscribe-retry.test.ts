@@ -1,4 +1,6 @@
 // Imessage tests cover monitor.watch subscribe retry plugin behavior.
+import os from "node:os";
+import path from "node:path";
 import type { waitForTransportReady } from "eve-agent/plugin-sdk/transport-ready-runtime";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { createIMessageRpcClient, IMessageRpcClient } from "./client.js";
@@ -65,6 +67,13 @@ function createRpcClient(overrides?: {
 }
 
 describe("monitorIMessageProvider watch.subscribe startup retry", () => {
+  const missingDbPath = path.join(
+    os.tmpdir(),
+    "eve-imessage-watch-subscribe-retry",
+    String(process.pid),
+    "chat.db",
+  );
+
   beforeEach(() => {
     vi.useFakeTimers();
     waitForTransportReadyMock.mockReset().mockResolvedValue(undefined);
@@ -97,7 +106,7 @@ describe("monitorIMessageProvider watch.subscribe startup retry", () => {
       .mockResolvedValueOnce(secondClient);
 
     const monitorPromise = monitorIMessageProvider({
-      config: { channels: { imessage: {} } } as never,
+      config: { channels: { imessage: { dbPath: missingDbPath } } } as never,
       runtime: runtime as never,
     });
 
@@ -118,7 +127,7 @@ describe("monitorIMessageProvider watch.subscribe startup retry", () => {
     expect(retryLog).toContain("imessage: watch.subscribe startup failed attempt=1/3");
     expect(retryLog).toContain("account=default");
     expect(retryLog).toContain("cliPath=imsg");
-    expect(retryLog).toContain("dbPath=default");
+    expect(retryLog).toContain("dbPath=configured");
     expect(retryLog).toContain("timeoutMs=10000");
     expect(retryLog).toContain("since_rowid=none");
     expect(retryLog).toContain("attachments=false");
@@ -142,7 +151,7 @@ describe("monitorIMessageProvider watch.subscribe startup retry", () => {
     );
 
     const monitorErrorPromise = monitorIMessageProvider({
-      config: { channels: { imessage: {} } } as never,
+      config: { channels: { imessage: { dbPath: missingDbPath } } } as never,
       runtime: runtime as never,
     }).catch((error: unknown) => error);
 

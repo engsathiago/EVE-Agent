@@ -465,8 +465,7 @@ export function registerHooksCli(program: Command): void {
     .description("Manage internal agent hooks")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/hooks", "docs.eve.ai/cli/hooks")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/hooks", "docs.eve.ai/cli/hooks")}\n`,
     );
 
   hooks
@@ -563,9 +562,7 @@ export function registerHooksCli(program: Command): void {
     .option("--all", "Update all tracked hooks", false)
     .option("--dry-run", "Show what would change without writing", false)
     .action(async (id: string | undefined, opts: HooksUpdateOptions) => {
-      defaultRuntime.log(
-        theme.warn("`eve hooks update` is deprecated; use `eve plugins update`."),
-      );
+      defaultRuntime.log(theme.warn("`eve hooks update` is deprecated; use `eve plugins update`."));
       await runPluginUpdateCommand({ id, opts });
     });
 

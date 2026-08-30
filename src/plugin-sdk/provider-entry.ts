@@ -17,11 +17,7 @@ import type {
 } from "../plugins/types.js";
 import { copyArrayEntries, isRecord, readRecordValue } from "../shared/safe-record.js";
 import { definePluginEntry } from "./plugin-entry.js";
-import type {
-  EVEPluginApi,
-  EVEPluginConfigSchema,
-  EVEPluginDefinition,
-} from "./plugin-entry.js";
+import type { EVEPluginApi, EVEPluginConfigSchema, EVEPluginDefinition } from "./plugin-entry.js";
 import { buildSingleProviderApiKeyCatalog } from "./provider-catalog-shared.js";
 
 type ApiKeyAuthMethodOptions = Parameters<typeof createProviderApiKeyAuthMethod>[0];

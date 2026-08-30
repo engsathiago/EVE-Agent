@@ -55,6 +55,7 @@ import {
   proposeUpdateSkill,
   quarantineSkillProposal,
   rejectSkillProposal,
+  rollbackSkillProposal,
   reviseSkillProposal,
 } from "../../skills/workshop/service.js";
 import { skillsUploadHandlers } from "./skills-upload.js";
@@ -483,6 +484,22 @@ export const skillsHandlers: GatewayRequestHandlers = {
       validate: validateSkillsProposalActionParams,
       run: (parsedParams, resolved) =>
         applySkillProposal({
+          workspaceDir: resolved.workspaceDir,
+          config: resolved.cfg,
+          proposalId: parsedParams.proposalId,
+          reason: parsedParams.reason,
+        }),
+    });
+  },
+  "skills.proposals.rollback": async ({ params, respond, context }) => {
+    await runSkillsProposalWorkspaceHandler({
+      method: "skills.proposals.rollback",
+      rawParams: params,
+      respond,
+      context,
+      validate: validateSkillsProposalActionParams,
+      run: (parsedParams, resolved) =>
+        rollbackSkillProposal({
           workspaceDir: resolved.workspaceDir,
           config: resolved.cfg,
           proposalId: parsedParams.proposalId,

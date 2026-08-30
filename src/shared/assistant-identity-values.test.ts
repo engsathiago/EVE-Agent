@@ -15,11 +15,11 @@ describe("shared/assistant-identity-values", () => {
   });
 
   it("truncates overlong trimmed values at the exact limit", () => {
-    expect(coerceIdentityValue("  EVE Assistant  ", 8)).toBe("EVE");
+    expect(coerceIdentityValue("  EVE Assistant  ", 8)).toBe("EVE Assi");
   });
 
   it("returns an empty string when truncating to a zero-length limit", () => {
     expect(coerceIdentityValue("  EVE  ", 0)).toBe("");
-    expect(coerceIdentityValue("  EVE  ", -1)).toBe("OpenCla");
+    expect(coerceIdentityValue("  EVE  ", -1)).toBe("EV");
   });
 });

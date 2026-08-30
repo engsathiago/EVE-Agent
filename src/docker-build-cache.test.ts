@@ -118,12 +118,10 @@ describe("docker build cache layout", () => {
     expect(dockerfile).toContain(
       "npm install -g --prefix /tmp/eve-prefix /tmp/eve-current.tgz --no-fund --no-audit",
     );
-    expect(dockerfile).not.toContain(
-      "cp -a /tmp/eve-prefix/lib/node_modules/. /app/node_modules/",
-    );
-    expect(dockerfile).toContain("cp -a /tmp/eve-prefix/lib/node_modules/eve/. /app/");
-    expect(dockerfile).toContain("rm -rf /app/node_modules/eve");
-    expect(dockerfile).toContain("ln -sf /app /app/node_modules/eve");
+    expect(dockerfile).not.toContain("cp -a /tmp/eve-prefix/lib/node_modules/. /app/node_modules/");
+    expect(dockerfile).toContain("cp -a /tmp/eve-prefix/lib/node_modules/eve-agent/. /app/");
+    expect(dockerfile).toContain("rm -rf /app/node_modules/eve-agent");
+    expect(dockerfile).toContain("ln -sf /app /app/node_modules/eve-agent");
   });
 
   it("copies manifests before install in the qr-import image", async () => {

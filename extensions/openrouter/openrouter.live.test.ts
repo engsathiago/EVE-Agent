@@ -1,10 +1,10 @@
-// Openrouter tests cover openrouter plugin behavior.
-import OpenAI from "openai";
 import { AuthStorage, ModelRegistry } from "eve-agent/plugin-sdk/agent-sessions";
 import {
   registerProviderPlugin,
   requireRegisteredProvider,
 } from "eve-agent/plugin-sdk/plugin-test-runtime";
+// Openrouter tests cover openrouter plugin behavior.
+import OpenAI from "openai";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 import { normalizeOpenRouterApiModelId } from "./models.js";
@@ -13,8 +13,7 @@ const OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models";
 const OPENROUTER_MISTRAL_PROVIDER_PREFIX = "mistralai/";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY ?? "";
 const LIVE_MODEL_REF =
-  process.env.EVE_LIVE_OPENROUTER_PLUGIN_MODEL?.trim() ||
-  "openrouter/anthropic/claude-sonnet-4.6";
+  process.env.EVE_LIVE_OPENROUTER_PLUGIN_MODEL?.trim() || "openrouter/anthropic/claude-sonnet-4.6";
 const LIVE_MODEL_ID = LIVE_MODEL_REF.startsWith("openrouter/")
   ? LIVE_MODEL_REF
   : `openrouter/${LIVE_MODEL_REF}`;

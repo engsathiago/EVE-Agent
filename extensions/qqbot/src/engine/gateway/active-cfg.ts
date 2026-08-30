@@ -34,10 +34,7 @@ export function createActiveCfgProvider(options: ActiveCfgProviderOptions): Acti
   };
 }
 
-export function resolveActiveCfg(
-  loader: GatewayCfgLoader,
-  fallback: EVEConfig,
-): EVEConfig {
+export function resolveActiveCfg(loader: GatewayCfgLoader, fallback: EVEConfig): EVEConfig {
   try {
     return loader();
   } catch {

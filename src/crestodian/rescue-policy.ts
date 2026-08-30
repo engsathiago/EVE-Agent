@@ -53,10 +53,7 @@ function resolveScopedExecConfig(cfg: EVEConfig, agentId?: string) {
   return resolveAgentEntry(cfg, agentId)?.tools?.exec;
 }
 
-function resolveScopedSandboxMode(
-  cfg: EVEConfig,
-  agentId?: string,
-): "off" | "non-main" | "all" {
+function resolveScopedSandboxMode(cfg: EVEConfig, agentId?: string): "off" | "non-main" | "all" {
   return (
     resolveAgentEntry(cfg, agentId)?.sandbox?.mode ?? cfg.agents?.defaults?.sandbox?.mode ?? "off"
   );

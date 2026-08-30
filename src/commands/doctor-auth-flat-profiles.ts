@@ -107,9 +107,7 @@ function extractProviderFromModelRef(modelRef: string): string | undefined {
   return readNonEmptyString(model.slice(0, slash));
 }
 
-function collectLegacyConfigAuthProfileProviderHints(
-  cfg: EVEConfig,
-): ReadonlyMap<string, string> {
+function collectLegacyConfigAuthProfileProviderHints(cfg: EVEConfig): ReadonlyMap<string, string> {
   const hints = new Map<string, string>();
   const conflicted = new Set<string>();
   const addHint = (profileId: string, provider: string): void => {

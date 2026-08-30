@@ -261,9 +261,7 @@ export function collectPublishablePluginPackageErrors(
   const extensions = packageJson.eve?.extensions ?? [];
 
   if (!packageName.startsWith("@eve/")) {
-    errors.push(
-      `package name must start with "@eve/"; found "${packageName || "<missing>"}".`,
-    );
+    errors.push(`package name must start with "@eve/"; found "${packageName || "<missing>"}".`);
   }
   if (packageJson.private === true) {
     errors.push("package.json private must not be true.");

@@ -6,11 +6,7 @@ import { run, say } from "./host-command.ts";
 import { resolveHostIp, resolveHostPort } from "./host-server.ts";
 import { startHostServer } from "./host-server.ts";
 import { runSmokeLane, type SmokeLane, type SmokeLaneStatus } from "./lane-runner.ts";
-import {
-  packageBuildCommitFromTgz,
-  packageVersionFromTgz,
-  packEVE,
-} from "./package-artifact.ts";
+import { packageBuildCommitFromTgz, packageVersionFromTgz, packEVE } from "./package-artifact.ts";
 import type { HostServer, Mode, PackageArtifact, Provider, SnapshotInfo } from "./types.ts";
 
 export interface SmokeHostOptions {

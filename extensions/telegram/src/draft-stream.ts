@@ -1,10 +1,10 @@
-// Telegram plugin module implements draft stream behavior.
-import type { Bot } from "grammy";
 import {
   createFinalizableDraftStreamControlsForState,
   takeMessageIdAfterStop,
 } from "eve-agent/plugin-sdk/channel-outbound";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+// Telegram plugin module implements draft stream behavior.
+import type { Bot } from "grammy";
 import { buildTelegramThreadParams, type TelegramThreadSpec } from "./bot/helpers.js";
 import { renderTelegramHtmlText, telegramHtmlToPlainTextFallback } from "./format.js";
 import {

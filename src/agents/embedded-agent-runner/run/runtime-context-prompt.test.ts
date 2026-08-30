@@ -266,13 +266,9 @@ describe("runtime context prompt submission", () => {
       resolveRuntimeContextPromptParts({
         effectivePrompt: "[EVE room event]",
         transcriptPrompt: "",
-        modelPrompt: [
-          "dynamic hook context",
-          "",
-          "[EVE room event]",
-          "",
-          "dynamic hook tail",
-        ].join("\n"),
+        modelPrompt: ["dynamic hook context", "", "[EVE room event]", "", "dynamic hook tail"].join(
+          "\n",
+        ),
         emptyTranscriptMode: "model-prompt",
       }),
     ).toEqual({

@@ -14,11 +14,15 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../config/sessions.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import { resetPluginLoaderTestStateForTest } from "../plugins/loader.test-fixtures.js";
 import type * as ManifestRegistryModule from "../plugins/manifest-registry.js";
 import { runAgentAttempt as runAgentAttemptImpl } from "./command/attempt-execution.js";
 import type { RunEmbeddedAgentParams } from "./embedded-agent-runner/run/params.js";
 import type { EmbeddedAgentRunResult } from "./embedded-agent.js";
-import { resolveProviderIdForAuth } from "./provider-auth-aliases.js";
+import {
+  resetProviderAuthAliasMapCacheForTest,
+  resolveProviderIdForAuth,
+} from "./provider-auth-aliases.js";
 
 type LoadPluginManifestRegistry = typeof ManifestRegistryModule.loadPluginManifestRegistry;
 type RunAgentAttemptParams = Parameters<typeof runAgentAttemptImpl>[0];
@@ -239,6 +243,8 @@ describe("Auth profile runtime contract - embedded EVE and CLI adapter", () => {
   let storePath: string;
 
   beforeEach(async () => {
+    resetPluginLoaderTestStateForTest();
+    resetProviderAuthAliasMapCacheForTest();
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-auth-contract-"));
     storePath = path.join(tmpDir, "sessions.json");
     loadPluginManifestRegistry.mockReset().mockReturnValue(createAuthAliasManifestRegistry());
@@ -249,6 +255,8 @@ describe("Auth profile runtime contract - embedded EVE and CLI adapter", () => {
   });
 
   afterEach(async () => {
+    resetPluginLoaderTestStateForTest();
+    resetProviderAuthAliasMapCacheForTest();
     await fs.rm(tmpDir, { recursive: true, force: true });
   });
 
@@ -266,10 +274,12 @@ describe("Auth profile runtime contract - embedded EVE and CLI adapter", () => {
   ] as const)(
     "resolves %s through the provider auth alias resolver using a mocked manifest",
     (provider, expectedAuthProvider) => {
+      const manifestRegistry = createAuthAliasManifestRegistry();
       expect(
         resolveProviderIdForAuth(provider, {
           config: {} as EVEConfig,
           workspaceDir: tmpDir,
+          metadataSnapshot: { plugins: manifestRegistry.plugins },
         }),
       ).toBe(expectedAuthProvider);
     },

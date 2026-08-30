@@ -165,9 +165,7 @@ export type GatewayClientConnectionMetadata = {
   preauthHandshakeTimeoutMs?: number;
 };
 
-function createEVEGatewayClientHostDeps(
-  overrides?: GatewayClientHostDeps,
-): GatewayClientHostDeps {
+function createEVEGatewayClientHostDeps(overrides?: GatewayClientHostDeps): GatewayClientHostDeps {
   return {
     // This wrapper is the only place the package reaches into EVE runtime
     // state. Keep device identity, token storage, proxy, and redaction here.

@@ -3,7 +3,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("eve-agent/plugin-sdk/memory-core-host-engine-embeddings", async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import("eve-agent/plugin-sdk/memory-core-host-engine-embeddings")>();
+    await importOriginal<
+      typeof import("eve-agent/plugin-sdk/memory-core-host-engine-embeddings")
+    >();
   return {
     ...actual,
     withRemoteHttpResponse: (async <T>(params: {

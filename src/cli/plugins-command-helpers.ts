@@ -47,10 +47,7 @@ function loadRuntimeKindReportForPlugins(config: EVEConfig, pluginIds: readonly 
   });
 }
 
-function buildSlotSelectionRegistry(
-  config: EVEConfig,
-  pluginId: string,
-): SlotSelectionRegistry {
+function buildSlotSelectionRegistry(config: EVEConfig, pluginId: string): SlotSelectionRegistry {
   const plugins = loadPluginMetadataSnapshot({
     config,
     env: process.env,
@@ -141,10 +138,7 @@ export function createHookPackInstallLogger(runtime: RuntimeEnv = defaultRuntime
   };
 }
 
-export function enableInternalHookEntries(
-  config: EVEConfig,
-  hookNames: string[],
-): EVEConfig {
+export function enableInternalHookEntries(config: EVEConfig, hookNames: string[]): EVEConfig {
   const entries = { ...config.hooks?.internal?.entries } as Record<string, HookInternalEntryLike>;
 
   for (const hookName of hookNames) {

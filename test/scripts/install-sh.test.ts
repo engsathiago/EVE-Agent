@@ -86,6 +86,23 @@ describe("install.sh", () => {
     expect(result.stdout + result.stderr).toContain("Missing value for --version");
   });
 
+  it("removes only validated current or legacy npm eve symlink conflicts", () => {
+    const result = runInstallShell(`
+      set -euo pipefail
+      source "${SCRIPT_PATH}"
+      root="$(mktemp -d)"
+      mkdir -p "$root/bin" "$root/lib/node_modules/eve/dist"
+      ln -s "../lib/node_modules/eve/dist/entry.js" "$root/bin/eve"
+      npm_global_bin_dir() { printf '%s\\n' "$root/bin"; }
+      ui_info() { :; }
+      cleanup_eve_bin_conflict "$root/bin/eve"
+      [[ ! -e "$root/bin/eve" && ! -L "$root/bin/eve" ]]
+      rm -rf "$root"
+    `);
+
+    expect(result.status).toBe(0);
+  });
+
   it("accepts GNU and musl Linux shells in OS detection", () => {
     expect(script).toContain('[[ "$OSTYPE" == "linux"* ]]');
     expect(script).not.toContain('[[ "$OSTYPE" == "linux-gnu"* ]]');
@@ -445,7 +462,7 @@ describe("install.sh", () => {
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install eve@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install eve-agent@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -513,7 +530,7 @@ describe("install.sh", () => {
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install eve@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install eve-agent@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -583,7 +600,7 @@ describe("install.sh", () => {
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install eve@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install eve-agent@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -642,9 +659,7 @@ describe("install.sh", () => {
     const output = result?.stdout ?? "";
     expect(output).toContain(`git=${join(eveHome, "eve")}`);
     expect(output).toContain(`workspace=${join(eveHome, ".eve", "workspace")}`);
-    expect(output).toContain(
-      `workspaceProfile=${join(eveHome, ".eve", "workspace-work")}`,
-    );
+    expect(output).toContain(`workspaceProfile=${join(eveHome, ".eve", "workspace-work")}`);
     const mkdirParentIndex = script.indexOf('mkdir -p "$(dirname "$repo_dir")"');
     const cloneIndex = script.indexOf(
       'run_quiet_step "Cloning EVE" git clone "$repo_url" "$repo_dir"',
@@ -729,7 +744,7 @@ describe("install.sh", () => {
           `PATH=${JSON.stringify(`${bin}:/usr/bin:/bin`)}`,
           "NPM_LOGLEVEL=error",
           "NPM_SILENT_FLAG=",
-          `run_npm_global_install eve@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install eve-agent@latest ${JSON.stringify(join(tmp, "install.log"))}`,
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");
@@ -767,7 +782,7 @@ describe("install.sh", () => {
           `PATH=${JSON.stringify(`${bin}:/usr/bin:/bin`)}`,
           "NPM_LOGLEVEL=error",
           "NPM_SILENT_FLAG=",
-          `run_npm_global_install eve@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install eve-agent@latest ${JSON.stringify(join(tmp, "install.log"))}`,
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");
@@ -1193,7 +1208,7 @@ describe("install.sh", () => {
     expect(noSudoWarningIndex).toBeGreaterThan(npmSetIndex);
     expect(result?.stdout).toContain("npm global prefix is not writable");
     expect(result?.stdout).toContain("npm normally writes that setting to ~/.npmrc");
-    expect(result?.stdout).toContain("npm i -g eve@latest");
+    expect(result?.stdout).toContain("npm i -g eve-agent@latest");
     expect(result?.stdout).toContain("using this user prefix");
     expect(result?.stdout).not.toContain("has been saved");
   });
@@ -1283,7 +1298,7 @@ describe("install.sh", () => {
       set -euo pipefail
       source "${SCRIPT_PATH}"
       npm() {
-        if [[ "$1" == "view" && "$2" == "eve" && "$3" == "dist-tags.beta" ]]; then
+        if [[ "$1" == "view" && "$2" == "eve-agent" && "$3" == "dist-tags.beta" ]]; then
           printf '2026.5.12-beta.3\\n'
           return 0
         fi
@@ -1503,9 +1518,9 @@ describe("install.sh duplicate EVE install detection", () => {
       source "${SCRIPT_PATH}"
       root="$(mktemp -d)"
       trap 'rm -rf "$root"' EXIT
-      mkdir -p "$root/brew/eve" "$root/fnm/eve"
-      printf '{"version":"2026.3.7"}\\n' > "$root/brew/eve/package.json"
-      printf '{"version":"2026.3.1"}\\n' > "$root/fnm/eve/package.json"
+      mkdir -p "$root/brew/eve-agent" "$root/fnm/eve-agent"
+      printf '{"version":"2026.3.7"}\\n' > "$root/brew/eve-agent/package.json"
+      printf '{"version":"2026.3.1"}\\n' > "$root/fnm/eve-agent/package.json"
       collect_eve_npm_root_candidates() { printf '%s\\n' "$root/brew" "$root/fnm"; }
       EVE_BIN="$root/fnm/.bin/eve"
       ui_warn() { echo "WARN: $*"; }
@@ -1516,10 +1531,10 @@ describe("install.sh duplicate EVE install detection", () => {
     expect(result.stdout).toContain("Multiple EVE global installs detected");
     expect(result.stdout).toContain("2026.3.7");
     expect(result.stdout).toContain("2026.3.1");
-    expect(result.stdout).toContain("/brew/eve");
-    expect(result.stdout).toContain("/fnm/eve");
+    expect(result.stdout).toContain("/brew/eve-agent");
+    expect(result.stdout).toContain("/fnm/eve-agent");
     expect(result.stdout).toContain("Active eve:");
-    expect(result.stdout).toContain("npm uninstall -g eve");
+    expect(result.stdout).toContain("npm uninstall -g eve-agent");
   });
 
   it("stays quiet when only one EVE npm root exists", () => {
@@ -1528,8 +1543,8 @@ describe("install.sh duplicate EVE install detection", () => {
       source "${SCRIPT_PATH}"
       root="$(mktemp -d)"
       trap 'rm -rf "$root"' EXIT
-      mkdir -p "$root/only/eve"
-      printf '{"version":"2026.3.7"}\\n' > "$root/only/eve/package.json"
+      mkdir -p "$root/only/eve-agent"
+      printf '{"version":"2026.3.7"}\\n' > "$root/only/eve-agent/package.json"
       collect_eve_npm_root_candidates() { printf '%s\\n' "$root/only"; }
       ui_warn() { echo "WARN: $*"; }
       warn_duplicate_eve_global_installs

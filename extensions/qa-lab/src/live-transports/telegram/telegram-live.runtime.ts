@@ -311,7 +311,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     id: "telegram-status-command",
     title: "Telegram status command reply",
     rationale: "Recent Telegram group regressions broke /status while normal chat still worked.",
-    regressionRefs: ["eve/eve#74698"],
+    regressionRefs: ["engsathiago/eve-agent#74698"],
     timeoutMs: 45_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -399,7 +399,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     defaultEnabled: false,
     rationale:
       "Opt-in real Telegram proof that /usage tokens decorates message-tool-only visible replies.",
-    regressionRefs: ["eve/eve#87392"],
+    regressionRefs: ["engsathiago/eve-agent#87392"],
     timeoutMs: 90_000,
     buildRun: (sutUsername) => {
       const marker = `QA-TELEGRAM-USAGE-FOOTER-${randomUUID().slice(0, 8).toUpperCase()}`;
@@ -471,7 +471,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     defaultEnabled: false,
     defaultProviderModes: ["mock-openai"],
     rationale: "Opt-in regression guard for duplicate final replies from Telegram streaming paths.",
-    regressionRefs: ["eve/eve#39905"],
+    regressionRefs: ["engsathiago/eve-agent#39905"],
     timeoutMs: 75_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -489,7 +489,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     title: "Telegram long final reuses the preview message",
     defaultProviderModes: ["mock-openai"],
     rationale: "Regression guard for long streamed finals leaving stale preview messages behind.",
-    regressionRefs: ["eve/eve#39905"],
+    regressionRefs: ["engsathiago/eve-agent#39905"],
     timeoutMs: 60_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({
@@ -508,7 +508,7 @@ const TELEGRAM_QA_SCENARIOS: TelegramQaScenarioDefinition[] = [
     title: "Telegram three-chunk final keeps only final chunks",
     defaultEnabled: false,
     rationale: "Opt-in stress probe for Telegram long final chunk accounting.",
-    regressionRefs: ["eve/eve#39905"],
+    regressionRefs: ["engsathiago/eve-agent#39905"],
     timeoutMs: 60_000,
     buildRun: (sutUsername) =>
       telegramQaStepRun({

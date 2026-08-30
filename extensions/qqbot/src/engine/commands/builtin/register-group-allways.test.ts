@@ -68,9 +68,7 @@ function createConfig(qqbot: NonNullable<EVEConfig["channels"]>["qqbot"]): EVECo
   };
 }
 
-function getAllwaysConfig(
-  write: EVEConfig | undefined,
-): WrittenQQBotConfigWithAllways | undefined {
+function getAllwaysConfig(write: EVEConfig | undefined): WrittenQQBotConfigWithAllways | undefined {
   return write?.channels?.qqbot as WrittenQQBotConfigWithAllways | undefined;
 }
 

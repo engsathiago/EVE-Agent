@@ -114,9 +114,9 @@ function runtimeUsage(cell: RuntimeParityCell): TokenEfficiencyRuntimeUsage {
 }
 
 function toolNamesForCells(eve: RuntimeParityCell, codex: RuntimeParityCell): string[] {
-  return [
-    ...new Set([...eve.toolCalls, ...codex.toolCalls].map((call) => call.tool)),
-  ].toSorted((left, right) => left.localeCompare(right));
+  return [...new Set([...eve.toolCalls, ...codex.toolCalls].map((call) => call.tool))].toSorted(
+    (left, right) => left.localeCompare(right),
+  );
 }
 
 function buildRow(params: {

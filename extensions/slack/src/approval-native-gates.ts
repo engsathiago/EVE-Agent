@@ -67,10 +67,7 @@ function isSlackApprovalTransportEnabled(params: {
   return isSlackPluginAccountConfigured(resolveSlackAccount(params));
 }
 
-function resolveSlackNativeApprovalConfig(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-}) {
+function resolveSlackNativeApprovalConfig(params: { cfg: EVEConfig; accountId?: string | null }) {
   return resolveSlackAccount(params).config.execApprovals;
 }
 

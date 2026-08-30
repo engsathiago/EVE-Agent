@@ -99,8 +99,7 @@ const REPAIRABLE_PACKAGE_ENTRY_DIAGNOSTIC_MARKERS = [
 ] as const;
 const VERSION_BOUND_RUNTIME_PLUGIN_IDS = new Set(["codex"]);
 const EVE_BETA_COMPANION_VERSION_RE = /^(\d{4}\.[1-9]\d?\.[1-9]\d?)-beta\.[1-9]\d*$/;
-const EVE_STABLE_OR_BETA_COMPANION_VERSION_RE =
-  /^(\d{4}\.[1-9]\d?\.[1-9]\d?)(?:-beta\.[1-9]\d*)?$/;
+const EVE_STABLE_OR_BETA_COMPANION_VERSION_RE = /^(\d{4}\.[1-9]\d?\.[1-9]\d?)(?:-beta\.[1-9]\d*)?$/;
 
 function shouldFallbackClawHubToNpm(params: {
   result: { ok: false; code?: string };
@@ -141,10 +140,7 @@ function addConfiguredAgentRuntimePluginIds(ids: Set<string>, cfg: EVEConfig): v
   }
 }
 
-function addConfiguredMemoryEmbeddingProviderPluginIds(
-  ids: Set<string>,
-  cfg: EVEConfig,
-): void {
+function addConfiguredMemoryEmbeddingProviderPluginIds(ids: Set<string>, cfg: EVEConfig): void {
   const configuredProviderIds = collectConfiguredMemoryEmbeddingProviderIds(cfg);
   if (configuredProviderIds.size === 0) {
     return;

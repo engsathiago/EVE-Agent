@@ -128,10 +128,7 @@ function readManifest(manifestPath) {
 }
 
 function writeXcconfig(manifest) {
-  const lines = [
-    "EVE_CODE_SIGN_STYLE = Manual",
-    "EVE_CODE_SIGN_IDENTITY = Apple Distribution",
-  ];
+  const lines = ["EVE_CODE_SIGN_STYLE = Manual", "EVE_CODE_SIGN_IDENTITY = Apple Distribution"];
   if (typeof manifest.appGroupId === "string") {
     lines.push(`EVE_APP_GROUP_ID = ${manifest.appGroupId}`);
   }

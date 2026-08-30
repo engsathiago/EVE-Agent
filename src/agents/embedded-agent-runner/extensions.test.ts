@@ -121,9 +121,7 @@ describe("buildEmbeddedExtensionFactories", () => {
       "/tmp/eve-workspace",
     );
 
-    expect(getCompactionSafeguardRuntime(sessionManager)?.workspaceDir).toBe(
-      "/tmp/eve-workspace",
-    );
+    expect(getCompactionSafeguardRuntime(sessionManager)?.workspaceDir).toBe("/tmp/eve-workspace");
   });
 
   it("enables cache-ttl pruning for custom anthropic-messages providers", () => {

@@ -147,10 +147,10 @@ export function inspectBundleLspRuntimeSupport(params: {
 }
 
 /** Loads and merges enabled bundle LSP config across plugin manifests. */
-export function loadEnabledBundleLspConfig(params: {
-  workspaceDir: string;
-  cfg?: EVEConfig;
-}): { config: BundleLspConfig; diagnostics: Array<{ pluginId: string; message: string }> } {
+export function loadEnabledBundleLspConfig(params: { workspaceDir: string; cfg?: EVEConfig }): {
+  config: BundleLspConfig;
+  diagnostics: Array<{ pluginId: string; message: string }>;
+} {
   return loadEnabledBundleConfig({
     workspaceDir: params.workspaceDir,
     cfg: params.cfg,

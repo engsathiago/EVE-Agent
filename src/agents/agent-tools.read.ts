@@ -877,10 +877,7 @@ export function createHostWorkspaceEditTool(root: string, options?: { workspaceO
 }
 
 /** Wrap the base read tool with EVE paging, MIME, and image handling. */
-export function createEVEReadTool(
-  base: AnyAgentTool,
-  options?: EVEReadToolOptions,
-): AnyAgentTool {
+export function createEVEReadTool(base: AnyAgentTool, options?: EVEReadToolOptions): AnyAgentTool {
   return {
     ...base,
     execute: async (toolCallId, params, signal) => {

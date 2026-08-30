@@ -133,19 +133,11 @@ function mergeWhatsAppConfig(
   };
 }
 
-function setWhatsAppDmPolicy(
-  cfg: EVEConfig,
-  accountId: string,
-  dmPolicy: DmPolicy,
-): EVEConfig {
+function setWhatsAppDmPolicy(cfg: EVEConfig, accountId: string, dmPolicy: DmPolicy): EVEConfig {
   return mergeWhatsAppConfig(cfg, accountId, { dmPolicy });
 }
 
-function setWhatsAppAllowFrom(
-  cfg: EVEConfig,
-  accountId: string,
-  allowFrom?: string[],
-): EVEConfig {
+function setWhatsAppAllowFrom(cfg: EVEConfig, accountId: string, allowFrom?: string[]): EVEConfig {
   return mergeWhatsAppConfig(cfg, accountId, { allowFrom }, { unsetOnUndefined: ["allowFrom"] });
 }
 

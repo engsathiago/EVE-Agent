@@ -65,15 +65,9 @@ describe("diagnostics timeline", () => {
 
     expect(isDiagnosticsTimelineEnabled({ env })).toBe(true);
     expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "1" } })).toBe(true);
-    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "yes" } })).toBe(
-      true,
-    );
-    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "on" } })).toBe(
-      true,
-    );
-    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "all" } })).toBe(
-      true,
-    );
+    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "yes" } })).toBe(true);
+    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "on" } })).toBe(true);
+    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "all" } })).toBe(true);
     expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "*" } })).toBe(true);
     expect(
       isDiagnosticsTimelineEnabled({
@@ -83,9 +77,7 @@ describe("diagnostics timeline", () => {
     expect(
       isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "telegram.http" } }),
     ).toBe(false);
-    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "0" } })).toBe(
-      false,
-    );
+    expect(isDiagnosticsTimelineEnabled({ env: { ...env, EVE_DIAGNOSTICS: "0" } })).toBe(false);
     expect(
       isDiagnosticsTimelineEnabled({
         env: { ...env, EVE_DIAGNOSTICS_TIMELINE_PATH: "" },

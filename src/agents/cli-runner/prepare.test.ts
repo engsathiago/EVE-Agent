@@ -125,8 +125,7 @@ function createTestMcpLoopbackServerConfig(port: number) {
           "x-eve-current-inbound-audio": "${EVE_MCP_CURRENT_INBOUND_AUDIO}",
           "x-eve-inbound-event-kind": "${EVE_MCP_INBOUND_EVENT_KIND}",
           "x-eve-source-reply-delivery-mode": "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
-          "x-eve-require-explicit-message-target":
-            "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+          "x-eve-require-explicit-message-target": "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
           "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
         },
       },
@@ -1437,9 +1436,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
       });
 
       expect(context.params.prompt).toBe("latest ask");
-      expect(context.systemPrompt).toContain(
-        "You are a personal assistant running inside EVE.",
-      );
+      expect(context.systemPrompt).toContain("You are a personal assistant running inside EVE.");
       expect(context.systemPrompt).toContain("Current model identity: test-cli/test-model.");
       expect(context.systemPrompt).not.toContain("hook exploded");
       expect(hookRunner.runBeforePromptBuild).toHaveBeenCalledOnce();
@@ -2648,7 +2645,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
 
   it("renders CLI skills from sandbox-readable paths instead of persisted host snapshots", async () => {
     const { dir, sessionFile } = createSessionFile();
-    const hostSkillDir = "/home/tzdai/.npm-global/lib/node_modules/eve/skills/gog";
+    const hostSkillDir = "/home/tzdai/.npm-global/lib/node_modules/eve-agent/skills/gog";
     const hostSkillPath = `${hostSkillDir}/SKILL.md`;
     const materializedWorkspace = path.join(dir, "state", "sandbox-skills");
     const materializedSkillDir = path.join(materializedWorkspace, "skills", "gog");
@@ -2722,9 +2719,7 @@ describe("shouldSkipLocalCliCredentialEpoch", () => {
         sessionKey: "agent:main:sandboxed-user",
         workspaceDir: dir,
       });
-      expect(context.systemPrompt).toContain(
-        "/workspace/.eve/sandbox-skills/skills/gog/SKILL.md",
-      );
+      expect(context.systemPrompt).toContain("/workspace/.eve/sandbox-skills/skills/gog/SKILL.md");
       expect(context.systemPrompt).not.toContain(hostSkillPath);
       expect(context.systemPromptReport.skills.promptChars).toBeGreaterThan(0);
       expect(context.systemPromptReport.skills.entries).toEqual([

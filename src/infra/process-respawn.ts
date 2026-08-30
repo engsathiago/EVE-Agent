@@ -27,14 +27,14 @@ function isTruthy(value: string | undefined): boolean {
 }
 
 const PNPM_VERSIONED_EVE_ENTRY_PATTERN =
-  /^(.*?)([\\/])node_modules\2\.pnpm\2eve@[^\\/]+\2node_modules\2eve\2.+$/;
+  /^(.*?)([\\/])node_modules\2\.pnpm\2eve-agent@[^\\/]+\2node_modules\2eve-agent\2.+$/;
 
 function rewritePnpmVersionedEVEEntryPath(entryPath: string): string {
   // pnpm can expose argv[1] as a versioned realpath that self-update removes.
   // Respawn through the stable EVE package wrapper instead.
   return entryPath.replace(
     PNPM_VERSIONED_EVE_ENTRY_PATTERN,
-    "$1$2node_modules$2eve$2eve.mjs",
+    "$1$2node_modules$2eve-agent$2eve.mjs",
   );
 }
 

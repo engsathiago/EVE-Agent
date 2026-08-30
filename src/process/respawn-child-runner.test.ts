@@ -43,15 +43,11 @@ describe("runRespawnChildWithSignalBridge", () => {
       onError: vi.fn(),
     });
 
-    expect(spawnChild).toHaveBeenCalledWith(
-      "/usr/bin/node",
-      ["/repo/eve/dist/entry.js"],
-      {
-        stdio: "inherit",
-        env: { EVE_NODE_OPTIONS_READY: "1" },
-        detached: process.platform !== "win32",
-      },
-    );
+    expect(spawnChild).toHaveBeenCalledWith("/usr/bin/node", ["/repo/eve/dist/entry.js"], {
+      stdio: "inherit",
+      env: { EVE_NODE_OPTIONS_READY: "1" },
+      detached: process.platform !== "win32",
+    });
   });
 
   it("signals detached respawn process groups after forwarded signal grace", () => {

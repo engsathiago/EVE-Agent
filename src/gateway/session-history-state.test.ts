@@ -184,8 +184,7 @@ describe("SessionHistorySseState", () => {
     ).toBe("Still the current chat.");
     expect(
       Boolean(
-        (appended?.message as { eveMessageToolMirror?: unknown } | undefined)
-          ?.eveMessageToolMirror,
+        (appended?.message as { eveMessageToolMirror?: unknown } | undefined)?.eveMessageToolMirror,
       ),
     ).toBe(true);
   });
@@ -256,8 +255,7 @@ describe("SessionHistorySseState", () => {
     ).toBe("Still visible after forwarded handoff.");
     expect(
       Boolean(
-        (appended?.message as { eveMessageToolMirror?: unknown } | undefined)
-          ?.eveMessageToolMirror,
+        (appended?.message as { eveMessageToolMirror?: unknown } | undefined)?.eveMessageToolMirror,
       ),
     ).toBe(true);
   });

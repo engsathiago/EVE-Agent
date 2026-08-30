@@ -147,7 +147,7 @@ Each entry lists the package, distribution route, and description.
 
 - **[openrouter](/plugins/reference/openrouter)** (`@eve/openrouter-provider`) - included in EVE. Adds OpenRouter model provider support to EVE.
 
-- **[policy](/plugins/reference/policy)** (`@eve/policy`) - included in EVE. Adds policy-backed doctor checks for workspace conformance.
+- **[policy](/plugins/reference/policy)** (`@eve/policy`) - included in EVE. Empty first-party policy contract reserved for future EVE-owned rules.
 
 - **[runway](/plugins/reference/runway)** (`@eve/runway-provider`) - included in EVE. Adds video generation provider support.
 

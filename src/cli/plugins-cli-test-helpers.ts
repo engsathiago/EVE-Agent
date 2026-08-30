@@ -207,10 +207,10 @@ vi.mock("../config/config.js", () => ({
       ...args,
     )) as (typeof import("../config/config.js"))["readConfigFileSnapshotForWrite"],
   writeConfigFile: ((config: EVEConfig) =>
-    invokeMock<
-      [EVEConfig],
-      ReturnType<(typeof import("../config/config.js"))["writeConfigFile"]>
-    >(writeConfigFile, config)) as (typeof import("../config/config.js"))["writeConfigFile"],
+    invokeMock<[EVEConfig], ReturnType<(typeof import("../config/config.js"))["writeConfigFile"]>>(
+      writeConfigFile,
+      config,
+    )) as (typeof import("../config/config.js"))["writeConfigFile"],
   replaceConfigFile: ((
     params: Parameters<(typeof import("../config/config.js"))["replaceConfigFile"]>[0],
   ) =>
@@ -770,8 +770,9 @@ export function resetPluginsCliTestState() {
   });
   writeConfigFile.mockResolvedValue(undefined);
   replaceConfigFile.mockImplementation(
-    (async (params: { nextConfig: EVEConfig }) =>
-      await writeConfigFile(params.nextConfig)) as (...args: unknown[]) => Promise<unknown>,
+    (async (params: { nextConfig: EVEConfig }) => await writeConfigFile(params.nextConfig)) as (
+      ...args: unknown[]
+    ) => Promise<unknown>,
   );
   resolveStateDir.mockReturnValue("/tmp/eve-state");
   resolveMarketplaceInstallShortcut.mockResolvedValue(null);

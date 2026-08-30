@@ -48,8 +48,7 @@ describe("loadPromptRefImages", () => {
 
     await expect(
       loadPromptRefImages({
-        prompt:
-          'Called the Read tool with {"file_path":"/workspace/.eve-cli-images/stale.png"}',
+        prompt: 'Called the Read tool with {"file_path":"/workspace/.eve-cli-images/stale.png"}',
         workspaceDir: "/workspace",
       }),
     ).resolves.toStrictEqual([]);
@@ -250,9 +249,7 @@ describe("writeCliImages", () => {
     try {
       expect(first.paths).toStrictEqual([
         expect.stringMatching(
-          new RegExp(
-            `^${escapeRegExp(`${resolvePreferredEVETmpDir()}/eve-cli-images/`)}.*\\.png$`,
-          ),
+          new RegExp(`^${escapeRegExp(`${resolvePreferredEVETmpDir()}/eve-cli-images/`)}.*\\.png$`),
         ),
       ]);
       expect(second.paths).toEqual(first.paths);

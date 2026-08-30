@@ -332,7 +332,9 @@ const codexAppServerNetworkProxySchema = z
     baseProfile: z.enum(["read-only", "workspace"]).optional(),
     mode: z.enum(["limited", "full"]).optional(),
     domains: z.record(z.string(), codexAppServerNetworkProxyDomainPermissionSchema).optional(),
-    unixSockets: z.record(z.string(), codexAppServerNetworkProxyUnixSocketPermissionSchema).optional(),
+    unixSockets: z
+      .record(z.string(), codexAppServerNetworkProxyUnixSocketPermissionSchema)
+      .optional(),
     proxyUrl: z.string().trim().min(1).optional(),
     socksUrl: z.string().trim().min(1).optional(),
     enableSocks5: z.boolean().optional(),
@@ -1951,9 +1953,7 @@ function applyEVEExecApprovalFloors(
   };
 }
 
-function resolveEVEExecPolicyForMode(
-  mode: EVEExecMode,
-): Omit<EVEExecPolicy, "touched"> {
+function resolveEVEExecPolicyForMode(mode: EVEExecMode): Omit<EVEExecPolicy, "touched"> {
   switch (mode) {
     case "deny":
       return { mode, security: "deny", ask: "off" };
@@ -1985,10 +1985,7 @@ function resolveEVEExecModeFromPolicy(params: {
   return "ask";
 }
 
-function minEVEExecSecurity(
-  left: EVEExecSecurity,
-  right: EVEExecSecurity,
-): EVEExecSecurity {
+function minEVEExecSecurity(left: EVEExecSecurity, right: EVEExecSecurity): EVEExecSecurity {
   const order: Record<EVEExecSecurity, number> = { deny: 0, allowlist: 1, full: 2 };
   return order[left] <= order[right] ? left : right;
 }

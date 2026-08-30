@@ -2,6 +2,11 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import { Transform, type Readable, type TransformCallback } from "node:stream";
+import { resolveFfmpegBin } from "eve-agent/plugin-sdk/media-runtime";
+import { resamplePcm } from "eve-agent/plugin-sdk/realtime-voice";
+import { logVerbose, shouldLogVerbose } from "eve-agent/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
+import { tempWorkspace, resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import {
   Application,
   createDecoder as createLibopusDecoder,
@@ -9,11 +14,6 @@ import {
   type OpusDecoderHandle as LibopusDecoder,
   type OpusEncoderHandle as LibopusEncoder,
 } from "libopus-wasm";
-import { resolveFfmpegBin } from "eve-agent/plugin-sdk/media-runtime";
-import { resamplePcm } from "eve-agent/plugin-sdk/realtime-voice";
-import { logVerbose, shouldLogVerbose } from "eve-agent/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
-import { tempWorkspace, resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 
 const SAMPLE_RATE = 48_000;
 const CHANNELS = 2;

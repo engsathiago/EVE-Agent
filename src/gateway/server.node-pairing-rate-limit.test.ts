@@ -127,10 +127,7 @@ describe("node pairing rate limit", () => {
       },
     };
     await withGatewayServer(async ({ port }) => {
-      const identityPrefix = path.join(
-        os.tmpdir(),
-        `eve-node-pairing-upgrade-${randomUUID()}`,
-      );
+      const identityPrefix = path.join(os.tmpdir(), `eve-node-pairing-upgrade-${randomUUID()}`);
       const pairedIdentityPath = `${identityPrefix}-paired.json`;
       const pairedIdentity = await approveNodeIdentity({
         identityPath: pairedIdentityPath,

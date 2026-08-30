@@ -3,7 +3,7 @@ import { once } from "node:events";
 import type { Server } from "node:http";
 import { createConnection, type AddressInfo } from "node:net";
 import express from "express";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { applyMSTeamsWebhookTimeouts } from "./webhook-timeouts.js";
 
 async function closeServer(server: Server): Promise<void> {
@@ -38,6 +38,10 @@ async function waitForSlowBodySocketClose(port: number, timeoutMs: number): Prom
 }
 
 describe("msteams monitor webhook hardening", () => {
+  beforeEach(() => {
+    vi.useRealTimers();
+  });
+
   it("applies default timeouts and header clamp", async () => {
     const app = express();
     const server = app.listen(0, "127.0.0.1");

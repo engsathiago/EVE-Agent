@@ -118,7 +118,7 @@ EVE_QA_TELEGRAM_GROUP_ID="..." \
 EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN="..." \
 EVE_QA_TELEGRAM_SUT_BOT_TOKEN="..." \
 EVE_QA_PROVIDER_MODE="mock-openai" \
-EVE_NPM_TELEGRAM_PACKAGE_SPEC="eve@beta" \
+EVE_NPM_TELEGRAM_PACKAGE_SPEC="eve-agent@beta" \
 pnpm test:docker:npm-telegram-live
 ```
 
@@ -142,7 +142,7 @@ pnpm test:docker:npm-telegram-live
 - If direct Telegram env is missing locally and `op signin` blocks, prefer dispatching the manual GitHub lane because the `qa-live-shared` environment already has Convex CI credentials:
 
 ```bash
-gh workflow run "NPM Telegram Beta E2E" --repo eve/eve --ref main \
+gh workflow run "NPM Telegram Beta E2E" --repo engsathiago/eve-agent --ref main \
   -f package_spec=eve@YYYY.M.D-beta.N \
   -f package_label=eve@YYYY.M.D-beta.N \
   -f provider_mode=mock-openai
@@ -151,7 +151,7 @@ gh workflow run "NPM Telegram Beta E2E" --repo eve/eve --ref main \
 - Poll the exact run id from the dispatch URL. `gh run view --json artifacts` is not supported; list artifacts with:
 
 ```bash
-gh api repos/eve/eve/actions/runs/<run-id>/artifacts
+gh api repos/engsathiago/eve-agent/actions/runs/<run-id>/artifacts
 ```
 
 ## WhatsApp live credentials

@@ -42,18 +42,15 @@ type MusicGenerationProviderPlugin = import("./types.js").MusicGenerationProvide
 type EVEPluginCliCommandDescriptor = import("./types.js").EVEPluginCliCommandDescriptor;
 type EVEPluginCliRegistrar = import("./types.js").EVEPluginCliRegistrar;
 type EVEPluginCommandDefinition = import("./types.js").EVEPluginCommandDefinition;
-type EVEPluginGatewayRuntimeScopeSurface =
-  import("./types.js").EVEPluginGatewayRuntimeScopeSurface;
+type EVEPluginGatewayRuntimeScopeSurface = import("./types.js").EVEPluginGatewayRuntimeScopeSurface;
 type EVEGatewayDiscoveryService = import("./types.js").EVEGatewayDiscoveryService;
 type EVEPluginHttpRouteAuth = import("./types.js").EVEPluginHttpRouteAuth;
 type EVEPluginHttpRouteHandler = import("./types.js").EVEPluginHttpRouteHandler;
-type EVEPluginHttpRouteUpgradeHandler =
-  import("./types.js").EVEPluginHttpRouteUpgradeHandler;
+type EVEPluginHttpRouteUpgradeHandler = import("./types.js").EVEPluginHttpRouteUpgradeHandler;
 type EVEPluginHttpRouteMatch = import("./types.js").EVEPluginHttpRouteMatch;
 type EVEPluginHostedMediaResolver = import("./types.js").EVEPluginHostedMediaResolver;
 type EVEPluginReloadRegistration = import("./types.js").EVEPluginReloadRegistration;
-type EVEPluginSecurityAuditCollector =
-  import("./types.js").EVEPluginSecurityAuditCollector;
+type EVEPluginSecurityAuditCollector = import("./types.js").EVEPluginSecurityAuditCollector;
 type EVEPluginService = import("./types.js").EVEPluginService;
 type EVEPluginToolFactory = import("./types.js").EVEPluginToolFactory;
 type PluginConversationBindingResolvedEvent =

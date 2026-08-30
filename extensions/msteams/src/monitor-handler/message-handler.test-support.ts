@@ -20,10 +20,7 @@ type MessageHandlerDepsOptions = {
   resolveInboundDebounceMs?: PluginRuntime["channel"]["debounce"]["resolveInboundDebounceMs"];
 };
 
-export function createMessageHandlerDeps(
-  cfg: EVEConfig,
-  options: MessageHandlerDepsOptions = {},
-) {
+export function createMessageHandlerDeps(cfg: EVEConfig, options: MessageHandlerDepsOptions = {}) {
   const enqueueSystemEvent = options.enqueueSystemEvent ?? vi.fn();
   const readAllowFromStore = options.readAllowFromStore ?? vi.fn(async () => []);
   const upsertPairingRequest = options.upsertPairingRequest ?? vi.fn(async () => null);

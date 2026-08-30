@@ -86,10 +86,7 @@ function resolveSkillWorkshopStateDir(options: SkillWorkshopStoreOptions = {}): 
   return path.resolve(options.stateDir ?? resolveStateDir(options.env));
 }
 
-function resolveProposalDir(
-  proposalId: string,
-  options: SkillWorkshopStoreOptions = {},
-): string {
+function resolveProposalDir(proposalId: string, options: SkillWorkshopStoreOptions = {}): string {
   assertProposalId(proposalId);
   return path.join(resolveSkillWorkshopStateDir(options), proposalRelativeDir(proposalId));
 }
@@ -306,6 +303,32 @@ export async function writeSkillProposalRollback(params: {
   );
 }
 
+export async function readSkillProposalRollback(
+  proposalId: string,
+  options: SkillWorkshopStoreOptions = {},
+): Promise<SkillProposalRollback | null> {
+  assertProposalId(proposalId);
+  const stateRoot = await root(resolveSkillWorkshopStateDir(options));
+  let raw: unknown;
+  try {
+    const read = await stateRoot.read(
+      path.join(proposalRelativeDir(proposalId), PROPOSAL_ROLLBACK_FILE),
+      {
+        hardlinks: "reject",
+        maxBytes: MAX_PROPOSAL_SUPPORT_FILES_TOTAL_BYTES + MAX_PROPOSAL_BYTES,
+        symlinks: "reject",
+      },
+    );
+    raw = JSON.parse(read.buffer.toString("utf8")) as unknown;
+  } catch (error) {
+    if ((error as { code?: string })?.code === "ENOENT") {
+      return null;
+    }
+    throw error;
+  }
+  return parseSkillProposalRollback(raw, proposalId);
+}
+
 export async function readSkillProposalManifest(
   options: SkillWorkshopStoreOptions = {},
 ): Promise<SkillProposalManifest> {
@@ -472,7 +495,9 @@ function parseSkillProposalRecord(raw: unknown): SkillProposalRecord | null {
     record.schema !== SKILL_WORKSHOP_SCHEMA ||
     !PROPOSAL_ID_PATTERN.test(record.id) ||
     (record.kind !== "create" && record.kind !== "update") ||
-    !["pending", "applied", "rejected", "quarantined", "stale"].includes(record.status) ||
+    !["pending", "applied", "rolled_back", "rejected", "quarantined", "stale"].includes(
+      record.status,
+    ) ||
     typeof record.title !== "string" ||
     typeof record.description !== "string" ||
     typeof record.createdAt !== "string" ||
@@ -493,6 +518,80 @@ function parseSkillProposalRecord(raw: unknown): SkillProposalRecord | null {
     return null;
   }
   return record;
+}
+
+function parseSkillProposalRollback(
+  raw: unknown,
+  proposalId: string,
+): SkillProposalRollback | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return null;
+  }
+  const rollback = raw as SkillProposalRollback;
+  if (
+    rollback.schema !== SKILL_WORKSHOP_ROLLBACK_SCHEMA ||
+    rollback.proposalId !== proposalId ||
+    typeof rollback.writtenAt !== "string" ||
+    typeof rollback.targetSkillFile !== "string" ||
+    (rollback.action !== "create" && rollback.action !== "update") ||
+    !isValidOptionalRollbackContent(rollback.previousContent, rollback.previousContentHash) ||
+    !isValidRollbackSupportFiles(rollback.supportFiles)
+  ) {
+    return null;
+  }
+  return rollback;
+}
+
+function isValidOptionalRollbackContent(content: unknown, hash: unknown): boolean {
+  if (content === undefined) {
+    return hash === undefined;
+  }
+  return (
+    typeof content === "string" &&
+    contentSizeBytes(content) <= MAX_PROPOSAL_BYTES &&
+    typeof hash === "string" &&
+    hashSkillProposalContent(content) === hash
+  );
+}
+
+function isValidRollbackSupportFiles(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+  if (!Array.isArray(value) || value.length > MAX_PROPOSAL_SUPPORT_FILES) {
+    return false;
+  }
+  const paths: string[] = [];
+  let totalBytes = 0;
+  for (const item of value) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      return false;
+    }
+    const file = item as NonNullable<SkillProposalRollback["supportFiles"]>[number];
+    if (
+      typeof file.path !== "string" ||
+      typeof file.existed !== "boolean" ||
+      !isValidOptionalRollbackContent(file.previousContent, file.previousContentHash) ||
+      file.existed !== (file.previousContent !== undefined)
+    ) {
+      return false;
+    }
+    try {
+      paths.push(normalizeWorkspaceSkillSupportPath(file.path));
+    } catch {
+      return false;
+    }
+    totalBytes += file.previousContent ? contentSizeBytes(file.previousContent) : 0;
+    if (totalBytes > MAX_PROPOSAL_SUPPORT_FILES_TOTAL_BYTES) {
+      return false;
+    }
+  }
+  try {
+    assertWorkspaceSkillSupportPathSetIsFileOnly(paths);
+  } catch {
+    return false;
+  }
+  return new Set(paths).size === paths.length;
 }
 
 function isValidProposalOrigin(value: unknown): boolean {

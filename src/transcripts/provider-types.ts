@@ -120,9 +120,6 @@ export type TranscriptSourceProvider = {
   sourceKinds: readonly TranscriptSourceKind[];
   start?: (request: TranscriptStartRequest) => Promise<TranscriptsStartResult>;
   stop?: (request: TranscriptStopRequest) => Promise<TranscriptsStopResult>;
-  status?: (
-    source: TranscriptSourceLocator,
-    cfg?: EVEConfig,
-  ) => Promise<TranscriptSourceStatus[]>;
+  status?: (source: TranscriptSourceLocator, cfg?: EVEConfig) => Promise<TranscriptSourceStatus[]>;
   importTranscript?: (request: TranscriptImportRequest) => Promise<TranscriptUtterance[]>;
 };

@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements visual task behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "eve/plugin-sdk/error-runtime";
-import { pathExists, writeExternalFileWithinRoot } from "eve/plugin-sdk/security-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { pathExists, writeExternalFileWithinRoot } from "eve-agent/plugin-sdk/security-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import { isTruthyOptIn, trimToValue } from "../mantis-options.runtime.js";
 import {

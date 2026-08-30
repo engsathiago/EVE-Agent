@@ -16,10 +16,7 @@ export function formatAutoReplyConfigMutationError(error: unknown): string | nul
   return error instanceof AutoReplyConfigMutationError ? error.message : null;
 }
 
-function assertValidConfig(
-  next: Record<string, unknown>,
-  action: string,
-): { config: EVEConfig } {
+function assertValidConfig(next: Record<string, unknown>, action: string): { config: EVEConfig } {
   const validated = validateConfigObjectWithPlugins(next);
   if (!validated.ok) {
     const issue = validated.issues[0];

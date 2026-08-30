@@ -114,9 +114,7 @@ const DIARY_END_MARKER = "<!-- eve:dreaming:diary:end -->";
 const BACKFILL_ENTRY_MARKER = "eve:dreaming:backfill-entry";
 const RECENT_DIARY_CONTEXT_LIMIT = 3;
 const RECENT_DIARY_CONTEXT_MAX_CHARS = 360;
-const NARRATIVE_SESSION_LOCKS_KEY = Symbol.for(
-  "eve.memoryCore.dreamingNarrative.sessionLocks",
-);
+const NARRATIVE_SESSION_LOCKS_KEY = Symbol.for("eve.memoryCore.dreamingNarrative.sessionLocks");
 
 type NarrativeSessionLockEntry = {
   withLock: ReturnType<typeof createAsyncLock>;

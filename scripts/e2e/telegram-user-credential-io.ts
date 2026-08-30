@@ -38,15 +38,11 @@ function readKillGraceMs() {
     return 5_000;
   }
   if (!/^\d+$/u.test(raw)) {
-    throw new Error(
-      `EVE_QA_CREDENTIAL_KILL_GRACE_MS must be a non-negative integer; got: ${raw}`,
-    );
+    throw new Error(`EVE_QA_CREDENTIAL_KILL_GRACE_MS must be a non-negative integer; got: ${raw}`);
   }
   const parsed = Number(raw);
   if (!Number.isSafeInteger(parsed)) {
-    throw new Error(
-      `EVE_QA_CREDENTIAL_KILL_GRACE_MS must be a non-negative integer; got: ${raw}`,
-    );
+    throw new Error(`EVE_QA_CREDENTIAL_KILL_GRACE_MS must be a non-negative integer; got: ${raw}`);
   }
   return parsed;
 }

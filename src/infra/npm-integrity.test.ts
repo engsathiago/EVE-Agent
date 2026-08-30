@@ -151,9 +151,7 @@ describe("resolveNpmIntegrityDrift", () => {
       warn,
     });
 
-    expect(result.error).toBe(
-      "aborted: npm package integrity drift detected for @eve/test@1.0.0",
-    );
+    expect(result.error).toBe("aborted: npm package integrity drift detected for @eve/test@1.0.0");
     expect(warn).toHaveBeenCalledWith(
       "Integrity drift detected for @eve/test@1.0.0: expected sha512-old, got sha512-new",
     );

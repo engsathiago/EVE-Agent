@@ -30,11 +30,11 @@ import {
   resolveOpenAIDefaultBaseUrl,
 } from "./base-url.js";
 import { applyOpenAIConfig, OPENAI_DEFAULT_MODEL } from "./default-models.js";
+import manifest from "./eve.plugin.json" with { type: "json" };
 import {
   buildOpenAIChatGPTAuthMethods,
   buildOpenAICodexProviderHooks,
 } from "./openai-chatgpt-provider.js";
-import manifest from "./eve.plugin.json" with { type: "json" };
 import {
   buildOpenAIResponsesProviderHooks,
   buildOpenAISyntheticCatalogEntry,

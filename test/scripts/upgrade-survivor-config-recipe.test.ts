@@ -35,8 +35,7 @@ describe("upgrade survivor config recipe command resolution", () => {
         'eve.cmd config set models.providers.openai "{""apiKey"":""sk test""}" --strict-json',
       ],
       command: String.raw`C:\Windows\System32\cmd.exe`,
-      commandLabel:
-        'eve config set models.providers.openai {"apiKey":"sk test"} --strict-json',
+      commandLabel: 'eve config set models.providers.openai {"apiKey":"sk test"} --strict-json',
       shell: false,
       windowsVerbatimArguments: true,
     });

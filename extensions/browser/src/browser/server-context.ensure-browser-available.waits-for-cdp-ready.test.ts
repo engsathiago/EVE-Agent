@@ -49,9 +49,7 @@ function createAttachOnlyLoopbackProfile(cdpUrl: string) {
   return { profile: ctx.forProfile("manual-cdp"), state };
 }
 
-function requireFirstLaunchOptions(launchEVEChrome: {
-  mock: { calls: unknown[][] };
-}): unknown {
+function requireFirstLaunchOptions(launchEVEChrome: { mock: { calls: unknown[][] } }): unknown {
   const [call] = launchEVEChrome.mock.calls;
   if (!call) {
     throw new Error("expected Chrome launch call");
@@ -193,8 +191,7 @@ describe("browser server-context ensureBrowserAvailable", () => {
   });
 
   it("does not share inflight lazy-start promises across different headless overrides", async () => {
-    const { launchEVEChrome, isChromeCdpReady, profile } =
-      setupEnsureBrowserAvailableHarness();
+    const { launchEVEChrome, isChromeCdpReady, profile } = setupEnsureBrowserAvailableHarness();
     const isChromeReachable = vi.mocked(chromeModule.isChromeReachable);
     isChromeReachable.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
     isChromeCdpReady.mockResolvedValue(true);
@@ -312,9 +309,7 @@ describe("browser server-context ensureBrowserAvailable", () => {
     isChromeCdpReady.mockResolvedValue(false);
 
     const promise = profile.ensureBrowserAvailable();
-    await expect(promise).rejects.toThrow(
-      'Port 18800 is in use for profile "eve" but not by eve.',
-    );
+    await expect(promise).rejects.toThrow('Port 18800 is in use for profile "eve" but not by eve.');
     await expect(promise).rejects.toThrow(
       "set browser.profiles.eve.attachOnly=true so EVE attaches without trying to manage the local process",
     );

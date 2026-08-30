@@ -63,9 +63,7 @@ function isEVECommandBasename(basename: string, platform: NodeJS.Platform): bool
     return true;
   }
   if (platform === "win32") {
-    return (
-      basename === "eve.cmd" || basename === "eve.ps1" || basename === "eve.exe"
-    );
+    return basename === "eve.cmd" || basename === "eve.ps1" || basename === "eve.exe";
   }
   return false;
 }
@@ -109,11 +107,7 @@ export function resolveDaemonEVEBinDir(
   const argv1 = argv[1]?.trim();
   const dirs: string[] = [];
 
-  if (
-    argv1 &&
-    path.isAbsolute(argv1) &&
-    isEVECommandBasename(path.basename(argv1), platform)
-  ) {
+  if (argv1 && path.isAbsolute(argv1) && isEVECommandBasename(path.basename(argv1), platform)) {
     addUniquePathDir(dirs, path.dirname(argv1));
   }
 

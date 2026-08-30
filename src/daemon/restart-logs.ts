@@ -19,9 +19,7 @@ function resolveGatewayLogPrefix(env: GatewayServiceEnv): string {
 }
 
 function resolveMacLaunchAgentLogPrefix(env: GatewayServiceEnv): string {
-  return (
-    env.EVE_LOG_PREFIX?.trim() || `gateway${resolveGatewayProfileSuffix(env.EVE_PROFILE)}`
-  );
+  return env.EVE_LOG_PREFIX?.trim() || `gateway${resolveGatewayProfileSuffix(env.EVE_PROFILE)}`;
 }
 
 export function resolveGatewayLogPaths(env: GatewayServiceEnv): GatewayLogPaths {

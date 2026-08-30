@@ -31,9 +31,7 @@ import { createMemoryCoreTestHarness } from "./test-helpers.js";
 
 const { createTempWorkspace } = createMemoryCoreTestHarness();
 const DREAMS_FILE_LOCKS_KEY = Symbol.for("eve.memoryCore.dreamingNarrative.fileLocks");
-const NARRATIVE_SESSION_LOCKS_KEY = Symbol.for(
-  "eve.memoryCore.dreamingNarrative.sessionLocks",
-);
+const NARRATIVE_SESSION_LOCKS_KEY = Symbol.for("eve.memoryCore.dreamingNarrative.sessionLocks");
 const EXPECTS_POSIX_PRIVATE_FILE_MODE = process.platform !== "win32";
 
 type MockCallSource = { mock: { calls: Array<Array<unknown>> } };

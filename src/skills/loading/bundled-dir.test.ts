@@ -29,7 +29,7 @@ describe("resolveBundledSkillsDir", () => {
     delete process.env.EVE_BUNDLED_SKILLS_DIR;
 
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-bundled-"));
-    await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve" }));
+    await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }));
 
     await writeSkill({
       dir: path.join(root, "skills", "peekaboo"),

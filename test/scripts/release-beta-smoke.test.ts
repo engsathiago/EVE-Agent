@@ -134,7 +134,7 @@ describe("release-beta-smoke", () => {
     const sleeps: number[] = [];
 
     await expect(
-      pollRun("eve/eve", "123", {
+      pollRun("engsathiago/eve-agent", "123", {
         now: () => now,
         pollIntervalMs: 400,
         readRun: () => ({
@@ -155,7 +155,7 @@ describe("release-beta-smoke", () => {
 
   it("returns when the Telegram workflow succeeds", async () => {
     await expect(
-      pollRun("eve/eve", "123", {
+      pollRun("engsathiago/eve-agent", "123", {
         readRun: () => ({
           conclusion: "success",
           html_url: "https://github.com/engsathiago/eve-agent/actions/runs/123",

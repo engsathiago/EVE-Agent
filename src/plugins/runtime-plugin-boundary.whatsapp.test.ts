@@ -31,7 +31,7 @@ function createBundledWhatsAppRuntimeFixture() {
   for (const [relativePath, value] of Object.entries({
     "package.json": JSON.stringify(
       {
-        name: "eve",
+        name: "eve-agent",
         type: "module",
         bin: {
           eve: "eve.mjs",

@@ -3415,10 +3415,7 @@ export class QmdMemoryManager implements MemorySearchManager {
   }
 }
 
-function resolveQmdManagerRuntimeConfig(
-  cfg: EVEConfig,
-  agentId: string,
-): QmdManagerRuntimeConfig {
+function resolveQmdManagerRuntimeConfig(cfg: EVEConfig, agentId: string): QmdManagerRuntimeConfig {
   return {
     workspaceDir: resolveAgentWorkspaceDir(cfg, agentId),
     syncSettings: resolveMemorySearchSyncConfig(cfg, agentId),

@@ -5,6 +5,7 @@ import {
   normalizeStringifiedOptionalString,
 } from "@eve/normalization-core/string-coerce";
 import { normalizeUniqueStringEntries } from "@eve/normalization-core/string-normalization";
+import { pickSandboxToolPolicy } from "../agents/sandbox-tool-policy.js";
 import { resolveSandboxConfigForAgent } from "../agents/sandbox/config.js";
 import { isDangerousNetworkMode, normalizeNetworkMode } from "../agents/sandbox/network-mode.js";
 import { resolveSandboxToolPolicyForAgent } from "../agents/sandbox/tool-policy.js";
@@ -13,8 +14,8 @@ import { getBlockedBindReason } from "../agents/sandbox/validate-sandbox-securit
 import { isToolAllowedByPolicies } from "../agents/tool-policy-match.js";
 import { resolveToolProfilePolicy } from "../agents/tool-policy.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { GatewayAuthConfig } from "../config/types.gateway.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { GatewayAuthConfig } from "../config/types.gateway.js";
 import type { AgentToolsConfig } from "../config/types.tools.js";
 import { resolveGatewayAuth, type ResolvedGatewayAuth } from "../gateway/auth.js";
 import { resolveAllowedAgentIds } from "../gateway/hooks-policy.js";
@@ -24,7 +25,6 @@ import {
   resolveNodeCommandAllowlist,
 } from "../gateway/node-command-policy.js";
 import { collectAuditModelRefs } from "./audit-model-refs.js";
-import { pickSandboxToolPolicy } from "../agents/sandbox-tool-policy.js";
 
 /**
  * Synchronous security audit collector functions.
@@ -586,8 +586,7 @@ export function collectSecretsInConfigFindings(cfg: EVEConfig): SecurityAuditFin
       title: "Gateway password is stored in config",
       detail:
         "gateway.auth.password is set in the config file; prefer environment variables for secrets when possible.",
-      remediation:
-        "Prefer EVE_GATEWAY_PASSWORD (env) and remove gateway.auth.password from disk.",
+      remediation: "Prefer EVE_GATEWAY_PASSWORD (env) and remove gateway.auth.password from disk.",
     });
   }
 
@@ -1012,9 +1011,7 @@ export function collectNodeDenyCommandPatternFindings(cfg: EVEConfig): SecurityA
   return findings;
 }
 
-export function collectNodeDangerousAllowCommandFindings(
-  cfg: EVEConfig,
-): SecurityAuditFinding[] {
+export function collectNodeDangerousAllowCommandFindings(cfg: EVEConfig): SecurityAuditFinding[] {
   const findings: SecurityAuditFinding[] = [];
   const allowRaw = cfg.gateway?.nodes?.allowCommands;
   if (!Array.isArray(allowRaw) || allowRaw.length === 0) {

@@ -13,6 +13,7 @@ import type {
   MemoryCommandOptions,
   MemoryPromoteCommandOptions,
   MemoryPromoteExplainOptions,
+  MemoryReflectCommandOptions,
   MemoryRemBackfillOptions,
   MemoryRemHarnessOptions,
   MemorySearchCommandOptions,
@@ -47,6 +48,11 @@ async function runMemoryIndex(opts: MemoryCommandOptions) {
 async function runMemorySearch(queryArg: string | undefined, opts: MemorySearchCommandOptions) {
   const runtime = await loadMemoryCliRuntime();
   await runtime.runMemorySearch(queryArg, opts);
+}
+
+async function runMemoryReflect(opts: MemoryReflectCommandOptions) {
+  const runtime = await loadMemoryCliRuntime();
+  await runtime.runMemoryReflect(opts);
 }
 
 async function runMemoryPromote(opts: MemoryPromoteCommandOptions) {
@@ -127,13 +133,14 @@ export function registerMemoryCli(program: Command) {
             "Limit results for focused troubleshooting.",
           ],
           [
+            'eve memory reflect --delivered "Shipped onboarding" --quality "Tests passed"',
+            "Append a structured completion reflection to daily memory.",
+          ],
+          [
             `eve memory promote --limit 10 --min-score ${DEFAULT_PROMOTION_MIN_SCORE}`,
             "Review weighted short-term candidates for long-term memory.",
           ],
-          [
-            "eve memory promote --apply",
-            "Append top-ranked short-term candidates into MEMORY.md.",
-          ],
+          ["eve memory promote --apply", "Append top-ranked short-term candidates into MEMORY.md."],
           [
             'eve memory promote-explain "router vlan"',
             "Explain why a specific candidate would or would not promote.",
@@ -192,6 +199,20 @@ export function registerMemoryCli(program: Command) {
     .option("--json", "Print JSON")
     .action(async (queryArg: string | undefined, opts: MemorySearchCommandOptions) => {
       await runMemorySearch(queryArg, opts);
+    });
+
+  memory
+    .command("reflect")
+    .description("Append a structured completion reflection to daily memory")
+    .option("--agent <id>", "Agent id (default: default agent)")
+    .option("--delivered <text>", "What was delivered")
+    .option("--quality <text>", "Quality or verification assessment")
+    .option("--next <text>", "Recommended next action")
+    .option("--lesson <text>", "Reusable lesson")
+    .option("--index", "Refresh the memory index after writing", false)
+    .option("--json", "Print JSON")
+    .action(async (opts: MemoryReflectCommandOptions) => {
+      await runMemoryReflect(opts);
     });
 
   memory

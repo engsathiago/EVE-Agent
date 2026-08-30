@@ -5838,9 +5838,7 @@ describe("matrix live qa scenarios", () => {
       let cliAccountConfigDuringRun: Record<string, unknown> | null = null;
       runMatrixQaEVECli.mockImplementation(async ({ args, env, stdin }) => {
         if (!cliAccountConfigDuringRun && env.EVE_CONFIG_PATH) {
-          const cliConfig = JSON.parse(
-            await readFile(String(env.EVE_CONFIG_PATH), "utf8"),
-          ) as {
+          const cliConfig = JSON.parse(await readFile(String(env.EVE_CONFIG_PATH), "utf8")) as {
             channels?: {
               matrix?: {
                 accounts?: Record<string, Record<string, unknown>>;
@@ -5932,18 +5930,14 @@ describe("matrix live qa scenarios", () => {
         "--timeout-ms",
         "8000",
       ]);
-      expect(mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli").timeoutMs).toBe(
-        16_000,
-      );
+      expect(mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli").timeoutMs).toBe(16_000);
       expect(waitForOutput).toHaveBeenCalledTimes(2);
       expect(writeStdin).toHaveBeenCalledWith("yes\n");
       expect(endStdin).toHaveBeenCalledTimes(1);
       expect(wait).toHaveBeenCalledTimes(1);
       expect(kill).toHaveBeenCalledTimes(1);
       const registrationRequest = mockObjectArg(registerWithToken, "registerWithToken");
-      expect(registrationRequest?.deviceName).toBe(
-        "EVE Matrix QA CLI Self Verification Owner",
-      );
+      expect(registrationRequest?.deviceName).toBe("EVE Matrix QA CLI Self Verification Owner");
       if (
         typeof registrationRequest.localpart !== "string" ||
         typeof registrationRequest.password !== "string"
@@ -5987,8 +5981,10 @@ describe("matrix live qa scenarios", () => {
       expect(mockObjectArg(runMatrixQaEVECli, "runMatrixQaEVECli").stdin).toBe(
         "encoded-recovery-key\n",
       );
-      const cliEnv = mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli")
-        .env as Record<string, unknown>;
+      const cliEnv = mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli").env as Record<
+        string,
+        unknown
+      >;
       expect(cliEnv?.EVE_STATE_DIR).toContain("eve-matrix-cli-qa-");
       expect(cliEnv?.EVE_CONFIG_PATH).toContain("eve-matrix-cli-qa-");
       const configPath = String(cliEnv?.EVE_CONFIG_PATH);
@@ -6052,9 +6048,7 @@ describe("matrix live qa scenarios", () => {
       });
       runMatrixQaEVECli.mockImplementation(async ({ args, env }) => {
         if (env.EVE_CONFIG_PATH) {
-          const initialConfig = JSON.parse(
-            await readFile(String(env.EVE_CONFIG_PATH), "utf8"),
-          ) as {
+          const initialConfig = JSON.parse(await readFile(String(env.EVE_CONFIG_PATH), "utf8")) as {
             channels?: { matrix?: { enabled?: boolean; accounts?: Record<string, unknown> } };
             plugins?: { allow?: string[]; entries?: { matrix?: unknown } };
           };
@@ -6200,9 +6194,7 @@ describe("matrix live qa scenarios", () => {
       let initialAccountConfig: Record<string, unknown> | null = null;
       runMatrixQaEVECli.mockImplementation(async ({ args, env }) => {
         if (!initialAccountConfig && env.EVE_CONFIG_PATH) {
-          const initialConfig = JSON.parse(
-            await readFile(String(env.EVE_CONFIG_PATH), "utf8"),
-          ) as {
+          const initialConfig = JSON.parse(await readFile(String(env.EVE_CONFIG_PATH), "utf8")) as {
             channels?: {
               matrix?: {
                 accounts?: Record<string, Record<string, unknown>>;
@@ -6344,9 +6336,7 @@ describe("matrix live qa scenarios", () => {
       let initialAccountConfig: Record<string, unknown> | null = null;
       runMatrixQaEVECli.mockImplementation(async ({ args, env }) => {
         if (!initialAccountConfig && env.EVE_CONFIG_PATH) {
-          const initialConfig = JSON.parse(
-            await readFile(String(env.EVE_CONFIG_PATH), "utf8"),
-          ) as {
+          const initialConfig = JSON.parse(await readFile(String(env.EVE_CONFIG_PATH), "utf8")) as {
             channels?: {
               matrix?: {
                 accounts?: Record<string, Record<string, unknown>>;
@@ -6497,9 +6487,7 @@ describe("matrix live qa scenarios", () => {
           success: false,
         }),
       }));
-      const wait = vi
-        .fn()
-        .mockRejectedValue(new Error("eve matrix encryption setup exited 1"));
+      const wait = vi.fn().mockRejectedValue(new Error("eve matrix encryption setup exited 1"));
       const kill = vi.fn();
       startMatrixQaEVECli.mockReturnValue({
         args: ["matrix", "encryption", "setup", "--account", "cli-encryption-failure", "--json"],
@@ -6575,12 +6563,8 @@ describe("matrix live qa scenarios", () => {
         "--json",
       ]);
       expect(
-        (
-          mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli").env as Record<
-            string,
-            unknown
-          >
-        ).EVE_CONFIG_PATH,
+        (mockObjectArg(startMatrixQaEVECli, "startMatrixQaEVECli").env as Record<string, unknown>)
+          .EVE_CONFIG_PATH,
       ).toContain("eve-matrix-e2ee-setup-qa-");
       expect(output).toHaveBeenCalledTimes(1);
       expect(wait).toHaveBeenCalledTimes(1);
@@ -6654,9 +6638,7 @@ describe("matrix live qa scenarios", () => {
       let initialAccountConfig: Record<string, unknown> | null = null;
       runMatrixQaEVECli.mockImplementation(async ({ args, env }) => {
         if (!initialAccountConfig && env.EVE_CONFIG_PATH) {
-          const initialConfig = JSON.parse(
-            await readFile(String(env.EVE_CONFIG_PATH), "utf8"),
-          ) as {
+          const initialConfig = JSON.parse(await readFile(String(env.EVE_CONFIG_PATH), "utf8")) as {
             channels?: {
               matrix?: {
                 accounts?: Record<string, Record<string, unknown>>;
@@ -6828,9 +6810,7 @@ describe("matrix live qa scenarios", () => {
           success: false,
         }),
       }));
-      const wait = vi
-        .fn()
-        .mockRejectedValue(new Error("eve matrix encryption setup exited 1"));
+      const wait = vi.fn().mockRejectedValue(new Error("eve matrix encryption setup exited 1"));
       const kill = vi.fn();
       startMatrixQaEVECli.mockReturnValue({
         args: [

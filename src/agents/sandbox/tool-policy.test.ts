@@ -300,9 +300,7 @@ describe("sandbox/tool-policy", () => {
     expect(message).toContain("tools.sandbox.tools.deny");
     expect(message).not.toContain(`Session: ${sessionKey}`);
     expect(message).toContain("Session: agent:… -rf /");
-    expect(message).toContain(
-      "eve sandbox explain --session 'agent:main:weird session;rm -rf /'",
-    );
+    expect(message).toContain("eve sandbox explain --session 'agent:main:weird session;rm -rf /'");
   });
 
   it("avoids terminal injection for control-character session keys", () => {

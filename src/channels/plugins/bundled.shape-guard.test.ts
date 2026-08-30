@@ -180,9 +180,7 @@ function packageMarkerPathsToRoots(markerPaths: string[], extensionsDir: string)
 }
 
 afterEach(() => {
-  delete (globalThis as { __eveBundledChannelReenter?: () => void })[
-    "__eveBundledChannelReenter"
-  ];
+  delete (globalThis as { __eveBundledChannelReenter?: () => void })["__eveBundledChannelReenter"];
   vi.resetModules();
   vi.doUnmock("../../plugins/bundled-channel-runtime.js");
   vi.doUnmock("../../plugins/bundled-plugin-metadata.js");
@@ -860,7 +858,7 @@ describe("bundled channel entry shape guards", () => {
     fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.21" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.21" }),
       "utf8",
     );
     fs.writeFileSync(
@@ -1172,14 +1170,13 @@ module.exports = {
     }));
 
     let reentered = false;
-    (globalThis as { __eveBundledChannelReenter?: () => void })[
-      "__eveBundledChannelReenter"
-    ] = () => {
-      if (!reentered) {
-        reentered = true;
-        expect(bundled.listBundledChannelPlugins()).toStrictEqual([]);
-      }
-    };
+    (globalThis as { __eveBundledChannelReenter?: () => void })["__eveBundledChannelReenter"] =
+      () => {
+        if (!reentered) {
+          reentered = true;
+          expect(bundled.listBundledChannelPlugins()).toStrictEqual([]);
+        }
+      };
 
     const bundled = await importFreshModule<typeof import("./bundled.js")>(
       import.meta.url,

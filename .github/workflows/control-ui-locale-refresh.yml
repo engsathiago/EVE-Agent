@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   plan:
-    if: github.repository == 'eve/eve' && (github.event_name != 'push' || github.actor != 'github-actions[bot]')
+    if: github.repository == 'engsathiago/eve-agent' && (github.event_name != 'push' || github.actor != 'github-actions[bot]')
     runs-on: ubuntu-latest
     outputs:
       has_locales: ${{ steps.plan.outputs.has_locales }}
@@ -102,7 +102,7 @@ jobs:
 
   refresh:
     needs: plan
-    if: github.repository == 'eve/eve' && needs.plan.outputs.has_locales == 'true'
+    if: github.repository == 'engsathiago/eve-agent' && needs.plan.outputs.has_locales == 'true'
     strategy:
       fail-fast: false
       max-parallel: 4

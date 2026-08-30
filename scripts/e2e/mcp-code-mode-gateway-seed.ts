@@ -7,8 +7,7 @@ import { writeProbeMcpServer } from "./lib/mcp-code-mode-probe-server.ts";
 
 async function main() {
   const stateDir = process.env.EVE_STATE_DIR?.trim() || path.join(os.homedir(), ".eve");
-  const configPath =
-    process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
+  const configPath = process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
   const workspaceDir = path.join(stateDir, "workspace");
   const serverPath = path.join(stateDir, "mcp-code-mode-fixture", "fixture-server.mjs");
   const apiKey =

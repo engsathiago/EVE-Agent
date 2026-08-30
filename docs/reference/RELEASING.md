@@ -132,8 +132,8 @@ the maintainer-only release runbook.
    preview cell flakes, and ends with registry verification for every expected
    plugin version so partial publishes remain visible and retryable. Then run the post-publish
    package acceptance against the published
-   `eve@YYYY.M.PATCH-beta.N` or
-   `eve@beta` package. If a pushed or published prerelease needs a fix,
+   `eve-agent@YYYY.M.PATCH-beta.N` or
+   `eve-agent@beta` package. If a pushed or published prerelease needs a fix,
    cut the next matching prerelease number; do not delete or rewrite the old
    prerelease.
 10. For stable, continue only after the vetted beta or release candidate has the
@@ -244,7 +244,7 @@ release state.
   `gh workflow run full-release-validation.yml --ref main -f ref=release/YYYY.M.PATCH`
 - Run the manual `Package Acceptance` workflow when you want side-channel proof
   for a package candidate while release work continues. Use `source=npm` for
-  `eve@beta`, `eve@latest`, or an exact release version; `source=ref`
+  `eve-agent@beta`, `eve-agent@latest`, or an exact release version; `source=ref`
   to pack a trusted `package_ref` branch/tag/SHA with the current
   `workflow_ref` harness; `source=url` for a public HTTPS tarball with a
   required SHA-256 and strict public URL policy; `source=trusted-url` for a
@@ -259,7 +259,7 @@ release state.
   the published baseline. `update-restart-auth` uses the candidate package as
   both the installed CLI and the package-under-test so it exercises the
   candidate update command's managed restart path.
-  Example: `gh workflow run package-acceptance.yml --ref main -f workflow_ref=main -f source=npm -f package_spec=eve@beta -f suite_profile=product -f published_upgrade_survivor_baseline=eve@2026.4.26 -f telegram_mode=mock-openai`
+  Example: `gh workflow run package-acceptance.yml --ref main -f workflow_ref=main -f source=npm -f package_spec=eve-agent@beta -f suite_profile=product -f published_upgrade_survivor_baseline=eve-agent@2026.4.26 -f telegram_mode=mock-openai`
   Common profiles:
   - `smoke`: install/channel/agent, gateway network, and config reload lanes
   - `package`: artifact-native package/update/restart/plugin lanes without OpenWebUI or live ClawHub
@@ -376,7 +376,7 @@ Validation` or from the `main`/release workflow ref so workflow logic and
   `node --import tsx scripts/eve-npm-postpublish-verify.ts YYYY.M.PATCH`
   (or the matching beta/correction version) to verify the published registry
   install path in a fresh temp prefix
-- After a beta publish, run `EVE_NPM_TELEGRAM_PACKAGE_SPEC=eve@YYYY.M.PATCH-beta.N EVE_NPM_TELEGRAM_CREDENTIAL_SOURCE=convex EVE_NPM_TELEGRAM_CREDENTIAL_ROLE=ci pnpm test:docker:npm-telegram-live`
+- After a beta publish, run `EVE_NPM_TELEGRAM_PACKAGE_SPEC=eve-agent@YYYY.M.PATCH-beta.N EVE_NPM_TELEGRAM_CREDENTIAL_SOURCE=convex EVE_NPM_TELEGRAM_CREDENTIAL_ROLE=ci pnpm test:docker:npm-telegram-live`
   to verify installed-package onboarding, Telegram setup, and real Telegram E2E
   against the published npm package using the shared leased Telegram credential
   pool. Local maintainer one-offs may omit the Convex vars and pass the three
@@ -456,7 +456,7 @@ gh workflow run full-release-validation.yml \
   -f provider=openai \
   -f mode=both \
   -f release_profile=stable \
-  -f evidence_package_spec=eve@YYYY.M.PATCH-beta.N
+  -f evidence_package_spec=eve-agent@YYYY.M.PATCH-beta.N
 ```
 
 The workflow resolves the target ref, dispatches manual `CI` with
@@ -504,7 +504,7 @@ each baseline sharded into its own Docker runner job.
 ref once as `release-package-under-test` and reuses that artifact in cross-OS,
 Package Acceptance, and release-path Docker checks when soak runs. This keeps
 all package-facing boxes on the same bytes and avoids repeated package builds.
-After a beta is already on npm, set `release_package_spec=eve@YYYY.M.PATCH-beta.N`
+After a beta is already on npm, set `release_package_spec=eve-agent@YYYY.M.PATCH-beta.N`
 so release checks download the shipped package once, extract its build source
 SHA from `dist/build-info.json`, and reuse that artifact for cross-OS,
 Package Acceptance, release-path Docker, and package Telegram lanes.
@@ -539,8 +539,8 @@ gh workflow run full-release-validation.yml \
   -f provider=openai \
   -f mode=both \
   -f release_profile=full \
-  -f release_package_spec=eve@YYYY.M.PATCH-beta.N \
-  -f evidence_package_spec=eve@YYYY.M.PATCH-beta.N \
+  -f release_package_spec=eve-agent@YYYY.M.PATCH-beta.N \
+  -f evidence_package_spec=eve-agent@YYYY.M.PATCH-beta.N \
   -f npm_telegram_provider_mode=mock-openai
 ```
 
@@ -668,7 +668,7 @@ workflow harness ref separate from the package source ref.
 
 Supported candidate sources:
 
-- `source=npm`: `eve@beta`, `eve@latest`, or an exact EVE release
+- `source=npm`: `eve-agent@beta`, `eve-agent@latest`, or an exact EVE release
   version
 - `source=ref`: pack a trusted `package_ref` branch, tag, or full commit SHA
   with the selected `workflow_ref` harness
@@ -728,9 +728,9 @@ gh workflow run package-acceptance.yml \
   --ref main \
   -f workflow_ref=main \
   -f source=npm \
-  -f package_spec=eve@beta \
+  -f package_spec=eve-agent@beta \
   -f suite_profile=product \
-  -f published_upgrade_survivor_baseline=eve@2026.4.26
+  -f published_upgrade_survivor_baseline=eve-agent@2026.4.26
 ```
 
 Common package profiles:

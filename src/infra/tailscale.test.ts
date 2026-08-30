@@ -252,16 +252,10 @@ describe("tailscale helpers", () => {
     await enableTailscaleServe(3000, exec as never, "svc:eve");
 
     expect(exec).toHaveBeenCalledTimes(1);
-    expectExecCall(
-      exec,
-      1,
-      tailscaleBin,
-      ["serve", "--service=svc:eve", "--bg", "--yes", "3000"],
-      {
-        maxBuffer: 200_000,
-        timeoutMs: 15_000,
-      },
-    );
+    expectExecCall(exec, 1, tailscaleBin, ["serve", "--service=svc:eve", "--bg", "--yes", "3000"], {
+      maxBuffer: 200_000,
+      timeoutMs: 15_000,
+    });
   });
 
   it("disableTailscaleServe uses fallback", async () => {

@@ -216,16 +216,12 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
   });
 
   it("can pin ACPX startup probe policy per benchmark case", () => {
-    const probeOffEnv = testing.sanitizedEnv(
-      "/tmp/eve-bench",
-      "/tmp/eve-bench/config.json",
-      {
-        config: {},
-        env: { EVE_ACPX_RUNTIME_STARTUP_PROBE: "0" },
-        id: "skipChannelsNoAcpxProbe",
-        name: "gateway restart, skip channels, ACPX startup probe off",
-      },
-    );
+    const probeOffEnv = testing.sanitizedEnv("/tmp/eve-bench", "/tmp/eve-bench/config.json", {
+      config: {},
+      env: { EVE_ACPX_RUNTIME_STARTUP_PROBE: "0" },
+      id: "skipChannelsNoAcpxProbe",
+      name: "gateway restart, skip channels, ACPX startup probe off",
+    });
 
     expect(probeOffEnv.EVE_ACPX_RUNTIME_STARTUP_PROBE).toBe("0");
   });
@@ -783,10 +779,7 @@ node    1234 user   12u  IPv4    0t0      TCP localhost:1234
       expect(config.plugins?.load?.paths).toEqual([path.join(root, "plugins")]);
       expect(config.plugins?.allow).toEqual(["bench-plugin-01", "bench-plugin-02"]);
       const manifest = JSON.parse(
-        fs.readFileSync(
-          path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"),
-          "utf8",
-        ),
+        fs.readFileSync(path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"), "utf8"),
       ) as { activation?: { onStartup?: boolean } };
       expect(manifest.activation?.onStartup).toBe(true);
     } finally {

@@ -17,8 +17,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("./loader.js", () => ({
-  loadEVEPluginCliRegistry: (...args: unknown[]) =>
-    mocks.loadEVEPluginCliRegistry(...args),
+  loadEVEPluginCliRegistry: (...args: unknown[]) => mocks.loadEVEPluginCliRegistry(...args),
   loadEVEPlugins: (...args: unknown[]) => mocks.loadEVEPlugins(...args),
 }));
 

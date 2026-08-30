@@ -335,10 +335,8 @@ describe("scripts/lib/live-docker-auth.sh", () => {
         encoding: "utf8",
         env: {
           ...process.env,
-          EVE_DOCKER_E2E_PIDS_LIMIT:
-            envName === "EVE_DOCKER_E2E_PIDS_LIMIT" ? "many" : "",
-          EVE_LIVE_DOCKER_PIDS_LIMIT:
-            envName === "EVE_LIVE_DOCKER_PIDS_LIMIT" ? "many" : "",
+          EVE_DOCKER_E2E_PIDS_LIMIT: envName === "EVE_DOCKER_E2E_PIDS_LIMIT" ? "many" : "",
+          EVE_LIVE_DOCKER_PIDS_LIMIT: envName === "EVE_LIVE_DOCKER_PIDS_LIMIT" ? "many" : "",
           PATH: binDir,
         },
       },

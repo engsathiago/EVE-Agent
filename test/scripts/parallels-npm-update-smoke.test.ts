@@ -146,7 +146,7 @@ describe("parallels npm update smoke", () => {
       const smoke = new FailingNpmUpdateSmoke({
         ...TEST_AUTH,
         json: false,
-        packageSpec: "eve@latest",
+        packageSpec: "eve-agent@latest",
         platforms: new Set<Platform>(["linux"]),
         provider: "openai",
         updateTarget: "local-main",
@@ -195,7 +195,7 @@ exit 1
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "eve@latest",
+          packageSpec: "eve-agent@latest",
           platforms: new Set<Platform>(["linux"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -207,12 +207,7 @@ exit 1
         ) => string;
 
         expect(() =>
-          writeGuestScript.call(
-            smoke,
-            "Linux VM",
-            "echo update",
-            "eve-parallels-npm-update-linux",
-          ),
+          writeGuestScript.call(smoke, "Linux VM", "echo update", "eve-parallels-npm-update-linux"),
         ).toThrow("failed to chmod guest script");
       },
     );
@@ -229,7 +224,7 @@ exit 1
     expect(script).toContain("--beta-validation [target]");
     expect(script).toContain("resolveEVERegistryVersion");
     expect(script).toContain("this.options.updateTarget = version");
-    expect(script).toContain("this.options.freshTargetSpec = `eve@${version}`");
+    expect(script).toContain("this.options.freshTargetSpec = `eve-agent@${version}`");
     expect(script).toContain("runFreshTargetInstalls");
     expect(script).toContain("freshTargetStatus");
   });
@@ -495,7 +490,7 @@ exit 1
         new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "eve@latest",
+          packageSpec: "eve-agent@latest",
           platforms: new Set<Platform>(["linux"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -535,7 +530,7 @@ exit 1
           new NpmUpdateSmoke({
             ...TEST_AUTH,
             json: false,
-            packageSpec: "eve@latest",
+            packageSpec: "eve-agent@latest",
             platforms: new Set<Platform>(["linux"]),
             provider: "openai",
             updateTarget: "local-main",
@@ -790,7 +785,7 @@ exit 7
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "eve@latest",
+          packageSpec: "eve-agent@latest",
           platforms: new Set<Platform>(["macos"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -831,7 +826,7 @@ exit 7
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "eve@latest",
+          packageSpec: "eve-agent@latest",
           platforms: new Set<Platform>(["macos"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -864,17 +859,11 @@ exit 7
     expect(script).toContain("Invoke-WithScopedEnv @{ EVE_DISABLE_BUNDLED_PLUGINS = '1'");
     expect(macosScript).toContain('EVE_BIN="$(resolve_required_command eve)"');
     expect(macosScript).toContain("/usr/local/bin:/usr/local/sbin");
-    expect(macosScript).toContain(
-      'EVE_DISABLE_BUNDLED_PLUGINS=1 "$EVE_BIN" update --tag',
-    );
+    expect(macosScript).toContain('EVE_DISABLE_BUNDLED_PLUGINS=1 "$EVE_BIN" update --tag');
     expect(macosScript).not.toContain("/opt/homebrew/bin/eve");
     expect(script).toContain("EVE_DISABLE_BUNDLED_PLUGINS=1 eve update --tag");
-    expect(macosScript).toContain(
-      'EVE_DISABLE_BUNDLED_PLUGINS=1 "$EVE_BIN" gateway stop',
-    );
-    expect(script).toContain(
-      "EVE_DISABLE_BUNDLED_PLUGINS=1 EVE_ALLOW_ROOT=1 eve gateway stop",
-    );
+    expect(macosScript).toContain('EVE_DISABLE_BUNDLED_PLUGINS=1 "$EVE_BIN" gateway stop');
+    expect(script).toContain("EVE_DISABLE_BUNDLED_PLUGINS=1 EVE_ALLOW_ROOT=1 eve gateway stop");
   });
 
   it("reenables bundled plugins before Windows post-update verification", () => {
@@ -917,9 +906,7 @@ exit 7
     }
     expect(staleImportLine).toContain("$updateText -match 'ERR_MODULE_NOT_FOUND'");
     expect(staleImportLine).toContain(`$updateText -match '${staleImportPattern}'`);
-    expect(staleImportPattern).toBe(
-      String.raw`node_modules\\eve\\dist\\[^\\]+-[A-Za-z0-9_-]+\.js`,
-    );
+    expect(staleImportPattern).toBe(String.raw`node_modules\\eve\\dist\\[^\\]+-[A-Za-z0-9_-]+\.js`);
     expect(staleImportPattern).not.toContain("node_modules\\eve\\dist\\");
     expect(staleImportPattern.match(/\\\\/g)).toHaveLength(4);
     const representativeUpdateFailure = String.raw`Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\runner\AppData\Roaming\npm\node_modules\eve\dist\main-a1_B2.js' imported from C:\Users\runner\AppData\Roaming\npm\node_modules\eve\dist\cli.js`;

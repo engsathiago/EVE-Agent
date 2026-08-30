@@ -227,10 +227,7 @@ export function resolveSandboxSshConfig(params: {
   };
 }
 
-export function resolveSandboxConfigForAgent(
-  cfg?: EVEConfig,
-  agentId?: string,
-): SandboxConfig {
+export function resolveSandboxConfigForAgent(cfg?: EVEConfig, agentId?: string): SandboxConfig {
   const agent = cfg?.agents?.defaults?.sandbox;
 
   // Agent-specific sandbox config overrides global

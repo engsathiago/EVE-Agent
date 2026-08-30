@@ -79,18 +79,14 @@ export function formatPendingRequests(pending: PendingPairingRequest[]): string 
   return lines.join("\n");
 }
 
-function openNotifySubscriberStore(
-  api: EVEPluginApi,
-): PluginStateKeyedStore<NotifySubscription> {
+function openNotifySubscriberStore(api: EVEPluginApi): PluginStateKeyedStore<NotifySubscription> {
   return api.runtime.state.openKeyedStore<NotifySubscription>({
     namespace: DEVICE_PAIR_NOTIFY_SUBSCRIBER_NAMESPACE,
     maxEntries: DEVICE_PAIR_NOTIFY_SUBSCRIBER_MAX_ENTRIES,
   });
 }
 
-function openNotifySeenRequestStore(
-  api: EVEPluginApi,
-): PluginStateKeyedStore<NotifySeenRequest> {
+function openNotifySeenRequestStore(api: EVEPluginApi): PluginStateKeyedStore<NotifySeenRequest> {
   return api.runtime.state.openKeyedStore<NotifySeenRequest>({
     namespace: DEVICE_PAIR_NOTIFY_SEEN_REQUEST_NAMESPACE,
     maxEntries: DEVICE_PAIR_NOTIFY_SEEN_REQUEST_MAX_ENTRIES,

@@ -817,9 +817,7 @@ export function resolveProviderRequestHeaders(params: {
   }).headers;
 }
 
-const MODEL_PROVIDER_REQUEST_TRANSPORT_SYMBOL = Symbol.for(
-  "eve.modelProviderRequestTransport",
-);
+const MODEL_PROVIDER_REQUEST_TRANSPORT_SYMBOL = Symbol.for("eve.modelProviderRequestTransport");
 
 type ModelWithProviderRequestTransport = {
   [MODEL_PROVIDER_REQUEST_TRANSPORT_SYMBOL]?: ModelProviderRequestTransportOverrides;

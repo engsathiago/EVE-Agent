@@ -182,11 +182,7 @@ describe("config cli integration", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-config-cli-int-"));
     const configPath = path.join(tempDir, "eve.json");
     const batchPath = path.join(tempDir, "batch.json");
-    const envSnapshot = captureEnv([
-      "EVE_CONFIG_PATH",
-      "EVE_TEST_FAST",
-      "DISCORD_BOT_TOKEN",
-    ]);
+    const envSnapshot = captureEnv(["EVE_CONFIG_PATH", "EVE_TEST_FAST", "DISCORD_BOT_TOKEN"]);
     try {
       fs.writeFileSync(
         configPath,
@@ -270,11 +266,7 @@ describe("config cli integration", () => {
   it("keeps file unchanged when real-file dry-run fails and reports JSON error payload", async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-config-cli-int-fail-"));
     const configPath = path.join(tempDir, "eve.json");
-    const envSnapshot = captureEnv([
-      "EVE_CONFIG_PATH",
-      "EVE_TEST_FAST",
-      "MISSING_TEST_SECRET",
-    ]);
+    const envSnapshot = captureEnv(["EVE_CONFIG_PATH", "EVE_TEST_FAST", "MISSING_TEST_SECRET"]);
     try {
       fs.writeFileSync(
         configPath,

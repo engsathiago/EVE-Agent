@@ -13,7 +13,6 @@ import type { HealthCheck } from "./health-checks.js";
 
 const mocks = vi.hoisted(() => ({
   maybeRunConfiguredPluginInstallReleaseStep: vi.fn(),
-  registerBundledHealthChecks: vi.fn(),
   runDoctorHealthRepairs: vi.fn(),
   maybeRepairLegacyFlatAuthProfileStores: vi.fn().mockResolvedValue(undefined),
   maybeRepairCanonicalApiKeyFieldAlias: vi.fn().mockResolvedValue(undefined),
@@ -84,10 +83,6 @@ const DOCTOR_GATEWAY_HEALTH_ID = "doctor:gateway-health";
 
 vi.mock("../commands/doctor/shared/release-configured-plugin-installs.js", () => ({
   maybeRunConfiguredPluginInstallReleaseStep: mocks.maybeRunConfiguredPluginInstallReleaseStep,
-}));
-
-vi.mock("./bundled-health-checks.js", () => ({
-  registerBundledHealthChecks: mocks.registerBundledHealthChecks,
 }));
 
 vi.mock("./doctor-repair-flow.js", () => ({
@@ -307,7 +302,6 @@ function buildDoctorPrompter(shouldRepair: boolean): DoctorPrompter {
 describe("doctor health contributions", () => {
   beforeEach(() => {
     mocks.maybeRunConfiguredPluginInstallReleaseStep.mockReset();
-    mocks.registerBundledHealthChecks.mockReset();
     mocks.runDoctorHealthRepairs.mockReset();
     mocks.maybeRepairLegacyFlatAuthProfileStores.mockClear();
     mocks.maybeRepairLegacyFlatAuthProfileStores.mockResolvedValue(undefined);

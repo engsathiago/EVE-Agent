@@ -279,11 +279,9 @@ export function buildQaToolCoverageReport(params: {
     reportOnlyTools: rows.filter((row) => !row.required || Boolean(row.tracking)).length,
     trackedTools: rows.filter((row) => Boolean(row.tracking)).length,
     nativeWorkspaceTools: rows.filter((row) => row.bucket === "codex-native-workspace").length,
-    dynamicIntegrationTools: rows.filter((row) => row.bucket === "eve-dynamic-integration")
+    dynamicIntegrationTools: rows.filter((row) => row.bucket === "eve-dynamic-integration").length,
+    searchableDynamicTools: rows.filter((row) => row.capabilityLayer === "eve-dynamic-searchable")
       .length,
-    searchableDynamicTools: rows.filter(
-      (row) => row.capabilityLayer === "eve-dynamic-searchable",
-    ).length,
     optionalTools: rows.filter((row) => row.bucket === "optional-profile-or-plugin").length,
     passingTools: evaluated
       ? rows.filter(

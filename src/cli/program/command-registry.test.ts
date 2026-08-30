@@ -24,6 +24,14 @@ vi.mock("./register.backup.js", () => ({
   },
 }));
 
+vi.mock("./register.offline.js", () => ({
+  registerOfflineCommand: (program: Command) => {
+    const offline = program.command("offline");
+    offline.command("status");
+    offline.command("bundle");
+  },
+}));
+
 vi.mock("./register.maintenance.js", () => ({
   registerMaintenanceCommands: (program: Command) => {
     program.command("doctor");
@@ -91,6 +99,7 @@ describe("command-registry", () => {
     expect(names).toContain("config");
     expect(names).toContain("agents");
     expect(names).toContain("backup");
+    expect(names).toContain("offline");
     expect(names).toContain("mcp");
     expect(names).toContain("sessions");
     expect(names).toContain("commitments");

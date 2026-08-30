@@ -1,7 +1,7 @@
-import OpenAI from "openai";
 import type { StreamFn } from "eve-agent/plugin-sdk/agent-core";
 import type { Model } from "eve-agent/plugin-sdk/llm";
 import { createAssistantMessageEventStream } from "eve-agent/plugin-sdk/llm";
+import OpenAI from "openai";
 import { describe, expect, it } from "vitest";
 import { isLiveTestEnabled } from "../../../agents/live-test-helpers.js";
 import { createOpenAIAnthropicToolPayloadCompatibilityWrapper } from "./anthropic-family-tool-payload-compat.js";

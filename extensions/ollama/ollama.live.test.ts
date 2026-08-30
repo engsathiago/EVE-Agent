@@ -11,11 +11,9 @@ import { createOllamaStreamFn } from "./src/stream.js";
 import { createOllamaWebSearchProvider } from "./src/web-search-provider.js";
 
 const LIVE = process.env.EVE_LIVE_TEST === "1" && process.env.EVE_LIVE_OLLAMA === "1";
-const OLLAMA_BASE_URL =
-  process.env.EVE_LIVE_OLLAMA_BASE_URL?.trim() || "http://127.0.0.1:11434";
+const OLLAMA_BASE_URL = process.env.EVE_LIVE_OLLAMA_BASE_URL?.trim() || "http://127.0.0.1:11434";
 const CHAT_MODEL = process.env.EVE_LIVE_OLLAMA_MODEL?.trim() || "llama3.2:latest";
-const EMBEDDING_MODEL =
-  process.env.EVE_LIVE_OLLAMA_EMBED_MODEL?.trim() || "embeddinggemma:latest";
+const EMBEDDING_MODEL = process.env.EVE_LIVE_OLLAMA_EMBED_MODEL?.trim() || "embeddinggemma:latest";
 const PROVIDER_ID = process.env.EVE_LIVE_OLLAMA_PROVIDER_ID?.trim() || "ollama-live-custom";
 const RUN_WEB_SEARCH = process.env.EVE_LIVE_OLLAMA_WEB_SEARCH !== "0";
 const RUN_EMBEDDINGS =
@@ -40,9 +38,7 @@ function requireOllamaRuntimeApiKey(): string | undefined {
   }
   const apiKey = process.env.OLLAMA_API_KEY?.trim();
   if (!apiKey) {
-    throw new Error(
-      "EVE_LIVE_OLLAMA_BASE_URL points at a remote Ollama host; set OLLAMA_API_KEY.",
-    );
+    throw new Error("EVE_LIVE_OLLAMA_BASE_URL points at a remote Ollama host; set OLLAMA_API_KEY.");
   }
   return apiKey;
 }

@@ -124,7 +124,9 @@ const NATIVE_FACTORY_KEY = Symbol.for("eve.test.memoryNativeWatchFactory");
 
 vi.mock("eve-agent/plugin-sdk/memory-core-host-engine-foundation", async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import("eve-agent/plugin-sdk/memory-core-host-engine-foundation")>();
+    await importOriginal<
+      typeof import("eve-agent/plugin-sdk/memory-core-host-engine-foundation")
+    >();
   return {
     ...actual,
     createSubsystemLogger: (subsystem: string) => ({

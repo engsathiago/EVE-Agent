@@ -1,8 +1,8 @@
 // Context engine tests cover context extraction and prompt context assembly.
 import type { AgentMessage } from "eve-agent/plugin-sdk/agent-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { MemoryCitationsMode } from "../config/types.memory.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { MemoryCitationsMode } from "../config/types.memory.js";
 import { clearMemoryPluginState, registerMemoryPromptSection } from "../plugins/memory-state.js";
 // ---------------------------------------------------------------------------
 // We dynamically import the registry so we can get a fresh module per test
@@ -1441,7 +1441,7 @@ describe("Invalid engine fallback", () => {
   });
 
   it("accepts resolved engines whose info.id differs from the registered slot id (#66601)", async () => {
-    // Regression for eve/eve#66601: third-party plugins like
+    // Regression for engsathiago/eve-agent#66601: third-party plugins like
     // lossless-claw register under an external slot id ("lossless-claw") but
     // the ContextEngine they return uses the plugin's own internal id
     // (e.g. "lcm"). That id is metadata, not the lookup key.

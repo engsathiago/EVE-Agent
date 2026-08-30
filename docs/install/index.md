@@ -76,7 +76,7 @@ If you already manage Node yourself:
 <Tabs>
   <Tab title="npm">
     ```bash
-    npm install -g eve@latest
+    npm install -g eve-agent@latest
     eve onboard --install-daemon
     ```
 
@@ -89,7 +89,7 @@ If you already manage Node yourself:
   </Tab>
   <Tab title="pnpm">
     ```bash
-    pnpm add -g eve@latest
+    pnpm add -g eve-agent@latest
     pnpm approve-builds -g
     eve onboard --install-daemon
     ```
@@ -101,7 +101,7 @@ If you already manage Node yourself:
   </Tab>
   <Tab title="bun">
     ```bash
-    bun add -g eve@latest
+    bun add -g eve-agent@latest
     eve onboard --install-daemon
     ```
 

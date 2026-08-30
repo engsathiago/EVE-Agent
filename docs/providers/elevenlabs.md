@@ -10,7 +10,7 @@ title: "ElevenLabs"
 EVE uses ElevenLabs for text-to-speech, batch speech-to-text with Scribe
 v2, and streaming STT with Scribe v2 Realtime.
 
-| Capability               | EVE surface                                                     | Default                  |
+| Capability               | EVE surface                                                          | Default                  |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------ |
 | Text-to-speech           | `messages.tts` / `talk`                                              | `eleven_multilingual_v2` |
 | Batch speech-to-text     | `tools.media.audio`                                                  | `scribe_v2`              |

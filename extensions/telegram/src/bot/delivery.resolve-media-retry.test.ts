@@ -1,6 +1,6 @@
+import { retryAsync } from "eve-agent/plugin-sdk/retry-runtime";
 // Telegram tests cover delivery.resolve media retry plugin behavior.
 import type { Message } from "grammy/types";
-import { retryAsync } from "eve-agent/plugin-sdk/retry-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveMedia } from "./delivery.resolve-media.js";
 import type { TelegramContext } from "./types.js";

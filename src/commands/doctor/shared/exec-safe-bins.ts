@@ -150,9 +150,7 @@ export function scanExecSafeBinCoverage(cfg: EVEConfig): ExecSafeBinCoverageHit[
 }
 
 /** Scan configured safeBins that resolve outside trusted binary directories. */
-export function scanExecSafeBinTrustedDirHints(
-  cfg: EVEConfig,
-): ExecSafeBinTrustedDirHintHit[] {
+export function scanExecSafeBinTrustedDirHints(cfg: EVEConfig): ExecSafeBinTrustedDirHintHit[] {
   const hits: ExecSafeBinTrustedDirHintHit[] = [];
   for (const scope of collectExecSafeBinScopes(cfg)) {
     for (const bin of scope.safeBins) {

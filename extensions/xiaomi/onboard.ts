@@ -57,11 +57,7 @@ const xiaomiTokenPlanPresetAppliers = createDefaultModelsPresetAppliers({
   },
 });
 
-function withProviderBaseUrl(
-  cfg: EVEConfig,
-  providerId: string,
-  baseUrl: string,
-): EVEConfig {
+function withProviderBaseUrl(cfg: EVEConfig, providerId: string, baseUrl: string): EVEConfig {
   const providers: Record<string, unknown> = {
     ...cfg.models?.providers,
     [providerId]: {

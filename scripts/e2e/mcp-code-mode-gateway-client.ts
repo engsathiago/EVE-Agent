@@ -25,11 +25,7 @@ export function readMcpCodeModeClientFetchLimits(
   env: NodeJS.ProcessEnv = process.env,
 ): McpCodeModeClientFetchLimits {
   return {
-    bodyMaxBytes: readPositiveIntEnv(
-      "EVE_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES",
-      1024 * 1024,
-      env,
-    ),
+    bodyMaxBytes: readPositiveIntEnv("EVE_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES", 1024 * 1024, env),
     timeoutMs: readPositiveIntEnv("EVE_MCP_CODE_MODE_CLIENT_TIMEOUT_MS", 300_000, env),
   };
 }

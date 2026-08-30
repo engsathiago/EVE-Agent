@@ -6,10 +6,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { resolveAuthProfileDatabasePath } from "../agents/auth-profiles/sqlite.js";
 import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import type { AuthProfileStore } from "../agents/auth-profiles/types.js";
-import {
-  closeEVEAgentDatabasesForTest,
-  openEVEAgentDatabase,
-} from "../state/eve-agent-db.js";
+import { closeEVEAgentDatabasesForTest, openEVEAgentDatabase } from "../state/eve-agent-db.js";
 import {
   buildTalkTestProviderConfig,
   TALK_TEST_PROVIDER_API_KEY_PATH,
@@ -104,9 +101,7 @@ function buildFixturePaths(rootDir: string) {
 }
 
 async function createApplyFixture(): Promise<ApplyFixture> {
-  const paths = buildFixturePaths(
-    await fs.mkdtemp(path.join(os.tmpdir(), "eve-secrets-apply-")),
-  );
+  const paths = buildFixturePaths(await fs.mkdtemp(path.join(os.tmpdir(), "eve-secrets-apply-")));
   await fs.mkdir(path.dirname(paths.configPath), { recursive: true });
   await fs.mkdir(paths.agentDir, { recursive: true });
   return {

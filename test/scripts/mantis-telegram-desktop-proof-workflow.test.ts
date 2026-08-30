@@ -135,12 +135,8 @@ describe("Mantis Telegram Desktop proof workflow", () => {
 
     const cleanupStep = workflowStep("Release leaked Telegram proof leases");
     expect(cleanupStep.if).toBe("${{ always() }}");
-    expect(cleanupStep.env?.EVE_QA_CONVEX_SECRET_CI).toContain(
-      "secrets.EVE_QA_CONVEX_SECRET_CI",
-    );
-    expect(cleanupStep.env?.EVE_QA_CONVEX_SITE_URL).toContain(
-      "secrets.EVE_QA_CONVEX_SITE_URL",
-    );
+    expect(cleanupStep.env?.EVE_QA_CONVEX_SECRET_CI).toContain("secrets.EVE_QA_CONVEX_SECRET_CI");
+    expect(cleanupStep.env?.EVE_QA_CONVEX_SITE_URL).toContain("secrets.EVE_QA_CONVEX_SITE_URL");
     expect(cleanupStep.env?.CRABBOX_PROVIDER).toContain(
       "needs.resolve_request.outputs.crabbox_provider",
     );
@@ -252,9 +248,7 @@ describe("Mantis Telegram Desktop proof workflow", () => {
     expect(readFileSync(TELEGRAM_PROOF_SKILL, "utf8")).not.toContain(
       "pnpm qa:telegram-user:crabbox",
     );
-    expect(readFileSync(TELEGRAM_PROOF_SKILL, "utf8")).toContain(
-      "EVE_TELEGRAM_USER_PROOF_CMD",
-    );
+    expect(readFileSync(TELEGRAM_PROOF_SKILL, "utf8")).toContain("EVE_TELEGRAM_USER_PROOF_CMD");
     expect(readFileSync(PROOF_SCRIPT, "utf8")).not.toContain("pnpm qa:telegram-user:crabbox");
     expect(readFileSync(CREDENTIAL_SCRIPT, "utf8")).toContain(
       'const TELEGRAM_USER_QA_CREDENTIAL_KIND = "telegram-user";',
@@ -440,9 +434,7 @@ describe("Mantis Telegram Desktop proof workflow", () => {
     expect(proofScript).toContain("download_file()");
     expect(proofScript).toContain('timeout --kill-after="$setup_step_timeout_kill_after"');
     expect(proofScript).not.toContain("timeout --foreground");
-    expect(proofScript).toContain(
-      'apt_timeout="\\${EVE_TELEGRAM_USER_APT_TIMEOUT_SECONDS:-900}s"',
-    );
+    expect(proofScript).toContain('apt_timeout="\\${EVE_TELEGRAM_USER_APT_TIMEOUT_SECONDS:-900}s"');
     expect(proofScript).toContain(
       'download_connect_timeout="\\${EVE_TELEGRAM_USER_DOWNLOAD_CONNECT_TIMEOUT_SECONDS:-15}"',
     );

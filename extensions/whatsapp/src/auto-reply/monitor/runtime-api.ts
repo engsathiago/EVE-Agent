@@ -31,7 +31,11 @@ export {
   resolveInboundLastRouteSessionKey,
   type resolveAgentRoute,
 } from "eve-agent/plugin-sdk/routing";
-export { logVerbose, shouldLogVerbose, type getChildLogger } from "eve-agent/plugin-sdk/runtime-env";
+export {
+  logVerbose,
+  shouldLogVerbose,
+  type getChildLogger,
+} from "eve-agent/plugin-sdk/runtime-env";
 export { resolvePinnedMainDmOwnerFromAllowlist } from "eve-agent/plugin-sdk/security-runtime";
 export { resolveMarkdownTableMode } from "eve-agent/plugin-sdk/markdown-table-runtime";
 export { jidToE164, normalizeE164 } from "../../text-runtime.js";

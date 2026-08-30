@@ -28,14 +28,14 @@ Use [`eve acp`](/cli/acp) when EVE should host a coding harness session itself a
 
 EVE has several MCP surfaces. Pick the one that matches who owns the agent runtime and who owns the tools.
 
-| Goal                                                                | Use                                                                  | Why                                                                                                             |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Let an external MCP client read/send EVE channel conversations | `eve mcp serve`                                                 | EVE is the MCP server and exposes Gateway-backed conversations over stdio.                                 |
-| Save third-party MCP servers for EVE-managed agent runs        | `eve mcp add`, `set`, `configure`, `tools`, `login`             | EVE is the MCP client-side registry and later projects those servers into eligible runtimes.               |
-| Check a saved server without running an agent turn                  | `eve mcp status`, `doctor`, `probe`                             | `status` and `doctor` inspect config; `probe` opens a live MCP connection and lists capabilities.               |
-| Edit MCP config from a browser                                      | Control UI `/mcp`                                                    | The page shows inventory, enablement, OAuth/filter summaries, command hints, and a scoped `mcp` editor.         |
-| Give Codex app-server a scoped native MCP server                    | `mcp.servers.<name>.codex`                                           | The `codex` block only affects Codex app-server thread projection and is stripped before native config handoff. |
-| Run ACP-hosted harness sessions                                     | [`eve acp`](/cli/acp) and [ACP Agents](/tools/acp-agents-setup) | ACP bridge mode does not accept per-session MCP server injection; configure gateway/plugin bridges instead.     |
+| Goal                                                           | Use                                                             | Why                                                                                                             |
+| -------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Let an external MCP client read/send EVE channel conversations | `eve mcp serve`                                                 | EVE is the MCP server and exposes Gateway-backed conversations over stdio.                                      |
+| Save third-party MCP servers for EVE-managed agent runs        | `eve mcp add`, `set`, `configure`, `tools`, `login`             | EVE is the MCP client-side registry and later projects those servers into eligible runtimes.                    |
+| Check a saved server without running an agent turn             | `eve mcp status`, `doctor`, `probe`                             | `status` and `doctor` inspect config; `probe` opens a live MCP connection and lists capabilities.               |
+| Edit MCP config from a browser                                 | Control UI `/mcp`                                               | The page shows inventory, enablement, OAuth/filter summaries, command hints, and a scoped `mcp` editor.         |
+| Give Codex app-server a scoped native MCP server               | `mcp.servers.<name>.codex`                                      | The `codex` block only affects Codex app-server thread projection and is stripped before native config handoff. |
+| Run ACP-hosted harness sessions                                | [`eve acp`](/cli/acp) and [ACP Agents](/tools/acp-agents-setup) | ACP bridge mode does not accept per-session MCP server injection; configure gateway/plugin bridges instead.     |
 
 <Tip>
 If you are not sure which path you need, start with `eve mcp status --verbose`. It shows what EVE has saved without starting any MCP servers.
@@ -693,7 +693,7 @@ Connects to a remote MCP server over HTTP Server-Sent Events.
 | `connectionTimeoutMs`          | Per-server connection timeout in ms (optional)                   |
 | `connectTimeout`               | Per-server connection timeout in seconds (optional)              |
 | `timeout` / `requestTimeoutMs` | Per-server MCP request timeout in seconds or ms                  |
-| `auth: "oauth"`                | Use MCP OAuth token storage and `eve mcp login`             |
+| `auth: "oauth"`                | Use MCP OAuth token storage and `eve mcp login`                  |
 | `sslVerify`                    | Set false only for explicitly trusted private HTTPS endpoints    |
 | `clientCert` / `clientKey`     | mTLS client certificate and key paths                            |
 | `supportsParallelToolCalls`    | Hint that concurrent calls are safe for this server              |
@@ -775,18 +775,18 @@ If the provider rotates tokens or the authorization state gets stuck, run `eve m
 
 `streamable-http` is an additional transport option alongside `sse` and `stdio`. It uses HTTP streaming for bidirectional communication with remote MCP servers.
 
-| Field                          | Description                                                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------- |
-| `url`                          | HTTP or HTTPS URL of the remote server (required)                                      |
+| Field                          | Description                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| `url`                          | HTTP or HTTPS URL of the remote server (required)                                 |
 | `transport`                    | Set to `"streamable-http"` to select this transport; when omitted, EVE uses `sse` |
-| `headers`                      | Optional key-value map of HTTP headers (for example auth tokens)                       |
-| `connectionTimeoutMs`          | Per-server connection timeout in ms (optional)                                         |
-| `connectTimeout`               | Per-server connection timeout in seconds (optional)                                    |
-| `timeout` / `requestTimeoutMs` | Per-server MCP request timeout in seconds or ms                                        |
+| `headers`                      | Optional key-value map of HTTP headers (for example auth tokens)                  |
+| `connectionTimeoutMs`          | Per-server connection timeout in ms (optional)                                    |
+| `connectTimeout`               | Per-server connection timeout in seconds (optional)                               |
+| `timeout` / `requestTimeoutMs` | Per-server MCP request timeout in seconds or ms                                   |
 | `auth: "oauth"`                | Use MCP OAuth token storage and `eve mcp login`                                   |
-| `sslVerify`                    | Set false only for explicitly trusted private HTTPS endpoints                          |
-| `clientCert` / `clientKey`     | mTLS client certificate and key paths                                                  |
-| `supportsParallelToolCalls`    | Hint that concurrent calls are safe for this server                                    |
+| `sslVerify`                    | Set false only for explicitly trusted private HTTPS endpoints                     |
+| `clientCert` / `clientKey`     | mTLS client certificate and key paths                                             |
+| `supportsParallelToolCalls`    | Hint that concurrent calls are safe for this server                               |
 
 EVE config uses `transport: "streamable-http"` as the canonical spelling. CLI-native MCP `type: "http"` values are accepted when saved through `eve mcp set` and repaired by `eve doctor --fix` in existing config, but `transport` is what embedded EVE consumes directly.
 

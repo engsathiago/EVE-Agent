@@ -265,9 +265,7 @@ function readPersistedInstalledPluginIndexForRecords(
     return tryReadJsonSync(options.filePath);
   }
   try {
-    const database = openEVEStateDatabase(
-      resolveInstalledPluginIndexStateDatabaseOptions(options),
-    );
+    const database = openEVEStateDatabase(resolveInstalledPluginIndexStateDatabaseOptions(options));
     const row = database.db
       .prepare(
         `

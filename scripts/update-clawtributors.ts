@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { ApiContributor, Entry, MapConfig, User } from "./update-clawtributors.types.js";
 
-const REPO = "eve/eve";
+const REPO = "engsathiago/eve-agent";
 const PER_LINE = 10;
 const AVATAR_PROBE_SIZE = 40;
 const AVATAR_PROBE_MAX_BYTES = 256 * 1024;

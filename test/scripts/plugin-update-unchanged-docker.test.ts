@@ -67,9 +67,7 @@ describe("plugin update unchanged Docker E2E", () => {
     expect(runner).toContain("scripts/e2e/lib/plugin-update/unchanged-scenario.sh");
     expect(scenario).toContain('node "$probe" seed');
     expect(probe).toContain("writeJson(process.env.EVE_CONFIG_PATH, { plugins: {} });");
-    expect(probe).not.toContain(
-      "writeJson(process.env.EVE_CONFIG_PATH, { plugins: { installs",
-    );
+    expect(probe).not.toContain("writeJson(process.env.EVE_CONFIG_PATH, { plugins: { installs");
     expect(probe).toContain("installRecords: {");
     expect(probe).toContain('"lossless-claw": {');
   });
@@ -78,9 +76,7 @@ describe("plugin update unchanged Docker E2E", () => {
     const script = readFileSync(PLUGIN_UPDATE_SCENARIO_SCRIPT, "utf8");
 
     expect(script).toContain("EVE_PLUGIN_UPDATE_TIMEOUT_SECONDS");
-    expect(script).toContain(
-      "eve_e2e_read_positive_int_env EVE_PLUGIN_UPDATE_TIMEOUT_SECONDS 180",
-    );
+    expect(script).toContain("eve_e2e_read_positive_int_env EVE_PLUGIN_UPDATE_TIMEOUT_SECONDS 180");
     expect(script).toContain(
       'eve_e2e_maybe_timeout "${plugin_update_timeout_seconds}s" node "$entry" plugins update',
     );
@@ -161,17 +157,15 @@ describe("plugin update unchanged Docker E2E", () => {
     expect(script).not.toContain(
       'update_timeout_seconds="${EVE_UPDATE_CORRUPT_PLUGIN_TIMEOUT_SECONDS:-900}"',
     );
-    expect(
-      script.match(/eve_e2e_maybe_timeout "\$\{update_timeout_seconds\}s" \\/gu)?.length,
-    ).toBe(2);
+    expect(script.match(/eve_e2e_maybe_timeout "\$\{update_timeout_seconds\}s" \\/gu)?.length).toBe(
+      2,
+    );
     expect(script).toContain("--channel beta");
     expect(script).toContain("EVE_UPDATE_POST_CORE=1");
     expect(script).not.toContain(
       'node "$entry" update --channel beta --tag "${EVE_CURRENT_PACKAGE_TGZ',
     );
-    expect(script).toContain(
-      "eve update failed or timed out after ${update_timeout_seconds}s",
-    );
+    expect(script).toContain("eve update failed or timed out after ${update_timeout_seconds}s");
     expect(script).toContain(
       "updated EVE entry failed or timed out after ${update_timeout_seconds}s",
     );

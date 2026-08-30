@@ -118,15 +118,7 @@ function createSlackTokenCredential(params: {
     },
     applyUseEnv: ({ cfg, accountId }: { cfg: EVEConfig; accountId: string }) =>
       enableSlackAccount(cfg, accountId),
-    applySet: ({
-      cfg,
-      accountId,
-      value,
-    }: {
-      cfg: EVEConfig;
-      accountId: string;
-      value: unknown;
-    }) =>
+    applySet: ({ cfg, accountId, value }: { cfg: EVEConfig; accountId: string; value: unknown }) =>
       patchChannelConfigForAccount({
         cfg,
         channel,

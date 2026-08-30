@@ -7,10 +7,7 @@ import { readTextFileBounded } from "./text-file-utils.mjs";
 
 const INDEX_KEY = "installed-plugin-index";
 const ERROR_DETAIL_TAIL_BYTES = 16 * 1024;
-const JSON_ARTIFACT_MAX_BYTES = readPositiveIntEnv(
-  "EVE_PLUGIN_INDEX_JSON_MAX_BYTES",
-  1024 * 1024,
-);
+const JSON_ARTIFACT_MAX_BYTES = readPositiveIntEnv("EVE_PLUGIN_INDEX_JSON_MAX_BYTES", 1024 * 1024);
 
 export function stateDir() {
   return process.env.EVE_STATE_DIR || path.join(process.env.HOME, ".eve");

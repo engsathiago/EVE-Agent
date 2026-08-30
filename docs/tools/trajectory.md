@@ -118,7 +118,7 @@ An exported bundle can contain:
 | `manifest.json`       | Bundle schema, source files, event counts, and generated file list                             |
 | `events.jsonl`        | Ordered runtime and transcript timeline                                                        |
 | `session-branch.json` | Redacted active transcript branch and session header                                           |
-| `metadata.json`       | EVE version, OS/runtime, model, config snapshot, plugins, skills, and prompt metadata     |
+| `metadata.json`       | EVE version, OS/runtime, model, config snapshot, plugins, skills, and prompt metadata          |
 | `artifacts.json`      | Final status, errors, usage, prompt cache, compaction count, assistant text, and tool metadata |
 | `prompts.json`        | Submitted prompts and selected prompt-building details                                         |
 | `system-prompt.txt`   | Latest compiled system prompt, when captured                                                   |

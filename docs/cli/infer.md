@@ -107,8 +107,8 @@ runtime before the provider request is made.
 
 This table maps common inference tasks to the corresponding infer command.
 
-| Task                          | Command                                                                                       | Notes                                                 |
-| ----------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Task                          | Command                                                                                  | Notes                                                 |
+| ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | Run a text/model prompt       | `eve infer model run --prompt "..." --json`                                              | Uses the normal local path by default                 |
 | Run a model prompt on images  | `eve infer model run --prompt "Describe this" --file ./image.png --model provider/model` | Repeat `--file` for multiple image inputs             |
 | Generate an image             | `eve infer image generate --prompt "..." --json`                                         | Use `image edit` when starting from an existing file  |

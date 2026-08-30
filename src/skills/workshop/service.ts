@@ -16,6 +16,7 @@ import {
   normalizeWorkspaceSkillSupportPath,
   readWorkspaceSkillFile,
   readWorkspaceSupportFile,
+  restoreWorkspaceSkill,
   writeWorkspaceSkill,
 } from "../lifecycle/workspace-skill-write.js";
 import { resolveAllowedSkillSymlinkTargetRealPaths } from "../loading/symlink-targets.js";
@@ -36,6 +37,7 @@ import {
   readProposalSupportFiles,
   readSkillProposal,
   readSkillProposalRecord,
+  readSkillProposalRollback,
   readSkillProposalManifest,
   replaceSkillProposalDraft,
   refreshSkillProposalManifest,
@@ -57,6 +59,7 @@ import {
   type SkillProposalRecord,
   type SkillProposalReviseInput,
   type SkillProposalRollback,
+  type SkillProposalRollbackResult,
   type SkillProposalScan,
   type SkillProposalSupportFile,
   type SkillProposalSupportFileInput,
@@ -587,6 +590,113 @@ export async function applySkillProposal(
     await refreshSkillProposalManifest();
     return { record: applied, targetSkillFile: record.target.skillFile };
   });
+}
+
+/** Undo an applied proposal without overwriting changes made after its application. */
+export async function rollbackSkillProposal(
+  input: SkillProposalActionInput,
+): Promise<SkillProposalRollbackResult> {
+  const initial = await readRequiredProposal(input.proposalId, input.workspaceDir);
+  return await withSkillProposalTargetLock(initial.record, async () => {
+    const read = await readRequiredProposal(input.proposalId, input.workspaceDir);
+    const { record, content } = read;
+    if (record.status !== "applied") {
+      throw new Error(
+        `Only applied proposals can be rolled back. Current status: ${record.status}.`,
+      );
+    }
+    assertInsideWorkspace(input.workspaceDir, record.target.skillFile, "skill file");
+    assertInsideWorkspace(input.workspaceDir, record.target.skillDir, "skill directory");
+    const rollback = await readSkillProposalRollback(record.id);
+    if (
+      !rollback ||
+      rollback.action !== record.kind ||
+      path.resolve(rollback.targetSkillFile) !== path.resolve(record.target.skillFile)
+    ) {
+      throw new Error("Skill proposal rollback snapshot is missing or invalid.");
+    }
+    if (record.kind === "update" && rollback.previousContent === undefined) {
+      throw new Error("Skill proposal rollback snapshot is missing the previous skill content.");
+    }
+    const supportFiles = await readProposalSupportFiles(record);
+    assertRollbackSupportFilesMatchProposal(rollback, supportFiles);
+    await assertAppliedProposalUnchanged(record, content, supportFiles);
+
+    const workshopConfig = resolveSkillWorkshopConfig(input.config);
+    const symlinkPolicy = {
+      allowWrites: workshopConfig.allowSymlinkTargetWrites,
+      allowedTargetRealPaths: workshopConfig.allowSymlinkTargetWrites
+        ? resolveAllowedSkillSymlinkTargetRealPaths(input.config)
+        : [],
+    };
+    await restoreWorkspaceSkill({
+      workspaceDir: input.workspaceDir,
+      skillDir: record.target.skillDir,
+      skillFile: record.target.skillFile,
+      previousContent: rollback.previousContent,
+      supportFiles: rollback.supportFiles,
+      symlinkPolicy,
+    });
+    bumpSkillsSnapshotVersion({
+      workspaceDir: input.workspaceDir,
+      reason: "workshop",
+      changedPath: record.target.skillFile,
+    });
+    const now = new Date().toISOString();
+    const rolledBack: SkillProposalRecord = {
+      ...record,
+      status: "rolled_back",
+      updatedAt: now,
+      rolledBackAt: now,
+      statusReason: normalizeOptionalString(input.reason),
+    };
+    await updateSkillProposalRecord({ record: rolledBack });
+    return { record: rolledBack, targetSkillFile: record.target.skillFile };
+  });
+}
+
+async function assertAppliedProposalUnchanged(
+  record: SkillProposalRecord,
+  proposalContent: string,
+  supportFiles: readonly PreparedSkillProposalSupportFile[],
+): Promise<void> {
+  const currentContent = await readWorkspaceSkillFile(record.target.skillFile);
+  const appliedContent = stripProposalFrontmatterForSkill(proposalContent);
+  if (
+    currentContent === null ||
+    hashSkillProposalContent(currentContent) !== hashSkillProposalContent(appliedContent)
+  ) {
+    throw new Error("Target skill changed after proposal application; rollback refused.");
+  }
+  for (const file of supportFiles) {
+    const currentSupport = await readWorkspaceSupportFile({
+      skillDir: record.target.skillDir,
+      relativePath: file.path,
+    });
+    if (currentSupport === null || hashSkillProposalContent(currentSupport) !== file.hash) {
+      throw new Error(
+        `Target support file changed after proposal application; rollback refused: ${file.path}`,
+      );
+    }
+  }
+}
+
+function assertRollbackSupportFilesMatchProposal(
+  rollback: SkillProposalRollback,
+  supportFiles: readonly PreparedSkillProposalSupportFile[],
+): void {
+  const rollbackPaths = (rollback.supportFiles ?? [])
+    .map((file) => file.path)
+    .toSorted((a, b) => a.localeCompare(b));
+  const proposalPaths = supportFiles
+    .map((file) => file.path)
+    .toSorted((a, b) => a.localeCompare(b));
+  if (
+    rollbackPaths.length !== proposalPaths.length ||
+    rollbackPaths.some((filePath, index) => filePath !== proposalPaths[index])
+  ) {
+    throw new Error("Skill proposal rollback snapshot does not match its support files.");
+  }
 }
 
 async function readApplyTargetState(

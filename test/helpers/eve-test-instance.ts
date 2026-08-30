@@ -51,10 +51,7 @@ export type EVETestInstance = {
   child?: ChildProcessWithoutNullStreams;
   env: NodeJS.ProcessEnv;
   entrypoint: () => Promise<string[]>;
-  cli: (
-    args: string[],
-    options?: { timeoutMs?: number },
-  ) => Promise<EVETestInstanceCommandResult>;
+  cli: (args: string[], options?: { timeoutMs?: number }) => Promise<EVETestInstanceCommandResult>;
   startGateway: () => Promise<void>;
   stopGateway: () => Promise<void>;
   logs: () => string;

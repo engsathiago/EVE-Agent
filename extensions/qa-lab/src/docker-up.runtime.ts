@@ -41,7 +41,11 @@ async function isQaLabDockerHealthReachable(url: string, fetchImpl: FetchLike) {
   }
 }
 
-function isMissingCommandError(error: unknown, command: string, seen = new Set<unknown>()): boolean {
+function isMissingCommandError(
+  error: unknown,
+  command: string,
+  seen = new Set<unknown>(),
+): boolean {
   if (!error || seen.has(error)) {
     return false;
   }
@@ -153,13 +157,7 @@ export async function runQaDockerUp(
     sleepImpl,
     composeFile,
   });
-  await waitForDockerServiceHealth(
-    "eve-qa-gateway",
-    composeFile,
-    repoRoot,
-    runCommand,
-    sleepImpl,
-  );
+  await waitForDockerServiceHealth("eve-qa-gateway", composeFile, repoRoot, runCommand, sleepImpl);
   let gatewayUrl = hostGatewayUrl;
   if (!(await isQaLabDockerHealthReachable(`${hostGatewayUrl}healthz`, fetchImpl))) {
     const containerGatewayUrl = await resolveComposeServiceUrl(

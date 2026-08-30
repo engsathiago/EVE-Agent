@@ -5,10 +5,7 @@ import { isRecord } from "@eve/normalization-core/record-coerce";
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { expandHomePrefix } from "../infra/home-dir.js";
 import { replaceFileAtomic } from "../infra/replace-file.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../state/eve-state-db.js";
 import { resolveConfigDir } from "../utils.js";
 import { parseJsonWithJson5Fallback } from "../utils/parse-json-compat.js";
 import { cronStoreKey } from "./store/key.js";

@@ -39,9 +39,7 @@ describe("package Telegram live Docker E2E", () => {
   it("defaults CI runs to Convex when broker credentials are present", () => {
     const script = readFileSync(DOCKER_SCRIPT_PATH, "utf8");
 
-    expect(script).toContain(
-      'if [ -n "${CI:-}" ] && [ -n "${EVE_QA_CONVEX_SITE_URL:-}" ]; then',
-    );
+    expect(script).toContain('if [ -n "${CI:-}" ] && [ -n "${EVE_QA_CONVEX_SITE_URL:-}" ]; then');
     expect(script).toContain("EVE_QA_CONVEX_SECRET_CI");
     expect(script).toContain("EVE_QA_CONVEX_SECRET_MAINTAINER");
     expect(script).toContain('printf "convex"');
@@ -71,9 +69,7 @@ describe("package Telegram live Docker E2E", () => {
       '"$timeout_bin" "$npm_install_timeout" npm install -g "$install_source" --no-fund --no-audit',
     );
     expect(installRun).toContain('npm install -g "$install_source" --no-fund --no-audit');
-    expect(installRun).not.toContain(
-      "running package install without EVE_E2E_NPM_INSTALL_TIMEOUT",
-    );
+    expect(installRun).not.toContain("running package install without EVE_E2E_NPM_INSTALL_TIMEOUT");
     expect(installRun).toContain('"${package_mount_args[@]}"');
     expect(installRun).not.toContain('"${docker_env[@]}"');
     expect(installRun).toContain("run_logged docker_e2e_docker_run_cmd run --rm");
@@ -95,9 +91,7 @@ describe("package Telegram live Docker E2E", () => {
     const runtimeRun = script.slice(runtimeRunStart);
 
     expect(runtimeRunStart).toBeGreaterThanOrEqual(0);
-    expect(script).toContain(
-      '-e EVE_E2E_COMMAND_TIMEOUT="${EVE_E2E_COMMAND_TIMEOUT:-300s}"',
-    );
+    expect(script).toContain('-e EVE_E2E_COMMAND_TIMEOUT="${EVE_E2E_COMMAND_TIMEOUT:-300s}"');
     expect(runtimeRun).toContain("source scripts/lib/eve-e2e-instance.sh");
     expect(runtimeRun).toContain("eve_e2e_run_command eve --version");
     expect(runtimeRun).toContain("eve_e2e_run_command eve onboard");
@@ -133,9 +127,7 @@ describe("package Telegram live Docker E2E", () => {
   it("keeps live Docker artifacts isolated by default", () => {
     const script = readFileSync(DOCKER_SCRIPT_PATH, "utf8");
 
-    expect(script).toContain(
-      'RUN_ID="${EVE_NPM_TELEGRAM_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"',
-    );
+    expect(script).toContain('RUN_ID="${EVE_NPM_TELEGRAM_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"');
     expect(script).toContain(
       'OUTPUT_DIR="${EVE_NPM_TELEGRAM_OUTPUT_DIR:-.artifacts/qa-e2e/npm-telegram-live/$RUN_ID}"',
     );
@@ -198,7 +190,7 @@ describe("package Telegram live Docker E2E", () => {
     expect(script).toContain('-v "$ROOT_DIR/extensions/qa-lab:/app/extensions/qa-lab:ro"');
     expect(script).not.toContain('ln -sfnT /app/extensions "$eve_package_dir/extensions"');
     expect(script).toContain("node scripts/e2e/lib/npm-telegram-live/prepare-package.mjs");
-    expect(script).toContain("/app/node_modules/eve/package.json");
+    expect(script).toContain("/app/node_modules/eve-agent/package.json");
     expect(preparePackage).toContain('pkg.exports["./plugin-sdk/gateway-runtime"]');
     expect(preparePackage).toContain('"./dist/plugin-sdk/gateway-runtime.js"');
     expect(gatewayRpcClient).toContain('from "eve-agent/plugin-sdk/gateway-runtime"');
@@ -210,7 +202,7 @@ describe("package Telegram live Docker E2E", () => {
 
     expect(script).toContain("link_installed_package_dependency()");
     expect(script).toContain(
-      'local source="/npm-global/lib/node_modules/eve/node_modules/$name"',
+      'local source="/npm-global/lib/node_modules/eve-agent/node_modules/$name"',
     );
     expect(script).toContain('ln -sfn "$source" "$target"');
     expect(script).toContain('link_installed_package_dependency "$dependency"');

@@ -11,7 +11,7 @@ import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-const REPO = "eve/eve";
+const REPO = "engsathiago/eve-agent";
 const REPO_URL = `https://github.com/${REPO}`;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────

@@ -17,7 +17,7 @@ running (or attaches to an existing local Gateway if one is already running).
 Node 24 is the default runtime on the Mac. Node 22 LTS, currently `22.19+`, still works for compatibility. Then install `eve` globally:
 
 ```bash
-npm install -g eve@<version>
+npm install -g eve-agent@<version>
 ```
 
 The macOS app's **Install CLI** button runs the same global install flow the app

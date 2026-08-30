@@ -76,11 +76,11 @@ defaults write ai.eve.mac eve.nixMode -bool true
 
 EVE reads JSON5 config from `EVE_CONFIG_PATH` and stores mutable data in `EVE_STATE_DIR`. When running under Nix, set these explicitly to Nix-managed locations so runtime state and config stay out of the immutable store.
 
-| Variable               | Default                                 |
-| ---------------------- | --------------------------------------- |
+| Variable          | Default                                 |
+| ----------------- | --------------------------------------- |
 | `EVE_HOME`        | `HOME` / `USERPROFILE` / `os.homedir()` |
-| `EVE_STATE_DIR`   | `~/.eve`                           |
-| `EVE_CONFIG_PATH` | `$EVE_STATE_DIR/eve.json`     |
+| `EVE_STATE_DIR`   | `~/.eve`                                |
+| `EVE_CONFIG_PATH` | `$EVE_STATE_DIR/eve.json`               |
 
 ### Service PATH discovery
 

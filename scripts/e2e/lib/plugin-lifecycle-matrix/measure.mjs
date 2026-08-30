@@ -50,14 +50,8 @@ function readPositiveNumberEnv(name, fallback) {
 
 const pollMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_METRIC_POLL_MS", 100);
 const timeoutMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS", 300000);
-const timeoutKillGraceMs = readPositiveIntEnv(
-  "EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS",
-  2000,
-);
-const maxRssKbThreshold = readPositiveIntEnv(
-  "EVE_PLUGIN_LIFECYCLE_MAX_RSS_KB",
-  4 * 1024 * 1024,
-);
+const timeoutKillGraceMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS", 2000);
+const maxRssKbThreshold = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_MAX_RSS_KB", 4 * 1024 * 1024);
 const maxWallMs = readPositiveIntEnv("EVE_PLUGIN_LIFECYCLE_MAX_WALL_MS", timeoutMs);
 const maxCpuCoreRatio = readPositiveNumberEnv("EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO", 16);
 

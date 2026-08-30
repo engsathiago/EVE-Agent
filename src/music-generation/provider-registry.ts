@@ -27,9 +27,7 @@ function isSafeMusicGenerationProviderId(id: string | undefined): id is string {
   return Boolean(id && !UNSAFE_PROVIDER_IDS.has(id));
 }
 
-function resolvePluginMusicGenerationProviders(
-  cfg?: EVEConfig,
-): MusicGenerationProviderPlugin[] {
+function resolvePluginMusicGenerationProviders(cfg?: EVEConfig): MusicGenerationProviderPlugin[] {
   return resolvePluginCapabilityProviders({
     key: "musicGenerationProviders",
     cfg,
@@ -68,9 +66,7 @@ function buildProviderMaps(cfg?: EVEConfig): {
 }
 
 /** List canonical music generation providers available for the current config. */
-export function listMusicGenerationProviders(
-  cfg?: EVEConfig,
-): MusicGenerationProviderPlugin[] {
+export function listMusicGenerationProviders(cfg?: EVEConfig): MusicGenerationProviderPlugin[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
 

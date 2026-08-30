@@ -44,7 +44,7 @@ export async function createEVEChannelMcpServer(opts: EVEMcpServeOptions = {}): 
   const claudeChannelMode = opts.claudeChannelMode ?? "auto";
   const capabilities = getChannelMcpCapabilities(claudeChannelMode);
   const server = new McpServer(
-    { name: "eve", version: VERSION },
+    { name: "eve-agent", version: VERSION },
     capabilities ? { capabilities } : undefined,
   );
   const bridge = new EVEChannelBridge(cfg, {

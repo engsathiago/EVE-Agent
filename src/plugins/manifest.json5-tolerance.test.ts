@@ -29,11 +29,7 @@ describe("loadPluginManifest JSON5 tolerance", () => {
       id: "demo",
       configSchema: { type: "object" },
     };
-    fs.writeFileSync(
-      path.join(dir, "eve.plugin.json"),
-      JSON.stringify(manifest, null, 2),
-      "utf-8",
-    );
+    fs.writeFileSync(path.join(dir, "eve.plugin.json"), JSON.stringify(manifest, null, 2), "utf-8");
     const result = loadPluginManifest(dir, false);
     expect(result.ok).toBe(true);
     if (result.ok) {

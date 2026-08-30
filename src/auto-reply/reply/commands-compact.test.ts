@@ -32,10 +32,7 @@ const {
 } = await import("./commands-compact.runtime.js");
 const { handleCompactCommand } = await import("./commands-compact.js");
 
-function buildCompactParams(
-  commandBodyNormalized: string,
-  cfg: EVEConfig,
-): HandleCommandsParams {
+function buildCompactParams(commandBodyNormalized: string, cfg: EVEConfig): HandleCommandsParams {
   return {
     cfg,
     ctx: {

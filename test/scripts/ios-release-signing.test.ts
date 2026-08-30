@@ -20,9 +20,7 @@ describe("scripts/ios-release-signing.mjs", () => {
     expect(output).toContain("EVE_CODE_SIGN_IDENTITY = Apple Distribution");
     expect(output).toContain("EVE_APP_GROUP_ID = group.ai.evefoundation.app.shared");
     expect(output).toContain("EVE_APP_PROFILE = EVE App Store ai.evefoundation.app");
-    expect(output).toContain(
-      "EVE_SHARE_PROFILE = EVE App Store ai.evefoundation.app.share",
-    );
+    expect(output).toContain("EVE_SHARE_PROFILE = EVE App Store ai.evefoundation.app.share");
     expect(output).toContain(
       "EVE_ACTIVITY_WIDGET_PROFILE = EVE App Store ai.evefoundation.app.activitywidget",
     );

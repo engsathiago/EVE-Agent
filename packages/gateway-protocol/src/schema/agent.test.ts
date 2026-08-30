@@ -57,6 +57,28 @@ const musicCompletionEvent: AgentInternalEvent = {
 };
 
 describe("AgentParamsSchema", () => {
+  it("accepts a non-empty inherited tool allowlist for child runs", () => {
+    expect(
+      Value.Check(AgentParamsSchema, {
+        message: "Run the Workboard task.",
+        sessionKey: "agent:main:subagent:workboard-card-1",
+        idempotencyKey: "workboard-card-1",
+        inheritedToolAllow: ["workboard_*", "group:web"],
+      }),
+    ).toBe(true);
+  });
+
+  it("rejects empty inherited tool allowlists", () => {
+    expect(
+      Value.Check(AgentParamsSchema, {
+        message: "Run the Workboard task.",
+        sessionKey: "agent:main:subagent:workboard-card-1",
+        idempotencyKey: "workboard-card-1",
+        inheritedToolAllow: [],
+      }),
+    ).toBe(false);
+  });
+
   it("accepts generated music attachments on internal completion events", () => {
     const params = makeAgentParamsWithInternalEvent(musicCompletionEvent);
 

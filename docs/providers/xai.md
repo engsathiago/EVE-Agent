@@ -150,19 +150,19 @@ provider and tool contracts. Capabilities that don't fit the shared contract
 (for example streaming TTS and realtime voice) are not exposed - see the table
 below.
 
-| xAI capability             | EVE surface                          | Status                                                              |
-| -------------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| Chat / Responses           | `xai/<model>` model provider              | Yes                                                                 |
-| Server-side web search     | `web_search` provider `grok`              | Yes                                                                 |
-| Server-side X search       | `x_search` tool                           | Yes                                                                 |
-| Server-side code execution | `code_execution` tool                     | Yes                                                                 |
-| Images                     | `image_generate`                          | Yes                                                                 |
-| Videos                     | `video_generate`                          | Yes                                                                 |
-| Batch text-to-speech       | `messages.tts.provider: "xai"` / `tts`    | Yes                                                                 |
+| xAI capability             | EVE surface                               | Status                                                         |
+| -------------------------- | ----------------------------------------- | -------------------------------------------------------------- |
+| Chat / Responses           | `xai/<model>` model provider              | Yes                                                            |
+| Server-side web search     | `web_search` provider `grok`              | Yes                                                            |
+| Server-side X search       | `x_search` tool                           | Yes                                                            |
+| Server-side code execution | `code_execution` tool                     | Yes                                                            |
+| Images                     | `image_generate`                          | Yes                                                            |
+| Videos                     | `video_generate`                          | Yes                                                            |
+| Batch text-to-speech       | `messages.tts.provider: "xai"` / `tts`    | Yes                                                            |
 | Streaming TTS              | -                                         | Not exposed; EVE's TTS contract returns complete audio buffers |
-| Batch speech-to-text       | `tools.media.audio` / media understanding | Yes                                                                 |
-| Streaming speech-to-text   | Voice Call `streaming.provider: "xai"`    | Yes                                                                 |
-| Realtime voice             | -                                         | Not exposed yet; different session/WebSocket contract               |
+| Batch speech-to-text       | `tools.media.audio` / media understanding | Yes                                                            |
+| Streaming speech-to-text   | Voice Call `streaming.provider: "xai"`    | Yes                                                            |
+| Realtime voice             | -                                         | Not exposed yet; different session/WebSocket contract          |
 | Files / batches            | Generic model API compatibility only      | Not a first-class EVE tool                                     |
 
 <Note>

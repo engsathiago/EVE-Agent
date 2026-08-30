@@ -31,10 +31,7 @@ function normalizeMatrixExecApproverId(value: string | number): string | undefin
   return normalized === "*" ? undefined : normalized;
 }
 
-function resolveMatrixExecApprovalConfig(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-}) {
+function resolveMatrixExecApprovalConfig(params: { cfg: EVEConfig; accountId?: string | null }) {
   const account = resolveMatrixAccount(params);
   const config = account.config.execApprovals;
   if (!config) {

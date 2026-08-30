@@ -871,9 +871,7 @@ status=done`,
       comparedAt: "2026-04-11T00:00:00.000Z",
     });
     const report = renderQaAgenticParityMarkdownReport(comparison);
-    expect(report).toContain(
-      "# EVE Agentic Parity Report — openai/gpt-5.5-alt vs openai/gpt-5.5",
-    );
+    expect(report).toContain("# EVE Agentic Parity Report — openai/gpt-5.5-alt vs openai/gpt-5.5");
   });
 
   it("builds a runtime parity report from suite summaries", () => {

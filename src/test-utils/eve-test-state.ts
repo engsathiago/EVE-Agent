@@ -264,9 +264,7 @@ async function writeJsonFile(filePath: string, value: unknown): Promise<string> 
   return filePath;
 }
 
-export async function createEVETestState(
-  options: EVETestStateOptions = {},
-): Promise<EVETestState> {
+export async function createEVETestState(options: EVETestStateOptions = {}): Promise<EVETestState> {
   const label = normalizeLabel(options.label ?? options.scenario);
   const prefix = options.prefix ?? `${DEFAULT_PREFIX}${label}-`;
   const root = await fs.mkdtemp(path.join(os.tmpdir(), prefix));

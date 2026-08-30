@@ -34,10 +34,7 @@ export function registerNodeCli(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          [
-            "eve node run --host 127.0.0.1 --port 18789",
-            "Run the node host in the foreground.",
-          ],
+          ["eve node run --host 127.0.0.1 --port 18789", "Run the node host in the foreground."],
           ["eve node status", "Check node host service status."],
           ["eve node install", "Install the node host service."],
           ["eve node start", "Start the installed node host service."],

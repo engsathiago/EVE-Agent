@@ -592,9 +592,7 @@ const EVE_RELEASE_SUFFIX_PATTERN =
   /^[vV]?(\d{4}\.[1-9]\d?\.[1-9]\d*)(?:-\d+|-(?:alpha|beta|rc)\.\d+)$/i;
 const EVE_NUMERIC_CORRECTION_PATTERN = /^[vV]?(\d{4}\.[1-9]\d?\.[1-9]\d*)-\d+$/;
 
-function normalizeEVENumericCorrectionForPluginApi(
-  pluginApiVersion: string,
-): string | undefined {
+function normalizeEVENumericCorrectionForPluginApi(pluginApiVersion: string): string | undefined {
   return EVE_NUMERIC_CORRECTION_PATTERN.exec(pluginApiVersion.trim())?.[1];
 }
 

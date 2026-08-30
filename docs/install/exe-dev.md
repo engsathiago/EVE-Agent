@@ -187,7 +187,7 @@ with email auth.
 ## Updating
 
 ```bash
-npm i -g eve@latest
+npm i -g eve-agent@latest
 eve doctor
 eve gateway restart
 eve health

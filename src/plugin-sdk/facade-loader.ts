@@ -226,9 +226,7 @@ export async function loadBundledPluginPublicSurfaceModule<T extends object>(par
     absolutePath: preparedLocation.modulePath,
     rootPath: preparedLocation.boundaryRoot,
     boundaryLabel:
-      preparedLocation.boundaryRoot === getEVEPackageRoot()
-        ? "EVE package root"
-        : "plugin root",
+      preparedLocation.boundaryRoot === getEVEPackageRoot() ? "EVE package root" : "plugin root",
     rejectHardlinks: false,
   });
   if (!opened.ok) {

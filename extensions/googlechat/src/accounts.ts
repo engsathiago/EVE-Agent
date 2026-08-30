@@ -7,7 +7,10 @@ import {
   resolveAccountEntry,
   resolveMergedAccountConfig,
 } from "eve-agent/plugin-sdk/account-resolution";
-import { safeParseJsonWithSchema, safeParseWithSchema } from "eve-agent/plugin-sdk/extension-shared";
+import {
+  safeParseJsonWithSchema,
+  safeParseWithSchema,
+} from "eve-agent/plugin-sdk/extension-shared";
 import { mergePairLoopGuardConfig } from "eve-agent/plugin-sdk/pair-loop-guard-runtime";
 import { isSecretRef } from "eve-agent/plugin-sdk/secret-input";
 import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
@@ -45,10 +48,7 @@ const {
 });
 export { listGoogleChatAccountIds, resolveDefaultGoogleChatAccountId };
 
-function mergeGoogleChatAccountConfig(
-  cfg: EVEConfig,
-  accountId: string,
-): GoogleChatAccountConfig {
+function mergeGoogleChatAccountConfig(cfg: EVEConfig, accountId: string): GoogleChatAccountConfig {
   const raw = cfg.channels?.["googlechat"] ?? {};
   const base = resolveMergedAccountConfig<GoogleChatAccountConfig>({
     channelConfig: raw as GoogleChatAccountConfig,

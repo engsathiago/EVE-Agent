@@ -148,9 +148,9 @@ RUN --mount=type=cache,id=eve-pnpm-store,target=/root/.local/share/pnpm/store,sh
     node scripts/postinstall-bundled-plugins.mjs && \
     find dist -type f \( -name '*.d.ts' -o -name '*.d.mts' -o -name '*.d.cts' -o -name '*.map' \) -delete && \
     rm -rf \
-      /app/node_modules/eve \
+      /app/node_modules/eve-agent \
       /app/node_modules/.bin/eve \
-      /app/node_modules/.pnpm/eve@*/node_modules/eve && \
+      /app/node_modules/.pnpm/eve-agent@*/node_modules/eve-agent && \
     node scripts/check-package-dist-imports.mjs /app
 
 # ── Runtime base image ──────────────────────────────────────────

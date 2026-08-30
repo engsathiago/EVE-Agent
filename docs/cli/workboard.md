@@ -23,7 +23,7 @@ eve gateway restart
 
 ```bash
 eve workboard list [--board <id>] [--status <status>] [--json]
-eve workboard create <title...> [--notes <text>] [--status <status>] [--priority <priority>] [--agent <id>] [--board <id>] [--labels <items>] [--json]
+eve workboard create <title...> [--notes <text>] [--status <status>] [--priority <priority>] [--agent <id>] [--board <id>] [--labels <items>] [--toolset <items>] [--json]
 eve workboard show <id> [--json]
 eve workboard dispatch [--url <url>] [--token <token>] [--timeout <ms>] [--json]
 ```
@@ -61,6 +61,7 @@ Flags:
 ```bash
 eve workboard create "Fix stale worker heartbeat" --priority high --labels bug,workboard
 eve workboard create "Write Workboard docs" --status ready --agent docs-agent --board docs --notes "Cover CLI, slash command, dispatch, and SQLite state."
+eve workboard create "Research provider APIs" --agent researcher --toolset auto
 ```
 
 Flags:
@@ -73,10 +74,20 @@ Flags:
 | `--agent <id>`          | Assign the card to an agent or owner id |
 | `--board <id>`          | Store the card on a board namespace     |
 | `--labels <items>`      | Comma-separated labels                  |
+| `--toolset <items>`     | `auto` or comma-separated toolsets      |
 | `--json`                | Print the created card as machine JSON  |
 
 `create` writes directly to Workboard SQLite state. The card is immediately
 visible in the Control UI Workboard tab and to Workboard tools.
+
+The CLI's `--toolset auto`, agent tools, and the Control UI can set automation
+`toolsets` on a card. Use `toolsets: ["auto"]` to infer one or more capability families from the
+title, notes, and labels: `coding`, `research`, `operations`, `visual`, or
+`communications`. Explicit toolsets narrow the worker session to matching tools
+plus Workboard completion, memory, and status tools. They never grant a tool
+that the assigned agent profile does not already allow. A card without
+`toolsets` keeps the profile's normal tool surface; `auto` cannot be mixed with
+explicit values.
 
 ## `show`
 
@@ -112,7 +123,7 @@ The dispatch loop:
 4. Selects a small batch of unclaimed ready cards.
 5. Claims each selected card for the dispatcher or assigned agent.
 6. Starts a subagent worker run with bounded card context and the card claim
-   token.
+   token, applying the card's toolset allowlist when configured.
 7. Stores the worker run id, session key, task linkage when the Gateway task
    ledger reports it, execution status, and worker log on the card.
 

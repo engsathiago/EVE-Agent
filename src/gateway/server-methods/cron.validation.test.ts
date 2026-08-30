@@ -10,9 +10,7 @@ import {
   createTestRegistry,
 } from "../../test-utils/channel-plugins.js";
 
-const getRuntimeConfig = vi.hoisted(() =>
-  vi.fn<() => EVEConfig>(() => ({}) as EVEConfig),
-);
+const getRuntimeConfig = vi.hoisted(() => vi.fn<() => EVEConfig>(() => ({}) as EVEConfig));
 
 vi.mock("../../config/config.js", async () => {
   const actual =

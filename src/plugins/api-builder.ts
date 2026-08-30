@@ -98,8 +98,7 @@ const noopRegisterCli: EVEPluginApi["registerCli"] = () => {};
 const noopRegisterReload: EVEPluginApi["registerReload"] = () => {};
 const noopRegisterNodeHostCommand: EVEPluginApi["registerNodeHostCommand"] = () => {};
 const noopRegisterNodeInvokePolicy: EVEPluginApi["registerNodeInvokePolicy"] = () => {};
-const noopRegisterSecurityAuditCollector: EVEPluginApi["registerSecurityAuditCollector"] =
-  () => {};
+const noopRegisterSecurityAuditCollector: EVEPluginApi["registerSecurityAuditCollector"] = () => {};
 const noopRegisterService: EVEPluginApi["registerService"] = () => {};
 const noopRegisterGatewayDiscoveryService: EVEPluginApi["registerGatewayDiscoveryService"] =
   () => {};
@@ -109,14 +108,12 @@ const noopRegisterConfigMigration: EVEPluginApi["registerConfigMigration"] = () 
 const noopRegisterMigrationProvider: EVEPluginApi["registerMigrationProvider"] = () => {};
 const noopRegisterAutoEnableProbe: EVEPluginApi["registerAutoEnableProbe"] = () => {};
 const noopRegisterProvider: EVEPluginApi["registerProvider"] = () => {};
-const noopRegisterModelCatalogProvider: EVEPluginApi["registerModelCatalogProvider"] =
-  () => {};
+const noopRegisterModelCatalogProvider: EVEPluginApi["registerModelCatalogProvider"] = () => {};
 const noopRegisterEmbeddingProvider: EVEPluginApi["registerEmbeddingProvider"] = () => {};
 const noopRegisterSpeechProvider: EVEPluginApi["registerSpeechProvider"] = () => {};
 const noopRegisterRealtimeTranscriptionProvider: EVEPluginApi["registerRealtimeTranscriptionProvider"] =
   () => {};
-const noopRegisterRealtimeVoiceProvider: EVEPluginApi["registerRealtimeVoiceProvider"] =
-  () => {};
+const noopRegisterRealtimeVoiceProvider: EVEPluginApi["registerRealtimeVoiceProvider"] = () => {};
 const noopRegisterMediaUnderstandingProvider: EVEPluginApi["registerMediaUnderstandingProvider"] =
   () => {};
 const noopRegisterTranscriptsSourceProvider: EVEPluginApi["registerTranscriptSourceProvider"] =
@@ -130,8 +127,7 @@ const noopRegisterMusicGenerationProvider: EVEPluginApi["registerMusicGeneration
 const noopRegisterWebFetchProvider: EVEPluginApi["registerWebFetchProvider"] = () => {};
 const noopRegisterWebSearchProvider: EVEPluginApi["registerWebSearchProvider"] = () => {};
 const noopRegisterInteractiveHandler: EVEPluginApi["registerInteractiveHandler"] = () => {};
-const noopOnConversationBindingResolved: EVEPluginApi["onConversationBindingResolved"] =
-  () => {};
+const noopOnConversationBindingResolved: EVEPluginApi["onConversationBindingResolved"] = () => {};
 const noopRegisterCommand: EVEPluginApi["registerCommand"] = () => {};
 const noopRegisterContextEngine: EVEPluginApi["registerContextEngine"] = () => {};
 const noopRegisterCompactionProvider: EVEPluginApi["registerCompactionProvider"] = () => {};
@@ -148,8 +144,7 @@ const noopRegisterTrustedToolPolicy: EVEPluginApi["registerTrustedToolPolicy"] =
 const noopRegisterToolMetadata: EVEPluginApi["registerToolMetadata"] = () => {};
 const noopRegisterControlUiDescriptor: EVEPluginApi["registerControlUiDescriptor"] = () => {};
 const noopRegisterRuntimeLifecycle: EVEPluginApi["registerRuntimeLifecycle"] = () => {};
-const noopRegisterAgentEventSubscription: EVEPluginApi["registerAgentEventSubscription"] =
-  () => {};
+const noopRegisterAgentEventSubscription: EVEPluginApi["registerAgentEventSubscription"] = () => {};
 const noopEmitAgentEvent: EVEPluginApi["emitAgentEvent"] = () => ({
   emitted: false,
   reason: "not wired",
@@ -165,15 +160,15 @@ const noopSendSessionAttachment: EVEPluginApi["sendSessionAttachment"] = async (
   error: "not wired",
 });
 const noopScheduleSessionTurn: EVEPluginApi["scheduleSessionTurn"] = async () => undefined;
-const noopUnscheduleSessionTurnsByTag: EVEPluginApi["unscheduleSessionTurnsByTag"] =
-  async () => ({ removed: 0, failed: 0 });
+const noopUnscheduleSessionTurnsByTag: EVEPluginApi["unscheduleSessionTurnsByTag"] = async () => ({
+  removed: 0,
+  failed: 0,
+});
 const noopRegisterDetachedTaskRuntime: EVEPluginApi["registerDetachedTaskRuntime"] = () => {};
 const noopRegisterMemoryCapability: EVEPluginApi["registerMemoryCapability"] = () => {};
 const noopRegisterMemoryPromptSection: EVEPluginApi["registerMemoryPromptSection"] = () => {};
-const noopRegisterMemoryPromptSupplement: EVEPluginApi["registerMemoryPromptSupplement"] =
-  () => {};
-const noopRegisterMemoryCorpusSupplement: EVEPluginApi["registerMemoryCorpusSupplement"] =
-  () => {};
+const noopRegisterMemoryPromptSupplement: EVEPluginApi["registerMemoryPromptSupplement"] = () => {};
+const noopRegisterMemoryCorpusSupplement: EVEPluginApi["registerMemoryCorpusSupplement"] = () => {};
 const noopRegisterMemoryFlushPlan: EVEPluginApi["registerMemoryFlushPlan"] = () => {};
 const noopRegisterMemoryRuntime: EVEPluginApi["registerMemoryRuntime"] = () => {};
 const noopRegisterMemoryEmbeddingProvider: EVEPluginApi["registerMemoryEmbeddingProvider"] =

@@ -128,9 +128,7 @@ describe("run-additional-boundary-checks", () => {
 
   it("rejects malformed timeout and output limit integers", () => {
     expect(resolvePositiveInteger("25", 50, "EVE_ADDITIONAL_BOUNDARY_TIMEOUT_MS")).toBe(25);
-    expect(resolvePositiveInteger(undefined, 50, "EVE_ADDITIONAL_BOUNDARY_TIMEOUT_MS")).toBe(
-      50,
-    );
+    expect(resolvePositiveInteger(undefined, 50, "EVE_ADDITIONAL_BOUNDARY_TIMEOUT_MS")).toBe(50);
     expect(() =>
       resolvePositiveInteger("1000ms", 50, "EVE_ADDITIONAL_BOUNDARY_TIMEOUT_MS"),
     ).toThrow("EVE_ADDITIONAL_BOUNDARY_TIMEOUT_MS must be a positive integer; got: 1000ms");

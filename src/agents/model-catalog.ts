@@ -41,10 +41,7 @@ import {
   buildConfiguredModelCatalog,
   hasConfiguredProviderModelRows,
 } from "./model-selection-shared.js";
-import {
-  buildModelsJsonSourceFingerprint,
-  prepareEVEModelsJsonSource,
-} from "./models-config.js";
+import { buildModelsJsonSourceFingerprint, prepareEVEModelsJsonSource } from "./models-config.js";
 import {
   filterGeneratedPluginModelCatalogProviders,
   listPluginModelCatalogFiles,

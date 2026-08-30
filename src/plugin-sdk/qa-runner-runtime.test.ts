@@ -113,9 +113,7 @@ describe("plugin-sdk qa-runner-runtime", () => {
     expect(testApiCall?.dirName).toBe("matrix");
     expect(testApiCall?.artifactBasename).toBe("test-api.js");
     expect(testApiCall?.env?.EVE_ENABLE_PRIVATE_QA_CLI).toBe("1");
-    expect(testApiCall?.env?.EVE_BUNDLED_PLUGINS_DIR).toBe(
-      path.join(sourceRoot, "extensions"),
-    );
+    expect(testApiCall?.env?.EVE_BUNDLED_PLUGINS_DIR).toBe(path.join(sourceRoot, "extensions"));
   });
 
   it("reports the qa runtime as unavailable when the qa-lab surface is missing", async () => {
@@ -230,9 +228,7 @@ describe("plugin-sdk qa-runner-runtime", () => {
     ]);
     const manifestCall = firstManifestRegistryCall();
     expect(manifestCall?.env?.EVE_ENABLE_PRIVATE_QA_CLI).toBe("1");
-    expect(manifestCall?.env?.EVE_BUNDLED_PLUGINS_DIR).toBe(
-      path.join(sourceRoot, "extensions"),
-    );
+    expect(manifestCall?.env?.EVE_BUNDLED_PLUGINS_DIR).toBe(path.join(sourceRoot, "extensions"));
 
     const publicSurfaceCall = firstPublicSurfaceCall();
     expect(publicSurfaceCall?.dirName).toBe("qa-matrix");

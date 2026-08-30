@@ -47,9 +47,9 @@
 
 import os from "node:os";
 import path from "node:path";
-import { minimatch } from "minimatch";
 import { mutateConfigFile } from "eve-agent/plugin-sdk/config-mutation";
 import { getRuntimeConfig } from "eve-agent/plugin-sdk/runtime-config-snapshot";
+import { minimatch } from "minimatch";
 
 export type FilePolicyKind = "read" | "write";
 export type FilePolicyAskMode = "off" | "on-miss" | "always";

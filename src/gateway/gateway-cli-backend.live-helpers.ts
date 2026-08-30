@@ -171,14 +171,10 @@ export function resolveCliBackendLiveArgs(params: {
   defaultResumeArgs?: string[];
 }): { args: string[]; resumeArgs?: string[] } {
   const args =
-    parseJsonStringArray(
-      "EVE_LIVE_CLI_BACKEND_ARGS",
-      process.env.EVE_LIVE_CLI_BACKEND_ARGS,
-    ) ?? params.defaultArgs;
+    parseJsonStringArray("EVE_LIVE_CLI_BACKEND_ARGS", process.env.EVE_LIVE_CLI_BACKEND_ARGS) ??
+    params.defaultArgs;
   if (!args || args.length === 0) {
-    throw new Error(
-      `EVE_LIVE_CLI_BACKEND_ARGS is required for provider "${params.providerId}".`,
-    );
+    throw new Error(`EVE_LIVE_CLI_BACKEND_ARGS is required for provider "${params.providerId}".`);
   }
   const resumeArgs =
     parseJsonStringArray(

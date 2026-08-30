@@ -24,7 +24,8 @@ import {
 const emitSessionTranscriptUpdateMock = vi.hoisted(() => vi.fn());
 
 vi.mock("eve-agent/plugin-sdk/agent-harness-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/agent-harness-runtime")>();
+  const actual =
+    await importOriginal<typeof import("eve-agent/plugin-sdk/agent-harness-runtime")>();
   return {
     ...actual,
     emitSessionTranscriptUpdate: emitSessionTranscriptUpdateMock,

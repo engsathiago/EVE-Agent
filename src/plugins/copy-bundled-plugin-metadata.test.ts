@@ -48,10 +48,7 @@ function createPlugin(
 
 function readBundledManifest(repoRoot: string, pluginId: string): Record<string, unknown> {
   return JSON.parse(
-    fs.readFileSync(
-      path.join(repoRoot, "dist", "extensions", pluginId, "eve.plugin.json"),
-      "utf8",
-    ),
+    fs.readFileSync(path.join(repoRoot, "dist", "extensions", pluginId, "eve.plugin.json"), "utf8"),
   ) as Record<string, unknown>;
 }
 

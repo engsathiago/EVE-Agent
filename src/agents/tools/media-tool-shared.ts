@@ -129,9 +129,7 @@ export function readGenerationTimeoutMs(args: Record<string, unknown>): number |
 /**
  * Resolves the shared remote-media SSRF policy used by media tools that fetch URLs.
  */
-export function resolveRemoteMediaSsrfPolicy(
-  cfg: EVEConfig | undefined,
-): SsrFPolicy | undefined {
+export function resolveRemoteMediaSsrfPolicy(cfg: EVEConfig | undefined): SsrFPolicy | undefined {
   return cfg?.tools?.web?.fetch?.ssrfPolicy;
 }
 

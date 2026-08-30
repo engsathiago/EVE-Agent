@@ -42,7 +42,7 @@ Local onboarding defaults new local configs to `tools.profile: "coding"` when un
 | `group:nodes`      | `nodes`                                                                                                                 |
 | `group:agents`     | `agents_list`, `update_plan`                                                                                            |
 | `group:media`      | `image`, `image_generate`, `music_generate`, `video_generate`, `tts`                                                    |
-| `group:eve`   | All built-in tools (excludes provider plugins)                                                                          |
+| `group:eve`        | All built-in tools (excludes provider plugins)                                                                          |
 | `group:plugins`    | Tools owned by loaded plugins, including configured MCP servers exposed through `bundle-mcp`                            |
 
 ### MCP and plugin tools inside sandbox tool policy

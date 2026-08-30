@@ -117,13 +117,13 @@ Before installing a plugin, make sure you have:
 
 ### Choose an install source
 
-| Source      | Use when                                                                       | Example                                                        |
-| ----------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| Source      | Use when                                                                  | Example                                                   |
+| ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------- |
 | ClawHub     | You want EVE-native discovery, scans, version metadata, and install hints | `eve plugins install clawhub:<package>`                   |
-| npm         | You need direct npm registry or dist-tag workflows                             | `eve plugins install npm:<package>`                       |
-| git         | You need a branch, tag, or commit from a repository                            | `eve plugins install git:github.com/<owner>/<repo>@<ref>` |
-| local path  | You are developing or testing a plugin on the same machine                     | `eve plugins install --link ./my-plugin`                  |
-| marketplace | You are installing a Claude-compatible marketplace plugin                      | `eve plugins install <plugin> --marketplace <source>`     |
+| npm         | You need direct npm registry or dist-tag workflows                        | `eve plugins install npm:<package>`                       |
+| git         | You need a branch, tag, or commit from a repository                       | `eve plugins install git:github.com/<owner>/<repo>@<ref>` |
+| local path  | You are developing or testing a plugin on the same machine                | `eve plugins install --link ./my-plugin`                  |
+| marketplace | You are installing a Claude-compatible marketplace plugin                 | `eve plugins install <plugin> --marketplace <source>`     |
 
 Bare package specs have special compatibility behavior. If the bare name matches
 a bundled plugin id, EVE uses that bundled source. If it matches an
@@ -214,10 +214,10 @@ stale plugin ids, allowlist/tool mismatches, or legacy bundled plugin paths.
 
 EVE recognizes two plugin formats:
 
-| Format                 | How it loads                                                                 | Use when                                                               |
-| ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Native EVE plugin | `eve.plugin.json` plus a runtime module loaded in process               | You are installing or building EVE-specific runtime capabilities  |
-| Compatible bundle      | Codex, Claude, or Cursor plugin layout mapped into EVE plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata |
+| Format            | How it loads                                                            | Use when                                                               |
+| ----------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Native EVE plugin | `eve.plugin.json` plus a runtime module loaded in process               | You are installing or building EVE-specific runtime capabilities       |
+| Compatible bundle | Codex, Claude, or Cursor plugin layout mapped into EVE plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata |
 
 Both formats appear in `eve plugins list`, `eve plugins inspect`,
 `eve plugins enable`, and `eve plugins disable`. See
@@ -269,15 +269,15 @@ serves your channels, not only a wrapper or supervisor.
 
 ## Troubleshooting
 
-| Symptom                                                        | Check                                                                                                                                      | Fix                                                                                                     |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Plugin appears in `plugins list` but runtime hooks do not run  | Use `eve plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                               |
-| Duplicate channel or tool ownership diagnostics appear         | Run `eve plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement      |
-| Config says a plugin is missing                                | Check [Plugin inventory](/plugins/plugin-inventory) for whether it is bundled, official external, or source-only                           | Install the external package, enable the bundled plugin, or remove stale config                         |
-| Config is invalid during install                               | Read the validation message and run `eve doctor --fix` when it points to stale plugin state                                           | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload     |
-| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                             | Fix filesystem ownership/permissions, then run `eve plugins registry --refresh`                    |
-| `EVE_NIX_MODE=1` blocks lifecycle commands                | Confirm the install is managed by Nix                                                                                                      | Change plugin selection in the Nix source instead of using plugin mutator commands                      |
-| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                                 | Run `eve plugins update <id>`, reinstall the source, or install local plugin dependencies yourself |
+| Symptom                                                        | Check                                                                                                                                 | Fix                                                                                                 |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Plugin appears in `plugins list` but runtime hooks do not run  | Use `eve plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                           |
+| Duplicate channel or tool ownership diagnostics appear         | Run `eve plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement  |
+| Config says a plugin is missing                                | Check [Plugin inventory](/plugins/plugin-inventory) for whether it is bundled, official external, or source-only                      | Install the external package, enable the bundled plugin, or remove stale config                     |
+| Config is invalid during install                               | Read the validation message and run `eve doctor --fix` when it points to stale plugin state                                           | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload |
+| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                        | Fix filesystem ownership/permissions, then run `eve plugins registry --refresh`                     |
+| `EVE_NIX_MODE=1` blocks lifecycle commands                     | Confirm the install is managed by Nix                                                                                                 | Change plugin selection in the Nix source instead of using plugin mutator commands                  |
+| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                            | Run `eve plugins update <id>`, reinstall the source, or install local plugin dependencies yourself  |
 
 When stale plugin config still names a no-longer-discoverable channel plugin,
 Gateway startup skips that plugin-backed channel instead of blocking every

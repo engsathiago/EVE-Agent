@@ -213,9 +213,7 @@ describe("runMatrixStartupMaintenance", () => {
     params.auth.encryption = true;
     vi.mocked(deps.summarizeMatrixDeviceHealth).mockReturnValue({
       currentDeviceId: null,
-      staleEVEDevices: [
-        { deviceId: "DEV123", displayName: "EVE Device", current: false },
-      ],
+      staleEVEDevices: [{ deviceId: "DEV123", displayName: "EVE Device", current: false }],
       currentEVEDevices: [],
     });
     vi.mocked(deps.ensureMatrixStartupVerification).mockResolvedValue(

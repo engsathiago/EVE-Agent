@@ -447,9 +447,7 @@ function shouldApplyNativeWorkerBudget(env) {
   if (env.RAYON_NUM_THREADS?.trim() && env.TOKIO_WORKER_THREADS?.trim()) {
     return false;
   }
-  return (
-    env.EVE_TEST_PROJECTS_SERIAL === "1" || resolveExplicitVitestWorkerBudget(env) !== null
-  );
+  return env.EVE_TEST_PROJECTS_SERIAL === "1" || resolveExplicitVitestWorkerBudget(env) !== null;
 }
 
 function resolveNativeWorkerCount(env) {
@@ -508,8 +506,7 @@ export function resolveLinkedSourceBundledPluginsEnv(
   }
   return {
     EVE_BUNDLED_PLUGINS_DIR: extensionsDir,
-    EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR:
-      env.EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR?.trim() || "1",
+    EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR: env.EVE_TEST_TRUST_BUNDLED_PLUGINS_DIR?.trim() || "1",
   };
 }
 

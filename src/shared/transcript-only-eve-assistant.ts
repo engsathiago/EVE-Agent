@@ -20,8 +20,7 @@ export function isTranscriptOnlyEVEAssistantMessage(message: unknown): boolean {
   }
   const entry = message as { role?: unknown; provider?: unknown; model?: unknown };
   return (
-    entry.role === "assistant" &&
-    isTranscriptOnlyEVEAssistantModel(entry.provider, entry.model)
+    entry.role === "assistant" && isTranscriptOnlyEVEAssistantModel(entry.provider, entry.model)
   );
 }
 

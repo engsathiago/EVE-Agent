@@ -298,7 +298,7 @@ describe("respawnGatewayProcessForUpdate", () => {
     process.execArgv = [];
     process.argv = [
       "C:\\Program Files\\node.exe",
-      "C:\\eve\\node_modules\\.pnpm\\eve@2026.6.5\\node_modules\\eve\\dist\\index.js",
+      "C:\\eve\\node_modules\\.pnpm\\eve-agent@2026.6.5\\node_modules\\eve-agent\\dist\\index.js",
       "gateway",
       "run",
     ];
@@ -310,7 +310,7 @@ describe("respawnGatewayProcessForUpdate", () => {
     expect(result.pid).toBe(5151);
     expect(spawnMock).toHaveBeenCalledWith(
       process.execPath,
-      ["C:\\eve\\node_modules\\eve\\eve.mjs", "gateway", "run"],
+      ["C:\\eve\\node_modules\\eve-agent\\eve.mjs", "gateway", "run"],
       {
         detached: true,
         env: process.env,
@@ -325,7 +325,7 @@ describe("respawnGatewayProcessForUpdate", () => {
     process.execArgv = [];
     process.argv = [
       "/usr/local/bin/node",
-      "/app/node_modules/.pnpm/eve@2026.6.5/node_modules/eve/dist/entry.js",
+      "/app/node_modules/.pnpm/eve-agent@2026.6.5/node_modules/eve-agent/dist/entry.js",
       "gateway",
       "run",
     ];
@@ -336,7 +336,7 @@ describe("respawnGatewayProcessForUpdate", () => {
     expect(result.mode).toBe("spawned");
     expect(spawnMock).toHaveBeenCalledWith(
       process.execPath,
-      ["/app/node_modules/eve/eve.mjs", "gateway", "run"],
+      ["/app/node_modules/eve-agent/eve.mjs", "gateway", "run"],
       {
         detached: true,
         env: process.env,

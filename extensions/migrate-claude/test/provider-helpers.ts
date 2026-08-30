@@ -15,9 +15,7 @@ const logger = {
 };
 
 export async function makeTempRoot() {
-  const root = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-migrate-claude-"),
-  );
+  const root = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-migrate-claude-"));
   tempRoots.add(root);
   return root;
 }

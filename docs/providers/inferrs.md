@@ -12,7 +12,7 @@ title: "Inferrs"
 | Property           | Value                                                              |
 | ------------------ | ------------------------------------------------------------------ |
 | Provider id        | `inferrs` (custom; configure under `models.providers.inferrs`)     |
-| Plugin             | none — `inferrs` is not a bundled EVE provider plugin         |
+| Plugin             | none — `inferrs` is not a bundled EVE provider plugin              |
 | Auth env var       | Optional. Any value works if your inferrs server has no auth       |
 | API                | OpenAI-compatible (`openai-completions`)                           |
 | Suggested base URL | `http://127.0.0.1:8080/v1` (or wherever your inferrs server lives) |

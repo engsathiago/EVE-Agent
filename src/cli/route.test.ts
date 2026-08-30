@@ -147,9 +147,7 @@ describe("tryRouteCli", () => {
       return true;
     });
 
-    await expect(tryRouteCli(["node", "eve", "models", "status", "--json"])).resolves.toBe(
-      true,
-    );
+    await expect(tryRouteCli(["node", "eve", "models", "status", "--json"])).resolves.toBe(true);
 
     expect(ensureConfigReadyMock).not.toHaveBeenCalled();
     expect(captured).toEqual([true]);
@@ -204,9 +202,7 @@ describe("tryRouteCli", () => {
       capturedLogLevels.push(process.env.EVE_LOG_LEVEL);
     });
 
-    await expect(tryRouteCli(["node", "eve", "status", "--log-level=trace"])).resolves.toBe(
-      true,
-    );
+    await expect(tryRouteCli(["node", "eve", "status", "--log-level=trace"])).resolves.toBe(true);
 
     expect(ensureConfigReadyMock).toHaveBeenCalledTimes(1);
     expect(runRouteMock).toHaveBeenCalledTimes(1);

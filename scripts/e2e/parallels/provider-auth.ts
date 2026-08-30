@@ -37,16 +37,13 @@ export function resolveProviderAuth(input: {
       authChoice: "apiKey",
       authKeyFlag: "anthropic-api-key",
       modelId:
-        input.modelId ||
-        process.env.EVE_PARALLELS_ANTHROPIC_MODEL ||
-        "anthropic/claude-sonnet-4-6",
+        input.modelId || process.env.EVE_PARALLELS_ANTHROPIC_MODEL || "anthropic/claude-sonnet-4-6",
     },
     minimax: {
       apiKeyEnv: input.apiKeyEnv || "MINIMAX_API_KEY",
       authChoice: "minimax-global-api",
       authKeyFlag: "minimax-api-key",
-      modelId:
-        input.modelId || process.env.EVE_PARALLELS_MINIMAX_MODEL || "minimax/MiniMax-M2.7",
+      modelId: input.modelId || process.env.EVE_PARALLELS_MINIMAX_MODEL || "minimax/MiniMax-M2.7",
     },
     openai: {
       apiKeyEnv: input.apiKeyEnv || "OPENAI_API_KEY",
@@ -89,9 +86,7 @@ export function providerIdFromModelId(modelId: string): string {
 
 export function resolveParallelsModelTimeoutSeconds(platform?: Platform): number {
   const platformEnvName =
-    platform === undefined
-      ? undefined
-      : `EVE_PARALLELS_${platform.toUpperCase()}_MODEL_TIMEOUT_S`;
+    platform === undefined ? undefined : `EVE_PARALLELS_${platform.toUpperCase()}_MODEL_TIMEOUT_S`;
   const platformEnv = platformEnvName === undefined ? undefined : process.env[platformEnvName];
   const defaultSeconds = platform === "macos" || platform === "windows" ? 1800 : 900;
   if (platformEnvName && platformEnv?.trim()) {
@@ -217,7 +212,7 @@ export function resolveLatestVersion(
   const userConfigPath = path.join(userConfigDir, "npmrc");
   try {
     writeFile(userConfigPath, "", "utf8");
-    return runCommand("npm", ["view", "eve", "version", "--userconfig", userConfigPath], {
+    return runCommand("npm", ["view", "eve-agent", "version", "--userconfig", userConfigPath], {
       quiet: true,
     }).stdout.trim();
   } finally {

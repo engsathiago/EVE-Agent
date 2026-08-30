@@ -113,7 +113,7 @@ export async function runPluginPayloadSmokeCheck(params: {
           pluginId,
           installPath,
           reason: "missing-eve-peer-link",
-          detail: `Plugin declares peerDependency "eve" but peer link audit failed: ${peerIssue.reason}.`,
+          detail: `Plugin declares peerDependency "eve-agent" but peer link audit failed: ${peerIssue.reason}.`,
         });
       }
     }
@@ -176,7 +176,7 @@ function manifestDeclaresEVEPeer(manifest: PackageManifest): boolean {
     typeof peerDependencies === "object" &&
     peerDependencies !== null &&
     !Array.isArray(peerDependencies) &&
-    typeof (peerDependencies as Record<string, unknown>).eve === "string"
+    typeof (peerDependencies as Record<string, unknown>)["eve-agent"] === "string"
   );
 }
 

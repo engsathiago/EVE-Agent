@@ -394,6 +394,7 @@ export const es: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Control",
+    workspace: "Espacio de trabajo",
     agent: "Agente",
     settings: "Ajustes",
     expand: "Expandir barra lateral",
@@ -405,6 +406,11 @@ export const es: TranslationMap = {
     activity: "Actividad",
     overview: "Resumen",
     workboard: "Panel de trabajo",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Canales",
     instances: "Instancias",
     sessions: "Sesiones",
@@ -430,6 +436,11 @@ export const es: TranslationMap = {
     activity: "Resúmenes de actividad de herramientas locales del navegador.",
     overview: "Estado de la puerta de enlace, puntos de entrada y lectura rápida de salud.",
     workboard: "Cola de trabajo del agente y traspaso de sesión.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Gestionar canales y ajustes.",
     instances: "Balizas de presencia de clientes y nodos conectados.",
     sessions: "Inspeccionar sesiones activas y ajustar valores predeterminados por sesión.",
@@ -1322,8 +1333,7 @@ export const es: TranslationMap = {
         title: "No se pudo conectar",
         summary:
           "El navegador no pudo completar la conexión al Gateway. Revisa el destino y el transporte antes de reintentar credenciales.",
-        stepGateway:
-          "Confirma que el Gateway esté en ejecución con eve status u eve gateway run.",
+        stepGateway: "Confirma que el Gateway esté en ejecución con eve status u eve gateway run.",
         stepUrl:
           "Revisa la URL de WebSocket y usa wss:// cuando el Gateway esté detrás de HTTPS/Tailscale Serve.",
         stepDashboard:

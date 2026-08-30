@@ -43,10 +43,10 @@ describe("plugin npm runtime build planning", () => {
       expectDistRelativePaths(plan.runtimeExtensions);
       expectDistRelativePaths(plan.runtimeBuildOutputs);
       expect(plan.packageFiles).toContain("dist/**");
-      expect(plan.packagePeerMetadata.peerDependencies.eve).toBe(
+      expect(plan.packagePeerMetadata.peerDependencies["eve-agent"]).toBe(
         plan.packageJson.eve.compat.pluginApi,
       );
-      expect(plan.packagePeerMetadata.peerDependenciesMeta.eve.optional).toBe(true);
+      expect(plan.packagePeerMetadata.peerDependenciesMeta["eve-agent"].optional).toBe(true);
     }
   });
 

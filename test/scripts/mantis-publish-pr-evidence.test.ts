@@ -267,7 +267,7 @@ describe("scripts/mantis/publish-pr-evidence", () => {
       manifest,
       marker: "<!-- mantis-telegram-desktop-proof -->",
       rawBase:
-        "https://raw.githubusercontent.com/eve/eve/qa-artifacts/mantis/telegram-desktop/pr-1/run-1",
+        "https://raw.githubusercontent.com/engsathiago/eve-agent/qa-artifacts/mantis/telegram-desktop/pr-1/run-1",
       requestSource: "issue_comment",
       runUrl: "https://github.com/engsathiago/eve-agent/actions/runs/1",
       treeUrl:

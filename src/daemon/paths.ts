@@ -55,9 +55,7 @@ export function resolveGatewayTaskScriptPath(env: Record<string, string | undefi
   }
   const scriptName = normalizeOptionalString(env.EVE_TASK_SCRIPT_NAME) || "gateway.cmd";
   if (/[/\\]|\.\./.test(scriptName)) {
-    throw new Error(
-      `EVE_TASK_SCRIPT_NAME must be a file name only, not a path: ${scriptName}`,
-    );
+    throw new Error(`EVE_TASK_SCRIPT_NAME must be a file name only, not a path: ${scriptName}`);
   }
   return path.join(resolveGatewayStateDir(env), scriptName);
 }

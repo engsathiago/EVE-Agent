@@ -554,8 +554,7 @@ export async function startGatewayServer(
   const { bootstrapGatewayNetworkRuntime } = await import("./server-network-runtime.js");
   bootstrapGatewayNetworkRuntime();
 
-  const minimalTestGateway =
-    isVitestRuntimeEnv() && process.env.EVE_TEST_MINIMAL_GATEWAY === "1";
+  const minimalTestGateway = isVitestRuntimeEnv() && process.env.EVE_TEST_MINIMAL_GATEWAY === "1";
 
   // Ensure all default port derivations (browser/canvas) see the actual runtime port.
   process.env.EVE_GATEWAY_PORT = String(port);

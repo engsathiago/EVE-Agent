@@ -54,9 +54,7 @@ describe("telegram DM access warning helpers", () => {
   it("shows global config commands for the default account", () => {
     const lines = buildTelegramDmAccessWarningLines(DEFAULT_ACCOUNT_ID);
 
-    expect(lines.join("\n")).toContain(
-      'eve config set channels.telegram.dmPolicy "allowlist"',
-    );
+    expect(lines.join("\n")).toContain('eve config set channels.telegram.dmPolicy "allowlist"');
     expect(lines.join("\n")).toContain(
       `eve config set channels.telegram.allowFrom '["YOUR_USER_ID"]'`,
     );

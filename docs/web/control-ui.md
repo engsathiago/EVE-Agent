@@ -1,5 +1,5 @@
 ---
-summary: "Browser-based control UI for the Gateway (chat, activity, nodes, config)"
+summary: "Browser-based control UI for chat, missions, projects, Studio, environments, integrations, intelligence, nodes, and Gateway config"
 read_when:
   - You want to operate the Gateway from a browser
   - You want Tailnet access without SSH tunnels
@@ -104,6 +104,15 @@ Imported themes are stored only in the current browser profile. They are not wri
     - Talk through browser realtime sessions. OpenAI uses direct WebRTC, Google Live uses a constrained one-use browser token over WebSocket, and backend-only realtime voice plugins use the Gateway relay transport. Client-owned provider sessions start with `talk.client.create`; Gateway relay sessions start with `talk.session.create`. The relay keeps provider credentials on the Gateway while the browser streams microphone PCM through `talk.session.appendAudio`, forwards `eve_agent_consult` provider tool calls through `talk.client.toolCall` for Gateway policy and the larger configured EVE model, and routes active-run voice steering through `talk.client.steer` or `talk.session.steer`.
     - Stream tool calls + live tool output cards in Chat (agent events).
     - Activity tab with browser-local, redaction-first summaries of live tool activity from existing `session.tool` / tool event delivery.
+
+  </Accordion>
+  <Accordion title="Projects, Mission Control, and intelligence">
+    - Projects group one or more folders under a persistent project identity and its Workboard board (`projects.*`).
+    - Mission Control uses the Workboard page for mission creation, instructions, pause/resume, retry, reassignment, proof, and worker dispatch (`mission.*`, `workboard.*`).
+    - Environments creates and controls Docker workspaces with explicit image, CPU, memory, TTL, persistence, and network settings. Each environment can be started, stopped, restarted, snapshotted, or deleted (`intelligence.environments.*`).
+    - Studio creates versioned documents, decks, sheets, sites, notes, and diagrams. It imports files up to 16 MB through the Gateway, previews supported text and media formats, exposes version metadata, downloads the original artifact, and publishes deliverables to Result Hub (`intelligence.studio.*`).
+    - Integration Store searches and filters one credential-safe view of EVE plugins, channels, and configured MCP servers. **Manage** and **Install** open the owning Plugins, Channels, or MCP page; those owner pages perform configuration and lifecycle changes (`intelligence.integrations.list`).
+    - Intelligence summarizes traces, Result Hub, flows, evals, routing, experiments, workers, Model Lab, and work packages (`intelligence.status`). Use the matching CLI command when you need detailed history or automation.
 
   </Accordion>
   <Accordion title="Channels, instances, sessions, dreams">
@@ -231,12 +240,12 @@ The Control UI ships a `manifest.webmanifest` and a service worker, so modern br
 
 If the page shows **Protocol mismatch** right after an EVE update, first reopen the dashboard with `eve dashboard` and hard-refresh the page. If it still fails, clear site data for the dashboard origin or test in a private browser window; an old tab or browser service-worker cache can keep running a pre-update Control UI bundle against the newer Gateway.
 
-| Surface                                               | What it does                                                       |
-| ----------------------------------------------------- | ------------------------------------------------------------------ |
-| `ui/public/manifest.webmanifest`                      | PWA manifest. Browsers offer "Install app" once it is reachable.   |
-| `ui/public/sw.js`                                     | Service worker that handles `push` events and notification clicks. |
+| Surface                                          | What it does                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| `ui/public/manifest.webmanifest`                 | PWA manifest. Browsers offer "Install app" once it is reachable.   |
+| `ui/public/sw.js`                                | Service worker that handles `push` events and notification clicks. |
 | `push/vapid-keys.json` (under the EVE state dir) | Auto-generated VAPID keypair used to sign Web Push payloads.       |
-| `push/web-push-subscriptions.json`                    | Persisted browser subscription endpoints.                          |
+| `push/web-push-subscriptions.json`               | Persisted browser subscription endpoints.                          |
 
 Override the VAPID keypair through env vars on the Gateway process when you want to pin keys (for multi-host deployments, secrets rotation, or tests):
 

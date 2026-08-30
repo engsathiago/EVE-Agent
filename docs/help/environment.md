@@ -161,17 +161,17 @@ shorthand values.
 
 ## Path-related env vars
 
-| Variable                 | Purpose                                                                                                                                                                                                                                 |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable            | Purpose                                                                                                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `EVE_HOME`          | Override the home directory used for internal EVE path defaults (`~/.eve/`, agent dirs, sessions, credentials, installer onboarding, and the default dev checkout). Useful when running EVE as a dedicated service user. |
-| `EVE_STATE_DIR`     | Override the state directory (default `~/.eve`).                                                                                                                                                                                   |
-| `EVE_CONFIG_PATH`   | Override the config file path (default `~/.eve/eve.json`).                                                                                                                                                                    |
-| `EVE_INCLUDE_ROOTS` | Path-list of directories where `$include` directives may resolve files outside the config directory (default: none — `$include` is confined to the config dir). Tilde-expanded.                                                         |
+| `EVE_STATE_DIR`     | Override the state directory (default `~/.eve`).                                                                                                                                                                         |
+| `EVE_CONFIG_PATH`   | Override the config file path (default `~/.eve/eve.json`).                                                                                                                                                               |
+| `EVE_INCLUDE_ROOTS` | Path-list of directories where `$include` directives may resolve files outside the config directory (default: none — `$include` is confined to the config dir). Tilde-expanded.                                          |
 
 ## Logging
 
-| Variable                         | Purpose                                                                                                                                                                                      |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable                    | Purpose                                                                                                                                                                                      |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `EVE_LOG_LEVEL`             | Override log level for both file and console (e.g. `debug`, `trace`). Takes precedence over `logging.level` and `logging.consoleLevel` in config. Invalid values are ignored with a warning. |
 | `EVE_DEBUG_MODEL_TRANSPORT` | Emit targeted model request/response timing diagnostics at `info` level without enabling global debug logs.                                                                                  |
 | `EVE_DEBUG_MODEL_PAYLOAD`   | Model payload diagnostics: `summary`, `tools`, or `full-redacted`. `full-redacted` is capped and redacted but may include prompt/message text.                                               |

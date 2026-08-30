@@ -167,8 +167,7 @@ export function resolveLoginFailureFeedback(
     return buildFeedback({
       kind: "origin-not-allowed",
       rawError,
-      docsHref:
-        "https://docs.eve.ai/web/control-ui#debuggingtesting-dev-server--remote-gateway",
+      docsHref: "https://docs.eve.ai/web/control-ui#debuggingtesting-dev-server--remote-gateway",
       titleKey: "login.failure.origin.title",
       summaryKey: "login.failure.origin.summary",
       stepKeys: [
@@ -183,8 +182,7 @@ export function resolveLoginFailureFeedback(
     return buildFeedback({
       kind: "protocol-mismatch",
       rawError,
-      docsHref:
-        "https://docs.eve.ai/web/control-ui#debuggingtesting-dev-server--remote-gateway",
+      docsHref: "https://docs.eve.ai/web/control-ui#debuggingtesting-dev-server--remote-gateway",
       titleKey: "login.failure.protocol.title",
       summaryKey: "login.failure.protocol.summary",
       stepKeys: [
@@ -377,9 +375,7 @@ export function renderLoginGate(state: AppViewState) {
         <div class="login-gate__help">
           <div class="login-gate__help-title">${t("overview.connection.title")}</div>
           <ol class="login-gate__steps">
-            <li>
-              ${t("overview.connection.step1")}${renderConnectCommand("eve gateway run")}
-            </li>
+            <li>${t("overview.connection.step1")}${renderConnectCommand("eve gateway run")}</li>
             <li>${t("overview.connection.step2")} ${renderConnectCommand("eve dashboard")}</li>
             <li>${t("overview.connection.step3")}</li>
           </ol>

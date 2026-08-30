@@ -57,10 +57,7 @@ function normalizeSessionKey(sessionKey: string): string {
 }
 
 /** Canonicalizes aliases and main-session keys before ACP metadata lookup. */
-export function canonicalizeAcpSessionKey(params: {
-  cfg: EVEConfig;
-  sessionKey: string;
-}): string {
+export function canonicalizeAcpSessionKey(params: { cfg: EVEConfig; sessionKey: string }): string {
   const normalized = normalizeSessionKey(params.sessionKey);
   if (!normalized) {
     return "";

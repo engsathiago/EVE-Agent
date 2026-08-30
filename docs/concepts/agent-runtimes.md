@@ -14,12 +14,12 @@ the finished turn to EVE.
 Runtimes are easy to confuse with providers because both show up near model
 configuration. They are different layers:
 
-| Layer         | Examples                                     | What it means                                                       |
-| ------------- | -------------------------------------------- | ------------------------------------------------------------------- |
-| Provider      | `openai`, `anthropic`, `github-copilot`      | How EVE authenticates, discovers models, and names model refs. |
-| Model         | `gpt-5.5`, `claude-opus-4-6`                 | The model selected for the agent turn.                              |
-| Agent runtime | `eve`, `codex`, `copilot`, `claude-cli` | The low level loop or backend that executes the prepared turn.      |
-| Channel       | Telegram, Discord, Slack, WhatsApp           | Where messages enter and leave EVE.                            |
+| Layer         | Examples                                | What it means                                                  |
+| ------------- | --------------------------------------- | -------------------------------------------------------------- |
+| Provider      | `openai`, `anthropic`, `github-copilot` | How EVE authenticates, discovers models, and names model refs. |
+| Model         | `gpt-5.5`, `claude-opus-4-6`            | The model selected for the agent turn.                         |
+| Agent runtime | `eve`, `codex`, `copilot`, `claude-cli` | The low level loop or backend that executes the prepared turn. |
+| Channel       | Telegram, Discord, Slack, WhatsApp      | Where messages enter and leave EVE.                            |
 
 You will also see the word **harness** in code. A harness is the implementation
 that provides an agent runtime. For example, the bundled Codex harness
@@ -48,7 +48,7 @@ for the user-facing decision between PI, Codex, and GitHub Copilot agent runtime
 
 Most confusion comes from several different surfaces sharing the Codex name:
 
-| Surface                                          | EVE name/config                 | What it does                                                                                                   |
+| Surface                                          | EVE name/config                      | What it does                                                                                                   |
 | ------------------------------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | Native Codex app-server runtime                  | `openai/*` model refs                | Runs OpenAI embedded agent turns through Codex app-server. This is the usual ChatGPT/Codex subscription setup. |
 | Codex OAuth auth profiles                        | `openai` OAuth profiles              | Stores ChatGPT/Codex subscription auth that the Codex app-server harness consumes.                             |
@@ -123,15 +123,15 @@ contract, see [Codex harness runtime](/plugins/codex-harness-runtime#v1-support-
 
 Different runtimes own different amounts of the loop.
 
-| Surface                     | EVE embedded                             | Codex app-server                                                            |
-| --------------------------- | --------------------------------------------- | --------------------------------------------------------------------------- |
-| Model loop owner            | EVE through the EVE embedded runner | Codex app-server                                                            |
-| Canonical thread state      | EVE transcript                           | Codex thread, plus EVE transcript mirror                               |
-| EVE dynamic tools      | Native EVE tool loop                     | Bridged through the Codex adapter                                           |
-| Native shell and file tools | EVE path                                 | Codex-native tools, bridged through native hooks where supported            |
-| Context engine              | Native EVE context assembly              | EVE projects assembled context into the Codex turn                     |
-| Compaction                  | EVE or selected context engine           | Codex-native compaction, with EVE notifications and mirror maintenance |
-| Channel delivery            | EVE                                      | EVE                                                                    |
+| Surface                     | EVE embedded                        | Codex app-server                                                       |
+| --------------------------- | ----------------------------------- | ---------------------------------------------------------------------- |
+| Model loop owner            | EVE through the EVE embedded runner | Codex app-server                                                       |
+| Canonical thread state      | EVE transcript                      | Codex thread, plus EVE transcript mirror                               |
+| EVE dynamic tools           | Native EVE tool loop                | Bridged through the Codex adapter                                      |
+| Native shell and file tools | EVE path                            | Codex-native tools, bridged through native hooks where supported       |
+| Context engine              | Native EVE context assembly         | EVE projects assembled context into the Codex turn                     |
+| Compaction                  | EVE or selected context engine      | Codex-native compaction, with EVE notifications and mirror maintenance |
+| Channel delivery            | EVE                                 | EVE                                                                    |
 
 This ownership split is the main design rule:
 
@@ -238,15 +238,15 @@ SDK decision, see [GitHub Copilot agent runtime](/plugins/copilot).
 When a runtime is not EVE, it should document what EVE surfaces it supports.
 Use this shape for runtime docs:
 
-| Question                               | Why it matters                                                                                    |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Who owns the model loop?               | Determines where retries, tool continuation, and final answer decisions happen.                   |
+| Question                               | Why it matters                                                                               |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Who owns the model loop?               | Determines where retries, tool continuation, and final answer decisions happen.              |
 | Who owns canonical thread history?     | Determines whether EVE can edit history or only mirror it.                                   |
-| Do EVE dynamic tools work?        | Messaging, sessions, cron, and EVE-owned tools rely on this.                                 |
+| Do EVE dynamic tools work?             | Messaging, sessions, cron, and EVE-owned tools rely on this.                                 |
 | Do dynamic tool hooks work?            | Plugins expect `before_tool_call`, `after_tool_call`, and middleware around EVE-owned tools. |
-| Do native tool hooks work?             | Shell, patch, and runtime-owned tools need native hook support for policy and observation.        |
-| Does the context engine lifecycle run? | Memory and context plugins depend on assemble, ingest, after-turn, and compaction lifecycle.      |
-| What compaction data is exposed?       | Some plugins only need notifications, while others need kept/dropped metadata.                    |
+| Do native tool hooks work?             | Shell, patch, and runtime-owned tools need native hook support for policy and observation.   |
+| Does the context engine lifecycle run? | Memory and context plugins depend on assemble, ingest, after-turn, and compaction lifecycle. |
+| What compaction data is exposed?       | Some plugins only need notifications, while others need kept/dropped metadata.               |
 | What is intentionally unsupported?     | Users should not assume EVE equivalence where the native runtime owns more state.            |
 
 The Codex runtime support contract is documented in

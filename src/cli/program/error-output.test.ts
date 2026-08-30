@@ -64,8 +64,6 @@ describe("formatCliParseErrorOutput", () => {
       argv: ["node", "eve", "plugins", "install"],
     });
 
-    expect(output).toBe(
-      'Missing required argument "name".\nTry: eve plugins install --help\n',
-    );
+    expect(output).toBe('Missing required argument "name".\nTry: eve plugins install --help\n');
   });
 });

@@ -163,8 +163,7 @@ describe("doctor command", () => {
       },
     ]);
 
-    const previousConfigWriteSupport =
-      process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE;
+    const previousConfigWriteSupport = process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE;
     process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE = "1";
     try {
       await doctorCommand(createDoctorRuntime(), { yes: true });
@@ -172,8 +171,7 @@ describe("doctor command", () => {
       if (previousConfigWriteSupport === undefined) {
         delete process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE;
       } else {
-        process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE =
-          previousConfigWriteSupport;
+        process.env.EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE = previousConfigWriteSupport;
       }
     }
 

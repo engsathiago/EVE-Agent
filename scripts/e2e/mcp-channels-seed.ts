@@ -6,8 +6,7 @@ import { applyDockerOpenAiProviderConfig, type EVEConfig } from "./docker-openai
 
 async function main() {
   const stateDir = process.env.EVE_STATE_DIR?.trim() || path.join(os.homedir(), ".eve");
-  const configPath =
-    process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
+  const configPath = process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
   const sessionsDir = path.join(stateDir, "agents", "main", "sessions");
   const sessionFile = path.join(sessionsDir, "sess-main.jsonl");
   const storePath = path.join(sessionsDir, "sessions.json");

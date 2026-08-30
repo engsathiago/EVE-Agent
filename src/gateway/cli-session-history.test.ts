@@ -361,8 +361,7 @@ describe("cli session history", () => {
         const record = readRecord(message);
         return (
           record.role === "user" &&
-          (record["__eve"] as { cliSessionId?: unknown } | undefined)?.cliSessionId ===
-            sessionId
+          (record["__eve"] as { cliSessionId?: unknown } | undefined)?.cliSessionId === sessionId
         );
       });
       if (!importedUser) {

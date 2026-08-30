@@ -112,7 +112,7 @@ export async function runGatewayLoop(params: {
   // listeners. Without this, every subsequent lifecycle path (SIGUSR1,
   // SIGTERM-with-intent, restart iteration hook, stability bundle writer)
   // depends on a dynamic import() call. After an in-place package upgrade
-  // (e.g. `npm install -g eve@latest` triggered via update.run),
+  // (e.g. `npm install -g eve-agent@latest` triggered via update.run),
   // dist/ chunk hashes rotate while the process is still running. The next
   // SIGUSR1 — including the one update.run schedules for itself — would
   // hit ERR_MODULE_NOT_FOUND from inside its async IIFE, reject silently,
@@ -249,9 +249,7 @@ export async function runGatewayLoop(params: {
           gatewayLog.warn(`failed to mark update restart sentinel unhealthy: ${String(err)}`);
         });
       } else {
-        gatewayLog.info(
-          `restart mode: in-process restart (${respawn.detail ?? "EVE_NO_RESPAWN"})`,
-        );
+        gatewayLog.info(`restart mode: in-process restart (${respawn.detail ?? "EVE_NO_RESPAWN"})`);
       }
       if (!(await reacquireLockForInProcessRestart())) {
         return;
@@ -307,9 +305,7 @@ export async function runGatewayLoop(params: {
         `full process restart failed (${respawn.detail ?? "unknown error"}); falling back to in-process restart`,
       );
     } else {
-      gatewayLog.info(
-        `restart mode: in-process restart (${respawn.detail ?? "EVE_NO_RESPAWN"})`,
-      );
+      gatewayLog.info(`restart mode: in-process restart (${respawn.detail ?? "EVE_NO_RESPAWN"})`);
     }
     if (!(await reacquireLockForInProcessRestart())) {
       return;

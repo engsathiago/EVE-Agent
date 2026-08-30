@@ -431,18 +431,12 @@ export function readRunnerOverrideEnv(env = process.env) {
   };
 
   return {
-    varUbuntuRunner: preferNonEmptyEnv(
-      env.VAR_UBUNTU_RUNNER,
-      env.EVE_RELEASE_CHECKS_UBUNTU_RUNNER,
-    ),
+    varUbuntuRunner: preferNonEmptyEnv(env.VAR_UBUNTU_RUNNER, env.EVE_RELEASE_CHECKS_UBUNTU_RUNNER),
     varWindowsRunner: preferNonEmptyEnv(
       env.VAR_WINDOWS_RUNNER,
       env.EVE_RELEASE_CHECKS_WINDOWS_RUNNER,
     ),
-    varMacosRunner: preferNonEmptyEnv(
-      env.VAR_MACOS_RUNNER,
-      env.EVE_RELEASE_CHECKS_MACOS_RUNNER,
-    ),
+    varMacosRunner: preferNonEmptyEnv(env.VAR_MACOS_RUNNER, env.EVE_RELEASE_CHECKS_MACOS_RUNNER),
   };
 }
 
@@ -492,7 +486,7 @@ async function main(argv) {
   const previousVersion = args["previous-version"]?.trim() || "";
   const baselineSpec =
     args["baseline-spec"]?.trim() ||
-    (previousVersion ? `eve@${previousVersion}` : "eve@latest");
+    (previousVersion ? `eve-agent@${previousVersion}` : "eve-agent@latest");
   const providedBaselineTgz = args["baseline-tgz"]?.trim()
     ? resolve(args["baseline-tgz"].trim())
     : "";
@@ -1692,11 +1686,11 @@ export function verifyWindowsPackagedUpgradeFallbackInstall({
 
 export function resolveExplicitBaselineVersion(baselineSpec) {
   const trimmed = baselineSpec.trim();
-  if (!trimmed || trimmed === "eve@latest") {
+  if (!trimmed || trimmed === "eve-agent@latest") {
     return "";
   }
-  if (trimmed.startsWith("eve@")) {
-    return trimmed.slice("eve@".length);
+  if (trimmed.startsWith("eve-agent@")) {
+    return trimmed.slice("eve-agent@".length);
   }
   return trimmed;
 }
@@ -1706,13 +1700,13 @@ async function resolveInstallerTargetVersion(params) {
   if (resolvedVersion) {
     return resolvedVersion;
   }
-  const latestResult = await runCommand(npmCommand(), ["view", "eve@latest", "version"], {
+  const latestResult = await runCommand(npmCommand(), ["view", "eve-agent@latest", "version"], {
     logPath: join(params.logsDir, `${params.suiteName}-latest-version.log`),
     timeoutMs: 2 * 60 * 1000,
   });
   const latestVersion = latestResult.stdout.trim();
   if (!latestVersion) {
-    throw new Error("npm view eve@latest version did not return a version.");
+    throw new Error("npm view eve-agent@latest version did not return a version.");
   }
   return latestVersion;
 }
@@ -2801,9 +2795,7 @@ async function waitForInstalledDiscordReadback(params) {
 
 async function maybeRunDiscordRoundtrip(params) {
   const token =
-    process.env.EVE_DISCORD_SMOKE_BOT_TOKEN?.trim() ||
-    process.env.DISCORD_BOT_TOKEN?.trim() ||
-    "";
+    process.env.EVE_DISCORD_SMOKE_BOT_TOKEN?.trim() || process.env.DISCORD_BOT_TOKEN?.trim() || "";
   const guildId = process.env.EVE_DISCORD_SMOKE_GUILD_ID?.trim() || "";
   const channelId = process.env.EVE_DISCORD_SMOKE_CHANNEL_ID?.trim() || "";
   if (!token || !guildId || !channelId) {
@@ -3837,8 +3829,8 @@ export function resolveInstalledPackageRootFromCliPath(
 
 function installedPackageRoot(prefixDir, platform = process.platform) {
   return platform === "win32"
-    ? join(prefixDir, "node_modules", "eve")
-    : join(prefixDir, "lib", "node_modules", "eve");
+    ? join(prefixDir, "node_modules", "eve-agent")
+    : join(prefixDir, "lib", "node_modules", "eve-agent");
 }
 
 function installedEntryPath(prefixDir) {

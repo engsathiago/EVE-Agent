@@ -562,9 +562,7 @@ async function createMatrixQaCliSelfVerificationRuntime(params: {
   userId: string;
 }) {
   const outputDir = requireMatrixQaE2eeOutputDir(params.context);
-  const rootDir = await mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-matrix-cli-qa-"),
-  );
+  const rootDir = await mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-matrix-cli-qa-"));
   const artifactDir = path.join(
     outputDir,
     "cli-self-verification",

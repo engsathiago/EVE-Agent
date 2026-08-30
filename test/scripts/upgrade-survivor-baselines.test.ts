@@ -29,7 +29,7 @@ function withJsonFixture<T>(name: string, contents: unknown, fn: (file: string) 
 
 describe("scripts/resolve-upgrade-survivor-baselines", () => {
   it("keeps the single fallback baseline when no expanded request is provided", () => {
-    expect(resolveBaselines(new Map([["fallback", "2026.4.23"]]))).toEqual(["eve@2026.4.23"]);
+    expect(resolveBaselines(new Map([["fallback", "2026.4.23"]]))).toEqual(["eve-agent@2026.4.23"]);
   });
 
   it("resolves release-history to last six stable releases plus explicit legacy anchors", () => {
@@ -64,14 +64,14 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
           ]),
         ),
       ).toEqual([
-        "eve@2026.4.29",
-        "eve@2026.4.27",
-        "eve@2026.4.26",
-        "eve@2026.4.25",
-        "eve@2026.4.24",
-        "eve@2026.4.22",
-        "eve@2026.4.23",
-        "eve@2026.3.13-1",
+        "eve-agent@2026.4.29",
+        "eve-agent@2026.4.27",
+        "eve-agent@2026.4.26",
+        "eve-agent@2026.4.25",
+        "eve-agent@2026.4.24",
+        "eve-agent@2026.4.22",
+        "eve-agent@2026.4.23",
+        "eve-agent@2026.3.13-1",
       ]);
     });
   });
@@ -106,10 +106,10 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
               ]),
             ),
           ).toEqual([
-            "eve@2026.5.2",
-            "eve@2026.4.30",
-            "eve@2026.4.29",
-            "eve@2026.4.23",
+            "eve-agent@2026.5.2",
+            "eve-agent@2026.4.30",
+            "eve-agent@2026.4.29",
+            "eve-agent@2026.4.23",
           ]);
         },
       );
@@ -147,12 +147,12 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
               ]),
             ),
           ).toEqual([
-            "eve@2026.5.3-1",
-            "eve@2026.5.3",
-            "eve@2026.5.2",
-            "eve@2026.4.29",
-            "eve@2026.4.23",
-            "eve@2026.4.15",
+            "eve-agent@2026.5.3-1",
+            "eve-agent@2026.5.3",
+            "eve-agent@2026.5.2",
+            "eve-agent@2026.4.29",
+            "eve-agent@2026.4.23",
+            "eve-agent@2026.4.15",
           ]);
         },
       );
@@ -218,7 +218,7 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
             ["history-count", "2"],
           ]),
         ),
-      ).toEqual(["eve@2026.4.29"]);
+      ).toEqual(["eve-agent@2026.4.29"]);
     });
   });
 
@@ -256,13 +256,13 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
               ]),
             ),
           ).toEqual([
-            "eve@2026.4.29",
-            "eve@2026.4.27",
-            "eve@2026.4.26",
-            "eve@2026.4.25",
-            "eve@2026.4.24",
-            "eve@2026.4.23",
-            "eve@2026.3.13",
+            "eve-agent@2026.4.29",
+            "eve-agent@2026.4.27",
+            "eve-agent@2026.4.26",
+            "eve-agent@2026.4.25",
+            "eve-agent@2026.4.24",
+            "eve-agent@2026.4.23",
+            "eve-agent@2026.3.13",
           ]);
         },
       );

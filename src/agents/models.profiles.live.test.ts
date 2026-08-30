@@ -76,18 +76,13 @@ const LIVE = isLiveTestEnabled();
 const DIRECT_ENABLED = Boolean(process.env.EVE_LIVE_MODELS?.trim());
 const REQUIRE_PROFILE_KEYS = isLiveProfileKeyModeEnabled();
 const LIVE_HEARTBEAT_MS = Math.max(1_000, toInt(process.env.EVE_LIVE_HEARTBEAT_MS, 30_000));
-const LIVE_SETUP_TIMEOUT_MS = Math.max(
-  1_000,
-  toInt(process.env.EVE_LIVE_SETUP_TIMEOUT_MS, 45_000),
-);
+const LIVE_SETUP_TIMEOUT_MS = Math.max(1_000, toInt(process.env.EVE_LIVE_SETUP_TIMEOUT_MS, 45_000));
 const LIVE_TEST_TIMEOUT_MS = Math.max(
   1_000,
   toInt(process.env.EVE_LIVE_TEST_TIMEOUT_MS, 60 * 60 * 1000),
 );
 const DEFAULT_LIVE_MODEL_CONCURRENCY = 20;
-const LIVE_MODEL_CONCURRENCY = resolveLiveModelConcurrency(
-  process.env.EVE_LIVE_MODEL_CONCURRENCY,
-);
+const LIVE_MODEL_CONCURRENCY = resolveLiveModelConcurrency(process.env.EVE_LIVE_MODEL_CONCURRENCY);
 const LIVE_MODELS_JSON_TIMEOUT_MS = resolveLiveModelsJsonTimeoutMs(
   process.env.EVE_LIVE_MODELS_JSON_TIMEOUT_MS,
 );
@@ -261,10 +256,7 @@ function applyLiveProviderDiscoveryPluginCompat(params: {
   });
 }
 
-function enableLiveProviderPlugins(
-  config: EVEConfig,
-  pluginIds: readonly string[],
-): EVEConfig {
+function enableLiveProviderPlugins(config: EVEConfig, pluginIds: readonly string[]): EVEConfig {
   const compatConfig =
     withBundledPluginEnablementCompat({
       config,

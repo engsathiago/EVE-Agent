@@ -152,10 +152,7 @@ type DiscordContractApi = {
 };
 
 type FeishuContractApi = {
-  createFeishuThreadBindingManager: (params: {
-    accountId?: string;
-    cfg: EVEConfig;
-  }) => unknown;
+  createFeishuThreadBindingManager: (params: { accountId?: string; cfg: EVEConfig }) => unknown;
   feishuThreadBindingTesting: {
     resetFeishuThreadBindingsForTests: () => void;
   };

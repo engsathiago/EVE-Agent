@@ -1,5 +1,7 @@
 /** Session-scoped MCP runtime manager, catalog loader, and transport lifecycle. */
 import crypto from "node:crypto";
+import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
+import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
@@ -11,8 +13,6 @@ import type {
   JsonSchemaValidator,
   jsonSchemaValidator,
 } from "@modelcontextprotocol/sdk/validation/types.js";
-import { redactSensitiveUrlLikeString } from "@eve/net-policy/redact-sensitive-url";
-import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { Compile } from "typebox/compile";
 import type { EVEConfig } from "../config/types.eve.js";
 import { logWarn } from "../logger.js";

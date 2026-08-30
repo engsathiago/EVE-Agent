@@ -64,9 +64,7 @@ function readFacadeBoundaryConfigSafely(): {
     const raw = fs.readFileSync(configPath, "utf8");
     const parsed = JSON5.parse(raw);
     const rawConfig =
-      parsed && typeof parsed === "object"
-        ? (parsed as EVEConfig)
-        : EMPTY_FACADE_BOUNDARY_CONFIG;
+      parsed && typeof parsed === "object" ? (parsed as EVEConfig) : EMPTY_FACADE_BOUNDARY_CONFIG;
     return { rawConfig };
   } catch {
     return { rawConfig: EMPTY_FACADE_BOUNDARY_CONFIG };
@@ -133,11 +131,7 @@ function readBundledPluginManifestRecordFromDir(params: {
   pluginsRoot: string;
   resolvedDirName: string;
 }): FacadePluginManifestLike | null {
-  const manifestPath = path.join(
-    params.pluginsRoot,
-    params.resolvedDirName,
-    "eve.plugin.json",
-  );
+  const manifestPath = path.join(params.pluginsRoot, params.resolvedDirName, "eve.plugin.json");
   if (!fs.existsSync(manifestPath)) {
     return null;
   }

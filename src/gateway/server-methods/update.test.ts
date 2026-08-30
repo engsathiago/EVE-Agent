@@ -82,9 +82,8 @@ vi.mock("../../config/sessions.js", () => ({
 }));
 
 vi.mock("../../infra/eve-root.js", async () => {
-  const actual = await vi.importActual<typeof import("../../infra/eve-root.js")>(
-    "../../infra/eve-root.js",
-  );
+  const actual =
+    await vi.importActual<typeof import("../../infra/eve-root.js")>("../../infra/eve-root.js");
   return {
     ...actual,
     resolveEVEPackageRoot: async () => "/tmp/eve",
@@ -514,9 +513,7 @@ describe("update.run restart scheduling", () => {
       throw Object.assign(new Error("uv_cwd"), { code: "ENOENT", syscall: "uv_cwd" });
     });
     try {
-      await withProcessEnv({ EVE_LAUNCHD_LABEL: "ai.eve.gateway" }, () =>
-        invokeUpdateRun({}),
-      );
+      await withProcessEnv({ EVE_LAUNCHD_LABEL: "ai.eve.gateway" }, () => invokeUpdateRun({}));
     } finally {
       cwdSpy.mockRestore();
     }
@@ -787,9 +784,7 @@ describe("update.run post-core plugin finalize", () => {
     detectRespawnSupervisorMock.mockReturnValueOnce("launchd");
     mockGlobalInstallSurface();
 
-    await withProcessEnv({ EVE_LAUNCHD_LABEL: "ai.eve.gateway" }, () =>
-      captureUpdateRunPayload(),
-    );
+    await withProcessEnv({ EVE_LAUNCHD_LABEL: "ai.eve.gateway" }, () => captureUpdateRunPayload());
 
     expect(runGatewayUpdateMock).not.toHaveBeenCalled();
     expect(runPostCoreFinalizeAfterGatewayUpdateMock).not.toHaveBeenCalled();

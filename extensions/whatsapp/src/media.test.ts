@@ -59,9 +59,7 @@ async function expectLocalMediaAccessCode(promise: Promise<unknown>, code: strin
 }
 
 beforeAll(async () => {
-  fixtureRoot = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-media-test-"),
-  );
+  fixtureRoot = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-media-test-"));
   largeJpegBuffer = await fs.readFile("docs/assets/showcase/roof-camera-sky.jpg");
   largeJpegFile = await writeTempFile(largeJpegBuffer, ".jpg");
   tinyPngBuffer = createSolidPngBuffer(10, 10, { r: 0, g: 255, b: 0 });

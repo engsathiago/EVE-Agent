@@ -683,10 +683,7 @@ describe("chrome.ts internal", () => {
         run: async (baseUrl) => {
           const port = new URL(baseUrl).port;
           const profile = makeProfile(Number(port));
-          const running = await launchEVEChrome(
-            makeResolved({ localLaunchTimeoutMs: 1 }),
-            profile,
-          );
+          const running = await launchEVEChrome(makeResolved({ localLaunchTimeoutMs: 1 }), profile);
           expect(running.pid).toBe(4242);
           expect(discoveryCalls).toBeGreaterThan(1);
           running.proc.kill?.("SIGTERM");
@@ -742,10 +739,7 @@ describe("chrome.ts internal", () => {
         run: async (baseUrl) => {
           const port = new URL(baseUrl).port;
           const profile = makeProfile(Number(port));
-          const running = await launchEVEChrome(
-            makeResolved({ localLaunchTimeoutMs: 1 }),
-            profile,
-          );
+          const running = await launchEVEChrome(makeResolved({ localLaunchTimeoutMs: 1 }), profile);
           expect(running.pid).toBe(4242);
           expect(discoveryCalls).toBeGreaterThan(1);
           expect(fakeProc.kill).not.toHaveBeenCalledWith("SIGKILL");

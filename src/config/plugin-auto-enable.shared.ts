@@ -68,10 +68,7 @@ function extractProviderFromModelRef(value: string): string | null {
   return normalizeProviderId(trimmed.slice(0, slash));
 }
 
-function hasConfiguredEmbeddedHarnessRuntime(
-  cfg: EVEConfig,
-  _env: NodeJS.ProcessEnv,
-): boolean {
+function hasConfiguredEmbeddedHarnessRuntime(cfg: EVEConfig, _env: NodeJS.ProcessEnv): boolean {
   return collectConfiguredAgentHarnessRuntimes(cfg).length > 0;
 }
 
@@ -562,10 +559,7 @@ function configMayNeedPluginManifestRegistry(cfg: EVEConfig, env: NodeJS.Process
   return false;
 }
 
-export function configMayNeedPluginAutoEnable(
-  cfg: EVEConfig,
-  env: NodeJS.ProcessEnv,
-): boolean {
+export function configMayNeedPluginAutoEnable(cfg: EVEConfig, env: NodeJS.ProcessEnv): boolean {
   return resolvePluginAutoEnableReadiness(cfg, env).mayNeedAutoEnable;
 }
 

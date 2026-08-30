@@ -2,11 +2,11 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { ISyncResponse } from "matrix-js-sdk/lib/matrix.js";
 import {
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
 } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import type { ISyncResponse } from "matrix-js-sdk/lib/matrix.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getMatrixRuntime } from "../../runtime.js";
 import { installMatrixTestRuntime } from "../../test-runtime.js";

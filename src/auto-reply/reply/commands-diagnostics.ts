@@ -11,10 +11,7 @@ import type { InteractiveReply, MessagePresentationAction } from "../../interact
 import { executePluginCommand, matchPluginCommand } from "../../plugins/commands.js";
 import type { PluginCommandDiagnosticsSession, PluginCommandResult } from "../../plugins/types.js";
 import type { ReplyPayload } from "../types.js";
-import {
-  buildCurrentEVECliCommand,
-  buildCurrentEVECliExecEnv,
-} from "./commands-eve-cli.js";
+import { buildCurrentEVECliCommand, buildCurrentEVECliExecEnv } from "./commands-eve-cli.js";
 import {
   deliverPrivateCommandReply,
   readCommandDeliveryTarget,

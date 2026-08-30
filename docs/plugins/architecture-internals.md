@@ -258,7 +258,7 @@ listed here.
 | --- | --------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `catalog`                         | Publish provider config into `models.providers` during `models.json` generation                                | Provider owns a catalog or base URL defaults                                                                                                  |
 | 2   | `applyConfigDefaults`             | Apply provider-owned global config defaults during config materialization                                      | Defaults depend on auth mode, env, or provider model-family semantics                                                                         |
-| --  | _(built-in model lookup)_         | EVE tries the normal registry/catalog path first                                                          | _(not a plugin hook)_                                                                                                                         |
+| --  | _(built-in model lookup)_         | EVE tries the normal registry/catalog path first                                                               | _(not a plugin hook)_                                                                                                                         |
 | 3   | `normalizeModelId`                | Normalize legacy or preview model-id aliases before lookup                                                     | Provider owns alias cleanup before canonical model resolution                                                                                 |
 | 4   | `normalizeTransport`              | Normalize provider-family `api` / `baseUrl` before generic model assembly                                      | Provider owns transport cleanup for custom provider ids in the same transport family                                                          |
 | 5   | `normalizeConfig`                 | Normalize `models.providers.<id>` before runtime/provider resolution                                           | Provider needs config cleanup that should live with the plugin; bundled Google-family helpers also backstop supported Google config entries   |
@@ -279,7 +279,7 @@ listed here.
 | 21  | `resolveTransportTurnState`       | Attach native per-turn transport headers or metadata                                                           | Provider wants generic transports to send provider-native turn identity                                                                       |
 | 22  | `resolveWebSocketSessionPolicy`   | Attach native WebSocket headers or session cool-down policy                                                    | Provider wants generic WS transports to tune session headers or fallback policy                                                               |
 | 23  | `formatApiKey`                    | Auth-profile formatter: stored profile becomes the runtime `apiKey` string                                     | Provider stores extra auth metadata and needs a custom runtime token shape                                                                    |
-| 24  | `refreshOAuth`                    | OAuth refresh override for custom refresh endpoints or refresh-failure policy                                  | Provider does not fit the shared EVE refreshers                                                                                          |
+| 24  | `refreshOAuth`                    | OAuth refresh override for custom refresh endpoints or refresh-failure policy                                  | Provider does not fit the shared EVE refreshers                                                                                               |
 | 25  | `buildAuthDoctorHint`             | Repair hint appended when OAuth refresh fails                                                                  | Provider needs provider-owned auth repair guidance after refresh failure                                                                      |
 | 26  | `matchesContextOverflowError`     | Provider-owned context-window overflow matcher                                                                 | Provider has raw overflow errors generic heuristics would miss                                                                                |
 | 27  | `classifyFailoverReason`          | Provider-owned failover reason classification                                                                  | Provider can map raw API/transport errors to rate-limit/overload/etc                                                                          |
@@ -662,12 +662,12 @@ Notes:
 Use narrow SDK subpaths instead of the monolithic `eve-agent/plugin-sdk` root
 barrel when authoring new plugins. Core subpaths:
 
-| Subpath                             | Purpose                                            |
-| ----------------------------------- | -------------------------------------------------- |
-| `eve-agent/plugin-sdk/plugin-entry`  | Plugin registration primitives                     |
-| `eve-agent/plugin-sdk/channel-core`  | Channel entry/build helpers                        |
-| `eve-agent/plugin-sdk/core`          | Generic shared helpers and umbrella contract       |
-| `eve-agent/plugin-sdk/config-schema` | Root `eve.json` Zod schema (`EVESchema`) |
+| Subpath                              | Purpose                                      |
+| ------------------------------------ | -------------------------------------------- |
+| `eve-agent/plugin-sdk/plugin-entry`  | Plugin registration primitives               |
+| `eve-agent/plugin-sdk/channel-core`  | Channel entry/build helpers                  |
+| `eve-agent/plugin-sdk/core`          | Generic shared helpers and umbrella contract |
+| `eve-agent/plugin-sdk/config-schema` | Root `eve.json` Zod schema (`EVESchema`)     |
 
 Channel plugins pick from a family of narrow seams — `channel-setup`,
 `setup-runtime`, `setup-tools`, `channel-pairing`,

@@ -815,10 +815,7 @@ describe("control UI routing", () => {
     expect(refreshed.settings.gatewayUrl).toBe("wss://missing-token.example/eve");
     expect(refreshed.settings.token).toBe("");
 
-    sessionStorage.setItem(
-      "eve.control.token.v1:wss://other-gateway.example/eve",
-      "other-token",
-    );
+    sessionStorage.setItem("eve.control.token.v1:wss://other-gateway.example/eve", "other-token");
     gatewayUrlInput.value = "wss://other-gateway.example/eve";
     gatewayUrlInput.dispatchEvent(new Event("input", { bubbles: true }));
     await refreshed.updateComplete;
@@ -828,9 +825,7 @@ describe("control UI routing", () => {
   });
 
   it("keeps a hash token pending until the gateway URL change is confirmed", async () => {
-    const app = mountApp(
-      "/ui/overview?gatewayUrl=wss://other-gateway.example/eve#token=abc123",
-    );
+    const app = mountApp("/ui/overview?gatewayUrl=wss://other-gateway.example/eve#token=abc123");
     await app.updateComplete;
 
     expect(app.settings.gatewayUrl).not.toBe("wss://other-gateway.example/eve");

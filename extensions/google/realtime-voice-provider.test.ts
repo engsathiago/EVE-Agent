@@ -841,9 +841,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     lastConnectParams().callbacks.onmessage({
       setupComplete: { sessionId: "session-1" },
       toolCall: {
-        functionCalls: [
-          { id: "consult-call", name: "eve_agent_consult", args: { prompt: "hi" } },
-        ],
+        functionCalls: [{ id: "consult-call", name: "eve_agent_consult", args: { prompt: "hi" } }],
       },
     });
 

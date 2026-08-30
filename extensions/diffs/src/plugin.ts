@@ -2,11 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { resolveLivePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
-import {
-  resolvePreferredEVETmpDir,
-  type EVEConfig,
-  type EVEPluginApi,
-} from "../api.js";
+import { resolvePreferredEVETmpDir, type EVEConfig, type EVEPluginApi } from "../api.js";
 import {
   resolveDiffsPluginDefaults,
   resolveDiffsPluginSecurity,
@@ -26,9 +22,7 @@ export function registerDiffsPlugin(api: EVEPluginApi): void {
   });
   const resolveCurrentPluginConfig = () =>
     resolveLivePluginConfigObject(
-      api.runtime.config?.current
-        ? () => api.runtime.config.current() as EVEConfig
-        : undefined,
+      api.runtime.config?.current ? () => api.runtime.config.current() as EVEConfig : undefined,
       "diffs",
       api.pluginConfig as Record<string, unknown>,
     ) ?? {};

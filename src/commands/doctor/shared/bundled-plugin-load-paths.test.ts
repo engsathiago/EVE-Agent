@@ -38,7 +38,7 @@ function createPluginLoadPathConfig(
 
 describe("bundled plugin load path repair", () => {
   beforeEach(() => {
-    const packageRoot = "/app/node_modules/eve";
+    const packageRoot = "/app/node_modules/eve-agent";
     mockBundledSource("feishu", bundledDistPluginRootAt(packageRoot, "feishu"));
   });
 
@@ -47,7 +47,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("detects legacy bundled plugin paths that still point at source extensions", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = bundledPluginRootAt(packageRoot, "feishu");
     const bundledPath = bundledDistPluginRootAt(packageRoot, "feishu");
     vi.spyOn(bundledSources, "resolveBundledPluginSources").mockReturnValue(
@@ -73,7 +73,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("removes legacy bundled paths during doctor repair", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = bundledPluginRootAt(packageRoot, "feishu");
     const bundledPath = bundledDistPluginRootAt(packageRoot, "feishu");
     vi.spyOn(bundledSources, "resolveBundledPluginSources").mockReturnValue(
@@ -95,7 +95,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("removes current packaged bundled paths during doctor repair", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const bundledPath = bundledDistPluginRootAt(packageRoot, "feishu");
     mockBundledSource("feishu", bundledPath);
 
@@ -105,13 +105,13 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("removes stale bundled paths from old versioned EVE package roots", () => {
-    const currentPackageRoot = path.resolve("node_modules", "eve");
+    const currentPackageRoot = path.resolve("node_modules", "eve-agent");
     const stalePackageRoot = path.resolve(
       "pnpm-global",
       ".pnpm",
-      "eve@2026.3.28_@napi-rs+canvas@0.1.97",
+      "eve-agent@2026.3.28_@napi-rs+canvas@0.1.97",
       "node_modules",
-      "eve",
+      "eve-agent",
     );
     const currentBundledPath = bundledDistPluginRootAt(currentPackageRoot, "feishu");
     const staleBundledPath = bundledDistPluginRootAt(stalePackageRoot, "feishu");
@@ -128,13 +128,13 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("removes stale legacy bundled paths from old versioned EVE package roots", () => {
-    const currentPackageRoot = path.resolve("node_modules", "eve");
+    const currentPackageRoot = path.resolve("node_modules", "eve-agent");
     const stalePackageRoot = path.resolve(
       "pnpm-global",
       ".pnpm",
-      "eve@2026.3.28_@napi-rs+canvas@0.1.97",
+      "eve-agent@2026.3.28_@napi-rs+canvas@0.1.97",
       "node_modules",
-      "eve",
+      "eve-agent",
     );
     const currentBundledPath = bundledDistPluginRootAt(currentPackageRoot, "feishu");
     const staleLegacyPath = bundledPluginRootAt(stalePackageRoot, "feishu");
@@ -149,7 +149,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("does not remove arbitrary missing paths that happen to use the bundled dist layout", () => {
-    const currentPackageRoot = path.resolve("node_modules", "eve");
+    const currentPackageRoot = path.resolve("node_modules", "eve-agent");
     const customPath = path.resolve("elsewhere", "dist", "extensions", "feishu");
     mockBundledSource("feishu", bundledDistPluginRootAt(currentPackageRoot, "feishu"));
 
@@ -160,7 +160,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("derives legacy paths from the bundled directory name instead of plugin id", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = bundledPluginRootAt(packageRoot, "kimi-coding");
     const bundledPath = bundledDistPluginRootAt(packageRoot, "kimi-coding");
     vi.spyOn(bundledSources, "resolveBundledPluginSources").mockReturnValue(
@@ -186,7 +186,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("matches legacy bundled paths with a trailing slash", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = `${bundledPluginRootAt(packageRoot, "feishu")}${path.sep}`;
     const bundledPath = bundledDistPluginRootAt(packageRoot, "feishu");
     mockBundledSource("feishu", bundledPath);
@@ -197,7 +197,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("removes dist-runtime bundled paths", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = path.join(packageRoot, "extensions", "feishu");
     const bundledPath = path.join(packageRoot, "dist-runtime", "extensions", "feishu");
     mockBundledSource("feishu", bundledPath);
@@ -208,7 +208,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("preserves non-string path entries when repairing legacy bundled paths", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = path.join(packageRoot, "extensions", "feishu");
     const bundledPath = path.join(packageRoot, "dist", "extensions", "feishu");
     mockBundledSource("feishu", bundledPath);
@@ -221,7 +221,7 @@ describe("bundled plugin load path repair", () => {
   });
 
   it("formats a doctor hint for legacy bundled plugin paths", () => {
-    const packageRoot = path.resolve("app-node-modules", "eve");
+    const packageRoot = path.resolve("app-node-modules", "eve-agent");
     const legacyPath = path.join(packageRoot, "extensions", "feishu");
     const bundledPath = path.join(packageRoot, "dist", "extensions", "feishu");
 

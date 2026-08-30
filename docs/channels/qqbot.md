@@ -259,7 +259,7 @@ Built-in commands intercepted before the AI queue:
 | Command        | Description                                                                                              |
 | -------------- | -------------------------------------------------------------------------------------------------------- |
 | `/bot-ping`    | Latency test                                                                                             |
-| `/bot-version` | Show the EVE framework version                                                                      |
+| `/bot-version` | Show the EVE framework version                                                                           |
 | `/bot-help`    | List all commands                                                                                        |
 | `/bot-me`      | Show the sender's QQ user ID (openid) for `allowFrom`/`groupAllowFrom` setup                             |
 | `/bot-upgrade` | Show the QQBot upgrade guide link                                                                        |

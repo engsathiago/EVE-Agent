@@ -51,12 +51,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
       "demo",
       ".eve-runtime-deps-stamp.json",
     );
-    const legacyManifest = path.join(
-      packageRoot,
-      "extensions",
-      "demo",
-      ".eve-runtime-deps.json",
-    );
+    const legacyManifest = path.join(packageRoot, "extensions", "demo", ".eve-runtime-deps.json");
     const thirdPartyNodeModules = path.join(
       stateDir,
       "extensions",
@@ -233,7 +228,7 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
   it("does not unlink global runtime symlinks through unsafe cleanup roots", async () => {
     const stateDir = path.join(tempDir, "state");
-    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve");
+    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve-agent");
     const nodeModulesRoot = path.dirname(packageRoot);
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
     const externalRuntimeRoot = path.join(tempDir, "external-runtime");
@@ -273,12 +268,12 @@ describe("cleanupLegacyPluginDependencyState", () => {
 
   it("removes dangling global plugin-runtime symlinks that point at legacy runtime deps", async () => {
     const stateDir = path.join(tempDir, "state");
-    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve");
+    const packageRoot = path.join(tempDir, "prefix", "lib", "node_modules", "eve-agent");
     const nodeModulesRoot = path.dirname(packageRoot);
     const legacyRuntimeRoot = path.join(stateDir, "plugin-runtime-deps");
     const legacyTarget = path.join(
       legacyRuntimeRoot,
-      "eve-2026.4.29-slack",
+      "eve-agent-2026.4.29-slack",
       "node_modules",
       "@slack",
       "web-api",

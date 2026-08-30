@@ -361,8 +361,7 @@ describe("trigger handling", () => {
   for (const testCase of [
     {
       error: "sandbox is not defined.",
-      expected:
-        "⚠️ Agent failed before reply: sandbox is not defined.\nLogs: eve logs --follow",
+      expected: "⚠️ Agent failed before reply: sandbox is not defined.\nLogs: eve logs --follow",
     },
     {
       error: "Context window exceeded",
@@ -491,8 +490,7 @@ describe("trigger handling", () => {
         expect(text, testCase.label).not.toMatch(/Thinking level set/i);
         expect(runEmbeddedAgentMock, testCase.label).toHaveBeenCalledOnce();
         if (testCase.assertPrompt) {
-          const prompt =
-            firstMockCallArg(runEmbeddedAgentMock, "embedded EVE agent").prompt ?? "";
+          const prompt = firstMockCallArg(runEmbeddedAgentMock, "embedded EVE agent").prompt ?? "";
           expect(prompt).toContain("Give me the status");
           expect(prompt).not.toContain("/thinking high");
           expect(prompt).not.toContain("/think high");

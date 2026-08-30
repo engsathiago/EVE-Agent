@@ -3,11 +3,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTrackedTempDirs } from "../test-utils/tracked-temp-dirs.js";
-import {
-  packNpmSpecToArchive,
-  resolveArchiveSourcePath,
-  withTempDir,
-} from "./install-source-utils.js";
 
 const execFileSyncMock = vi.hoisted(() => vi.fn(() => "/tmp/eve-test-global-npmrc\n"));
 const runCommandWithTimeoutMock = vi.fn();
@@ -25,6 +20,11 @@ vi.mock("node:child_process", async (importOriginal) => {
 vi.mock("../process/exec.js", () => ({
   runCommandWithTimeout: (...args: unknown[]) => runCommandWithTimeoutMock(...args),
 }));
+
+vi.resetModules();
+
+const { packNpmSpecToArchive, resolveArchiveSourcePath, withTempDir } =
+  await import("./install-source-utils.js");
 
 async function createTempDir(prefix: string) {
   return await tempDirs.make(prefix);

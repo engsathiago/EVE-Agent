@@ -558,9 +558,7 @@ export function buildNativeHookRelayCommand(params: {
   const timeoutMs = normalizePositiveInteger(params.timeoutMs, DEFAULT_RELAY_TIMEOUT_MS);
   const executable = params.executable ?? resolveEVECliExecutable();
   const argv =
-    executable === "eve"
-      ? ["eve"]
-      : [params.nodeExecutable ?? process.execPath, executable];
+    executable === "eve" ? ["eve"] : [params.nodeExecutable ?? process.execPath, executable];
   const nicePrefix = resolveNativeHookRelayNicePrefix(params.nice);
   return shellQuoteArgs([
     ...nicePrefix,

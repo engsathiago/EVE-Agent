@@ -171,9 +171,7 @@ describe("detectChangedScope", () => {
       runChangedSmoke: false,
       runControlUiI18n: false,
     });
-    expect(
-      detectChangedScope(["apps/macos-mlx-tts/Sources/EVEMLXTTSHelper/main.swift"]),
-    ).toEqual({
+    expect(detectChangedScope(["apps/macos-mlx-tts/Sources/EVEMLXTTSHelper/main.swift"])).toEqual({
       runNode: false,
       runMacos: true,
       runAndroid: false,

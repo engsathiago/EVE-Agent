@@ -82,26 +82,24 @@ describe("applyAuthChoicePluginProvider", () => {
         },
       }),
     );
-    offerPostInstallMigrations.mockImplementation(
-      async ({ config }: { config: EVEConfig }) => ({
-        config: {
-          ...config,
-          plugins: {
-            ...config.plugins,
-            entries: {
-              ...config.plugins?.entries,
-              codex: {
-                enabled: true,
-                config: {
-                  codexPlugins: {
-                    enabled: true,
-                    allow_destructive_actions: true,
-                    plugins: {
-                      gmail: {
-                        enabled: true,
-                        marketplaceName: "openai-curated",
-                        pluginName: "gmail",
-                      },
+    offerPostInstallMigrations.mockImplementation(async ({ config }: { config: EVEConfig }) => ({
+      config: {
+        ...config,
+        plugins: {
+          ...config.plugins,
+          entries: {
+            ...config.plugins?.entries,
+            codex: {
+              enabled: true,
+              config: {
+                codexPlugins: {
+                  enabled: true,
+                  allow_destructive_actions: true,
+                  plugins: {
+                    gmail: {
+                      enabled: true,
+                      marketplaceName: "openai-curated",
+                      pluginName: "gmail",
                     },
                   },
                 },
@@ -109,8 +107,8 @@ describe("applyAuthChoicePluginProvider", () => {
             },
           },
         },
-      }),
-    );
+      },
+    }));
 
     const result = await applyAuthChoicePluginProvider(
       {

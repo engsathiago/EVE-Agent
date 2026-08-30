@@ -26,11 +26,7 @@ class DynamicAgentMutationSkipped extends Error {
   }
 }
 
-function hasDefaultDirectRoute(
-  cfg: EVEConfig,
-  accountId: string,
-  senderOpenId: string,
-): boolean {
+function hasDefaultDirectRoute(cfg: EVEConfig, accountId: string, senderOpenId: string): boolean {
   return (
     resolveAgentRoute({
       cfg,
@@ -50,10 +46,7 @@ function resolveDynamicAgentConfig(
     | undefined;
 }
 
-function isAtDynamicAgentLimit(
-  cfg: EVEConfig,
-  dynamicCfg: DynamicAgentCreationConfig,
-): boolean {
+function isAtDynamicAgentLimit(cfg: EVEConfig, dynamicCfg: DynamicAgentCreationConfig): boolean {
   if (dynamicCfg.maxAgents === undefined) {
     return false;
   }
@@ -153,10 +146,8 @@ export async function maybeCreateDynamicAgent(params: {
         }
 
         if (!agentExists) {
-          const workspaceTemplate =
-            dynamicCfg.workspaceTemplate ?? "~/.eve/workspace-{agentId}";
-          const agentDirTemplate =
-            dynamicCfg.agentDirTemplate ?? "~/.eve/agents/{agentId}/agent";
+          const workspaceTemplate = dynamicCfg.workspaceTemplate ?? "~/.eve/workspace-{agentId}";
+          const agentDirTemplate = dynamicCfg.agentDirTemplate ?? "~/.eve/agents/{agentId}/agent";
           const workspace = resolveUserPath(
             workspaceTemplate.replace("{userId}", senderOpenId).replace("{agentId}", agentId),
           );

@@ -1,10 +1,7 @@
 // Builds plugin API facades exposed to bundled and external plugins.
 import type { EVEPluginApi } from "./types.js";
 
-type PluginApiFacadeFields = Pick<
-  EVEPluginApi,
-  "agent" | "lifecycle" | "runContext" | "session"
->;
+type PluginApiFacadeFields = Pick<EVEPluginApi, "agent" | "lifecycle" | "runContext" | "session">;
 /** Plugin API shape without nested facade namespaces attached. */
 export type EVEPluginApiWithoutFacades = Omit<EVEPluginApi, keyof PluginApiFacadeFields>;
 type PluginApiFacadeSource = Pick<

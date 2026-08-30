@@ -8,10 +8,7 @@ import { cleanupTempDirs, makeTempDir } from "./helpers/temp-dir.js";
 
 async function makeLauncherFixture(fixtureRoots: string[]): Promise<string> {
   const fixtureRoot = makeTempDir(fixtureRoots, "eve-launcher-");
-  await fs.copyFile(
-    path.resolve(process.cwd(), "eve.mjs"),
-    path.join(fixtureRoot, "eve.mjs"),
-  );
+  await fs.copyFile(path.resolve(process.cwd(), "eve.mjs"), path.join(fixtureRoot, "eve.mjs"));
   await fs.mkdir(path.join(fixtureRoot, "dist"), { recursive: true });
   return fixtureRoot;
 }
@@ -262,7 +259,7 @@ describe("eve launcher", () => {
     await fs.writeFile(
       path.join(fixtureRoot, "package.json"),
       JSON.stringify({
-        name: "eve",
+        name: "eve-agent",
         version: "1.2.3-test",
         gitHead: "abcdef0123456789",
       }),
@@ -274,15 +271,11 @@ describe("eve launcher", () => {
       "utf8",
     );
 
-    const result = spawnSync(
-      process.execPath,
-      [path.join(fixtureRoot, "eve.mjs"), "--version"],
-      {
-        cwd: fixtureRoot,
-        env: launcherEnv(),
-        encoding: "utf8",
-      },
-    );
+    const result = spawnSync(process.execPath, [path.join(fixtureRoot, "eve.mjs"), "--version"], {
+      cwd: fixtureRoot,
+      env: launcherEnv(),
+      encoding: "utf8",
+    });
 
     expect(result.status).toBe(0);
     expect(result.stdout).toBe("EVE 1.2.3-test (abcdef0)\n");
@@ -293,7 +286,7 @@ describe("eve launcher", () => {
     const fixtureRoot = await makeLauncherFixture(fixtureRoots);
     await fs.writeFile(
       path.join(fixtureRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "1.2.3-test" }),
+      JSON.stringify({ name: "eve-agent", version: "1.2.3-test" }),
       "utf8",
     );
     await fs.writeFile(
@@ -390,15 +383,11 @@ describe("eve launcher", () => {
         "utf8",
       );
 
-      const result = spawnSync(
-        process.env.BUN_BIN ?? "bun",
-        [path.join(fixtureRoot, "eve.mjs")],
-        {
-          cwd: fixtureRoot,
-          env: launcherEnv(),
-          encoding: "utf8",
-        },
-      );
+      const result = spawnSync(process.env.BUN_BIN ?? "bun", [path.join(fixtureRoot, "eve.mjs")], {
+        cwd: fixtureRoot,
+        env: launcherEnv(),
+        encoding: "utf8",
+      });
 
       expect(result.status).toBe(0);
       expect(result.stdout).toBe("bun entry ok\n");
@@ -648,7 +637,7 @@ describe("eve launcher", () => {
     expect(result.stderr).toContain("missing dist/entry.(m)js");
     expect(result.stderr).toContain("unbuilt source tree or GitHub source archive");
     expect(result.stderr).toContain("pnpm install && pnpm build");
-    expect(result.stderr).toContain("github:eve/eve#<ref>");
+    expect(result.stderr).toContain("github:engsathiago/eve-agent#<ref>");
   });
 
   it("keeps compile cache off for source-checkout launchers", async () => {

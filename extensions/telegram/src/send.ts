@@ -1,7 +1,3 @@
-// Telegram plugin module implements send behavior.
-import * as grammy from "grammy";
-import { type ApiClientOptions, Bot, HttpError } from "grammy";
-import type { ReactionType, ReactionTypeEmoji } from "grammy/types";
 import { recordChannelActivity } from "eve-agent/plugin-sdk/channel-activity-runtime";
 import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
 import { isDiagnosticFlagEnabled } from "eve-agent/plugin-sdk/diagnostic-runtime";
@@ -13,6 +9,10 @@ import { createTelegramRetryRunner, type RetryConfig } from "eve-agent/plugin-sd
 import { createSubsystemLogger, logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+// Telegram plugin module implements send behavior.
+import * as grammy from "grammy";
+import { type ApiClientOptions, Bot, HttpError } from "grammy";
+import type { ReactionType, ReactionTypeEmoji } from "grammy/types";
 import { getOrCreateAccountThrottler } from "./account-throttler.js";
 import { type ResolvedTelegramAccount, resolveTelegramAccount } from "./accounts.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";

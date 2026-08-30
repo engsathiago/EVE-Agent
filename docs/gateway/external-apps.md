@@ -30,8 +30,8 @@ results, cancel work, or inspect Gateway resources.
 | --------------------------------------- | ------ | --------------------------------------------------------------------------------------------- |
 | [Gateway protocol](/gateway/protocol)   | Ready  | WebSocket transport, connect handshake, auth scopes, protocol versioning, and events.         |
 | [Gateway RPC reference](/reference/rpc) | Ready  | Current Gateway methods for agents, sessions, tasks, models, tools, artifacts, and approvals. |
-| [`eve agent`](/cli/agent)          | Ready  | One-shot script integration when shelling out to the CLI is enough.                           |
-| [`eve message`](/cli/message)      | Ready  | Sending messages or channel actions from scripts.                                             |
+| [`eve agent`](/cli/agent)               | Ready  | One-shot script integration when shelling out to the CLI is enough.                           |
+| [`eve message`](/cli/message)           | Ready  | Sending messages or channel actions from scripts.                                             |
 
 The source tree contains internal package work for a future client library, but
 that is not a public install surface. Treat it as preview implementation detail

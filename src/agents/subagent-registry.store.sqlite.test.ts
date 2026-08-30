@@ -4,10 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "../state/eve-state-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "../state/eve-state-db.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import {
   loadSubagentRegistryFromSqlite,

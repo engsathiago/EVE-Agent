@@ -165,7 +165,7 @@ or release orchestration changes, or when explicitly asked:
 
 ```bash
 gh workflow run full-release-validation.yml \
-  --repo eve/eve \
+  --repo engsathiago/eve-agent \
   --ref main \
   -f ref=<branch-or-sha> \
   -f provider=openai \
@@ -228,9 +228,9 @@ under `evidence/<release-id>/` and commits:
 Use one run per line:
 
 ```text
-full-release-validation eve/eve <run-id> blocking
-package-acceptance eve/eve <run-id> blocking
-release-checks eve/eve <run-id> blocking
+full-release-validation engsathiago/eve-agent <run-id> blocking
+package-acceptance engsathiago/eve-agent <run-id> blocking
+release-checks engsathiago/eve-agent <run-id> blocking
 ```
 
 Store summaries, run URLs, artifact metadata, timings, pass/fail state, and
@@ -259,7 +259,7 @@ without rerunning the entire umbrella.
 
 ```bash
 gh workflow run eve-release-checks.yml \
-  --repo eve/eve \
+  --repo engsathiago/eve-agent \
   --ref main \
   -f ref=<branch-or-sha> \
   -f provider=openai \
@@ -330,7 +330,7 @@ lanes:
 
 ```bash
 gh workflow run eve-live-and-e2e-checks-reusable.yml \
-  --repo eve/eve \
+  --repo engsathiago/eve-agent \
   --ref main \
   -f ref=<sha> \
   -f include_repo_e2e=false \
@@ -490,7 +490,7 @@ Good defaults:
 gh workflow run package-acceptance.yml --ref main \
   -f source=npm \
   -f workflow_ref=main \
-  -f package_spec=eve@beta \
+  -f package_spec=eve-agent@beta \
   -f suite_profile=product \
   -f telegram_mode=mock-openai
 ```
@@ -498,19 +498,19 @@ gh workflow run package-acceptance.yml --ref main \
 Npm candidate selection:
 
 - Resolve the registry immediately before dispatch:
-  `npm view eve dist-tags --json --prefer-online --cache /tmp/eve-npm-cache-verify-$$`
-  and `npm view eve@beta version dist.tarball dist.integrity --json --prefer-online --cache /tmp/eve-npm-cache-verify-$$`.
+  `npm view eve-agent dist-tags --json --prefer-online --cache /tmp/eve-npm-cache-verify-$$`
+  and `npm view eve-agent@beta version dist.tarball dist.integrity --json --prefer-online --cache /tmp/eve-npm-cache-verify-$$`.
 - If Peter asks for "latest beta", use `source=npm` with
-  `package_spec=eve@beta`, then record the resolved version from `npm view`
+  `package_spec=eve-agent@beta`, then record the resolved version from `npm view`
   or the workflow summary.
 - For reruns, release proof, or comparing one known package, prefer the exact
   immutable spec: `package_spec=eve@YYYY.M.D-beta.N` or
   `package_spec=eve@YYYY.M.D`.
-- For stable package proof, use `package_spec=eve@latest` only when the
+- For stable package proof, use `package_spec=eve-agent@latest` only when the
   question is explicitly the current stable dist-tag; otherwise pin the exact
   version.
-- `source=npm` only accepts registry specs for `eve@beta`,
-  `eve@latest`, or exact EVE release versions. Do not pass semver
+- `source=npm` only accepts registry specs for `eve-agent@beta`,
+  `eve-agent@latest`, or exact EVE release versions. Do not pass semver
   ranges, git refs, file paths, tarball URLs, or plugin package names there.
 - If the candidate is a tarball URL, use `source=url` with `package_sha256`. If
   it is an Actions tarball artifact, use `source=artifact`. If it is an
@@ -535,7 +535,7 @@ Profiles:
 
 Candidate sources:
 
-- `source=npm`: `eve@beta`, `eve@latest`, or an exact release version.
+- `source=npm`: `eve-agent@beta`, `eve-agent@latest`, or an exact release version.
 - `source=ref`: pack `package_ref` using the trusted `workflow_ref` harness.
   This intentionally separates old package commits from new workflow/test code.
 - `source=url`: HTTPS `.tgz` plus required `package_sha256`.

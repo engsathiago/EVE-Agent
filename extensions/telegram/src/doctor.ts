@@ -143,9 +143,7 @@ function describeConfigValueType(value: unknown): string {
   return typeof value;
 }
 
-export function scanTelegramMalformedGroupsConfig(
-  cfg: EVEConfig,
-): TelegramMalformedGroupsHit[] {
+export function scanTelegramMalformedGroupsConfig(cfg: EVEConfig): TelegramMalformedGroupsHit[] {
   const hits: TelegramMalformedGroupsHit[] = [];
   for (const scope of collectTelegramAccountScopes(cfg)) {
     if (!Object.hasOwn(scope.account, "groups")) {
@@ -180,9 +178,7 @@ export function collectTelegramMalformedGroupsWarnings(params: {
   ];
 }
 
-export function scanTelegramInvalidAllowFromEntries(
-  cfg: EVEConfig,
-): TelegramAllowFromInvalidHit[] {
+export function scanTelegramInvalidAllowFromEntries(cfg: EVEConfig): TelegramAllowFromInvalidHit[] {
   const hits: TelegramAllowFromInvalidHit[] = [];
   const scanList = (pathLabel: string, list: unknown) => {
     if (!Array.isArray(list)) {
@@ -219,9 +215,7 @@ export function collectTelegramInvalidAllowFromWarnings(params: {
   ];
 }
 
-export function scanTelegramBotEndpointApiRoots(
-  cfg: EVEConfig,
-): TelegramApiRootBotEndpointHit[] {
+export function scanTelegramBotEndpointApiRoots(cfg: EVEConfig): TelegramApiRootBotEndpointHit[] {
   const hits: TelegramApiRootBotEndpointHit[] = [];
   for (const scope of collectTelegramAccountScopes(cfg)) {
     const value = scope.account.apiRoot;

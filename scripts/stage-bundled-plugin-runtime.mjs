@@ -194,11 +194,11 @@ function ensureEVEExtensionAlias(params) {
     repoRoot: params.repoRoot,
     pluginSdkDir,
   });
-  const aliasDir = path.join(params.distExtensionsRoot, "node_modules", "eve");
+  const aliasDir = path.join(params.distExtensionsRoot, "node_modules", "eve-agent");
   const pluginSdkAliasPath = path.join(aliasDir, "plugin-sdk");
   fs.mkdirSync(aliasDir, { recursive: true });
   writeJsonFile(path.join(aliasDir, "package.json"), {
-    name: "eve",
+    name: "eve-agent",
     type: "module",
     exports: buildRuntimePluginSdkPackageExports(publicDistFileNames),
   });

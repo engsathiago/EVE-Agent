@@ -306,7 +306,7 @@ function runCompiledEsmSidecarFastPathProbe(): SpawnSyncReturns<string> {
   ).href;
 
   writeJson(path.join(tempRoot, "package.json"), {
-    name: "eve",
+    name: "eve-agent",
     type: "module",
     bin: { eve: "./eve.mjs" },
     exports: {
@@ -586,7 +586,7 @@ describe("loadBundledEntryExportSync", () => {
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-channel-entry-contract-"));
     tempDirs.push(tempRoot);
 
-    fs.writeFileSync(path.join(tempRoot, "package.json"), '{"name":"eve"}\n', "utf8");
+    fs.writeFileSync(path.join(tempRoot, "package.json"), '{"name":"eve-agent"}\n', "utf8");
     const pluginRoot = path.join(tempRoot, "dist", "extensions", "telegram");
     const sourceRoot = path.join(tempRoot, "extensions", "telegram", "src");
     fs.mkdirSync(pluginRoot, { recursive: true });

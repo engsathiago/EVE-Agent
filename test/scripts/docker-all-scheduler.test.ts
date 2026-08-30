@@ -157,9 +157,7 @@ describe("scripts/test-docker-all scheduler", () => {
       });
 
       expect(result.status).toBe(1);
-      expect(result.stderr).toContain(
-        "EVE_DOCKER_ALL_DOCKER_LIMIT must be a positive integer",
-      );
+      expect(result.stderr).toContain("EVE_DOCKER_ALL_DOCKER_LIMIT must be a positive integer");
       expect(result.stderr).not.toContain("at ");
     } finally {
       rmSync(logDir, { force: true, recursive: true });

@@ -10,8 +10,9 @@ import { createReadTool } from "eve-agent/plugin-sdk/agent-sessions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("eve-agent/plugin-sdk/llm", async () => {
-  const original =
-    await vi.importActual<typeof import("eve-agent/plugin-sdk/llm")>("eve-agent/plugin-sdk/llm");
+  const original = await vi.importActual<typeof import("eve-agent/plugin-sdk/llm")>(
+    "eve-agent/plugin-sdk/llm",
+  );
   return {
     ...original,
   };

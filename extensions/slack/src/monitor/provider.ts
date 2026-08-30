@@ -256,7 +256,7 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
   // Pre-set shuttingDown on the SocketModeClient before app.stop() to prevent
   // a race where the library's internal ping timeout fires disconnect() before
   // shuttingDown is set, causing orphaned reconnects with leaked ping intervals.
-  // See: eve/eve#56508
+  // See: engsathiago/eve-agent#56508
   const gracefulStop = async () => {
     await gracefulStopSlackApp(app);
   };

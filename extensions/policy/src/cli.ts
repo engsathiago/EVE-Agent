@@ -1,9 +1,5 @@
 import type { Command } from "commander";
-import {
-  allowEveAction,
-  createEmptyEvePolicy,
-  EVE_POLICY_VERSION,
-} from "./contract.js";
+import { allowEveAction, createEmptyEvePolicy, EVE_POLICY_VERSION } from "./contract.js";
 
 export function registerPolicyCli(program: Command): void {
   program

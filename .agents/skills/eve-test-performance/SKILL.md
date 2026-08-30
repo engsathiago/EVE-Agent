@@ -110,10 +110,10 @@ same command. For Testbox comparisons, use the same `tbx_...` id when possible.
 | --------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | wall time       | user-visible suite cost            | `/usr/bin/time -l`, test wrapper duration, Testbox run time                 |
 | Vitest duration | test body/import cost              | Vitest output per file/shard                                                |
-| import duration | broad barrel/runtime loads         | `EVE_VITEST_IMPORT_DURATIONS=1`                                        |
+| import duration | broad barrel/runtime loads         | `EVE_VITEST_IMPORT_DURATIONS=1`                                             |
 | max RSS         | memory pressure and OOM risk       | `/usr/bin/time -l`, `pnpm test:extensions:memory`, wrapper memory summaries |
 | CPU/user/sys    | CPU-bound vs wait-bound split      | `/usr/bin/time -l` locally, Testbox job timing when local CPU is noisy      |
-| heap snapshots  | real leak vs retained module graph | `eve-test-heap-leaks` workflow                                         |
+| heap snapshots  | real leak vs retained module graph | `eve-test-heap-leaks` workflow                                              |
 
 Local scoped command with CPU/RSS:
 

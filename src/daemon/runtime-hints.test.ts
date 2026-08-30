@@ -77,10 +77,6 @@ describe("buildPlatformServiceStartHints", () => {
         systemdServiceName: "eve-gateway",
         windowsTaskName: "EVE Gateway",
       }),
-    ).toEqual([
-      "eve gateway install",
-      "eve gateway",
-      "systemctl --user start eve-gateway.service",
-    ]);
+    ).toEqual(["eve gateway install", "eve gateway", "systemctl --user start eve-gateway.service"]);
   });
 });

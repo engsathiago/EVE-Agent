@@ -232,7 +232,7 @@ jobs:
         if: steps.plan.outputs.missing_trusted_publisher_count != '0'
         run: |
           echo "::error::One or more ClawHub packages exist but do not have trusted publishing configured. Configure trusted publishing before running the normal OIDC publish workflow."
-          jq -r '.missingTrustedPublisher[]? | "::error::Missing trusted publisher: \(.packageName)@\(.version). Configure trusted publishing for eve/eve, workflow plugin-clawhub-release.yml."' .local/plugin-clawhub-release-plan.json
+          jq -r '.missingTrustedPublisher[]? | "::error::Missing trusted publisher: \(.packageName)@\(.version). Configure trusted publishing for engsathiago/eve-agent, workflow plugin-clawhub-release.yml."' .local/plugin-clawhub-release-plan.json
           exit 1
 
       - name: Fail normal publish when bootstrap is required

@@ -199,11 +199,11 @@ function pushDeprecatedRuntimeApiViolations(violations, files) {
 
 function pushBroadConfigRuntimeBarrelViolations(violations, files) {
   const staticImportPattern =
-    /\b(?:import|export)\s+(?:type\s+)?\{[\s\S]*?\}\s+from\s+["']eve\/plugin-sdk\/config-runtime["']/g;
+    /\b(?:import|export)\s+(?:type\s+)?\{[\s\S]*?\}\s+from\s+["']eve-agent\/plugin-sdk\/config-runtime["']/g;
   const dynamicImportPattern =
-    /\b(?:const|let|var)\s+\{[\s\S]*?\}\s*=\s*(?:await\s+)?import\(["']eve\/plugin-sdk\/config-runtime["']\)/g;
+    /\b(?:const|let|var)\s+\{[\s\S]*?\}\s*=\s*(?:await\s+)?import\(["']eve-agent\/plugin-sdk\/config-runtime["']\)/g;
   const typeQueryPattern =
-    /\b(?:typeof\s+)?import\(["']eve\/plugin-sdk\/config-runtime["']\)\.[A-Za-z_$][\w$]*/g;
+    /\b(?:typeof\s+)?import\(["']eve-agent\/plugin-sdk\/config-runtime["']\)\.[A-Za-z_$][\w$]*/g;
 
   for (const { filePath, relPath } of files) {
     const source = readTypeScriptSource(filePath);
@@ -218,7 +218,7 @@ function pushBroadConfigRuntimeBarrelViolations(violations, files) {
 }
 
 function pushBroadConfigRuntimeSpecifierViolations(violations, files) {
-  const moduleSpecifierPattern = /["']eve\/plugin-sdk\/config-runtime["']/g;
+  const moduleSpecifierPattern = /["']eve-agent\/plugin-sdk\/config-runtime["']/g;
 
   for (const { filePath, relPath } of files) {
     const source = readTypeScriptSource(filePath);
@@ -260,7 +260,7 @@ export function collectDeprecatedInternalConfigApiViolations({
     const guards = [
       {
         pattern:
-          /\b(?:import|export)\s+(?:type\s+)?\{[^}]*\bloadConfig\b[^}]*\}\s+from\s+["']eve\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']/,
+          /\b(?:import|export)\s+(?:type\s+)?\{[^}]*\bloadConfig\b[^}]*\}\s+from\s+["']eve-agent\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']/,
         replacement:
           "use getRuntimeConfig(), runtime.config.current(), or pass the already loaded config",
       },
@@ -316,13 +316,13 @@ export function collectDeprecatedInternalConfigApiViolations({
     const guards = [
       {
         pattern:
-          /\b(?:import|export)\s+(?:type\s+)?\{[\s\S]*?\b(?:loadConfig|writeConfigFile)\b[\s\S]*?\}\s+from\s+["']eve\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']/,
+          /\b(?:import|export)\s+(?:type\s+)?\{[\s\S]*?\b(?:loadConfig|writeConfigFile)\b[\s\S]*?\}\s+from\s+["']eve-agent\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']/,
         replacement:
           "use getRuntimeConfig(), runtime.config.current(), or mutation helpers with afterWrite",
       },
       {
         pattern:
-          /ReturnType<typeof import\(["']eve\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']\)\.(?:loadConfig|writeConfigFile)>/,
+          /ReturnType<typeof import\(["']eve-agent\/plugin-sdk\/(?:config-runtime|memory-core-host-runtime-core)["']\)\.(?:loadConfig|writeConfigFile)>/,
         replacement: "use EVEConfig or the explicit mutation helper type",
       },
     ];

@@ -46,10 +46,7 @@ function createMatchMediaMock(width: number) {
 const mountedApps = new Set<EVEApp>();
 
 function collectMountedApps() {
-  return new Set<EVEApp>([
-    ...mountedApps,
-    ...document.querySelectorAll<EVEApp>("eve-app"),
-  ]);
+  return new Set<EVEApp>([...mountedApps, ...document.querySelectorAll<EVEApp>("eve-app")]);
 }
 
 function nextMicrotask() {

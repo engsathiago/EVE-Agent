@@ -15,7 +15,13 @@ import type {
 
 const SKILL_WORKSHOP_NOTICE_MS = 2800;
 
-type SkillProposalStatus = "pending" | "applied" | "rejected" | "quarantined" | "stale";
+type SkillProposalStatus =
+  | "pending"
+  | "applied"
+  | "rolled_back"
+  | "rejected"
+  | "quarantined"
+  | "stale";
 type SkillProposalKind = "create" | "update";
 type SkillProposalScanState = "pending" | "clean" | "failed" | "quarantined";
 
@@ -315,7 +321,15 @@ export function countSkillWorkshopProposals(
       counts[proposal.status] += 1;
       return counts;
     },
-    { all: 0, pending: 0, applied: 0, rejected: 0, quarantined: 0, stale: 0 },
+    {
+      all: 0,
+      pending: 0,
+      applied: 0,
+      rolled_back: 0,
+      rejected: 0,
+      quarantined: 0,
+      stale: 0,
+    },
   );
 }
 
@@ -424,7 +438,7 @@ async function refreshAfterMutation(state: SkillWorkshopState, proposalId: strin
 
 export async function runSkillWorkshopLifecycleAction(
   state: SkillWorkshopState,
-  action: Extract<SkillWorkshopAction, "apply" | "reject">,
+  action: Extract<SkillWorkshopAction, "apply" | "rollback" | "reject">,
   proposalId: string,
 ): Promise<void> {
   if (!state.client || !state.connected || state.skillWorkshopActionBusy) {
@@ -435,12 +449,19 @@ export async function runSkillWorkshopLifecycleAction(
   state.skillWorkshopActionNotice = null;
   state.skillWorkshopError = null;
   try {
-    const method = action === "apply" ? "skills.proposals.apply" : "skills.proposals.reject";
+    const method =
+      action === "apply"
+        ? "skills.proposals.apply"
+        : action === "rollback"
+          ? "skills.proposals.rollback"
+          : "skills.proposals.reject";
     const requestParams = { ...loadedSkillWorkshopAgentParams(state), proposalId };
     await state.client.request(method, requestParams);
     await refreshAfterMutation(state, proposalId);
     const updated = state.skillWorkshopProposals.find((proposal) => proposal.key === proposalId);
-    showActionNotice(state, updated ?? previous, action === "apply" ? "Applied" : "Rejected");
+    const label =
+      action === "apply" ? "Applied" : action === "rollback" ? "Rolled back" : "Rejected";
+    showActionNotice(state, updated ?? previous, label);
   } catch (err) {
     state.skillWorkshopError = getErrorMessage(err);
   } finally {

@@ -589,11 +589,7 @@ async function runExec(input: Extract<CodeModeWorkerInput, { kind: "exec" }>) {
   });
   let output: unknown[] = [];
   try {
-    vm.evalCode(
-      buildUserSource(input.source),
-      "eve-code-mode:user.js",
-      EvalFlags.ASYNC,
-    ).dispose();
+    vm.evalCode(buildUserSource(input.source), "eve-code-mode:user.js", EvalFlags.ASYNC).dispose();
     drainPendingJobs(vm);
     output = takeOutput(vm);
     const resultHandle = getResultHandle(vm);

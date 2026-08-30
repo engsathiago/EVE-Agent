@@ -2,10 +2,7 @@
 // leaking secret-shaped names or values.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { captureEnv, deleteTestEnvValue, withEnv } from "../test-utils/env.js";
-import {
-  resetLegacyEVEEnvWarningForTest,
-  warnLegacyEVEEnvVars,
-} from "./env-deprecation.js";
+import { resetLegacyEVEEnvWarningForTest, warnLegacyEVEEnvVars } from "./env-deprecation.js";
 
 describe("warnLegacyEVEEnvVars", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;

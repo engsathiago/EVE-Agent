@@ -22,7 +22,10 @@ import {
   parseStrictPositiveInteger,
   resolveTimerTimeoutMs,
 } from "eve-agent/plugin-sdk/number-runtime";
-import { readFiniteNumberParam, readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import {
+  readFiniteNumberParam,
+  readPositiveIntegerParam,
+} from "eve-agent/plugin-sdk/param-readers";
 import { resolveLivePluginConfigObject } from "eve-agent/plugin-sdk/plugin-config-runtime";
 import { ensureGlobalUndiciEnvProxyDispatcher } from "eve-agent/plugin-sdk/runtime-env";
 import {
@@ -1448,9 +1451,7 @@ export default definePluginEntry({
     let memoryRecallCooldown: { until: number; error: string } | undefined;
     const resolveCurrentHookConfig = () => {
       const runtimePluginConfig = resolveLivePluginConfigObject(
-        api.runtime.config?.current
-          ? () => api.runtime.config.current() as EVEConfig
-          : undefined,
+        api.runtime.config?.current ? () => api.runtime.config.current() as EVEConfig : undefined,
         "memory-lancedb",
         api.pluginConfig as Record<string, unknown>,
       );

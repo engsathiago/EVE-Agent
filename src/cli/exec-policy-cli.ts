@@ -214,10 +214,7 @@ function applyApprovalsDefaults(
   return next;
 }
 
-function buildNextExecPolicyConfig(
-  config: EVEConfig,
-  policy: ExecPolicyResolved,
-): EVEConfig {
+function buildNextExecPolicyConfig(config: EVEConfig, policy: ExecPolicyResolved): EVEConfig {
   const draft = structuredClone(config);
   applyConfigExecPolicy(draft as Record<string, unknown>, policy);
   return draft;

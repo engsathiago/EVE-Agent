@@ -28,7 +28,7 @@ function isEVENodeModulesPackageRoot(packageRoot: string): boolean {
   const normalized = normalizeBundledLookupPath(packageRoot);
   const packageDir = path.basename(normalized);
   const parentDir = path.basename(path.dirname(normalized));
-  return packageDir === "eve" && parentDir === "node_modules";
+  return packageDir === "eve-agent" && parentDir === "node_modules";
 }
 
 /** Find configured plugin load paths that alias bundled plugins already shipped by EVE. */

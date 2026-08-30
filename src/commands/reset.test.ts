@@ -30,9 +30,7 @@ describe("resetCommand", () => {
     });
 
     expect(
-      cleanupCommandLogMessages(runtime).some((message) =>
-        message.includes("eve backup create"),
-      ),
+      cleanupCommandLogMessages(runtime).some((message) => message.includes("eve backup create")),
     ).toBe(true);
   });
 
@@ -45,9 +43,7 @@ describe("resetCommand", () => {
     });
 
     expect(
-      cleanupCommandLogMessages(runtime).some((message) =>
-        message.includes("eve backup create"),
-      ),
+      cleanupCommandLogMessages(runtime).some((message) => message.includes("eve backup create")),
     ).toBe(false);
   });
 
@@ -59,10 +55,8 @@ describe("resetCommand", () => {
       dryRun: true,
     });
 
-    expect(removeWorkspaceAttestationPaths).toHaveBeenCalledWith(
-      ["/tmp/.eve/workspace"],
-      runtime,
-      { dryRun: true },
-    );
+    expect(removeWorkspaceAttestationPaths).toHaveBeenCalledWith(["/tmp/.eve/workspace"], runtime, {
+      dryRun: true,
+    });
   });
 });

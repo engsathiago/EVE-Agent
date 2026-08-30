@@ -153,15 +153,13 @@ describe("kitchen-sink RPC isolated state", () => {
   });
 
   it("uses an explicit RPC port or asks the OS for an available fallback", async () => {
-    await expect(
-      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "19080" }),
-    ).resolves.toBe(19080);
-    await expect(
-      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65535" }),
-    ).resolves.toBe(65535);
-    await expect(
-      resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65536" }),
-    ).rejects.toThrow(
+    await expect(resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "19080" })).resolves.toBe(
+      19080,
+    );
+    await expect(resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65535" })).resolves.toBe(
+      65535,
+    );
+    await expect(resolveKitchenSinkRpcPort({ EVE_KITCHEN_SINK_RPC_PORT: "65536" })).rejects.toThrow(
       'EVE_KITCHEN_SINK_RPC_PORT must be a TCP port from 1 to 65535. Got: "65536"',
     );
     await expect(

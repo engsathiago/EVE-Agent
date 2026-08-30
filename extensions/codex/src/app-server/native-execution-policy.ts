@@ -169,10 +169,7 @@ function shouldReadRuntimeSessionEntry(params: {
   return sessionAgentId === explicitAgentId;
 }
 
-function isDefaultAgentSessionKeyForAgent(params: {
-  config: EVEConfig;
-  agentId: string;
-}): boolean {
+function isDefaultAgentSessionKeyForAgent(params: { config: EVEConfig; agentId: string }): boolean {
   return (
     normalizeAgentId(params.agentId) ===
     resolveDefaultPolicyAgentId(listAgentEntries(params.config))

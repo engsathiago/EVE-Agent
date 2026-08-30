@@ -21,8 +21,8 @@ import type {
   ChannelOutboundTargetRef,
 } from "../../channels/plugins/types.adapters.js";
 import { resolveMirroredTranscriptText } from "../../config/sessions/transcript-mirror.js";
-import type { ReplyToMode } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ReplyToMode } from "../../config/types.js";
 import { fireAndForgetHook } from "../../hooks/fire-and-forget.js";
 import { createInternalHookEvent, triggerInternalHook } from "../../hooks/internal-hooks.js";
 import {

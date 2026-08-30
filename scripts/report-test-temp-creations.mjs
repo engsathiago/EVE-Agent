@@ -18,8 +18,7 @@ const FINDING_PATTERNS = [
     reason: "new tmp.dir temp directory creation",
   },
 ];
-const TEMP_DIR_ALLOW_COMMENT_RE =
-  /(?:^|\s)(?:\/\/|\/\*|\*|#)\s*eve-temp-dir:\s*allow\s+(.+)$/u;
+const TEMP_DIR_ALLOW_COMMENT_RE = /(?:^|\s)(?:\/\/|\/\*|\*|#)\s*eve-temp-dir:\s*allow\s+(.+)$/u;
 
 function usage() {
   return `Usage: node scripts/report-test-temp-creations.mjs [options]

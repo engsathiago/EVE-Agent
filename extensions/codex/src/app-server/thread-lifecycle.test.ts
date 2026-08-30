@@ -223,9 +223,7 @@ describe("Codex app-server native code mode config", () => {
     const instructions = buildDeveloperInstructions(createAttemptParams({ provider: "openai" }));
 
     expect(instructions).toContain("Use Codex native `spawn_agent` for Codex subagents");
-    expect(instructions).toContain(
-      "Use EVE `sessions_spawn` only for EVE or ACP delegation.",
-    );
+    expect(instructions).toContain("Use EVE `sessions_spawn` only for EVE or ACP delegation.");
   });
 
   it("summarizes deferred dynamic tool names in developer instructions", () => {

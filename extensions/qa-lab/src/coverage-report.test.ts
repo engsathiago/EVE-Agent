@@ -282,9 +282,7 @@ describe("qa coverage report", () => {
 
     expect(report).toContain("- Suite commands:");
     expect(report).toContain("  - flow: `pnpm eve qa suite --scenario flow-proof`");
-    expect(report).toContain(
-      "  - playwright: `pnpm eve qa suite --scenario playwright-proof`",
-    );
+    expect(report).toContain("  - playwright: `pnpm eve qa suite --scenario playwright-proof`");
   });
 
   it("reports missing taxonomy coverage refs without treating them as fulfilled", () => {

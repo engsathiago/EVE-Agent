@@ -393,11 +393,7 @@ function stageLiveTestState(params: {
     : path.join(realStateDir, "eve.json");
   if (fs.existsSync(realConfigPath)) {
     const rawConfig = fs.readFileSync(realConfigPath, "utf8");
-    fs.writeFileSync(
-      path.join(tempStateDir, "eve.json"),
-      sanitizeLiveConfig(rawConfig),
-      "utf8",
-    );
+    fs.writeFileSync(path.join(tempStateDir, "eve.json"), sanitizeLiveConfig(rawConfig), "utf8");
   }
 
   copyDirIfExists(path.join(realStateDir, "credentials"), path.join(tempStateDir, "credentials"));

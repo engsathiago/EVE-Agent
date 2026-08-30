@@ -41,10 +41,7 @@ function parseModelRef(raw: string, defaultProvider: string): SessionDisplayMode
   };
 }
 
-function resolveAgentPrimaryModel(
-  cfg: EVEConfig,
-  agentId: string | undefined,
-): string | undefined {
+function resolveAgentPrimaryModel(cfg: EVEConfig, agentId: string | undefined): string | undefined {
   if (!agentId) {
     return undefined;
   }
@@ -127,10 +124,7 @@ function normalizeCliRuntimeDisplayRef(
 }
 
 /** Resolves only the model id to show for a session row. */
-export function resolveSessionDisplayModel(
-  cfg: EVEConfig,
-  row: SessionDisplayModelRow,
-): string {
+export function resolveSessionDisplayModel(cfg: EVEConfig, row: SessionDisplayModelRow): string {
   return resolveSessionDisplayModelRef(cfg, row).model;
 }
 

@@ -22,12 +22,7 @@ const QA_OPENAI_PROVIDER_ID = "openai";
 const QA_LIVE_API_KEY_ALIASES: Readonly<Record<string, readonly string[]>> = Object.freeze({
   anthropic: ["EVE_LIVE_ANTHROPIC_KEY"],
   gemini: ["EVE_LIVE_GEMINI_KEY"],
-  openai: [
-    "CODEX_API_KEY",
-    "EVE_LIVE_CODEX_API_KEY",
-    "EVE_LIVE_OPENAI_KEY",
-    "OPENAI_API_KEY",
-  ],
+  openai: ["CODEX_API_KEY", "EVE_LIVE_CODEX_API_KEY", "EVE_LIVE_OPENAI_KEY", "OPENAI_API_KEY"],
 });
 
 function buildQaLiveApiKeyProfileId(provider: string): string {
@@ -63,10 +58,7 @@ function qaLiveOpenAiUsesCodexByDefault(cfg: EVEConfig): boolean {
   );
 }
 
-function expandQaLiveApiKeyProviderIds(params: {
-  cfg: EVEConfig;
-  providerIds: readonly string[];
-}) {
+function expandQaLiveApiKeyProviderIds(params: { cfg: EVEConfig; providerIds: readonly string[] }) {
   const expanded = new Set(normalizeQaLiveProviderIds(params.providerIds));
   if (expanded.has(QA_OPENAI_PROVIDER_ID) && qaLiveOpenAiUsesCodexByDefault(params.cfg)) {
     expanded.add(QA_OPENAI_PROVIDER_ID);

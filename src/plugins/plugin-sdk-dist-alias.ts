@@ -158,10 +158,10 @@ export function ensureEVEPluginSdkAlias(distRoot: string): void {
   }
 
   const publicDistFileNames = readPublicPluginSdkDistFileNames(distRoot);
-  const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve");
+  const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve-agent");
   const pluginSdkAliasDir = path.join(aliasDir, "plugin-sdk");
   writeRuntimeJsonFile(path.join(aliasDir, "package.json"), {
-    name: "eve",
+    name: "eve-agent",
     type: "module",
     exports: buildRuntimePluginSdkPackageExports(publicDistFileNames),
   });

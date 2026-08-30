@@ -135,9 +135,7 @@ describe("program routes", () => {
 
   it("passes parsed channel read-only route flags through", async () => {
     const listRoute = expectRoute(["channels", "list"]);
-    await expect(listRoute.run(["node", "eve", "channels", "list", "--json"])).resolves.toBe(
-      true,
-    );
+    await expect(listRoute.run(["node", "eve", "channels", "list", "--json"])).resolves.toBe(true);
     expect(channelsListCommandMock).toHaveBeenCalledWith(
       { json: true, all: false },
       defaultRuntime,
@@ -194,18 +192,9 @@ describe("program routes", () => {
 
   it("returns false for gateway status route when option values are missing", async () => {
     await expectRunFalse(["gateway", "status"], ["node", "eve", "gateway", "status", "--url"]);
-    await expectRunFalse(
-      ["gateway", "status"],
-      ["node", "eve", "gateway", "status", "--token"],
-    );
-    await expectRunFalse(
-      ["gateway", "status"],
-      ["node", "eve", "gateway", "status", "--password"],
-    );
-    await expectRunFalse(
-      ["gateway", "status"],
-      ["node", "eve", "gateway", "status", "--timeout"],
-    );
+    await expectRunFalse(["gateway", "status"], ["node", "eve", "gateway", "status", "--token"]);
+    await expectRunFalse(["gateway", "status"], ["node", "eve", "gateway", "status", "--password"]);
+    await expectRunFalse(["gateway", "status"], ["node", "eve", "gateway", "status", "--timeout"]);
   });
 
   it("returns false for gateway status route when probe-only flags are present", async () => {
@@ -217,10 +206,7 @@ describe("program routes", () => {
       ["gateway", "status"],
       ["node", "eve", "gateway", "status", "--ssh-identity", "~/.ssh/id_test"],
     );
-    await expectRunFalse(
-      ["gateway", "status"],
-      ["node", "eve", "gateway", "status", "--ssh-auto"],
-    );
+    await expectRunFalse(["gateway", "status"], ["node", "eve", "gateway", "status", "--ssh-auto"]);
   });
 
   it("passes parsed gateway status flags through to daemon status", async () => {
@@ -262,9 +248,7 @@ describe("program routes", () => {
 
   it("passes --no-probe through to daemon status", async () => {
     const route = expectRoute(["gateway", "status"]);
-    await expect(route.run(["node", "eve", "gateway", "status", "--no-probe"])).resolves.toBe(
-      true,
-    );
+    await expect(route.run(["node", "eve", "gateway", "status", "--no-probe"])).resolves.toBe(true);
 
     expect(runDaemonStatusMock).toHaveBeenCalledWith({
       rpc: {
@@ -496,15 +480,7 @@ describe("program routes", () => {
     expect(rootRoute.loadPlugins).toBeUndefined();
     expect(rootRoute.canRun?.(["node", "eve", "tasks"])).toBe(false);
     await expect(
-      rootRoute.run([
-        "node",
-        "eve",
-        "tasks",
-        "--json",
-        "--runtime",
-        "cli",
-        "--status=running",
-      ]),
+      rootRoute.run(["node", "eve", "tasks", "--json", "--runtime", "cli", "--status=running"]),
     ).resolves.toBe(true);
     expect(tasksListJsonCommandMock).toHaveBeenCalledWith(
       { json: true, runtime: "cli", status: "running" },

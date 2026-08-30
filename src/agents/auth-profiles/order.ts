@@ -141,10 +141,7 @@ function listProfilesCompatibleWithAuthProvider(params: {
     .map(([profileId]) => profileId);
 }
 
-function resolveProviderAuthMode(
-  cfg: EVEConfig | undefined,
-  provider: string,
-): string | undefined {
+function resolveProviderAuthMode(cfg: EVEConfig | undefined, provider: string): string | undefined {
   const providers = cfg?.models?.providers;
   if (!providers) {
     return undefined;

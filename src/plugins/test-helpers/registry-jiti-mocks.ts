@@ -9,9 +9,8 @@ const registryJitiMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../discovery.js", () => ({
-  discoverEVEPlugins: (
-    ...args: Parameters<typeof registryJitiMocks.discoverEVEPlugins>
-  ) => registryJitiMocks.discoverEVEPlugins(...args),
+  discoverEVEPlugins: (...args: Parameters<typeof registryJitiMocks.discoverEVEPlugins>) =>
+    registryJitiMocks.discoverEVEPlugins(...args),
 }));
 
 vi.mock("../manifest-registry.js", () => ({

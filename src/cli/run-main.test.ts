@@ -251,27 +251,21 @@ describe("parent command help fast paths", () => {
     expect(shouldUseSecretsHelpFastPath(["node", "eve", "secrets", "--help"])).toBe(true);
     expect(shouldUseSecretsHelpFastPath(["node", "eve", "secrets", "-h"])).toBe(true);
     expect(shouldUseSecretsHelpFastPath(["node", "eve", "secrets", "--version"])).toBe(false);
-    expect(shouldUseSecretsHelpFastPath(["node", "eve", "secrets", "audit", "--help"])).toBe(
-      false,
-    );
+    expect(shouldUseSecretsHelpFastPath(["node", "eve", "secrets", "audit", "--help"])).toBe(false);
 
     expect(shouldUseNodesHelpFastPath(["node", "eve", "nodes", "--help"])).toBe(true);
     expect(shouldUseNodesHelpFastPath(["node", "eve", "nodes", "-h"])).toBe(true);
     expect(shouldUseNodesHelpFastPath(["node", "eve", "nodes", "--version"])).toBe(false);
-    expect(shouldUseNodesHelpFastPath(["node", "eve", "nodes", "invoke", "--help"])).toBe(
-      false,
-    );
+    expect(shouldUseNodesHelpFastPath(["node", "eve", "nodes", "invoke", "--help"])).toBe(false);
   });
 });
 
 describe("shouldUseSetupOnboardConfigureHelpFastPath", () => {
   it("uses the fast path only for setup, onboard, and configure help", () => {
-    expect(
-      shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "setup", "--help"]),
-    ).toBe(true);
-    expect(shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "onboard", "-h"])).toBe(
+    expect(shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "setup", "--help"])).toBe(
       true,
     );
+    expect(shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "onboard", "-h"])).toBe(true);
     expect(
       shouldUseSetupOnboardConfigureHelpFastPath([
         "node",
@@ -283,17 +277,11 @@ describe("shouldUseSetupOnboardConfigureHelpFastPath", () => {
       ]),
     ).toBe(true);
     expect(
-      shouldUseSetupOnboardConfigureHelpFastPath([
-        "node",
-        "eve",
-        "onboard",
-        "status",
-        "--help",
-      ]),
+      shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "onboard", "status", "--help"]),
     ).toBe(false);
-    expect(
-      shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "status", "--help"]),
-    ).toBe(false);
+    expect(shouldUseSetupOnboardConfigureHelpFastPath(["node", "eve", "status", "--help"])).toBe(
+      false,
+    );
   });
 });
 
@@ -316,23 +304,15 @@ describe("resolvePrecomputedSubcommandHelpFastPath", () => {
         "-h",
       ]),
     ).toBe("models");
-    expect(
-      resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "plugins", "--help"]),
-    ).toBe("plugins");
+    expect(resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "plugins", "--help"])).toBe(
+      "plugins",
+    );
     expect(
       resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "doctor", "--version"]),
     ).toBeNull();
+    expect(resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "gateway", "-V"])).toBeNull();
     expect(
-      resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "gateway", "-V"]),
-    ).toBeNull();
-    expect(
-      resolvePrecomputedSubcommandHelpFastPath([
-        "node",
-        "eve",
-        "doctor",
-        "--help",
-        "--version",
-      ]),
+      resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "doctor", "--help", "--version"]),
     ).toBeNull();
     expect(
       resolvePrecomputedSubcommandHelpFastPath(["node", "eve", "doctor", "--version", "-h"]),

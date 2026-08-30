@@ -229,10 +229,7 @@ describe("plugins Docker assertions", () => {
 
     for (const scriptPath of scripts) {
       const script = readFileSync(scriptPath, "utf8");
-      const scriptWithoutDefaultScratch = script.replace(
-        'mktemp -d "/tmp/eve-plugins.XXXXXX"',
-        "",
-      );
+      const scriptWithoutDefaultScratch = script.replace('mktemp -d "/tmp/eve-plugins.XXXXXX"', "");
       expect(script).toContain("EVE_PLUGINS_TMP_DIR");
       expect(scriptWithoutDefaultScratch).not.toMatch(
         /\/tmp\/(?:plugins|marketplace|demo-plugin|is-number|eve-plugin|eve-clawhub)/,

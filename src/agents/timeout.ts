@@ -3,10 +3,7 @@
  *
  * Converts config and per-run overrides into timer-safe millisecond deadlines.
  */
-import {
-  clampTimerTimeoutMs,
-  MAX_TIMER_TIMEOUT_MS,
-} from "@eve/normalization-core/number-coercion";
+import { clampTimerTimeoutMs, MAX_TIMER_TIMEOUT_MS } from "@eve/normalization-core/number-coercion";
 import type { EVEConfig } from "../config/types.eve.js";
 
 const DEFAULT_AGENT_TIMEOUT_SECONDS = 48 * 60 * 60;

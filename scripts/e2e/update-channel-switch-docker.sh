@@ -84,7 +84,7 @@ if ! eve_e2e_maybe_timeout "${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install -g
   eve_e2e_print_log "$package_install_log" >&2
   exit 1
 fi
-package_version="$(node -p "JSON.parse(require(\"node:fs\").readFileSync(\"/tmp/npm-prefix/lib/node_modules/eve/package.json\", \"utf8\")).version")"
+package_version="$(node -p "JSON.parse(require(\"node:fs\").readFileSync(\"/tmp/npm-prefix/lib/node_modules/eve-agent/package.json\", \"utf8\")).version")"
 EVE_PACKAGE_ACCEPTANCE_LEGACY_COMPAT="$(
   node scripts/e2e/lib/package-compat.mjs "$package_version"
 )"

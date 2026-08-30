@@ -34,10 +34,7 @@ function hasAnyHint(env: NodeJS.ProcessEnv, keys: readonly string[]): boolean {
 }
 
 function hasEVEGatewayServiceMarker(env: NodeJS.ProcessEnv): boolean {
-  return (
-    env.EVE_SERVICE_MARKER?.trim() === "eve" &&
-    env.EVE_SERVICE_KIND?.trim() === "gateway"
-  );
+  return env.EVE_SERVICE_MARKER?.trim() === "eve" && env.EVE_SERVICE_KIND?.trim() === "gateway";
 }
 
 function isCurrentGatewayLaunchdJob(env: NodeJS.ProcessEnv): boolean {
@@ -63,8 +60,7 @@ export function detectRespawnSupervisor(
   }
   if (platform === "linux") {
     return hasAnyHint(env, SUPERVISOR_HINTS.systemd) ||
-      (options.includeLinuxEVEGatewayServiceMarker === true &&
-        hasEVEGatewayServiceMarker(env))
+      (options.includeLinuxEVEGatewayServiceMarker === true && hasEVEGatewayServiceMarker(env))
       ? "systemd"
       : null;
   }

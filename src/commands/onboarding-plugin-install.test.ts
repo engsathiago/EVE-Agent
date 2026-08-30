@@ -1334,67 +1334,64 @@ describe("ensureOnboardingPluginInstalled", () => {
   });
 
   it("records local install source metadata when npm install falls back to local", async () => {
-    await withTempDir(
-      { prefix: "eve-onboarding-install-npm-fallback-record-" },
-      async (temp) => {
-        const workspaceDir = path.join(temp, "workspace");
-        const pluginDir = path.join(workspaceDir, "plugins", "demo");
-        await fs.mkdir(path.join(workspaceDir, ".git"), { recursive: true });
-        await fs.mkdir(pluginDir, { recursive: true });
-        installPluginFromNpmSpec.mockResolvedValueOnce({
-          ok: false,
-          error: "registry unavailable",
-        });
-        const note = vi.fn(async () => {});
+    await withTempDir({ prefix: "eve-onboarding-install-npm-fallback-record-" }, async (temp) => {
+      const workspaceDir = path.join(temp, "workspace");
+      const pluginDir = path.join(workspaceDir, "plugins", "demo");
+      await fs.mkdir(path.join(workspaceDir, ".git"), { recursive: true });
+      await fs.mkdir(pluginDir, { recursive: true });
+      installPluginFromNpmSpec.mockResolvedValueOnce({
+        ok: false,
+        error: "registry unavailable",
+      });
+      const note = vi.fn(async () => {});
 
-        const result = await ensureOnboardingPluginInstalled({
-          cfg: {},
-          entry: {
-            pluginId: "demo-plugin",
-            label: "Demo Plugin",
-            install: {
-              npmSpec: "@demo/plugin@1.2.3",
-              localPath: "plugins/demo",
-            },
+      const result = await ensureOnboardingPluginInstalled({
+        cfg: {},
+        entry: {
+          pluginId: "demo-plugin",
+          label: "Demo Plugin",
+          install: {
+            npmSpec: "@demo/plugin@1.2.3",
+            localPath: "plugins/demo",
           },
-          prompter: {
-            select: vi.fn(async () => "npm"),
-            note,
-            confirm: vi.fn(async () => true),
-            progress: vi.fn(() => ({ update: vi.fn(), stop: vi.fn() })),
-          } as never,
-          runtime: {} as never,
-          workspaceDir,
-        });
+        },
+        prompter: {
+          select: vi.fn(async () => "npm"),
+          note,
+          confirm: vi.fn(async () => true),
+          progress: vi.fn(() => ({ update: vi.fn(), stop: vi.fn() })),
+        } as never,
+        runtime: {} as never,
+        workspaceDir,
+      });
 
-        const realPluginDir = await fs.realpath(pluginDir);
-        expect(note).toHaveBeenCalledWith(
-          "Failed to install @demo/plugin@1.2.3: registry unavailable\nReturning to selection.",
-          "Plugin install",
-        );
-        const [recordCfg, recordUpdate] = readFirstMockCall(
-          recordPluginInstall,
-          "recordPluginInstall",
-        ) as [EVEConfig, PluginInstallRecord];
-        expect(recordCfg.plugins?.load?.paths).toEqual([realPluginDir]);
-        expect(recordUpdate).toEqual({
+      const realPluginDir = await fs.realpath(pluginDir);
+      expect(note).toHaveBeenCalledWith(
+        "Failed to install @demo/plugin@1.2.3: registry unavailable\nReturning to selection.",
+        "Plugin install",
+      );
+      const [recordCfg, recordUpdate] = readFirstMockCall(
+        recordPluginInstall,
+        "recordPluginInstall",
+      ) as [EVEConfig, PluginInstallRecord];
+      expect(recordCfg.plugins?.load?.paths).toEqual([realPluginDir]);
+      expect(recordUpdate).toEqual({
+        pluginId: "demo-plugin",
+        source: "path",
+        sourcePath: "./plugins/demo",
+        spec: "@demo/plugin@1.2.3",
+      });
+      expect(result.installed).toBe(true);
+      expect(result.status).toBe("installed");
+      expect(result.cfg.plugins?.installs).toEqual({
+        "demo-plugin": {
           pluginId: "demo-plugin",
           source: "path",
           sourcePath: "./plugins/demo",
           spec: "@demo/plugin@1.2.3",
-        });
-        expect(result.installed).toBe(true);
-        expect(result.status).toBe("installed");
-        expect(result.cfg.plugins?.installs).toEqual({
-          "demo-plugin": {
-            pluginId: "demo-plugin",
-            source: "path",
-            sourcePath: "./plugins/demo",
-            spec: "@demo/plugin@1.2.3",
-          },
-        });
-      },
-    );
+        },
+      });
+    });
   });
 
   it("records absolute local catalog paths as workspace-relative source metadata", async () => {

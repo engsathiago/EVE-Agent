@@ -74,9 +74,7 @@ describe("run-with-env", () => {
   });
 
   it("rejects missing command separators", () => {
-    expect(() => parseRunWithEnvArgs(["EVE_GATEWAY_PROJECT_SHARDS=1", "node"])).toThrow(
-      /Usage:/u,
-    );
+    expect(() => parseRunWithEnvArgs(["EVE_GATEWAY_PROJECT_SHARDS=1", "node"])).toThrow(/Usage:/u);
   });
 
   it("prints wrapper help without spawning a command", () => {
@@ -91,9 +89,9 @@ describe("run-with-env", () => {
   });
 
   it("keeps command help passthrough after the separator", () => {
-    expect(
-      isRunWithEnvHelpRequest(["EVE_GATEWAY_PROJECT_SHARDS=1", "--", "node", "--help"]),
-    ).toBe(false);
+    expect(isRunWithEnvHelpRequest(["EVE_GATEWAY_PROJECT_SHARDS=1", "--", "node", "--help"])).toBe(
+      false,
+    );
   });
 
   it("rejects malformed assignments before spawning", () => {
@@ -153,9 +151,7 @@ describe("run-with-env", () => {
 
     expect(result.status).toBe(2);
     expect(result.stdout).toBe("");
-    expect(result.stderr).toContain(
-      "EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer",
-    );
+    expect(result.stderr).toContain("EVE_RUN_WITH_ENV_FORCE_KILL_MS must be a positive integer");
   });
 
   it.runIf(process.platform !== "win32").each(["SIGTERM", "SIGHUP", "SIGINT"] as const)(

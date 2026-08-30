@@ -87,10 +87,7 @@ function parseAssistantTranscriptText(
   if (!message || message.role !== "assistant") {
     return undefined;
   }
-  if (
-    options?.excludeTranscriptOnlyEVEAssistant &&
-    isTranscriptOnlyEVEAssistantMessage(message)
-  ) {
+  if (options?.excludeTranscriptOnlyEVEAssistant && isTranscriptOnlyEVEAssistantMessage(message)) {
     return undefined;
   }
   const text = extractAssistantVisibleText(message)?.trim();

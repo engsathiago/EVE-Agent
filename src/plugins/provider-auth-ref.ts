@@ -45,10 +45,7 @@ export function extractEnvVarFromSourceLabel(source: string): string | undefined
   return match?.[1];
 }
 
-function resolveDefaultProviderEnvVar(
-  provider: string,
-  config?: EVEConfig,
-): string | undefined {
+function resolveDefaultProviderEnvVar(provider: string, config?: EVEConfig): string | undefined {
   const envVars = getProviderEnvVars(provider, {
     ...(config ? { config } : {}),
     includeUntrustedWorkspacePlugins: false,

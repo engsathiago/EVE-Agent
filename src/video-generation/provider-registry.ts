@@ -22,9 +22,7 @@ function isSafeVideoGenerationProviderId(id: string | undefined): id is string {
   return Boolean(id && !UNSAFE_PROVIDER_IDS.has(id));
 }
 
-function resolvePluginVideoGenerationProviders(
-  cfg?: EVEConfig,
-): VideoGenerationProviderPlugin[] {
+function resolvePluginVideoGenerationProviders(cfg?: EVEConfig): VideoGenerationProviderPlugin[] {
   return capabilityProviderRuntime.resolvePluginCapabilityProviders({
     key: "videoGenerationProviders",
     cfg,
@@ -64,9 +62,7 @@ function buildProviderMaps(cfg?: EVEConfig): {
   return { canonical, aliases };
 }
 
-export function listVideoGenerationProviders(
-  cfg?: EVEConfig,
-): VideoGenerationProviderPlugin[] {
+export function listVideoGenerationProviders(cfg?: EVEConfig): VideoGenerationProviderPlugin[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
 

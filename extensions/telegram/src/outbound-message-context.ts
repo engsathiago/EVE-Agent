@@ -1,8 +1,8 @@
-// Telegram plugin module implements outbound message context behavior.
-import type { Message } from "grammy/types";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
+// Telegram plugin module implements outbound message context behavior.
+import type { Message } from "grammy/types";
 import { createTelegramMessageCache, resolveTelegramMessageCacheScope } from "./message-cache.js";
 
 export type TelegramOutboundPromptContextMessage = {

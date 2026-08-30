@@ -129,10 +129,7 @@ export function resolveBootstrapMaxChars(cfg?: EVEConfig, agentId?: string | nul
   return DEFAULT_BOOTSTRAP_MAX_CHARS;
 }
 
-export function resolveBootstrapTotalMaxChars(
-  cfg?: EVEConfig,
-  agentId?: string | null,
-): number {
+export function resolveBootstrapTotalMaxChars(cfg?: EVEConfig, agentId?: string | null): number {
   const raw =
     cfg && agentId
       ? (resolveAgentConfig(cfg, agentId)?.bootstrapTotalMaxChars ??

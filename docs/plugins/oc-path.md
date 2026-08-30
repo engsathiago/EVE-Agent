@@ -131,7 +131,7 @@ dependency, and the per-line JSONC parse already goes through `jsonc-parser`.
 
 | Surface                        | Provided by                                             |
 | ------------------------------ | ------------------------------------------------------- |
-| `eve path` CLI            | `extensions/oc-path/cli-registration.ts`                |
+| `eve path` CLI                 | `extensions/oc-path/cli-registration.ts`                |
 | `oc://` parser / formatter     | `extensions/oc-path/src/oc-path/oc-path.ts`             |
 | Per-kind parse / emit / edit   | `extensions/oc-path/src/oc-path/{md,jsonc,jsonl,yaml}`  |
 | Universal resolve / find / set | `extensions/oc-path/src/oc-path/{resolve,find,edit}.ts` |

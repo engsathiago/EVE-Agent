@@ -86,10 +86,10 @@ rm -f "$SUMMARY_JSON" "$CONFIG_COVERAGE_JSON"
 
 validate_baseline_package_spec() {
   local spec="$1"
-  if [[ "$spec" =~ ^eve@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
+  if [[ "$spec" =~ ^(eve|eve-agent)@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
     return 0
   fi
-  echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve@latest, eve@beta, eve@alpha, an exact EVE release version, or a bare release version; got: $spec" >&2
+  echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve-agent@latest, eve-agent@beta, eve-agent@alpha, an exact EVE release version, or a bare release version; got: $spec" >&2
   return 1
 }
 
@@ -104,13 +104,17 @@ normalize_baseline() {
       baseline_spec="$raw"
       baseline_version="${raw#eve@}"
       ;;
+    eve-agent@*)
+      baseline_spec="$raw"
+      baseline_version="${raw#eve-agent@}"
+      ;;
     *@*)
-      echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve@<version> or a bare version" >&2
+      echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve-agent@<version> or a bare version" >&2
       return 1
       ;;
     *)
       baseline_version="$raw"
-      baseline_spec="eve@$raw"
+      baseline_spec="eve-agent@$raw"
       ;;
   esac
   case "$baseline_version" in
@@ -119,7 +123,7 @@ normalize_baseline() {
       baseline_version_expected="0"
       ;;
     dev | main | "")
-      echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve@latest, eve@beta, eve@alpha, eve@<version>, or a bare version" >&2
+      echo "EVE_UPGRADE_SURVIVOR_BASELINE must be eve-agent@latest, eve-agent@beta, eve-agent@alpha, eve-agent@<version>, or a bare version" >&2
       return 1
       ;;
     *)
@@ -276,7 +280,11 @@ phase() {
 }
 
 package_root() {
-  printf '%s/lib/node_modules/eve\n' "$npm_config_prefix"
+  local package_name="eve-agent"
+  if [[ "$baseline_spec" == eve@* ]]; then
+    package_name="eve"
+  fi
+  printf '%s/lib/node_modules/%s\n' "$npm_config_prefix" "$package_name"
 }
 
 legacy_runtime_deps_symlink_plugin() {

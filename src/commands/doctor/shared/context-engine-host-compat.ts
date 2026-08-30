@@ -85,9 +85,7 @@ function listModelRefs(value: unknown): string[] {
   return refs;
 }
 
-function collectExplicitRuntimeRefs(
-  cfg: EVEConfig,
-): Array<{ runtimeId: string; path: string }> {
+function collectExplicitRuntimeRefs(cfg: EVEConfig): Array<{ runtimeId: string; path: string }> {
   const refs: Array<{ runtimeId: string; path: string }> = [];
   const push = (runtime: unknown, path: string) => {
     const runtimeId = normalizeRuntimeId(runtime);

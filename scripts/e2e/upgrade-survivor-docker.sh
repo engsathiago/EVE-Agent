@@ -62,17 +62,17 @@ normalize_npm_candidate() {
   local raw="$1"
   case "$raw" in
     latest | beta)
-      printf 'eve@%s\n' "$raw"
+      printf 'eve-agent@%s\n' "$raw"
       ;;
-    eve@*)
+    eve-agent@*)
       printf '%s\n' "$raw"
       ;;
     *@*)
-      echo "EVE_UPGRADE_SURVIVOR_CANDIDATE must be current, latest, beta, eve@<version>, a bare version, or a .tgz path." >&2
+      echo "EVE_UPGRADE_SURVIVOR_CANDIDATE must be current, latest, beta, eve-agent@<version>, a bare version, or a .tgz path." >&2
       return 1
       ;;
     *)
-      printf 'eve@%s\n' "$raw"
+      printf 'eve-agent@%s\n' "$raw"
       ;;
   esac
 }
@@ -320,7 +320,7 @@ node scripts/e2e/lib/upgrade-survivor/assertions.mjs seed
 
 eve_e2e_install_package "$EVE_UPGRADE_SURVIVOR_ARTIFACT_ROOT/install.log" "upgrade survivor package" "$npm_config_prefix"
 command -v eve >/dev/null
-package_version="$(node -p "JSON.parse(require(\"node:fs\").readFileSync(process.argv[1] + \"/lib/node_modules/eve/package.json\", \"utf8\")).version" "$npm_config_prefix")"
+package_version="$(node -p "JSON.parse(require(\"node:fs\").readFileSync(process.argv[1] + \"/lib/node_modules/eve-agent/package.json\", \"utf8\")).version" "$npm_config_prefix")"
 EVE_PACKAGE_ACCEPTANCE_LEGACY_COMPAT="$(
   node scripts/e2e/lib/package-compat.mjs "$package_version"
 )"

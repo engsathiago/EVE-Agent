@@ -40,9 +40,7 @@ describe("Control UI Vite config", () => {
   it("keeps specific tsconfig aliases ahead of broad package aliases", () => {
     const aliases = resolveTsconfigPathAliasesForVite();
     const netPolicyIpIndex = aliases.findIndex((alias) => alias.find === "@eve/net-policy/ip");
-    const netPolicyPackageIndex = aliases.findIndex(
-      (alias) => alias.find === "@eve/net-policy",
-    );
+    const netPolicyPackageIndex = aliases.findIndex((alias) => alias.find === "@eve/net-policy");
     const netPolicyWildcardIndex = aliases.findIndex(
       (alias) =>
         alias.find instanceof RegExp && alias.replacement.includes("packages/net-policy/src/$1"),

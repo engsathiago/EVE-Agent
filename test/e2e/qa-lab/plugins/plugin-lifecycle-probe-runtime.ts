@@ -218,7 +218,7 @@ function createMatrixStateEnv(resourceDir: string): MatrixEnv {
 }
 
 function packageEntrypoint(prefix: string) {
-  const packageRoot = path.join(prefix, "lib", "node_modules", "eve");
+  const packageRoot = path.join(prefix, "lib", "node_modules", "eve-agent");
   for (const entry of ["dist/index.mjs", "dist/index.js"]) {
     const candidate = path.join(packageRoot, entry);
     if (fs.existsSync(candidate)) {

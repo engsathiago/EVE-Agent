@@ -3177,9 +3177,7 @@ export class AgentSession {
    * @returns Path to exported file
    */
   async exportToHtml(_outputPath?: string): Promise<string> {
-    throw new Error(
-      "AgentSession.exportToHtml is deprecated; use the EVE session export command.",
-    );
+    throw new Error("AgentSession.exportToHtml is deprecated; use the EVE session export command.");
   }
 
   /**

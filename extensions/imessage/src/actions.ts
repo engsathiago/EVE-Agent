@@ -579,7 +579,7 @@ export const imessageMessageActions: ChannelMessageActionAdapter = {
         // (eve/imsg#114). Older imsg builds reject the option, so
         // refuse loudly here rather than letting send-rich ship the text
         // alone and silently drop the attachment — the original symptom
-        // of eve/eve#79822.
+        // of engsathiago/eve-agent#79822.
         if (privateApiStatus?.cliCapabilities?.sendRichSupportsAttachment !== true) {
           throw new Error(
             "iMessage reply with an attachment needs an imsg build that exposes `send-rich --file` " +

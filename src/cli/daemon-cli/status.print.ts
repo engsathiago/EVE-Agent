@@ -327,9 +327,7 @@ export function printDaemonStatus(status: DaemonStatus, opts: { json: boolean; d
     isSystemdUnavailableDetail(service.runtime?.detail);
   if (systemdUnavailable) {
     const serviceEnv = service.command?.environment ?? process.env;
-    const container = Boolean(
-      resolveDaemonContainerContext(serviceEnv),
-    );
+    const container = Boolean(resolveDaemonContainerContext(serviceEnv));
     defaultRuntime.error(errorText("systemd user services unavailable."));
     for (const hint of renderSystemdUnavailableHints({
       wsl: isWSLEnv(serviceEnv),
@@ -388,9 +386,7 @@ export function printDaemonStatus(status: DaemonStatus, opts: { json: boolean; d
         `LaunchAgent label cached but plist missing. Clear with: launchctl bootout gui/$UID/${labelValue}`,
       ),
     );
-    defaultRuntime.error(
-      errorText(`Then reinstall: ${formatCliCommand("eve gateway install")}`),
-    );
+    defaultRuntime.error(errorText(`Then reinstall: ${formatCliCommand("eve gateway install")}`));
     spacer();
   }
 

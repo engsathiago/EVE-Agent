@@ -58,9 +58,7 @@ beforeEach(() => {
   setSlackRuntime({ channel: { slack: {} } } as never);
 });
 
-function makeMinimalSlackConfig(
-  opts: { botToken?: string; userToken?: string } = {},
-): EVEConfig {
+function makeMinimalSlackConfig(opts: { botToken?: string; userToken?: string } = {}): EVEConfig {
   const slack: Record<string, unknown> = {};
   if (opts.botToken !== undefined) {
     slack.botToken = opts.botToken;

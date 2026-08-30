@@ -3,7 +3,10 @@
  * preserving safety boundaries and redacting tool payloads.
  */
 import type { AgentMessage } from "eve-agent/plugin-sdk/agent-harness-runtime";
-import { redactSensitiveFieldValue, redactToolPayloadText } from "eve-agent/plugin-sdk/logging-core";
+import {
+  redactSensitiveFieldValue,
+  redactToolPayloadText,
+} from "eve-agent/plugin-sdk/logging-core";
 
 type CodexContextProjection = {
   developerInstructionAddition?: string;

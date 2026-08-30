@@ -5,9 +5,19 @@ import { Readable } from "node:stream";
 import type * as Lark from "@larksuiteoapi/node-sdk";
 import type { MessageReceipt } from "eve-agent/plugin-sdk/channel-outbound";
 import { mediaKindFromMime } from "eve-agent/plugin-sdk/media-mime";
-import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "eve-agent/plugin-sdk/media-runtime";
-import { saveMediaBuffer, saveMediaStream, type SavedMedia } from "eve-agent/plugin-sdk/media-store";
-import { readRegularFile, writeExternalFileWithinRoot } from "eve-agent/plugin-sdk/security-runtime";
+import {
+  MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS,
+  runFfmpeg,
+} from "eve-agent/plugin-sdk/media-runtime";
+import {
+  saveMediaBuffer,
+  saveMediaStream,
+  type SavedMedia,
+} from "eve-agent/plugin-sdk/media-store";
+import {
+  readRegularFile,
+  writeExternalFileWithinRoot,
+} from "eve-agent/plugin-sdk/security-runtime";
 import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   resolvePreferredEVETmpDir,

@@ -242,9 +242,7 @@ describe("Parallels smoke model selection", () => {
     try {
       writeFileSync(logPath, ["EVE 0.0.1", "x".repeat(4096), "EVE 2026.6.7"].join("\n"));
 
-      await expect(extractLastEVEVersionFromLog(logPath, undefined, 128)).resolves.toBe(
-        "2026.6.7",
-      );
+      await expect(extractLastEVEVersionFromLog(logPath, undefined, 128)).resolves.toBe("2026.6.7");
     } finally {
       rmSync(tempDir, { force: true, recursive: true });
     }
@@ -329,18 +327,18 @@ describe("Parallels smoke model selection", () => {
     expect(parseMacosSmokeArgs(["--host-port", "65535"]).hostPort).toBe(65535);
     expect(parseLinuxSmokeArgs(["--host-port", "65535"]).hostPort).toBe(65535);
     expect(parseWindowsSmokeArgs(["--host-port", "65535"]).hostPort).toBe(65535);
-    expect(parseNpmUpdateSmokeArgs(["--", "--package-spec", "eve@2026.5.1"]).packageSpec).toBe(
-      "eve@2026.5.1",
-    );
+    expect(
+      parseNpmUpdateSmokeArgs(["--", "--package-spec", "eve-agent@2026.5.1"]).packageSpec,
+    ).toBe("eve-agent@2026.5.1");
     expect(
       parseNpmUpdateSmokeArgs([
         "--package-spec",
-        "eve@2026.5.1",
+        "eve-agent@2026.5.1",
         "--",
         "--package-spec",
-        "eve@latest",
+        "eve-agent@latest",
       ]).packageSpec,
-    ).toBe("eve@2026.5.1");
+    ).toBe("eve-agent@2026.5.1");
     expect(parseNpmUpdateSmokeArgs(["--macos-vm", "macOS"]).macosVm).toBe("macOS");
     expect(parseWindowsSmokeArgs(["--", "--upgrade-from-packed-main"]).upgradeFromPackedMain).toBe(
       true,
@@ -557,7 +555,7 @@ describe("Parallels smoke model selection", () => {
         runCommand: (command, args, options) => {
           userConfigPath = args.at(-1) ?? "";
           expect(command).toBe("npm");
-          expect(args).toEqual(["view", "eve", "version", "--userconfig", userConfigPath]);
+          expect(args).toEqual(["view", "eve-agent", "version", "--userconfig", userConfigPath]);
           expect(options).toEqual({ quiet: true });
           expect(statSync(userConfigPath).isFile()).toBe(true);
           return { status: 0, stderr: "", stdout: "2026.6.1\n" };
@@ -1293,8 +1291,9 @@ if (isPrlctl) {
     expect(windowsGit.indexOf('"MinGit-2.53.0.2-64-bit.zip"')).toBeLessThan(
       windowsGit.indexOf('"MinGit-2.53.0.2-arm64.zip"'),
     );
-    expect(combined.match(/curl\.exe -fsSL --connect-timeout 10 --max-time 120 --retry 2/g))
-      .toHaveLength(2);
+    expect(
+      combined.match(/curl\.exe -fsSL --connect-timeout 10 --max-time 120 --retry 2/g),
+    ).toHaveLength(2);
     expect(script).toContain("Invoke-RestMethod -Uri");
     expect(script).toContain("-TimeoutSec 120");
     expect(windowsGit).toContain('if "-64-bit." in name:');
@@ -1377,12 +1376,12 @@ if (isPrlctl) {
     expect(macos).toContain('const guestEVE = "eve"');
     expect(macos).toContain('const guestNode = "node"');
     expect(macos).toContain('const guestNpm = "npm"');
-    expect(macos).toContain("$(npm root -g)/eve/eve.mjs");
+    expect(macos).toContain("$(npm root -g)/eve-agent/eve.mjs");
     expect(macos).toContain("guestEVEEntryExec");
     expect(macos).not.toContain('const guestEVE = "/opt/homebrew/bin/eve"');
     expect(macos).not.toContain('const guestNode = "/opt/homebrew/bin/node"');
     expect(macos).not.toContain('const guestNpm = "/opt/homebrew/bin/npm"');
-    expect(macos).not.toContain("/opt/homebrew/lib/node_modules/eve/eve.mjs");
+    expect(macos).not.toContain("/opt/homebrew/lib/node_modules/eve-agent/eve.mjs");
   });
 
   it("keeps Windows gateway reachability on a real deadline with start recovery", () => {
@@ -1879,14 +1878,14 @@ setInterval(() => {}, 1000);
     const execPath = "C:\\nodejs\\node.exe";
     const npmCmdPath = win32.resolve(win32.dirname(execPath), "npm.cmd");
     expect(
-      resolveHostCommandInvocation("npm", ["view", "eve", "version"], {
+      resolveHostCommandInvocation("npm", ["view", "eve-agent", "version"], {
         env: { ComSpec: comSpec },
         execPath,
         existsSync: (candidate) => candidate === npmCmdPath,
         platform: "win32",
       }),
     ).toEqual({
-      args: ["/d", "/s", "/c", `${npmCmdPath} view eve version`],
+      args: ["/d", "/s", "/c", `${npmCmdPath} view eve-agent version`],
       command: comSpec,
       shell: false,
       windowsVerbatimArguments: true,
@@ -1912,9 +1911,7 @@ setInterval(() => {}, 1000);
 
     expect(script).toContain('guestPowerShellBackground(\n      "agent-turn"');
     expect(script).toContain("EVE_PARALLELS_WINDOWS_AGENT_TIMEOUT_S");
-    expect(script).toContain(
-      'readPositiveIntEnv(\n    "EVE_PARALLELS_WINDOWS_AGENT_TIMEOUT_S"',
-    );
+    expect(script).toContain('readPositiveIntEnv("EVE_PARALLELS_WINDOWS_AGENT_TIMEOUT_S", 2700)');
     expect(script).toContain("windowsAgentTurnConfigPatchScript(this.auth.modelId)");
     expect(script).toContain("--model");
     expect(script).toContain('resolveParallelsModelTimeoutSeconds("windows")');
@@ -1999,10 +1996,10 @@ setInterval(() => {}, 1000);
       'this.updateDevTimeoutSeconds = readPositiveIntEnv(\n      "EVE_PARALLELS_MACOS_UPDATE_DEV_TIMEOUT_S"',
     );
     expect(readFileSync(TS_PATHS.linux, "utf8")).toContain(
-      'readPositiveIntEnv(\n    "EVE_PARALLELS_LINUX_AGENT_TIMEOUT_S"',
+      'readPositiveIntEnv("EVE_PARALLELS_LINUX_AGENT_TIMEOUT_S", 1500)',
     );
     expect(readFileSync(TS_PATHS.windows, "utf8")).toContain(
-      'readPositiveIntEnv(\n    "EVE_PARALLELS_WINDOWS_UPDATE_TIMEOUT_S"',
+      'readPositiveIntEnv("EVE_PARALLELS_WINDOWS_UPDATE_TIMEOUT_S", 1200)',
     );
     expect(readFileSync(TS_PATHS.packageArtifact, "utf8")).toContain(
       'readPositiveIntEnv("EVE_PARALLELS_PACKAGE_LOCK_TIMEOUT_MS", 30 * 60_000)',
@@ -2026,9 +2023,7 @@ setInterval(() => {}, 1000);
     const powershell = readFileSync(TS_PATHS.powershell, "utf8");
 
     expect(powershell).toContain("windowsScopedEnvFunction");
-    expect(windows).toContain(
-      "Invoke-WithScopedEnv @{ EVE_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS",
-    );
+    expect(windows).toContain("Invoke-WithScopedEnv @{ EVE_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS");
     expect(windows).toContain("$script:EVEUpdateExit = $LASTEXITCODE");
     expect(windows).not.toContain("$env:EVE_DISABLE_BUNDLED_PLUGINS = '1'");
   });

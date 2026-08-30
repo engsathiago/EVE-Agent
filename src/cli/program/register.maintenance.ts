@@ -74,9 +74,7 @@ export function registerMaintenanceCommands(program: Command) {
         return;
       }
       if (hasLintOnlyDoctorOptions(opts)) {
-        defaultRuntime.error(
-          "doctor lint options require --lint. Use `eve doctor --lint ...`.",
-        );
+        defaultRuntime.error("doctor lint options require --lint. Use `eve doctor --lint ...`.");
         defaultRuntime.exit(2);
         return;
       }
@@ -123,8 +121,7 @@ export function registerMaintenanceCommands(program: Command) {
     .description("Reset local config/state (keeps the CLI installed)")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/reset", "docs.eve.ai/cli/reset")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/reset", "docs.eve.ai/cli/reset")}\n`,
     )
     .option("--scope <scope>", "config|config+creds+sessions|full (default: interactive prompt)")
     .option("--yes", "Skip confirmation prompts", false)

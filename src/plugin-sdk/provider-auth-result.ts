@@ -7,8 +7,8 @@ import {
   normalizeAgentModelMapForConfig,
   normalizeAgentModelRefForConfig,
 } from "../config/model-input.js";
-import type { ModelProviderConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderConfig } from "../config/types.models.js";
 import type { ProviderAuthResult } from "../plugins/types.js";
 
 function normalizeAgentModelConfigForAuthResult(value: unknown): unknown {
@@ -62,9 +62,7 @@ function normalizeProviderConfigModelIdsForAuthResult(
   return mutated ? { ...providerConfig, models: nextModels } : providerConfig;
 }
 
-function normalizeProviderAuthConfigPatchModelRefs(
-  patch: Partial<EVEConfig>,
-): Partial<EVEConfig> {
+function normalizeProviderAuthConfigPatchModelRefs(patch: Partial<EVEConfig>): Partial<EVEConfig> {
   let next = patch;
   const defaults = patch.agents?.defaults;
   if (defaults) {

@@ -12,10 +12,7 @@ import {
 } from "../../infra/diagnostic-events.js";
 import { approveNodePairing, requestNodePairing } from "../../infra/node-pairing.js";
 import { resolvePairingPaths } from "../../infra/pairing-files.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import { nodeHandlers } from "./nodes.js";
 import type { GatewayRequestHandlerOptions } from "./types.js";
 

@@ -7,6 +7,12 @@ import {
   normalizeNullableString,
 } from "@eve/normalization-core/string-coerce";
 import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
+import { MediaUnderstandingSkipError } from "../../packages/media-understanding-common/src/errors.js";
+import { extractGeminiResponse } from "../../packages/media-understanding-common/src/output-extract.js";
+import {
+  estimateBase64Size,
+  resolveVideoMaxBase64Bytes,
+} from "../../packages/media-understanding-common/src/video.js";
 import {
   collectProviderApiKeysForExecution,
   executeWithApiKeyRotation,
@@ -31,20 +37,14 @@ import { resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 import { runFfmpeg } from "../media/media-services.js";
 import { runExec } from "../process/exec.js";
 import { providerOperationRetryConfig } from "../provider-runtime/operation-retry.js";
-import { MediaUnderstandingSkipError } from "../../packages/media-understanding-common/src/errors.js";
-import { extractGeminiResponse } from "../../packages/media-understanding-common/src/output-extract.js";
-import {
-  estimateBase64Size,
-  resolveVideoMaxBase64Bytes,
-} from "../../packages/media-understanding-common/src/video.js";
 import { MediaAttachmentCache } from "./attachments.js";
 import {
   CLI_OUTPUT_MAX_BUFFER,
   DEFAULT_TIMEOUT_SECONDS,
   MIN_AUDIO_FILE_BYTES,
 } from "./defaults.constants.js";
-import { fileExists } from "./fs.js";
 import { resolveDefaultMediaModel } from "./defaults.js";
+import { fileExists } from "./fs.js";
 import { normalizeImageDescriptionInput } from "./image-input-normalize.js";
 import { describeImageWithModel } from "./image-runtime.js";
 import { resolveOpenAiAudioAuthModelApi } from "./openai-audio-api.js";
@@ -922,9 +922,7 @@ export async function runCliEntry(params: {
     const stat = await fs.stat(pathResult.path);
     assertMinAudioSize({ size: stat.size, attachmentIndex: params.attachmentIndex });
   }
-  const outputDir = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-media-cli-"),
-  );
+  const outputDir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-media-cli-"));
   const mediaPath = await resolveCliMediaPath({
     capability,
     command,

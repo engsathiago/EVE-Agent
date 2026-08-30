@@ -16,8 +16,7 @@ function truthy(value: string | undefined): boolean {
 }
 
 const runLive =
-  truthy(process.env.EVE_LIVE_TEST) &&
-  truthy(process.env.EVE_LIVE_CRESTODIAN_RESCUE_CHANNEL);
+  truthy(process.env.EVE_LIVE_TEST) && truthy(process.env.EVE_LIVE_CRESTODIAN_RESCUE_CHANNEL);
 const describeLive = runLive ? describe : describe.skip;
 
 function commandContext(channel = process.env.EVE_LIVE_CRESTODIAN_CHANNEL ?? "whatsapp") {
@@ -36,11 +35,7 @@ function commandContext(channel = process.env.EVE_LIVE_CRESTODIAN_CHANNEL ?? "wh
   } satisfies CommandContext;
 }
 
-async function runRescue(params: {
-  commandBody: string;
-  cfg: EVEConfig;
-  ctx?: CommandContext;
-}) {
+async function runRescue(params: { commandBody: string; cfg: EVEConfig; ctx?: CommandContext }) {
   const ctx = params.ctx ?? commandContext();
   return await runCrestodianRescueMessage({
     cfg: params.cfg,

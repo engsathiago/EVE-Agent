@@ -256,8 +256,7 @@ describe("probeGatewayMemoryStatus", () => {
       embedding: {
         ok: false,
         checked: false,
-        error:
-          "memory embedding readiness not checked; run `eve memory status --deep` to probe",
+        error: "memory embedding readiness not checked; run `eve memory status --deep` to probe",
       },
     });
 

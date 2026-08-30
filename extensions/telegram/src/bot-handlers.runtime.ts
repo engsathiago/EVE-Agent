@@ -1,6 +1,5 @@
 // Telegram plugin module implements bot handlers behavior.
 import { randomUUID } from "node:crypto";
-import type { Message, ReactionTypeEmoji } from "grammy/types";
 import { parseExecApprovalCommandText } from "eve-agent/plugin-sdk/approval-reply-runtime";
 import { resolveChannelConfigWrites } from "eve-agent/plugin-sdk/channel-config-helpers";
 import {
@@ -44,6 +43,7 @@ import {
   patchSessionEntry,
 } from "eve-agent/plugin-sdk/session-store-runtime";
 import { normalizeStringEntries } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { Message, ReactionTypeEmoji } from "grammy/types";
 import { expandTelegramAllowFromWithAccessGroups } from "./access-groups.js";
 import { resolveTelegramAccount, resolveTelegramMediaRuntimeOptions } from "./accounts.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";

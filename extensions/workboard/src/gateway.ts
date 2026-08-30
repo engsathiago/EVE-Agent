@@ -2,15 +2,19 @@
 import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
 import type { EVEPluginApi } from "../api.js";
 import { dispatchAndStartWorkboardCards } from "./dispatcher.js";
+import {
+  missionAct,
+  missionCreate,
+  missionInstruction,
+  missionOverview,
+} from "./mission-control.js";
 import { WorkboardStore } from "./store.js";
 import { WORKBOARD_STATUSES, type WorkboardCard } from "./types.js";
 
 const READ_SCOPE = "operator.read" as const;
 const WRITE_SCOPE = "operator.write" as const;
 
-type GatewayMethodContext = Parameters<
-  Parameters<EVEPluginApi["registerGatewayMethod"]>[1]
->[0];
+type GatewayMethodContext = Parameters<Parameters<EVEPluginApi["registerGatewayMethod"]>[1]>[0];
 type GatewayRespond = GatewayMethodContext["respond"];
 
 function respondError(respond: GatewayRespond, error: unknown) {
@@ -696,5 +700,61 @@ export function registerWorkboardGatewayMethods(params: {
       }
     },
     { scope: READ_SCOPE },
+  );
+
+  api.registerGatewayMethod(
+    "mission.overview",
+    async ({ params: requestParams, respond }) => {
+      try {
+        respond(
+          true,
+          await missionOverview(
+            store,
+            typeof requestParams.boardId === "string" ? requestParams.boardId : undefined,
+          ),
+        );
+      } catch (error) {
+        respondError(respond, error);
+      }
+    },
+    { scope: READ_SCOPE },
+  );
+
+  api.registerGatewayMethod(
+    "mission.tasks.create",
+    async ({ params: requestParams, respond }) => {
+      try {
+        respond(true, { task: await missionCreate(store, requestParams) });
+      } catch (error) {
+        respondError(respond, error);
+      }
+    },
+    { scope: WRITE_SCOPE },
+  );
+
+  api.registerGatewayMethod(
+    "mission.tasks.instruction",
+    async ({ params: requestParams, respond }) => {
+      try {
+        respond(true, {
+          task: await missionInstruction(store, readId(requestParams), requestParams),
+        });
+      } catch (error) {
+        respondError(respond, error);
+      }
+    },
+    { scope: WRITE_SCOPE },
+  );
+
+  api.registerGatewayMethod(
+    "mission.tasks.action",
+    async ({ params: requestParams, respond }) => {
+      try {
+        respond(true, { task: await missionAct(store, readId(requestParams), requestParams) });
+      } catch (error) {
+        respondError(respond, error);
+      }
+    },
+    { scope: WRITE_SCOPE },
   );
 }

@@ -241,11 +241,7 @@ function computeBaseConfigSchemaStablePayload(): BaseConfigSchemaStablePayload {
     applyFieldDocumentation(schemaRoot, buildFieldDocumentation());
   }
   const baseHints = mapSensitivePaths(EVESchema, "", buildBaseHints());
-  const sensitiveUrlPaths = collectMatchingSchemaPaths(
-    EVESchema,
-    "",
-    isSensitiveUrlConfigPath,
-  );
+  const sensitiveUrlPaths = collectMatchingSchemaPaths(EVESchema, "", isSensitiveUrlConfigPath);
   const stablePayload = {
     schema: stripLegacyCompatSchemaPaths(stripChannelSchema(schema)),
     uiHints: stripLegacyCompatHints(

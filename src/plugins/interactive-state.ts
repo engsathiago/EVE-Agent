@@ -17,9 +17,7 @@ type InteractiveState = {
 };
 
 const PLUGIN_INTERACTIVE_STATE_KEY = Symbol.for("eve.pluginInteractiveState");
-const PLUGIN_INTERACTIVE_CALLBACK_DEDUPE_KEY = Symbol.for(
-  "eve.pluginInteractiveCallbackDedupe",
-);
+const PLUGIN_INTERACTIVE_CALLBACK_DEDUPE_KEY = Symbol.for("eve.pluginInteractiveCallbackDedupe");
 
 function createInteractiveCallbackDedupe(): DedupeCache {
   return resolveGlobalDedupeCache(PLUGIN_INTERACTIVE_CALLBACK_DEDUPE_KEY, {

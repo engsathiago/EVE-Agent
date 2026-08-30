@@ -3,8 +3,8 @@ import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string
 import { getLoadedChannelPlugin, normalizeChannelId } from "../channels/plugins/index.js";
 import { resolveReadOnlyChannelCommandDefaults } from "../channels/plugins/read-only-command-defaults.js";
 import type { ChannelId } from "../channels/plugins/types.public.js";
-import type { NativeCommandsSetting } from "./types.js";
 import type { EVEConfig } from "./types.eve.js";
+import type { NativeCommandsSetting } from "./types.js";
 export { isCommandFlagEnabled, isRestartEnabled } from "./commands.flags.js";
 
 function resolveAutoDefault(

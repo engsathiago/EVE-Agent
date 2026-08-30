@@ -1,6 +1,6 @@
+import type { EVEConfig } from "../config/types.eve.js";
 /** Type contracts for plugin-owned CLI backend integrations. */
 import type { CliBackendConfig } from "../config/types.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import type { ContextEngineHostCapability } from "../context-engine/types.js";
 
 export type PluginTextReplacement = {

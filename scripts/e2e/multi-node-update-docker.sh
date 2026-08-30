@@ -117,7 +117,7 @@ echo "eve binary: $EVE_A"
 echo "eve version: $(eve --version 2>/dev/null || echo unknown)"
 
 # Record the package root for node-A install.
-PACKAGE_ROOT_A="$NPM_PREFIX_A/lib/node_modules/eve"
+PACKAGE_ROOT_A="$NPM_PREFIX_A/lib/node_modules/eve-agent"
 echo "Package root A: $PACKAGE_ROOT_A"
 ls -la "$PACKAGE_ROOT_A/package.json" 2>/dev/null || echo "WARNING: package.json not found at A"
 
@@ -378,7 +378,7 @@ else
 fi
 
 # Check 2: Is the EVE package installed under node-B npm prefix?
-if [ -f "$NPM_PREFIX_B/lib/node_modules/eve/package.json" ]; then
+if [ -f "$NPM_PREFIX_B/lib/node_modules/eve-agent/package.json" ]; then
   echo "WARNING: EVE was ALSO installed under node-B prefix (split install)"
 else
   echo "OK: EVE is NOT under node-B prefix (expected: only under node-A)"
@@ -455,7 +455,7 @@ EXIT_CODE=0
 if [ "$BAKED_NODE_AFTER" = "$NODE_B" ] && [ "$BAKED_NODE_BEFORE" != "$NODE_B" ]; then
   EXIT_CODE=1
 fi
-if [ -f "$NPM_PREFIX_B/lib/node_modules/eve/package.json" ]; then
+if [ -f "$NPM_PREFIX_B/lib/node_modules/eve-agent/package.json" ]; then
   EXIT_CODE=1
 fi
 if [ -f "$GATEWAY_UNIT_PATH" ]; then

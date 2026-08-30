@@ -22,10 +22,7 @@ import {
 } from "../../plugins/plugin-module-loader-cache.js";
 import { loadChannelPluginModule, resolveExistingPluginModulePath } from "./module-loader.js";
 
-type ChannelPackageStateChecker = (params: {
-  cfg: EVEConfig;
-  env?: NodeJS.ProcessEnv;
-}) => boolean;
+type ChannelPackageStateChecker = (params: { cfg: EVEConfig; env?: NodeJS.ProcessEnv }) => boolean;
 
 type ChannelPackageStateMetadata = {
   specifier?: string;

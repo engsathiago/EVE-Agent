@@ -170,6 +170,7 @@ describe("Skill Workshop proposal RPCs", () => {
 
   it.each([
     ["apply", "skills.proposals.apply", "applied"],
+    ["rollback", "skills.proposals.rollback", "rolled_back"],
     ["reject", "skills.proposals.reject", "rejected"],
   ] as const)(
     "%s sends the selected agent id and refreshes that agent scope",

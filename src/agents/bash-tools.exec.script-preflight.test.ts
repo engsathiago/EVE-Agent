@@ -74,9 +74,7 @@ async function expectSymlinkSwapDuringPreflightToAvoidErrors(params: {
 
 describe("exec interactive EVE channel login guard", () => {
   it("recognizes direct and package-runner channel login commands before execution", () => {
-    expect(
-      parseEVEChannelsLoginShellCommand("eve channels login --channel whatsapp"),
-    ).toBe(true);
+    expect(parseEVEChannelsLoginShellCommand("eve channels login --channel whatsapp")).toBe(true);
     expect(
       parseEVEChannelsLoginShellCommand(
         "pnpm exec eve channels login --channel whatsapp --verbose",

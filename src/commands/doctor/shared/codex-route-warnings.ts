@@ -353,10 +353,7 @@ function resolveDefaultProviderForAliasContext(params: {
   return normalizeProviderId(implicit?.provider ?? DEFAULT_PROVIDER) || DEFAULT_PROVIDER;
 }
 
-function findAgentById(
-  cfg: EVEConfig,
-  agentId: string | undefined,
-): MutableRecord | undefined {
+function findAgentById(cfg: EVEConfig, agentId: string | undefined): MutableRecord | undefined {
   if (!agentId) {
     return undefined;
   }
@@ -1815,10 +1812,7 @@ function readMutablePath(root: MutableRecord, pathLabel: string): MutableRecord 
   return asMutableRecord(cursor);
 }
 
-function readCompactionOwnerForPath(
-  cfg: EVEConfig,
-  ownerPath: string,
-): MutableRecord | undefined {
+function readCompactionOwnerForPath(cfg: EVEConfig, ownerPath: string): MutableRecord | undefined {
   if (ownerPath === "agents.defaults") {
     return asMutableRecord(cfg.agents?.defaults);
   }
@@ -2809,8 +2803,7 @@ export function collectCodexRouteWarnings(params: {
     warnings.push(
       formatUnsupportedCompactionWarning({
         hits: fixableHits,
-        fixHint:
-          "- Run `eve doctor --fix`: it removes unsupported Codex compaction overrides.",
+        fixHint: "- Run `eve doctor --fix`: it removes unsupported Codex compaction overrides.",
       }),
     );
   }

@@ -687,9 +687,7 @@ describe("feishu_doc image fetch hardening", () => {
     });
 
     loadWebMediaMock.mockRejectedValueOnce(
-      new Error(
-        "Local media path is not under an allowed directory: /home/admin/.eve/eve.json",
-      ),
+      new Error("Local media path is not under an allowed directory: /home/admin/.eve/eve.json"),
     );
 
     const feishuDocTool = resolveFeishuDocTool();

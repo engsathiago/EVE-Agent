@@ -24,9 +24,7 @@ import type {
   AgentHarnessCompactResult,
 } from "./types.js";
 
-const agentRunAttempt = vi.fn<AgentHarness["runAttempt"]>(async () =>
-  createAttemptResult("eve"),
-);
+const agentRunAttempt = vi.fn<AgentHarness["runAttempt"]>(async () => createAttemptResult("eve"));
 const compactAuthMocks = vi.hoisted(() => ({
   getApiKeyForModel: vi.fn(),
   resolveModelAsync: vi.fn(),
@@ -241,11 +239,7 @@ function providerRuntimeConfig(provider: string, runtime: string): EVEConfig {
   } as EVEConfig;
 }
 
-function agentModelRuntimeConfig(
-  modelRef: string,
-  runtime: string,
-  agentId?: string,
-): EVEConfig {
+function agentModelRuntimeConfig(modelRef: string, runtime: string, agentId?: string): EVEConfig {
   if (agentId) {
     return {
       agents: {

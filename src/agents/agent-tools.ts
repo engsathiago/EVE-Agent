@@ -12,8 +12,8 @@ import type { SourceReplyDeliveryMode } from "../auto-reply/get-reply-options.ty
 import { HEARTBEAT_RESPONSE_TOOL_NAME } from "../auto-reply/heartbeat-tool-response.js";
 import type { InboundEventKind } from "../channels/inbound-event/kind.js";
 import { resolveExecCommandHighlighting } from "../config/exec-command-highlighting.js";
-import type { ModelCompatConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelCompatConfig } from "../config/types.models.js";
 import type { DiagnosticTraceContext } from "../infra/diagnostic-trace-context.js";
 import { resolveEventSessionRoutingPolicy } from "../infra/event-session-routing.js";
 import {
@@ -69,14 +69,14 @@ import type { ProcessToolDefaults } from "./bash-tools.process.js";
 import { execSchema, processSchema } from "./bash-tools.schemas.js";
 import { listChannelAgentTools } from "./channel-tools.js";
 import { shouldSuppressManagedWebSearchTool } from "./codex-native-web-search.js";
+import { resolveEVEPluginToolsForOptions } from "./eve-plugin-tools.js";
+import { createEVETools } from "./eve-tools.js";
 import { resolveImageSanitizationLimits } from "./image-sanitization.js";
 import {
   filterLocalModelLeanTools,
   resolveLocalModelLeanPreserveToolNames,
 } from "./local-model-lean.js";
 import type { ModelAuthMode } from "./model-auth.js";
-import { resolveEVEPluginToolsForOptions } from "./eve-plugin-tools.js";
-import { createEVETools } from "./eve-tools.js";
 import type { SandboxContext } from "./sandbox.js";
 import { SANDBOX_AGENT_WORKSPACE_MOUNT } from "./sandbox/constants.js";
 import { resolveReadOnlyWorkspaceSkillMounts } from "./sandbox/workspace-mounts.js";

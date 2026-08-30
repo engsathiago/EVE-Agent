@@ -100,8 +100,7 @@ describe("native Gateway protocol levels", () => {
       );
     }
 
-    const swiftGeneratedPath =
-      "apps/shared/EVEKit/Sources/EVEProtocol/GatewayModels.swift";
+    const swiftGeneratedPath = "apps/shared/EVEKit/Sources/EVEProtocol/GatewayModels.swift";
     const swiftGenerated = await readRepoFile(swiftGeneratedPath);
     assertLevelsMatch(swiftGeneratedPath, {
       min: extractInteger(
@@ -205,8 +204,7 @@ describe("native Gateway protocol levels", () => {
   });
 
   it("emits named string-literal unions as Swift enums", async () => {
-    const swiftGeneratedPath =
-      "apps/shared/EVEKit/Sources/EVEProtocol/GatewayModels.swift";
+    const swiftGeneratedPath = "apps/shared/EVEKit/Sources/EVEProtocol/GatewayModels.swift";
     const swiftGenerated = await readRepoFile(swiftGeneratedPath);
 
     for (const [name, schema] of Object.entries(ProtocolSchemas)) {

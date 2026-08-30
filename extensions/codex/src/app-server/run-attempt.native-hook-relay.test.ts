@@ -30,9 +30,7 @@ const DISABLED_CODEX_WEB_SEARCH_THREAD_CONFIG_FINGERPRINT = JSON.stringify({
   web_search: "disabled",
 });
 
-function writeCodexAppServerBinding(
-  ...args: Parameters<typeof writeRawCodexAppServerBinding>
-) {
+function writeCodexAppServerBinding(...args: Parameters<typeof writeRawCodexAppServerBinding>) {
   const [sessionFile, binding, lookup] = args;
   return writeRawCodexAppServerBinding(
     sessionFile,
@@ -684,7 +682,7 @@ describe("runCodexAppServerAttempt native hook relay", () => {
       sessionKey: "agent:dev-codex:cu-pr-relay-smoke",
     });
 
-    expect(relayId).toBe("codex-8810b5252975550c887ff0def512b25e944bac39");
+    expect(relayId).toBe("codex-116064de097de3218be1797c5aeb92df21a7e0de");
     expect(relayId).not.toContain("dev-codex");
     expect(relayId).not.toContain("cu-pr-relay-smoke");
   });

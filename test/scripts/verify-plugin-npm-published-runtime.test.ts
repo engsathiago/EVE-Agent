@@ -26,9 +26,9 @@ describe("plugin npm publish verifier args", () => {
     expect(() => parseVerifyPublishedPluginRuntimeArgs(["--wat"])).toThrow(
       "Unknown plugin npm verifier option: --wat",
     );
-    expect(() =>
-      parseVerifyPublishedPluginRuntimeArgs(["@eve/discord@2026.5.2", "extra"]),
-    ).toThrow("Unexpected plugin npm verifier argument: extra");
+    expect(() => parseVerifyPublishedPluginRuntimeArgs(["@eve/discord@2026.5.2", "extra"])).toThrow(
+      "Unexpected plugin npm verifier argument: extra",
+    );
   });
 });
 
@@ -283,9 +283,7 @@ describe("collectPluginNpmPublishedRuntimeErrors", () => {
         },
         files: ["package.json", "dist/index.js", "dist/setup-entry.js"],
       }),
-    ).toEqual([
-      "@eve/twitch@2026.5.3 package.json eve.runtimeSetupEntry requires eve.setupEntry",
-    ]);
+    ).toEqual(["@eve/twitch@2026.5.3 package.json eve.runtimeSetupEntry requires eve.setupEntry"]);
   });
 });
 

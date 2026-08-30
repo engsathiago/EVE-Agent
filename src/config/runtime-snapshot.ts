@@ -137,10 +137,7 @@ function createRuntimeConfigSnapshotMetadata(
   };
 }
 
-export function setRuntimeConfigSnapshot(
-  config: EVEConfig,
-  sourceConfig?: EVEConfig,
-): void {
+export function setRuntimeConfigSnapshot(config: EVEConfig, sourceConfig?: EVEConfig): void {
   runtimeConfigSnapshot = config;
   runtimeConfigSourceSnapshot = sourceConfig ?? null;
   runtimeConfigSnapshotMetadata = createRuntimeConfigSnapshotMetadata(config, sourceConfig);

@@ -91,11 +91,7 @@ async function createHttpPokeApi(params: {
   };
 }
 
-function resolveOutboundContext(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-  to: string;
-}) {
+function resolveOutboundContext(params: { cfg: EVEConfig; accountId?: string | null; to: string }) {
   const account = resolveTlonAccount(params.cfg, params.accountId ?? undefined);
   if (!account.configured || !account.ship || !account.url || !account.code) {
     throw new Error("Tlon account not configured");

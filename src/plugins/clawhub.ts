@@ -176,7 +176,7 @@ function isTrustedSourceLinkedOfficialPackage(pkg: NonNullable<ClawHubPackageDet
     pkg.channel === "official" &&
     pkg.isOfficial &&
     pkg.verification?.tier === "source-linked" &&
-    (sourceRepo === "eve/eve" ||
+    (sourceRepo === "engsathiago/eve-agent" ||
       sourceRepo === "github.com/engsathiago/eve-agent" ||
       sourceRepo === "https://github.com/engsathiago/eve-agent")
   );

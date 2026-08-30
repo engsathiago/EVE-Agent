@@ -1,5 +1,3 @@
-// Telegram type declarations define plugin contracts.
-import type { Bot } from "grammy";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type {
   DmPolicy,
@@ -9,6 +7,8 @@ import type {
 } from "eve-agent/plugin-sdk/config-contracts";
 import type { HistoryEntry } from "eve-agent/plugin-sdk/reply-history";
 import type { MsgContext } from "eve-agent/plugin-sdk/reply-runtime";
+// Telegram type declarations define plugin contracts.
+import type { Bot } from "grammy";
 import type { StickerMetadata, TelegramContext } from "./bot/types.js";
 import type { TelegramReplyChainEntry } from "./message-cache.js";
 

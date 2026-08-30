@@ -61,7 +61,7 @@ jobs:
     name: Scan iOS dead code
     needs: scope
     if: ${{ needs.scope.outputs.should-scan == 'true' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && 'macos-26' || (github.repository == 'eve/eve' && 'blacksmith-12vcpu-macos-26' || 'macos-26') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && 'macos-26' || (github.repository == 'engsathiago/eve-agent' && 'blacksmith-12vcpu-macos-26' || 'macos-26') }}
     timeout-minutes: 45
     steps:
       - name: Checkout

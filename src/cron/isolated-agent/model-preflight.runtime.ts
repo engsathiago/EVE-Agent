@@ -1,8 +1,8 @@
 /** Preflights local model-provider endpoints before scheduled cron runner startup. */
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
-import type { ModelProviderConfig } from "../../config/types.models.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ModelProviderConfig } from "../../config/types.models.js";
 import { fetchWithSsrFGuard } from "../../infra/net/fetch-guard.js";
 import type { SsrFPolicy } from "../../infra/net/ssrf.js";
 
@@ -37,10 +37,7 @@ type CachedEndpointPreflightResult = {
 
 const preflightCache = new Map<string, CachedEndpointPreflightResult>();
 
-function resolveProviderConfig(
-  cfg: EVEConfig,
-  provider: string,
-): ModelProviderConfig | undefined {
+function resolveProviderConfig(cfg: EVEConfig, provider: string): ModelProviderConfig | undefined {
   const providers = cfg.models?.providers;
   if (!providers) {
     return undefined;

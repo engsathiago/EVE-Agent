@@ -1,3 +1,5 @@
+import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
+import { chunkMarkdownTextWithMode, type ChunkMode } from "eve-agent/plugin-sdk/reply-chunking";
 // Telegram rich message helpers isolate Bot API 10.1 calls until grammY types catch up.
 import type { Bot } from "grammy";
 import type {
@@ -8,8 +10,6 @@ import type {
   ReplyKeyboardRemove,
   ReplyParameters,
 } from "grammy/types";
-import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
-import { chunkMarkdownTextWithMode, type ChunkMode } from "eve-agent/plugin-sdk/reply-chunking";
 import {
   escapeTelegramHtml,
   limitTelegramRichHtmlNesting,

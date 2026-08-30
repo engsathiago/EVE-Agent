@@ -1,8 +1,5 @@
 // Extracts user commitments from conversation text through model prompts.
-import {
-  asFiniteNumber,
-  timestampMsToIsoString,
-} from "@eve/normalization-core/number-coercion";
+import { asFiniteNumber, timestampMsToIsoString } from "@eve/normalization-core/number-coercion";
 import { normalizeOptionalString as asString } from "@eve/normalization-core/string-coerce";
 import { resolveAgentConfig } from "../agents/agent-scope.js";
 import type { EVEConfig } from "../config/config.js";

@@ -23,9 +23,7 @@ import { resolveFunctionModuleExport } from "./module-loader.js";
 import { loadWorkspaceHookEntries } from "./workspace.js";
 
 const log = createSubsystemLogger("hooks:loader");
-const LOADED_INTERNAL_HOOK_REGISTRATIONS_KEY = Symbol.for(
-  "eve.loadedInternalHookRegistrations",
-);
+const LOADED_INTERNAL_HOOK_REGISTRATIONS_KEY = Symbol.for("eve.loadedInternalHookRegistrations");
 const loadedHookRegistrations = resolveGlobalSingleton<
   Array<{ event: string; handler: InternalHookHandler }>
 >(LOADED_INTERNAL_HOOK_REGISTRATIONS_KEY, () => []);

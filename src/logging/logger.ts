@@ -18,10 +18,7 @@ import {
 import { expandHomePrefix } from "../infra/home-dir.js";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import { appendRegularFileSync } from "../infra/regular-file.js";
-import {
-  POSIX_EVE_TMP_DIR,
-  resolvePreferredEVETmpDir,
-} from "../infra/tmp-eve-dir.js";
+import { POSIX_EVE_TMP_DIR, resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 import { readLoggingConfig, shouldSkipMutatingLoggingConfigRead } from "./config.js";
 import { resolveEnvLogLevelOverride } from "./env-log-level.js";
 import { type LogLevel, levelToMinLevel, normalizeLogLevel } from "./levels.js";
@@ -52,9 +49,7 @@ function resolveDefaultLogDir(): string {
 }
 
 function resolveDefaultLogFile(defaultLogDir: string): string {
-  return canUseNodeFs()
-    ? path.join(defaultLogDir, "eve.log")
-    : `${POSIX_EVE_TMP_DIR}/eve.log`;
+  return canUseNodeFs() ? path.join(defaultLogDir, "eve.log") : `${POSIX_EVE_TMP_DIR}/eve.log`;
 }
 
 export const DEFAULT_LOG_DIR = resolveDefaultLogDir();

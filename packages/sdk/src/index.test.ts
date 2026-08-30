@@ -1,12 +1,7 @@
 // EVE SDK tests cover index behavior.
 import { describe, expect, it } from "vitest";
 import { EventHub, EVE, normalizeGatewayEvent } from "./index.js";
-import type {
-  GatewayEvent,
-  GatewayRequestOptions,
-  EVEEvent,
-  EVETransport,
-} from "./types.js";
+import type { GatewayEvent, GatewayRequestOptions, EVEEvent, EVETransport } from "./types.js";
 
 type RequestCall = {
   method: string;

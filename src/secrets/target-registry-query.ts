@@ -111,9 +111,7 @@ function getCompiledCoreEVETargetState() {
   return compiledCoreEVETargetState;
 }
 
-function getCompiledChannelEVETargets(
-  channelId: string,
-): CompiledTargetRegistryEntry[] | null {
+function getCompiledChannelEVETargets(channelId: string): CompiledTargetRegistryEntry[] | null {
   const normalizedChannelId = channelId.trim();
   if (!normalizedChannelId) {
     return null;
@@ -383,9 +381,7 @@ export function resolveConfigSecretTargetByPath(pathSegments: string[]): Resolve
 /**
  * Discovers configured secret-bearing values in eve.json using the full registry.
  */
-export function discoverConfigSecretTargets(
-  config: EVEConfig,
-): DiscoveredConfigSecretTarget[] {
+export function discoverConfigSecretTargets(config: EVEConfig): DiscoveredConfigSecretTarget[] {
   return discoverConfigSecretTargetsByIds(config);
 }
 

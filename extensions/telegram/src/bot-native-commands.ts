@@ -1,7 +1,6 @@
 // Telegram plugin module implements bot native commands behavior.
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import type { Bot, Context } from "grammy";
 import {
   loadModelCatalog,
   resolveAgentConfig,
@@ -48,6 +47,7 @@ import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
 } from "eve-agent/plugin-sdk/string-coerce-runtime";
+import type { Bot, Context } from "grammy";
 import { expandTelegramAllowFromWithAccessGroups } from "./access-groups.js";
 import { resolveTelegramAccount } from "./accounts.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
@@ -116,7 +116,8 @@ type TelegramNativeCommandContext = Context & { match?: string };
 type TelegramChunkMode = ReturnType<
   typeof import("eve-agent/plugin-sdk/reply-dispatch-runtime").resolveChunkMode
 >;
-type TelegramNativeReplyPayload = import("eve-agent/plugin-sdk/reply-dispatch-runtime").ReplyPayload;
+type TelegramNativeReplyPayload =
+  import("eve-agent/plugin-sdk/reply-dispatch-runtime").ReplyPayload;
 type TelegramNativeReplyChannelData = {
   buttons?: TelegramInlineButtons;
   pin?: boolean;

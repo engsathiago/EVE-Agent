@@ -1,10 +1,8 @@
 // Normalizes talk-mode config for voice and channel interactions.
-import {
-  normalizeFastMode,
-  normalizeOptionalString,
-} from "@eve/normalization-core/string-coerce";
+import { normalizeFastMode, normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { normalizeThinkLevel } from "../auto-reply/thinking.js";
 import { isRecord } from "../utils.js";
+import type { EVEConfig } from "./types.eve.js";
 import type {
   ResolvedTalkConfig,
   TalkConfig,
@@ -12,7 +10,6 @@ import type {
   TalkProviderConfig,
   TalkRealtimeConfig,
 } from "./types.gateway.js";
-import type { EVEConfig } from "./types.eve.js";
 import { coerceSecretRef } from "./types.secrets.js";
 
 function normalizeTalkSecretInput(value: unknown): TalkProviderConfig["apiKey"] | undefined {

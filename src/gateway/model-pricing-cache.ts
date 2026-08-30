@@ -1,7 +1,7 @@
+import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 // Gateway model-pricing refresh and normalization.
 // Fetches, normalizes, and schedules cached pricing for model usage estimates.
 import type { ModelCatalogCost } from "@eve/model-catalog-core/model-catalog-types";
-import { readResponseWithLimit } from "@eve/media-core/read-response-with-limit";
 import {
   normalizeOptionalString,
   resolvePrimaryStringValue,
@@ -16,8 +16,8 @@ import {
   type ModelRef,
 } from "../agents/model-selection.js";
 import { resolvePluginWebSearchConfig } from "../config/plugin-web-search-config.js";
-import type { ModelDefinitionConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelDefinitionConfig } from "../config/types.models.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { planManifestModelCatalogRows } from "../model-catalog/index.js";
 import { isInstalledPluginEnabled } from "../plugins/installed-plugin-index.js";

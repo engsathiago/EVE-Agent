@@ -2128,8 +2128,7 @@ export function registerCapabilityCli(program: Command) {
     .description("Run provider-backed inference commands through a stable CLI surface")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/infer", "docs.eve.ai/cli/infer")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/infer", "docs.eve.ai/cli/infer")}\n`,
     );
 
   registerCapabilityListAndInspect(capability);

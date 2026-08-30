@@ -494,8 +494,7 @@ export function registerLogsCli(program: Command) {
     .option("--utc", "Display timestamps in UTC", false)
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/logs", "docs.eve.ai/cli/logs")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/logs", "docs.eve.ai/cli/logs")}\n`,
     );
 
   addGatewayClientOptions(logs);

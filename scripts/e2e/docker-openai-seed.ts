@@ -27,10 +27,7 @@ const DOCKER_OPENAI_MODEL: ModelDefinitionConfig = {
   maxTokens: 128_000,
 };
 
-export function applyDockerOpenAiProviderConfig(
-  config: EVEConfig,
-  apiKey: string,
-): EVEConfig {
+export function applyDockerOpenAiProviderConfig(config: EVEConfig, apiKey: string): EVEConfig {
   const seededConfig = applyProviderConfigWithDefaultModelPreset(config, {
     providerId: "openai",
     api: "openai-responses",

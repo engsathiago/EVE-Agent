@@ -17,16 +17,20 @@ describe("gh-read helpers", () => {
   });
 
   it("finds repo from gh args", () => {
-    expect(parseRepoArg(["pr", "view", "42", "-R", "eve/eve"])).toBe("eve/eve");
+    expect(parseRepoArg(["pr", "view", "42", "-R", "engsathiago/eve-agent"])).toBe(
+      "engsathiago/eve-agent",
+    );
     expect(parseRepoArg(["run", "list", "--repo=eve/docs"])).toBe("eve/docs");
     expect(parseRepoArg(["pr", "view", "42"])).toBeNull();
   });
 
   it("normalizes repo strings from common git formats", () => {
-    expect(normalizeRepo("eve/eve")).toBe("eve/eve");
-    expect(normalizeRepo("github.com/engsathiago/eve-agent")).toBe("eve/eve");
-    expect(normalizeRepo("https://github.com/engsathiago/eve-agent.git")).toBe("eve/eve");
-    expect(normalizeRepo("git@github.com:eve/eve.git")).toBe("eve/eve");
+    expect(normalizeRepo("engsathiago/eve-agent")).toBe("engsathiago/eve-agent");
+    expect(normalizeRepo("github.com/engsathiago/eve-agent")).toBe("engsathiago/eve-agent");
+    expect(normalizeRepo("https://github.com/engsathiago/eve-agent.git")).toBe(
+      "engsathiago/eve-agent",
+    );
+    expect(normalizeRepo("git@github.com:engsathiago/eve-agent.git")).toBe("engsathiago/eve-agent");
     expect(normalizeRepo("invalid")).toBeNull();
   });
 

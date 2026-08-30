@@ -212,21 +212,21 @@ Do not switch to broad live GitHub search unless `gitcrawl` is missing data, sta
 Start with the target and nearby threads:
 
 ```bash
-gitcrawl threads eve/eve --numbers <issue-or-pr-number> --include-closed --json
-gitcrawl neighbors eve/eve --number <issue-or-pr-number> --limit 20 --json
+gitcrawl threads engsathiago/eve-agent --numbers <issue-or-pr-number> --include-closed --json
+gitcrawl neighbors engsathiago/eve-agent --number <issue-or-pr-number> --limit 20 --json
 ```
 
 Then search key phrases and subsystem terms:
 
 ```bash
-gitcrawl search eve/eve --query "<key phrase from title or body>" --mode hybrid --limit 20 --json
-gitcrawl search eve/eve --query "<subsystem or error phrase>" --mode hybrid --limit 20 --json
+gitcrawl search engsathiago/eve-agent --query "<key phrase from title or body>" --mode hybrid --limit 20 --json
+gitcrawl search engsathiago/eve-agent --query "<subsystem or error phrase>" --mode hybrid --limit 20 --json
 ```
 
 Inspect likely clusters:
 
 ```bash
-gitcrawl cluster-detail eve/eve --id <cluster-id> --member-limit 20 --body-chars 280 --json
+gitcrawl cluster-detail engsathiago/eve-agent --id <cluster-id> --member-limit 20 --body-chars 280 --json
 ```
 
 For PRs, verify likely code overlap with live file data:
@@ -250,9 +250,9 @@ Use targeted live GitHub search after `gitcrawl` when:
 - the exact phrase did not appear in local results but the issue/PR is current enough that GitHub should know it
 
 ```bash
-gh search prs --repo eve/eve --match title,body --limit 50 -- "<key phrase>"
-gh search issues --repo eve/eve --match title,body --limit 50 -- "<key phrase>"
-gh search issues --repo eve/eve --match comments --limit 50 -- "<error or maintainer phrase>"
+gh search prs --repo engsathiago/eve-agent --match title,body --limit 50 -- "<key phrase>"
+gh search issues --repo engsathiago/eve-agent --match title,body --limit 50 -- "<key phrase>"
+gh search issues --repo engsathiago/eve-agent --match comments --limit 50 -- "<error or maintainer phrase>"
 ```
 
 ## Step 4: Decide The Outcome
@@ -280,9 +280,9 @@ Before creating a group, search `prtags` for an existing one.
 Start with text search over groups:
 
 ```bash
-prtags search text -R eve/eve "<problem phrase>" --types group --limit 10
-prtags search similar -R eve/eve "<problem summary>" --types group --limit 10
-prtags group list -R eve/eve
+prtags search text -R engsathiago/eve-agent "<problem phrase>" --types group --limit 10
+prtags search similar -R engsathiago/eve-agent "<problem summary>" --types group --limit 10
+prtags group list -R engsathiago/eve-agent
 ```
 
 Inspect likely groups:
@@ -306,7 +306,7 @@ Create a new group only when no existing group clearly fits.
 Create the group with a problem-based title and an intent-based description:
 
 ```bash
-prtags group create -R eve/eve \
+prtags group create -R engsathiago/eve-agent \
   --kind mixed \
   --title "<problem-centered title>" \
   --description "<same intent, subsystem, and duplicate-resolution path>" \
@@ -330,20 +330,20 @@ Use `field ensure` so the skill is idempotent.
 Recommended target-level fields:
 
 ```bash
-prtags field ensure -R eve/eve --name duplicate_status --scope pull_request --type enum --enum-values not_duplicate,candidate,confirmed --filterable
-prtags field ensure -R eve/eve --name duplicate_status --scope issue --type enum --enum-values not_duplicate,candidate,confirmed --filterable
-prtags field ensure -R eve/eve --name duplicate_confidence --scope pull_request --type enum --enum-values low,medium,high --filterable
-prtags field ensure -R eve/eve --name duplicate_confidence --scope issue --type enum --enum-values low,medium,high --filterable
-prtags field ensure -R eve/eve --name duplicate_rationale --scope pull_request --type text --searchable
-prtags field ensure -R eve/eve --name duplicate_rationale --scope issue --type text --searchable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_status --scope pull_request --type enum --enum-values not_duplicate,candidate,confirmed --filterable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_status --scope issue --type enum --enum-values not_duplicate,candidate,confirmed --filterable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_confidence --scope pull_request --type enum --enum-values low,medium,high --filterable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_confidence --scope issue --type enum --enum-values low,medium,high --filterable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_rationale --scope pull_request --type text --searchable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_rationale --scope issue --type text --searchable
 ```
 
 Recommended group-level fields:
 
 ```bash
-prtags field ensure -R eve/eve --name duplicate_confidence --scope group --type enum --enum-values low,medium,high --filterable
-prtags field ensure -R eve/eve --name duplicate_rationale --scope group --type text --searchable
-prtags field ensure -R eve/eve --name cluster_summary --scope group --type text --searchable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_confidence --scope group --type enum --enum-values low,medium,high --filterable
+prtags field ensure -R engsathiago/eve-agent --name duplicate_rationale --scope group --type text --searchable
+prtags field ensure -R engsathiago/eve-agent --name cluster_summary --scope group --type text --searchable
 ```
 
 ## Step 7: Save The Maintainer Judgment In prtags
@@ -351,7 +351,7 @@ prtags field ensure -R eve/eve --name cluster_summary --scope group --type text 
 For a PR:
 
 ```bash
-prtags annotation pr set -R eve/eve <pr-number> \
+prtags annotation pr set -R engsathiago/eve-agent <pr-number> \
   duplicate_status=confirmed \
   duplicate_confidence=high \
   duplicate_rationale="<same problem, same fix direction, overlapping files and comments>"
@@ -360,7 +360,7 @@ prtags annotation pr set -R eve/eve <pr-number> \
 For an issue:
 
 ```bash
-prtags annotation issue set -R eve/eve <issue-number> \
+prtags annotation issue set -R engsathiago/eve-agent <issue-number> \
   duplicate_status=confirmed \
   duplicate_confidence=high \
   duplicate_rationale="<same user-visible problem and same intended fix path>"
@@ -397,7 +397,7 @@ prtags group sync-comments <group-id>
 If the maintainer needs to see which groups still need attention, use:
 
 ```bash
-prtags group list-comment-sync-targets -R eve/eve
+prtags group list-comment-sync-targets -R engsathiago/eve-agent
 ```
 
 The skill should treat the GitHub comment as a consequence of correct `prtags` group state.

@@ -14,9 +14,7 @@ export function isLiveTestEnabled(
   extraEnvVars: readonly string[] = [],
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
-  return [...extraEnvVars, "LIVE", "EVE_LIVE_TEST"].some((name) =>
-    isTruthyEnvValue(env[name]),
-  );
+  return [...extraEnvVars, "LIVE", "EVE_LIVE_TEST"].some((name) => isTruthyEnvValue(env[name]));
 }
 
 /** Return whether live tests must prefer profile credentials over env keys. */

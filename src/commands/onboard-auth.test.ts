@@ -122,11 +122,7 @@ async function expectMissingFile(readPromise: Promise<unknown>) {
 }
 
 describe("writeOAuthCredentials", () => {
-  const lifecycle = createAuthTestLifecycle([
-    "EVE_STATE_DIR",
-    "EVE_AGENT_DIR",
-    "EVE_OAUTH_DIR",
-  ]);
+  const lifecycle = createAuthTestLifecycle(["EVE_STATE_DIR", "EVE_AGENT_DIR", "EVE_OAUTH_DIR"]);
 
   let tempStateDir: string;
   const authProfilePathFor = (dir: string) => path.join(dir, "auth-profiles.json");

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo="eve/eve"
+repo="engsathiago/eve-agent"
 months="12"
 include_global="0"
 

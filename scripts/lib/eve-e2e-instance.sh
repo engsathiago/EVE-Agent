@@ -50,7 +50,7 @@ eve_e2e_resolve_entrypoint() {
 eve_e2e_package_root() {
   local prefix="${1:-}"
   if [ -n "$prefix" ]; then
-    printf '%s/lib/node_modules/eve\n' "$prefix"
+    printf '%s/lib/node_modules/eve-agent\n' "$prefix"
     return 0
   fi
   printf '%s/eve\n' "$(npm root -g)"

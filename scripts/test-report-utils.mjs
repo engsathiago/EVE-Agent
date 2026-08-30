@@ -62,11 +62,7 @@ function validateVitestJsonReport(reportPath) {
 /**
  * Runs Vitest with the JSON reporter unless an existing report was supplied.
  */
-export function runVitestJsonReport({
-  config,
-  reportPath = "",
-  prefix = "eve-vitest-report",
-}) {
+export function runVitestJsonReport({ config, reportPath = "", prefix = "eve-vitest-report" }) {
   const resolvedReportPath = reportPath || path.join(os.tmpdir(), `${prefix}-${Date.now()}.json`);
 
   if (!(reportPath && fs.existsSync(resolvedReportPath))) {

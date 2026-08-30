@@ -19,7 +19,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "eve/eve",
+      repo: "engsathiago/eve-agent",
       registry: "https://clawhub.ai",
       workflowRef: undefined,
       clawHubWorkflowRef: undefined,
@@ -67,7 +67,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "eve/eve",
+      repo: "engsathiago/eve-agent",
       registry: "https://clawhub.ai",
       workflowRef: "release/2026.5.10",
       clawHubWorkflowRef: "v2026.5.10-beta.3",
@@ -137,7 +137,7 @@ describe("runNpmViewWithRetry", () => {
     const delays: number[] = [];
 
     await expect(
-      runNpmViewWithRetry(["view", "eve@2026.5.10-beta.3", "version", "--json"], {
+      runNpmViewWithRetry(["view", "eve-agent@2026.5.10-beta.3", "version", "--json"], {
         attempts: 3,
         delay: async (delayMs) => {
           delays.push(delayMs);

@@ -15,10 +15,7 @@ const OUTPUT_CAPTURE_CHARS = readPositiveIntEnv(
   "EVE_BUNDLED_PLUGIN_RUNTIME_OUTPUT_CHARS",
   1024 * 1024,
 );
-const LOG_SCAN_BYTES = readPositiveIntEnv(
-  "EVE_BUNDLED_PLUGIN_RUNTIME_LOG_SCAN_BYTES",
-  256 * 1024,
-);
+const LOG_SCAN_BYTES = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_LOG_SCAN_BYTES", 256 * 1024);
 const GATEWAY_LOG_CAPTURE_BYTES = readPositiveIntEnv(
   "EVE_BUNDLED_PLUGIN_RUNTIME_GATEWAY_LOG_BYTES",
   16 * 1024 * 1024,
@@ -26,10 +23,7 @@ const GATEWAY_LOG_CAPTURE_BYTES = readPositiveIntEnv(
 const WATCHDOG_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_WATCHDOG_MS", 1000);
 const READY_TIMEOUT_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_READY_MS", 900000);
 const RPC_TIMEOUT_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_RPC_MS", 60000);
-const RPC_READY_TIMEOUT_MS = readPositiveIntEnv(
-  "EVE_BUNDLED_PLUGIN_RUNTIME_RPC_READY_MS",
-  210000,
-);
+const RPC_READY_TIMEOUT_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_RPC_READY_MS", 210000);
 const COMMAND_TIMEOUT_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_COMMAND_MS", 120000);
 const HTTP_PROBE_TIMEOUT_MS = readPositiveIntEnv("EVE_BUNDLED_PLUGIN_RUNTIME_HTTP_MS", 5000);
 const HTTP_PROBE_BODY_MAX_BYTES = 1024 * 1024;
@@ -255,9 +249,7 @@ function loadManifest(pluginDir, pluginRoot) {
 }
 
 function configPathFromEnv(env = process.env) {
-  return (
-    env.EVE_CONFIG_PATH || path.join(env.HOME || os.homedir(), ".eve", "eve.json")
-  );
+  return env.EVE_CONFIG_PATH || path.join(env.HOME || os.homedir(), ".eve", "eve.json");
 }
 
 function readConfig(env = process.env) {

@@ -30,9 +30,10 @@ vi.mock("./ports-lsof.js", () => ({
 
 vi.mock("../config/paths.js", () => ({
   resolveGatewayPort: (...args: unknown[]) => resolveGatewayPortMock(...args),
-  resolveStateDir: (env: NodeJS.ProcessEnv = process.env) =>
-    env.EVE_STATE_DIR ?? "/tmp/eve-state",
+  resolveStateDir: (env: NodeJS.ProcessEnv = process.env) => env.EVE_STATE_DIR ?? "/tmp/eve-state",
 }));
+
+vi.resetModules();
 
 const { testing, cleanStaleGatewayProcessesSync, findGatewayPidsOnPortSync } =
   await import("./restart-stale-pids.js");

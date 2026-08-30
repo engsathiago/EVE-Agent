@@ -236,14 +236,8 @@ function stripLeadingPackageManagerSeparator(argv: string[]): string[] {
 
 class WindowsSmoke extends SmokeRunController<WindowsOptions> {
   private auth: ProviderAuth;
-  private agentTimeoutSeconds = readPositiveIntEnv(
-    "EVE_PARALLELS_WINDOWS_AGENT_TIMEOUT_S",
-    2700,
-  );
-  private updateTimeoutSeconds = readPositiveIntEnv(
-    "EVE_PARALLELS_WINDOWS_UPDATE_TIMEOUT_S",
-    1200,
-  );
+  private agentTimeoutSeconds = readPositiveIntEnv("EVE_PARALLELS_WINDOWS_AGENT_TIMEOUT_S", 2700);
+  private updateTimeoutSeconds = readPositiveIntEnv("EVE_PARALLELS_WINDOWS_UPDATE_TIMEOUT_S", 1200);
   private gatewayRecoveryAfterMs =
     readPositiveIntEnv("EVE_PARALLELS_WINDOWS_GATEWAY_RECOVERY_AFTER_S", 180) * 1000;
   private artifact: PackageArtifact | null = null;

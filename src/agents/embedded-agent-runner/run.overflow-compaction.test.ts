@@ -404,9 +404,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
       mockedEnsureAuthProfileStoreWithoutExternalProfiles,
     ) as [string | undefined, { allowKeychainPrompt?: boolean } | undefined];
     expect(typeof agentDir).toBe("string");
-    expect(String(agentDir).replaceAll("\\", "/").endsWith("/.eve/agents/main/agent")).toBe(
-      true,
-    );
+    expect(String(agentDir).replaceAll("\\", "/").endsWith("/.eve/agents/main/agent")).toBe(true);
     expect(authStoreOptions).toEqual({ allowKeychainPrompt: false });
   });
 

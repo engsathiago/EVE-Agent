@@ -90,7 +90,7 @@ function requireMemoryEmbeddingProvider(providerId: string) {
 
 function makeEVEDevSourceRoot(): string {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-loader-dev-source-"));
-  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf-8");
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }), "utf-8");
   fs.mkdirSync(path.join(root, "src"), { recursive: true });
   fs.mkdirSync(path.join(root, "extensions"), { recursive: true });
   return root;

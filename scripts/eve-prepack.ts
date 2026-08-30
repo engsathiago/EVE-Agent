@@ -110,11 +110,7 @@ function positiveEnvInt(name: string, env: NodeJS.ProcessEnv, fallback: number):
 }
 
 export function resolvePrepackCommandTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
-  return positiveEnvInt(
-    "EVE_PREPACK_COMMAND_TIMEOUT_MS",
-    env,
-    DEFAULT_PREPACK_COMMAND_TIMEOUT_MS,
-  );
+  return positiveEnvInt("EVE_PREPACK_COMMAND_TIMEOUT_MS", env, DEFAULT_PREPACK_COMMAND_TIMEOUT_MS);
 }
 
 export function runPrepackCommand(

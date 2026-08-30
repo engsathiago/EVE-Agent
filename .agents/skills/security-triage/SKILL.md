@@ -25,11 +25,11 @@ Do not close only because `main` is fixed. If latest shipped tag or npm release 
 Before answering:
 
 1. Read `SECURITY.md`.
-2. Read the GHSA body with `gh api /repos/eve/eve/security-advisories/<GHSA>`.
+2. Read the GHSA body with `gh api /repos/engsathiago/eve-agent/security-advisories/<GHSA>`.
 3. Inspect the exact implicated code paths.
 4. Verify shipped state:
    - `git tag --sort=-creatordate | head`
-   - `npm view eve version --userconfig "$(mktemp)"`
+   - `npm view eve-agent version --userconfig "$(mktemp)"`
    - `git tag --contains <fix-commit>`
    - if needed: `git show <tag>:path/to/file`
 5. Search for canonical overlap:
@@ -128,14 +128,14 @@ Tell the user that the clipboard now contains the proposed response for that adv
 ## Useful Commands
 
 ```bash
-gh api /repos/eve/eve/security-advisories/<GHSA>
-gh api /repos/eve/eve/security-advisories --paginate
+gh api /repos/engsathiago/eve-agent/security-advisories/<GHSA>
+gh api /repos/engsathiago/eve-agent/security-advisories --paginate
 git tag --sort=-creatordate | head -n 20
-npm view eve version --userconfig "$(mktemp)"
+npm view eve-agent version --userconfig "$(mktemp)"
 git tag --contains <commit>
 git show <tag>:<path>
-gh search issues --repo eve/eve --match title,body,comments -- "<terms>"
-gh search prs --repo eve/eve --match title,body,comments -- "<terms>"
+gh search issues --repo engsathiago/eve-agent --match title,body,comments -- "<terms>"
+gh search prs --repo engsathiago/eve-agent --match title,body,comments -- "<terms>"
 ```
 
 ## Decision Notes

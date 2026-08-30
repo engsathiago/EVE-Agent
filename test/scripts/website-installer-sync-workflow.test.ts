@@ -45,14 +45,12 @@ describe("website installer sync workflow", () => {
 
   it("syncs verified scripts to eve.ai only after all installer checks pass", () => {
     expect(workflow).toContain("needs: [static, linux-docker, macos-installer, windows-installer]");
-    expect(workflow).toContain("repository: eve/eve.ai");
+    expect(workflow).toContain("repository: engsathiago/eve-agent.ai");
     expect(workflow).toContain("EVE_GH_TOKEN: ${{ secrets.EVE_GH_TOKEN }}");
     expect(workflow).toContain("EVE_GH_TOKEN is not configured");
     expect(workflow).toContain("token: ${{ env.EVE_GH_TOKEN }}");
     expect(workflow).toContain("cp eve/scripts/install.sh eve.ai/public/install.sh");
-    expect(workflow).toContain(
-      "cp eve/scripts/install-cli.sh eve.ai/public/install-cli.sh",
-    );
+    expect(workflow).toContain("cp eve/scripts/install-cli.sh eve.ai/public/install-cli.sh");
     expect(workflow).toContain("cp eve/scripts/install.ps1 eve.ai/public/install.ps1");
     expect(workflow).toContain("rm -f eve.ai/public/install.cmd");
     expect(workflow).toContain("bun run build");

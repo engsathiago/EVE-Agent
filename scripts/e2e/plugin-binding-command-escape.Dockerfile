@@ -9,6 +9,6 @@ RUN corepack enable
 WORKDIR /workspace/eve
 COPY . .
 
-RUN EVE_DISABLE_BUNDLED_PLUGIN_POSTINSTALL=1 pnpm install --frozen-lockfile --ignore-scripts --filter eve
+RUN EVE_DISABLE_BUNDLED_PLUGIN_POSTINSTALL=1 pnpm install --frozen-lockfile --ignore-scripts --filter eve-agent
 
 CMD ["bash"]

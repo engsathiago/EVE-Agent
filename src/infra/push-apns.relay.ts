@@ -116,9 +116,7 @@ export function normalizeApnsRelayBaseUrl(
     }
     // Plain HTTP is only for local relay development; production relay URLs must use TLS.
     if (parsed.protocol === "http:" && !readAllowHttp(env.EVE_APNS_RELAY_ALLOW_HTTP)) {
-      throw new Error(
-        "http relay URLs require EVE_APNS_RELAY_ALLOW_HTTP=true (development only)",
-      );
+      throw new Error("http relay URLs require EVE_APNS_RELAY_ALLOW_HTTP=true (development only)");
     }
     if (parsed.protocol === "http:" && !isLoopbackRelayHostname(parsed.hostname)) {
       throw new Error("http relay URLs are limited to loopback hosts");
@@ -207,9 +205,7 @@ export function resolveApnsRelayConfigFromEnv(
     ok: true,
     value: {
       baseUrl: normalizedBaseUrl.value,
-      timeoutMs: normalizeTimeoutMs(
-        env.EVE_APNS_RELAY_TIMEOUT_MS ?? configuredRelay?.timeoutMs,
-      ),
+      timeoutMs: normalizeTimeoutMs(env.EVE_APNS_RELAY_TIMEOUT_MS ?? configuredRelay?.timeoutMs),
     },
   };
 }

@@ -7,10 +7,7 @@ import {
 } from "../infra/kysely-sync.js";
 import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot.types.js";
 import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../state/eve-state-db.js";
 const AGENT_MODEL_CATALOG_CACHE_VERSION = 1;
 const AGENT_MODEL_CATALOG_CACHE_TTL_MS = 30 * 60 * 1000;
 

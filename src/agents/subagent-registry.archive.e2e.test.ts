@@ -325,9 +325,7 @@ describe("subagent registry archive behavior", () => {
   });
 
   it("removes attachments for the replaced run after steer restart", async () => {
-    const attachmentsRootDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-replace-attachments-"),
-    );
+    const attachmentsRootDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-replace-attachments-"));
     const attachmentsDir = path.join(attachmentsRootDir, "old");
     await fs.mkdir(attachmentsDir, { recursive: true });
     await fs.writeFile(path.join(attachmentsDir, "artifact.txt"), "artifact", "utf8");

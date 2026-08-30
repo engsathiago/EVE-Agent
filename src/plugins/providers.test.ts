@@ -460,8 +460,7 @@ describe("resolvePluginProviders", () => {
       diagnostics: [],
     });
     vi.doMock("./loader.js", () => ({
-      loadEVEPlugins: (...args: Parameters<LoadEVEPlugins>) =>
-        loadEVEPluginsMock(...args),
+      loadEVEPlugins: (...args: Parameters<LoadEVEPlugins>) => loadEVEPluginsMock(...args),
       isPluginRegistryLoadInFlight: (...args: Parameters<IsPluginRegistryLoadInFlight>) =>
         isPluginRegistryLoadInFlightMock(...args),
       resolveCompatibleRuntimePluginRegistry: (

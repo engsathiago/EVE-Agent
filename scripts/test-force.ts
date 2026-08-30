@@ -54,8 +54,7 @@ function killGatewayListeners(port: number): PortProcess[] {
 
 function runTests() {
   const isolatedLock =
-    process.env.EVE_GATEWAY_LOCK ??
-    path.join(os.tmpdir(), `eve-gateway.lock.test.${Date.now()}`);
+    process.env.EVE_GATEWAY_LOCK ?? path.join(os.tmpdir(), `eve-gateway.lock.test.${Date.now()}`);
   const result = spawnSync(process.execPath, ["scripts/test-projects.mjs"], {
     stdio: "inherit",
     env: {

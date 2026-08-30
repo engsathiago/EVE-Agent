@@ -21,9 +21,8 @@ async function importBrowserSafeLogger(params?: {
     });
 
   vi.doMock("../infra/tmp-eve-dir.js", async () => {
-    const actual = await vi.importActual<typeof import("../infra/tmp-eve-dir.js")>(
-      "../infra/tmp-eve-dir.js",
-    );
+    const actual =
+      await vi.importActual<typeof import("../infra/tmp-eve-dir.js")>("../infra/tmp-eve-dir.js");
     return {
       ...actual,
       resolvePreferredEVETmpDir,

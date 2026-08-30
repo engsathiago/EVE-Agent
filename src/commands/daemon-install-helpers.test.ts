@@ -118,9 +118,7 @@ function createSecurePluginRoot(pathname: string): void {
 describe("resolveGatewayDevMode", () => {
   it("detects dev mode for src ts entrypoints", () => {
     expect(resolveGatewayDevMode(["node", "/Users/me/eve/src/cli/index.ts"])).toBe(true);
-    expect(resolveGatewayDevMode(["node", "C:\\Users\\me\\eve\\src\\cli\\index.ts"])).toBe(
-      true,
-    );
+    expect(resolveGatewayDevMode(["node", "C:\\Users\\me\\eve\\src\\cli\\index.ts"])).toBe(true);
     expect(resolveGatewayDevMode(["node", "/Users/me/eve/dist/cli/index.js"])).toBe(false);
   });
 });
@@ -364,9 +362,7 @@ describe("buildGatewayInstallPlan", () => {
     ).toBeUndefined();
     expect(plan.environment.EVE_WRAPPER).toBeUndefined();
     expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining(
-        "Ignoring EVE_WRAPPER because it points to the Windows task script",
-      ),
+      expect.stringContaining("Ignoring EVE_WRAPPER because it points to the Windows task script"),
     );
   });
 
@@ -1141,9 +1137,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
 
     expect(plan.environment.TAVILY_API_KEY).toBe("dotenv-tavily");
     expect(plan.environment.OPENROUTER_API_KEY).toBe("or-key");
-    expect(plan.environment.EVE_SERVICE_MANAGED_ENV_KEYS).toBe(
-      "OPENROUTER_API_KEY,TAVILY_API_KEY",
-    );
+    expect(plan.environment.EVE_SERVICE_MANAGED_ENV_KEYS).toBe("OPENROUTER_API_KEY,TAVILY_API_KEY");
   });
 
   it("retains .env values for macOS LaunchAgent env SecretRefs", async () => {
@@ -1578,10 +1572,7 @@ describe("collectPreservedExistingServiceEnvVars — operator opt-in allowlist",
   const managedKeys = new Set<string>();
 
   it("continues to drop stale EVE_ALLOW_ROOT", () => {
-    const result = collectPreservedExistingServiceEnvVars(
-      { EVE_ALLOW_ROOT: "1" },
-      managedKeys,
-    );
+    const result = collectPreservedExistingServiceEnvVars({ EVE_ALLOW_ROOT: "1" }, managedKeys);
     expect(result.EVE_ALLOW_ROOT).toBeUndefined();
   });
 

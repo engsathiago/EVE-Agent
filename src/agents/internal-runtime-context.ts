@@ -181,9 +181,7 @@ function stripLegacyInternalRuntimeContext(text: string): string {
 }
 
 function isRuntimeContextPromptHeader(line: string): boolean {
-  return (
-    line === EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER || line === EVE_RUNTIME_EVENT_HEADER
-  );
+  return line === EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER || line === EVE_RUNTIME_EVENT_HEADER;
 }
 
 function stripRuntimeContextPromptPreface(text: string): string {
@@ -255,9 +253,7 @@ export function hasInternalRuntimeContext(text: string): boolean {
   return (
     findDelimitedTokenIndex(text, INTERNAL_RUNTIME_CONTEXT_BEGIN, 0) !== -1 ||
     text.includes(LEGACY_INTERNAL_CONTEXT_HEADER) ||
-    text.includes(
-      `${EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER}\n${EVE_RUNTIME_CONTEXT_NOTICE}`,
-    ) ||
+    text.includes(`${EVE_NEXT_TURN_RUNTIME_CONTEXT_HEADER}\n${EVE_RUNTIME_CONTEXT_NOTICE}`) ||
     text.includes(`${EVE_RUNTIME_EVENT_HEADER}\n${EVE_RUNTIME_CONTEXT_NOTICE}`)
   );
 }
@@ -267,9 +263,7 @@ function isEVERuntimeContextCustomMessage(message: unknown): boolean {
     return false;
   }
   const candidate = message as { role?: unknown; customType?: unknown };
-  return (
-    candidate.role === "custom" && candidate.customType === EVE_RUNTIME_CONTEXT_CUSTOM_TYPE
-  );
+  return candidate.role === "custom" && candidate.customType === EVE_RUNTIME_CONTEXT_CUSTOM_TYPE;
 }
 
 /** Remove all structured runtime-context custom messages. */

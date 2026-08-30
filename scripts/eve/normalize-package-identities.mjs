@@ -33,12 +33,20 @@ function renameDependencyKeys(value) {
     return;
   }
   for (const [key, child] of Object.entries(value)) {
-    if (dependencySections.has(key) && child && typeof child === "object" && !Array.isArray(child)) {
+    if (
+      dependencySections.has(key) &&
+      child &&
+      typeof child === "object" &&
+      !Array.isArray(child)
+    ) {
       if (Object.hasOwn(child, "eve")) {
         child["eve-agent"] = child.eve;
         delete child.eve;
       }
-      if ((key === "dependencies" || key === "devDependencies") && Object.hasOwn(child, "eve-agent")) {
+      if (
+        (key === "dependencies" || key === "devDependencies") &&
+        Object.hasOwn(child, "eve-agent")
+      ) {
         child["eve-agent"] = "workspace:*";
       }
       if (Object.hasOwn(child, "@eve/fs-safe")) {

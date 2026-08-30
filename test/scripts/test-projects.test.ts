@@ -1158,12 +1158,10 @@ describe("scripts/test-projects changed-target routing", () => {
   });
 
   it("keeps release-check workflow edits on release workflow regression tests", () => {
-    expect(resolveChangedTestTargetPlan([".github/workflows/eve-release-checks.yml"])).toEqual(
-      {
-        mode: "targets",
-        targets: ["test/scripts/package-acceptance-workflow.test.ts"],
-      },
-    );
+    expect(resolveChangedTestTargetPlan([".github/workflows/eve-release-checks.yml"])).toEqual({
+      mode: "targets",
+      targets: ["test/scripts/package-acceptance-workflow.test.ts"],
+    });
   });
 
   it("keeps workflow sanity script edits on workflow guard tests", () => {
@@ -1317,10 +1315,7 @@ describe("scripts/test-projects changed-target routing", () => {
       ],
       ["scripts/eve-prepack.ts", ["test/eve-prepack.test.ts"]],
       ["scripts/eve-npm-release-check.ts", ["test/eve-npm-release-check.test.ts"]],
-      [
-        "scripts/eve-npm-postpublish-verify.ts",
-        ["test/eve-npm-postpublish-verify.test.ts"],
-      ],
+      ["scripts/eve-npm-postpublish-verify.ts", ["test/eve-npm-postpublish-verify.test.ts"]],
       ["scripts/verify-pr-hosted-gates.mjs", ["test/scripts/verify-pr-hosted-gates.test.ts"]],
       [
         "scripts/postinstall-bundled-plugins.mjs",
@@ -4111,9 +4106,7 @@ describe("scripts/test-projects Vitest stall watchdog", () => {
     expect(shouldRetryVitestNoOutputTimeout({ GITHUB_ACTIONS: "true" })).toBe(false);
     expect(shouldRetryVitestNoOutputTimeout({ EVE_VITEST_NO_OUTPUT_RETRY: "1" })).toBe(true);
     expect(shouldRetryVitestNoOutputTimeout({ EVE_VITEST_NO_OUTPUT_RETRY: "0" })).toBe(false);
-    expect(shouldRetryVitestNoOutputTimeout({ EVE_VITEST_NO_OUTPUT_RETRY: "false" })).toBe(
-      false,
-    );
+    expect(shouldRetryVitestNoOutputTimeout({ EVE_VITEST_NO_OUTPUT_RETRY: "false" })).toBe(false);
   });
 });
 

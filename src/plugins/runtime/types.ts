@@ -15,6 +15,8 @@ export type SubagentRunParams = {
   extraSystemPrompt?: string;
   lane?: string;
   lightContext?: boolean;
+  /** Narrow this child session to a subset of its already-authorized tools. */
+  inheritedToolAllow?: string[];
   deliver?: boolean;
   idempotencyKey?: string;
 };

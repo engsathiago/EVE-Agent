@@ -81,10 +81,7 @@ export function resolveDefaultSmsAccountId(cfg: EVEConfig): string {
   });
 }
 
-export function resolveSmsAccount(
-  cfg: EVEConfig,
-  accountId?: string | null,
-): ResolvedSmsAccount {
+export function resolveSmsAccount(cfg: EVEConfig, accountId?: string | null): ResolvedSmsAccount {
   const channelCfg = getChannelConfig(cfg) ?? {};
   const id = normalizeOptionalAccountId(accountId) ?? resolveDefaultSmsAccountId(cfg);
   const accountConfig = resolveAccountEntry(channelCfg.accounts, id);

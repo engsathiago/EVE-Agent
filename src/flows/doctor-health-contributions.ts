@@ -439,14 +439,12 @@ async function runStructuredHealthRepairs(ctx: DoctorHealthFlowContext): Promise
   if (!ctx.prompter.shouldRepair) {
     return;
   }
-  const { registerBundledHealthChecks } = await import("./bundled-health-checks.js");
   const { listExtensionHealthChecksForDoctor } = await loadHealthCheckRegistryModule();
   const { runDoctorHealthRepairs } = await import("./doctor-repair-flow.js");
   const { resolveAgentWorkspaceDir, resolveDefaultAgentId } = await loadAgentScopeModule();
   const { note } = await loadNoteModule();
 
   const workspaceDir = resolveAgentWorkspaceDir(ctx.cfg, resolveDefaultAgentId(ctx.cfg));
-  registerBundledHealthChecks({ cfg: ctx.cfg, cwd: workspaceDir });
   const checks = listExtensionHealthChecksForDoctor(await resolveDoctorContributionHealthChecks());
   const result = await runDoctorHealthRepairs(
     {

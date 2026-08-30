@@ -2,8 +2,8 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import type { Message } from "grammy/types";
 import { resetPluginStateStoreForTests } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
+import type { Message } from "grammy/types";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   buildTelegramMessageDispatchAccountReplayKey,

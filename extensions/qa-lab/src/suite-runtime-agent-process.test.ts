@@ -169,9 +169,7 @@ describe("qa suite runtime agent process helpers", () => {
         ["qa", "suite"],
         { timeoutMs: 1 },
       );
-      const timeoutAssertion = expect(pending).rejects.toThrow(
-        "qa cli timed out: eve qa suite",
-      );
+      const timeoutAssertion = expect(pending).rejects.toThrow("qa cli timed out: eve qa suite");
 
       await waitForSpawnCount(1);
       await timeoutAssertion;

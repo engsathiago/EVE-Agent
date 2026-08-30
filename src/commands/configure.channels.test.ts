@@ -80,9 +80,7 @@ function optionLabels(options: Array<{ value: unknown; label: string }> | undefi
 
 function expectUnknownChannelRemovalPrompt(unsafeChannel: string, label: string) {
   expectOption(selectArg().options, channelChoice(unsafeChannel), label);
-  expect(confirmArg().message).toBe(
-    `Delete ${label} configuration from ~/.eve/eve.json?`,
-  );
+  expect(confirmArg().message).toBe(`Delete ${label} configuration from ~/.eve/eve.json?`);
   expect(note).toHaveBeenCalledWith(
     `${label} removed from config.\nNote: credentials/sessions on disk are unchanged.`,
     "Channel removed",
@@ -138,9 +136,7 @@ describe("removeChannelConfigWizard", () => {
       {} as never,
     );
 
-    expect(confirmArg().message).toBe(
-      "Delete Telegram configuration from ~/.eve/eve.json?",
-    );
+    expect(confirmArg().message).toBe("Delete Telegram configuration from ~/.eve/eve.json?");
     expect(next.channels).toEqual({ twitch: { token: "secret" } });
     expect(note).toHaveBeenCalledWith(
       "Telegram removed from config.\nNote: credentials/sessions on disk are unchanged.",
@@ -227,9 +223,7 @@ describe("removeChannelConfigWizard", () => {
     );
 
     expectOption(selectArg().options, channelChoice("telegram"), "Telegram\\nBot");
-    expect(confirmArg().message).toBe(
-      "Delete Telegram\\nBot configuration from ~/.eve/eve.json?",
-    );
+    expect(confirmArg().message).toBe("Delete Telegram\\nBot configuration from ~/.eve/eve.json?");
     expect(note).toHaveBeenCalledWith(
       "Telegram\\nBot removed from config.\nNote: credentials/sessions on disk are unchanged.",
       "Channel removed",

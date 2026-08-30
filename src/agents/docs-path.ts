@@ -52,9 +52,7 @@ async function resolveEVEDocsPath(params: {
 }
 
 /** Resolve the package root only when it is a Git checkout. */
-async function resolveEVESourcePath(
-  params: ResolveEVEReferencePathParams,
-): Promise<string | null> {
+async function resolveEVESourcePath(params: ResolveEVEReferencePathParams): Promise<string | null> {
   const packageRoot = await resolveEVEPackageRoot({
     cwd: params.cwd,
     argv1: params.argv1,
@@ -67,9 +65,7 @@ async function resolveEVESourcePath(
 }
 
 /** Resolve docs and source roots concurrently for prompt/reference injection. */
-export async function resolveEVEReferencePaths(
-  params: ResolveEVEReferencePathParams,
-): Promise<{
+export async function resolveEVEReferencePaths(params: ResolveEVEReferencePathParams): Promise<{
   docsPath: string | null;
   sourcePath: string | null;
 }> {

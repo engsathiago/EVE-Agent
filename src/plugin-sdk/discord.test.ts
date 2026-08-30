@@ -3,11 +3,7 @@ import type { MessageReceipt } from "./channel-outbound.js";
 /**
  * Tests Discord SDK helpers and Discord-facing compatibility behavior.
  */
-import type {
-  DiscordComponentSendOpts,
-  DiscordComponentSendResult,
-  EVEConfig,
-} from "./discord.js";
+import type { DiscordComponentSendOpts, DiscordComponentSendResult, EVEConfig } from "./discord.js";
 
 const mocks = vi.hoisted(() => {
   const runtimeConfig = { channels: { discord: { token: "token" } } };

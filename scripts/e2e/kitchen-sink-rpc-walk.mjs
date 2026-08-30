@@ -9,8 +9,7 @@ import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const PLUGIN_SPEC =
-  process.env.EVE_KITCHEN_SINK_NPM_SPEC || "npm:@eve/kitchen-sink@latest";
+const PLUGIN_SPEC = process.env.EVE_KITCHEN_SINK_NPM_SPEC || "npm:@eve/kitchen-sink@latest";
 const PLUGIN_ID = process.env.EVE_KITCHEN_SINK_PLUGIN_ID || "eve-kitchen-sink-fixture";
 const CHANNEL_ID = "kitchen-sink-channel";
 const CHANNEL_ACCOUNT_ID = "local";
@@ -270,8 +269,7 @@ export function makeEnv() {
       EVE_CONFIG_PATH: path.join(stateDir, "eve.json"),
       EVE_NO_ONBOARD: "1",
       EVE_SKIP_PROVIDERS: "0",
-      EVE_KITCHEN_SINK_PERSONALITY:
-        process.env.EVE_KITCHEN_SINK_PERSONALITY || "conformance",
+      EVE_KITCHEN_SINK_PERSONALITY: process.env.EVE_KITCHEN_SINK_PERSONALITY || "conformance",
     },
   };
 }

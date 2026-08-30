@@ -309,8 +309,8 @@ OpenRouter's documented app-attribution headers:
 
 | Header                    | Value                                                                                                  |
 | ------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `HTTP-Referer`            | `https://eve.ai`                                                                                  |
-| `X-OpenRouter-Title`      | `EVE`                                                                                             |
+| `HTTP-Referer`            | `https://eve.ai`                                                                                       |
+| `X-OpenRouter-Title`      | `EVE`                                                                                                  |
 | `X-OpenRouter-Categories` | `cli-agent,cloud-agent,programming-app,creative-writing,writing-assistant,general-chat,personal-agent` |
 
 <Warning>

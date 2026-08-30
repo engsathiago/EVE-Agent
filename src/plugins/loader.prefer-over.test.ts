@@ -131,9 +131,7 @@ describe("plugin loader preferOver activation", () => {
 
     expect(autoEnabled.config.plugins?.entries?.["eve-qqbot"]?.enabled).toBe(true);
     expect(autoEnabled.config.plugins?.entries?.qqbot?.enabled).toBe(false);
-    expect(registry.plugins.find((plugin) => plugin.id === "eve-qqbot")?.status).toBe(
-      "loaded",
-    );
+    expect(registry.plugins.find((plugin) => plugin.id === "eve-qqbot")?.status).toBe("loaded");
     expect(registry.plugins.find((plugin) => plugin.id === "qqbot")?.status).toBe("disabled");
     expect(registry.tools.map((tool) => tool.pluginId)).toEqual(["eve-qqbot"]);
     expect(registry.diagnostics.map((diag) => diag.message).join("\n")).not.toContain(

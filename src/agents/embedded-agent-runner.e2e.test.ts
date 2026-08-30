@@ -45,8 +45,9 @@ let clearRuntimeConfigSnapshot: typeof import("../config/config.js").clearRuntim
 let setRuntimeConfigSnapshot: typeof import("../config/config.js").setRuntimeConfigSnapshot;
 
 vi.mock("eve-agent/plugin-sdk/llm", async () => {
-  const actual =
-    await vi.importActual<typeof import("eve-agent/plugin-sdk/llm")>("eve-agent/plugin-sdk/llm");
+  const actual = await vi.importActual<typeof import("eve-agent/plugin-sdk/llm")>(
+    "eve-agent/plugin-sdk/llm",
+  );
 
   const buildAssistantMessage = (model: { api: string; provider: string; id: string }) => ({
     role: "assistant" as const,

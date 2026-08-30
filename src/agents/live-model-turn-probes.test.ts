@@ -25,10 +25,7 @@ describe("live model turn probes", () => {
       ),
     ).toBe(false);
     expect(
-      isLiveModelProbeEnabled(
-        { EVE_LIVE_MODEL_IMAGE_PROBE: "1" },
-        "EVE_LIVE_MODEL_IMAGE_PROBE",
-      ),
+      isLiveModelProbeEnabled({ EVE_LIVE_MODEL_IMAGE_PROBE: "1" }, "EVE_LIVE_MODEL_IMAGE_PROBE"),
     ).toBe(true);
   });
 

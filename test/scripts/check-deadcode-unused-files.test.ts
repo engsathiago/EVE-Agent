@@ -85,7 +85,7 @@ describe("check-deadcode-unused-files", () => {
   it("parses the compact Knip unused-file section", () => {
     expect(
       parseKnipCompactUnusedFiles(`
-> eve@2026.4.27 deadcode:knip /repo
+> eve-agent@2026.4.27 deadcode:knip /repo
 > pnpm dlx knip --reporter compact --files
 
 Unused files (2)

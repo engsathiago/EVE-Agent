@@ -52,10 +52,10 @@ The macOS app expects a global `eve` CLI install to manage background tasks.
 Alternatively, install it manually:
 
 ```bash
-npm install -g eve@<version>
+npm install -g eve-agent@<version>
 ```
 
-`pnpm add -g eve@<version>` and `bun add -g eve@<version>` also work.
+`pnpm add -g eve-agent@<version>` and `bun add -g eve-agent@<version>` also work.
 For the Gateway runtime, Node remains the recommended path.
 
 ## Troubleshooting

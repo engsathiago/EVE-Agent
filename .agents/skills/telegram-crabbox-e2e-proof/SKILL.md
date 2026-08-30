@@ -182,7 +182,7 @@ cp <main-output>/telegram-user-crabbox-session-motion-telegram-window.gif \
 cp <pr-output>/telegram-user-crabbox-session-motion-telegram-window.gif \
   .artifacts/qa-e2e/telegram-user-crabbox/pr-123/comparison/pr-after.gif
 crabbox artifacts publish \
-  --repo eve/eve \
+  --repo engsathiago/eve-agent \
   --pr 123 \
   --dir .artifacts/qa-e2e/telegram-user-crabbox/pr-123/comparison \
   --summary 'Telegram before/after proof' \

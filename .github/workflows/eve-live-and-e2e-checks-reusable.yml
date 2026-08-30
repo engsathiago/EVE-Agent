@@ -36,7 +36,7 @@ on:
       published_upgrade_survivor_baseline:
         description: Published EVE package baseline for the published-upgrade-survivor/update-migration Docker lanes
         required: false
-        default: eve@latest
+        default: eve-agent@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional exact baseline list for published-upgrade-survivor/update-migration lane expansion
@@ -151,7 +151,7 @@ on:
       published_upgrade_survivor_baseline:
         description: Published EVE package baseline for the published-upgrade-survivor/update-restart-auth/update-migration Docker lanes
         required: false
-        default: eve@latest
+        default: eve-agent@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional exact baseline list for published-upgrade-survivor/update-migration lane expansion

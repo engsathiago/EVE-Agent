@@ -141,8 +141,7 @@ function normalizeWorkspaceDependencies(
   }
   const normalized: Record<string, string> = {};
   for (const [name, spec] of Object.entries(dependencies)) {
-    normalized[name] =
-      name.startsWith("@eve/") && spec === "workspace:*" ? "0.0.0-private" : spec;
+    normalized[name] = name.startsWith("@eve/") && spec === "workspace:*" ? "0.0.0-private" : spec;
   }
   return normalized;
 }

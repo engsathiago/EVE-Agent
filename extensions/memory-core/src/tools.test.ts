@@ -372,8 +372,7 @@ describe("memory_search unavailable payloads", () => {
       error: reason,
       warning:
         "Tell the user: memory search is paused because the memory index was built with a different embedding provider/model/settings.",
-      action:
-        "Tell the user to run: eve memory status --index or eve memory index --force.",
+      action: "Tell the user to run: eve memory status --index or eve memory index --force.",
     });
     expect(searchCalls).toBe(1);
     expect(getMemorySyncMockCalls()).toBe(0);

@@ -97,10 +97,7 @@ if (isMain) {
       return;
     }
     if (isBenignUncaughtExceptionError(error)) {
-      console.warn(
-        "[eve] Non-fatal uncaught exception (continuing):",
-        formatUncaughtError(error),
-      );
+      console.warn("[eve] Non-fatal uncaught exception (continuing):", formatUncaughtError(error));
       return;
     }
     for (const line of formatCliFailureLines({

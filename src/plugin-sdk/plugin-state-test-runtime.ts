@@ -9,7 +9,4 @@ export {
 export { createChannelIngressQueue as createChannelIngressQueueForTests } from "../channels/message/ingress-queue.js";
 export { executeSqliteQuerySync, getNodeSqliteKysely } from "../infra/kysely-sync.js";
 export type { DB as EVEStateKyselyDatabaseForTests } from "../state/eve-state-db.generated.js";
-export {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "../state/eve-state-db.js";
+export { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "../state/eve-state-db.js";

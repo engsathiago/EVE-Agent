@@ -49,9 +49,7 @@ const CLI_DEBUG = isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND_DEBUG);
 const CLI_CI_SAFE_CODEX_CONFIG = isTruthyEnvValue(
   process.env.EVE_LIVE_CLI_BACKEND_USE_CI_SAFE_CODEX_CONFIG,
 );
-const CLI_MCP_SCHEMA_PROBE = isTruthyEnvValue(
-  process.env.EVE_LIVE_CLI_BACKEND_MCP_SCHEMA_PROBE,
-);
+const CLI_MCP_SCHEMA_PROBE = isTruthyEnvValue(process.env.EVE_LIVE_CLI_BACKEND_MCP_SCHEMA_PROBE);
 const CLI_ALLOW_PROVIDER_SKIP = shouldAllowCliBackendLiveProviderSkip();
 const describeLive = LIVE && CLI_LIVE ? describe : describe.skip;
 
@@ -327,9 +325,7 @@ describeLive("gateway live (cli backend)", () => {
 
       const cliCommand = process.env.EVE_LIVE_CLI_BACKEND_COMMAND ?? providerDefaults?.command;
       if (!cliCommand) {
-        throw new Error(
-          `EVE_LIVE_CLI_BACKEND_COMMAND is required for provider "${providerId}".`,
-        );
+        throw new Error(`EVE_LIVE_CLI_BACKEND_COMMAND is required for provider "${providerId}".`);
       }
 
       const { args: baseCliArgs, resumeArgs: baseCliResumeArgs } = resolveCliBackendLiveArgs({
@@ -354,12 +350,9 @@ describeLive("gateway live (cli backend)", () => {
       const cliImageArg =
         process.env.EVE_LIVE_CLI_BACKEND_IMAGE_ARG?.trim() || providerDefaults?.imageArg;
       const cliImageMode =
-        parseImageMode(process.env.EVE_LIVE_CLI_BACKEND_IMAGE_MODE) ??
-        providerDefaults?.imageMode;
+        parseImageMode(process.env.EVE_LIVE_CLI_BACKEND_IMAGE_MODE) ?? providerDefaults?.imageMode;
       if (cliImageMode && !cliImageArg) {
-        throw new Error(
-          "EVE_LIVE_CLI_BACKEND_IMAGE_MODE requires EVE_LIVE_CLI_BACKEND_IMAGE_ARG.",
-        );
+        throw new Error("EVE_LIVE_CLI_BACKEND_IMAGE_MODE requires EVE_LIVE_CLI_BACKEND_IMAGE_ARG.");
       }
 
       const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-live-cli-"));

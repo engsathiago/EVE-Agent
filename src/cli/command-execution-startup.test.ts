@@ -89,17 +89,7 @@ describe("command-execution-startup", () => {
     ).toBe(false);
     expect(
       mod.resolveCliExecutionStartupContext({
-        argv: [
-          "node",
-          "eve",
-          "agent",
-          "--agent",
-          "main",
-          "--message",
-          "hi",
-          "--json",
-          "--local",
-        ],
+        argv: ["node", "eve", "agent", "--agent", "main", "--message", "hi", "--json", "--local"],
         jsonOutputMode: true,
       }).startupPolicy.loadPlugins,
     ).toBe(true);

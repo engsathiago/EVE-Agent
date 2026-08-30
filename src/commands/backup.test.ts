@@ -300,11 +300,12 @@ describe("backup commands", () => {
       expect(manifest.archiveRoot).toBe(result.archiveRoot);
       expect(manifest.platform).toBe(process.platform);
       expect(manifest.options).toEqual({ includeWorkspace: true, onlyConfig: false });
+      const canonicalExternalWorkspace = await fs.realpath(externalWorkspace);
       expect(manifest.paths).toEqual({
         stateDir,
         configPath,
         oauthDir: path.join(stateDir, "credentials"),
-        workspaceDirs: [externalWorkspace],
+        workspaceDirs: [canonicalExternalWorkspace],
       });
       expect(manifest.assets).toEqual(
         result.assets.map((asset) => ({

@@ -76,8 +76,7 @@ export function collectPluginSourceEntries(packageJson) {
       )
     : [];
   const setupEntry =
-    typeof packageJson?.eve?.setupEntry === "string" &&
-    packageJson.eve.setupEntry.trim().length > 0
+    typeof packageJson?.eve?.setupEntry === "string" && packageJson.eve.setupEntry.trim().length > 0
       ? packageJson.eve.setupEntry
       : undefined;
   if (setupEntry) {
@@ -197,8 +196,7 @@ export function collectBundledPluginBuildEntries(params = {}) {
   for (const candidate of collectBundledPluginCandidates(cwd, extensionsRoot)) {
     const { dirName, pluginDir, relativeFiles, topLevelPublicSurfaceEntries } = candidate;
     const manifestPath = path.join(pluginDir, "eve.plugin.json");
-    const hasManifest =
-      relativeFiles?.includes("eve.plugin.json") ?? fs.existsSync(manifestPath);
+    const hasManifest = relativeFiles?.includes("eve.plugin.json") ?? fs.existsSync(manifestPath);
     const packageJsonPath = path.join(pluginDir, "package.json");
     const packageJson = readBundledPluginPackageJson(packageJsonPath, {
       hasPackageJson: relativeFiles?.includes("package.json"),

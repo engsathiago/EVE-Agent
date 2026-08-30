@@ -3,8 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { EVEConfig } from "../config/types.eve.js";
 import { formatErrorMessage } from "../infra/errors.js";
-import { tryReadJson } from "../infra/json-files.js";
 import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
+import { tryReadJson } from "../infra/json-files.js";
 import { parseStrictPositiveInteger } from "../infra/parse-finite-number.js";
 import {
   runInstallPolicy,
@@ -183,11 +183,11 @@ function pathContainsNodeModulesSegment(relativePath: string): boolean {
 
 function isPackageRootEVEPeerSymlink(segments: string[]): boolean {
   return (
-    (segments.length === 2 && segments[0] === "node_modules" && segments[1] === "eve") ||
+    (segments.length === 2 && segments[0] === "node_modules" && segments[1] === "eve-agent") ||
     (segments.length === 3 &&
       segments[0] === "node_modules" &&
       segments[1] === ".bin" &&
-      segments[2] === "eve")
+      segments[2] === "eve-agent")
   );
 }
 
@@ -354,7 +354,7 @@ function collectManifestRuntimeDependencyNames(manifest: PackageManifest): strin
     }
   }
   for (const dependencyName of Object.keys(manifest.peerDependencies ?? {})) {
-    if (dependencyName !== "eve" && isInstallScannableDependencyName(dependencyName)) {
+    if (dependencyName !== "eve-agent" && isInstallScannableDependencyName(dependencyName)) {
       dependencyNames.add(dependencyName);
     }
   }

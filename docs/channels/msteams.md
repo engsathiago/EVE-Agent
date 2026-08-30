@@ -217,14 +217,14 @@ If you can't use the Teams CLI, you can set up the bot manually through the Azur
 1. Go to [Create Azure Bot](https://portal.azure.com/#create/Microsoft.AzureBot)
 2. Fill in the **Basics** tab:
 
-   | Field              | Value                                                    |
-   | ------------------ | -------------------------------------------------------- |
+   | Field              | Value                                               |
+   | ------------------ | --------------------------------------------------- |
    | **Bot handle**     | Your bot name, e.g., `eve-msteams` (must be unique) |
-   | **Subscription**   | Select your Azure subscription                           |
-   | **Resource group** | Create new or use existing                               |
-   | **Pricing tier**   | **Free** for dev/testing                                 |
-   | **Type of App**    | **Single Tenant** (recommended - see note below)         |
-   | **Creation type**  | **Create new Microsoft App ID**                          |
+   | **Subscription**   | Select your Azure subscription                      |
+   | **Resource group** | Create new or use existing                          |
+   | **Pricing tier**   | **Free** for dev/testing                            |
+   | **Type of App**    | **Single Tenant** (recommended - see note below)    |
+   | **Creation type**  | **Create new Microsoft App ID**                     |
 
 <Warning>
 Creation of new multi-tenant bots was deprecated after 2025-07-31. Use **Single Tenant** for new bots.
@@ -681,7 +681,7 @@ For non-public Teams clouds, set `cloud` and the matching proactive boundary whe
 
 Microsoft publishes the global proactive Bot Connector endpoints in the [Create the conversation](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/send-proactive-messages?tabs=dotnet#create-the-conversation) section of the Teams proactive messaging docs. Use the incoming activity's `serviceUrl` when available; if you need a global proactive endpoint, use Microsoft's table.
 
-| Teams environment | EVE config                                             | Proactive `serviceUrl`                             |
+| Teams environment | EVE config                                                  | Proactive `serviceUrl`                             |
 | ----------------- | ----------------------------------------------------------- | -------------------------------------------------- |
 | Public            | no cloud/serviceUrl config needed                           | `https://smba.trafficmanager.net/teams`            |
 | GCC               | set `serviceUrl`; no separate Teams SDK cloud preset exists | `https://smba.infra.gcc.teams.microsoft.com/teams` |

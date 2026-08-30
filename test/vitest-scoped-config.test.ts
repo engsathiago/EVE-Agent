@@ -153,12 +153,12 @@ function expectForkedIsolatedRunner(config: {
 describe("resolveVitestIsolation", () => {
   it("aliases private QA plugin SDK subpaths for source tests only", () => {
     for (const subpath of PRIVATE_PLUGIN_SDK_SUBPATHS) {
-      expect(findAlias(sharedVitestConfig.resolve.alias, `eve-agent/plugin-sdk/${subpath}`)).toEqual(
-        {
-          find: `eve-agent/plugin-sdk/${subpath}`,
-          replacement: path.join(process.cwd(), "src", "plugin-sdk", `${subpath}.ts`),
-        },
-      );
+      expect(
+        findAlias(sharedVitestConfig.resolve.alias, `eve-agent/plugin-sdk/${subpath}`),
+      ).toEqual({
+        find: `eve-agent/plugin-sdk/${subpath}`,
+        replacement: path.join(process.cwd(), "src", "plugin-sdk", `${subpath}.ts`),
+      });
       expect(() =>
         findAlias(sharedVitestConfig.resolve.alias, `@eve/plugin-sdk/${subpath}`),
       ).toThrow(`missing alias @eve/plugin-sdk/${subpath}`);
@@ -170,12 +170,10 @@ describe("resolveVitestIsolation", () => {
       find: "@eve/media-core/mime",
       replacement: path.join(process.cwd(), "packages", "media-core", "src", "mime.ts"),
     });
-    expect(findAlias(sharedVitestConfig.resolve.alias, "@eve/acp-core/runtime/types")).toEqual(
-      {
-        find: "@eve/acp-core/runtime/types",
-        replacement: path.join(process.cwd(), "packages", "acp-core", "src", "runtime", "types.ts"),
-      },
-    );
+    expect(findAlias(sharedVitestConfig.resolve.alias, "@eve/acp-core/runtime/types")).toEqual({
+      find: "@eve/acp-core/runtime/types",
+      replacement: path.join(process.cwd(), "packages", "acp-core", "src", "runtime", "types.ts"),
+    });
   });
 
   it("defaults shared scoped configs to the non-isolated runner", () => {

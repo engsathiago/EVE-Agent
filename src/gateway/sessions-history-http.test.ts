@@ -346,9 +346,7 @@ async function expectMessageEventMatch(
   expect((event.data as { messageSeq?: number }).messageSeq).toBe(params.seq);
   if (params.id !== undefined) {
     expectEVEMetadata(
-      (event.data as { message?: { __eve?: { id?: string; seq?: number } } }).message?.[
-        "__eve"
-      ],
+      (event.data as { message?: { __eve?: { id?: string; seq?: number } } }).message?.["__eve"],
       {
         id: params.id,
         seq: params.seq,

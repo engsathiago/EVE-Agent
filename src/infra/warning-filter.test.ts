@@ -130,9 +130,7 @@ describe("warning filter", () => {
         { type: "Warning", code: "EVE_VISIBLE_OVERRIDE" },
       );
       await flushWarnings();
-      expect(
-        seenWarnings.find((warning) => warning.code === "EVE_TEST_WARNING"),
-      ).toStrictEqual({
+      expect(seenWarnings.find((warning) => warning.code === "EVE_TEST_WARNING")).toStrictEqual({
         code: "EVE_TEST_WARNING",
         name: "Warning",
         message: "Visible warning",

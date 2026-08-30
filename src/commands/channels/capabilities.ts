@@ -21,11 +21,7 @@ import { formatUnknownChannelMessage } from "../../cli/error-format.js";
 import { parseTimeoutMsWithFallback } from "../../cli/parse-timeout.js";
 import { commitConfigWithPendingPluginInstalls } from "../../cli/plugins-install-record-commit.js";
 import { refreshPluginRegistryAfterConfigMutation } from "../../cli/plugins-registry-refresh.js";
-import {
-  readConfigFileSnapshot,
-  replaceConfigFile,
-  type EVEConfig,
-} from "../../config/config.js";
+import { readConfigFileSnapshot, replaceConfigFile, type EVEConfig } from "../../config/config.js";
 import { danger } from "../../globals.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import { defaultRuntime, type RuntimeEnv, writeRuntimeJson } from "../../runtime.js";

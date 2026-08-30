@@ -2170,9 +2170,7 @@ describe("dropPreSessionStartAnnouncePairs (#85648)", () => {
       },
     ];
     const out = dropPreSessionStartAnnouncePairs(messages, cutoff);
-    expect(out.map((m) => asOptionalRecord(asOptionalRecord(m)?.["__eve"])?.["seq"])).toEqual([
-      1,
-    ]);
+    expect(out.map((m) => asOptionalRecord(asOptionalRecord(m)?.["__eve"])?.["seq"])).toEqual([1]);
   });
 
   it("does not drop a normal pre-cutoff user message that is not a subagent_announce", () => {

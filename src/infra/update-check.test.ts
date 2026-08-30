@@ -85,7 +85,7 @@ describe("resolveNpmChannelTag", () => {
     await expect(
       fetchNpmPackageTargetStatus({
         target: "latest",
-        spec: "eve@latest",
+        spec: "eve-agent@latest",
         command: "/opt/eve/node/bin/npm",
         timeoutMs: 1000,
         cwd: "/tmp/eve-project",
@@ -102,7 +102,7 @@ describe("resolveNpmChannelTag", () => {
       [
         "/opt/eve/node/bin/npm",
         "view",
-        "eve@latest",
+        "eve-agent@latest",
         "version",
         "engines.node",
         "--json",
@@ -127,15 +127,15 @@ describe("resolveNpmChannelTag", () => {
         res.setHeader("content-type", "application/json");
         res.end(
           JSON.stringify({
-            name: "eve",
+            name: "eve-agent",
             "dist-tags": { latest: "2026.6.6" },
             versions: {
               "2026.6.6": {
-                name: "eve",
+                name: "eve-agent",
                 version: "2026.6.6",
                 engines: { node: ">=22.19.0" },
                 dist: {
-                  tarball: "http://example.invalid/eve-2026.6.6.tgz",
+                  tarball: "http://example.invalid/eve-agent-2026.6.6.tgz",
                   shasum: "0".repeat(40),
                 },
               },
@@ -214,7 +214,7 @@ describe("resolveNpmChannelTag", () => {
       nodeEngine: ">=22.19.0",
     });
     expect(fetch).toHaveBeenCalledWith(
-      "https://registry.npmjs.org/eve/latest",
+      "https://registry.npmjs.org/eve-agent/latest",
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
   });
@@ -463,7 +463,7 @@ describe("checkUpdateStatus", () => {
     await withTempDir({ prefix: "eve-update-check-npm-shrinkwrap-" }, async (root) => {
       await fs.writeFile(
         path.join(root, "package.json"),
-        JSON.stringify({ name: "eve", packageManager: "pnpm@11.2.2" }),
+        JSON.stringify({ name: "eve-agent", packageManager: "pnpm@11.2.2" }),
         "utf8",
       );
       await fs.writeFile(path.join(root, "npm-shrinkwrap.json"), "{}", "utf8");
@@ -490,7 +490,7 @@ describe("checkUpdateStatus", () => {
       await fs.mkdir(repoRoot, { recursive: true });
       await fs.writeFile(
         path.join(repoRoot, "package.json"),
-        JSON.stringify({ name: "eve", packageManager: "pnpm@10.0.0" }),
+        JSON.stringify({ name: "eve-agent", packageManager: "pnpm@10.0.0" }),
         "utf8",
       );
       await runCommandWithTimeout(["git", "init"], { cwd: repoRoot, timeoutMs: 1000 });

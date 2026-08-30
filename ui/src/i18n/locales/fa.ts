@@ -395,6 +395,7 @@ export const fa: TranslationMap = {
   nav: {
     chat: "چت",
     control: "کنترل",
+    workspace: "فضای کاری",
     agent: "عامل",
     settings: "تنظیمات",
     expand: "گسترش نوار کناری",
@@ -406,6 +407,11 @@ export const fa: TranslationMap = {
     activity: "فعالیت",
     overview: "نمای کلی",
     workboard: "تابلوی کار",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "کانال‌ها",
     instances: "نمونه‌ها",
     sessions: "نشست‌ها",
@@ -431,6 +437,11 @@ export const fa: TranslationMap = {
     activity: "خلاصه‌های فعالیت ابزار در مرورگر محلی.",
     overview: "وضعیت، نقاط ورود، سلامت.",
     workboard: "صف کار عامل و واگذاری جلسه.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "کانال‌ها و تنظیمات.",
     instances: "کلاینت‌ها و گره‌های متصل.",
     sessions: "نشست‌های فعال و پیش‌فرض‌ها.",
@@ -1316,8 +1327,7 @@ export const fa: TranslationMap = {
         title: "اتصال برقرار نشد",
         summary:
           "مرورگر نتوانست اتصال Gateway را کامل کند. پیش از تلاش دوباره با اعتبارنامه ها، هدف و انتقال را بررسی کنید.",
-        stepGateway:
-          "با eve status یا eve gateway run تأیید کنید که Gateway در حال اجرا است.",
+        stepGateway: "با eve status یا eve gateway run تأیید کنید که Gateway در حال اجرا است.",
         stepUrl:
           "URL WebSocket را بررسی کنید و وقتی Gateway پشت HTTPS/Tailscale Serve است از wss:// استفاده کنید.",
         stepDashboard:

@@ -621,9 +621,9 @@ describe("image-generation runtime", () => {
     ];
     providers = registryProviders;
 
-    expect(
-      listRuntimeImageGenerationProviders({ config: {} as EVEConfig }, runtimeDeps),
-    ).toEqual(registryProviders);
+    expect(listRuntimeImageGenerationProviders({ config: {} as EVEConfig }, runtimeDeps)).toEqual(
+      registryProviders,
+    );
     expect(listedConfigs).toEqual([{} as EVEConfig]);
   });
 
@@ -659,9 +659,7 @@ describe("image-generation runtime", () => {
       "vision-two": ["VISION_TWO_API_KEY"],
     };
 
-    await expect(
-      runGenerateImage({ cfg: {} as EVEConfig, prompt: "draw a cat" }),
-    ).rejects.toThrow(
+    await expect(runGenerateImage({ cfg: {} as EVEConfig, prompt: "draw a cat" })).rejects.toThrow(
       'No image-generation model configured. Set agents.defaults.imageGenerationModel.primary to a provider/model like "vision-one/paint-v1". If you want a specific provider, also configure that provider\'s auth/API key first (vision-one: VISION_ONE_API_KEY; vision-two: VISION_TWO_API_KEY).',
     );
   });

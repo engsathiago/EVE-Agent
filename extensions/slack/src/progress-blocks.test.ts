@@ -107,7 +107,7 @@ describe("buildSlackProgressDraftBlocks", () => {
     expectLegacyLineBlock(
       blocks?.[1],
       "🛠️ *Exec*",
-      "run tests in /Users/example/P…aw/packages/very/deep/path/example",
+      "run tests in /Users/example/P…ve/packages/very/deep/path/example",
     );
   });
 
@@ -212,7 +212,7 @@ describe("native Slack progress stream chunks", () => {
       planUpdate("Shelling..."),
       taskUpdate(
         "tool_1",
-        "Exec — run tests in /Users/example/P…aw/packages/very/deep/path/example",
+        "Exec — run tests in /Users/example/P…ve/packages/very/deep/path/example",
         "in_progress",
       ),
     ]);

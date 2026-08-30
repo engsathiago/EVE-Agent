@@ -164,15 +164,9 @@ try {
   budgets = {
     publicEntrypoints: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS", 321),
     publicExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_EXPORTS", 10337),
-    publicFunctionExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS", 5187),
-    publicDeprecatedExports: readBudgetEnv(
-      "EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS",
-      3245,
-    ),
-    publicWildcardReexports: readBudgetEnv(
-      "EVE_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS",
-      215,
-    ),
+    publicFunctionExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS", 5189),
+    publicDeprecatedExports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS", 3245),
+    publicWildcardReexports: readBudgetEnv("EVE_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS", 215),
   };
   publicDeprecatedExportsByEntrypointBudget = readEntrypointBudgetEnv(
     "EVE_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT",

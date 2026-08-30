@@ -425,8 +425,8 @@ Sends a verification request from this EVE account. `--own-user` requests self-v
 
 For lower-level lifecycle handling - typically while shadowing inbound requests from another client - these commands act on a specific request `<id>` (printed by `verify list` and `verify request`):
 
-| Command                                    | Purpose                                                             |
-| ------------------------------------------ | ------------------------------------------------------------------- |
+| Command                               | Purpose                                                             |
+| ------------------------------------- | ------------------------------------------------------------------- |
 | `eve matrix verify accept <id>`       | Accept an inbound request                                           |
 | `eve matrix verify start <id>`        | Start the SAS flow                                                  |
 | `eve matrix verify sas <id>`          | Print the SAS emoji or decimals                                     |

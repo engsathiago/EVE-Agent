@@ -28,7 +28,7 @@ function setFile(p: string, content = "") {
   state.entries.set(abs(p), { kind: "file", content });
 }
 
-function setPackageRoot(root: string, name = "eve") {
+function setPackageRoot(root: string, name = "eve-agent") {
   setFile(path.join(root, "package.json"), JSON.stringify({ name }));
 }
 
@@ -132,7 +132,7 @@ describe("resolveEVEPackageRoot", () => {
       setup: () => {
         const project = fx("bin-scenario");
         const argv1 = path.join(project, "node_modules", ".bin", "eve");
-        const pkgRoot = path.join(project, "node_modules", "eve");
+        const pkgRoot = path.join(project, "node_modules", "eve-agent");
         setPackageRoot(pkgRoot);
         return { opts: { argv1 }, expected: pkgRoot };
       },
@@ -153,7 +153,7 @@ describe("resolveEVEPackageRoot", () => {
       setup: () => {
         const project = fx("realpath-throw-scenario");
         const argv1 = path.join(project, "node_modules", ".bin", "eve");
-        const pkgRoot = path.join(project, "node_modules", "eve");
+        const pkgRoot = path.join(project, "node_modules", "eve-agent");
         state.realpathErrors.add(abs(argv1));
         setPackageRoot(pkgRoot);
         return { opts: { argv1 }, expected: pkgRoot };
@@ -210,11 +210,8 @@ describe("resolveEVEPackageRoot", () => {
       setup: () => {
         const project = fx("symlink-node-modules-fallback");
         const argv1 = path.join(project, "node_modules", ".bin", "eve");
-        state.realpaths.set(
-          abs(argv1),
-          abs(path.join(project, "versions", "current", "eve.mjs")),
-        );
-        const pkgRoot = path.join(project, "node_modules", "eve");
+        state.realpaths.set(abs(argv1), abs(path.join(project, "versions", "current", "eve.mjs")));
+        const pkgRoot = path.join(project, "node_modules", "eve-agent");
         setPackageRoot(pkgRoot);
         return { opts: { argv1 }, expected: pkgRoot };
       },

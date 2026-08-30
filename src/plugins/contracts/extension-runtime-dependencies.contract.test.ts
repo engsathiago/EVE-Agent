@@ -297,7 +297,7 @@ describe("extension runtime dependency manifests", () => {
       for (const filePath of listRuntimeFiles(extensionDir)) {
         for (const packageName of collectRuntimeImports(filePath)) {
           if (
-            packageName === "eve" ||
+            packageName === "eve-agent" ||
             packageName.startsWith("@eve/") ||
             BUILTIN_MODULES.has(packageName) ||
             declared.has(packageName) ||

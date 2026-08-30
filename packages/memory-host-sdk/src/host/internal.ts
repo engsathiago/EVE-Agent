@@ -8,6 +8,16 @@ import { CANONICAL_ROOT_MEMORY_FILENAME } from "./config-utils.js";
 import { estimateStructuredEmbeddingInputBytes } from "./embedding-input-limits.js";
 import { buildTextEmbeddingInput, type EmbeddingInput } from "./embedding-inputs.js";
 import {
+  CHARS_PER_TOKEN_ESTIMATE,
+  detectMime,
+  estimateStringChars,
+  runTasksWithConcurrency,
+} from "./eve-runtime-io.js";
+import {
+  resolveCanonicalRootMemoryFile,
+  shouldSkipRootMemoryAuxiliaryPath,
+} from "./eve-runtime-memory.js";
+import {
   isFileMissingError,
   readRegularFile,
   statRegularFile,
@@ -20,16 +30,6 @@ import {
   type MemoryMultimodalModality,
   type MemoryMultimodalSettings,
 } from "./multimodal.js";
-import {
-  CHARS_PER_TOKEN_ESTIMATE,
-  detectMime,
-  estimateStringChars,
-  runTasksWithConcurrency,
-} from "./eve-runtime-io.js";
-import {
-  resolveCanonicalRootMemoryFile,
-  shouldSkipRootMemoryAuxiliaryPath,
-} from "./eve-runtime-memory.js";
 import { retryTransientMemoryRead } from "./read-retry.js";
 import { normalizeStringEntries, uniqueStrings } from "./string-utils.js";
 

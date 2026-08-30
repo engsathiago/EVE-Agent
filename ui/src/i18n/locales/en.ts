@@ -392,6 +392,7 @@ export const en: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Control",
+    workspace: "Workspace",
     agent: "Agent",
     settings: "Settings",
     expand: "Expand sidebar",
@@ -402,7 +403,12 @@ export const en: TranslationMap = {
     agents: "Agents",
     activity: "Activity",
     overview: "Overview",
-    workboard: "Workboard",
+    workboard: "Mission Control",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Channels",
     instances: "Instances",
     sessions: "Sessions",
@@ -427,7 +433,12 @@ export const en: TranslationMap = {
     agents: "Workspaces, tools, identities.",
     activity: "Browser-local tool activity summaries.",
     overview: "Status, entry points, health.",
-    workboard: "Agent work queue and session handoff.",
+    workboard: "Mission orchestration, agent work queue, dependencies, and session handoff.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Channels and settings.",
     instances: "Connected clients and nodes.",
     sessions: "Active sessions and defaults.",
@@ -1234,8 +1245,7 @@ export const en: TranslationMap = {
         title: "Auth required",
         summary:
           "The Gateway is reachable, but it needs a matching token or password before this browser can connect.",
-        stepPaste:
-          "Paste the token from eve dashboard --no-open or enter the configured password.",
+        stepPaste: "Paste the token from eve dashboard --no-open or enter the configured password.",
         stepGenerate:
           "If no token is configured, run eve doctor --generate-gateway-token on the gateway host.",
         stepConnect: "Click Connect again after updating the credential.",
@@ -1244,8 +1254,7 @@ export const en: TranslationMap = {
         title: "Auth did not match",
         summary:
           "The supplied credential was rejected. The most common cause is a stale token or a token copied from another Gateway URL.",
-        stepDashboard:
-          "Run eve dashboard --no-open and open the fresh URL or paste its token.",
+        stepDashboard: "Run eve dashboard --no-open and open the fresh URL or paste its token.",
         stepReplace:
           "Replace stale token/password values; do not reuse a token from another Gateway URL.",
         stepMode:
@@ -1298,8 +1307,7 @@ export const en: TranslationMap = {
           "Reopen the served dashboard with eve dashboard so the UI and Gateway come from the same install.",
         stepDevUi:
           "If using pnpm ui:dev, rebuild or restart the dev UI against the current checkout.",
-        stepRestart:
-          "Restart the Gateway after updating EVE so it serves the current protocol.",
+        stepRestart: "Restart the Gateway after updating EVE so it serves the current protocol.",
       },
       network: {
         title: "Could not connect",

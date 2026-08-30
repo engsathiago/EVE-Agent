@@ -20,7 +20,7 @@ type UsageFieldMap = {
 };
 
 // Upstream agent runtimes should normalize Anthropic zero-token empty `stop`
-// turns before EVE sees them. Downstream: eve/eve#71880.
+// turns before EVE sees them. Downstream: engsathiago/eve-agent#71880.
 function readFiniteTokenCount(value: unknown): number | undefined {
   return asFiniteNumber(value);
 }

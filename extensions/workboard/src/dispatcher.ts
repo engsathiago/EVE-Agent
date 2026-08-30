@@ -37,6 +37,77 @@ export type WorkboardDispatchAndStartResult = WorkboardDispatchResult & {
   startFailures: WorkboardStartFailure[];
 };
 
+const TOOLSET_CLASSIFIERS = [
+  {
+    id: "coding",
+    pattern:
+      /\b(api|bug|build|code|coding|código|deploy|docker|erro|implement|program|refactor|servidor|test|typescript|vps)\b/iu,
+  },
+  {
+    id: "research",
+    pattern:
+      /\b(analy[sz]e|documentação|documentation|fonte|investigate|pesquis|research|search|source|web)\b/iu,
+  },
+  {
+    id: "operations",
+    pattern: /\b(ci|deploy|docker|gateway|install|logs?|monitor|release|server|vps)\b/iu,
+  },
+  {
+    id: "visual",
+    pattern: /\b(browser|design|foto|image|imagem|screenshot|ui|ux|visual)\b/iu,
+  },
+  {
+    id: "communications",
+    pattern: /\b(discord|email|message|slack|telegram|whatsapp)\b/iu,
+  },
+] as const;
+
+const WORKBOARD_BASE_TOOL_ALLOW = ["workboard_*", "group:memory", "session_status"] as const;
+const WORKBOARD_TOOLSET_ALLOW: Record<string, readonly string[]> = {
+  coding: ["group:fs", "group:runtime", "group:web", "group:sessions"],
+  research: ["group:web", "group:ui", "group:sessions"],
+  operations: ["group:runtime", "group:fs", "group:automation", "group:nodes"],
+  visual: ["group:ui", "group:media", "group:fs"],
+  communications: ["group:messaging", "group:sessions"],
+};
+
+/** Infer capability families; the selected agent profile remains the hard authorization boundary. */
+export function resolveWorkboardToolsets(card: WorkboardCard): string[] {
+  const configured = [
+    ...new Set(
+      (card.metadata?.automation?.toolsets ?? [])
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean),
+    ),
+  ];
+  if (configured.length > 0 && !(configured.length === 1 && configured[0] === "auto")) {
+    return configured;
+  }
+  const taskText = [card.title, card.notes, ...card.labels].filter(Boolean).join(" ");
+  const inferred = TOOLSET_CLASSIFIERS.flatMap((classifier) =>
+    classifier.pattern.test(taskText) ? [classifier.id] : [],
+  );
+  return inferred.length ? inferred : ["general"];
+}
+
+/** Build a narrowing allowlist only when a card explicitly opts into toolset selection. */
+export function resolveWorkboardToolAllowlist(card: WorkboardCard): string[] | undefined {
+  const configured = card.metadata?.automation?.toolsets;
+  if (!configured?.length) {
+    return undefined;
+  }
+  const selected = resolveWorkboardToolsets(card);
+  if (selected.includes("general")) {
+    return undefined;
+  }
+  return [
+    ...new Set([
+      ...WORKBOARD_BASE_TOOL_ALLOW,
+      ...selected.flatMap((toolset) => WORKBOARD_TOOLSET_ALLOW[toolset] ?? [toolset]),
+    ]),
+  ];
+}
+
 function normalizePositiveInteger(value: number | undefined, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value)
     ? Math.max(0, Math.trunc(value))
@@ -94,6 +165,7 @@ function buildWorkerPrompt(params: {
   ownerId: string;
   token: string;
 }): string {
+  const toolsets = resolveWorkboardToolsets(params.card);
   return [
     `Work on this EVE Workboard card: ${params.card.title}`,
     "",
@@ -105,6 +177,7 @@ function buildWorkerPrompt(params: {
     "Heartbeat with workboard_heartbeat using the card id and token while working.",
     "When done, call workboard_complete with the card id, token, summary, and proof.",
     "If blocked, call workboard_block with the card id, token, and reason.",
+    `Selected toolsets: ${toolsets.join(", ")}. Explicit toolsets narrow existing permissions and never grant new ones.`,
     "",
     params.context,
   ].join("\n");
@@ -190,6 +263,7 @@ export async function dispatchAndStartWorkboardCards(params: {
       });
       token = claimed.token;
       const context = await params.store.buildWorkerContext(card.id);
+      const inheritedToolAllow = resolveWorkboardToolAllowlist(claimed.card);
       const run = await params.subagent.run({
         sessionKey,
         message: buildWorkerPrompt({
@@ -200,6 +274,7 @@ export async function dispatchAndStartWorkboardCards(params: {
         }),
         ...(params.options?.provider ? { provider: params.options.provider } : {}),
         ...(params.options?.model ? { model: params.options.model } : {}),
+        ...(inheritedToolAllow ? { inheritedToolAllow } : {}),
         lane: `workboard:${cardBoardId(card)}:${card.id}`,
         idempotencyKey: `workboard:${card.id}:${claimed.card.updatedAt}`,
         lightContext: true,

@@ -27,9 +27,7 @@ describe("shouldFetchRemotePolicyConfig", () => {
   });
 
   it("returns true for env and cli overrides", () => {
-    expect(shouldFetchRemotePolicyConfig(details({ urlSource: "env EVE_GATEWAY_URL" }))).toBe(
-      true,
-    );
+    expect(shouldFetchRemotePolicyConfig(details({ urlSource: "env EVE_GATEWAY_URL" }))).toBe(true);
     expect(shouldFetchRemotePolicyConfig(details({ urlSource: "cli --url" }))).toBe(true);
   });
 

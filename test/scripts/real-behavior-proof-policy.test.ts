@@ -105,9 +105,7 @@ describe("real-behavior-proof-policy", () => {
     "![after](https://github.com/user-attachments/assets/abc123)",
     "Linked artifact: https://github.com/engsathiago/eve-agent/actions/runs/123456789/artifacts/987654321",
     "Redacted runtime log: gateway connected Discord channel and delivered the reply.",
-    ["Terminal transcript:", "```text", "$ eve gateway status", "discord ready", "```"].join(
-      "\n",
-    ),
+    ["Terminal transcript:", "```text", "$ eve gateway status", "discord ready", "```"].join("\n"),
   ])("passes external PRs with evidence: %s", (evidence) => {
     const evaluation = evaluatePullRequestContext({
       pullRequest: externalPr(proofBody(evidence)),

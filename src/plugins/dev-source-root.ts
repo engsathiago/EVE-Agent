@@ -27,7 +27,7 @@ export function resolveEVEDevSourceRoot(env: NodeJS.ProcessEnv = process.env): s
   if (!realRoot) {
     return null;
   }
-  if (readPackageName(path.join(realRoot, "package.json")) !== "eve") {
+  if (readPackageName(path.join(realRoot, "package.json")) !== "eve-agent") {
     return null;
   }
   if (!fs.existsSync(path.join(realRoot, "src"))) {

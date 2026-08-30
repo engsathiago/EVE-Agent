@@ -18,10 +18,10 @@ Use this skill for maintainer-facing GitHub workflow, not for ordinary code chan
 Common read-only path:
 
 ```bash
-gitcrawl threads eve/eve --numbers <issue-or-pr-number> --include-closed --json
-gitcrawl neighbors eve/eve --number <issue-or-pr-number> --limit 12 --json
-gitcrawl search eve/eve --query "<scope or title keywords>" --mode hybrid --json
-gitcrawl cluster-detail eve/eve --id <cluster-id> --member-limit 20 --body-chars 280 --json
+gitcrawl threads engsathiago/eve-agent --numbers <issue-or-pr-number> --include-closed --json
+gitcrawl neighbors engsathiago/eve-agent --number <issue-or-pr-number> --limit 12 --json
+gitcrawl search engsathiago/eve-agent --query "<scope or title keywords>" --mode hybrid --json
+gitcrawl cluster-detail engsathiago/eve-agent --id <cluster-id> --member-limit 20 --body-chars 280 --json
 ```
 
 ## Claim specific review targets
@@ -41,7 +41,7 @@ When a maintainer asks Codex to review, triage, fix, or land a specific EVE issu
 Assignment time proof:
 
 ```bash
-gh api "repos/eve/eve/issues/<number>/timeline" --paginate \
+gh api "repos/engsathiago/eve-agent/issues/<number>/timeline" --paginate \
   -H "Accept: application/vnd.github+json" \
   --jq '[.[] | select(.event=="assigned") | {assignee:.assignee.login, assigner:.assigner.login, actor:.actor.login, created_at}]'
 ```
@@ -51,7 +51,7 @@ Use the newest `assigned` event for each current assignee. Issue timeline events
 Claim command for issues or PRs:
 
 ```bash
-gh api -X POST "repos/eve/eve/issues/<number>/assignees" -f 'assignees[]=<login>' >/dev/null
+gh api -X POST "repos/engsathiago/eve-agent/issues/<number>/assignees" -f 'assignees[]=<login>' >/dev/null
 ```
 
 ## Surface opener identity
@@ -263,16 +263,16 @@ If the best-fix answer is only "maybe", keep reading or state the missing eviden
 ## Search broadly before deciding
 
 - Prefer `gitcrawl` first. Then use targeted GitHub keyword search to verify gaps, live status, comments, and candidates not present in the local store.
-- Use `--repo eve/eve` with `--match title,body` first when using `gh search`.
+- Use `--repo engsathiago/eve-agent` with `--match title,body` first when using `gh search`.
 - Add `--match comments` when triaging follow-up discussion or closed-as-duplicate chains.
 - Do not stop at the first 500 results when the task requires a full search.
 
 Examples:
 
 ```bash
-gh search prs --repo eve/eve --match title,body --limit 50 -- "auto-update"
-gh search issues --repo eve/eve --match title,body --limit 50 -- "auto-update"
-gh search issues --repo eve/eve --match title,body --limit 50 \
+gh search prs --repo engsathiago/eve-agent --match title,body --limit 50 -- "auto-update"
+gh search issues --repo engsathiago/eve-agent --match title,body --limit 50 -- "auto-update"
+gh search issues --repo engsathiago/eve-agent --match title,body --limit 50 \
   --json number,title,state,url,updatedAt -- "auto update" \
   --jq '.[] | "\(.number) | \(.state) | \(.title) | \(.url)"'
 ```

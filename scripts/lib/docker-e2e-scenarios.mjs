@@ -19,8 +19,7 @@ export const BUNDLED_PLUGIN_INSTALL_UNINSTALL_SHARDS = 24;
 const upgradeSurvivorCommand = "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:upgrade-survivor";
 const rootManagedVpsUpgradeCommand =
   "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:root-managed-vps-upgrade";
-const updateRestartAuthCommand =
-  "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-restart-auth";
+const updateRestartAuthCommand = "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-restart-auth";
 const CODEX_HARNESS_API_KEY_ENV = "EVE_LIVE_CODEX_HARNESS_AUTH=api-key";
 
 const LIVE_RETRY_PATTERNS = [
@@ -325,15 +324,11 @@ export const mainLanes = [
     stateScenario: "empty",
     weight: 3,
   }),
-  serviceLane(
-    "codex-media-path",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-media-path",
-    {
-      resources: ["npm"],
-      stateScenario: "empty",
-      weight: 3,
-    },
-  ),
+  serviceLane("codex-media-path", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:codex-media-path", {
+    resources: ["npm"],
+    stateScenario: "empty",
+    weight: 3,
+  }),
   npmLane(
     "npm-onboard-channel-agent",
     "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
@@ -349,16 +344,12 @@ export const mainLanes = [
     "EVE_NPM_ONBOARD_CHANNEL=slack EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:npm-onboard-channel-agent",
     { resources: ["service"], stateScenario: "empty", weight: 3 },
   ),
-  npmLane(
-    "release-user-journey",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-user-journey",
-    {
-      resources: ["npm", "service"],
-      stateScenario: "empty",
-      timeoutMs: 20 * 60 * 1000,
-      weight: 4,
-    },
-  ),
+  npmLane("release-user-journey", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-user-journey", {
+    resources: ["npm", "service"],
+    stateScenario: "empty",
+    timeoutMs: 20 * 60 * 1000,
+    weight: 4,
+  }),
   npmLane(
     "release-typed-onboarding",
     "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-typed-onboarding",
@@ -369,16 +360,12 @@ export const mainLanes = [
       weight: 3,
     },
   ),
-  npmLane(
-    "release-media-memory",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-media-memory",
-    {
-      resources: ["npm", "service"],
-      stateScenario: "empty",
-      timeoutMs: 20 * 60 * 1000,
-      weight: 3,
-    },
-  ),
+  npmLane("release-media-memory", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-media-memory", {
+    resources: ["npm", "service"],
+    stateScenario: "empty",
+    timeoutMs: 20 * 60 * 1000,
+    weight: 3,
+  }),
   npmLane(
     "release-upgrade-user-journey",
     "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:release-upgrade-user-journey",
@@ -437,11 +424,11 @@ export const mainLanes = [
   lane("crestodian-planner", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-planner", {
     stateScenario: "empty",
   }),
-  serviceLane(
-    "cron-mcp-cleanup",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
-    { resources: ["npm"], stateScenario: "empty", weight: 3 },
-  ),
+  serviceLane("cron-mcp-cleanup", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup", {
+    resources: ["npm"],
+    stateScenario: "empty",
+    weight: 3,
+  }),
   ...createPackageUpdateMaintenanceLanes(),
   npmLane("update-migration", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:update-migration", {
     stateScenario: "upgrade-survivor",
@@ -500,11 +487,9 @@ export const mainLanes = [
   lane("openai-image-auth", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:openai-image-auth", {
     stateScenario: "empty",
   }),
-  lane(
-    "crestodian-first-run",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-first-run",
-    { stateScenario: "empty" },
-  ),
+  lane("crestodian-first-run", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:crestodian-first-run", {
+    stateScenario: "empty",
+  }),
   lane(
     "session-runtime-context",
     "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:session-runtime-context",
@@ -660,15 +645,11 @@ const releasePathPluginRuntimeLanes = [
     weight: 6,
   }),
   ...bundledPluginInstallUninstallLanes,
-  serviceLane(
-    "cron-mcp-cleanup",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
-    {
-      resources: ["npm"],
-      stateScenario: "empty",
-      weight: 3,
-    },
-  ),
+  serviceLane("cron-mcp-cleanup", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup", {
+    resources: ["npm"],
+    stateScenario: "empty",
+    weight: 3,
+  }),
   kitchenSinkRpcLane(),
   serviceLane(
     "openai-web-search-minimal",
@@ -687,15 +668,11 @@ const releasePathPluginRuntimePluginLanes = [
 ];
 
 const releasePathPluginRuntimeServiceLanes = [
-  serviceLane(
-    "cron-mcp-cleanup",
-    "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup",
-    {
-      resources: ["npm"],
-      stateScenario: "empty",
-      weight: 3,
-    },
-  ),
+  serviceLane("cron-mcp-cleanup", "EVE_SKIP_DOCKER_BUILD=1 pnpm test:docker:cron-mcp-cleanup", {
+    resources: ["npm"],
+    stateScenario: "empty",
+    weight: 3,
+  }),
   kitchenSinkRpcLane(),
   serviceLane(
     "openai-web-search-minimal",

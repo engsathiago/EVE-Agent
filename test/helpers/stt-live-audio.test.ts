@@ -8,16 +8,16 @@ import { describe, expect, it } from "vitest";
 
 describe("normalizeTranscriptForMatch", () => {
   it("normalizes punctuation and common EVE live transcription variants", () => {
-    expect(normalizeTranscriptForMatch("Open-Claw integration OK")).toBe("eveintegrationok");
-    expect(normalizeTranscriptForMatch("Testing OpenFlaw realtime transcription")).toMatch(
-      /open(?:claw|flaw)/,
-    );
-    expect(normalizeTranscriptForMatch("OpenCore xAI realtime transcription")).toMatch(
+    expect(normalizeTranscriptForMatch("E.V.E. integration OK")).toBe("eveintegrationok");
+    expect(normalizeTranscriptForMatch("Testing Evie realtime transcription")).toMatch(
       EVE_LIVE_TRANSCRIPT_MARKER_RE,
     );
-    expect(normalizeTranscriptForMatch("OpenCL xAI realtime transcription")).toMatch(
+    expect(normalizeTranscriptForMatch("Evy xAI realtime transcription")).toMatch(
       EVE_LIVE_TRANSCRIPT_MARKER_RE,
     );
-    expectEVELiveTranscriptMarker("OpenClar integration OK");
+    expect(normalizeTranscriptForMatch("E V E xAI realtime transcription")).toMatch(
+      EVE_LIVE_TRANSCRIPT_MARKER_RE,
+    );
+    expectEVELiveTranscriptMarker("Evie integration OK");
   });
 });

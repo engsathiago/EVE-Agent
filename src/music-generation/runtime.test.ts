@@ -212,9 +212,9 @@ describe("music-generation runtime", () => {
     ];
     providers = registryProviders;
 
-    expect(
-      listRuntimeMusicGenerationProviders({ config: {} as EVEConfig }, runtimeDeps),
-    ).toEqual(registryProviders);
+    expect(listRuntimeMusicGenerationProviders({ config: {} as EVEConfig }, runtimeDeps)).toEqual(
+      registryProviders,
+    );
     expect(listedConfigs).toEqual([{} as EVEConfig]);
   });
 

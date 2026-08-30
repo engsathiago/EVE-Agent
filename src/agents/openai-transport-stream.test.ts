@@ -1,7 +1,7 @@
 // Verifies OpenAI-compatible streaming payloads, failures, and transport wrapping.
 import { createServer } from "node:http";
-import OpenAI from "openai";
 import type { Api, Model } from "eve-agent/plugin-sdk/llm";
+import OpenAI from "openai";
 import { describe, expect, it, vi } from "vitest";
 import {
   classifyAssistantFailoverReason,
@@ -968,9 +968,7 @@ describe("openai transport stream", () => {
       },
     );
 
-    expect(resolveTransportAwareSimpleApi(model.api)).toBe(
-      "eve-google-generative-ai-transport",
-    );
+    expect(resolveTransportAwareSimpleApi(model.api)).toBe("eve-google-generative-ai-transport");
   });
 
   it("keeps github-copilot OpenAI-family models on the shared transport seam", () => {
@@ -4087,13 +4085,10 @@ describe("openai transport stream", () => {
                   id: "rs_prior",
                   encrypted_content: "ciphertext",
                 }),
-                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(
-                  model,
-                  {
-                    authProfileId: "openai:oauth",
-                    sessionId: "session-123",
-                  },
-                ),
+                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(model, {
+                  authProfileId: "openai:oauth",
+                  sessionId: "session-123",
+                }),
               },
               {
                 type: "text",
@@ -4324,13 +4319,10 @@ describe("openai transport stream", () => {
                   id: "rs_prior",
                   encrypted_content: "ciphertext",
                 }),
-                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(
-                  model,
-                  {
-                    authProfileId: "openai:oauth",
-                    sessionId: "different-session",
-                  },
-                ),
+                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(model, {
+                  authProfileId: "openai:oauth",
+                  sessionId: "different-session",
+                }),
               },
             ],
           },
@@ -4399,13 +4391,10 @@ describe("openai transport stream", () => {
                   id: "rs_prior",
                   encrypted_content: "ciphertext",
                 }),
-                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(
-                  model,
-                  {
-                    authProfileId: "openai:old-oauth",
-                    sessionId: "session-123",
-                  },
-                ),
+                eveReasoningReplay: testing.buildOpenAIResponsesReasoningReplayMetadata(model, {
+                  authProfileId: "openai:old-oauth",
+                  sessionId: "session-123",
+                }),
               },
             ],
           },

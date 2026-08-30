@@ -813,11 +813,7 @@ export function resolveRunPlans(args) {
  * Builds env for full-suite report runs, including per-config cache paths.
  */
 export function resolveFullSuiteVitestEnv(args, env = process.env, label = "") {
-  if (
-    !args.fullSuite ||
-    env.EVE_VITEST_MAX_WORKERS?.trim() ||
-    env.EVE_TEST_WORKERS?.trim()
-  ) {
+  if (!args.fullSuite || env.EVE_VITEST_MAX_WORKERS?.trim() || env.EVE_TEST_WORKERS?.trim()) {
     return {};
   }
 

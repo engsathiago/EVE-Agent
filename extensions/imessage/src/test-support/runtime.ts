@@ -15,9 +15,7 @@ import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { setIMessageRuntime } from "../runtime.js";
 
 function createIMessageTestEnv(): NodeJS.ProcessEnv {
-  const stateDir = fs.mkdtempSync(
-    path.join(resolvePreferredEVETmpDir(), "eve-imessage-state-"),
-  );
+  const stateDir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-imessage-state-"));
   return { ...process.env, EVE_STATE_DIR: stateDir };
 }
 

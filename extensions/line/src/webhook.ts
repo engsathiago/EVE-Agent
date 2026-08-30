@@ -1,11 +1,11 @@
 // Line plugin module implements webhook behavior.
 import type { webhook } from "@line/bot-sdk";
-import type { NextFunction, Request, Response } from "express";
 import {
   createMessageReceiveContext,
   type MessageReceiveContext,
 } from "eve-agent/plugin-sdk/channel-outbound";
 import { danger, logVerbose, type RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import type { NextFunction, Request, Response } from "express";
 import { parseLineWebhookBody, validateLineSignature } from "./webhook-utils.js";
 
 const LINE_WEBHOOK_MAX_RAW_BODY_BYTES = 64 * 1024;

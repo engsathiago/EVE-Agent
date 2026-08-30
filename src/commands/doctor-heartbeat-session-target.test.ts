@@ -36,10 +36,7 @@ describe("describeHeartbeatSessionTargetIssues", () => {
     } as EVEConfig;
   }
 
-  function cfgWithDefaultHeartbeat(
-    session: string,
-    target: string | null = "slack",
-  ): EVEConfig {
+  function cfgWithDefaultHeartbeat(session: string, target: string | null = "slack"): EVEConfig {
     const heartbeat = target === null ? { session } : { session, target };
     return {
       session: {

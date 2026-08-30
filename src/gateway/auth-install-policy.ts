@@ -22,10 +22,7 @@ function hasConfiguredGatewayPasswordForInstall(cfg: EVEConfig): boolean {
   return hasConfiguredSecretInput(cfg.gateway?.auth?.password, cfg.secrets?.defaults);
 }
 
-function hasDurableGatewayPasswordEnvForInstall(
-  cfg: EVEConfig,
-  env: NodeJS.ProcessEnv,
-): boolean {
+function hasDurableGatewayPasswordEnvForInstall(cfg: EVEConfig, env: NodeJS.ProcessEnv): boolean {
   const durableServiceEnv = collectDurableServiceEnvVars({ env, config: cfg });
   return Boolean(
     normalizeOptionalString(durableServiceEnv.EVE_GATEWAY_PASSWORD) ||

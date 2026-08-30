@@ -394,7 +394,7 @@ function assertRealPathInside(parentPath, childPath, label) {
 }
 
 function assertClawHubExternalInstallContract(installPath) {
-  const evePeerPath = path.join(installPath, "node_modules", "eve");
+  const evePeerPath = path.join(installPath, "node_modules", "eve-agent");
   if (!fs.existsSync(evePeerPath)) {
     throw new Error(`missing kitchen-sink eve peer symlink: ${evePeerPath}`);
   }

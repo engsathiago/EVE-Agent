@@ -89,9 +89,9 @@ can satisfy the MiniMax Search bearer credential.
 
 ## Supported parameters
 
-| Parameter | Type    | Constraints | Description                                                                 |
-| --------- | ------- | ----------- | --------------------------------------------------------------------------- |
-| `query`   | string  | required    | Search query string.                                                        |
+| Parameter | Type    | Constraints | Description                                                            |
+| --------- | ------- | ----------- | ---------------------------------------------------------------------- |
+| `query`   | string  | required    | Search query string.                                                   |
 | `count`   | integer | 1-10        | Number of results to return. EVE trims the returned list to this size. |
 
 Provider-specific filters are not currently supported.

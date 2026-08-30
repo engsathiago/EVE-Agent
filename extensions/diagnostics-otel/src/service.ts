@@ -451,11 +451,7 @@ function assignModelCallSizeTimingAttrs(
 ): void {
   assignPositiveNumberAttr(attrs, "eve.model_call.request_bytes", evt.requestPayloadBytes);
   assignPositiveNumberAttr(attrs, "eve.model_call.response_bytes", evt.responseStreamBytes);
-  assignPositiveNumberAttr(
-    attrs,
-    "eve.model_call.time_to_first_byte_ms",
-    evt.timeToFirstByteMs,
-  );
+  assignPositiveNumberAttr(attrs, "eve.model_call.time_to_first_byte_ms", evt.timeToFirstByteMs);
 }
 
 function assignGenAiSpanIdentityAttrs(
@@ -946,11 +942,7 @@ function assignOtelModelContentAttributes(
 ): void {
   assignGenAiModelContentAttributes(attributes, content, policy);
   if (policy.inputMessages) {
-    assignOtelContentAttribute(
-      attributes,
-      "eve.content.input_messages",
-      content?.inputMessages,
-    );
+    assignOtelContentAttribute(attributes, "eve.content.input_messages", content?.inputMessages);
   }
   if (policy.toolDefinitions) {
     assignOtelContentAttribute(
@@ -960,11 +952,7 @@ function assignOtelModelContentAttributes(
     );
   }
   if (policy.outputMessages) {
-    assignOtelContentAttribute(
-      attributes,
-      "eve.content.output_messages",
-      content?.outputMessages,
-    );
+    assignOtelContentAttribute(attributes, "eve.content.output_messages", content?.outputMessages);
   }
   if (policy.systemPrompt) {
     assignOtelContentAttribute(attributes, "eve.content.system_prompt", content?.systemPrompt);
@@ -1570,13 +1558,10 @@ export function createDiagnosticsOtelService(): EVEPluginService {
         unit: "1",
         description: "Inbound messages received",
       });
-      const messageDispatchStartedCounter = meter.createCounter(
-        "eve.message.dispatch.started",
-        {
-          unit: "1",
-          description: "Inbound message dispatch attempts started",
-        },
-      );
+      const messageDispatchStartedCounter = meter.createCounter("eve.message.dispatch.started", {
+        unit: "1",
+        description: "Inbound message dispatch attempts started",
+      });
       const messageDispatchCompletedCounter = meter.createCounter(
         "eve.message.dispatch.completed",
         {
@@ -1599,13 +1584,10 @@ export function createDiagnosticsOtelService(): EVEPluginService {
         unit: "ms",
         description: "Message processing duration",
       });
-      const messageDeliveryStartedCounter = meter.createCounter(
-        "eve.message.delivery.started",
-        {
-          unit: "1",
-          description: "Outbound message delivery attempts started",
-        },
-      );
+      const messageDeliveryStartedCounter = meter.createCounter("eve.message.delivery.started", {
+        unit: "1",
+        description: "Outbound message delivery attempts started",
+      });
       const messageDeliveryDurationHistogram = meter.createHistogram(
         "eve.message.delivery.duration_ms",
         {
@@ -1659,13 +1641,10 @@ export function createDiagnosticsOtelService(): EVEPluginService {
           description: "Session recovery attempts completed",
         },
       );
-      const sessionRecoveryAgeHistogram = meter.createHistogram(
-        "eve.session.recovery.age_ms",
-        {
-          unit: "ms",
-          description: "Age of sessions selected for recovery",
-        },
-      );
+      const sessionRecoveryAgeHistogram = meter.createHistogram("eve.session.recovery.age_ms", {
+        unit: "ms",
+        description: "Age of sessions selected for recovery",
+      });
       const talkEventCounter = meter.createCounter("eve.talk.event", {
         unit: "1",
         description: "Talk events emitted by type",
@@ -1694,13 +1673,10 @@ export function createDiagnosticsOtelService(): EVEPluginService {
         unit: "ms",
         description: "Model call duration",
       });
-      const modelCallRequestBytesHistogram = meter.createHistogram(
-        "eve.model_call.request_bytes",
-        {
-          unit: "By",
-          description: "UTF-8 byte size of sanitized model request payloads",
-        },
-      );
+      const modelCallRequestBytesHistogram = meter.createHistogram("eve.model_call.request_bytes", {
+        unit: "By",
+        description: "UTF-8 byte size of sanitized model request payloads",
+      });
       const modelCallResponseBytesHistogram = meter.createHistogram(
         "eve.model_call.response_bytes",
         {
@@ -1750,24 +1726,18 @@ export function createDiagnosticsOtelService(): EVEPluginService {
         unit: "By",
         description: "External memory bytes reported by diagnostic memory samples",
       });
-      const memoryArrayBuffersHistogram = meter.createHistogram(
-        "eve.memory.array_buffers_bytes",
-        {
-          unit: "By",
-          description: "ArrayBuffer bytes reported by diagnostic memory samples",
-        },
-      );
+      const memoryArrayBuffersHistogram = meter.createHistogram("eve.memory.array_buffers_bytes", {
+        unit: "By",
+        description: "ArrayBuffer bytes reported by diagnostic memory samples",
+      });
       const memoryPressureCounter = meter.createCounter("eve.memory.pressure", {
         unit: "1",
         description: "Diagnostic memory pressure events",
       });
-      const asyncQueueDroppedCounter = meter.createCounter(
-        "eve.diagnostic.async_queue.dropped",
-        {
-          unit: "1",
-          description: "Async diagnostic queue drops by dropped event class",
-        },
-      );
+      const asyncQueueDroppedCounter = meter.createCounter("eve.diagnostic.async_queue.dropped", {
+        unit: "1",
+        description: "Async diagnostic queue drops by dropped event class",
+      });
       const payloadLargeCounter = meter.createCounter("eve.payload.large", {
         unit: "1",
         description: "Oversized payload diagnostics by surface and action",
@@ -1801,13 +1771,10 @@ export function createDiagnosticsOtelService(): EVEPluginService {
           description: "Event-loop utilization reported by diagnostic liveness warnings",
         },
       );
-      const livenessCpuCoreRatioHistogram = meter.createHistogram(
-        "eve.liveness.cpu_core_ratio",
-        {
-          unit: "1",
-          description: "CPU core ratio reported by diagnostic liveness warnings",
-        },
-      );
+      const livenessCpuCoreRatioHistogram = meter.createHistogram("eve.liveness.cpu_core_ratio", {
+        unit: "1",
+        description: "CPU core ratio reported by diagnostic liveness warnings",
+      });
       const telemetryExporterCounter = meter.createCounter("eve.telemetry.exporter.events", {
         unit: "1",
         description: "Diagnostic telemetry exporter lifecycle and failure events",
@@ -1893,11 +1860,7 @@ export function createDiagnosticsOtelService(): EVEPluginService {
             assignOtelLogAttribute(attributes, "eve.logger", evt.loggerName);
           }
           if (evt.loggerParents?.length) {
-            assignOtelLogAttribute(
-              attributes,
-              "eve.logger.parents",
-              evt.loggerParents.join("."),
-            );
+            assignOtelLogAttribute(attributes, "eve.logger.parents", evt.loggerParents.join("."));
           }
           assignOtelLogEventAttributes(attributes, evt.attributes);
           if (evt.code?.line) {
@@ -3081,8 +3044,7 @@ export function createDiagnosticsOtelService(): EVEPluginService {
       ) => {
         const metricAttrs: Record<string, string> = {
           "eve.failover.reason": lowCardinalityAttr(evt.reason, "unknown"),
-          "eve.failover.suspended":
-            evt.suspended === undefined ? "unknown" : String(evt.suspended),
+          "eve.failover.suspended": evt.suspended === undefined ? "unknown" : String(evt.suspended),
           "eve.lane": lowCardinalityQueueLaneAttr(evt.lane, "unknown"),
           "eve.model": lowCardinalityAttr(evt.fromModel),
           "eve.provider": lowCardinalityAttr(evt.fromProvider),
@@ -3540,15 +3502,11 @@ export function createDiagnosticsOtelService(): EVEPluginService {
           ...(evt.eventLoopUtilization !== undefined
             ? { "eve.liveness.event_loop_utilization": evt.eventLoopUtilization }
             : {}),
-          ...(evt.cpuUserMs !== undefined
-            ? { "eve.liveness.cpu_user_ms": evt.cpuUserMs }
-            : {}),
+          ...(evt.cpuUserMs !== undefined ? { "eve.liveness.cpu_user_ms": evt.cpuUserMs } : {}),
           ...(evt.cpuSystemMs !== undefined
             ? { "eve.liveness.cpu_system_ms": evt.cpuSystemMs }
             : {}),
-          ...(evt.cpuTotalMs !== undefined
-            ? { "eve.liveness.cpu_total_ms": evt.cpuTotalMs }
-            : {}),
+          ...(evt.cpuTotalMs !== undefined ? { "eve.liveness.cpu_total_ms": evt.cpuTotalMs } : {}),
           ...(evt.cpuCoreRatio !== undefined
             ? { "eve.liveness.cpu_core_ratio": evt.cpuCoreRatio }
             : {}),
@@ -3572,19 +3530,14 @@ export function createDiagnosticsOtelService(): EVEPluginService {
         const spanAttrs: Record<string, string | number> = {
           "eve.phase": lowCardinalityAttr(evt.name, "unknown"),
           ...(evt.cpuUserMs !== undefined ? { "eve.phase.cpu_user_ms": evt.cpuUserMs } : {}),
-          ...(evt.cpuSystemMs !== undefined
-            ? { "eve.phase.cpu_system_ms": evt.cpuSystemMs }
-            : {}),
-          ...(evt.cpuTotalMs !== undefined
-            ? { "eve.phase.cpu_total_ms": evt.cpuTotalMs }
-            : {}),
+          ...(evt.cpuSystemMs !== undefined ? { "eve.phase.cpu_system_ms": evt.cpuSystemMs } : {}),
+          ...(evt.cpuTotalMs !== undefined ? { "eve.phase.cpu_total_ms": evt.cpuTotalMs } : {}),
           ...(evt.cpuCoreRatio !== undefined
             ? { "eve.phase.cpu_core_ratio": evt.cpuCoreRatio }
             : {}),
         };
         for (const [key, value] of Object.entries(evt.details ?? {})) {
-          spanAttrs[`eve.phase.detail.${key}`] =
-            typeof value === "boolean" ? String(value) : value;
+          spanAttrs[`eve.phase.detail.${key}`] = typeof value === "boolean" ? String(value) : value;
         }
         const span = spanWithDuration("eve.diagnostic.phase", spanAttrs, evt.durationMs, {
           endTimeMs: evt.ts,

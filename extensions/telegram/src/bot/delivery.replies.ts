@@ -1,5 +1,3 @@
-// Telegram plugin module implements delivery.replies behavior.
-import { type Bot, GrammyError, InputFile } from "grammy";
 import {
   createOutboundPayloadPlan,
   projectOutboundPayloadPlanForDelivery,
@@ -29,6 +27,8 @@ import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { danger, logVerbose } from "eve-agent/plugin-sdk/runtime-env";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { loadWebMedia } from "eve-agent/plugin-sdk/web-media";
+// Telegram plugin module implements delivery.replies behavior.
+import { type Bot, GrammyError, InputFile } from "grammy";
 import { resolveTelegramInlineButtons, type TelegramInlineButtons } from "../button-types.js";
 import { splitTelegramCaption } from "../caption.js";
 import {

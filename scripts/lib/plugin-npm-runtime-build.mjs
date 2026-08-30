@@ -70,7 +70,7 @@ function getRecord(value) {
 function createNeverBundleDependencyMatcher(packageJson) {
   const externalDependencies = collectExternalDependencyNames(packageJson);
   return (id) => {
-    if (id === "eve" || id.startsWith("eve/")) {
+    if (id === "eve-agent" || id.startsWith("eve-agent/")) {
       return true;
     }
     for (const dependency of externalDependencies) {
@@ -159,7 +159,7 @@ function normalizeEVEPeerRange(value) {
 function resolveEVEPeerRange(packageJson, rootPackageJson) {
   return (
     normalizeEVEPeerRange(packageJson.eve?.compat?.pluginApi) ||
-    normalizeEVEPeerRange(packageJson.peerDependencies?.eve) ||
+    normalizeEVEPeerRange(packageJson.peerDependencies?.["eve-agent"]) ||
     normalizeEVEPeerRange(packageJson.eve?.build?.eveVersion) ||
     normalizeEVEPeerRange(rootPackageJson?.version) ||
     normalizeEVEPeerRange(packageJson.version)
@@ -176,15 +176,15 @@ export function resolvePluginNpmRuntimePackagePeerMetadata(plan) {
   }
   const existingPeerDependencies = getStringRecord(plan.packageJson.peerDependencies);
   const existingPeerDependenciesMeta = getRecord(plan.packageJson.peerDependenciesMeta);
-  const existingEVEMeta = getRecord(existingPeerDependenciesMeta.eve);
+  const existingEVEMeta = getRecord(existingPeerDependenciesMeta["eve-agent"]);
   return {
     peerDependencies: {
       ...existingPeerDependencies,
-      eve: evePeerRange,
+      "eve-agent": evePeerRange,
     },
     peerDependenciesMeta: {
       ...existingPeerDependenciesMeta,
-      eve: {
+      "eve-agent": {
         ...existingEVEMeta,
         optional: true,
       },

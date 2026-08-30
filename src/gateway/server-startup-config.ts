@@ -14,8 +14,8 @@ import { isNixMode } from "../config/paths.js";
 import { applyPluginAutoEnable } from "../config/plugin-auto-enable.js";
 import { isPluginPackagingRuntimeOutputInvalidConfigSnapshot } from "../config/recovery-policy.js";
 import { applyConfigOverrides } from "../config/runtime-overrides.js";
-import type { GatewayAuthConfig, GatewayTailscaleConfig } from "../config/types.gateway.js";
 import type { ConfigFileSnapshot, EVEConfig } from "../config/types.eve.js";
+import type { GatewayAuthConfig, GatewayTailscaleConfig } from "../config/types.gateway.js";
 import { measureDiagnosticsTimelineSpan } from "../infra/diagnostics-timeline.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
@@ -171,11 +171,7 @@ function withRuntimeConfig(
 /** Create the serialized secrets activation function used by startup and reload paths. */
 export function createRuntimeSecretsActivator(params: {
   logSecrets: GatewayStartupLog;
-  emitStateEvent: (
-    code: GatewaySecretsStateEventCode,
-    message: string,
-    cfg: EVEConfig,
-  ) => void;
+  emitStateEvent: (code: GatewaySecretsStateEventCode, message: string, cfg: EVEConfig) => void;
   prepareRuntimeSecretsSnapshot?: PrepareRuntimeSecretsSnapshot;
   activateRuntimeSecretsSnapshot?: ActivateRuntimeSecretsSnapshot;
   manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;

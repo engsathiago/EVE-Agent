@@ -9,10 +9,7 @@ import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  closeEVEAgentDatabasesForTest,
-  openEVEAgentDatabase,
-} from "../state/eve-agent-db.js";
+import { closeEVEAgentDatabasesForTest, openEVEAgentDatabase } from "../state/eve-agent-db.js";
 import { closeEVEStateDatabaseForTest } from "../state/eve-state-db.js";
 import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
 import { withEnvAsync } from "../test-utils/env.js";

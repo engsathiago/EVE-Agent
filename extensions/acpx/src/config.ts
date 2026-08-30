@@ -208,9 +208,7 @@ function resolveConfiguredMcpServers(params: {
     );
   }
   if (params.eveToolsMcpBridge) {
-    resolved[ACPX_EVE_TOOLS_MCP_SERVER_NAME] = resolveEVEToolsMcpServerConfig(
-      params.moduleUrl,
-    );
+    resolved[ACPX_EVE_TOOLS_MCP_SERVER_NAME] = resolveEVEToolsMcpServerConfig(params.moduleUrl);
   }
   return resolved;
 }

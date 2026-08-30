@@ -386,8 +386,7 @@ export function createMcpLoopbackServerConfig(port: number) {
           "x-eve-current-inbound-audio": "${EVE_MCP_CURRENT_INBOUND_AUDIO}",
           "x-eve-inbound-event-kind": "${EVE_MCP_INBOUND_EVENT_KIND}",
           "x-eve-source-reply-delivery-mode": "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
-          "x-eve-require-explicit-message-target":
-            "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+          "x-eve-require-explicit-message-target": "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
           "x-eve-cli-capture-key": "${EVE_MCP_CLI_CAPTURE_KEY}",
         },
       },

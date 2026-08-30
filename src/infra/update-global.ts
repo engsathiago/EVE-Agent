@@ -51,11 +51,11 @@ export type ResolvedGlobalInstallTarget = ResolvedGlobalInstallCommand & {
   directNodeModulesRoot?: boolean;
 };
 
-const PRIMARY_PACKAGE_NAME = "eve";
+const PRIMARY_PACKAGE_NAME = "eve-agent";
 const ALL_PACKAGE_NAMES = [PRIMARY_PACKAGE_NAME] as const;
 const GLOBAL_RENAME_PREFIX = ".";
 /** npm-compatible spec used when the user asks to install the moving main branch. */
-export const EVE_MAIN_PACKAGE_SPEC = "github:eve/eve#main";
+export const EVE_MAIN_PACKAGE_SPEC = "github:engsathiago/eve-agent#main";
 const COREPACK_ENABLE_DOWNLOAD_PROMPT_DEFAULT = "0";
 const NPM_GLOBAL_INSTALL_QUIET_FLAGS = ["--no-fund", "--no-audit", "--loglevel=error"] as const;
 const PNPM_EVE_BUILD_ALLOWLIST_FLAG = `--allow-build=${PRIMARY_PACKAGE_NAME}`;
@@ -125,7 +125,7 @@ function isPnpmEVESourceInstallSpec(spec: string): boolean {
 }
 
 /**
- * Extracts a pinned installed version from package specs like `eve@1.2.3`.
+ * Extracts a pinned installed version from package specs like `eve-agent@1.2.3`.
  * Moving tags, URLs, git refs, and aliases return null because they cannot be
  * compared reliably after install.
  */
@@ -390,8 +390,7 @@ export function resolveGlobalInstallSpec(params: {
   env?: NodeJS.ProcessEnv;
 }): string {
   const override =
-    params.env?.EVE_UPDATE_PACKAGE_SPEC?.trim() ||
-    process.env.EVE_UPDATE_PACKAGE_SPEC?.trim();
+    params.env?.EVE_UPDATE_PACKAGE_SPEC?.trim() || process.env.EVE_UPDATE_PACKAGE_SPEC?.trim();
   if (override) {
     return override;
   }

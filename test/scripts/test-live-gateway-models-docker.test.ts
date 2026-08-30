@@ -23,9 +23,7 @@ describe("scripts/test-live-gateway-models-docker.sh", () => {
       'LIVE_GATEWAY_MODEL_TIMEOUT_MS="$(eve_live_read_positive_int_env EVE_LIVE_GATEWAY_MODEL_TIMEOUT_MS 90000)"',
     );
     expect(script).toContain('-e EVE_LIVE_GATEWAY_MAX_MODELS="$LIVE_GATEWAY_MAX_MODELS"');
-    expect(script).toContain(
-      '-e EVE_LIVE_GATEWAY_STEP_TIMEOUT_MS="$LIVE_GATEWAY_STEP_TIMEOUT_MS"',
-    );
+    expect(script).toContain('-e EVE_LIVE_GATEWAY_STEP_TIMEOUT_MS="$LIVE_GATEWAY_STEP_TIMEOUT_MS"');
     expect(script).toContain(
       '-e EVE_LIVE_GATEWAY_MODEL_TIMEOUT_MS="$LIVE_GATEWAY_MODEL_TIMEOUT_MS"',
     );

@@ -48,14 +48,12 @@ export function resolveDefaultReleaseUpgradeBaseline(candidateVersion, published
   const versions = normalizePublishedVersions(publishedVersions);
   const older = versions.find((version) => compareEVEVersions(version, candidate.version) < 0);
   if (older) {
-    return `eve@${older}`;
+    return `eve-agent@${older}`;
   }
 
-  const same = versions.find(
-    (version) => compareEVEVersions(version, candidate.version) === 0,
-  );
+  const same = versions.find((version) => compareEVEVersions(version, candidate.version) === 0);
   if (same) {
-    return `eve@${same}`;
+    return `eve-agent@${same}`;
   }
 
   throw new Error(`no published EVE baseline is <= candidate ${candidate.version}`);
@@ -88,7 +86,7 @@ function readPublishedVersions(args) {
     }
     return parsed;
   }
-  const raw = execFileSync("npm", ["view", "eve", "versions", "--json", "--silent"], {
+  const raw = execFileSync("npm", ["view", "eve-agent", "versions", "--json", "--silent"], {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
   });

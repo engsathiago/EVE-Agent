@@ -86,9 +86,7 @@ export async function startQaLiveLaneGateway(params: {
   command?: QaGatewayChildCommand;
   transport: {
     requiredPluginIds: readonly string[];
-    createGatewayConfig: (params: {
-      baseUrl: string;
-    }) => Pick<EVEConfig, "channels" | "messages">;
+    createGatewayConfig: (params: { baseUrl: string }) => Pick<EVEConfig, "channels" | "messages">;
   };
   transportBaseUrl: string;
   controlUiAllowedOrigins?: string[];

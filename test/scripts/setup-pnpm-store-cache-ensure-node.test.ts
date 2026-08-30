@@ -65,10 +65,9 @@ function runVersionMatch(actual: string, requested: string) {
     "bash",
     [
       "-c",
-      [
-        `source "${ensureNodeScript}"`,
-        `eve_node_version_matches "${actual}" "${requested}"`,
-      ].join("; "),
+      [`source "${ensureNodeScript}"`, `eve_node_version_matches "${actual}" "${requested}"`].join(
+        "; ",
+      ),
     ],
     { encoding: "utf8", env: process.env },
   );

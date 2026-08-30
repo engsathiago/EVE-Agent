@@ -16,11 +16,7 @@ afterEach(async () => {
   await fs.promises.rm(tempRoot, { recursive: true, force: true });
 });
 
-function createRuntime(
-  currentCfg?: EVEConfig,
-  persistedCfg?: EVEConfig,
-  mutationCfg?: EVEConfig,
-) {
+function createRuntime(currentCfg?: EVEConfig, persistedCfg?: EVEConfig, mutationCfg?: EVEConfig) {
   let runtimeCfg = structuredClone(currentCfg ?? ({} as EVEConfig));
   const commitConfig = vi.fn();
   const mutateConfigFile = vi.fn(

@@ -22,7 +22,7 @@ env:
 jobs:
   update-docs:
     if: >
-      github.repository == 'eve/eve' &&
+      github.repository == 'engsathiago/eve-agent' &&
       github.actor != 'github-actions[bot]' &&
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&

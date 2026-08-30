@@ -11,7 +11,10 @@ import {
   waitForDiagnosticEventsDrained,
   type DiagnosticEventPayload,
 } from "eve-agent/plugin-sdk/diagnostic-runtime";
-import { initializeGlobalHookRunner, registerInternalHook } from "eve-agent/plugin-sdk/hook-runtime";
+import {
+  initializeGlobalHookRunner,
+  registerInternalHook,
+} from "eve-agent/plugin-sdk/hook-runtime";
 import { registerMemoryCapability } from "eve-agent/plugin-sdk/memory-core-host-runtime-core";
 import { MESSAGE_TOOL_DELIVERY_HINTS } from "eve-agent/plugin-sdk/message-tool-delivery-hints";
 import { registerPluginCommand } from "eve-agent/plugin-sdk/plugin-runtime";
@@ -31,10 +34,7 @@ import { resolveCodexAppServerEnvApiKeyCacheKey } from "./auth-bridge.js";
 import { CodexAppServerRpcError } from "./client.js";
 import { readCodexPluginConfig, resolveCodexAppServerRuntimeOptions } from "./config.js";
 import { CODEX_TURN_START_TEXT_INPUT_MAX_CHARS } from "./context-engine-projection.js";
-import {
-  CODEX_EVE_DYNAMIC_TOOL_NAMESPACE,
-  createCodexDynamicToolBridge,
-} from "./dynamic-tools.js";
+import { CODEX_EVE_DYNAMIC_TOOL_NAMESPACE, createCodexDynamicToolBridge } from "./dynamic-tools.js";
 import * as elicitationBridge from "./elicitation-bridge.js";
 import {
   CodexAppServerEventProjector,
@@ -274,10 +274,7 @@ async function buildCodexTurnContextForTest(
     params,
     workspacePromptContext: workspaceBootstrapContext.promptContext,
   });
-  const codexTurnPromptText = prependCodexEVEPromptContext(
-    params.prompt,
-    evePromptContext,
-  );
+  const codexTurnPromptText = prependCodexEVEPromptContext(params.prompt, evePromptContext);
   const turnStartParams = buildTurnStartParams(params, {
     threadId: "thread-1",
     cwd: workspaceDir,

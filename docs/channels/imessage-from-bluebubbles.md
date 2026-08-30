@@ -221,20 +221,20 @@ If the gateway logs `imessage: dropping group message from chat_id=<id>` or the 
 
 ## Action parity at a glance
 
-| Action                                              | legacy BlueBubbles                  | bundled iMessage                                                              |
-| --------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------- |
-| Send text / SMS fallback                            | ✅                                  | ✅                                                                            |
-| Send media (photo, video, file, voice)              | ✅                                  | ✅                                                                            |
+| Action                                              | legacy BlueBubbles                  | bundled iMessage                                                                  |
+| --------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------- |
+| Send text / SMS fallback                            | ✅                                  | ✅                                                                                |
+| Send media (photo, video, file, voice)              | ✅                                  | ✅                                                                                |
 | Threaded reply (`reply_to_guid`)                    | ✅                                  | ✅ (closes [#51892](https://github.com/engsathiago/eve-agent/issues/51892))       |
-| Tapback (`react`)                                   | ✅                                  | ✅                                                                            |
-| Edit / unsend (macOS 13+ recipients)                | ✅                                  | ✅                                                                            |
+| Tapback (`react`)                                   | ✅                                  | ✅                                                                                |
+| Edit / unsend (macOS 13+ recipients)                | ✅                                  | ✅                                                                                |
 | Send with screen effect                             | ✅                                  | ✅ (closes part of [#9394](https://github.com/engsathiago/eve-agent/issues/9394)) |
-| Rich text bold / italic / underline / strikethrough | ✅                                  | ✅ (typed-run formatting via attributedBody)                                  |
-| Rename group / set group icon                       | ✅                                  | ✅                                                                            |
-| Add / remove participant, leave group               | ✅                                  | ✅                                                                            |
-| Read receipts and typing indicator                  | ✅                                  | ✅ (gated on private API probe)                                               |
-| Same-sender DM coalescing                           | ✅                                  | ✅ (DM-only; opt-in via `channels.imessage.coalesceSameSenderDms`)            |
-| Inbound recovery after a restart                    | ✅ (webhook replay + history fetch) | ✅ (automatic: replay missed via since_rowid + dedupe; wider window on local) |
+| Rich text bold / italic / underline / strikethrough | ✅                                  | ✅ (typed-run formatting via attributedBody)                                      |
+| Rename group / set group icon                       | ✅                                  | ✅                                                                                |
+| Add / remove participant, leave group               | ✅                                  | ✅                                                                                |
+| Read receipts and typing indicator                  | ✅                                  | ✅ (gated on private API probe)                                                   |
+| Same-sender DM coalescing                           | ✅                                  | ✅ (DM-only; opt-in via `channels.imessage.coalesceSameSenderDms`)                |
+| Inbound recovery after a restart                    | ✅ (webhook replay + history fetch) | ✅ (automatic: replay missed via since_rowid + dedupe; wider window on local)     |
 
 iMessage recovers messages missed while the gateway was down: on startup it replays from the last dispatched rowid via `imsg watch.subscribe` `since_rowid` and dedupes by GUID, while a stale-backlog age fence suppresses the Push-flush "backlog bomb". This runs over the `imsg` RPC connection, so it works for remote SSH `cliPath` setups too; local setups get a wider recovery window because they can read `chat.db`. See [Inbound recovery after a bridge or gateway restart](/channels/imessage#inbound-recovery-after-a-bridge-or-gateway-restart).
 

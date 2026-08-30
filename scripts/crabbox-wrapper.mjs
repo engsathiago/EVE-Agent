@@ -2390,11 +2390,7 @@ function startFullCheckoutKeepalive(checkout, options = {}) {
 }
 
 function fullCheckoutKeepaliveIntervalMs() {
-  return parseNonNegativeIntegerEnv(
-    "EVE_CRABBOX_SYNC_KEEPALIVE_MS",
-    5000,
-    "millisecond interval",
-  );
+  return parseNonNegativeIntegerEnv("EVE_CRABBOX_SYNC_KEEPALIVE_MS", 5000, "millisecond interval");
 }
 
 function cleanupFullCheckout(dir, active) {

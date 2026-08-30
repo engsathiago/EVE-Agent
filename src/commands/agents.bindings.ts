@@ -8,8 +8,8 @@ import type { ChannelId } from "../channels/plugins/types.public.js";
 import { normalizeChannelId as normalizeBundledChannelId } from "../channels/registry.js";
 import { formatUnknownChannelMessage } from "../cli/error-format.js";
 import { isRouteBinding, listRouteBindings } from "../config/bindings.js";
-import type { AgentRouteBinding } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { AgentRouteBinding } from "../config/types.js";
 import { listManifestChannelContributionIds } from "../plugins/manifest-contribution-ids.js";
 import { DEFAULT_ACCOUNT_ID, normalizeAgentId } from "../routing/session-key.js";
 import type { ChannelChoice } from "./onboard-types.js";
@@ -228,10 +228,7 @@ function listManifestChannelIds(config: EVEConfig): Set<string> {
   );
 }
 
-function normalizeBindingChannelId(
-  raw: string | undefined,
-  config: EVEConfig,
-): ChannelId | null {
+function normalizeBindingChannelId(raw: string | undefined, config: EVEConfig): ChannelId | null {
   const bundled = normalizeBundledChannelId(raw);
   if (bundled) {
     return bundled;

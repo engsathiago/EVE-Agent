@@ -25,7 +25,7 @@ const SKIPPED_DIRS = new Set([
 ]);
 const TEXT_FILE_PATTERN = /\.(?:[cm]?[jt]sx?|json|mdx?|ya?ml)$/u;
 const PLUGIN_SDK_SPECIFIER_PATTERN =
-  /\b(?:from\s*["']|import\s*\(\s*["']|require\s*\(\s*["']|vi\.(?:mock|doMock)\s*\(\s*["'])(eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*))["']/g;
+  /\b(?:from\s*["']|import\s*\(\s*["']|require\s*\(\s*["']|vi\.(?:mock|doMock)\s*\(\s*["'])(eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*))["']/g;
 
 type CliOptions = {
   json: boolean;

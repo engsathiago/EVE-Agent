@@ -943,8 +943,7 @@ export const zh_CN = {
       reinstall: "重新安装",
       rerunInstallDaemon: "或重新运行：{command}",
       restart: "重启",
-      securityReminder:
-        "在你的电脑上运行 agent 存在风险，请加固设置：https://docs.eve.ai/security",
+      securityReminder: "在你的电脑上运行 agent 存在风险，请加固设置：https://docs.eve.ai/security",
       secretRefAuthFailed: "无法解析用于设置认证的 {field} SecretRef。",
       skipHealthNextTime: "下次也可跳过此探测：{command}",
       skipControlUi: "跳过 Control UI/TUI 提示。",

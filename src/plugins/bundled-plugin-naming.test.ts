@@ -248,8 +248,7 @@ describe("bundled plugin naming guardrails", () => {
     },
     {
       name: "keeps bundled channel ids aligned with the canonical plugin id",
-      message:
-        "Bundled eve.channel.id values must match eve.plugin.json:id for the owning plugin.",
+      message: "Bundled eve.channel.id values must match eve.plugin.json:id for the owning plugin.",
       collectMismatches: (records: BundledPluginRecord[]) =>
         records
           .filter(

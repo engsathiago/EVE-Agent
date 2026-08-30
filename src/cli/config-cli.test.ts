@@ -74,10 +74,7 @@ vi.mock("../runtime.js", async () => {
   );
 });
 
-function buildSnapshot(params: {
-  resolved: EVEConfig;
-  config: EVEConfig;
-}): ConfigFileSnapshot {
+function buildSnapshot(params: { resolved: EVEConfig; config: EVEConfig }): ConfigFileSnapshot {
   return {
     path: "/tmp/eve.json",
     exists: true,
@@ -2483,9 +2480,7 @@ describe("config cli", () => {
 
       const pathname = path.join(
         os.tmpdir(),
-        `eve-config-patch-ref-schema-${Date.now()}-${Math.random()
-          .toString(16)
-          .slice(2)}.json5`,
+        `eve-config-patch-ref-schema-${Date.now()}-${Math.random().toString(16).slice(2)}.json5`,
       );
       fs.writeFileSync(
         pathname,
@@ -2529,9 +2524,7 @@ describe("config cli", () => {
 
       const pathname = path.join(
         os.tmpdir(),
-        `eve-config-patch-nested-ref-${Date.now()}-${Math.random()
-          .toString(16)
-          .slice(2)}.json5`,
+        `eve-config-patch-nested-ref-${Date.now()}-${Math.random().toString(16).slice(2)}.json5`,
       );
       fs.writeFileSync(
         pathname,

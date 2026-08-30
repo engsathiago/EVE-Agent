@@ -155,8 +155,7 @@ describe("buildCliRespawnPlan", () => {
   });
 
   it("normalizes duplicated Windows node.exe argv before respawning", () => {
-    const scriptPath =
-      "C:\\Users\\alice\\AppData\\Roaming\\npm\\node_modules\\eve\\eve.mjs";
+    const scriptPath = "C:\\Users\\alice\\AppData\\Roaming\\npm\\node_modules\\eve\\eve.mjs";
     const plan = buildCliRespawnPlan({
       argv: [
         "C:\\Program Files\\nodejs\\node.exe",
@@ -220,11 +219,7 @@ describe("buildCliRespawnPlan", () => {
 
     const respawnPlan = expectCliRespawnPlan(plan);
     expect(respawnPlan.command).toBe("node");
-    expect(respawnPlan.argv).toEqual([
-      EXPERIMENTAL_WARNING_FLAG,
-      "/usr/local/bin/eve",
-      "status",
-    ]);
+    expect(respawnPlan.argv).toEqual([EXPERIMENTAL_WARNING_FLAG, "/usr/local/bin/eve", "status"]);
     expect(respawnPlan.detachForProcessTree).toBe(true);
   });
 });
@@ -252,16 +247,11 @@ describe("runCliRespawnPlan", () => {
       },
     );
 
-    expect(spawn).toHaveBeenCalledWith(
-      "/usr/bin/node",
-      ["/repo/eve/dist/entry.js", "status"],
-      {
-        stdio: "inherit",
-        env: { EVE_NODE_OPTIONS_READY: "1" },
-        detached:
-          process.platform !== "win32" && !(process.stdin.isTTY || process.stdout.isTTY),
-      },
-    );
+    expect(spawn).toHaveBeenCalledWith("/usr/bin/node", ["/repo/eve/dist/entry.js", "status"], {
+      stdio: "inherit",
+      env: { EVE_NODE_OPTIONS_READY: "1" },
+      detached: process.platform !== "win32" && !(process.stdin.isTTY || process.stdout.isTTY),
+    });
     const [bridgeChild, bridgeOptions] = requireFirstMockCall(
       attachChildProcessBridge,
       "child process bridge attach",

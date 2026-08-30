@@ -72,7 +72,8 @@ export async function maybeCreateMatrixMigrationSnapshot(params: {
 }): Promise<MatrixMigrationSnapshotResult> {
   const env = params.env ?? process.env;
   const createBackupArchive =
-    params.createBackupArchive ?? (await import("eve-agent/plugin-sdk/runtime")).createBackupArchive;
+    params.createBackupArchive ??
+    (await import("eve-agent/plugin-sdk/runtime")).createBackupArchive;
   const markerPath = resolveMatrixMigrationSnapshotMarkerPath(env);
   const existingMarker = loadSnapshotMarker(markerPath);
   if (existingMarker?.archivePath && fs.existsSync(existingMarker.archivePath)) {

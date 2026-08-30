@@ -21,9 +21,7 @@ export function summarizeMatrixDeviceHealth(
   devices: MatrixManagedDeviceInfo[],
 ): MatrixDeviceHealthSummary {
   const currentDeviceId = devices.find((device) => device.current)?.deviceId ?? null;
-  const eveDevices = devices.filter((device) =>
-    isEVEManagedMatrixDevice(device.displayName),
-  );
+  const eveDevices = devices.filter((device) => isEVEManagedMatrixDevice(device.displayName));
   return {
     currentDeviceId,
     staleEVEDevices: eveDevices.filter((device) => !device.current),

@@ -109,9 +109,7 @@ function formatBlockedRuntimePluginGuidance(params: {
 }): string | undefined {
   const pluginId = params.pluginId;
   const alternative =
-    pluginId === "acpx"
-      ? "disable ACP/acpx in acp config"
-      : 'change the runtime policy to "eve"';
+    pluginId === "acpx" ? "disable ACP/acpx in acp config" : 'change the runtime policy to "eve"';
   if (params.cfg.plugins?.enabled === false) {
     return `Enable plugin loading and the "${pluginId}" plugin, or ${alternative}.`;
   }
@@ -124,10 +122,7 @@ function formatBlockedRuntimePluginGuidance(params: {
   return undefined;
 }
 
-function formatDisabledRuntimePluginGuidance(params: {
-  cfg: EVEConfig;
-  pluginId: string;
-}): string {
+function formatDisabledRuntimePluginGuidance(params: { cfg: EVEConfig; pluginId: string }): string {
   const allow = params.cfg.plugins?.allow;
   const alternative =
     params.pluginId === "acpx"

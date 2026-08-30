@@ -6,14 +6,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { formatErrorMessage } from "../src/infra/errors.ts";
-import { runNpmVerifyCommand } from "./lib/npm-verify-exec.ts";
-import { runInstalledWorkspaceBootstrapSmoke } from "./lib/workspace-bootstrap-smoke.mjs";
 import {
   collectInstalledPackageErrors,
   normalizeInstalledBinaryVersion,
   resolveInstalledBinaryCommandInvocation,
 } from "./eve-npm-postpublish-verify.ts";
 import { resolveNpmCommandInvocation } from "./eve-npm-release-check.ts";
+import { runNpmVerifyCommand } from "./lib/npm-verify-exec.ts";
+import { runInstalledWorkspaceBootstrapSmoke } from "./lib/workspace-bootstrap-smoke.mjs";
 
 type InstalledPackageJson = {
   version?: string;
@@ -98,7 +98,7 @@ function main(argv = process.argv.slice(2)): void {
       workingDir,
     );
     const globalRoot = npmExec(["root", "-g", "--prefix", prefixDir], workingDir);
-    const packageRoot = join(globalRoot, "eve");
+    const packageRoot = join(globalRoot, "eve-agent");
     const pkg = JSON.parse(
       readFileSync(join(packageRoot, "package.json"), "utf8"),
     ) as InstalledPackageJson;

@@ -128,9 +128,7 @@ export function describeChannelPluginCatalogEntriesContract() {
       {
         name: "includes external catalog entries",
         setup: () => {
-          const dir = fs.mkdtempSync(
-            path.join(resolvePreferredEVETmpDir(), "eve-catalog-"),
-          );
+          const dir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-catalog-"));
           const catalogPath = path.join(dir, "catalog.json");
           writeCatalogFile(
             catalogPath,
@@ -216,9 +214,7 @@ export function describeChannelPluginCatalogEntriesContract() {
       {
         name: "accepts rich external manifest entries with pinned npm metadata",
         setup: () => {
-          const dir = fs.mkdtempSync(
-            path.join(resolvePreferredEVETmpDir(), "eve-catalog-rich-"),
-          );
+          const dir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-catalog-rich-"));
           const catalogPath = path.join(dir, "catalog.json");
           fs.writeFileSync(
             catalogPath,
@@ -486,9 +482,7 @@ export function describeChannelPluginCatalogPathResolutionContract() {
       {
         name: "uses the provided env for external catalog path resolution",
         setup: () => {
-          const home = fs.mkdtempSync(
-            path.join(resolvePreferredEVETmpDir(), "eve-catalog-home-"),
-          );
+          const home = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-catalog-home-"));
           const catalogPath = path.join(home, "catalog.json");
           writeCatalogFile(
             catalogPath,

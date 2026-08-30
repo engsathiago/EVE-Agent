@@ -34,10 +34,7 @@ function isConfigured(account: TlonResolvedAccount): boolean {
 }
 
 type TlonSetupWizardBaseParams = {
-  resolveConfigured: (params: {
-    cfg: EVEConfig;
-    accountId?: string;
-  }) => boolean | Promise<boolean>;
+  resolveConfigured: (params: { cfg: EVEConfig; accountId?: string }) => boolean | Promise<boolean>;
   resolveStatusLines?: (params: {
     cfg: EVEConfig;
     accountId?: string;

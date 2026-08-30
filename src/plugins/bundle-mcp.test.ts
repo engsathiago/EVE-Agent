@@ -91,42 +91,38 @@ async function expectInlineBundleMcpServer(params: {
 
 describe("loadEnabledBundleMcpConfig", () => {
   it("loads enabled Claude bundle MCP config and absolutizes relative args", async () => {
-    await withBundleHomeEnv(
-      tempHarness,
-      "eve-bundle-mcp",
-      async ({ homeDir, workspaceDir }) => {
-        const { pluginRoot, serverPath } = await createBundleProbePlugin(homeDir);
+    await withBundleHomeEnv(tempHarness, "eve-bundle-mcp", async ({ homeDir, workspaceDir }) => {
+      const { pluginRoot, serverPath } = await createBundleProbePlugin(homeDir);
 
-        const config: EVEConfig = {
-          plugins: {
-            entries: {
-              "bundle-probe": { enabled: true },
-            },
+      const config: EVEConfig = {
+        plugins: {
+          entries: {
+            "bundle-probe": { enabled: true },
           },
-        };
+        },
+      };
 
-        const loaded = loadEnabledBundleMcpConfig({
-          workspaceDir,
-          cfg: config,
-        });
-        const resolvedServerPath = await fs.realpath(serverPath);
-        const loadedServer = loaded.config.mcpServers.bundleProbe;
-        const loadedArgs = getServerArgs(loadedServer);
-        const loadedServerPath = typeof loadedArgs?.[0] === "string" ? loadedArgs[0] : undefined;
-        const resolvedPluginRoot = await fs.realpath(pluginRoot);
+      const loaded = loadEnabledBundleMcpConfig({
+        workspaceDir,
+        cfg: config,
+      });
+      const resolvedServerPath = await fs.realpath(serverPath);
+      const loadedServer = loaded.config.mcpServers.bundleProbe;
+      const loadedArgs = getServerArgs(loadedServer);
+      const loadedServerPath = typeof loadedArgs?.[0] === "string" ? loadedArgs[0] : undefined;
+      const resolvedPluginRoot = await fs.realpath(pluginRoot);
 
-        expectNoDiagnostics(loaded.diagnostics);
-        expect(isRecord(loadedServer) ? loadedServer.command : undefined).toBe("node");
-        expect(loadedArgs).toHaveLength(1);
-        if (!loadedServerPath) {
-          throw new Error("expected bundled MCP args to include the server path");
-        }
-        expect(normalizePathForAssertion(await fs.realpath(loadedServerPath))).toBe(
-          normalizePathForAssertion(resolvedServerPath),
-        );
-        await expectResolvedPathEqual(loadedServer.cwd, resolvedPluginRoot);
-      },
-    );
+      expectNoDiagnostics(loaded.diagnostics);
+      expect(isRecord(loadedServer) ? loadedServer.command : undefined).toBe("node");
+      expect(loadedArgs).toHaveLength(1);
+      if (!loadedServerPath) {
+        throw new Error("expected bundled MCP args to include the server path");
+      }
+      expect(normalizePathForAssertion(await fs.realpath(loadedServerPath))).toBe(
+        normalizePathForAssertion(resolvedServerPath),
+      );
+      await expectResolvedPathEqual(loadedServer.cwd, resolvedPluginRoot);
+    });
   });
 
   it("uses a provided manifest registry instead of rediscovering bundle plugins", async () => {
@@ -164,61 +160,57 @@ describe("loadEnabledBundleMcpConfig", () => {
   });
 
   it("merges inline bundle MCP servers and skips disabled bundles", async () => {
-    await withBundleHomeEnv(
-      tempHarness,
-      "eve-bundle-inline",
-      async ({ homeDir, workspaceDir }) => {
-        await writeClaudeBundleManifest({
-          homeDir,
-          pluginId: "inline-enabled",
-          manifest: {
-            name: "inline-enabled",
-            mcpServers: {
-              enabledProbe: {
-                command: "node",
-                args: ["./enabled.mjs"],
-              },
+    await withBundleHomeEnv(tempHarness, "eve-bundle-inline", async ({ homeDir, workspaceDir }) => {
+      await writeClaudeBundleManifest({
+        homeDir,
+        pluginId: "inline-enabled",
+        manifest: {
+          name: "inline-enabled",
+          mcpServers: {
+            enabledProbe: {
+              command: "node",
+              args: ["./enabled.mjs"],
             },
           },
-        });
-        await writeClaudeBundleManifest({
-          homeDir,
-          pluginId: "inline-disabled",
-          manifest: {
-            name: "inline-disabled",
-            mcpServers: {
-              disabledProbe: {
-                command: "node",
-                args: ["./disabled.mjs"],
-              },
+        },
+      });
+      await writeClaudeBundleManifest({
+        homeDir,
+        pluginId: "inline-disabled",
+        manifest: {
+          name: "inline-disabled",
+          mcpServers: {
+            disabledProbe: {
+              command: "node",
+              args: ["./disabled.mjs"],
             },
           },
-        });
+        },
+      });
 
-        const loaded = loadEnabledBundleMcpConfig({
-          workspaceDir,
-          cfg: {
-            plugins: {
-              entries: {
-                ...createEnabledPluginEntries(["inline-enabled"]),
-                "inline-disabled": { enabled: false },
-              },
+      const loaded = loadEnabledBundleMcpConfig({
+        workspaceDir,
+        cfg: {
+          plugins: {
+            entries: {
+              ...createEnabledPluginEntries(["inline-enabled"]),
+              "inline-disabled": { enabled: false },
             },
           },
-        });
+        },
+      });
 
-        const enabledProbe = loaded.config.mcpServers.enabledProbe;
-        const enabledArgs = getServerArgs(enabledProbe);
-        expect(isRecord(enabledProbe) ? enabledProbe.command : undefined).toBe("node");
-        expect(enabledArgs).toHaveLength(1);
-        expect(typeof enabledArgs?.[0]).toBe("string");
-        if (typeof enabledArgs?.[0] !== "string") {
-          throw new Error("expected inline MCP enabledProbe args to include enabled.mjs");
-        }
-        expect(enabledArgs[0]).toContain("enabled.mjs");
-        expect(loaded.config.mcpServers.disabledProbe).toBeUndefined();
-      },
-    );
+      const enabledProbe = loaded.config.mcpServers.enabledProbe;
+      const enabledArgs = getServerArgs(enabledProbe);
+      expect(isRecord(enabledProbe) ? enabledProbe.command : undefined).toBe("node");
+      expect(enabledArgs).toHaveLength(1);
+      expect(typeof enabledArgs?.[0]).toBe("string");
+      if (typeof enabledArgs?.[0] !== "string") {
+        throw new Error("expected inline MCP enabledProbe args to include enabled.mjs");
+      }
+      expect(enabledArgs[0]).toContain("enabled.mjs");
+      expect(loaded.config.mcpServers.disabledProbe).toBeUndefined();
+    });
   });
 
   it("resolves inline Claude MCP paths from the plugin root and expands CLAUDE_PLUGIN_ROOT", async () => {
@@ -265,50 +257,46 @@ describe("loadEnabledBundleMcpConfig", () => {
   });
 
   it("loads Link-style Codex bundle MCP config", async () => {
-    await withBundleHomeEnv(
-      tempHarness,
-      "eve-bundle-link",
-      async ({ homeDir, workspaceDir }) => {
-        const pluginRoot = resolveBundlePluginRoot(homeDir, "link");
-        await writeBundleTextFiles(pluginRoot, {
-          ".codex-plugin/plugin.json": `${JSON.stringify(
-            {
-              name: "link",
-              skills: "./skills/",
-              mcpServers: "./.mcp.json",
-            },
-            null,
-            2,
-          )}\n`,
-          ".mcp.json": `${JSON.stringify(
-            {
-              mcpServers: {
-                link: {
-                  command: "pnpx",
-                  args: ["@stripe/link-cli", "--mcp"],
-                },
+    await withBundleHomeEnv(tempHarness, "eve-bundle-link", async ({ homeDir, workspaceDir }) => {
+      const pluginRoot = resolveBundlePluginRoot(homeDir, "link");
+      await writeBundleTextFiles(pluginRoot, {
+        ".codex-plugin/plugin.json": `${JSON.stringify(
+          {
+            name: "link",
+            skills: "./skills/",
+            mcpServers: "./.mcp.json",
+          },
+          null,
+          2,
+        )}\n`,
+        ".mcp.json": `${JSON.stringify(
+          {
+            mcpServers: {
+              link: {
+                command: "pnpx",
+                args: ["@stripe/link-cli", "--mcp"],
               },
             },
-            null,
-            2,
-          )}\n`,
-        });
+          },
+          null,
+          2,
+        )}\n`,
+      });
 
-        const loaded = loadEnabledBundleMcpConfig({
-          workspaceDir,
-          cfg: createEnabledBundleConfig(["link"]),
-        });
-        const loadedServer = loaded.config.mcpServers.link;
+      const loaded = loadEnabledBundleMcpConfig({
+        workspaceDir,
+        cfg: createEnabledBundleConfig(["link"]),
+      });
+      const loadedServer = loaded.config.mcpServers.link;
 
-        expectNoDiagnostics(loaded.diagnostics);
-        expect(isRecord(loadedServer) ? loadedServer.command : undefined).toBe("pnpx");
-        expect(getServerArgs(loadedServer)).toEqual(["@stripe/link-cli", "--mcp"]);
-        await expectResolvedPathEqual(
-          isRecord(loadedServer) ? loadedServer.cwd : undefined,
-          pluginRoot,
-        );
-      },
-    );
+      expectNoDiagnostics(loaded.diagnostics);
+      expect(isRecord(loadedServer) ? loadedServer.command : undefined).toBe("pnpx");
+      expect(getServerArgs(loadedServer)).toEqual(["@stripe/link-cli", "--mcp"]);
+      await expectResolvedPathEqual(
+        isRecord(loadedServer) ? loadedServer.cwd : undefined,
+        pluginRoot,
+      );
+    });
   });
 
   it("reports malformed file-backed MCP configs instead of silently dropping servers", async () => {

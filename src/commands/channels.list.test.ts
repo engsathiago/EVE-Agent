@@ -406,9 +406,7 @@ describe("channels list", () => {
     expect(output).toContain("not installed");
     expect(output).toContain("configured");
     expect(output).toContain("disabled");
-    expect(output).toContain(
-      "run eve plugins install @eve/discord or eve doctor --fix",
-    );
+    expect(output).toContain("run eve plugins install @eve/discord or eve doctor --fix");
     expect(output).not.toContain("no configured chat channels");
   });
 

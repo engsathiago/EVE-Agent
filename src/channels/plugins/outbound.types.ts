@@ -4,8 +4,8 @@
  * Defines text/media/payload/poll contexts, presentation capabilities, and send results.
  */
 import type { ReplyPayload } from "../../auto-reply/reply-payload.js";
-import type { ReplyToMode } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ReplyToMode } from "../../config/types.js";
 import type { OutboundDeliveryResult } from "../../infra/outbound/deliver-types.js";
 import type { OutboundDeliveryFormattingOptions } from "../../infra/outbound/formatting.js";
 import type { OutboundIdentity } from "../../infra/outbound/identity-types.js";

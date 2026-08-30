@@ -115,13 +115,11 @@ describe("config mutate helpers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetConfigRuntimeState();
-    validationMocks.validateConfigObjectWithPlugins.mockImplementation(
-      (config: EVEConfig) => ({
-        ok: true,
-        config,
-        warnings: [],
-      }),
-    );
+    validationMocks.validateConfigObjectWithPlugins.mockImplementation((config: EVEConfig) => ({
+      ok: true,
+      config,
+      warnings: [],
+    }));
     ioMocks.resolveConfigSnapshotHash.mockImplementation(
       (snapshot: { hash?: string }) => snapshot.hash ?? null,
     );
@@ -470,9 +468,7 @@ describe("config mutate helpers", () => {
       replaceConfigFile({
         nextConfig: { gateway: { port: 19001 } },
       }),
-    ).rejects.toThrow(
-      "Agent-first Nix setup: https://github.com/eve/nix-eve#quick-start",
-    );
+    ).rejects.toThrow("Agent-first Nix setup: https://github.com/eve/nix-eve#quick-start");
 
     expect(ioMocks.writeConfigFile).not.toHaveBeenCalled();
   });

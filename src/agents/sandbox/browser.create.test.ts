@@ -276,9 +276,7 @@ describe("ensureSandboxBrowser create args", () => {
       new URL("../../../scripts/docker/sandbox/Dockerfile.browser", import.meta.url),
       "utf8",
     );
-    const label = dockerfile.match(
-      /^LABEL org\.eve\.sandbox-browser\.contract="([^"]+)"$/m,
-    )?.[1];
+    const label = dockerfile.match(/^LABEL org\.eve\.sandbox-browser\.contract="([^"]+)"$/m)?.[1];
 
     expect(label).toBe(SANDBOX_BROWSER_IMAGE_CONTRACT_EPOCH);
   });
@@ -654,9 +652,7 @@ describe("ensureSandboxBrowser create args", () => {
 
     const createArgs = findDockerArgsCall(dockerMocks.execDocker.mock.calls, "create");
     const envEntries = collectDockerFlagValues(createArgs ?? [], "-e");
-    const authEntry = envEntries.find((entry) =>
-      entry.startsWith("EVE_BROWSER_CDP_AUTH_TOKEN="),
-    );
+    const authEntry = envEntries.find((entry) => entry.startsWith("EVE_BROWSER_CDP_AUTH_TOKEN="));
     expect(authEntry).toMatch(/^EVE_BROWSER_CDP_AUTH_TOKEN=[0-9a-f]{48}$/);
     expect(envEntries).not.toContain("EVE_BROWSER_CDP_SOURCE_RANGE=172.21.0.1/32");
 

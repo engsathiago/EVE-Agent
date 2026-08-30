@@ -87,7 +87,7 @@ if [[ "\${1:-}" == "compose" ]]; then
       "\${args[$((i + 1))]}" == "node" &&
       "\${args[$((i + 2))]}" == "eve-gateway" &&
       "\${args[$((i + 3))]}" == "-e" ]]; then
-      node -e "\${args[$((i + 4))]}" "\${args[@]:$((i + 5))}"
+      ${JSON.stringify(process.execPath)} -e "\${args[$((i + 4))]}" "\${args[@]:$((i + 5))}"
       exit $?
     fi
   done
@@ -140,6 +140,10 @@ async function createDockerSetupSandbox(): Promise<DockerSetupSandbox> {
   await copyFile(
     join(repoRoot, "scripts", "lib", "docker-build.sh"),
     join(rootDir, "scripts", "lib", "docker-build.sh"),
+  );
+  await copyFile(
+    join(repoRoot, "scripts", "lib", "host-timeout.sh"),
+    join(rootDir, "scripts", "lib", "host-timeout.sh"),
   );
   await copyFile(
     join(repoRoot, "scripts", "lib", "docker-e2e-logs.sh"),
@@ -572,7 +576,7 @@ describe("scripts/docker/setup.sh", () => {
     const result = runDockerSetup(
       activeSandbox,
       {
-        EVE_IMAGE: "ghcr.io/eve/eve:latest",
+        EVE_IMAGE: "ghcr.io/engsathiago/eve-agent:latest",
         EVE_SKIP_ONBOARDING: "1",
       },
       ["--offline"],
@@ -580,12 +584,12 @@ describe("scripts/docker/setup.sh", () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
-      "Using preloaded Docker image: ghcr.io/eve/eve:latest",
+      "Using preloaded Docker image: ghcr.io/engsathiago/eve-agent:latest",
     );
 
     const lines = await readDockerLogLines(activeSandbox);
     const log = lines.join("\n");
-    expect(log).toContain("image inspect ghcr.io/eve/eve:latest");
+    expect(log).toContain("image inspect ghcr.io/engsathiago/eve-agent:latest");
     expect(log).not.toMatch(/^build /m);
     expect(log).not.toMatch(/^pull /m);
     expect(log).toContain("config set --batch-json");
@@ -599,19 +603,19 @@ describe("scripts/docker/setup.sh", () => {
     const result = runDockerSetup(
       activeSandbox,
       {
-        EVE_IMAGE: "ghcr.io/eve/eve:offline",
-        DOCKER_STUB_MISSING_IMAGES: "ghcr.io/eve/eve:offline",
+        EVE_IMAGE: "ghcr.io/engsathiago/eve-agent:offline",
+        DOCKER_STUB_MISSING_IMAGES: "ghcr.io/engsathiago/eve-agent:offline",
       },
       ["--offline"],
     );
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
-      "Offline Docker setup requires preloaded image ghcr.io/eve/eve:offline",
+      "Offline Docker setup requires preloaded image ghcr.io/engsathiago/eve-agent:offline",
     );
 
     const log = await readDockerLog(activeSandbox);
-    expect(log).toContain("image inspect ghcr.io/eve/eve:offline");
+    expect(log).toContain("image inspect ghcr.io/engsathiago/eve-agent:offline");
     expect(log).not.toMatch(/^build /m);
     expect(log).not.toMatch(/^pull /m);
     expect(log).not.toContain("up -d eve-gateway");
@@ -980,9 +984,7 @@ describe("scripts/docker/setup.sh", () => {
         `compose compose -f ${join(activeSandbox.rootDir, "docker-compose.yml")} up -d --pull never --no-build --force-recreate eve-gateway`,
       );
       expect(forceRecreateLine).not.toContain("docker-compose.sandbox.yml");
-      expect(log).toContain(
-        `image inspect eve-sandbox:bookworm-slim host=unix://${socketPath}`,
-      );
+      expect(log).toContain(`image inspect eve-sandbox:bookworm-slim host=unix://${socketPath}`);
       expectOfflineComposePolicy(lines);
       await expectMissingPath(join(activeSandbox.rootDir, "docker-compose.sandbox.yml"));
     });
@@ -1106,9 +1108,7 @@ describe("scripts/docker/setup.sh", () => {
 
   it("keeps docker-compose gateway Bonjour advertising in auto mode by default", async () => {
     const compose = await readFile(join(repoRoot, "docker-compose.yml"), "utf8");
-    expect(
-      compose.match(/EVE_DISABLE_BONJOUR: \$\{EVE_DISABLE_BONJOUR:-\}/g),
-    ).toHaveLength(1);
+    expect(compose.match(/EVE_DISABLE_BONJOUR: \$\{EVE_DISABLE_BONJOUR:-\}/g)).toHaveLength(1);
   });
 
   it("keeps docker-compose CLI network namespace settings in sync", async () => {
@@ -1119,9 +1119,7 @@ describe("scripts/docker/setup.sh", () => {
 
   it("keeps docker-compose gateway token env defaults aligned across services", async () => {
     const compose = await readFile(join(repoRoot, "docker-compose.yml"), "utf8");
-    expect(compose.match(/EVE_GATEWAY_TOKEN: \$\{EVE_GATEWAY_TOKEN:-\}/g)).toHaveLength(
-      2,
-    );
+    expect(compose.match(/EVE_GATEWAY_TOKEN: \$\{EVE_GATEWAY_TOKEN:-\}/g)).toHaveLength(2);
   });
 
   it("keeps docker-compose auth profile secret key source durable outside state", async () => {
@@ -1150,13 +1148,9 @@ describe("scripts/docker/setup.sh", () => {
     // reach runtime code inside Linux Docker.
     expect(compose.match(/EVE_HOME: \/home\/node$/gm)).toHaveLength(2);
     expect(compose.match(/EVE_STATE_DIR: \/home\/node\/\.eve$/gm)).toHaveLength(2);
-    expect(
-      compose.match(/EVE_CONFIG_PATH: \/home\/node\/\.eve\/eve\.json$/gm),
-    ).toHaveLength(2);
+    expect(compose.match(/EVE_CONFIG_PATH: \/home\/node\/\.eve\/eve\.json$/gm)).toHaveLength(2);
     expect(compose.match(/EVE_CONFIG_DIR: \/home\/node\/\.eve$/gm)).toHaveLength(2);
-    expect(
-      compose.match(/EVE_WORKSPACE_DIR: \/home\/node\/\.eve\/workspace$/gm),
-    ).toHaveLength(2);
+    expect(compose.match(/EVE_WORKSPACE_DIR: \/home\/node\/\.eve\/workspace$/gm)).toHaveLength(2);
   });
 
   it("Dockerfile ARG EVE_IMAGE_APT_PACKAGES must not have a default value", async () => {

@@ -1966,8 +1966,8 @@ export function createOpenAIResponsesTransportStreamFn(): StreamFn {
         ) as typeof params;
         params = sanitizeResponsesImagePayload(params as Record<string, unknown>) as typeof params;
         if (
-          (options as { eveCodeModeToolSurface?: unknown } | undefined)
-            ?.eveCodeModeToolSurface === true
+          (options as { eveCodeModeToolSurface?: unknown } | undefined)?.eveCodeModeToolSurface ===
+          true
         ) {
           enforceCodeModeResponsesToolSurface(params);
           assertCodeModeResponsesToolSurface(params);
@@ -2103,8 +2103,7 @@ function raiseMinimalReasoningForResponsesWebSearch(params: {
 function isOpenAICodexResponsesModel(model: Model): boolean {
   return (
     OPENAI_CODEX_RESPONSES_PROVIDERS.has(model.provider) &&
-    (model.api === "openai-chatgpt-responses" ||
-      model.api === "eve-openai-responses-transport")
+    (model.api === "openai-chatgpt-responses" || model.api === "eve-openai-responses-transport")
   );
 }
 
@@ -2417,8 +2416,8 @@ export function createAzureOpenAIResponsesTransportStreamFn(): StreamFn {
         ) as typeof params;
         params = sanitizeResponsesImagePayload(params as Record<string, unknown>) as typeof params;
         if (
-          (options as { eveCodeModeToolSurface?: unknown } | undefined)
-            ?.eveCodeModeToolSurface === true
+          (options as { eveCodeModeToolSurface?: unknown } | undefined)?.eveCodeModeToolSurface ===
+          true
         ) {
           enforceCodeModeResponsesToolSurface(params);
           assertCodeModeResponsesToolSurface(params);
@@ -2669,8 +2668,8 @@ export function createOpenAICompletionsTransportStreamFn(): StreamFn {
           params = nextParams as typeof params;
         }
         if (
-          (options as { eveCodeModeToolSurface?: unknown } | undefined)
-            ?.eveCodeModeToolSurface === true
+          (options as { eveCodeModeToolSurface?: unknown } | undefined)?.eveCodeModeToolSurface ===
+          true
         ) {
           enforceCodeModeResponsesToolSurface(params);
           assertCodeModeResponsesToolSurface(params);

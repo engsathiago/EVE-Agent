@@ -393,9 +393,7 @@ describe("bench-cli-startup", () => {
       },
     ]) {
       expect(
-        withEnv({ EVE_GATEWAY_PORT: undefined }, () =>
-          testing.buildConfigFixture(commandCase),
-        ),
+        withEnv({ EVE_GATEWAY_PORT: undefined }, () => testing.buildConfigFixture(commandCase)),
       ).toEqual(expectedFixture);
     }
   });

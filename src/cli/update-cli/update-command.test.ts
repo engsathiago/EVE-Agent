@@ -206,9 +206,7 @@ describe("resolvePostInstallDoctorEnv", () => {
     expect(env.PATH).toBe("/bin");
     expect(env.NODE_DISABLE_COMPILE_CACHE).toBe("1");
     expect(env.EVE_STATE_DIR).toBe(path.join("/srv/eve", "daemon-state"));
-    expect(env.EVE_CONFIG_PATH).toBe(
-      path.join("/srv/eve", "daemon-state", "eve.json"),
-    );
+    expect(env.EVE_CONFIG_PATH).toBe(path.join("/srv/eve", "daemon-state", "eve.json"));
     expect(env.EVE_PROFILE).toBe("work");
   });
 

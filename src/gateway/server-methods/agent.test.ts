@@ -785,62 +785,59 @@ describe("gateway agent handler", () => {
       dateOnlyFakeClockActive = true;
       vi.setSystemTime(now);
 
-      await withTempDir(
-        { prefix: "eve-gateway-terminal-main-newer-transcript-" },
-        async (root) => {
-          const sessionsDir = `${root}/sessions`;
-          await fs.mkdir(sessionsDir, { recursive: true });
-          const sessionFile = "terminal-main-session.jsonl";
-          const transcriptPath = `${sessionsDir}/${sessionFile}`;
-          await fs.writeFile(
-            transcriptPath,
-            `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
-            "utf8",
-          );
-          await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
-          mocks.loadSessionEntry.mockReturnValue({
-            cfg: {},
-            storePath: `${sessionsDir}/sessions.json`,
-            entry: {
-              sessionId: "terminal-main-session",
-              sessionFile,
-              ...(scenario.status ? { status: scenario.status } : {}),
-              updatedAt: now - 10_000,
-              sessionStartedAt: now - 60_000,
-              lastInteractionAt: now - 10_000,
-              startedAt: now - 20_000,
-              endedAt: now - 15_000,
-              runtimeMs: 5_000,
-              cliSessionBindings: {
-                "claude-cli": { sessionId: "old-claude-cli-session" },
-                "codex-cli": { sessionId: "old-codex-cli-session" },
-              },
-              cliSessionIds: {
-                "claude-cli": "old-claude-cli-session",
-                "codex-cli": "old-codex-cli-session",
-              },
-              claudeCliSessionId: "old-claude-cli-session",
+      await withTempDir({ prefix: "eve-gateway-terminal-main-newer-transcript-" }, async (root) => {
+        const sessionsDir = `${root}/sessions`;
+        await fs.mkdir(sessionsDir, { recursive: true });
+        const sessionFile = "terminal-main-session.jsonl";
+        const transcriptPath = `${sessionsDir}/${sessionFile}`;
+        await fs.writeFile(
+          transcriptPath,
+          `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
+          "utf8",
+        );
+        await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
+        mocks.loadSessionEntry.mockReturnValue({
+          cfg: {},
+          storePath: `${sessionsDir}/sessions.json`,
+          entry: {
+            sessionId: "terminal-main-session",
+            sessionFile,
+            ...(scenario.status ? { status: scenario.status } : {}),
+            updatedAt: now - 10_000,
+            sessionStartedAt: now - 60_000,
+            lastInteractionAt: now - 10_000,
+            startedAt: now - 20_000,
+            endedAt: now - 15_000,
+            runtimeMs: 5_000,
+            cliSessionBindings: {
+              "claude-cli": { sessionId: "old-claude-cli-session" },
+              "codex-cli": { sessionId: "old-codex-cli-session" },
             },
-            canonicalKey: "agent:main:main",
-          });
+            cliSessionIds: {
+              "claude-cli": "old-claude-cli-session",
+              "codex-cli": "old-codex-cli-session",
+            },
+            claudeCliSessionId: "old-claude-cli-session",
+          },
+          canonicalKey: "agent:main:main",
+        });
 
-          const capturedEntry = await runMainAgentAndCaptureEntry(
-            "test-idem-terminal-main-newer-transcript",
-          );
+        const capturedEntry = await runMainAgentAndCaptureEntry(
+          "test-idem-terminal-main-newer-transcript",
+        );
 
-          const call = await waitForAgentCommandCall<{ sessionId?: string }>();
-          expect(call.sessionId).not.toBe("terminal-main-session");
-          expect(capturedEntry?.sessionId).not.toBe("terminal-main-session");
-          expect(capturedEntry?.status).toBeUndefined();
-          expect(capturedEntry?.startedAt).toBeUndefined();
-          expect(capturedEntry?.endedAt).toBeUndefined();
-          expect(capturedEntry?.runtimeMs).toBeUndefined();
-          expect(capturedEntry?.sessionFile).toBeUndefined();
-          expect(capturedEntry?.cliSessionBindings).toBeUndefined();
-          expect(capturedEntry?.cliSessionIds).toBeUndefined();
-          expect(capturedEntry?.claudeCliSessionId).toBeUndefined();
-        },
-      );
+        const call = await waitForAgentCommandCall<{ sessionId?: string }>();
+        expect(call.sessionId).not.toBe("terminal-main-session");
+        expect(capturedEntry?.sessionId).not.toBe("terminal-main-session");
+        expect(capturedEntry?.status).toBeUndefined();
+        expect(capturedEntry?.startedAt).toBeUndefined();
+        expect(capturedEntry?.endedAt).toBeUndefined();
+        expect(capturedEntry?.runtimeMs).toBeUndefined();
+        expect(capturedEntry?.sessionFile).toBeUndefined();
+        expect(capturedEntry?.cliSessionBindings).toBeUndefined();
+        expect(capturedEntry?.cliSessionIds).toBeUndefined();
+        expect(capturedEntry?.claudeCliSessionId).toBeUndefined();
+      });
     },
   );
 
@@ -916,12 +913,79 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir(
-      { prefix: "eve-gateway-terminal-main-explicit-resume-" },
-      async (root) => {
+    await withTempDir({ prefix: "eve-gateway-terminal-main-explicit-resume-" }, async (root) => {
+      const sessionsDir = `${root}/sessions`;
+      await fs.mkdir(sessionsDir, { recursive: true });
+      const sessionFile = "terminal-main-session.jsonl";
+      const transcriptPath = `${sessionsDir}/${sessionFile}`;
+      await fs.writeFile(
+        transcriptPath,
+        `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
+        "utf8",
+      );
+      await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
+      const existingEntry = {
+        sessionId: "terminal-main-session",
+        sessionFile,
+        status: "done",
+        updatedAt: now - 10_000,
+        sessionStartedAt: now - 60_000,
+        lastInteractionAt: now - 10_000,
+        startedAt: now - 20_000,
+        endedAt: now - 15_000,
+        runtimeMs: 5_000,
+      };
+      mocks.loadSessionEntry.mockReturnValue({
+        cfg: {},
+        storePath: `${sessionsDir}/sessions.json`,
+        entry: existingEntry,
+        canonicalKey: "agent:main:main",
+      });
+      let capturedEntry: Record<string, unknown> | undefined;
+      mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
+        const store: Record<string, unknown> = {
+          "agent:main:main": { ...existingEntry },
+        };
+        const result = await updater(store);
+        capturedEntry = result as Record<string, unknown>;
+        return result;
+      });
+      mocks.agentCommand.mockResolvedValue({
+        payloads: [{ text: "ok" }],
+        meta: { durationMs: 100 },
+      });
+
+      await invokeAgent({
+        message: "resume terminal main",
+        agentId: "main",
+        sessionKey: "agent:main:main",
+        sessionId: "terminal-main-session",
+        idempotencyKey: "test-idem-terminal-main-explicit-resume",
+      } as AgentParams);
+
+      const call = await waitForAgentCommandCall<{ sessionId?: string }>();
+      expect(call.sessionId).toBe("terminal-main-session");
+      expect(capturedEntry?.sessionId).toBe("terminal-main-session");
+      expect(capturedEntry?.sessionFile).toBe(sessionFile);
+      expect(capturedEntry?.status).toBe("done");
+      expect(capturedEntry?.startedAt).toBe(now - 20_000);
+      expect(capturedEntry?.endedAt).toBe(now - 15_000);
+      expect(capturedEntry?.runtimeMs).toBe(5_000);
+    });
+  });
+
+  it.each(["heartbeat", "cron"] as const)(
+    "preserves terminal main session reuse for %s gateway runs",
+    async (runKind) => {
+      const now = Date.parse("2026-05-18T09:49:00.000Z");
+      vi.useFakeTimers({ toFake: ["Date"] });
+      dateOnlyFakeClockActive = true;
+      vi.setSystemTime(now);
+
+      await withTempDir({ prefix: `eve-gateway-terminal-main-${runKind}-reuse-` }, async (root) => {
         const sessionsDir = `${root}/sessions`;
         await fs.mkdir(sessionsDir, { recursive: true });
-        const sessionFile = "terminal-main-session.jsonl";
+        const sessionFile = `terminal-main-${runKind}.jsonl`;
         const transcriptPath = `${sessionsDir}/${sessionFile}`;
         await fs.writeFile(
           transcriptPath,
@@ -946,6 +1010,7 @@ describe("gateway agent handler", () => {
           entry: existingEntry,
           canonicalKey: "agent:main:main",
         });
+
         let capturedEntry: Record<string, unknown> | undefined;
         mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
           const store: Record<string, unknown> = {
@@ -961,92 +1026,18 @@ describe("gateway agent handler", () => {
         });
 
         await invokeAgent({
-          message: "resume terminal main",
+          message: `${runKind} probe`,
           agentId: "main",
           sessionKey: "agent:main:main",
-          sessionId: "terminal-main-session",
-          idempotencyKey: "test-idem-terminal-main-explicit-resume",
+          bootstrapContextRunKind: runKind,
+          idempotencyKey: `test-idem-terminal-main-${runKind}-reuse`,
         } as AgentParams);
 
         const call = await waitForAgentCommandCall<{ sessionId?: string }>();
         expect(call.sessionId).toBe("terminal-main-session");
         expect(capturedEntry?.sessionId).toBe("terminal-main-session");
         expect(capturedEntry?.sessionFile).toBe(sessionFile);
-        expect(capturedEntry?.status).toBe("done");
-        expect(capturedEntry?.startedAt).toBe(now - 20_000);
-        expect(capturedEntry?.endedAt).toBe(now - 15_000);
-        expect(capturedEntry?.runtimeMs).toBe(5_000);
-      },
-    );
-  });
-
-  it.each(["heartbeat", "cron"] as const)(
-    "preserves terminal main session reuse for %s gateway runs",
-    async (runKind) => {
-      const now = Date.parse("2026-05-18T09:49:00.000Z");
-      vi.useFakeTimers({ toFake: ["Date"] });
-      dateOnlyFakeClockActive = true;
-      vi.setSystemTime(now);
-
-      await withTempDir(
-        { prefix: `eve-gateway-terminal-main-${runKind}-reuse-` },
-        async (root) => {
-          const sessionsDir = `${root}/sessions`;
-          await fs.mkdir(sessionsDir, { recursive: true });
-          const sessionFile = `terminal-main-${runKind}.jsonl`;
-          const transcriptPath = `${sessionsDir}/${sessionFile}`;
-          await fs.writeFile(
-            transcriptPath,
-            `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
-            "utf8",
-          );
-          await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
-          const existingEntry = {
-            sessionId: "terminal-main-session",
-            sessionFile,
-            status: "done",
-            updatedAt: now - 10_000,
-            sessionStartedAt: now - 60_000,
-            lastInteractionAt: now - 10_000,
-            startedAt: now - 20_000,
-            endedAt: now - 15_000,
-            runtimeMs: 5_000,
-          };
-          mocks.loadSessionEntry.mockReturnValue({
-            cfg: {},
-            storePath: `${sessionsDir}/sessions.json`,
-            entry: existingEntry,
-            canonicalKey: "agent:main:main",
-          });
-
-          let capturedEntry: Record<string, unknown> | undefined;
-          mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
-            const store: Record<string, unknown> = {
-              "agent:main:main": { ...existingEntry },
-            };
-            const result = await updater(store);
-            capturedEntry = result as Record<string, unknown>;
-            return result;
-          });
-          mocks.agentCommand.mockResolvedValue({
-            payloads: [{ text: "ok" }],
-            meta: { durationMs: 100 },
-          });
-
-          await invokeAgent({
-            message: `${runKind} probe`,
-            agentId: "main",
-            sessionKey: "agent:main:main",
-            bootstrapContextRunKind: runKind,
-            idempotencyKey: `test-idem-terminal-main-${runKind}-reuse`,
-          } as AgentParams);
-
-          const call = await waitForAgentCommandCall<{ sessionId?: string }>();
-          expect(call.sessionId).toBe("terminal-main-session");
-          expect(capturedEntry?.sessionId).toBe("terminal-main-session");
-          expect(capturedEntry?.sessionFile).toBe(sessionFile);
-        },
-      );
+      });
     },
   );
 
@@ -1519,6 +1510,68 @@ describe("gateway agent handler", () => {
       provider: "anthropic",
       model: "claude-haiku-4-5",
     });
+  });
+
+  it("rejects inherited tool allowlists for non-subagent sessions", async () => {
+    mocks.agentCommand.mockClear();
+    const respond = vi.fn();
+
+    await invokeAgent(
+      {
+        message: "do not narrow the main session",
+        agentId: "main",
+        sessionKey: "agent:main:main",
+        inheritedToolAllow: ["group:web"],
+        idempotencyKey: "test-idem-main-inherited-tools",
+      } as AgentParams,
+      { respond, flushDispatch: false },
+    );
+
+    expect(mocks.agentCommand).not.toHaveBeenCalled();
+    expectRespondError(respond, {
+      message: "inheritedToolAllow is only supported for subagent sessions.",
+    });
+  });
+
+  it("persists a normalized inherited tool allowlist on subagent sessions", async () => {
+    const sessionKey = "agent:main:subagent:workboard-card-1";
+    mocks.loadSessionEntry.mockReturnValue({
+      cfg: {},
+      storePath: "/tmp/sessions.json",
+      entry: {
+        sessionId: "subagent-session-id",
+        updatedAt: Date.now(),
+      },
+      canonicalKey: sessionKey,
+    });
+    let capturedEntry: Record<string, unknown> | undefined;
+    mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
+      const store: Record<string, Record<string, unknown>> = {
+        [sessionKey]: {
+          sessionId: "subagent-session-id",
+          updatedAt: Date.now(),
+        },
+      };
+      const result = await updater(store);
+      capturedEntry = store[sessionKey];
+      return result;
+    });
+    mocks.agentCommand.mockResolvedValue({
+      payloads: [{ text: "ok" }],
+      meta: { durationMs: 100 },
+    });
+
+    await invokeAgent({
+      message: "research the Workboard card",
+      agentId: "main",
+      sessionKey,
+      inheritedToolAllow: [" group:web ", "workboard_*", "group:web"],
+      idempotencyKey: "test-idem-subagent-inherited-tools",
+    } as AgentParams);
+
+    expect(
+      requireValue(capturedEntry, "updated subagent entry missing").inheritedToolAllow,
+    ).toEqual(["group:web", "workboard_*"]);
   });
 
   it("preserves cliSessionIds from existing session entry", async () => {
@@ -3324,84 +3377,81 @@ describe("gateway agent handler", () => {
   });
 
   it("keeps plugin SDK subagent runs best-effort when registry persistence fails", async () => {
-    await withTempDir(
-      { prefix: "eve-gateway-plugin-subagent-registry-fail-" },
-      async (root) => {
-        process.env.EVE_STATE_DIR = root;
-        resetTaskRegistryForTests();
-        resetSubagentRegistryForTests({ persist: false });
-        subagentRegistryTesting.setDepsForTest({
-          persistSubagentRunsToDiskOrThrow: () => {
-            throw new Error("disk full");
-          },
-        });
-        const runId = "plugin-subagent-registry-fail";
-        const childSessionKey = "agent:main:subagent:registry-fail";
-        const cfg = {
-          session: { mainKey: "main", scope: "per-sender" },
-        };
-        mocks.loadConfigReturn = cfg;
-        mocks.loadSessionEntry.mockReturnValue({
-          cfg,
-          storePath: "/tmp/sessions.json",
-          entry: {
+    await withTempDir({ prefix: "eve-gateway-plugin-subagent-registry-fail-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
+      resetTaskRegistryForTests();
+      resetSubagentRegistryForTests({ persist: false });
+      subagentRegistryTesting.setDepsForTest({
+        persistSubagentRunsToDiskOrThrow: () => {
+          throw new Error("disk full");
+        },
+      });
+      const runId = "plugin-subagent-registry-fail";
+      const childSessionKey = "agent:main:subagent:registry-fail";
+      const cfg = {
+        session: { mainKey: "main", scope: "per-sender" },
+      };
+      mocks.loadConfigReturn = cfg;
+      mocks.loadSessionEntry.mockReturnValue({
+        cfg,
+        storePath: "/tmp/sessions.json",
+        entry: {
+          sessionId: "plugin-subagent-registry-fail-session",
+          updatedAt: Date.now(),
+        },
+        canonicalKey: childSessionKey,
+      });
+      mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
+        const store: Record<string, unknown> = {
+          [childSessionKey]: {
             sessionId: "plugin-subagent-registry-fail-session",
             updatedAt: Date.now(),
           },
-          canonicalKey: childSessionKey,
-        });
-        mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
-          const store: Record<string, unknown> = {
-            [childSessionKey]: {
-              sessionId: "plugin-subagent-registry-fail-session",
-              updatedAt: Date.now(),
-            },
-          };
-          return await updater(store);
-        });
-        mocks.agentCommand.mockResolvedValue({
-          payloads: [{ text: "ok" }],
-          meta: { durationMs: 100 },
-        });
-        const context = makeContext();
-        const baseClient = requireValue(backendGatewayClient(), "expected backend client");
-        const commandCallCount = mocks.agentCommand.mock.calls.length;
+        };
+        return await updater(store);
+      });
+      mocks.agentCommand.mockResolvedValue({
+        payloads: [{ text: "ok" }],
+        meta: { durationMs: 100 },
+      });
+      const context = makeContext();
+      const baseClient = requireValue(backendGatewayClient(), "expected backend client");
+      const commandCallCount = mocks.agentCommand.mock.calls.length;
 
-        await invokeAgent(
-          {
-            message: "background plugin subagent task",
-            sessionKey: childSessionKey,
-            idempotencyKey: runId,
-          },
-          {
-            context,
-            reqId: runId,
-            client: {
-              connect: baseClient.connect,
-              internal: {
-                ...baseClient.internal,
-                agentRunTracking: "plugin_subagent",
-                pluginRuntimeOwnerId: "memory-core",
-              },
+      await invokeAgent(
+        {
+          message: "background plugin subagent task",
+          sessionKey: childSessionKey,
+          idempotencyKey: runId,
+        },
+        {
+          context,
+          reqId: runId,
+          client: {
+            connect: baseClient.connect,
+            internal: {
+              ...baseClient.internal,
+              agentRunTracking: "plugin_subagent",
+              pluginRuntimeOwnerId: "memory-core",
             },
           },
-        );
+        },
+      );
 
-        expect(mocks.agentCommand).toHaveBeenCalledTimes(commandCallCount + 1);
-        await waitForAssertion(() => {
-          const task = requireValue(findTaskByRunId(runId), "expected fallback cli task");
-          expectRecordFields(task, {
-            runtime: "cli",
-            childSessionKey,
-            status: "succeeded",
-            terminalSummary: "completed",
-          });
+      expect(mocks.agentCommand).toHaveBeenCalledTimes(commandCallCount + 1);
+      await waitForAssertion(() => {
+        const task = requireValue(findTaskByRunId(runId), "expected fallback cli task");
+        expectRecordFields(task, {
+          runtime: "cli",
+          childSessionKey,
+          status: "succeeded",
+          terminalSummary: "completed",
         });
-        expect(context.logGateway.warn).toHaveBeenCalledWith(
-          expect.stringContaining("falling back to cli task tracking"),
-        );
-      },
-    );
+      });
+      expect(context.logGateway.warn).toHaveBeenCalledWith(
+        expect.stringContaining("falling back to cli task tracking"),
+      );
+    });
   });
 
   it("terminalizes failed async gateway agent runs in the shared task registry", async () => {
@@ -3591,54 +3641,51 @@ describe("gateway agent handler", () => {
   });
 
   it("classifies wrapped rejections after gateway timeout as timed out", async () => {
-    await withTempDir(
-      { prefix: "eve-gateway-agent-task-wrapped-timeout-error-" },
-      async (root) => {
-        process.env.EVE_STATE_DIR = root;
-        resetTaskRegistryForTests();
-        primeMainAgentRun();
-        const timeoutReason = new Error("chat run timed out");
-        timeoutReason.name = "TimeoutError";
-        const wrappedError = new Error("fallback result classified terminal abort");
-        wrappedError.name = "FailoverError";
-        const context = makeContext();
-        const runId = "task-registry-agent-run-wrapped-timeout-error";
-        mocks.agentCommand.mockImplementationOnce(() => {
-          context.chatAbortControllers.get(runId)?.controller.abort(timeoutReason);
-          return Promise.reject(wrappedError);
-        });
+    await withTempDir({ prefix: "eve-gateway-agent-task-wrapped-timeout-error-" }, async (root) => {
+      process.env.EVE_STATE_DIR = root;
+      resetTaskRegistryForTests();
+      primeMainAgentRun();
+      const timeoutReason = new Error("chat run timed out");
+      timeoutReason.name = "TimeoutError";
+      const wrappedError = new Error("fallback result classified terminal abort");
+      wrappedError.name = "FailoverError";
+      const context = makeContext();
+      const runId = "task-registry-agent-run-wrapped-timeout-error";
+      mocks.agentCommand.mockImplementationOnce(() => {
+        context.chatAbortControllers.get(runId)?.controller.abort(timeoutReason);
+        return Promise.reject(wrappedError);
+      });
 
-        await invokeAgent(
+      await invokeAgent(
+        {
+          message: "background cli task",
+          sessionKey: "agent:main:main",
+          idempotencyKey: runId,
+        },
+        { context, reqId: runId },
+      );
+
+      await waitForAssertion(() => {
+        expectRecordFields(findTaskByRunId("task-registry-agent-run-wrapped-timeout-error"), {
+          runtime: "cli",
+          childSessionKey: "agent:main:main",
+          status: "timed_out",
+          error: "FailoverError: fallback result classified terminal abort",
+        });
+        expectRecordFields(
+          context.dedupe.get("agent:task-registry-agent-run-wrapped-timeout-error")?.payload,
           {
-            message: "background cli task",
-            sessionKey: "agent:main:main",
-            idempotencyKey: runId,
+            runId: "task-registry-agent-run-wrapped-timeout-error",
+            status: "timeout",
+            summary: "aborted",
+            stopReason: "timeout",
           },
-          { context, reqId: runId },
         );
-
-        await waitForAssertion(() => {
-          expectRecordFields(findTaskByRunId("task-registry-agent-run-wrapped-timeout-error"), {
-            runtime: "cli",
-            childSessionKey: "agent:main:main",
-            status: "timed_out",
-            error: "FailoverError: fallback result classified terminal abort",
-          });
-          expectRecordFields(
-            context.dedupe.get("agent:task-registry-agent-run-wrapped-timeout-error")?.payload,
-            {
-              runId: "task-registry-agent-run-wrapped-timeout-error",
-              status: "timeout",
-              summary: "aborted",
-              stopReason: "timeout",
-            },
-          );
-          expect(
-            context.dedupe.get("agent:task-registry-agent-run-wrapped-timeout-error")?.ok,
-          ).toBe(true);
-        });
-      },
-    );
+        expect(context.dedupe.get("agent:task-registry-agent-run-wrapped-timeout-error")?.ok).toBe(
+          true,
+        );
+      });
+    });
   });
 
   it("does not hide provider timeout async gateway agent rejections", async () => {

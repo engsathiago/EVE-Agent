@@ -33,9 +33,10 @@ describe("parsePluginReleaseSelection", () => {
   });
 
   it("dedupes and sorts comma or whitespace separated package names", () => {
-    expect(
-      parsePluginReleaseSelection(" @eve/zalo, @eve/feishu  @eve/zalo "),
-    ).toEqual(["@eve/feishu", "@eve/zalo"]);
+    expect(parsePluginReleaseSelection(" @eve/zalo, @eve/feishu  @eve/zalo ")).toEqual([
+      "@eve/feishu",
+      "@eve/zalo",
+    ]);
   });
 });
 
@@ -87,12 +88,7 @@ describe("parsePluginReleaseArgs", () => {
 
   it("rejects plugin names when all-publishable mode is selected", () => {
     expect(() =>
-      parsePluginReleaseArgs([
-        "--selection-mode",
-        "all-publishable",
-        "--plugins",
-        "@eve/zalo",
-      ]),
+      parsePluginReleaseArgs(["--selection-mode", "all-publishable", "--plugins", "@eve/zalo"]),
     ).toThrowError("`--selection-mode all-publishable` must not be combined with `--plugins`.");
   });
 

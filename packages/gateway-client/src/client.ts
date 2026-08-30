@@ -605,8 +605,7 @@ export class GatewayClient {
       return;
     }
 
-    const allowPrivateWs =
-      (this.opts.env ?? process.env).EVE_ALLOW_INSECURE_PRIVATE_WS === "1";
+    const allowPrivateWs = (this.opts.env ?? process.env).EVE_ALLOW_INSECURE_PRIVATE_WS === "1";
     // Block plaintext before device-token lookup. Credentials may be loaded from
     // host storage later in sendConnect(), and chat payloads are sensitive too.
     if (!isSecureWebSocketUrl(url, { allowPrivateWs })) {

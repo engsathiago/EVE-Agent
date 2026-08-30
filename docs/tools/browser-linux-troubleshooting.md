@@ -130,7 +130,7 @@ curl -s http://127.0.0.1:18791/tabs
 | `browser.enabled`                | Enable browser control                                               | `true`                                                      |
 | `browser.executablePath`         | Path to a Chromium-based browser binary (Chrome/Brave/Edge/Chromium) | auto-detected (prefers default browser when Chromium-based) |
 | `browser.headless`               | Run without GUI                                                      | `false`                                                     |
-| `EVE_BROWSER_HEADLESS`      | Per-process override for local managed browser headless mode         | unset                                                       |
+| `EVE_BROWSER_HEADLESS`           | Per-process override for local managed browser headless mode         | unset                                                       |
 | `browser.noSandbox`              | Add `--no-sandbox` flag (needed for some Linux setups)               | `false`                                                     |
 | `browser.attachOnly`             | Don't launch browser, only attach to existing                        | `false`                                                     |
 | `browser.cdpPort`                | Chrome DevTools Protocol port                                        | `18800`                                                     |

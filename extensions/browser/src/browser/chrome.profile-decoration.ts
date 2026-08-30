@@ -7,10 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadJsonFile, saveJsonFile } from "eve-agent/plugin-sdk/json-store";
-import {
-  DEFAULT_EVE_BROWSER_COLOR,
-  DEFAULT_EVE_BROWSER_PROFILE_NAME,
-} from "./constants.js";
+import { DEFAULT_EVE_BROWSER_COLOR, DEFAULT_EVE_BROWSER_PROFILE_NAME } from "./constants.js";
 
 function decoratedMarkerPath(userDataDir: string) {
   return path.join(userDataDir, ".eve-profile-decorated");

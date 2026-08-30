@@ -1,10 +1,10 @@
 // Channel MCP bridge translates MCP tool calls into channel runtime operations.
 import { randomUUID } from "node:crypto";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
 } from "@eve/normalization-core/string-coerce";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { EventFrame } from "../../packages/gateway-protocol/src/index.js";
 import type { EVEConfig } from "../config/types.eve.js";
 import type { GatewayClient } from "../gateway/client.js";

@@ -91,7 +91,7 @@ describe("install-cli.sh", () => {
       source "${SCRIPT_PATH}"
       npm_bin() { echo npm; }
       npm() {
-        if [[ "$1" == "view" && "$2" == "eve" && "$3" == "dist-tags.beta" ]]; then
+        if [[ "$1" == "view" && "$2" == "eve-agent" && "$3" == "dist-tags.beta" ]]; then
           printf '2026.5.12-beta.3\\n'
           return 0
         fi

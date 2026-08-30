@@ -44,9 +44,7 @@ describe("parseCliContainerArgs", () => {
   });
 
   it("does not consume an adjacent flag as the container value", () => {
-    expect(
-      parseCliContainerArgs(["node", "eve", "--container", "--no-color", "status"]),
-    ).toEqual({
+    expect(parseCliContainerArgs(["node", "eve", "--container", "--no-color", "status"])).toEqual({
       ok: false,
       error: "--container requires a value",
     });
@@ -87,27 +85,16 @@ describe("parseCliContainerArgs", () => {
     ).toEqual({
       ok: true,
       container: null,
-      argv: [
-        "node",
-        "eve",
-        "nodes",
-        "run",
-        "--",
-        "docker",
-        "run",
-        "--container",
-        "demo",
-        "alpine",
-      ],
+      argv: ["node", "eve", "nodes", "run", "--", "docker", "run", "--container", "demo", "alpine"],
     });
   });
 });
 
 describe("resolveCliContainerTarget", () => {
   it("uses argv first and falls back to EVE_CONTAINER", () => {
-    expect(
-      resolveCliContainerTarget(["node", "eve", "--container", "demo", "status"], {}),
-    ).toBe("demo");
+    expect(resolveCliContainerTarget(["node", "eve", "--container", "demo", "status"], {})).toBe(
+      "demo",
+    );
     expect(resolveCliContainerTarget(["node", "eve", "status"], {})).toBeNull();
     expect(
       resolveCliContainerTarget(["node", "eve", "status"], {

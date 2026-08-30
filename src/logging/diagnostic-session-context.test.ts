@@ -3,10 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { saveCronStore } from "../cron/store.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import {
   formatCronSessionDiagnosticFields,
   formatStoppedCronSessionDiagnosticFields,

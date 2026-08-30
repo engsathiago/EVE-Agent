@@ -83,7 +83,11 @@ describe("private-qa-cli", () => {
     process.env.EVE_ENABLE_PRIVATE_QA_CLI = "1";
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "eve-private-qa-"));
     tempDirs.push(root);
-    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf8");
+    fs.writeFileSync(
+      path.join(root, "package.json"),
+      JSON.stringify({ name: "eve-agent" }),
+      "utf8",
+    );
     const importModule = vi.fn(async () => ({}));
 
     expect(() =>

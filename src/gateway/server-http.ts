@@ -162,10 +162,7 @@ const GATEWAY_PROBE_STATUS_BY_PATH = new Map<string, "live" | "ready">([
   ["/ready", "ready"],
   ["/readyz", "ready"],
 ]);
-const pluginGatewayAuthBypassPathsCache = new WeakMap<
-  EVEConfig,
-  Promise<ReadonlySet<string>>
->();
+const pluginGatewayAuthBypassPathsCache = new WeakMap<EVEConfig, Promise<ReadonlySet<string>>>();
 
 async function resolvePluginGatewayAuthBypassPaths(
   configSnapshot: EVEConfig,

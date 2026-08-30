@@ -27,11 +27,7 @@ type ResolveRunWorkspaceResult = {
   agentIdSource: AgentIdSource;
 };
 
-function resolveRunAgentId(params: {
-  sessionKey?: string;
-  agentId?: string;
-  config?: EVEConfig;
-}): {
+function resolveRunAgentId(params: { sessionKey?: string; agentId?: string; config?: EVEConfig }): {
   agentId: string;
   agentIdSource: AgentIdSource;
 } {

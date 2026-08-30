@@ -1,8 +1,5 @@
 // Plugin test API helpers construct SDK-shaped host APIs for plugin unit tests.
-import {
-  attachPluginApiFacades,
-  type EVEPluginApiWithoutFacades,
-} from "../plugins/api-facades.js";
+import { attachPluginApiFacades, type EVEPluginApiWithoutFacades } from "../plugins/api-facades.js";
 import type { EVEPluginApi } from "./plugin-runtime.js";
 
 /** Partial plugin API overrides accepted by the SDK test helper. */

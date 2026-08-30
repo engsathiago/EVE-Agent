@@ -222,7 +222,7 @@ See [Plugins](/tools/plugin).
 
 ### Automatic dependency install
 
-When you install EVE globally with `npm install -g eve`, the acpx
+When you install EVE globally with `npm install -g eve-agent`, the acpx
 runtime dependencies (platform-specific binaries) are installed automatically
 via a postinstall hook. If the automatic install fails, the gateway still starts
 normally and reports the missing dependency through `eve acp doctor`.

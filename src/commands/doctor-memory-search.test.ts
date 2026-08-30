@@ -175,11 +175,10 @@ describe("noteMemorySearchHealth", () => {
     hasAnyAuthProfileStoreSource.mockReturnValue(true);
     getActiveMemorySearchManager.mockReset();
     resolveActiveMemoryBackendConfig.mockReset();
-    resolveActiveMemoryBackendConfig.mockImplementation(
-      ({ cfg: cfgLocal }: { cfg: EVEConfig }) =>
-        cfgLocal.memory?.backend === "qmd"
-          ? { backend: "qmd", qmd: cfgLocal.memory.qmd ?? {} }
-          : { backend: "builtin" },
+    resolveActiveMemoryBackendConfig.mockImplementation(({ cfg: cfgLocal }: { cfg: EVEConfig }) =>
+      cfgLocal.memory?.backend === "qmd"
+        ? { backend: "qmd", qmd: cfgLocal.memory.qmd ?? {} }
+        : { backend: "builtin" },
     );
     getActiveMemorySearchManager.mockResolvedValue({
       manager: {

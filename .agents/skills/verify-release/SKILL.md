@@ -24,7 +24,7 @@ publish skill; use `$release-eve-maintainer` before changing release state.
 ## Core Checks
 
 1. GitHub release:
-   - `gh release view v<VERSION> --repo eve/eve --json tagName,name,publishedAt,isDraft,isPrerelease,targetCommitish,url,body,assets`
+   - `gh release view v<VERSION> --repo engsathiago/eve-agent --json tagName,name,publishedAt,isDraft,isPrerelease,targetCommitish,url,body,assets`
    - Confirm stable releases are not draft/prerelease.
    - Confirm release body has npm, CI, plugin npm, ClawHub, mac/appcast evidence
      links when expected.
@@ -34,7 +34,7 @@ publish skill; use `$release-eve-maintainer` before changing release state.
    - Download each immutable evidence asset and its `.sha256` companion, then
      verify the checksum before trusting the release record.
 2. Root npm:
-   - `npm view eve@<VERSION> version dist-tags.latest dist.tarball dist.integrity time.<VERSION> --json`
+   - `npm view eve-agent@<VERSION> version dist-tags.latest dist.tarball dist.integrity time.<VERSION> --json`
    - `latest` must equal `<VERSION>` for stable.
    - Record tarball, integrity, publish time.
    - Confirm the release postpublish evidence records
@@ -42,13 +42,13 @@ publish skill; use `$release-eve-maintainer` before changing release state.
      `npmProvenanceAttestationMatched: true`.
 3. Plugin publish set:
    - Get exact tag metadata from GitHub, not the local checkout when dirty:
-     download `https://api.github.com/repos/eve/eve/tarball/v<VERSION>`
+     download `https://api.github.com/repos/engsathiago/eve-agent/tarball/v<VERSION>`
      into `/tmp/eve-v<VERSION>-src`.
    - Count `extensions/*/package.json` with
      `eve.release.publishToNpm === true` and
      `eve.release.publishToClawHub === true`.
    - Compare expected counts to workflow job counts:
-     `gh api repos/eve/eve/actions/runs/<RUN>/jobs --paginate`.
+     `gh api repos/engsathiago/eve-agent/actions/runs/<RUN>/jobs --paginate`.
    - Each expected npm plugin must have version `<VERSION>` and
      `dist-tags.latest === <VERSION>`.
 4. ClawHub:
@@ -70,7 +70,7 @@ publish skill; use `$release-eve-maintainer` before changing release state.
      optional lanes unless the release body promised them.
 6. Published package smoke:
    - In `/tmp`, isolated HOME:
-     `npm exec --yes --package eve@<VERSION> -- eve --version`.
+     `npm exec --yes --package eve-agent@<VERSION> -- eve --version`.
    - Run at least one harmless command that touches the published CLI surface,
      for example `plugins --help` or `gateway --help`.
 7. Dev Gateway live model smoke:

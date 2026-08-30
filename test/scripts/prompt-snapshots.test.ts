@@ -205,9 +205,7 @@ describe("happy path prompt snapshots", () => {
     expect(eveRuntimeInstructions).not.toContain(heartbeatPhrase);
     expect(collaborationModeInstructions).toContain(heartbeatPhrase);
     expect(collaborationModeInstructions).toContain("HEARTBEAT.md exists");
-    expect(collaborationModeInstructions).toContain(
-      "/tmp/eve-happy-path/workspace/HEARTBEAT.md",
-    );
+    expect(collaborationModeInstructions).toContain("/tmp/eve-happy-path/workspace/HEARTBEAT.md");
     expect(collaborationModeInstructions).not.toContain("<HEARTBEAT.md contents will be here>");
     expect(collaborationModeInstructions.split(heartbeatPhrase)).toHaveLength(2);
   });

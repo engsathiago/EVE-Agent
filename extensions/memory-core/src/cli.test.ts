@@ -542,6 +542,7 @@ describe("memory cli", () => {
     expect(helpText).toContain('eve memory search "meeting notes"');
     expect(helpText).toContain("Quick search using positional query.");
     expect(helpText).toContain('eve memory search --query "deployment" --max-results 20');
+    expect(helpText).toContain('eve memory reflect --delivered "Shipped onboarding"');
     expect(helpText).toContain("Limit results for focused troubleshooting.");
     expect(helpText).toContain("eve memory promote --apply");
     expect(helpText).toContain("Append top-ranked short-term candidates into MEMORY.md.");

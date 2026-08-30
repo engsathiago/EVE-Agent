@@ -493,9 +493,7 @@ describe("resolvePluginTools optional tools", () => {
   beforeEach(() => {
     loadEVEPluginsMock.mockReset();
     resolveRuntimePluginRegistryMock.mockReset();
-    resolveRuntimePluginRegistryMock.mockImplementation((params) =>
-      loadEVEPluginsMock(params),
-    );
+    resolveRuntimePluginRegistryMock.mockImplementation((params) => loadEVEPluginsMock(params));
     applyPluginAutoEnableMock.mockReset();
     applyPluginAutoEnableMock.mockImplementation(({ config }: { config: unknown }) => ({
       config,

@@ -27,7 +27,7 @@ const PUBLIC_CONTRACT_REFERENCE_FILES = [
   "docs/plugins/architecture.md",
   "src/plugins/contracts/plugin-sdk-subpaths.test.ts",
 ] as const;
-const PLUGIN_SDK_SUBPATH_PATTERN = /eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)\b/g;
+const PLUGIN_SDK_SUBPATH_PATTERN = /eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)\b/g;
 const BUNDLED_PLUGIN_FACADE_LOADER_PATTERN =
   /\bload(?:Activated)?BundledPluginPublicSurfaceModuleSync\b/;
 const PRIVATE_BUNDLED_SDK_SURFACE_PATTERN =
@@ -398,9 +398,9 @@ function collectExtensionTestHelperImportLeaks(): Array<{ file: string; specifie
 function collectDeprecatedExtensionSdkImports(): Array<{ file: string; specifier: string }> {
   const leaks: Array<{ file: string; specifier: string }> = [];
   const importPatterns = [
-    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["'](eve\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']/g,
-    /\bimport\s*\(\s*["'](eve\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']\s*\)/g,
-    /\bvi\.(?:mock|doMock)\s*\(\s*["'](eve\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']/g,
+    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["'](eve-agent\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']/g,
+    /\bimport\s*\(\s*["'](eve-agent\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']\s*\)/g,
+    /\bvi\.(?:mock|doMock)\s*\(\s*["'](eve-agent\/plugin-sdk(?:\/[a-z0-9][a-z0-9-]*)?)["']/g,
   ];
   for (const file of collectExtensionFiles(resolve(REPO_ROOT, "extensions"))) {
     const repoRelativePath = toRepoRelativePath(file);
@@ -485,9 +485,9 @@ function collectCodeFiles(dir: string): string[] {
 function collectDeprecatedTestBarrelImports(): string[] {
   const leaks: Array<{ file: string; specifier: string }> = [];
   const importPatterns = [
-    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["'](eve\/plugin-sdk\/(?:testing|test-utils))["']/g,
-    /\bimport\s*\(\s*["'](eve\/plugin-sdk\/(?:testing|test-utils))["']\s*\)/g,
-    /\bvi\.(?:mock|doMock)\s*\(\s*["'](eve\/plugin-sdk\/(?:testing|test-utils))["']/g,
+    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["'](eve-agent\/plugin-sdk\/(?:testing|test-utils))["']/g,
+    /\bimport\s*\(\s*["'](eve-agent\/plugin-sdk\/(?:testing|test-utils))["']\s*\)/g,
+    /\bvi\.(?:mock|doMock)\s*\(\s*["'](eve-agent\/plugin-sdk\/(?:testing|test-utils))["']/g,
   ];
   for (const root of ["src", "test", "extensions", "packages"]) {
     for (const file of collectCodeFiles(resolve(REPO_ROOT, root))) {
@@ -643,7 +643,7 @@ function collectCrossOwnerReservedSdkImports(): Array<{
   const leaks: Array<{ file: string; specifier: string; owner?: string }> = [];
   const reserved = new Set<string>(reservedBundledPluginSdkEntrypoints);
   const importPattern =
-    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g;
+    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g;
 
   for (const file of collectExtensionFiles(resolve(REPO_ROOT, "extensions"))) {
     const repoRelativePath = toRepoRelativePath(file);
@@ -672,9 +672,9 @@ function collectReservedSdkSubpathImports(): string[] {
   const imports = new Set<string>();
   const reserved = new Set<string>(reservedBundledPluginSdkEntrypoints);
   const importPatterns = [
-    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
-    /\bimport\s*\(\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']\s*\)/g,
-    /\bvi\.(?:mock|doMock)\s*\(\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
+    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
+    /\bimport\s*\(\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']\s*\)/g,
+    /\bvi\.(?:mock|doMock)\s*\(\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
   ];
 
   for (const root of ["src", "test", "extensions", "packages", "scripts"]) {
@@ -702,9 +702,9 @@ function hasWildcardReexport(entrypoint: string): boolean {
 function collectExtensionProductionSdkSubpathImports(subpaths: ReadonlySet<string>): string[] {
   const imports = new Set<string>();
   const importPatterns = [
-    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
-    /\bimport\s*\(\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']\s*\)/g,
-    /\bvi\.(?:mock|doMock)\s*\(\s*["']eve\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
+    /\b(?:import|export)\b[\s\S]*?\bfrom\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
+    /\bimport\s*\(\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']\s*\)/g,
+    /\bvi\.(?:mock|doMock)\s*\(\s*["']eve-agent\/plugin-sdk\/([a-z0-9][a-z0-9-]*)["']/g,
   ];
 
   for (const file of collectExtensionFiles(resolve(REPO_ROOT, "extensions"))) {

@@ -36,8 +36,7 @@ export function writeAndroidFixture(params: {
     `${JSON.stringify({ version: params.version, versionCode: params.versionCode }, null, 2)}\n`,
     "utf8",
   );
-  const releaseNotes =
-    "EVE is now available on Android.\n\nConnect to your EVE Gateway.\n";
+  const releaseNotes = "EVE is now available on Android.\n\nConnect to your EVE Gateway.\n";
   fs.writeFileSync(
     path.join(rootDir, "apps", "android", "CHANGELOG.md"),
     params.changelog ?? `# EVE Android Changelog\n\n## Unreleased\n\n${releaseNotes}`,

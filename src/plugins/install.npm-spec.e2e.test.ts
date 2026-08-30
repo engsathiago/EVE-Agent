@@ -422,7 +422,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     const versions = [
       await packPlugin({
         packageName,
-        peerDependencies: { eve: ">=2026.0.0" },
+        peerDependencies: { "eve-agent": ">=2026.0.0" },
         peerDependenciesMeta: {},
         pluginId: packageName,
         version: "1.0.0",
@@ -431,7 +431,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     ];
     const eveVersions = [
       await packPlugin({
-        packageName: "eve",
+        packageName: "eve-agent",
         pluginId: "registry-eve-copy",
         version: "2026.0.0",
         rootDir,
@@ -439,7 +439,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     ];
     const registry = await startStaticRegistry([
       { packageName, latest: "1.0.0", versions },
-      { packageName: "eve", latest: "2026.0.0", versions: eveVersions },
+      { packageName: "eve-agent", latest: "2026.0.0", versions: eveVersions },
     ]);
     process.env.NPM_CONFIG_REGISTRY = registry;
     process.env.npm_config_registry = registry;
@@ -473,7 +473,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     ) as {
       packages?: Record<string, unknown>;
     };
-    const rawEVELockEntry = rawLock.packages?.["node_modules/eve"] as
+    const rawEVELockEntry = rawLock.packages?.["node_modules/eve-agent"] as
       | { peer?: unknown; version?: unknown }
       | undefined;
     expect(rawEVELockEntry?.peer).toBe(true);
@@ -495,13 +495,13 @@ describe("installPluginFromNpmSpec e2e", () => {
     ) as {
       packages?: Record<string, unknown>;
     };
-    expect(lock.packages?.["node_modules/eve"]).toBeUndefined();
+    expect(lock.packages?.["node_modules/eve-agent"]).toBeUndefined();
     await expect(
-      fs.lstat(path.join(projectRoot, "node_modules", "eve")),
+      fs.lstat(path.join(projectRoot, "node_modules", "eve-agent")),
     ).rejects.toHaveProperty("code", "ENOENT");
     await expect(
       fs
-        .lstat(path.join(result.targetDir, "node_modules", "eve"))
+        .lstat(path.join(result.targetDir, "node_modules", "eve-agent"))
         .then((stat) => stat.isSymbolicLink()),
     ).resolves.toBe(true);
   });
@@ -1078,9 +1078,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     expect(rootManifest.dependencies?.[existingRootDependency]).toBe("1.0.0");
     expect(rootManifest.dependencies?.[blockedPlugin]).toBeUndefined();
     expect(rootManifest.dependencies?.[runtimePeer]).toBeUndefined();
-    expect(rootManifest.eve?.managedPeerDependencies ?? []).not.toContain(
-      existingRootDependency,
-    );
+    expect(rootManifest.eve?.managedPeerDependencies ?? []).not.toContain(existingRootDependency);
     expect(rootManifest.eve?.managedPeerDependencies ?? []).not.toContain(runtimePeer);
     await expect(
       fs.lstat(
@@ -1107,8 +1105,8 @@ describe("installPluginFromNpmSpec e2e", () => {
         versions: [
           await packPlugin({
             packageName: codexName,
-            peerDependencies: { eve: ">=2026.5.5-beta.2" },
-            peerDependenciesMeta: { eve: { optional: true } },
+            peerDependencies: { "eve-agent": ">=2026.5.5-beta.2" },
+            peerDependenciesMeta: { "eve-agent": { optional: true } },
             pluginId: codexName,
             version: "1.0.0",
             rootDir,
@@ -1121,7 +1119,7 @@ describe("installPluginFromNpmSpec e2e", () => {
         versions: [
           await packPlugin({
             packageName: opikName,
-            peerDependencies: { eve: ">=2026.3.2" },
+            peerDependencies: { "eve-agent": ">=2026.3.2" },
             peerDependenciesMeta: {},
             pluginId: opikName,
             version: "1.0.0",
@@ -1130,11 +1128,11 @@ describe("installPluginFromNpmSpec e2e", () => {
         ],
       },
       {
-        packageName: "eve",
+        packageName: "eve-agent",
         latest: "2026.5.4",
         versions: [
           await packPlugin({
-            packageName: "eve",
+            packageName: "eve-agent",
             pluginId: "registry-eve-copy",
             version: "2026.5.4",
             rootDir,
@@ -1173,19 +1171,19 @@ describe("installPluginFromNpmSpec e2e", () => {
       ) as {
         packages?: Record<string, unknown>;
       };
-      expect(lock.packages?.["node_modules/eve"]).toBeUndefined();
+      expect(lock.packages?.["node_modules/eve-agent"]).toBeUndefined();
       await expect(
-        fs.lstat(path.join(projectRoot, "node_modules", "eve")),
+        fs.lstat(path.join(projectRoot, "node_modules", "eve-agent")),
       ).rejects.toHaveProperty("code", "ENOENT");
     }
     await expect(
       fs
-        .lstat(path.join(first.targetDir, "node_modules", "eve"))
+        .lstat(path.join(first.targetDir, "node_modules", "eve-agent"))
         .then((stat) => stat.isSymbolicLink()),
     ).resolves.toBe(true);
     await expect(
       fs
-        .lstat(path.join(second.targetDir, "node_modules", "eve"))
+        .lstat(path.join(second.targetDir, "node_modules", "eve-agent"))
         .then((stat) => stat.isSymbolicLink()),
     ).resolves.toBe(true);
   });
@@ -1198,7 +1196,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     const peerVersions = [
       await packPlugin({
         packageName: peerPackageName,
-        peerDependencies: { eve: ">=2026.0.0" },
+        peerDependencies: { "eve-agent": ">=2026.0.0" },
         pluginId: peerPackageName,
         version: "1.0.0",
         rootDir,
@@ -1228,7 +1226,7 @@ describe("installPluginFromNpmSpec e2e", () => {
     if (!first.ok) {
       throw new Error(first.error);
     }
-    const peerLink = path.join(first.targetDir, "node_modules", "eve");
+    const peerLink = path.join(first.targetDir, "node_modules", "eve-agent");
     await expect(fs.lstat(peerLink).then((stat) => stat.isSymbolicLink())).resolves.toBe(true);
 
     const second = await installPluginFromNpmSpec({
@@ -1248,13 +1246,13 @@ describe("installPluginFromNpmSpec e2e", () => {
     ) as {
       dependencies?: Record<string, string>;
     };
-    expect(manifest.dependencies?.eve).toBeUndefined();
+    expect(manifest.dependencies?.["eve-agent"]).toBeUndefined();
     const lock = JSON.parse(
       await fs.readFile(path.join(peerProjectRoot, "package-lock.json"), "utf8"),
     ) as {
       packages?: Record<string, unknown>;
     };
-    expect(lock.packages?.["node_modules/eve"]).toBeUndefined();
+    expect(lock.packages?.["node_modules/eve-agent"]).toBeUndefined();
   });
 
   it("pins a mutable npm tag to the version resolved before install", async () => {

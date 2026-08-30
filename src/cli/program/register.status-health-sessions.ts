@@ -128,10 +128,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["eve status --all", "Full diagnosis (read-only)."],
           ["eve status --json", "Machine-readable output."],
           ["eve status --usage", "Show model provider usage/quota snapshots."],
-          [
-            "eve status --deep",
-            "Run channel probes (WA + Telegram + Discord + Slack + Signal).",
-          ],
+          ["eve status --deep", "Run channel probes (WA + Telegram + Discord + Slack + Signal)."],
           ["eve status --deep --timeout 5000", "Tighten probe timeout."],
         ])}`,
     )
@@ -254,10 +251,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["eve sessions cleanup --enforce", "Apply maintenance now."],
           ["eve sessions cleanup --agent work --dry-run", "Preview one agent store."],
           ["eve sessions cleanup --all-agents --dry-run", "Preview all agent stores."],
-          [
-            "eve sessions cleanup --enforce --store ./tmp/sessions.json",
-            "Use a specific store.",
-          ],
+          ["eve sessions cleanup --enforce --store ./tmp/sessions.json", "Use a specific store."],
         ])}`,
     )
     .action(async (opts, command) => {

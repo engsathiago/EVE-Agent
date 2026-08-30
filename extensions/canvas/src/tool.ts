@@ -15,7 +15,10 @@ import {
   jsonResult,
   readStringParam,
 } from "eve-agent/plugin-sdk/channel-actions";
-import { readFiniteNumberParam, readPositiveIntegerParam } from "eve-agent/plugin-sdk/param-readers";
+import {
+  readFiniteNumberParam,
+  readPositiveIntegerParam,
+} from "eve-agent/plugin-sdk/param-readers";
 import type { AnyAgentTool, EVEConfig } from "eve-agent/plugin-sdk/plugin-entry";
 import { resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
 import { normalizeCanvasSnapshotFileExtension, parseCanvasSnapshotPayload } from "./cli-helpers.js";
@@ -79,9 +82,7 @@ async function readJsonlFromPath(jsonlPath: string, workspaceDir?: string): Prom
   return await fs.readFile(resolvedReal, "utf8");
 }
 
-function resolveCanvasImageSanitizationLimits(
-  config?: EVEConfig,
-): CanvasImageSanitizationLimits {
+function resolveCanvasImageSanitizationLimits(config?: EVEConfig): CanvasImageSanitizationLimits {
   const configured = config?.agents?.defaults?.imageMaxDimensionPx;
   if (typeof configured !== "number" || !Number.isFinite(configured)) {
     return {};

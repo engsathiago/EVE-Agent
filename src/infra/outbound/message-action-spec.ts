@@ -95,6 +95,7 @@ function listActionTargetAliasSpecs(
   action: ChannelMessageActionName,
   params: Record<string, unknown>,
   channel?: string,
+  resolveChannelPlugin: typeof getBootstrapChannelPlugin = getBootstrapChannelPlugin,
 ): ActionTargetAliasSpec[] {
   const specs: ActionTargetAliasSpec[] = [];
   const coreSpec = ACTION_TARGET_ALIASES[action];
@@ -106,7 +107,7 @@ function listActionTargetAliasSpecs(
     return specs;
   }
   // Plugin aliases are only checked after cheap param-shape screening to avoid bootstrap reads.
-  const plugin = getBootstrapChannelPlugin(normalizedChannel);
+  const plugin = resolveChannelPlugin(normalizedChannel);
   const channelSpec = plugin?.actions?.messageActionTargetAliases?.[action];
   if (channelSpec) {
     specs.push(channelSpec);
@@ -127,7 +128,10 @@ export function actionRequiresTarget(action: ChannelMessageActionName): boolean 
 export function actionHasTarget(
   action: ChannelMessageActionName,
   params: Record<string, unknown>,
-  options?: { channel?: string },
+  options?: {
+    channel?: string;
+    resolveChannelPlugin?: typeof getBootstrapChannelPlugin;
+  },
 ): boolean {
   const to = normalizeOptionalString(params.to) ?? "";
   if (to) {
@@ -137,7 +141,12 @@ export function actionHasTarget(
   if (channelId) {
     return true;
   }
-  const specs = listActionTargetAliasSpecs(action, params, options?.channel);
+  const specs = listActionTargetAliasSpecs(
+    action,
+    params,
+    options?.channel,
+    options?.resolveChannelPlugin,
+  );
   if (specs.length === 0) {
     return false;
   }

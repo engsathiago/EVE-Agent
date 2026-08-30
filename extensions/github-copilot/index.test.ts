@@ -118,8 +118,7 @@ function requireFirstMockArg<T>(
 
 function registerProviderAndCatalogWithPluginConfig(pluginConfig: Record<string, unknown>) {
   const registerProviderMock = vi.fn<EVEPluginApi["registerProvider"]>();
-  const registerModelCatalogProviderMock =
-    vi.fn<EVEPluginApi["registerModelCatalogProvider"]>();
+  const registerModelCatalogProviderMock = vi.fn<EVEPluginApi["registerModelCatalogProvider"]>();
 
   plugin.register(
     createTestPluginApi({

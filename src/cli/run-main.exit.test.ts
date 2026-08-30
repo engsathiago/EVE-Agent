@@ -491,12 +491,7 @@ describe("runCli exit behavior", () => {
       argv: ["node", "eve", "gateway", "--force"],
     });
     expect(addGatewayRunCommandMock).toHaveBeenCalledTimes(2);
-    expect(commanderParseAsyncMock).toHaveBeenCalledWith([
-      "node",
-      "eve",
-      "gateway",
-      "--force",
-    ]);
+    expect(commanderParseAsyncMock).toHaveBeenCalledWith(["node", "eve", "gateway", "--force"]);
   });
 
   it("installs console capture before parsing the gateway foreground fast path", async () => {
@@ -789,11 +784,9 @@ describe("runCli exit behavior", () => {
     await fs.writeFile(path.join(stateDir, ".env"), "EVE_GATEWAY_TOKEN=state-token\n");
     await fs.writeFile(
       path.join(configDir, ".env"),
-      [
-        "EVE_GATEWAY_PASSWORD=config-root-password",
-        "EVE_GATEWAY_TOKEN=config-root-token",
-        "",
-      ].join("\n"),
+      ["EVE_GATEWAY_PASSWORD=config-root-password", "EVE_GATEWAY_TOKEN=config-root-token", ""].join(
+        "\n",
+      ),
     );
     try {
       await withEnvAsync(
@@ -1244,60 +1237,57 @@ describe("runCli exit behavior", () => {
   });
 
   it("discards env from a config replaced by suspicious recovery", async () => {
-    await withEnvAsync(
-      { EVE_GATEWAY_TOKEN: undefined, EVE_PROXY_ACTIVE: undefined },
-      async () => {
-        const clobberedSnapshot = {
-          exists: true,
-          valid: true,
-          sourceConfig: {
-            env: { vars: { EVE_GATEWAY_TOKEN: "discarded-token" } },
-            gateway: { mode: "local" },
-          },
-          hash: "clobbered",
-          path: "/tmp/eve.json",
-        };
-        const recoveredSnapshot = {
-          exists: true,
-          valid: true,
-          sourceConfig: { gateway: { mode: "local" } },
-          hash: "recovered",
-          path: "/tmp/eve.json",
-        };
-        const initialSnapshot = {
-          exists: true,
-          valid: true,
-          sourceConfig: { gateway: { mode: "local" } },
-          hash: "initial",
-          path: "/tmp/eve.json",
-        };
-        let currentSnapshot = initialSnapshot;
-        let recovered = false;
-        readConfigFileSnapshotMock.mockImplementation(async (options) => {
-          if (!options?.recoverSuspicious) {
-            return recovered ? recoveredSnapshot : currentSnapshot;
-          }
-          recovered = true;
-          await options.allowSuspiciousRecovery?.(
-            recoveredSnapshot.sourceConfig,
-            currentSnapshot.sourceConfig,
-          );
-          return recoveredSnapshot;
-        });
-        await runCli(["node", "eve", "gateway"]);
+    await withEnvAsync({ EVE_GATEWAY_TOKEN: undefined, EVE_PROXY_ACTIVE: undefined }, async () => {
+      const clobberedSnapshot = {
+        exists: true,
+        valid: true,
+        sourceConfig: {
+          env: { vars: { EVE_GATEWAY_TOKEN: "discarded-token" } },
+          gateway: { mode: "local" },
+        },
+        hash: "clobbered",
+        path: "/tmp/eve.json",
+      };
+      const recoveredSnapshot = {
+        exists: true,
+        valid: true,
+        sourceConfig: { gateway: { mode: "local" } },
+        hash: "recovered",
+        path: "/tmp/eve.json",
+      };
+      const initialSnapshot = {
+        exists: true,
+        valid: true,
+        sourceConfig: { gateway: { mode: "local" } },
+        hash: "initial",
+        path: "/tmp/eve.json",
+      };
+      let currentSnapshot = initialSnapshot;
+      let recovered = false;
+      readConfigFileSnapshotMock.mockImplementation(async (options) => {
+        if (!options?.recoverSuspicious) {
+          return recovered ? recoveredSnapshot : currentSnapshot;
+        }
+        recovered = true;
+        await options.allowSuspiciousRecovery?.(
+          recoveredSnapshot.sourceConfig,
+          currentSnapshot.sourceConfig,
+        );
+        return recoveredSnapshot;
+      });
+      await runCli(["node", "eve", "gateway"]);
 
-        currentSnapshot = clobberedSnapshot;
-        process.env.EVE_PROXY_ACTIVE = "1";
-        const hooks = addGatewayRunCommandMock.mock.calls[0]?.[1] as
-          | { beforeRun?: (opts: { force?: boolean }) => Promise<void> }
-          | undefined;
-        await hooks?.beforeRun?.({});
+      currentSnapshot = clobberedSnapshot;
+      process.env.EVE_PROXY_ACTIVE = "1";
+      const hooks = addGatewayRunCommandMock.mock.calls[0]?.[1] as
+        | { beforeRun?: (opts: { force?: boolean }) => Promise<void> }
+        | undefined;
+      await hooks?.beforeRun?.({});
 
-        expect(process.env.EVE_GATEWAY_TOKEN).toBeUndefined();
-        expect(process.env.EVE_PROXY_ACTIVE).toBe("1");
-        expect(ensureCliExecutionBootstrapMock).toHaveBeenCalledOnce();
-      },
-    );
+      expect(process.env.EVE_GATEWAY_TOKEN).toBeUndefined();
+      expect(process.env.EVE_PROXY_ACTIVE).toBe("1");
+      expect(ensureCliExecutionBootstrapMock).toHaveBeenCalledOnce();
+    });
   });
 
   it("does not apply environment variables from invalid config snapshots", async () => {
@@ -1378,16 +1368,9 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(selectedStateDir, { recursive: true });
     await fs.writeFile(
       path.join(defaultStateDir, ".env"),
-      [
-        `EVE_STATE_DIR=${selectedStateDir}`,
-        "EVE_GATEWAY_TOKEN=superseded-token",
-        "",
-      ].join("\n"),
+      [`EVE_STATE_DIR=${selectedStateDir}`, "EVE_GATEWAY_TOKEN=superseded-token", ""].join("\n"),
     );
-    await fs.writeFile(
-      path.join(selectedStateDir, ".env"),
-      "EVE_GATEWAY_TOKEN=selected-token\n",
-    );
+    await fs.writeFile(path.join(selectedStateDir, ".env"), "EVE_GATEWAY_TOKEN=selected-token\n");
     try {
       await withEnvAsync(
         {
@@ -1416,17 +1399,10 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(defaultStateDir, { recursive: true });
     await fs.mkdir(selectedStateDir, { recursive: true });
     await fs.mkdir(gatewayEnvDir, { recursive: true });
-    await fs.writeFile(
-      path.join(defaultStateDir, ".env"),
-      `EVE_STATE_DIR=${selectedStateDir}\n`,
-    );
+    await fs.writeFile(path.join(defaultStateDir, ".env"), `EVE_STATE_DIR=${selectedStateDir}\n`);
     await fs.writeFile(
       path.join(gatewayEnvDir, "gateway.env"),
-      [
-        "EVE_CONFIG_PATH=/tmp/wrong-eve.json",
-        "EVE_GATEWAY_TOKEN=fallback-token",
-        "",
-      ].join("\n"),
+      ["EVE_CONFIG_PATH=/tmp/wrong-eve.json", "EVE_GATEWAY_TOKEN=fallback-token", ""].join("\n"),
     );
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
@@ -1468,14 +1444,9 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(gatewayEnvDir, { recursive: true });
     await fs.writeFile(
       path.join(gatewayEnvDir, "gateway.env"),
-      [`EVE_STATE_DIR=${selectedStateDir}`, "EVE_GATEWAY_TOKEN=fallback-token", ""].join(
-        "\n",
-      ),
+      [`EVE_STATE_DIR=${selectedStateDir}`, "EVE_GATEWAY_TOKEN=fallback-token", ""].join("\n"),
     );
-    await fs.writeFile(
-      path.join(selectedStateDir, ".env"),
-      "EVE_GATEWAY_TOKEN=selected-token\n",
-    );
+    await fs.writeFile(path.join(selectedStateDir, ".env"), "EVE_GATEWAY_TOKEN=selected-token\n");
     try {
       await withEnvAsync(
         {
@@ -1506,14 +1477,8 @@ describe("runCli exit behavior", () => {
     const selectedStateDir = path.join(homeDir, "selected-state");
     await fs.mkdir(defaultStateDir, { recursive: true });
     await fs.mkdir(selectedStateDir, { recursive: true });
-    await fs.writeFile(
-      path.join(defaultStateDir, ".env"),
-      "EVE_GATEWAY_TOKEN=superseded-token\n",
-    );
-    await fs.writeFile(
-      path.join(selectedStateDir, ".env"),
-      "EVE_GATEWAY_TOKEN=selected-token\n",
-    );
+    await fs.writeFile(path.join(defaultStateDir, ".env"), "EVE_GATEWAY_TOKEN=superseded-token\n");
+    await fs.writeFile(path.join(selectedStateDir, ".env"), "EVE_GATEWAY_TOKEN=selected-token\n");
     try {
       await withEnvAsync(
         {
@@ -1553,10 +1518,7 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(defaultStateDir, { recursive: true });
     await fs.mkdir(selectedStateDir, { recursive: true });
     await fs.writeFile(path.join(defaultStateDir, ".env"), "EVE_GATEWAY_TOKEN=early-token\n");
-    await fs.writeFile(
-      path.join(selectedStateDir, ".env"),
-      "EVE_GATEWAY_TOKEN=selected-token\n",
-    );
+    await fs.writeFile(path.join(selectedStateDir, ".env"), "EVE_GATEWAY_TOKEN=selected-token\n");
     try {
       await withEnvAsync(
         {
@@ -1770,29 +1732,26 @@ describe("runCli exit behavior", () => {
   });
 
   it("does not let config env authorize or retarget an explicit reset", async () => {
-    await withEnvAsync(
-      { EVE_PROFILE: undefined, EVE_WORKSPACE_DIR: undefined },
-      async () => {
-        readConfigFileSnapshotMock.mockResolvedValue({
-          exists: true,
-          valid: true,
-          sourceConfig: {
-            env: {
-              vars: {
-                EVE_PROFILE: "dev",
-                EVE_WORKSPACE_DIR: "/tmp/eve-config-workspace",
-              },
+    await withEnvAsync({ EVE_PROFILE: undefined, EVE_WORKSPACE_DIR: undefined }, async () => {
+      readConfigFileSnapshotMock.mockResolvedValue({
+        exists: true,
+        valid: true,
+        sourceConfig: {
+          env: {
+            vars: {
+              EVE_PROFILE: "dev",
+              EVE_WORKSPACE_DIR: "/tmp/eve-config-workspace",
             },
-            gateway: { mode: "local" },
           },
-        });
+          gateway: { mode: "local" },
+        },
+      });
 
-        await runCli(["node", "eve", "gateway", "--reset"]);
+      await runCli(["node", "eve", "gateway", "--reset"]);
 
-        expect(process.env.EVE_PROFILE).toBeUndefined();
-        expect(process.env.EVE_WORKSPACE_DIR).toBeUndefined();
-      },
-    );
+      expect(process.env.EVE_PROFILE).toBeUndefined();
+      expect(process.env.EVE_WORKSPACE_DIR).toBeUndefined();
+    });
   });
 
   it("honors banner suppression on the gateway foreground fast path", async () => {
@@ -1813,12 +1772,7 @@ describe("runCli exit behavior", () => {
 
     await runCli(["node", "eve", "browser", "--help"]);
 
-    expect(maybeRunCliInContainerMock).toHaveBeenCalledWith([
-      "node",
-      "eve",
-      "browser",
-      "--help",
-    ]);
+    expect(maybeRunCliInContainerMock).toHaveBeenCalledWith(["node", "eve", "browser", "--help"]);
     expect(tryRouteCliMock).not.toHaveBeenCalled();
     expect(outputPrecomputedBrowserHelpTextMock).toHaveBeenCalledTimes(1);
     expect(outputRootHelpMock).not.toHaveBeenCalled();
@@ -2374,9 +2328,7 @@ describe("runCli exit behavior", () => {
       throw new Error("config parse failed");
     });
 
-    await expect(runCli(["node", "eve", "gateway", "run"])).rejects.toThrow(
-      "config parse failed",
-    );
+    await expect(runCli(["node", "eve", "gateway", "run"])).rejects.toThrow("config parse failed");
 
     expect(startProxyMock).not.toHaveBeenCalled();
     expect(tryRouteCliMock).not.toHaveBeenCalled();
@@ -2746,9 +2698,7 @@ describe("runCli exit behavior", () => {
 
     try {
       expect(() => handler(new Error("boom"))).toThrow("process.exit(1)");
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "[eve] EVE hit an unexpected runtime error.",
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("[eve] EVE hit an unexpected runtime error.");
       expect(consoleErrorSpy).toHaveBeenCalledWith("[eve] Reason: boom");
       expect(restoreTerminalStateMock).toHaveBeenCalledWith("uncaught exception", {
         resumeStdinIfPaused: false,

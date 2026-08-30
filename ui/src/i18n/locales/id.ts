@@ -394,6 +394,7 @@ export const id: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Kontrol",
+    workspace: "Workspace",
     agent: "Agen",
     settings: "Pengaturan",
     expand: "Perluas bilah samping",
@@ -405,6 +406,11 @@ export const id: TranslationMap = {
     activity: "Aktivitas",
     overview: "Ikhtisar",
     workboard: "Workboard",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Saluran",
     instances: "Instans",
     sessions: "Sesi",
@@ -430,6 +436,11 @@ export const id: TranslationMap = {
     activity: "Ringkasan aktivitas alat lokal browser.",
     overview: "Status, titik masuk, kesehatan.",
     workboard: "Antrean kerja agen dan serah terima sesi.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Saluran dan pengaturan.",
     instances: "Klien dan node yang terhubung.",
     sessions: "Sesi aktif dan default.",
@@ -1252,8 +1263,7 @@ export const id: TranslationMap = {
         title: "Auth tidak cocok",
         summary:
           "Kredensial yang diberikan ditolak. Penyebab paling umum adalah token kedaluwarsa atau token yang disalin dari URL Gateway lain.",
-        stepDashboard:
-          "Jalankan eve dashboard --no-open lalu buka URL baru atau tempel tokennya.",
+        stepDashboard: "Jalankan eve dashboard --no-open lalu buka URL baru atau tempel tokennya.",
         stepReplace:
           "Ganti nilai token/kata sandi yang lama; jangan gunakan ulang token dari URL Gateway lain.",
         stepMode:

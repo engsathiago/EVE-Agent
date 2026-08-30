@@ -232,7 +232,7 @@ describe("loadDotEnv", () => {
         delete process.env.BAR;
         loggerMocks.warn.mockClear();
 
-        loadDotEnv({ quiet: true });
+        loadDotEnv({ quiet: true, warn: loggerMocks.warn });
 
         expect(process.env.FOO).toBe("from-global");
         expect(process.env.BAR).toBe("from-gateway");
@@ -252,10 +252,7 @@ describe("loadDotEnv", () => {
         setTestEnvValue("HOME", base);
         process.env.FOO = "from-shell";
         await writeEnvFile(path.join(stateDir, ".env"), "FOO=from-global\n");
-        await writeEnvFile(
-          path.join(base, ".config", "eve", "gateway.env"),
-          "FOO=from-gateway\n",
-        );
+        await writeEnvFile(path.join(base, ".config", "eve", "gateway.env"), "FOO=from-gateway\n");
 
         vi.spyOn(process, "cwd").mockReturnValue(cwdDir);
         loggerMocks.warn.mockClear();
@@ -663,10 +660,7 @@ describe("loadCliDotEnv", () => {
         const defaultStateDir = path.join(base, ".eve");
         setTestEnvValue("EVE_STATE_DIR", defaultStateDir);
         await writeEnvFile(path.join(defaultStateDir, ".env"), "FOO=from-global\n");
-        await writeEnvFile(
-          path.join(base, ".config", "eve", "gateway.env"),
-          "BAR=from-gateway\n",
-        );
+        await writeEnvFile(path.join(base, ".config", "eve", "gateway.env"), "BAR=from-gateway\n");
 
         vi.spyOn(process, "cwd").mockReturnValue(cwdDir);
         delete process.env.FOO;
@@ -688,10 +682,7 @@ describe("loadCliDotEnv", () => {
         setTestEnvValue("EVE_STATE_DIR", defaultStateDir);
         await writeEnvFile(path.join(cwdDir, ".env"), "BAZ=from-workspace\n");
         await writeEnvFile(path.join(defaultStateDir, ".env"), "FOO=from-global\n");
-        await writeEnvFile(
-          path.join(base, ".config", "eve", "gateway.env"),
-          "BAR=from-gateway\n",
-        );
+        await writeEnvFile(path.join(base, ".config", "eve", "gateway.env"), "BAR=from-gateway\n");
 
         vi.spyOn(process, "cwd").mockReturnValue(cwdDir);
         delete process.env.FOO;
@@ -713,10 +704,7 @@ describe("loadCliDotEnv", () => {
         const customStateDir = path.join(base, "custom-state");
         setTestEnvValue("HOME", base);
         setTestEnvValue("EVE_STATE_DIR", customStateDir);
-        await writeEnvFile(
-          path.join(base, ".config", "eve", "gateway.env"),
-          "FOO=from-gateway\n",
-        );
+        await writeEnvFile(path.join(base, ".config", "eve", "gateway.env"), "FOO=from-gateway\n");
 
         vi.spyOn(process, "cwd").mockReturnValue(cwdDir);
         delete process.env.FOO;
@@ -977,7 +965,7 @@ describe("workspace .env blocklist completeness", () => {
       await withDotEnvFixture(async ({ cwdDir }) => {
         await writeEnvFile(
           path.join(cwdDir, ".env"),
-          "MY_APP_KEY=user-value\nAPP_GITHUB_REPO=eve/eve\nDATABASE_URL_CUSTOM=pg://localhost\n",
+          "MY_APP_KEY=user-value\nAPP_GITHUB_REPO=engsathiago/eve-agent\nDATABASE_URL_CUSTOM=pg://localhost\n",
         );
 
         delete process.env.MY_APP_KEY;
@@ -987,7 +975,7 @@ describe("workspace .env blocklist completeness", () => {
         loadWorkspaceDotEnvFile(path.join(cwdDir, ".env"), { quiet: true });
 
         expect(process.env.MY_APP_KEY).toBe("user-value");
-        expect(process.env.APP_GITHUB_REPO).toBe("eve/eve");
+        expect(process.env.APP_GITHUB_REPO).toBe("engsathiago/eve-agent");
         expect(process.env.DATABASE_URL_CUSTOM).toBe("pg://localhost");
       });
     });

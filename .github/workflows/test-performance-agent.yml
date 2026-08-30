@@ -25,7 +25,7 @@ env:
 jobs:
   optimize-tests:
     if: >
-      github.repository == 'eve/eve' &&
+      github.repository == 'engsathiago/eve-agent' &&
       (github.event_name == 'workflow_dispatch' ||
         (github.event.workflow_run.conclusion == 'success' &&
           github.event.workflow_run.event == 'push' &&

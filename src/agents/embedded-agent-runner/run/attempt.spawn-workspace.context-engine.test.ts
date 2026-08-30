@@ -349,17 +349,10 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     });
 
     expect(hoisted.createEVECodingToolsMock).toHaveBeenCalledTimes(1);
-    const options = mockParams(
-      hoisted.createEVECodingToolsMock,
-      0,
-      "createEVECodingTools options",
-    );
+    const options = mockParams(hoisted.createEVECodingToolsMock, 0, "createEVECodingTools options");
     expect(options.includeToolSearchControls).toBe(true);
     const optionsConfig = requireRecord(options.config, "createEVECodingTools config");
-    const toolsConfig = requireRecord(
-      optionsConfig.tools,
-      "createEVECodingTools tools config",
-    );
+    const toolsConfig = requireRecord(optionsConfig.tools, "createEVECodingTools tools config");
     expect(toolsConfig.toolSearch).toEqual({
       enabled: true,
       mode: "tools",
@@ -408,11 +401,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     });
 
     expect(hoisted.createEVECodingToolsMock).toHaveBeenCalledTimes(1);
-    const options = mockParams(
-      hoisted.createEVECodingToolsMock,
-      0,
-      "createEVECodingTools options",
-    );
+    const options = mockParams(hoisted.createEVECodingToolsMock, 0, "createEVECodingTools options");
     expect(options.includeToolSearchControls).toBe(false);
     const sessionOptions = mockParams(
       hoisted.createAgentSessionMock,
@@ -1353,9 +1342,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
           missing: false,
         },
       ],
-      contextFiles: [
-        { path: "/tmp/eve-warning-workspace/AGENTS.md", content: "A".repeat(20) },
-      ],
+      contextFiles: [{ path: "/tmp/eve-warning-workspace/AGENTS.md", content: "A".repeat(20) }],
     });
 
     await createContextEngineAttemptRunner({

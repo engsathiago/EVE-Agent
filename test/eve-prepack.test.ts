@@ -59,14 +59,12 @@ describe("resolvePrepackCommandTimeoutMs", () => {
     expect(resolvePrepackCommandTimeoutMs({ EVE_PREPACK_COMMAND_TIMEOUT_MS: "" })).toBe(
       30 * 60 * 1000,
     );
-    expect(resolvePrepackCommandTimeoutMs({ EVE_PREPACK_COMMAND_TIMEOUT_MS: "1234" })).toBe(
-      1234,
-    );
+    expect(resolvePrepackCommandTimeoutMs({ EVE_PREPACK_COMMAND_TIMEOUT_MS: "1234" })).toBe(1234);
 
     for (const raw of ["nope", "10m", "1e3", "0", "-1", "9007199254740992"]) {
-      expect(() =>
-        resolvePrepackCommandTimeoutMs({ EVE_PREPACK_COMMAND_TIMEOUT_MS: raw }),
-      ).toThrow(`invalid EVE_PREPACK_COMMAND_TIMEOUT_MS: ${raw}`);
+      expect(() => resolvePrepackCommandTimeoutMs({ EVE_PREPACK_COMMAND_TIMEOUT_MS: raw })).toThrow(
+        `invalid EVE_PREPACK_COMMAND_TIMEOUT_MS: ${raw}`,
+      );
     }
   });
 });

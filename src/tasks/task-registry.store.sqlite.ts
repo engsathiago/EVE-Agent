@@ -23,10 +23,7 @@ import {
 
 type TaskRunsTable = EVEStateKyselyDatabase["task_runs"];
 type TaskDeliveryStateTable = EVEStateKyselyDatabase["task_delivery_state"];
-type TaskRegistryStoreDatabase = Pick<
-  EVEStateKyselyDatabase,
-  "task_delivery_state" | "task_runs"
->;
+type TaskRegistryStoreDatabase = Pick<EVEStateKyselyDatabase, "task_delivery_state" | "task_runs">;
 
 type TaskRegistryRow = Selectable<TaskRunsTable> & {
   runtime: string;

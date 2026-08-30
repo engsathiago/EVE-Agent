@@ -177,11 +177,7 @@ describe("runtime postbuild static assets", () => {
     );
     await fs.mkdir(path.join(distPluginDir, "assets"), { recursive: true });
     await fs.writeFile(path.join(distPluginDir, "index.js"), "export default {};\n", "utf8");
-    await fs.writeFile(
-      path.join(distPluginDir, "eve.plugin.json"),
-      '{"id":"diffs"}\n',
-      "utf8",
-    );
+    await fs.writeFile(path.join(distPluginDir, "eve.plugin.json"), '{"id":"diffs"}\n', "utf8");
     await fs.writeFile(
       path.join(distPluginDir, "package.json"),
       JSON.stringify({

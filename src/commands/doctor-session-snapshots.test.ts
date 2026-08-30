@@ -137,7 +137,7 @@ describe("doctor session snapshot stale runtime metadata", () => {
 
   it("expands home-relative cached bundled skill locations before classifying them", () => {
     const homeDir = path.join(root, "home");
-    const stalePath = "~/old-runtime/node_modules/eve/skills/doctor/SKILL.md";
+    const stalePath = "~/old-runtime/node_modules/eve-agent/skills/doctor/SKILL.md";
 
     const findings = scanSessionStoreForStaleRuntimeSnapshotPaths({
       bundledSkillsDir,
@@ -165,14 +165,7 @@ describe("doctor session snapshot stale runtime metadata", () => {
   it("ignores current bundled locations and unrelated workspace skill locations", () => {
     const currentPath = path.join(bundledSkillsDir, "doctor", "SKILL.md");
     const workspacePath = path.join(root, "workspace", "skills", "doctor", "SKILL.md");
-    const eveWorkspacePath = path.join(
-      root,
-      "projects",
-      "eve",
-      "skills",
-      "doctor",
-      "SKILL.md",
-    );
+    const eveWorkspacePath = path.join(root, "projects", "eve", "skills", "doctor", "SKILL.md");
     const findings = scanSessionStoreForStaleRuntimeSnapshotPaths({
       bundledSkillsDir,
       store: {

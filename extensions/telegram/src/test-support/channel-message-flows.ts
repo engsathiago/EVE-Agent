@@ -1,10 +1,10 @@
 // Channel Message Flows runtime supports QA Lab channel delivery evidence.
 import { setTimeout as sleep } from "node:timers/promises";
-import type { Bot } from "grammy";
-import type { Message } from "grammy/types";
 import { formatReasoningMessage } from "eve-agent/plugin-sdk/agent-runtime";
 import { formatChannelProgressDraftText } from "eve-agent/plugin-sdk/channel-outbound";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
+import type { Bot } from "grammy";
+import type { Message } from "grammy/types";
 import type { TelegramThreadSpec } from "../bot/helpers.js";
 import { createTelegramDraftStream, type TelegramDraftStream } from "../draft-stream.js";
 import {

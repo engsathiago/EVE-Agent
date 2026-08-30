@@ -111,8 +111,8 @@ async function runScope(options: {
       },
     },
     repo: {
-      owner: "eve",
-      repo: "eve",
+      owner: "engsathiago",
+      repo: "eve-agent",
     },
   };
   const github = {
@@ -193,7 +193,7 @@ async function runCommenter(
           pullGetCount += 1;
           return {
             data: {
-              base: { repo: { full_name: "eve/eve" } },
+              base: { repo: { full_name: "engsathiago/eve-agent" } },
               head: {
                 sha:
                   pullGetCount > 1
@@ -252,15 +252,15 @@ async function runCommenter(
         id: 12345,
         name: "iOS Periphery Dead Code",
         pull_requests: [{ number: 123 }],
-        repository: { full_name: "eve/eve" },
+        repository: { full_name: "engsathiago/eve-agent" },
         run_attempt: options.runAttempt ?? 2,
         run_number: 8,
         workflow_id: 999,
       },
     },
     repo: {
-      owner: "eve",
-      repo: "eve",
+      owner: "engsathiago",
+      repo: "eve-agent",
     },
   };
   const execute = compileFunction(`return (async () => {\n${script}\n})();`, [

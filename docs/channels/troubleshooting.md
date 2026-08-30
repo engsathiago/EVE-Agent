@@ -52,12 +52,12 @@ clean state.
 
 | Symptom                             | Fastest check                                       | Fix                                                                                                                              |
 | ----------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Connected but no DM replies         | `eve pairing list whatsapp`                    | Approve sender or switch DM policy/allowlist.                                                                                    |
+| Connected but no DM replies         | `eve pairing list whatsapp`                         | Approve sender or switch DM policy/allowlist.                                                                                    |
 | Group messages ignored              | Check `requireMention` + mention patterns in config | Mention the bot or relax mention policy for that group.                                                                          |
 | QR login times out with 408         | Check gateway `HTTPS_PROXY` / `HTTP_PROXY` env      | Set a reachable proxy; use `NO_PROXY` only for bypasses.                                                                         |
-| Random disconnect/relogin loops     | `eve channels status --probe` + logs           | Recent reconnects are flagged even when currently connected; watch logs, restart the gateway, then relink if flapping continues. |
+| Random disconnect/relogin loops     | `eve channels status --probe` + logs                | Recent reconnects are flagged even when currently connected; watch logs, restart the gateway, then relink if flapping continues. |
 | `status=408 Request Time-out` loop  | Probe, logs, doctor, then gateway status            | Fix host connectivity/timing first; back up auth and re-link the account if the loop persists.                                   |
-| Replies arrive seconds/minutes late | `eve doctor --fix`                             | Doctor stops verified stale local TUI clients when they are degrading the Gateway event loop.                                    |
+| Replies arrive seconds/minutes late | `eve doctor --fix`                                  | Doctor stops verified stale local TUI clients when they are degrading the Gateway event loop.                                    |
 
 Full troubleshooting: [WhatsApp troubleshooting](/channels/whatsapp#troubleshooting)
 
@@ -65,15 +65,15 @@ Full troubleshooting: [WhatsApp troubleshooting](/channels/whatsapp#troubleshoot
 
 ### Telegram failure signatures
 
-| Symptom                              | Fastest check                                    | Fix                                                                                                                        |
-| ------------------------------------ | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `/start` but no usable reply flow    | `eve pairing list telegram`                 | Approve pairing or change DM policy.                                                                                       |
-| Bot online but group stays silent    | Verify mention requirement and bot privacy mode  | Disable privacy mode for group visibility or mention bot.                                                                  |
-| Send failures with network errors    | Inspect logs for Telegram API call failures      | Fix DNS/IPv6/proxy routing to `api.telegram.org`.                                                                          |
-| Startup reports `getMe returned 401` | Check configured token source                    | Re-copy or regenerate the BotFather token and update `botToken`, `tokenFile`, or default-account `TELEGRAM_BOT_TOKEN`.     |
-| Polling stalls or reconnects slowly  | `eve logs --follow` for polling diagnostics | Upgrade; if restarts are false positives, tune `pollingStallThresholdMs`. Persistent stalls still point to proxy/DNS/IPv6. |
-| `setMyCommands` rejected at startup  | Inspect logs for `BOT_COMMANDS_TOO_MUCH`         | Reduce plugin/skill/custom Telegram commands or disable native menus.                                                      |
-| Upgraded and allowlist blocks you    | `eve security audit` and config allowlists  | Run `eve doctor --fix` or replace `@username` with numeric sender IDs.                                                |
+| Symptom                              | Fastest check                                   | Fix                                                                                                                        |
+| ------------------------------------ | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `/start` but no usable reply flow    | `eve pairing list telegram`                     | Approve pairing or change DM policy.                                                                                       |
+| Bot online but group stays silent    | Verify mention requirement and bot privacy mode | Disable privacy mode for group visibility or mention bot.                                                                  |
+| Send failures with network errors    | Inspect logs for Telegram API call failures     | Fix DNS/IPv6/proxy routing to `api.telegram.org`.                                                                          |
+| Startup reports `getMe returned 401` | Check configured token source                   | Re-copy or regenerate the BotFather token and update `botToken`, `tokenFile`, or default-account `TELEGRAM_BOT_TOKEN`.     |
+| Polling stalls or reconnects slowly  | `eve logs --follow` for polling diagnostics     | Upgrade; if restarts are false positives, tune `pollingStallThresholdMs`. Persistent stalls still point to proxy/DNS/IPv6. |
+| `setMyCommands` rejected at startup  | Inspect logs for `BOT_COMMANDS_TOO_MUCH`        | Reduce plugin/skill/custom Telegram commands or disable native menus.                                                      |
+| Upgraded and allowlist blocks you    | `eve security audit` and config allowlists      | Run `eve doctor --fix` or replace `@username` with numeric sender IDs.                                                     |
 
 Full troubleshooting: [Telegram troubleshooting](/channels/telegram#troubleshooting)
 
@@ -83,10 +83,10 @@ Full troubleshooting: [Telegram troubleshooting](/channels/telegram#troubleshoot
 
 | Symptom                                   | Fastest check                                                                                                                | Fix                                                                                                                                                                                                                                                                   |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bot online but no guild replies           | `eve channels status --probe`                                                                                           | Allow guild/channel and verify message content intent.                                                                                                                                                                                                                |
+| Bot online but no guild replies           | `eve channels status --probe`                                                                                                | Allow guild/channel and verify message content intent.                                                                                                                                                                                                                |
 | Group messages ignored                    | Check logs for mention gating drops                                                                                          | Mention bot or set guild/channel `requireMention: false`.                                                                                                                                                                                                             |
 | Typing/token usage but no Discord message | Check whether this is an ambient room event or an opted-in `message_tool` room where the model missed `message(action=send)` | Inspect the gateway verbose log for suppressed final payload metadata, verify `messages.groupChat.unmentionedInbound`, read [Ambient room events](/channels/ambient-room-events), or keep `messages.groupChat.visibleReplies: "automatic"` for normal group requests. |
-| DM replies missing                        | `eve pairing list discord`                                                                                              | Approve DM pairing or adjust DM policy.                                                                                                                                                                                                                               |
+| DM replies missing                        | `eve pairing list discord`                                                                                                   | Approve DM pairing or adjust DM policy.                                                                                                                                                                                                                               |
 
 Full troubleshooting: [Discord troubleshooting](/channels/discord#troubleshooting)
 
@@ -96,8 +96,8 @@ Full troubleshooting: [Discord troubleshooting](/channels/discord#troubleshootin
 
 | Symptom                                | Fastest check                             | Fix                                                                                                                                                  |
 | -------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Socket mode connected but no responses | `eve channels status --probe`        | Verify app token + bot token and required scopes; watch for `botTokenStatus` / `appTokenStatus = configured_unavailable` on SecretRef-backed setups. |
-| DMs blocked                            | `eve pairing list slack`             | Approve pairing or relax DM policy.                                                                                                                  |
+| Socket mode connected but no responses | `eve channels status --probe`             | Verify app token + bot token and required scopes; watch for `botTokenStatus` / `appTokenStatus = configured_unavailable` on SecretRef-backed setups. |
+| DMs blocked                            | `eve pairing list slack`                  | Approve pairing or relax DM policy.                                                                                                                  |
 | Channel message ignored                | Check `groupPolicy` and channel allowlist | Allow the channel or switch policy to `open`.                                                                                                        |
 
 Full troubleshooting: [Slack troubleshooting](/channels/slack#troubleshooting)
@@ -106,11 +106,11 @@ Full troubleshooting: [Slack troubleshooting](/channels/slack#troubleshooting)
 
 ### iMessage failure signatures
 
-| Symptom                              | Fastest check                                           | Fix                                                                   |
-| ------------------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------- |
-| `imsg` missing or fails on non-macOS | `eve channels status --probe --channel imessage`   | Run EVE on the Messages Mac or use an SSH wrapper for `cliPath`. |
-| Can send but no receive on macOS     | Check macOS privacy permissions for Messages automation | Re-grant TCC permissions and restart channel process.                 |
-| DM sender blocked                    | `eve pairing list imessage`                        | Approve pairing or update allowlist.                                  |
+| Symptom                              | Fastest check                                           | Fix                                                              |
+| ------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------- |
+| `imsg` missing or fails on non-macOS | `eve channels status --probe --channel imessage`        | Run EVE on the Messages Mac or use an SSH wrapper for `cliPath`. |
+| Can send but no receive on macOS     | Check macOS privacy permissions for Messages automation | Re-grant TCC permissions and restart channel process.            |
+| DM sender blocked                    | `eve pairing list imessage`                             | Approve pairing or update allowlist.                             |
 
 Full troubleshooting:
 
@@ -122,8 +122,8 @@ Full troubleshooting:
 
 | Symptom                         | Fastest check                              | Fix                                                      |
 | ------------------------------- | ------------------------------------------ | -------------------------------------------------------- |
-| Daemon reachable but bot silent | `eve channels status --probe`         | Verify `signal-cli` daemon URL/account and receive mode. |
-| DM blocked                      | `eve pairing list signal`             | Approve sender or adjust DM policy.                      |
+| Daemon reachable but bot silent | `eve channels status --probe`              | Verify `signal-cli` daemon URL/account and receive mode. |
+| DM blocked                      | `eve pairing list signal`                  | Approve sender or adjust DM policy.                      |
 | Group replies do not trigger    | Check group allowlist and mention patterns | Add sender/group or loosen gating.                       |
 
 Full troubleshooting: [Signal troubleshooting](/channels/signal#troubleshooting)
@@ -135,7 +135,7 @@ Full troubleshooting: [Signal troubleshooting](/channels/signal#troubleshooting)
 | Symptom                         | Fastest check                               | Fix                                                             |
 | ------------------------------- | ------------------------------------------- | --------------------------------------------------------------- |
 | Bot replies "gone to Mars"      | Verify `appId` and `clientSecret` in config | Set credentials or restart the gateway.                         |
-| No inbound messages             | `eve channels status --probe`          | Verify credentials on the QQ Open Platform.                     |
+| No inbound messages             | `eve channels status --probe`               | Verify credentials on the QQ Open Platform.                     |
 | Voice not transcribed           | Check STT provider config                   | Configure `channels.qqbot.stt` or `tools.media.audio`.          |
 | Proactive messages not arriving | Check QQ platform interaction requirements  | QQ may block bot-initiated messages without recent interaction. |
 
@@ -145,13 +145,13 @@ Full troubleshooting: [QQ Bot troubleshooting](/channels/qqbot#troubleshooting)
 
 ### Matrix failure signatures
 
-| Symptom                             | Fastest check                          | Fix                                                                       |
-| ----------------------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
-| Logged in but ignores room messages | `eve channels status --probe`     | Check `groupPolicy`, room allowlist, and mention gating.                  |
-| DMs do not process                  | `eve pairing list matrix`         | Approve sender or adjust DM policy.                                       |
+| Symptom                             | Fastest check                     | Fix                                                                  |
+| ----------------------------------- | --------------------------------- | -------------------------------------------------------------------- |
+| Logged in but ignores room messages | `eve channels status --probe`     | Check `groupPolicy`, room allowlist, and mention gating.             |
+| DMs do not process                  | `eve pairing list matrix`         | Approve sender or adjust DM policy.                                  |
 | Encrypted rooms fail                | `eve matrix verify status`        | Re-verify the device, then check `eve matrix verify backup status`.  |
 | Backup restore is pending/broken    | `eve matrix verify backup status` | Run `eve matrix verify backup restore` or rerun with a recovery key. |
-| Cross-signing/bootstrap looks wrong | `eve matrix verify bootstrap`     | Repair secret storage, cross-signing, and backup state in one pass.       |
+| Cross-signing/bootstrap looks wrong | `eve matrix verify bootstrap`     | Repair secret storage, cross-signing, and backup state in one pass.  |
 
 Full setup and config: [Matrix](/channels/matrix)
 

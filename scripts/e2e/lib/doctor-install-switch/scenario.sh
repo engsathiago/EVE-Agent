@@ -38,7 +38,7 @@ if ! eve_e2e_maybe_timeout "${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}" npm install -g
 fi
 
 npm_bin="/tmp/npm-prefix/bin/eve"
-npm_root="/tmp/npm-prefix/lib/node_modules/eve"
+npm_root="/tmp/npm-prefix/lib/node_modules/eve-agent"
 if [ -f "$npm_root/dist/index.mjs" ]; then
   npm_entry="$npm_root/dist/index.mjs"
 else

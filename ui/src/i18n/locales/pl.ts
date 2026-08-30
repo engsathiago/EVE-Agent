@@ -395,6 +395,7 @@ export const pl: TranslationMap = {
   nav: {
     chat: "Czat",
     control: "Sterowanie",
+    workspace: "Obszar roboczy",
     agent: "Agent",
     settings: "Ustawienia",
     expand: "Rozwiń pasek boczny",
@@ -406,6 +407,11 @@ export const pl: TranslationMap = {
     activity: "Aktywność",
     overview: "Przegląd",
     workboard: "Tablica pracy",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Kanały",
     instances: "Instancje",
     sessions: "Sesje",
@@ -431,6 +437,11 @@ export const pl: TranslationMap = {
     activity: "Podsumowania aktywności narzędzi lokalne dla przeglądarki.",
     overview: "Status, punkty dostępu, stan.",
     workboard: "Kolejka zadań agenta i przekazywanie sesji.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Kanały i ustawienia.",
     instances: "Połączone klienty i węzły.",
     sessions: "Aktywne sesje i ustawienia domyślne.",
@@ -1257,8 +1268,7 @@ export const pl: TranslationMap = {
         title: "Uwierzytelnienie nie pasuje",
         summary:
           "Podane poświadczenia zostały odrzucone. Najczęstsza przyczyna to nieaktualny token lub token skopiowany z innego URL Gateway.",
-        stepDashboard:
-          "Uruchom eve dashboard --no-open i otwórz świeży URL albo wklej jego token.",
+        stepDashboard: "Uruchom eve dashboard --no-open i otwórz świeży URL albo wklej jego token.",
         stepReplace:
           "Zastąp nieaktualne wartości tokenu/hasła; nie używaj ponownie tokenu z innego URL Gateway.",
         stepMode:
@@ -1313,15 +1323,13 @@ export const pl: TranslationMap = {
           "Otwórz ponownie udostępniany dashboard poleceniem eve dashboard, aby UI i Gateway pochodziły z tej samej instalacji.",
         stepDevUi:
           "Jeśli używasz pnpm ui:dev, przebuduj lub uruchom ponownie UI dev względem bieżącego checkoutu.",
-        stepRestart:
-          "Zrestartuj Gateway po aktualizacji EVE, aby udostępniał bieżący protokół.",
+        stepRestart: "Zrestartuj Gateway po aktualizacji EVE, aby udostępniał bieżący protokół.",
       },
       network: {
         title: "Nie udało się połączyć",
         summary:
           "Przeglądarka nie mogła dokończyć połączenia z Gateway. Sprawdź cel i transport przed ponowną próbą z poświadczeniami.",
-        stepGateway:
-          "Potwierdź, że Gateway działa, używając eve status lub eve gateway run.",
+        stepGateway: "Potwierdź, że Gateway działa, używając eve status lub eve gateway run.",
         stepUrl: "Sprawdź URL WebSocket i użyj wss://, gdy Gateway jest za HTTPS/Tailscale Serve.",
         stepDashboard:
           "Otwórz ponownie dashboard przez eve dashboard --no-open, aby skopiować bieżący URL i szczegóły auth.",

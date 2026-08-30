@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  allowEveAction,
-  createEmptyEvePolicy,
-  evaluateEvePolicy,
-} from "./contract.js";
+import { allowEveAction, createEmptyEvePolicy, evaluateEvePolicy } from "./contract.js";
 
 describe("empty EVE policy contract", () => {
   it("contains no behavioral rules", () => {

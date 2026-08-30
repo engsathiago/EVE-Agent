@@ -7,7 +7,10 @@ import {
   type EmbeddedRunAttemptParams,
   type ToolProgressDetailMode,
 } from "eve-agent/plugin-sdk/agent-harness-runtime";
-import { redactSensitiveFieldValue, redactToolPayloadText } from "eve-agent/plugin-sdk/logging-core";
+import {
+  redactSensitiveFieldValue,
+  redactToolPayloadText,
+} from "eve-agent/plugin-sdk/logging-core";
 import {
   isJsonObject,
   type CodexDynamicToolCallParams,

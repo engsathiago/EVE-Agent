@@ -120,8 +120,7 @@ export function renderOverview(props: OverviewProps) {
           : nothing}
         <div style="margin-top: 6px">
           ${pairingState.requestId
-            ? html`<span class="mono">eve devices approve ${pairingState.requestId}</span
-                ><br />`
+            ? html`<span class="mono">eve devices approve ${pairingState.requestId}</span><br />`
             : nothing}
           <span class="mono">eve devices list</span>
         </div>
@@ -385,8 +384,7 @@ export function renderOverview(props: OverviewProps) {
                 <div class="login-gate__help-title">${t("overview.connection.title")}</div>
                 <ol class="login-gate__steps">
                   <li>
-                    ${t("overview.connection.step1")}
-                    ${renderConnectCommand("eve gateway run")}
+                    ${t("overview.connection.step1")} ${renderConnectCommand("eve gateway run")}
                   </li>
                   <li>
                     ${t("overview.connection.step2")} ${renderConnectCommand("eve dashboard")}

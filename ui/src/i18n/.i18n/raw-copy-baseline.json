@@ -521,6 +521,13 @@
     },
     {
       "count": 1,
+      "kind": "object-property",
+      "name": "label",
+      "path": "ui/src/ui/navigation.ts",
+      "text": "workspace"
+    },
+    {
+      "count": 1,
       "kind": "html-attribute",
       "name": "title",
       "path": "ui/src/ui/views/agents-panels-overview.ts",
@@ -3974,6 +3981,307 @@
       "count": 1,
       "kind": "html-attribute",
       "name": "placeholder",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "What this project is responsible for"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Artifacts"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Auth"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Board"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Connect to the Gateway to use this workspace."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Create a document, deck, sheet, site, note or diagram."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Create environment"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Create isolated environment"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Create project"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Description"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Evaluate"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "EVE native workspace"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "EVE-owned"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Every subsystem persists through the Gateway and is also available through the EVE CLI and agent tools."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Experiment"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Expires"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Folders"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Group folders, sessions and a Mission Control board under one identity."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Network access"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "New project"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "No managed environments are running."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "No projects yet. Create the first EVE workspace."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Operational intelligence loop"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Persistent workspace"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Policy layer"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Promote"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Quota"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Rollback"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Route"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Runtime"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Save & publish"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Save version"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Select an artifact to edit and preview it."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Snapshots"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Source"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Subsystems"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Trace"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Updated"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Version"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "placeholder",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "/srv/eve/project"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "placeholder",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "Launch campaign"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "placeholder",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "research-sandbox"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "placeholder",
+      "path": "ui/src/ui/views/eve-suite.ts",
+      "text": "ubuntu:24.04"
+    },
+    {
+      "count": 1,
+      "kind": "html-attribute",
+      "name": "placeholder",
       "path": "ui/src/ui/views/login-gate.ts",
       "text": "ws://127.0.0.1:18789"
     },
@@ -4052,34 +4360,6 @@
       "kind": "html-text",
       "name": "text",
       "path": "ui/src/ui/views/mcp.ts",
-      "text": "Filtered"
-    },
-    {
-      "count": 1,
-      "kind": "html-text",
-      "name": "text",
-      "path": "ui/src/ui/views/mcp.ts",
-      "text": "MCP operator commands"
-    },
-    {
-      "count": 1,
-      "kind": "html-text",
-      "name": "text",
-      "path": "ui/src/ui/views/mcp.ts",
-      "text": "No MCP servers configured."
-    },
-    {
-      "count": 1,
-      "kind": "html-text",
-      "name": "text",
-      "path": "ui/src/ui/views/mcp.ts",
-      "text": "OAuth"
-    },
-    {
-      "count": 1,
-      "kind": "html-text",
-      "name": "text",
-      "path": "ui/src/ui/views/mcp.ts",
       "text": "eve mcp doctor --probe"
     },
     {
@@ -4102,6 +4382,34 @@
       "name": "text",
       "path": "ui/src/ui/views/mcp.ts",
       "text": "eve mcp status --verbose"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/mcp.ts",
+      "text": "Filtered"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/mcp.ts",
+      "text": "MCP operator commands"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/mcp.ts",
+      "text": "No MCP servers configured."
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/ui/views/mcp.ts",
+      "text": "OAuth"
     },
     {
       "count": 1,

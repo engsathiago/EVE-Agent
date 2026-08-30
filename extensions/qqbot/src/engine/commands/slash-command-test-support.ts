@@ -12,10 +12,7 @@ export type WrittenQQBotConfig = {
   accounts?: { default?: { streaming?: unknown } };
 };
 
-export function installCommandRuntime(
-  currentConfig: EVEConfig,
-  writes: EVEConfig[],
-): void {
+export function installCommandRuntime(currentConfig: EVEConfig, writes: EVEConfig[]): void {
   const replaceConfigFile: ReplaceConfigFile = async (params) => {
     writes.push(params.nextConfig);
     return undefined as unknown as ReplaceConfigFileResult;

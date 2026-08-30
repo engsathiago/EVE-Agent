@@ -29,13 +29,10 @@ export type FireAndForgetBoundedHookOptions = {
 };
 
 const getFireAndForgetHookState = () =>
-  resolveGlobalSingleton<FireAndForgetHookState>(
-    Symbol.for("eve.fireAndForgetHookState"),
-    () => ({
-      active: 0,
-      queue: [],
-    }),
-  );
+  resolveGlobalSingleton<FireAndForgetHookState>(Symbol.for("eve.fireAndForgetHookState"), () => ({
+    active: 0,
+    queue: [],
+  }));
 
 function positiveIntegerOrDefault(value: number | undefined, fallback: number): number {
   return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : fallback;

@@ -22,17 +22,15 @@ describe("parseEVENpmPrepublishVerifyArgs", () => {
   });
 
   it("rejects missing, option-like, and extra arguments before installing", () => {
-    expect(() => parseEVENpmPrepublishVerifyArgs([])).toThrow(
-      eveNpmPrepublishVerifyUsage(),
-    );
+    expect(() => parseEVENpmPrepublishVerifyArgs([])).toThrow(eveNpmPrepublishVerifyUsage());
     expect(() => parseEVENpmPrepublishVerifyArgs(["--tag"])).toThrow(
       "Unknown eve npm prepublish verifier option: --tag",
     );
     expect(() => parseEVENpmPrepublishVerifyArgs(["eve.tgz", "--tag"])).toThrow(
       "Unknown eve npm prepublish verifier option: --tag",
     );
-    expect(() =>
-      parseEVENpmPrepublishVerifyArgs(["eve.tgz", "2026.3.23", "extra"]),
-    ).toThrow("Unexpected eve npm prepublish verifier argument: extra");
+    expect(() => parseEVENpmPrepublishVerifyArgs(["eve.tgz", "2026.3.23", "extra"])).toThrow(
+      "Unexpected eve npm prepublish verifier argument: extra",
+    );
   });
 });

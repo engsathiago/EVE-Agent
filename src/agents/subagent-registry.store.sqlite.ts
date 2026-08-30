@@ -7,10 +7,7 @@ import fs from "node:fs";
 import type { Insertable, Selectable, Updateable } from "kysely";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../infra/kysely-sync.js";
 import type { DB as EVEStateKyselyDatabase } from "../state/eve-state-db.generated.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../state/eve-state-db.js";
 import { normalizeDeliveryContext } from "../utils/delivery-context.shared.js";
 import { normalizeSubagentRunState } from "./subagent-delivery-state.js";
 import {

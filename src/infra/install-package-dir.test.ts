@@ -213,12 +213,8 @@ describe("installPackageDir", () => {
       error: "post-copy validation failed: Error: validation boom",
     });
     await expect(fs.readFile(path.join(targetDir, "marker.txt"), "utf8")).resolves.toBe("old");
-    await expect(
-      listMatchingDirs(installBaseDir, ".eve-install-stage-"),
-    ).resolves.toHaveLength(0);
-    await expect(
-      listMatchingDirs(installBaseDir, ".eve-install-backups"),
-    ).resolves.toHaveLength(0);
+    await expect(listMatchingDirs(installBaseDir, ".eve-install-stage-")).resolves.toHaveLength(0);
+    await expect(listMatchingDirs(installBaseDir, ".eve-install-backups")).resolves.toHaveLength(0);
   });
 
   it("restores the original install if publish rename fails", async () => {
@@ -252,9 +248,7 @@ describe("installPackageDir", () => {
       error: "failed to copy plugin: Error: publish boom",
     });
     await expect(fs.readFile(path.join(targetDir, "marker.txt"), "utf8")).resolves.toBe("old");
-    await expect(
-      listMatchingDirs(installBaseDir, ".eve-install-stage-"),
-    ).resolves.toHaveLength(0);
+    await expect(listMatchingDirs(installBaseDir, ".eve-install-stage-")).resolves.toHaveLength(0);
     const backupRoot = path.join(installBaseDir, ".eve-install-backups");
     await expect(fs.readdir(backupRoot)).resolves.toHaveLength(0);
   });
@@ -297,9 +291,7 @@ describe("installPackageDir", () => {
     expect(result).toEqual({ ok: true });
     expect(exdevMoves).toBe(1);
     await expect(fs.readFile(path.join(targetDir, "marker.txt"), "utf8")).resolves.toBe("new");
-    await expect(
-      listMatchingDirs(installBaseDir, ".eve-install-stage-"),
-    ).resolves.toHaveLength(0);
+    await expect(listMatchingDirs(installBaseDir, ".eve-install-stage-")).resolves.toHaveLength(0);
   });
 
   it.runIf(process.platform !== "win32")(
@@ -608,9 +600,7 @@ describe("installPackageDir", () => {
         throw new Error("expected package install cwd");
       }
       await expectMissingPath(path.join(cwd, ".npmrc"));
-      await expect(
-        listMatchingEntries(cwd, ".eve-install-hidden-npmrc-"),
-      ).resolves.toHaveLength(1);
+      await expect(listMatchingEntries(cwd, ".eve-install-hidden-npmrc-")).resolves.toHaveLength(1);
       return {
         stdout: "",
         stderr: "",

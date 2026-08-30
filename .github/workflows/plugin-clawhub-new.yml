@@ -405,7 +405,7 @@ jobs:
           set -euo pipefail
           npm exec --yes --package "${CLAWHUB_CLI_PACKAGE}" -- \
             clawhub package trusted-publisher set "${PACKAGE_NAME}" \
-              --repository eve/eve \
+              --repository engsathiago/eve-agent \
               --workflow-filename plugin-clawhub-release.yml
 
   verify_bootstrap_clawhub_package:
@@ -483,12 +483,12 @@ jobs:
           const trustedPublisherDetail = await trustedPublisherResponse.json();
           const trustedPublisher = trustedPublisherDetail?.trustedPublisher;
           if (
-            trustedPublisher?.repository !== "eve/eve" ||
+            trustedPublisher?.repository !== "engsathiago/eve-agent" ||
             trustedPublisher?.workflowFilename !== "plugin-clawhub-release.yml" ||
             trustedPublisher?.environment != null
           ) {
             throw new Error(
-              `${packageName}: trusted publisher config did not match eve/eve plugin-clawhub-release.yml without an environment pin.`,
+              `${packageName}: trusted publisher config did not match engsathiago/eve-agent plugin-clawhub-release.yml without an environment pin.`,
             );
           }
 

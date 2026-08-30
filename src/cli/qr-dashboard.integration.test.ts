@@ -116,11 +116,7 @@ describe("cli integration: qr + dashboard token SecretRef", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeAll(() => {
-    envSnapshot = captureEnv([
-      "SHARED_GATEWAY_TOKEN",
-      "EVE_GATEWAY_TOKEN",
-      "EVE_GATEWAY_PASSWORD",
-    ]);
+    envSnapshot = captureEnv(["SHARED_GATEWAY_TOKEN", "EVE_GATEWAY_TOKEN", "EVE_GATEWAY_PASSWORD"]);
   });
 
   beforeEach(() => {

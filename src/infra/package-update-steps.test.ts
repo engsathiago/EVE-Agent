@@ -24,7 +24,7 @@ async function writePackageRoot(packageRoot: string, version: string): Promise<v
   await Promise.all([
     fs.writeFile(
       path.join(packageRoot, "package.json"),
-      JSON.stringify({ name: "eve", version }),
+      JSON.stringify({ name: "eve-agent", version }),
       "utf8",
     ),
     fs.writeFile(path.join(packageRoot, "dist", "index.js"), "export {};\n", "utf8"),
@@ -43,7 +43,7 @@ function createNpmTarget(globalRoot: string): ResolvedGlobalInstallTarget {
     manager: "npm",
     command: "npm",
     globalRoot,
-    packageRoot: path.join(globalRoot, "eve"),
+    packageRoot: path.join(globalRoot, "eve-agent"),
   };
 }
 
@@ -56,7 +56,7 @@ function createPnpmTarget(globalRoot: string): ResolvedGlobalInstallTarget {
     manager: "pnpm",
     command: "pnpm",
     globalRoot,
-    packageRoot: path.join(globalRoot, "eve"),
+    packageRoot: path.join(globalRoot, "eve-agent"),
   };
 }
 
@@ -157,7 +157,7 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-staged-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
       await fs.mkdir(path.join(packageRoot, "dist", "extensions", "qa-channel"), {
         recursive: true,
@@ -182,12 +182,12 @@ describe("runGlobalPackageUpdateSteps", () => {
           }
           expect(path.dirname(stagePrefix)).toBe(globalRoot);
           await writePackageRoot(
-            path.join(stagePrefix, "lib", "node_modules", "eve"),
+            path.join(stagePrefix, "lib", "node_modules", "eve-agent"),
             "2.0.0",
           );
           await fs.mkdir(path.join(stagePrefix, "bin"), { recursive: true });
           await fs.symlink(
-            "../lib/node_modules/eve/dist/index.js",
+            "../lib/node_modules/eve-agent/dist/index.js",
             path.join(stagePrefix, "bin", "eve"),
           );
           return {
@@ -202,8 +202,8 @@ describe("runGlobalPackageUpdateSteps", () => {
 
       const result = await runGlobalPackageUpdateSteps({
         installTarget: createNpmTarget(globalRoot),
-        installSpec: "eve@2.0.0",
-        packageName: "eve",
+        installSpec: "eve-agent@2.0.0",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(globalRoot),
         runStep,
@@ -224,7 +224,7 @@ describe("runGlobalPackageUpdateSteps", () => {
         path.join(packageRoot, "dist", "extensions", "qa-channel", "runtime-api.js"),
       );
       await expect(fs.readlink(path.join(prefix, "bin", "eve"))).resolves.toBe(
-        "../lib/node_modules/eve/dist/index.js",
+        "../lib/node_modules/eve-agent/dist/index.js",
       );
     });
   });
@@ -235,14 +235,14 @@ describe("runGlobalPackageUpdateSteps", () => {
       await withTempDir({ prefix: "eve-package-update-hardlinks-" }, async (base) => {
         const prefix = path.join(base, "prefix");
         const globalRoot = path.join(prefix, "lib", "node_modules");
-        const packageRoot = path.join(globalRoot, "eve");
+        const packageRoot = path.join(globalRoot, "eve-agent");
         await writePackageRoot(packageRoot, "1.0.0");
         await addHardlinkedPackageFile(packageRoot, path.join(base, "cache", "existing"));
 
         const result = await runGlobalPackageUpdateSteps({
           installTarget: createNpmTarget(globalRoot),
-          installSpec: "eve@2.0.0",
-          packageName: "eve",
+          installSpec: "eve-agent@2.0.0",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep: async ({ name, argv, cwd }): Promise<PackageUpdateStepResult> => {
@@ -254,7 +254,7 @@ describe("runGlobalPackageUpdateSteps", () => {
             if (!stagePrefix) {
               throw new Error("missing staged prefix");
             }
-            const stagedPackageRoot = path.join(stagePrefix, "lib", "node_modules", "eve");
+            const stagedPackageRoot = path.join(stagePrefix, "lib", "node_modules", "eve-agent");
             await writePackageRoot(stagedPackageRoot, "2.0.0");
             await addHardlinkedPackageFile(stagedPackageRoot, path.join(base, "cache", "staged"));
             return {
@@ -287,7 +287,7 @@ describe("runGlobalPackageUpdateSteps", () => {
   it("swaps staged npm updates into an explicitly selected direct node_modules root", async () => {
     await withTempDir({ prefix: "eve-package-update-direct-root-" }, async (base) => {
       const managedRoot = path.join(base, ".eve", "npm", "node_modules");
-      const packageRoot = path.join(managedRoot, "eve");
+      const packageRoot = path.join(managedRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
 
       const runStep = vi.fn(async ({ name, argv, cwd }): Promise<PackageUpdateStepResult> => {
@@ -301,10 +301,10 @@ describe("runGlobalPackageUpdateSteps", () => {
           throw new Error("missing staged prefix");
         }
         expect(path.dirname(stagePrefix)).toBe(managedRoot);
-        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve"), "2.0.0");
+        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve-agent"), "2.0.0");
         await fs.mkdir(path.join(stagePrefix, "bin"), { recursive: true });
         await fs.symlink(
-          "../lib/node_modules/eve/dist/index.js",
+          "../lib/node_modules/eve-agent/dist/index.js",
           path.join(stagePrefix, "bin", "eve"),
         );
         return {
@@ -321,8 +321,8 @@ describe("runGlobalPackageUpdateSteps", () => {
           ...createNpmTarget(managedRoot),
           directNodeModulesRoot: true,
         },
-        installSpec: "eve@2.0.0",
-        packageName: "eve",
+        installSpec: "eve-agent@2.0.0",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(path.join(base, "shell", "lib", "node_modules")),
         runStep,
@@ -343,23 +343,23 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-v-prefix-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
 
       const runStep = vi.fn(async ({ name, argv, cwd }): Promise<PackageUpdateStepResult> => {
         if (name !== "global update") {
           throw new Error(`unexpected step ${name}`);
         }
-        expect(argv).toContain("eve@v2.0.0");
+        expect(argv).toContain("eve-agent@v2.0.0");
         const prefixIndex = argv.indexOf("--prefix");
         const stagePrefix = argv[prefixIndex + 1];
         if (!stagePrefix) {
           throw new Error("missing staged prefix");
         }
-        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve"), "2.0.0");
+        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve-agent"), "2.0.0");
         await fs.mkdir(path.join(stagePrefix, "bin"), { recursive: true });
         await fs.symlink(
-          "../lib/node_modules/eve/dist/index.js",
+          "../lib/node_modules/eve-agent/dist/index.js",
           path.join(stagePrefix, "bin", "eve"),
         );
         return {
@@ -373,8 +373,8 @@ describe("runGlobalPackageUpdateSteps", () => {
 
       const result = await runGlobalPackageUpdateSteps({
         installTarget: createNpmTarget(globalRoot),
-        installSpec: "eve@v2.0.0",
-        packageName: "eve",
+        installSpec: "eve-agent@v2.0.0",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(globalRoot),
         runStep,
@@ -394,8 +394,8 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-npm-pack-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
-      const sourceSpec = "EVE@github:eve/eve#release/2026.5.12";
+      const packageRoot = path.join(globalRoot, "eve-agent");
+      const sourceSpec = "EVE@github:engsathiago/eve-agent#release/2026.5.12";
       await writePackageRoot(packageRoot, "1.0.0");
 
       let packDir: string | undefined;
@@ -415,7 +415,7 @@ describe("runGlobalPackageUpdateSteps", () => {
             throw new Error("missing pack destination");
           }
           packDir = destination;
-          await fs.writeFile(path.join(destination, "eve-2.0.0.tgz"), "packed\n", "utf8");
+          await fs.writeFile(path.join(destination, "eve-agent-2.0.0.tgz"), "packed\n", "utf8");
           return {
             name,
             command: argv.join(" "),
@@ -438,16 +438,16 @@ describe("runGlobalPackageUpdateSteps", () => {
           "-g",
           "--prefix",
           stagePrefix,
-          path.join(packDir, "eve-2.0.0.tgz"),
+          path.join(packDir, "eve-agent-2.0.0.tgz"),
           "--no-fund",
           "--no-audit",
           "--loglevel=error",
           "--min-release-age=0",
         ]);
-        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve"), "2.0.0");
+        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve-agent"), "2.0.0");
         await fs.mkdir(path.join(stagePrefix, "bin"), { recursive: true });
         await fs.symlink(
-          "../lib/node_modules/eve/dist/index.js",
+          "../lib/node_modules/eve-agent/dist/index.js",
           path.join(stagePrefix, "bin", "eve"),
         );
         return {
@@ -462,7 +462,7 @@ describe("runGlobalPackageUpdateSteps", () => {
       const result = await runGlobalPackageUpdateSteps({
         installTarget: createNpmTarget(globalRoot),
         installSpec: sourceSpec,
-        packageName: "eve",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(globalRoot),
         runStep,
@@ -494,22 +494,22 @@ describe("runGlobalPackageUpdateSteps", () => {
     },
     {
       name: "aliased hosted GitHub URL without git suffix",
-      sourceSpec: "eve@https://github.com/engsathiago/eve-agent#main",
+      sourceSpec: "eve-agent@https://github.com/engsathiago/eve-agent#main",
     },
     {
       name: "GitHub shorthand",
-      sourceSpec: "eve/eve#main",
+      sourceSpec: "engsathiago/eve-agent#main",
     },
     {
       name: "SCP-style SSH",
-      sourceSpec: "git@github.com:eve/eve.git#main",
+      sourceSpec: "git@github.com:engsathiago/eve-agent.git#main",
     },
   ] as const)(
     "packs additional npm git source spec forms before install: $name",
     async ({ sourceSpec }) => {
       await withTempDir({ prefix: "eve-package-update-npm-pack-variant-" }, async (base) => {
         const globalRoot = path.join(base, "prefix", "lib", "node_modules");
-        const packageRoot = path.join(globalRoot, "eve");
+        const packageRoot = path.join(globalRoot, "eve-agent");
         await writePackageRoot(packageRoot, "1.0.0");
 
         let tarball: string | undefined;
@@ -520,7 +520,7 @@ describe("runGlobalPackageUpdateSteps", () => {
               throw new Error("missing pack destination");
             }
             expect(argv.slice(0, 3)).toEqual(["npm", "pack", sourceSpec]);
-            tarball = path.join(destination, "eve-2.0.0.tgz");
+            tarball = path.join(destination, "eve-agent-2.0.0.tgz");
             await fs.writeFile(tarball, "packed\n", "utf8");
             return {
               name,
@@ -539,7 +539,7 @@ describe("runGlobalPackageUpdateSteps", () => {
             throw new Error("missing staged prefix");
           }
           await writePackageRoot(
-            path.join(stagePrefix, "lib", "node_modules", "eve"),
+            path.join(stagePrefix, "lib", "node_modules", "eve-agent"),
             "2.0.0",
           );
           return {
@@ -554,7 +554,7 @@ describe("runGlobalPackageUpdateSteps", () => {
         const result = await runGlobalPackageUpdateSteps({
           installTarget: createNpmTarget(globalRoot),
           installSpec: sourceSpec,
-          packageName: "eve",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep,
@@ -575,7 +575,7 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-exdev-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
 
       const realRename = fs.rename.bind(fs);
       let exdevMoves = 0;
@@ -587,7 +587,7 @@ describe("runGlobalPackageUpdateSteps", () => {
           if (
             exdevMoves === 0 &&
             fromPath.includes(`${path.sep}.eve-update-stage-`) &&
-            path.basename(fromPath) === "eve" &&
+            path.basename(fromPath) === "eve-agent" &&
             String(to) === packageRoot
           ) {
             exdevMoves += 1;
@@ -599,8 +599,8 @@ describe("runGlobalPackageUpdateSteps", () => {
       try {
         const result = await runGlobalPackageUpdateSteps({
           installTarget: createNpmTarget(globalRoot),
-          installSpec: "eve@2.0.0",
-          packageName: "eve",
+          installSpec: "eve-agent@2.0.0",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep: async ({ name, argv, cwd }) => {
@@ -610,7 +610,7 @@ describe("runGlobalPackageUpdateSteps", () => {
               throw new Error("missing staged prefix");
             }
             const stageLayout = resolveNpmGlobalPrefixLayoutFromPrefix(stagePrefix);
-            await writePackageRoot(path.join(stageLayout.globalRoot, "eve"), "2.0.0");
+            await writePackageRoot(path.join(stageLayout.globalRoot, "eve-agent"), "2.0.0");
             return {
               name,
               command: argv.join(" "),
@@ -638,7 +638,7 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-pnpm-staged-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       const staleChunk = path.join(packageRoot, "dist", "install-C_GuuNz6.js");
       await writePackageRoot(packageRoot, "1.0.0");
       await fs.writeFile(staleChunk, 'import "./install.runtime-Xom5hOHq.js";\n', "utf8");
@@ -651,14 +651,14 @@ describe("runGlobalPackageUpdateSteps", () => {
         expect(argv).toContain("i");
         expect(argv).toContain("-g");
         expect(argv).toContain("--prefix");
-        expect(argv).toContain("eve@2.0.0");
+        expect(argv).toContain("eve-agent@2.0.0");
         expect(argv).not.toContain("pnpm");
         const prefixIndex = argv.indexOf("--prefix");
         const stagePrefix = argv[prefixIndex + 1];
         if (!stagePrefix) {
           throw new Error("missing staged prefix");
         }
-        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve"), "2.0.0");
+        await writePackageRoot(path.join(stagePrefix, "lib", "node_modules", "eve-agent"), "2.0.0");
         return {
           name,
           command: argv.join(" "),
@@ -670,8 +670,8 @@ describe("runGlobalPackageUpdateSteps", () => {
 
       const result = await runGlobalPackageUpdateSteps({
         installTarget: createPnpmTarget(globalRoot),
-        installSpec: "eve@2.0.0",
-        packageName: "eve",
+        installSpec: "eve-agent@2.0.0",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(globalRoot),
         runStep,
@@ -694,14 +694,14 @@ describe("runGlobalPackageUpdateSteps", () => {
       await withTempDir({ prefix: "eve-package-update-win32-pnpm-" }, async (base) => {
         const globalDir = path.join(base, "pnpm", "global");
         const globalRoot = path.join(globalDir, "5", "node_modules");
-        const packageRoot = path.join(globalRoot, "eve");
+        const packageRoot = path.join(globalRoot, "eve-agent");
         await writePackageRoot(packageRoot, "1.0.0");
 
         const runStep = vi.fn(async ({ name, argv, cwd }): Promise<PackageUpdateStepResult> => {
           if (name !== "global update") {
             throw new Error(`unexpected step ${name}`);
           }
-          expect(argv).toEqual(["pnpm", "add", "-g", "--global-dir", globalDir, "eve@2.0.0"]);
+          expect(argv).toEqual(["pnpm", "add", "-g", "--global-dir", globalDir, "eve-agent@2.0.0"]);
           await writePackageRoot(packageRoot, "2.0.0");
           return {
             name,
@@ -714,8 +714,8 @@ describe("runGlobalPackageUpdateSteps", () => {
 
         const result = await runGlobalPackageUpdateSteps({
           installTarget: createPnpmTarget(globalRoot),
-          installSpec: "eve@2.0.0",
-          packageName: "eve",
+          installSpec: "eve-agent@2.0.0",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep,
@@ -735,7 +735,7 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-staged-cleanup-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
 
       const realRm = fs.rm;
@@ -756,8 +756,8 @@ describe("runGlobalPackageUpdateSteps", () => {
       try {
         const result = await runGlobalPackageUpdateSteps({
           installTarget: createNpmTarget(globalRoot),
-          installSpec: "eve@2.0.0",
-          packageName: "eve",
+          installSpec: "eve-agent@2.0.0",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep: async ({ name, argv, cwd }) => {
@@ -767,7 +767,7 @@ describe("runGlobalPackageUpdateSteps", () => {
               throw new Error("missing staged prefix");
             }
             const stageLayout = resolveNpmGlobalPrefixLayoutFromPrefix(stagePrefix);
-            await writePackageRoot(path.join(stageLayout.globalRoot, "eve"), "2.0.0");
+            await writePackageRoot(path.join(stageLayout.globalRoot, "eve-agent"), "2.0.0");
             return {
               name,
               command: argv.join(" "),
@@ -800,14 +800,14 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-verify-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
       const postVerifyStep = vi.fn();
 
       const result = await runGlobalPackageUpdateSteps({
         installTarget: createNpmTarget(globalRoot),
-        installSpec: "eve@2.0.0",
-        packageName: "eve",
+        installSpec: "eve-agent@2.0.0",
+        packageName: "eve-agent",
         packageRoot,
         runCommand: createRootRunner(globalRoot),
         runStep: async ({ name, argv, cwd }) => {
@@ -817,7 +817,7 @@ describe("runGlobalPackageUpdateSteps", () => {
             throw new Error("missing staged prefix");
           }
           await writePackageRoot(
-            path.join(stagePrefix, "lib", "node_modules", "eve"),
+            path.join(stagePrefix, "lib", "node_modules", "eve-agent"),
             "1.5.0",
           );
           return {
@@ -855,7 +855,7 @@ describe("runGlobalPackageUpdateSteps", () => {
       await withTempDir({ prefix: "eve-package-update-shim-rollback-" }, async (base) => {
         const prefix = path.join(base, "prefix");
         const globalRoot = path.join(prefix, "lib", "node_modules");
-        const packageRoot = path.join(globalRoot, "eve");
+        const packageRoot = path.join(globalRoot, "eve-agent");
         const targetShim = path.join(prefix, "bin", "eve");
         await writePackageRoot(packageRoot, "1.0.0");
         await fs.mkdir(path.dirname(targetShim), { recursive: true });
@@ -877,8 +877,8 @@ describe("runGlobalPackageUpdateSteps", () => {
         try {
           result = await runGlobalPackageUpdateSteps({
             installTarget: createNpmTarget(globalRoot),
-            installSpec: "eve@2.0.0",
-            packageName: "eve",
+            installSpec: "eve-agent@2.0.0",
+            packageName: "eve-agent",
             packageRoot,
             runCommand: createRootRunner(globalRoot),
             runStep: async ({ name, argv, cwd }) => {
@@ -888,7 +888,7 @@ describe("runGlobalPackageUpdateSteps", () => {
                 throw new Error("missing staged prefix");
               }
               await writePackageRoot(
-                path.join(stagePrefix, "lib", "node_modules", "eve"),
+                path.join(stagePrefix, "lib", "node_modules", "eve-agent"),
                 "2.0.0",
               );
               const stagedShim = path.join(stagePrefix, "bin", "eve");
@@ -924,15 +924,15 @@ describe("runGlobalPackageUpdateSteps", () => {
     await withTempDir({ prefix: "eve-package-update-cleanup-" }, async (base) => {
       const prefix = path.join(base, "prefix");
       const globalRoot = path.join(prefix, "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await writePackageRoot(packageRoot, "1.0.0");
 
       let stagePrefix: string | undefined;
       await expect(
         runGlobalPackageUpdateSteps({
           installTarget: createNpmTarget(globalRoot),
-          installSpec: "eve@2.0.0",
-          packageName: "eve",
+          installSpec: "eve-agent@2.0.0",
+          packageName: "eve-agent",
           packageRoot,
           runCommand: createRootRunner(globalRoot),
           runStep: async ({ argv }) => {

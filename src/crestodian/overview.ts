@@ -4,11 +4,7 @@ import {
   resolveAgentEffectiveModelPrimary,
   resolveDefaultAgentId,
 } from "../agents/agent-scope.js";
-import {
-  EVE_DOCS_URL,
-  EVE_SOURCE_URL,
-  resolveEVEReferencePaths,
-} from "../agents/docs-path.js";
+import { EVE_DOCS_URL, EVE_SOURCE_URL, resolveEVEReferencePaths } from "../agents/docs-path.js";
 import {
   readConfigFileSnapshot,
   resolveConfigPath,

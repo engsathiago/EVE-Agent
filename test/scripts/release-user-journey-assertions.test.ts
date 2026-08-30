@@ -386,11 +386,7 @@ describe("release user journey assertions", () => {
       );
       await expect(
         withEnvAsync({ HOME: home }, () =>
-          runReleaseUserJourneyAssertion("wait-clickclack-reply", [
-            statePath,
-            "EVE_E2E_OK",
-            "30s",
-          ]),
+          runReleaseUserJourneyAssertion("wait-clickclack-reply", [statePath, "EVE_E2E_OK", "30s"]),
         ),
       ).rejects.toThrow('ClickClack reply timeout seconds must be a positive integer. Got: "30s"');
     } finally {

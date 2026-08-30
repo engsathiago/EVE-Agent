@@ -42,9 +42,7 @@ describe("scripts/test-live-cli-backend-docker.sh", () => {
     });
 
     expect(result.status).toBe(2);
-    expect(result.stderr).toContain(
-      "invalid EVE_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: 180s",
-    );
+    expect(result.stderr).toContain("invalid EVE_LIVE_CLI_BACKEND_SETUP_TIMEOUT_SECONDS: 180s");
     expect(result.stderr).not.toContain("Cannot find package 'tsx'");
     expect(result.stderr).not.toContain("docker");
   });

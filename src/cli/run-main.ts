@@ -90,8 +90,7 @@ const loadProgressModule = async () => await import("./progress.js");
 function createGatewayCliMainStartupTrace(argv: string[]) {
   // Startup trace is scoped to gateway invocations to avoid routine CLI stderr noise.
   const enabled =
-    isTruthyEnvValue(process.env.EVE_GATEWAY_STARTUP_TRACE) &&
-    argv.slice(2).includes("gateway");
+    isTruthyEnvValue(process.env.EVE_GATEWAY_STARTUP_TRACE) && argv.slice(2).includes("gateway");
   const started = performance.now();
   let last = started;
   const emit = (name: string, durationMs: number, totalMs: number) => {

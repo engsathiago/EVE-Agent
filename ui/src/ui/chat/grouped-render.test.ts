@@ -1765,8 +1765,7 @@ describe("grouped chat rendering", () => {
         {
           id: "assistant-local-media-inline",
           role: "assistant",
-          content:
-            "Local image\nMEDIA:/tmp/eve/test image.png\nMEDIA:/tmp/eve/test-doc.pdf",
+          content: "Local image\nMEDIA:/tmp/eve/test image.png\nMEDIA:/tmp/eve/test-doc.pdf",
           timestamp: Date.now(),
         },
         {
@@ -1938,8 +1937,7 @@ describe("grouped chat rendering", () => {
       {
         id: "assistant-same-origin-media-inline",
         role: "assistant",
-        content:
-          "Inline\nMEDIA:/media/inbound/test-image.png\nMEDIA:/__eve__/media/test-doc.pdf",
+        content: "Inline\nMEDIA:/media/inbound/test-image.png\nMEDIA:/__eve__/media/test-doc.pdf",
         timestamp: Date.now(),
       },
       {
@@ -2057,8 +2055,7 @@ describe("grouped chat rendering", () => {
           ],
           timestamp: Date.now(),
         }),
-        expectedUrl:
-          "/eve/__eve__/assistant-media?source=%7E%2FPictures%2Ftest+image.png&meta=1",
+        expectedUrl: "/eve/__eve__/assistant-media?source=%7E%2FPictures%2Ftest+image.png&meta=1",
       }),
     ];
 

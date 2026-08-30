@@ -140,9 +140,9 @@ describe("scripts/test-live", () => {
     expect(() => resolveTestLiveHeartbeatMs({ EVE_LIVE_WRAPPER_HEARTBEAT_MS: "1e3" })).toThrow(
       "invalid EVE_LIVE_WRAPPER_HEARTBEAT_MS: 1e3",
     );
-    expect(() =>
-      resolveTestLiveHeartbeatMs({ EVE_LIVE_WRAPPER_HEARTBEAT_MS: "1000ms" }),
-    ).toThrow("invalid EVE_LIVE_WRAPPER_HEARTBEAT_MS: 1000ms");
+    expect(() => resolveTestLiveHeartbeatMs({ EVE_LIVE_WRAPPER_HEARTBEAT_MS: "1000ms" })).toThrow(
+      "invalid EVE_LIVE_WRAPPER_HEARTBEAT_MS: 1000ms",
+    );
     expect(() => resolveTestLiveHeartbeatMs({ EVE_LIVE_WRAPPER_HEARTBEAT_MS: "0" })).toThrow(
       "invalid EVE_LIVE_WRAPPER_HEARTBEAT_MS: 0",
     );

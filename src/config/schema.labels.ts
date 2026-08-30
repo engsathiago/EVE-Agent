@@ -717,8 +717,7 @@ export const FIELD_LABELS: Record<string, string> = {
   "agents.list[].runRetries.min": "Agent Run Retries Minimum",
   "agents.list[].runRetries.max": "Agent Run Retries Maximum",
   "agents.defaults.embeddedAgent": "Embedded EVE",
-  "agents.defaults.embeddedAgent.projectSettingsPolicy":
-    "Embedded EVE Project Settings Policy",
+  "agents.defaults.embeddedAgent.projectSettingsPolicy": "Embedded EVE Project Settings Policy",
   "agents.defaults.embeddedAgent.executionContract": "Embedded EVE Execution Contract",
   "agents.defaults.heartbeat.includeSystemPromptSection": "Heartbeat Include System Prompt Section",
   "agents.list.*.heartbeat.includeSystemPromptSection": "Heartbeat Include System Prompt Section",

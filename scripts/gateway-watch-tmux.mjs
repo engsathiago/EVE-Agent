@@ -144,16 +144,9 @@ const resolveGatewayWatchBenchmarkArgs = ({ args = [], env = process.env } = {})
  */
 export const resolveGatewayWatchTmuxSessionName = ({ args = [], env = process.env } = {}) => {
   const profile =
-    env.EVE_PROFILE ||
-    readArgValue(args, "--profile") ||
-    (args.includes("--dev") ? "dev" : null);
+    env.EVE_PROFILE || readArgValue(args, "--profile") || (args.includes("--dev") ? "dev" : null);
   const port = env.EVE_GATEWAY_PORT || readArgValue(args, "--port");
-  const parts = [
-    "eve",
-    "gateway",
-    "watch",
-    sanitizeSessionPart(profile ?? DEFAULT_PROFILE_NAME),
-  ];
+  const parts = ["eve", "gateway", "watch", sanitizeSessionPart(profile ?? DEFAULT_PROFILE_NAME)];
   if (port && port !== "18789") {
     parts.push(sanitizeSessionPart(port));
   }

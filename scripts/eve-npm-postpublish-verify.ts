@@ -26,6 +26,7 @@ import {
 import { pathToFileURL } from "node:url";
 import { formatErrorMessage } from "../src/infra/errors.ts";
 import { BUNDLED_RUNTIME_SIDECAR_PATHS } from "../src/plugins/runtime-sidecar-paths.ts";
+import { parseReleaseVersion, resolveNpmCommandInvocation } from "./eve-npm-release-check.ts";
 import { readBoundedResponseText } from "./lib/bounded-response.ts";
 import { listBundledPluginPackArtifacts } from "./lib/bundled-plugin-build-entries.mjs";
 import { runNpmVerifyCommand } from "./lib/npm-verify-exec.ts";
@@ -34,7 +35,6 @@ import {
   packageNameFromSpecifier,
 } from "./lib/plugin-package-dependencies.mjs";
 import { runInstalledWorkspaceBootstrapSmoke } from "./lib/workspace-bootstrap-smoke.mjs";
-import { parseReleaseVersion, resolveNpmCommandInvocation } from "./eve-npm-release-check.ts";
 import { buildCmdExeCommandLine } from "./windows-cmd-helpers.mjs";
 
 type InstalledPackageJson = {
@@ -140,7 +140,7 @@ export function buildPublishedInstallScenarios(version: string): PublishedInstal
     throw new Error(`Unsupported release version "${version}".`);
   }
 
-  const exactSpec = `eve@${version}`;
+  const exactSpec = `eve-agent@${version}`;
   const scenarios: PublishedInstallScenario[] = [
     {
       name: "fresh-exact",
@@ -152,7 +152,7 @@ export function buildPublishedInstallScenarios(version: string): PublishedInstal
   if (parsed.channel === "stable" && parsed.correctionNumber !== undefined) {
     scenarios.push({
       name: "upgrade-from-base-stable",
-      installSpecs: [`eve@${parsed.baseVersion}`, exactSpec],
+      installSpecs: [`eve-agent@${parsed.baseVersion}`, exactSpec],
       expectedVersion: version,
     });
   }
@@ -1056,7 +1056,7 @@ async function verifyPublishedRegistryProvenanceOnce(version: string): Promise<v
   if (!registry.pathname.endsWith("/")) {
     registry.pathname = `${registry.pathname}/`;
   }
-  const packageName = "eve";
+  const packageName = "eve-agent";
   const packageDocument = (await fetchRegistryJson(
     new URL(
       `${encodeURIComponent(packageName)}/${encodeURIComponent(version)}`,
@@ -1151,7 +1151,7 @@ function verifyScenario(version: string, scenario: PublishedInstallScenario): vo
     }
 
     const globalRoot = resolveGlobalRoot(prefixDir, workingDir);
-    const packageRoot = join(globalRoot, "eve");
+    const packageRoot = join(globalRoot, "eve-agent");
     const pkg = JSON.parse(
       readFileSync(join(packageRoot, "package.json"), "utf8"),
     ) as InstalledPackageJson;
@@ -1196,9 +1196,7 @@ async function main(argv = process.argv.slice(2)): Promise<void> {
     verifyScenario(version, scenario);
   }
 
-  console.log(
-    `eve-npm-postpublish-verify: verified published npm install paths for ${version}.`,
-  );
+  console.log(`eve-npm-postpublish-verify: verified published npm install paths for ${version}.`);
 }
 
 const entrypoint = process.argv[1] ? pathToFileURL(process.argv[1]).href : null;

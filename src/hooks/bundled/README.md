@@ -82,8 +82,7 @@ session-memory/
 name: my-hook
 description: "Short description"
 homepage: https://docs.eve.ai/automation/hooks#my-hook
-metadata:
-  { "eve": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+metadata: { "eve": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 # Hook Title
 

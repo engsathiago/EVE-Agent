@@ -92,7 +92,7 @@ dependency. EVE does not let npm install a separate registry copy of the
 host package into a managed project, because stale host packages can affect npm
 peer resolution inside that plugin. Managed npm installs skip npm peer
 resolution/materialization and EVE reasserts plugin-local
-`node_modules/eve` links for installed packages that declare the host peer
+`node_modules/eve-agent` links for installed packages that declare the host peer
 after install or update.
 
 git installs clone or refresh the repository, then run:
@@ -155,9 +155,9 @@ not a supported way to prepare bundled plugin dependencies.
 
 | Install shape                    | Bundled plugin location               | Dependency owner                                                     |
 | -------------------------------- | ------------------------------------- | -------------------------------------------------------------------- |
-| `npm install -g eve`        | Built runtime tree inside the package | EVE package and explicit plugin install/update/doctor flows     |
+| `npm install -g eve-agent`       | Built runtime tree inside the package | EVE package and explicit plugin install/update/doctor flows          |
 | Git checkout plus `pnpm install` | `extensions/<id>` workspace packages  | The pnpm workspace, including each plugin package's own dependencies |
-| `eve plugins install ...`   | Managed npm project/git/ClawHub root  | The plugin install/update flow                                       |
+| `eve plugins install ...`        | Managed npm project/git/ClawHub root  | The plugin install/update flow                                       |
 
 ## Legacy cleanup
 

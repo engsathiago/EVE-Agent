@@ -62,10 +62,7 @@ function hasCodexNativeWebSearchTool(tools: unknown): boolean {
 }
 
 /** Checks whether OpenAI/Codex auth is available for native web search. */
-export function hasAvailableCodexAuth(params: {
-  config?: EVEConfig;
-  agentDir?: string;
-}): boolean {
+export function hasAvailableCodexAuth(params: { config?: EVEConfig; agentDir?: string }): boolean {
   if (
     Object.values(params.config?.auth?.profiles ?? {}).some(
       (profile) =>

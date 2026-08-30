@@ -20,6 +20,7 @@ import {
   WORKBOARD_EXECUTION_MODES,
   WORKBOARD_EXECUTION_STATUSES,
   WORKBOARD_ATTEMPT_STATUSES,
+  WORKBOARD_COMPLETION_EVIDENCE_MODES,
   WORKBOARD_EVENT_KINDS,
   WORKBOARD_LINK_TYPES,
   WORKBOARD_NOTIFICATION_KINDS,
@@ -34,6 +35,8 @@ import {
   type WorkboardAutomation,
   type WorkboardBoardMetadata,
   type WorkboardClaim,
+  type WorkboardCompletionEvidence,
+  type WorkboardCompletionEvidenceMode,
   type WorkboardComment,
   type WorkboardDiagnostic,
   type WorkboardDiagnosticAction,
@@ -91,6 +94,10 @@ const RUNNING_HEARTBEAT_STALE_MS = 20 * 60 * 1000;
 const BLOCKED_TOO_LONG_MS = 24 * 60 * 60 * 1000;
 const CLAIM_RECLAIM_MS = 5 * 60 * 1000;
 
+type WorkboardStoreOptions = {
+  completionEvidence?: WorkboardCompletionEvidenceMode;
+};
+
 function secondsToDurationMs(seconds: number): number {
   const ms = Math.trunc(seconds) * 1000;
   return Number.isFinite(ms)
@@ -122,6 +129,7 @@ export type WorkboardCardInput = {
   createdByCardId?: unknown;
   idempotencyKey?: unknown;
   skills?: unknown;
+  toolsets?: unknown;
   workspace?: unknown;
   maxRuntimeSeconds?: unknown;
   maxRetries?: unknown;
@@ -640,6 +648,12 @@ function normalizeAutomation(
   const skills = Object.hasOwn(record, "skills")
     ? normalizeStringList(record.skills, "skills")
     : fallback.skills;
+  const toolsets = Object.hasOwn(record, "toolsets")
+    ? normalizeStringList(record.toolsets, "toolsets")
+    : fallback.toolsets;
+  if (toolsets?.some((entry) => entry.toLowerCase() === "auto") && toolsets.length !== 1) {
+    throw new Error("toolset 'auto' cannot be combined with explicit toolsets.");
+  }
   const createdCardIds = Object.hasOwn(record, "createdCardIds")
     ? normalizeStringList(record.createdCardIds, "created card ids", 120)
     : fallback.createdCardIds;
@@ -667,6 +681,7 @@ function normalizeAutomation(
     ...(createdByCardId ? { createdByCardId } : {}),
     ...(idempotencyKey ? { idempotencyKey } : {}),
     ...(skills?.length ? { skills } : {}),
+    ...(toolsets?.length ? { toolsets } : {}),
     ...(workspace ? { workspace } : {}),
     ...(maxRuntimeSeconds ? { maxRuntimeSeconds } : {}),
     ...(maxRetries ? { maxRetries } : {}),
@@ -1204,6 +1219,44 @@ function normalizeProofInput(input: WorkboardProofInput, now: number): Workboard
   };
 }
 
+function normalizeCompletionEvidence(
+  value: unknown,
+  fallback: WorkboardCompletionEvidence | undefined,
+): WorkboardCompletionEvidence | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return fallback;
+  }
+  const record = value as Record<string, unknown>;
+  const mode = WORKBOARD_COMPLETION_EVIDENCE_MODES.includes(
+    record.mode as WorkboardCompletionEvidenceMode,
+  )
+    ? (record.mode as WorkboardCompletionEvidenceMode)
+    : fallback?.mode;
+  const quality =
+    record.quality === "unassessed" ||
+    record.quality === "verified" ||
+    record.quality === "claimed" ||
+    record.quality === "failed"
+      ? record.quality
+      : fallback?.quality;
+  if (!mode || !quality) {
+    return fallback;
+  }
+  const stringIds = (candidate: unknown, previous: string[] | undefined) =>
+    Array.isArray(candidate)
+      ? candidate
+          .flatMap((entry) => (typeof entry === "string" && entry.trim() ? [entry.trim()] : []))
+          .slice(-MAX_CARD_PROOF)
+      : (previous ?? []);
+  return {
+    mode,
+    quality,
+    evaluatedAt: normalizeTimestamp(record.evaluatedAt, fallback?.evaluatedAt ?? Date.now()),
+    proofIds: stringIds(record.proofIds, fallback?.proofIds),
+    artifactIds: stringIds(record.artifactIds, fallback?.artifactIds),
+  };
+}
+
 function normalizeMetadata(
   value: unknown,
   fallback: WorkboardMetadata = {},
@@ -1258,6 +1311,9 @@ function normalizeMetadata(
           .filter((proof): proof is WorkboardProof => proof !== null)
           .slice(-MAX_CARD_PROOF)
       : fallback.proof,
+    completionEvidence: Object.hasOwn(record, "completionEvidence")
+      ? normalizeCompletionEvidence(record.completionEvidence, fallback.completionEvidence)
+      : fallback.completionEvidence,
     artifacts: Array.isArray(record.artifacts)
       ? record.artifacts
           .map(normalizeArtifact)
@@ -1388,6 +1444,7 @@ function removeUndefinedAutomationFields(automation: WorkboardAutomation): Workb
     "createdByCardId",
     "idempotencyKey",
     "skills",
+    "toolsets",
     "workspace",
     "maxRuntimeSeconds",
     "maxRetries",
@@ -1416,6 +1473,7 @@ function removeUndefinedMetadataFields(metadata: WorkboardMetadata): WorkboardMe
     "comments",
     "links",
     "proof",
+    "completionEvidence",
     "artifacts",
     "attachments",
     "workerLogs",
@@ -1972,6 +2030,7 @@ function computeCardDiagnostics(card: WorkboardCard, now: number): WorkboardDiag
   }
   if (
     card.status === "done" &&
+    card.metadata?.completionEvidence?.mode !== "off" &&
     !(
       card.metadata?.proof?.length ||
       card.metadata?.artifacts?.length ||
@@ -2151,6 +2210,9 @@ function buildWorkerContext(card: WorkboardCard, cards: readonly WorkboardCard[]
     if (automation.skills?.length) {
       lines.push(`Skills: ${automation.skills.join(", ")}`);
     }
+    if (automation.toolsets?.length) {
+      lines.push(`Toolsets: ${automation.toolsets.join(", ")}`);
+    }
     if (automation.workspace) {
       lines.push(
         `Workspace: ${automation.workspace.kind}${automation.workspace.path ? ` ${automation.workspace.path}` : ""}`,
@@ -2256,6 +2318,7 @@ export class WorkboardStore {
   private readonly boardStore: WorkboardKeyedStore<PersistedWorkboardBoard>;
   private readonly subscriptionStore: WorkboardKeyedStore<PersistedWorkboardNotificationSubscription>;
   private readonly attachmentStore: WorkboardKeyedStore<PersistedWorkboardAttachment>;
+  private readonly completionEvidence: WorkboardCompletionEvidenceMode;
 
   constructor(
     private readonly store: WorkboardKeyedStore,
@@ -2264,7 +2327,13 @@ export class WorkboardStore {
       subscriptions?: WorkboardKeyedStore<PersistedWorkboardNotificationSubscription>;
       attachments?: WorkboardKeyedStore<PersistedWorkboardAttachment>;
     } = {},
+    options: WorkboardStoreOptions = {},
   ) {
+    this.completionEvidence = WORKBOARD_COMPLETION_EVIDENCE_MODES.includes(
+      options.completionEvidence ?? "record",
+    )
+      ? (options.completionEvidence ?? "record")
+      : "record";
     this.boardStore =
       stores.boards ?? (store as unknown as WorkboardKeyedStore<PersistedWorkboardBoard>);
     this.subscriptionStore =
@@ -2312,6 +2381,28 @@ export class WorkboardStore {
     const base = Math.max(0, Math.trunc(now)) * 1000;
     this.lastNotificationSequence = Math.max(this.lastNotificationSequence + 1, base);
     return this.lastNotificationSequence;
+  }
+
+  private evaluateCompletionEvidence(
+    metadata: WorkboardMetadata,
+    now: number,
+    mode = metadata.completionEvidence?.mode ?? this.completionEvidence,
+  ): WorkboardCompletionEvidence {
+    const proof = metadata.proof ?? [];
+    const artifacts = metadata.artifacts ?? [];
+    const hasFailed = proof.some((entry) => entry.status === "failed");
+    const hasVerified =
+      proof.some((entry) => entry.status === "passed") ||
+      artifacts.length > 0 ||
+      (metadata.attachments?.length ?? 0) > 0;
+    return {
+      mode,
+      quality:
+        mode === "off" ? "unassessed" : hasVerified ? "verified" : hasFailed ? "failed" : "claimed",
+      evaluatedAt: now,
+      proofIds: proof.map((entry) => entry.id),
+      artifactIds: artifacts.map((entry) => entry.id),
+    };
   }
 
   async list(options: WorkboardListOptions = {}): Promise<WorkboardCard[]> {
@@ -2491,6 +2582,7 @@ export class WorkboardStore {
       createdByCardId: input.createdByCardId,
       idempotencyKey: input.idempotencyKey,
       skills: input.skills,
+      toolsets: input.toolsets,
       workspace: input.workspace,
       maxRuntimeSeconds: input.maxRuntimeSeconds,
       maxRetries: input.maxRetries,
@@ -2703,6 +2795,7 @@ export class WorkboardStore {
       "createdByCardId",
       "idempotencyKey",
       "skills",
+      "toolsets",
       "workspace",
       "maxRuntimeSeconds",
       "maxRetries",
@@ -3126,9 +3219,13 @@ export class WorkboardStore {
     return await this.updateMetadata(id, (existing) => {
       assertCanMutateClaimedCard(existing, scope);
       const metadata = clearDiagnostics(existing.metadata, ["missing_proof"]);
-      return {
+      const next = {
         ...metadata,
         proof: [...(metadata.proof ?? []), proof].slice(-MAX_CARD_PROOF),
+      };
+      return {
+        ...next,
+        completionEvidence: this.evaluateCompletionEvidence(next, now),
       };
     });
   }
@@ -3148,10 +3245,14 @@ export class WorkboardStore {
     return await this.updateMetadata(id, (existing) => {
       assertCanMutateClaimedCard(existing, scope);
       const metadata = clearDiagnostics(existing.metadata, ["missing_proof"]);
-      return {
+      const next = {
         ...metadata,
         proof: [...(metadata.proof ?? []), proof].slice(-MAX_CARD_PROOF),
         artifacts: [...(metadata.artifacts ?? []), artifact].slice(-MAX_CARD_ARTIFACTS),
+      };
+      return {
+        ...next,
+        completionEvidence: this.evaluateCompletionEvidence(next, now),
       };
     });
   }
@@ -3168,9 +3269,13 @@ export class WorkboardStore {
     return await this.updateMetadata(id, (existing) => {
       assertCanMutateClaimedCard(existing, scope);
       const metadata = clearDiagnostics(existing.metadata, ["missing_proof"]);
-      return {
+      const next = {
         ...metadata,
         artifacts: [...(metadata.artifacts ?? []), artifact].slice(-MAX_CARD_ARTIFACTS),
+      };
+      return {
+        ...next,
+        completionEvidence: this.evaluateCompletionEvidence(next, Date.now()),
       };
     });
   }
@@ -3194,12 +3299,15 @@ export class WorkboardStore {
         contentBase64,
       });
       try {
+        const metadata = clearDiagnostics(existing.metadata, ["missing_proof"]);
+        const nextMetadata: WorkboardMetadata = {
+          ...metadata,
+          attachments: [...(metadata.attachments ?? []), attachment].slice(-MAX_CARD_ATTACHMENTS),
+        };
         const updated = await this.updateCard(id, {
           metadata: {
-            ...clearDiagnostics(existing.metadata, ["missing_proof"]),
-            attachments: [...(existing.metadata?.attachments ?? []), attachment].slice(
-              -MAX_CARD_ATTACHMENTS,
-            ),
+            ...nextMetadata,
+            completionEvidence: this.evaluateCompletionEvidence(nextMetadata, now),
           },
         });
         if (!updated.metadata?.attachments?.some((entry) => entry.id === attachment.id)) {
@@ -3247,10 +3355,14 @@ export class WorkboardStore {
         throw new Error(`attachment not found: ${attachmentId}`);
       }
       await this.attachmentStore.delete(attachmentId);
+      const metadata: WorkboardMetadata = {
+        ...existing.metadata,
+        attachments: attachments.filter((attachment) => attachment.id !== attachmentId),
+      };
       return await this.updateCard(cardId, {
         metadata: {
-          ...existing.metadata,
-          attachments: attachments.filter((attachment) => attachment.id !== attachmentId),
+          ...metadata,
+          completionEvidence: this.evaluateCompletionEvidence(metadata, Date.now()),
         },
       });
     });
@@ -3529,6 +3641,17 @@ export class WorkboardStore {
           .slice(-MAX_CARD_ARTIFACTS)
       : [];
     const metadata = clearDiagnostics(existing.metadata, ["missing_proof"]);
+    const completionMetadata: WorkboardMetadata = {
+      ...metadata,
+      proof: proof ? [...(metadata.proof ?? []), proof].slice(-MAX_CARD_PROOF) : metadata.proof,
+      artifacts: artifacts.length
+        ? [...(metadata.artifacts ?? []), ...artifacts].slice(-MAX_CARD_ARTIFACTS)
+        : metadata.artifacts,
+    };
+    const completionEvidence = this.evaluateCompletionEvidence(completionMetadata, now);
+    if (completionEvidence.mode === "require" && completionEvidence.quality !== "verified") {
+      throw new Error("completion requires passed proof or an attached artifact");
+    }
     const notification: WorkboardNotification = {
       id: randomUUID(),
       kind: "completed",
@@ -3566,10 +3689,9 @@ export class WorkboardStore {
                 { id: randomUUID(), body: summary, createdAt: now },
               ].slice(-MAX_CARD_COMMENTS)
             : metadata.comments,
-          proof: proof ? [...(metadata.proof ?? []), proof].slice(-MAX_CARD_PROOF) : metadata.proof,
-          artifacts: artifacts.length
-            ? [...(metadata.artifacts ?? []), ...artifacts].slice(-MAX_CARD_ARTIFACTS)
-            : metadata.artifacts,
+          proof: completionMetadata.proof,
+          artifacts: completionMetadata.artifacts,
+          completionEvidence,
           notifications: [...(metadata.notifications ?? []), notification].slice(
             -MAX_CARD_NOTIFICATIONS,
           ),
@@ -4320,12 +4442,16 @@ export class WorkboardStore {
     );
   }
 
-  static openSqlite() {
+  static openSqlite(options: WorkboardStoreOptions = {}) {
     const stores = createWorkboardSqliteStores();
-    return new WorkboardStore(stores.cards, {
-      boards: stores.boards,
-      subscriptions: stores.subscriptions,
-      attachments: stores.attachments,
-    });
+    return new WorkboardStore(
+      stores.cards,
+      {
+        boards: stores.boards,
+        subscriptions: stores.subscriptions,
+        attachments: stores.attachments,
+      },
+      options,
+    );
   }
 }

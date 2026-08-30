@@ -9,11 +9,11 @@ title: "Installer internals"
 
 EVE ships three installer scripts, served from `eve.ai`.
 
-| Script                             | Platform             | What it does                                                                                                   |
-| ---------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------- |
-| [`install.sh`](#installsh)         | macOS / Linux / WSL  | Installs Node if needed, installs EVE via npm (default) or git, and can run onboarding.                   |
+| Script                             | Platform             | What it does                                                                                         |
+| ---------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| [`install.sh`](#installsh)         | macOS / Linux / WSL  | Installs Node if needed, installs EVE via npm (default) or git, and can run onboarding.              |
 | [`install-cli.sh`](#install-clish) | macOS / Linux / WSL  | Installs Node + EVE into a local prefix (`~/.eve`) with npm or git checkout modes. No root required. |
-| [`install.ps1`](#installps1)       | Windows (PowerShell) | Installs Node if needed, installs EVE via npm (default) or git, and can run onboarding.                   |
+| [`install.ps1`](#installps1)       | Windows (PowerShell) | Installs Node if needed, installs EVE via npm (default) or git, and can run onboarding.              |
 
 ## Quick commands
 
@@ -141,7 +141,7 @@ The script exits with code `2` for invalid method selection or invalid `--instal
 | `--git`                               | Shortcut for git method. Alias: `--github`                 |
 | `--version <version\|dist-tag\|spec>` | npm version, dist-tag, or package spec (default: `latest`) |
 | `--beta`                              | Use beta dist-tag if available, else fallback to `latest`  |
-| `--git-dir <path>`                    | Checkout directory (default: `~/eve`). Alias: `--dir` |
+| `--git-dir <path>`                    | Checkout directory (default: `~/eve`). Alias: `--dir`      |
 | `--no-git-update`                     | Skip `git pull` for existing checkout                      |
 | `--no-prompt`                         | Disable prompts                                            |
 | `--no-onboard`                        | Skip onboarding                                            |
@@ -154,19 +154,19 @@ The script exits with code `2` for invalid method selection or invalid `--instal
 
   <Accordion title="Environment variables reference">
 
-| Variable                                          | Description                                                        |
-| ------------------------------------------------- | ------------------------------------------------------------------ |
-| `EVE_INSTALL_METHOD=git\|npm`                | Install method                                                     |
-| `EVE_VERSION=latest\|next\|<semver>\|<spec>` | npm version, dist-tag, or package spec                             |
-| `EVE_BETA=0\|1`                              | Use beta if available                                              |
+| Variable                                     | Description                                                   |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `EVE_INSTALL_METHOD=git\|npm`                | Install method                                                |
+| `EVE_VERSION=latest\|next\|<semver>\|<spec>` | npm version, dist-tag, or package spec                        |
+| `EVE_BETA=0\|1`                              | Use beta if available                                         |
 | `EVE_HOME=<path>`                            | Base directory for EVE state and default git/onboarding paths |
-| `EVE_GIT_DIR=<path>`                         | Checkout directory                                                 |
-| `EVE_GIT_UPDATE=0\|1`                        | Toggle git updates                                                 |
-| `EVE_NO_PROMPT=1`                            | Disable prompts                                                    |
-| `EVE_NO_ONBOARD=1`                           | Skip onboarding                                                    |
-| `EVE_DRY_RUN=1`                              | Dry run mode                                                       |
-| `EVE_VERBOSE=1`                              | Debug mode                                                         |
-| `EVE_NPM_LOGLEVEL=error\|warn\|notice`       | npm log level                                                      |
+| `EVE_GIT_DIR=<path>`                         | Checkout directory                                            |
+| `EVE_GIT_UPDATE=0\|1`                        | Toggle git updates                                            |
+| `EVE_NO_PROMPT=1`                            | Disable prompts                                               |
+| `EVE_NO_ONBOARD=1`                           | Skip onboarding                                               |
+| `EVE_DRY_RUN=1`                              | Dry run mode                                                  |
+| `EVE_VERBOSE=1`                              | Debug mode                                                    |
+| `EVE_NPM_LOGLEVEL=error\|warn\|notice`       | npm log level                                                 |
 
   </Accordion>
 </AccordionGroup>
@@ -240,15 +240,15 @@ by default, plus git-checkout installs under the same prefix flow.
 
 | Flag                        | Description                                                                     |
 | --------------------------- | ------------------------------------------------------------------------------- |
-| `--prefix <path>`           | Install prefix (default: `~/.eve`)                                         |
+| `--prefix <path>`           | Install prefix (default: `~/.eve`)                                              |
 | `--install-method npm\|git` | Choose install method (default: `npm`). Alias: `--method`                       |
 | `--npm`                     | Shortcut for npm method                                                         |
 | `--git`, `--github`         | Shortcut for git method                                                         |
-| `--git-dir <path>`          | Git checkout directory (default: `~/eve`). Alias: `--dir`                  |
-| `--version <ver>`           | EVE version or dist-tag (default: `latest`)                                |
+| `--git-dir <path>`          | Git checkout directory (default: `~/eve`). Alias: `--dir`                       |
+| `--version <ver>`           | EVE version or dist-tag (default: `latest`)                                     |
 | `--node-version <ver>`      | Node version (default: `22.22.0`)                                               |
 | `--json`                    | Emit NDJSON events                                                              |
-| `--onboard`                 | Run `eve onboard` after install                                            |
+| `--onboard`                 | Run `eve onboard` after install                                                 |
 | `--no-onboard`              | Skip onboarding (default)                                                       |
 | `--set-npm-prefix`          | On Linux, force npm prefix to `~/.npm-global` if current prefix is not writable |
 | `--help`                    | Show usage (`-h`)                                                               |
@@ -257,17 +257,17 @@ by default, plus git-checkout installs under the same prefix flow.
 
   <Accordion title="Environment variables reference">
 
-| Variable                                    | Description                                                        |
-| ------------------------------------------- | ------------------------------------------------------------------ |
-| `EVE_PREFIX=<path>`                    | Install prefix                                                     |
-| `EVE_INSTALL_METHOD=git\|npm`          | Install method                                                     |
+| Variable                               | Description                                                   |
+| -------------------------------------- | ------------------------------------------------------------- |
+| `EVE_PREFIX=<path>`                    | Install prefix                                                |
+| `EVE_INSTALL_METHOD=git\|npm`          | Install method                                                |
 | `EVE_VERSION=<ver>`                    | EVE version or dist-tag                                       |
-| `EVE_NODE_VERSION=<ver>`               | Node version                                                       |
+| `EVE_NODE_VERSION=<ver>`               | Node version                                                  |
 | `EVE_HOME=<path>`                      | Base directory for EVE state and default git/onboarding paths |
-| `EVE_GIT_DIR=<path>`                   | Git checkout directory for git installs                            |
-| `EVE_GIT_UPDATE=0\|1`                  | Toggle git updates for existing checkouts                          |
-| `EVE_NO_ONBOARD=1`                     | Skip onboarding                                                    |
-| `EVE_NPM_LOGLEVEL=error\|warn\|notice` | npm log level                                                      |
+| `EVE_GIT_DIR=<path>`                   | Git checkout directory for git installs                       |
+| `EVE_GIT_UPDATE=0\|1`                  | Toggle git updates for existing checkouts                     |
+| `EVE_NO_ONBOARD=1`                     | Skip onboarding                                               |
+| `EVE_NPM_LOGLEVEL=error\|warn\|notice` | npm log level                                                 |
 
   </Accordion>
 </AccordionGroup>
@@ -348,7 +348,7 @@ by default, plus git-checkout installs under the same prefix flow.
 | --------------------------- | ---------------------------------------------------------- |
 | `-InstallMethod npm\|git`   | Install method (default: `npm`)                            |
 | `-Tag <tag\|version\|spec>` | npm dist-tag, version, or package spec (default: `latest`) |
-| `-GitDir <path>`            | Checkout directory (default: `%USERPROFILE%\eve`)     |
+| `-GitDir <path>`            | Checkout directory (default: `%USERPROFILE%\eve`)          |
 | `-NoOnboard`                | Skip onboarding                                            |
 | `-NoGitUpdate`              | Skip `git pull`                                            |
 | `-DryRun`                   | Print actions only                                         |
@@ -357,8 +357,8 @@ by default, plus git-checkout installs under the same prefix flow.
 
   <Accordion title="Environment variables reference">
 
-| Variable                           | Description        |
-| ---------------------------------- | ------------------ |
+| Variable                      | Description        |
+| ----------------------------- | ------------------ |
 | `EVE_INSTALL_METHOD=git\|npm` | Install method     |
 | `EVE_GIT_DIR=<path>`          | Checkout directory |
 | `EVE_NO_ONBOARD=1`            | Skip onboarding    |

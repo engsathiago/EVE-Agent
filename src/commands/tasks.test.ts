@@ -82,12 +82,19 @@ const zeroTaskAuditCounts = {
   stale_running: 0,
 };
 
-async function withTaskCommandStateDir(
-  run: (state: EVETestState) => Promise<void>,
-): Promise<void> {
-  await withEVETestState(
-    { layout: "state-only", prefix: "eve-tasks-command-" },
-    async (state) => {
+async function withTaskCommandStateDir(run: (state: EVETestState) => Promise<void>): Promise<void> {
+  await withEVETestState({ layout: "state-only", prefix: "eve-tasks-command-" }, async (state) => {
+    taskRegistryMaintenance.stopTaskRegistryMaintenance();
+    taskRegistryMaintenance.resetTaskRegistryMaintenanceRuntimeForTests();
+    resetConfigRuntimeState();
+    resetDetachedTaskLifecycleRuntimeForTests();
+    resetTaskRegistryDeliveryRuntimeForTests();
+    resetTaskRegistryForTests({ persist: false });
+    resetTaskFlowRegistryForTests({ persist: false });
+    closeEVEAgentDatabasesForTest();
+    try {
+      await run(state);
+    } finally {
       taskRegistryMaintenance.stopTaskRegistryMaintenance();
       taskRegistryMaintenance.resetTaskRegistryMaintenanceRuntimeForTests();
       resetConfigRuntimeState();
@@ -96,20 +103,8 @@ async function withTaskCommandStateDir(
       resetTaskRegistryForTests({ persist: false });
       resetTaskFlowRegistryForTests({ persist: false });
       closeEVEAgentDatabasesForTest();
-      try {
-        await run(state);
-      } finally {
-        taskRegistryMaintenance.stopTaskRegistryMaintenance();
-        taskRegistryMaintenance.resetTaskRegistryMaintenanceRuntimeForTests();
-        resetConfigRuntimeState();
-        resetDetachedTaskLifecycleRuntimeForTests();
-        resetTaskRegistryDeliveryRuntimeForTests();
-        resetTaskRegistryForTests({ persist: false });
-        resetTaskFlowRegistryForTests({ persist: false });
-        closeEVEAgentDatabasesForTest();
-      }
-    },
-  );
+    }
+  });
 }
 
 describe("tasks commands", () => {

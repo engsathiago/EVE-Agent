@@ -265,9 +265,7 @@ describe("provider attribution", () => {
         "User-Agent": "eve/2026.3.22",
       },
     });
-    expect(
-      resolveProviderAttributionPolicy("xai", { EVE_VERSION: "2026.3.22" })?.headers,
-    ).toEqual({
+    expect(resolveProviderAttributionPolicy("xai", { EVE_VERSION: "2026.3.22" })?.headers).toEqual({
       originator: "eve",
       version: "2026.3.22",
       "User-Agent": "eve/2026.3.22",

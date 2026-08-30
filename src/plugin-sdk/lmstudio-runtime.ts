@@ -1,9 +1,5 @@
 // Manual facade. Keep loader boundary explicit.
-import type {
-  ModelDefinitionConfig,
-  ModelProviderConfig,
-  EVEConfig,
-} from "../config/types.js";
+import type { ModelDefinitionConfig, ModelProviderConfig, EVEConfig } from "../config/types.js";
 import {
   createLazyFacadeValue as createLazyFacadeRuntimeValue,
   loadBundledPluginPublicSurfaceModuleSync,

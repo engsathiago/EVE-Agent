@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements telegram desktop builder behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "eve/plugin-sdk/error-runtime";
-import { pathExists } from "eve/plugin-sdk/security-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { pathExists } from "eve-agent/plugin-sdk/security-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import {
   acquireQaCredentialLease,
@@ -123,8 +123,7 @@ const CRABBOX_IDLE_TIMEOUT_ENV = "EVE_MANTIS_CRABBOX_IDLE_TIMEOUT";
 const CRABBOX_TTL_ENV = "EVE_MANTIS_CRABBOX_TTL";
 const HYDRATE_MODE_ENV = "EVE_MANTIS_HYDRATE_MODE";
 const TELEGRAM_PROFILE_ARCHIVE_ENV = "EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64";
-const TELEGRAM_PROFILE_ARCHIVE_ENV_NAME_ENV =
-  "EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_ARCHIVE_ENV";
+const TELEGRAM_PROFILE_ARCHIVE_ENV_NAME_ENV = "EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_ARCHIVE_ENV";
 const TELEGRAM_PROFILE_DIR_ENV = "EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_DIR";
 
 function normalizeHydrateMode(
@@ -154,14 +153,10 @@ function buildCrabboxEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
     next.EVE_MANTIS_TELEGRAM_GROUP_ID = trimToValue(next.EVE_QA_TELEGRAM_GROUP_ID);
   }
   if (!trimToValue(next.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN)) {
-    next.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN = trimToValue(
-      next.EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN,
-    );
+    next.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN = trimToValue(next.EVE_QA_TELEGRAM_DRIVER_BOT_TOKEN);
   }
   if (!trimToValue(next.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN)) {
-    next.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN = trimToValue(
-      next.EVE_QA_TELEGRAM_SUT_BOT_TOKEN,
-    );
+    next.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN = trimToValue(next.EVE_QA_TELEGRAM_SUT_BOT_TOKEN);
   }
   return next;
 }

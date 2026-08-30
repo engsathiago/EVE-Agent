@@ -128,10 +128,7 @@ function mergeSlackStreamingConfig(
   };
 }
 
-export function mergeSlackAccountConfig(
-  cfg: EVEConfig,
-  accountId: string,
-): SlackAccountConfig {
+export function mergeSlackAccountConfig(cfg: EVEConfig, accountId: string): SlackAccountConfig {
   const accountConfig = resolveSlackAccountConfig(cfg, accountId);
   const merged = resolveMergedAccountConfig<SlackAccountConfig>({
     channelConfig: cfg.channels?.slack as SlackAccountConfig,

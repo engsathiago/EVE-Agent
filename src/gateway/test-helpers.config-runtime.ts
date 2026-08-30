@@ -275,8 +275,7 @@ export function createGatewayConfigModuleMock(actual: GatewayConfigModule): Gate
     get isNixMode() {
       return testIsNixMode.value;
     },
-    applyConfigOverrides: (cfg: EVEConfig) =>
-      composeTestConfig(cfg as Record<string, unknown>),
+    applyConfigOverrides: (cfg: EVEConfig) => composeTestConfig(cfg as Record<string, unknown>),
     getRuntimeConfig: loadRuntimeAwareTestConfig,
     parseConfigJson5: (raw: string) => {
       try {

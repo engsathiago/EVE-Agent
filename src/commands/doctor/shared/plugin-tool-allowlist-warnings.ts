@@ -2,10 +2,7 @@
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { isRecord as hasRecord } from "@eve/normalization-core/record-coerce";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
-import {
-  sortUniqueStrings,
-  uniqueStrings,
-} from "@eve/normalization-core/string-normalization";
+import { sortUniqueStrings, uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { sanitizeServerName, TOOL_NAME_SEPARATOR } from "../../../agents/agent-bundle-mcp-names.js";
 import { DEFAULT_MODEL, DEFAULT_PROVIDER } from "../../../agents/defaults.js";
 import { compileGlobPatterns, matchesAnyGlobPattern } from "../../../agents/glob-pattern.js";

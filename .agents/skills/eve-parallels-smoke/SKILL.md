@@ -46,16 +46,16 @@ Use this skill for Parallels guest workflows and smoke interpretation. Do not lo
 
 - Preferred entrypoint: `pnpm test:parallels:npm-update`
 - For a macOS-only published release update check, use:
-  - `timeout --foreground 75m pnpm test:parallels:npm-update -- --platform macos --package-spec eve@<old-version> --update-target <target-version-or-tag> --json`
+  - `timeout --foreground 75m pnpm test:parallels:npm-update -- --platform macos --package-spec eve-agent@<old-version> --update-target <target-version-or-tag> --json`
     This keeps the same-guest `eve update --tag ...` coverage and uses the shared macOS current-user/sudo fallback without starting Windows/Linux lanes.
 - Required coverage: every release/update regression run must include both lanes:
   - fresh snapshot -> install requested package/baseline -> smoke
   - same guest baseline -> run the guest's installed `eve update ...` command -> smoke again
 - The update lane must exercise EVE's internal updater. Do not count a direct `npm install -g <tgz-or-spec>` or harness-side package swap as update-flow coverage; those are install smokes only.
-- For published targets, install the old baseline package first (for example `eve@2026.4.9`), then run the installed guest CLI with the intended channel/tag (for example `eve update --channel beta --yes --json`) and verify `eve --version`, `eve update status --json`, gateway RPC, and an agent turn after the command.
+- For published targets, install the old baseline package first (for example `eve-agent@2026.4.9`), then run the installed guest CLI with the intended channel/tag (for example `eve update --channel beta --yes --json`) and verify `eve --version`, `eve update status --json`, gateway RPC, and an agent turn after the command.
 - For unpublished targets, pack the candidate on the host, serve the `.tgz` over the harness HTTP server, and point the guest updater at that served package. Prefer `eve update --tag http://<host-ip>:<port>/eve-<version>.tgz --yes --json`; when channel persistence also matters, pass `--channel <stable|beta>` and set `EVE_UPDATE_PACKAGE_SPEC` to the same served URL in the guest update environment. The command under test must still be `eve update`, not direct npm.
 - For unpublished local-fix validation, remember the old baseline updater code still controls the first hop. A fix that lives only in the new updater code cannot change that already-running old process; the served candidate must either keep package/plugin metadata compatible with the baseline host or the baseline itself must include the updater fix.
-- For beta/stable verification, resolve the tag immediately before the run (`npm view eve@beta version dist.tarball` or `npm view eve@latest ...`). Tags can move while a long VM matrix is already running; restart the matrix when the intended prerelease appears after an earlier registry 404/tag-lag check.
+- For beta/stable verification, resolve the tag immediately before the run (`npm view eve-agent@beta version dist.tarball` or `npm view eve-agent@latest ...`). Tags can move while a long VM matrix is already running; restart the matrix when the intended prerelease appears after an earlier registry 404/tag-lag check.
 - Use the configured secret workflow to inject only the provider keys needed by OpenAI/Anthropic lanes. Do not print secrets or env dumps; pass provider secrets through the guest exec environment.
 - Same-guest update verification should set the default model explicitly to `openai/gpt-5.4` before the agent turn and use a fresh explicit `--session-id` so old session model state does not leak into the check.
 - The aggregate npm-update wrapper must resolve the Linux VM with the same Ubuntu fallback policy as `parallels-linux-smoke.sh` before both fresh and update lanes. Treat any Ubuntu guest with major version `>= 24` as acceptable when the exact default VM is missing, preferring the newest versioned Ubuntu guest with a fresh poweroff snapshot. On Peter's current host today, use `Ubuntu 26.04`.
@@ -74,7 +74,7 @@ Use this skill for Parallels guest workflows and smoke interpretation. Do not lo
     This resolves `beta3` to the latest `*-beta.3` version, runs latest->that-version same-guest update coverage, and then runs fresh install smoke for that exact published target on the same selected OS matrix. Use `--platform macos|windows|linux` to narrow reruns.
 - For beta 4 npm validation with agent turns, the known-good shape is:
   - `gtimeout --foreground 150m pnpm test:parallels:npm-update -- --beta-validation beta4 --model openai/gpt-5.4 --json`
-    Prefer the explicit `beta4` alias over `eve@beta` when validating a specific prerelease number; npm tags can move.
+    Prefer the explicit `beta4` alias over `eve-agent@beta` when validating a specific prerelease number; npm tags can move.
 - If the wrapper fails a lane, read the auto-dumped tail first, then the full nested lane log under `.artifacts/parallels/eve-parallels-npm-update.*`.
 - Current known macOS update-lane transport signature when the fallback is missing or bypassed: `Unable to authenticate the user. Make sure that the specified credentials are correct and try again.` Treat that as Parallels current-user authentication before blaming npm or EVE.
 - A macOS packaged fresh install with global package directories or bundled files mode `0777` usually means the harness used the root `prlctl exec` fallback under a permissive umask. The POSIX guest transports should prepend `umask 022`; verify the phase preflight line before blaming npm.
@@ -86,7 +86,7 @@ Use this skill for Parallels guest workflows and smoke interpretation. Do not lo
 ## macOS flow
 
 - Preferred entrypoint: `pnpm test:parallels:macos`
-- `parallels-macos-smoke.sh --mode fresh --target-package-spec eve@<version>` is an install smoke only. For published old-version -> new-version update coverage on macOS, prefer the npm-update wrapper with `--platform macos`; `parallels-macos-smoke.sh --mode upgrade --target-package-spec ...` installs the target package and does not exercise the baseline CLI's updater.
+- `parallels-macos-smoke.sh --mode fresh --target-package-spec eve-agent@<version>` is an install smoke only. For published old-version -> new-version update coverage on macOS, prefer the npm-update wrapper with `--platform macos`; `parallels-macos-smoke.sh --mode upgrade --target-package-spec ...` installs the target package and does not exercise the baseline CLI's updater.
 - Default upgrade coverage on macOS should now include: fresh snapshot -> site installer pinned to the latest stable tag -> `eve update --channel dev` on the guest. Treat this as part of the default Tahoe regression plan, not an optional side quest.
 - `parallels-macos-smoke.sh --mode upgrade` should run that release-to-dev lane by default. Keep the older host-tgz upgrade path only when the caller explicitly passes `--target-package-spec`.
 - Because the default upgrade lane no longer needs a host tgz, skip `npm pack` + host HTTP server startup for `--mode upgrade` unless `--target-package-spec` is set. Keep the pack/server path for `fresh` and `both`.
@@ -113,7 +113,7 @@ Use this skill for Parallels guest workflows and smoke interpretation. Do not lo
 - Preferred entrypoint: `pnpm test:parallels:windows`
 - Use the snapshot closest to `pre-eve-native-e2e-2026-03-12`.
 - Default upgrade coverage on Windows should now include: fresh snapshot -> site installer pinned to the requested stable tag -> `eve update --channel dev` on the guest. Keep the older host-tgz upgrade path only when the caller explicitly passes `--target-package-spec`.
-- Optional exact npm-tag baseline on Windows: `bash scripts/e2e/parallels-windows-smoke.sh --mode upgrade --target-package-spec eve@<tag> --json`. That lane installs the published npm tarball as baseline, then runs `eve update --channel dev`.
+- Optional exact npm-tag baseline on Windows: `bash scripts/e2e/parallels-windows-smoke.sh --mode upgrade --target-package-spec eve-agent@<tag> --json`. That lane installs the published npm tarball as baseline, then runs `eve update --channel dev`.
 - Optional forward-fix Windows validation: `bash scripts/e2e/parallels-windows-smoke.sh --mode upgrade --upgrade-from-packed-main --json`. That lane installs the packed current-main npm tgz as baseline, then runs `eve update --channel dev`.
 - Always use `prlctl exec --current-user`; plain `prlctl exec` lands in `NT AUTHORITY\\SYSTEM`.
 - Prefer explicit `npm.cmd` and `eve.cmd`.

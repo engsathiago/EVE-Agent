@@ -1,6 +1,6 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Configured hook helpers combine config and install records into active hooks.
 import type { HookConfig, HookInstallRecord } from "../config/types.hooks.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import { getLegacyInternalHookHandlers } from "./legacy-config.js";
 
 function hasEnabledFlag(entry: HookConfig | undefined): boolean {

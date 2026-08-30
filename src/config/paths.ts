@@ -342,10 +342,7 @@ function parseGatewayPortEnvValue(raw: string | undefined): number | null {
   return parseTcpPort(suffix);
 }
 
-export function resolveGatewayPort(
-  cfg?: EVEConfig,
-  env: NodeJS.ProcessEnv = process.env,
-): number {
+export function resolveGatewayPort(cfg?: EVEConfig, env: NodeJS.ProcessEnv = process.env): number {
   const envRaw = env.EVE_GATEWAY_PORT?.trim();
   const envPort = parseGatewayPortEnvValue(envRaw);
   if (envPort !== null) {

@@ -119,8 +119,7 @@ function buildProviderEntry(params: {
     setCredentialValue: (searchConfigTarget: Record<string, unknown>, value: unknown) => {
       searchConfigTarget.apiKey = value;
     },
-    getConfiguredCredentialValue: (config?: EVEConfig) =>
-      getConfigPath(config, credentialPath),
+    getConfiguredCredentialValue: (config?: EVEConfig) => getConfigPath(config, credentialPath),
     setConfiguredCredentialValue: (configTarget: EVEConfig, value: unknown) => {
       setConfigPath(configTarget, credentialPath, value);
     },

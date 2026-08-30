@@ -38,9 +38,7 @@ describe("parseEVENpmPostpublishVerifyArgs", () => {
   });
 
   it("rejects missing, option-like, and extra arguments before verification", () => {
-    expect(() => parseEVENpmPostpublishVerifyArgs([])).toThrow(
-      eveNpmPostpublishVerifyUsage(),
-    );
+    expect(() => parseEVENpmPostpublishVerifyArgs([])).toThrow(eveNpmPostpublishVerifyUsage());
     expect(() => parseEVENpmPostpublishVerifyArgs(["--tag"])).toThrow(
       "Unknown eve npm postpublish verifier option: --tag",
     );
@@ -63,7 +61,7 @@ describe("buildPublishedInstallScenarios", () => {
     expect(buildPublishedInstallScenarios("2026.3.23")).toEqual([
       {
         name: "fresh-exact",
-        installSpecs: ["eve@2026.3.23"],
+        installSpecs: ["eve-agent@2026.3.23"],
         expectedVersion: "2026.3.23",
       },
     ]);
@@ -73,12 +71,12 @@ describe("buildPublishedInstallScenarios", () => {
     expect(buildPublishedInstallScenarios("2026.3.23-2")).toEqual([
       {
         name: "fresh-exact",
-        installSpecs: ["eve@2026.3.23-2"],
+        installSpecs: ["eve-agent@2026.3.23-2"],
         expectedVersion: "2026.3.23-2",
       },
       {
         name: "upgrade-from-base-stable",
-        installSpecs: ["eve@2026.3.23", "eve@2026.3.23-2"],
+        installSpecs: ["eve-agent@2026.3.23", "eve-agent@2026.3.23-2"],
         expectedVersion: "2026.3.23-2",
       },
     ]);
@@ -86,7 +84,7 @@ describe("buildPublishedInstallScenarios", () => {
 });
 
 describe("npm registry provenance verification", () => {
-  const packageName = "eve";
+  const packageName = "eve-agent";
   const version = "2026.3.23";
   const integrity = `sha512-${Buffer.from("registry integrity", "utf8").toString("base64")}`;
   const provenancePayload = {
@@ -149,9 +147,7 @@ describe("npm registry provenance verification", () => {
         maxBodyBytes: 64,
         timeoutMs: 1234,
       }),
-    ).rejects.toThrow(
-      "npm registry https://registry.example/eve response body exceeded 64 bytes",
-    );
+    ).rejects.toThrow("npm registry https://registry.example/eve response body exceeded 64 bytes");
   });
 
   it("keeps npm registry timeouts active while reading response bodies", async () => {
@@ -164,9 +160,7 @@ describe("npm registry provenance verification", () => {
         fetchImpl,
         timeoutMs: 5,
       }),
-    ).rejects.toThrow(
-      "npm registry request timed out after 5ms: https://registry.example/eve",
-    );
+    ).rejects.toThrow("npm registry request timed out after 5ms: https://registry.example/eve");
   });
 
   it("verifies an npm registry signature against the matching public key", () => {
@@ -239,7 +233,7 @@ describe("npm registry provenance verification", () => {
                 payload: Buffer.from(
                   JSON.stringify({
                     ...provenancePayload,
-                    subject: [{ name: "pkg:npm/eve@2026.3.24", digest: {} }],
+                    subject: [{ name: "pkg:npm/eve-agent@2026.3.24", digest: {} }],
                   }),
                   "utf8",
                 ).toString("base64"),
@@ -328,7 +322,7 @@ describe("npm registry provenance verification", () => {
           attempts += 1;
           if (attempts < 3) {
             throw new Error(
-              "npm registry provenance metadata is incomplete for eve@2026.3.23.",
+              "npm registry provenance metadata is incomplete for eve-agent@2026.3.23.",
             );
           }
           return "verified";
@@ -348,14 +342,14 @@ describe("npm registry provenance verification", () => {
 
 describe("buildPublishedInstallCommandArgs", () => {
   it("runs lifecycle scripts for published install verification", () => {
-    const args = buildPublishedInstallCommandArgs("/tmp/eve-prefix", "eve@2026.4.10");
+    const args = buildPublishedInstallCommandArgs("/tmp/eve-prefix", "eve-agent@2026.4.10");
 
     expect(args).toEqual([
       "install",
       "-g",
       "--prefix",
       "/tmp/eve-prefix",
-      "eve@2026.4.10",
+      "eve-agent@2026.4.10",
       "--no-fund",
       "--no-audit",
     ]);
@@ -551,15 +545,11 @@ describe("normalizeInstalledBinaryVersion", () => {
 
 describe("resolveInstalledBinaryPath", () => {
   it("uses the Unix global bin path on non-Windows platforms", () => {
-    expect(resolveInstalledBinaryPath("/tmp/eve-prefix", "darwin")).toBe(
-      "/tmp/eve-prefix/bin/eve",
-    );
+    expect(resolveInstalledBinaryPath("/tmp/eve-prefix", "darwin")).toBe("/tmp/eve-prefix/bin/eve");
   });
 
   it("uses the Windows npm shim path on win32", () => {
-    expect(resolveInstalledBinaryPath("C:/eve-prefix", "win32")).toBe(
-      "C:\\eve-prefix\\eve.cmd",
-    );
+    expect(resolveInstalledBinaryPath("C:/eve-prefix", "win32")).toBe("C:\\eve-prefix\\eve.cmd");
   });
 });
 
@@ -587,12 +577,7 @@ describe("resolveInstalledBinaryCommandInvocation", () => {
       ),
     ).toEqual({
       command: "C:\\Windows\\System32\\cmd.exe",
-      args: [
-        "/d",
-        "/s",
-        "/c",
-        '""C:\\eve prefix\\eve.cmd" agent --message "hello world""',
-      ],
+      args: ["/d", "/s", "/c", '""C:\\eve prefix\\eve.cmd" agent --message "hello world""'],
       windowsVerbatimArguments: true,
     });
   });

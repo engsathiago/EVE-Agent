@@ -673,10 +673,7 @@ function buildQmdManagerIdentityKey(
   return `${agentId}:${JSON.stringify(config)}:${JSON.stringify(runtimeConfig.syncSettings ?? null)}:${JSON.stringify(runtimeConfig.contextLimits ?? null)}:${runtimeConfig.workspaceDir}`;
 }
 
-function resolveQmdManagerRuntimeConfig(
-  cfg: EVEConfig,
-  agentId: string,
-): QmdManagerRuntimeConfig {
+function resolveQmdManagerRuntimeConfig(cfg: EVEConfig, agentId: string): QmdManagerRuntimeConfig {
   return {
     workspaceDir: resolveAgentWorkspaceDir(cfg, agentId),
     syncSettings: resolveMemorySearchSyncConfig(cfg, agentId),

@@ -306,12 +306,12 @@ function createEVEPeerLinkFixtures(plugins: Array<{ pluginId: string; packageNam
       createInstalledPackageDir({
         name: packageName,
         version: "2026.5.4",
-        peerDependencies: { eve: ">=2026.5.4" },
+        peerDependencies: { "eve-agent": ">=2026.5.4" },
       }),
     ]),
   );
   const peerLinkPath = (pluginId: string) =>
-    path.join(installPaths[pluginId], "node_modules", "eve");
+    path.join(installPaths[pluginId], "node_modules", "eve-agent");
   const linkPeer = (pluginId: string) => {
     fs.mkdirSync(path.dirname(peerLinkPath(pluginId)), { recursive: true });
     fs.symlinkSync(peerTarget, peerLinkPath(pluginId), "junction");
@@ -1390,7 +1390,7 @@ describe("updateNpmInstalledPlugins", () => {
     const installPath = createInstalledPackageDir({
       name: "@eve/codex",
       version: "2026.5.3",
-      peerDependencies: { eve: ">=2026.5.3" },
+      peerDependencies: { "eve-agent": ">=2026.5.3" },
     });
     mockNpmViewMetadata({
       name: "@eve/codex",
@@ -1451,9 +1451,9 @@ describe("updateNpmInstalledPlugins", () => {
     const installPath = createInstalledPackageDir({
       name: "@eve/codex",
       version: "2026.5.3",
-      peerDependencies: { eve: ">=2026.5.3" },
+      peerDependencies: { "eve-agent": ">=2026.5.3" },
     });
-    fs.mkdirSync(path.join(installPath, "node_modules", "eve"), { recursive: true });
+    fs.mkdirSync(path.join(installPath, "node_modules", "eve-agent"), { recursive: true });
     mockNpmViewMetadata({
       name: "@eve/codex",
       version: "2026.5.3",
@@ -1643,7 +1643,7 @@ describe("updateNpmInstalledPlugins", () => {
     const brokenInstallPath = createInstalledPackageDir({
       name: "@eve/broken-plugin",
       version: "2026.5.4",
-      peerDependencies: { eve: ">=2026.5.4" },
+      peerDependencies: { "eve-agent": ">=2026.5.4" },
     });
     fs.writeFileSync(path.join(brokenInstallPath, "node_modules"), "not a directory");
     linkPeer("brave");
@@ -2958,8 +2958,7 @@ describe("updateNpmInstalledPlugins", () => {
           requestedLabel: "@beta",
           usedLabel: "@latest",
           reason: "failed",
-          message:
-            "plugin channel fallback: eve-codex-app-server used @latest after @beta failed",
+          message: "plugin channel fallback: eve-codex-app-server used @latest after @beta failed",
         },
       },
     ]);

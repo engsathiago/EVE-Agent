@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { formatErrorMessage } from "eve/plugin-sdk/error-runtime";
-import { pathExists } from "eve/plugin-sdk/security-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { pathExists } from "eve-agent/plugin-sdk/security-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import { isTruthyOptIn, trimToValue } from "../mantis-options.runtime.js";
 import {

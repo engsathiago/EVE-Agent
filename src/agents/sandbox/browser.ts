@@ -379,10 +379,7 @@ export async function ensureSandboxBrowser(params: {
     args.push("-e", `EVE_BROWSER_ENABLE_NOVNC=${params.cfg.browser.enableNoVnc ? "1" : "0"}`);
     args.push("-e", `EVE_BROWSER_CDP_PORT=${params.cfg.browser.cdpPort}`);
     args.push("-e", `${CDP_AUTH_TOKEN_ENV_KEY}=${cdpAuthToken}`);
-    args.push(
-      "-e",
-      `EVE_BROWSER_AUTO_START_TIMEOUT_MS=${params.cfg.browser.autoStartTimeoutMs}`,
-    );
+    args.push("-e", `EVE_BROWSER_AUTO_START_TIMEOUT_MS=${params.cfg.browser.autoStartTimeoutMs}`);
     if (cdpSourceRange) {
       args.push("-e", `${CDP_SOURCE_RANGE_ENV_KEY}=${cdpSourceRange}`);
     }

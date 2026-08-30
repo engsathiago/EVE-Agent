@@ -2,7 +2,6 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { Message } from "grammy/types";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolvePersistentDedupePluginStateNamespace } from "eve-agent/plugin-sdk/persistent-dedupe";
 import {
@@ -10,6 +9,7 @@ import {
   resetPluginStateStoreForTests,
 } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { resolveStorePath } from "eve-agent/plugin-sdk/session-store-runtime";
+import type { Message } from "grammy/types";
 import { afterEach, describe, expect, it } from "vitest";
 import { resolveTelegramBotInfoCachePath } from "./bot-info-cache.js";
 import { resolveTelegramMessageCachePath } from "./message-cache.js";

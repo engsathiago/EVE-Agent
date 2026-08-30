@@ -1272,10 +1272,10 @@ suppressed while queued assistant audio is still playing,
 and recent assistant-like transcript echoes are ignored before the agent consult
 so BlackHole loopback does not make the agent answer its own speech.
 
-| Mode    | Who decides the answer        | Speech output path                     | Use when                                              |
-| ------- | ----------------------------- | -------------------------------------- | ----------------------------------------------------- |
-| `agent` | The configured EVE agent | Normal EVE TTS runtime            | You want "my agent is in the meeting" behavior        |
-| `bidi`  | The realtime voice model      | Realtime voice provider audio response | You want the lowest-latency conversational voice loop |
+| Mode    | Who decides the answer   | Speech output path                     | Use when                                              |
+| ------- | ------------------------ | -------------------------------------- | ----------------------------------------------------- |
+| `agent` | The configured EVE agent | Normal EVE TTS runtime                 | You want "my agent is in the meeting" behavior        |
+| `bidi`  | The realtime voice model | Realtime voice provider audio response | You want the lowest-latency conversational voice loop |
 
 In `bidi` mode, when the realtime model needs deeper reasoning, current
 information, or normal EVE tools, it can call `eve_agent_consult`.

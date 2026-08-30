@@ -1,7 +1,7 @@
 // Defines external auth contracts for provider plugins.
 import type { AuthProfileStore, OAuthCredential } from "../agents/auth-profiles/types.js";
-import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
 
 /** Context for resolving synthetic provider credentials from config. */
 export type ProviderResolveSyntheticAuthContext = {

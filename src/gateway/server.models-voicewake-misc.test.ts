@@ -460,10 +460,7 @@ describe("gateway server models + voicewake", () => {
       ]);
 
       const onDisk = JSON.parse(
-        await fs.readFile(
-          path.join(homeDir, ".eve", "settings", "voicewake-routing.json"),
-          "utf8",
-        ),
+        await fs.readFile(path.join(homeDir, ".eve", "settings", "voicewake-routing.json"), "utf8"),
       ) as { routes?: unknown };
       expect(onDisk.routes).toEqual([{ trigger: "robot wake", target: { agentId: "main" } }]);
 

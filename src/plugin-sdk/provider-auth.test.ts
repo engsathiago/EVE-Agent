@@ -248,11 +248,9 @@ describe("provider auth profile helpers", () => {
       }),
     ).toBe(true);
     expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(1, "/tmp/eve-agent");
-    expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(
-      2,
-      "/tmp/eve-agent",
-      { externalCli },
-    );
+    expect(loadAuthProfileStoreForSecretsRuntime).toHaveBeenNthCalledWith(2, "/tmp/eve-agent", {
+      externalCli,
+    });
   });
 
   it("accepts plus-signed Copilot token expiry strings", async () => {

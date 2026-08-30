@@ -5,8 +5,7 @@ import type { TelegramNetworkConfig } from "eve-agent/plugin-sdk/config-contract
 import { isTruthyEnvValue, isWSL2Sync } from "eve-agent/plugin-sdk/runtime-env";
 import { normalizeOptionalLowercaseString } from "eve-agent/plugin-sdk/string-coerce-runtime";
 
-export const TELEGRAM_DISABLE_AUTO_SELECT_FAMILY_ENV =
-  "EVE_TELEGRAM_DISABLE_AUTO_SELECT_FAMILY";
+export const TELEGRAM_DISABLE_AUTO_SELECT_FAMILY_ENV = "EVE_TELEGRAM_DISABLE_AUTO_SELECT_FAMILY";
 export const TELEGRAM_ENABLE_AUTO_SELECT_FAMILY_ENV = "EVE_TELEGRAM_ENABLE_AUTO_SELECT_FAMILY";
 export const TELEGRAM_DNS_RESULT_ORDER_ENV = "EVE_TELEGRAM_DNS_RESULT_ORDER";
 

@@ -89,6 +89,10 @@ describe("workboard gateway methods", () => {
       "workboard.cards.protocolViolation",
       "workboard.cards.archive",
       "workboard.cards.export",
+      "mission.overview",
+      "mission.tasks.create",
+      "mission.tasks.instruction",
+      "mission.tasks.action",
     ]);
     expect(methods.get("workboard.cards.list")?.opts).toEqual({ scope: "operator.read" });
     expect(methods.get("workboard.cards.diagnostics")?.opts).toEqual({ scope: "operator.read" });
@@ -97,6 +101,8 @@ describe("workboard gateway methods", () => {
     });
     expect(methods.get("workboard.cards.export")?.opts).toEqual({ scope: "operator.read" });
     expect(methods.get("workboard.cards.create")?.opts).toEqual({ scope: "operator.write" });
+    expect(methods.get("mission.overview")?.opts).toEqual({ scope: "operator.read" });
+    expect(methods.get("mission.tasks.action")?.opts).toEqual({ scope: "operator.write" });
     expect(methods.get("workboard.cards.runs")?.opts).toEqual({ scope: "operator.read" });
     expect(methods.get("workboard.cards.attachments.get")?.opts).toEqual({
       scope: "operator.read",

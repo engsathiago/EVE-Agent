@@ -4,11 +4,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  clearRuntimeConfigSnapshot,
-  getRuntimeConfig,
-  type EVEConfig,
-} from "../config/config.js";
+import { clearRuntimeConfigSnapshot, getRuntimeConfig, type EVEConfig } from "../config/config.js";
 import { callGateway as realCallGateway } from "../gateway/call.js";
 import { GatewayClient } from "../gateway/client.js";
 import { dispatchGatewayMethodInProcess as realDispatchGatewayMethodInProcess } from "../gateway/server-plugins.js";
@@ -17,10 +13,7 @@ import { extractPayloadText } from "../gateway/test-helpers.agent-results.js";
 import { onAgentEvent, type AgentEventPayload } from "../infra/agent-events.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { clearCurrentPluginMetadataSnapshot } from "../plugins/current-plugin-metadata-snapshot.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import { GATEWAY_CLIENT_MODES, GATEWAY_CLIENT_NAMES } from "../utils/message-channel.js";
 import { isLiveTestEnabled } from "./live-test-helpers.js";
 import { testing as subagentAnnounceDeliveryTesting } from "./subagent-announce-delivery.js";

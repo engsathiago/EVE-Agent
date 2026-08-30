@@ -77,10 +77,7 @@ export function shouldIncludeUpdatePlanToolForEVETools(params: {
     params.config?.tools?.alsoAllow,
     params.pluginToolAllowlist,
   );
-  const denylist = mergeEVEToolPolicyList(
-    params.config?.tools?.deny,
-    params.pluginToolDenylist,
-  );
+  const denylist = mergeEVEToolPolicyList(params.config?.tools?.deny, params.pluginToolDenylist);
   return (
     isToolExplicitlyAllowedByEVEToolPolicy({
       toolName: "update_plan",

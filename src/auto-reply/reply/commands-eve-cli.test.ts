@@ -2,10 +2,7 @@ import { createRequire } from "node:module";
 // Verifies chat-facing CLI snippets execute the EVE CLI even from harness-hosted gateways.
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  buildCurrentEVECliArgv,
-  buildCurrentEVECliExecEnv,
-} from "./commands-eve-cli.js";
+import { buildCurrentEVECliArgv, buildCurrentEVECliExecEnv } from "./commands-eve-cli.js";
 
 const requireFromHere = createRequire(import.meta.url);
 const originalArgv = [...process.argv];

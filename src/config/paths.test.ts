@@ -280,12 +280,10 @@ describe("resolveIncludeRoots", () => {
 
   it("returns an empty list when EVE_INCLUDE_ROOTS is unset or blank", () => {
     expect(resolveIncludeRoots(envWith({}), () => HOME)).toStrictEqual([]);
-    expect(resolveIncludeRoots(envWith({ EVE_INCLUDE_ROOTS: "" }), () => HOME)).toStrictEqual(
+    expect(resolveIncludeRoots(envWith({ EVE_INCLUDE_ROOTS: "" }), () => HOME)).toStrictEqual([]);
+    expect(resolveIncludeRoots(envWith({ EVE_INCLUDE_ROOTS: "   " }), () => HOME)).toStrictEqual(
       [],
     );
-    expect(
-      resolveIncludeRoots(envWith({ EVE_INCLUDE_ROOTS: "   " }), () => HOME),
-    ).toStrictEqual([]);
   });
 
   it("splits on the platform path delimiter and resolves each entry to an absolute path", () => {

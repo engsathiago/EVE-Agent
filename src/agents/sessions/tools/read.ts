@@ -125,9 +125,7 @@ function quotePosixShellArg(value: string): string {
   return `'${value.replaceAll("'", "'\\''")}'`;
 }
 
-function getEVEDocsClassification(
-  absolutePath: string,
-): CompactReadClassification | undefined {
+function getEVEDocsClassification(absolutePath: string): CompactReadClassification | undefined {
   const packageRoot = dirname(getReadmePath());
   const relativePath = relative(resolvePath(packageRoot), resolvePath(absolutePath));
   if (

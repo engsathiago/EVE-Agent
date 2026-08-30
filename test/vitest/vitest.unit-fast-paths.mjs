@@ -245,6 +245,7 @@ const broadUnitFastCandidateSkipGlobs = [
   "src/security/**/*.test.ts",
   "src/secrets/**/*.test.ts",
   "test/helpers/stt-live-audio.test.ts",
+  "test/scripts/qa-report-cli.test.ts",
   "test/vitest-extensions-config.test.ts",
   "test/vitest-unit-paths.test.ts",
   ...boundaryTestFiles,

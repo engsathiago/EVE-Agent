@@ -67,7 +67,7 @@ function useBundledPluginsDir(extensionsRoot: string | undefined): void {
 
 function seedRoot(prefix: string): string {
   const root = makeTempRepoRoot(tempDirs, prefix);
-  writeJsonFile(path.join(root, "package.json"), { name: "eve" });
+  writeJsonFile(path.join(root, "package.json"), { name: "eve-agent" });
   vi.spyOn(process, "cwd").mockReturnValue(root);
   return root;
 }

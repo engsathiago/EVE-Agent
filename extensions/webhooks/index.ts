@@ -46,8 +46,7 @@ function registerWebhookRoutes(api: EVEPluginApi): void {
 export default definePluginEntry({
   id: "webhooks",
   name: "Webhooks",
-  description:
-    "Authenticated inbound webhooks that bind external automation to EVE TaskFlows.",
+  description: "Authenticated inbound webhooks that bind external automation to EVE TaskFlows.",
   register(api: EVEPluginApi) {
     registerWebhookRoutes(api);
   },

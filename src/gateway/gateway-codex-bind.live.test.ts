@@ -422,8 +422,7 @@ describeLive("gateway live (native Codex conversation binding)", () => {
       const accountId = "default";
       const slackUserId = `U${randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase()}`;
       const conversationId = `user:${slackUserId}`;
-      const bindModel =
-        process.env.EVE_LIVE_CODEX_BIND_MODEL?.trim() || DEFAULT_CODEX_BIND_MODEL;
+      const bindModel = process.env.EVE_LIVE_CODEX_BIND_MODEL?.trim() || DEFAULT_CODEX_BIND_MODEL;
       const bindProvider = resolveCodexBindModelProvider();
       const outboundReplies: CapturedOutboundReply[] = [];
 

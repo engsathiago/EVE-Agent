@@ -30,10 +30,7 @@ function pushPrefixed(out: string[], value: string): void {
 export function formatCliFailureLines(options: FormatCliFailureOptions): string[] {
   // Default output stays terse; stack traces require explicit debug intent.
   const env = options.env ?? process.env;
-  const lines = [
-    `[eve] ${options.title}`,
-    `[eve] Reason: ${formatErrorMessage(options.error)}`,
-  ];
+  const lines = [`[eve] ${options.title}`, `[eve] Reason: ${formatErrorMessage(options.error)}`];
 
   if (shouldShowStack(options.argv, env)) {
     lines.push("[eve] Stack:");

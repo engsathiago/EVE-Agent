@@ -195,10 +195,7 @@ function resolveBoundAcpAbortTargetSessionKey(params: {
   });
 }
 
-function normalizeRequesterSessionKey(
-  cfg: EVEConfig,
-  key: string | undefined,
-): string | undefined {
+function normalizeRequesterSessionKey(cfg: EVEConfig, key: string | undefined): string | undefined {
   const cleaned = normalizeOptionalString(key);
   if (!cleaned) {
     return undefined;

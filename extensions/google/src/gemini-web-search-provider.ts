@@ -68,9 +68,7 @@ function createGeminiToolDefinition(
   };
 }
 
-function resolveGoogleModelProviderConfig(
-  config?: EVEConfig,
-): Record<string, unknown> | undefined {
+function resolveGoogleModelProviderConfig(config?: EVEConfig): Record<string, unknown> | undefined {
   const provider = config?.models?.providers?.google;
   return isRecord(provider) ? provider : undefined;
 }

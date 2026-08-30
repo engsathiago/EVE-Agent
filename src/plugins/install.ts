@@ -104,7 +104,7 @@ type PackageManifest = PluginPackageManifest & {
 type PluginInstallRuntime = Awaited<ReturnType<typeof loadPluginInstallRuntime>>;
 
 function formatUnresolvedEVEPeerLinkError(packageName: string): string {
-  return `Installed plugin ${packageName} declares eve as a peer dependency, but EVE could not create a plugin-local node_modules/eve link. Run from a packaged EVE install or reinstall EVE, then retry.`;
+  return `Installed plugin ${packageName} declares eve-agent as a peer dependency, but EVE could not create a plugin-local node_modules/eve-agent link. Run from a packaged EVE install or reinstall EVE, then retry.`;
 }
 
 function isNpmAliasOverrideComparatorError(result: { stdout: string; stderr: string }): boolean {
@@ -735,7 +735,7 @@ async function rollbackManagedNpmPluginInstall(params: {
       );
     }
   }
-  if (params.packageName !== "eve") {
+  if (params.packageName !== "eve-agent") {
     try {
       await repairManagedNpmRootEVEPeer({
         npmRoot: params.npmRoot,
@@ -932,11 +932,11 @@ async function shouldCopyManagedNpmRollbackSnapshotEntry(params: {
   const isPluginLocalEVEPeer =
     (relativeParts.length === 3 &&
       relativeParts[1] === "node_modules" &&
-      relativeParts[2] === "eve") ||
+      relativeParts[2] === "eve-agent") ||
     (relativeParts.length === 4 &&
       relativeParts[0]?.startsWith("@") &&
       relativeParts[2] === "node_modules" &&
-      relativeParts[3] === "eve");
+      relativeParts[3] === "eve-agent");
   if (!isPluginLocalEVEPeer) {
     return true;
   }
@@ -1065,7 +1065,7 @@ async function listManagedNpmRootPackageNames(npmRoot: string): Promise<Set<stri
 
   const packageNames = new Set<string>();
   for (const entry of entries.toSorted((left, right) => left.name.localeCompare(right.name))) {
-    if (entry.name === ".bin" || entry.name === "eve") {
+    if (entry.name === ".bin" || entry.name === "eve-agent") {
       continue;
     }
     if (entry.name.startsWith("@")) {
@@ -1271,7 +1271,7 @@ async function installPluginFromManagedNpmRoot(
     prepared: ManagedNpmRootPreparedDependency,
   ): Promise<InstallPluginResult> => {
     logger.info?.(`Installing ${params.displaySpec} into ${npmRoot}…`);
-    if (params.packageName !== "eve") {
+    if (params.packageName !== "eve-agent") {
       const repairedEVEPeer = await repairManagedNpmRootEVEPeer({
         npmRoot,
         timeoutMs,
@@ -1561,7 +1561,7 @@ async function installPluginFromManagedNpmRoot(
         });
       }
     }
-    if (params.packageName !== "eve") {
+    if (params.packageName !== "eve-agent") {
       const repairedEVEPeer = await repairManagedNpmRootEVEPeer({
         npmRoot,
         timeoutMs,
@@ -2532,7 +2532,6 @@ async function installPluginFromInstalledPackageDirInternal(
   return result;
 }
 
-
 async function installPluginFromPackageDir(
   params: {
     packageDir: string;
@@ -2873,7 +2872,11 @@ export async function installPluginFromNpmSpec(
     targetPath: installRoot,
   });
 
-  const metadataResult = await resolveNpmSpecMetadata({ spec, timeoutMs });
+  const metadataResult = await resolveNpmSpecMetadata({
+    spec,
+    timeoutMs,
+    commandRunner: runCommandWithTimeout,
+  });
   if (!metadataResult.ok) {
     return {
       ok: false,
@@ -3057,6 +3060,7 @@ export async function installPluginFromNpmPackArchive(
   const metadataResult = await resolveNpmPackArchiveMetadata({
     archivePath: params.archivePath,
     timeoutMs,
+    commandRunner: runCommandWithTimeout,
   });
   if (!metadataResult.ok) {
     return metadataResult;

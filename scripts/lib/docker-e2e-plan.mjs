@@ -67,7 +67,7 @@ function shellQuote(value) {
 function sanitizeLaneNameSuffix(value) {
   return (
     String(value)
-      .replace(/^eve@/u, "")
+      .replace(/^eve-agent@/u, "")
       .replace(/[^A-Za-z0-9._-]+/g, "-")
       .replace(/^-+|-+$/g, "") || "baseline"
   );
@@ -95,16 +95,16 @@ export function normalizeUpgradeSurvivorBaselineSpec(raw) {
   if (!value) {
     return undefined;
   }
-  const spec = value.startsWith("eve@") ? value : `eve@${value}`;
+  const spec = value.startsWith("eve-agent@") ? value : `eve-agent@${value}`;
   if (
-    !/^eve@(?:alpha|beta|latest|[0-9]{4}\.[0-9]+\.[0-9]+(?:-(?:[0-9]+|alpha\.[0-9]+|beta\.[0-9]+))?)$/u.test(
+    !/^eve-agent@(?:alpha|beta|latest|[0-9]{4}\.[0-9]+\.[0-9]+(?:-(?:[0-9]+|alpha\.[0-9]+|beta\.[0-9]+))?)$/u.test(
       spec,
     )
   ) {
     throw new Error(
       `invalid published upgrade survivor baseline: ${JSON.stringify(
         value,
-      )}. Expected eve@latest, eve@beta, eve@alpha, or eve@YYYY.M.PATCH.`,
+      )}. Expected eve-agent@latest, eve-agent@beta, eve-agent@alpha, or eve-agent@YYYY.M.PATCH.`,
     );
   }
   return spec;
@@ -157,7 +157,7 @@ function parseUpgradeSurvivorScenarios(raw) {
 }
 
 function parsePublishedReleaseVersion(spec) {
-  const match = /^eve@([0-9]{4})\.([0-9]+)\.([0-9]+)/u.exec(String(spec ?? ""));
+  const match = /^eve-agent@([0-9]{4})\.([0-9]+)\.([0-9]+)/u.exec(String(spec ?? ""));
   if (!match) {
     return null;
   }
@@ -211,9 +211,7 @@ function expandUpgradeSurvivorBaselineLanes(poolLanes, rawBaselineSpecs, rawScen
           const name = suffix ? `${poolLane.name}-${suffix}` : poolLane.name;
           const commandPrefix = [
             `EVE_UPGRADE_SURVIVOR_ARTIFACT_DIR="$PWD/.artifacts/upgrade-survivor/${name}"`,
-            baselineSpec
-              ? `EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=${shellQuote(baselineSpec)}`
-              : "",
+            baselineSpec ? `EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=${shellQuote(baselineSpec)}` : "",
             scenario ? `EVE_UPGRADE_SURVIVOR_SCENARIO=${shellQuote(scenario)}` : "",
           ]
             .filter(Boolean)

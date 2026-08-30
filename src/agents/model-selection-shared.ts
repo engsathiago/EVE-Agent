@@ -133,10 +133,7 @@ function listModelAliasCandidates(cfg: EVEConfig): ModelAliasCandidate[] {
   });
 }
 
-function findModelAliasCandidate(
-  cfg: EVEConfig,
-  raw: string,
-): ModelAliasCandidate | undefined {
+function findModelAliasCandidate(cfg: EVEConfig, raw: string): ModelAliasCandidate | undefined {
   const aliasKey = normalizeLowercaseStringOrEmpty(raw);
   let match: ModelAliasCandidate | undefined;
   for (const candidate of listModelAliasCandidates(cfg)) {
@@ -1236,10 +1233,7 @@ function hasConfiguredModelRefsNeedingManifestLookup(
   });
 }
 
-function hasConfiguredRowsNeedingManifestLookup(
-  cfg: EVEConfig,
-  defaultProvider: string,
-): boolean {
+function hasConfiguredRowsNeedingManifestLookup(cfg: EVEConfig, defaultProvider: string): boolean {
   return (
     hasConfiguredProviderRowsNeedingManifestLookup(cfg) ||
     hasConfiguredModelRefsNeedingManifestLookup(cfg, defaultProvider)

@@ -113,9 +113,7 @@ function normalizeSlackRouteBindingConfig(cfg: EVEConfig): EVEConfig {
     };
   });
 
-  const normalizedCfg = changed
-    ? ({ ...cfg, bindings: normalizedBindings } as EVEConfig)
-    : cfg;
+  const normalizedCfg = changed ? ({ ...cfg, bindings: normalizedBindings } as EVEConfig) : cfg;
   slackRouteBindingConfigCache.set(cfg, { bindingsRef: bindings, normalizedCfg });
   return normalizedCfg;
 }

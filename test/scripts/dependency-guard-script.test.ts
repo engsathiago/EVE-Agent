@@ -312,9 +312,7 @@ describe("dependency guard script", () => {
   });
 
   it("trusts only configured dependency guard marker comment authors", () => {
-    const trustedAuthors = dependencyGuardCommentAuthors(
-      "github-actions[bot], eve-autoscrub[bot]",
-    );
+    const trustedAuthors = dependencyGuardCommentAuthors("github-actions[bot], eve-autoscrub[bot]");
 
     expect(
       isDependencyGuardMarkerComment(
@@ -432,7 +430,7 @@ describe("dependency guard script", () => {
     const sameRepoPullRequest = {
       head: {
         ref: "contributor/change",
-        repo: { full_name: "eve/eve" },
+        repo: { full_name: "engsathiago/eve-agent" },
         sha: headSha,
       },
     };
@@ -454,22 +452,22 @@ describe("dependency guard script", () => {
 
     expect(
       canAutoscrubPullRequest({
-        owner: "eve",
-        repo: "eve",
+        owner: "engsathiago",
+        repo: "eve-agent",
         pullRequest: sameRepoPullRequest,
       }),
     ).toBe(true);
     expect(
       canAutoscrubPullRequest({
-        owner: "eve",
-        repo: "eve",
+        owner: "engsathiago",
+        repo: "eve-agent",
         pullRequest: forkPullRequest,
       }),
     ).toBe(false);
     expect(
       canAutoscrubPullRequest({
-        owner: "eve",
-        repo: "eve",
+        owner: "engsathiago",
+        repo: "eve-agent",
         pullRequest: editableForkPullRequest,
       }),
     ).toBe(true);
@@ -564,8 +562,8 @@ describe("dependency guard script", () => {
     const commit = await createAutoscrubCommit(
       { baseApi, writeApi },
       {
-        owner: "eve",
-        repo: "eve",
+        owner: "engsathiago",
+        repo: "eve-agent",
         pullRequest: {
           base: { sha: "base-sha" },
           head: { ref: "contributor/change", sha: headSha },
@@ -577,7 +575,7 @@ describe("dependency guard script", () => {
 
     expect(commit).toEqual({ sha: staleSha });
     expect(calls.map((call) => `${call.api}:${call.path}`)).toEqual([
-      "base:/repos/eve/eve/contents/pnpm-lock.yaml?ref=base-sha",
+      "base:/repos/engsathiago/eve-agent/contents/pnpm-lock.yaml?ref=base-sha",
       "write:graphql",
     ]);
     expect(calls[1].variables).toMatchObject({
@@ -661,7 +659,9 @@ describe("dependency guard script", () => {
       )) as typeof fetch;
 
     try {
-      await expect(githubApi("token").request("/repos/eve/eve")).rejects.toMatchObject({
+      await expect(
+        githubApi("token").request("/repos/engsathiago/eve-agent"),
+      ).rejects.toMatchObject({
         message: `403 Forbidden: GitHub error response body exceeded ${GITHUB_ERROR_BODY_MAX_BYTES} bytes`,
         status: 403,
       });
@@ -679,7 +679,7 @@ describe("dependency guard script", () => {
             headers: { "content-length": "65" },
           }),
         )) as typeof fetch,
-    }).request("/repos/eve/eve");
+    }).request("/repos/engsathiago/eve-agent");
 
     await expect(request).rejects.toThrow("GitHub response body exceeded 64 bytes");
     expect(GITHUB_RESPONSE_BODY_MAX_BYTES).toBeGreaterThan(64);
@@ -700,9 +700,9 @@ describe("dependency guard script", () => {
         markFetchStarted();
         return new Promise(() => {});
       }) as typeof fetch,
-    }).request("/repos/eve/eve");
+    }).request("/repos/engsathiago/eve-agent");
     const rejection = expect(request).rejects.toThrow(
-      /GitHub API GET \/repos\/eve\/eve exceeded timeout 5ms/u,
+      /GitHub API GET \/repos\/engsathiago\/eve-agent exceeded timeout 5ms/u,
     );
 
     await fetchStarted;
@@ -734,9 +734,9 @@ describe("dependency guard script", () => {
           ),
         );
       }) as typeof fetch,
-    }).request("/repos/eve/eve");
+    }).request("/repos/engsathiago/eve-agent");
     const rejection = expect(request).rejects.toThrow(
-      /GitHub API GET \/repos\/eve\/eve exceeded timeout 5ms/u,
+      /GitHub API GET \/repos\/engsathiago\/eve-agent exceeded timeout 5ms/u,
     );
 
     await fetchStarted;

@@ -93,9 +93,7 @@ describe("resolveCodexAppServerSpawnInvocation", () => {
   it("rejects Windows Codex app-server commands that include inline script arguments", () => {
     expect(() =>
       resolveCodexAppServerSpawnInvocation(
-        startOptions(
-          "node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
-        ),
+        startOptions("node C:\\Users\\me\\.eve\\npm\\node_modules\\@openai\\codex\\bin\\codex.js"),
         {
           platform: "win32",
           env: {},

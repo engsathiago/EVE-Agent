@@ -18,7 +18,7 @@ optional chat channels — they just differ in how you interact with the setup.
 | **Interface**  | Terminal wizard                        | Guided UI in the app      |
 | **Best for**   | Servers, headless, full control        | Desktop Mac, visual setup |
 | **Automation** | `--non-interactive` for scripts        | Manual only               |
-| **Command**    | `eve onboard`                     | Launch the app            |
+| **Command**    | `eve onboard`                          | Launch the app            |
 
 Most users should start with **CLI onboarding** — it works everywhere and gives
 you the most control.

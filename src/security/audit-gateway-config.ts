@@ -5,8 +5,8 @@ import {
   normalizeOptionalLowercaseString,
 } from "@eve/normalization-core/string-coerce";
 import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
-import type { GatewayAuthConfig } from "../config/types.gateway.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { GatewayAuthConfig } from "../config/types.gateway.js";
 import { hasConfiguredSecretInput } from "../config/types.secrets.js";
 import { resolveGatewayAuth } from "../gateway/auth-resolve.js";
 import { resolveGatewayAuthTokenSourceConflict } from "../gateway/auth-token-source-conflict.js";

@@ -14,9 +14,7 @@ import {
 
 describe("route-args", () => {
   it("parses health and status route args", () => {
-    expect(
-      parseHealthRouteArgs(["node", "eve", "health", "--json", "--timeout", "5000"]),
-    ).toEqual({
+    expect(parseHealthRouteArgs(["node", "eve", "health", "--json", "--timeout", "5000"])).toEqual({
       json: true,
       verbose: false,
       timeoutMs: 5000,
@@ -55,31 +53,15 @@ describe("route-args", () => {
       expect(parseHealthRouteArgs(["node", "eve", "health", "--timeout", bad])).toBeNull();
     }
     expect(
-      parseStatusRouteArgs([
-        "node",
-        "eve",
-        "status",
-        "--timeout",
-        "5000",
-        "--timeout",
-        "nope",
-      ]),
+      parseStatusRouteArgs(["node", "eve", "status", "--timeout", "5000", "--timeout", "nope"]),
     ).toBeNull();
     expect(
-      parseHealthRouteArgs([
-        "node",
-        "eve",
-        "health",
-        "--timeout",
-        "nope",
-        "--timeout",
-        "5000",
-      ]),
+      parseHealthRouteArgs(["node", "eve", "health", "--timeout", "nope", "--timeout", "5000"]),
     ).toMatchObject({ timeoutMs: 5000 });
     // A valid positive integer still parses on the fast path.
-    expect(parseStatusRouteArgs(["node", "eve", "status", "--timeout", "5000"])).toMatchObject(
-      { timeoutMs: 5000 },
-    );
+    expect(parseStatusRouteArgs(["node", "eve", "status", "--timeout", "5000"])).toMatchObject({
+      timeoutMs: 5000,
+    });
     // No --timeout flag at all still uses the fast path (undefined timeout).
     expect(parseStatusRouteArgs(["node", "eve", "status"])).toMatchObject({
       timeoutMs: undefined,

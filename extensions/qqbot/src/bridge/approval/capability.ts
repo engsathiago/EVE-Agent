@@ -62,17 +62,11 @@ function shouldHandleRequest(params: {
   });
 }
 
-function hasExecApprovalConfig(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-}): boolean {
+function hasExecApprovalConfig(params: { cfg: EVEConfig; accountId?: string | null }): boolean {
   return resolveQQBotExecApprovalConfig(params) !== undefined;
 }
 
-function isNativeDeliveryEnabled(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-}): boolean {
+function isNativeDeliveryEnabled(params: { cfg: EVEConfig; accountId?: string | null }): boolean {
   if (hasExecApprovalConfig(params)) {
     return isQQBotExecApprovalClientEnabled(params);
   }

@@ -193,10 +193,7 @@ function findProviderRuntimePluginInRegistry(params: {
     });
 }
 
-function hasConfiguredModelProvider(params: {
-  provider: string;
-  config?: EVEConfig;
-}): boolean {
+function hasConfiguredModelProvider(params: { provider: string; config?: EVEConfig }): boolean {
   return (
     findNormalizedProviderValue(params.config?.models?.providers, params.provider) !== undefined
   );

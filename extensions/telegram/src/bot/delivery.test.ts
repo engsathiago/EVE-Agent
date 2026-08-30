@@ -1,6 +1,6 @@
+import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 // Telegram tests cover delivery plugin behavior.
 import type { Bot } from "grammy";
-import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const { loadWebMedia } = vi.hoisted(() => ({
   loadWebMedia: vi.fn(),

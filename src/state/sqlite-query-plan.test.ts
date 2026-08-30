@@ -4,14 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  closeEVEAgentDatabasesForTest,
-  openEVEAgentDatabase,
-} from "./eve-agent-db.js";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "./eve-state-db.js";
+import { closeEVEAgentDatabasesForTest, openEVEAgentDatabase } from "./eve-agent-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "./eve-state-db.js";
 
 function createTempStateDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-plan-"));

@@ -1,9 +1,6 @@
 // Codex tests cover run attemptynamic tools plugin behavior.
 import path from "node:path";
-import {
-  onAgentEvent,
-  type AgentEventPayload,
-} from "eve-agent/plugin-sdk/agent-harness-runtime";
+import { onAgentEvent, type AgentEventPayload } from "eve-agent/plugin-sdk/agent-harness-runtime";
 import {
   emitTrustedDiagnosticEvent,
   onInternalDiagnosticEvent,
@@ -62,10 +59,7 @@ describe("runCodexAppServerAttempt dynamic tools", () => {
     params.sessionKey = "agent:main:main";
 
     expect(
-      testing.resolveEVECodingToolsSessionKeys(
-        params,
-        "agent:main:telegram:default:direct:1234",
-      ),
+      testing.resolveEVECodingToolsSessionKeys(params, "agent:main:telegram:default:direct:1234"),
     ).toEqual({
       sessionKey: "agent:main:telegram:default:direct:1234",
       runSessionKey: "agent:main:main",

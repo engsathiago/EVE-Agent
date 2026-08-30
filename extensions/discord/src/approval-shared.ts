@@ -4,10 +4,7 @@ import type {
   ExecApprovalRequest,
   PluginApprovalRequest,
 } from "eve-agent/plugin-sdk/approval-runtime";
-import type {
-  DiscordExecApprovalConfig,
-  EVEConfig,
-} from "eve-agent/plugin-sdk/config-contracts";
+import type { DiscordExecApprovalConfig, EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { resolveDiscordAccount } from "./accounts.js";
 import {
   isChannelExecApprovalClientEnabledFromConfig,

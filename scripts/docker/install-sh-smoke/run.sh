@@ -146,7 +146,7 @@ is_self_swapped_package_process_exit() {
   local stderr="$1"
   [[ "$stderr" == *"[eve] Failed to start CLI:"* ]] &&
     [[ "$stderr" == *"ERR_MODULE_NOT_FOUND"* ]] &&
-    [[ "$stderr" == *"/node_modules/eve/dist/"* ]]
+    [[ "$stderr" == *"/node_modules/eve-agent/dist/"* ]]
 }
 
 is_version_before() {

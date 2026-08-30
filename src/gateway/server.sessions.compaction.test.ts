@@ -517,9 +517,7 @@ test("sessions.compact without maxLines runs embedded manual compaction for chec
   expect(compactionCall.workspaceDir).toBe(path.join(os.tmpdir(), "eve-gateway-test"));
   expect(compactionCall.cwd).toBe("/tmp/task-repo");
   expect(callConfig.agents?.defaults?.model?.primary).toBe("anthropic/claude-opus-4-6");
-  expect(callConfig.agents?.defaults?.workspace).toBe(
-    path.join(os.tmpdir(), "eve-gateway-test"),
-  );
+  expect(callConfig.agents?.defaults?.workspace).toBe(path.join(os.tmpdir(), "eve-gateway-test"));
   expect(compactionCall.provider).toBe("anthropic");
   expect(compactionCall.model).toBe("claude-opus-4-6");
   expect(compactionCall.allowGatewaySubagentBinding).toBe(true);

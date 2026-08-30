@@ -1422,6 +1422,9 @@ export async function runMessageAction(
     action,
     args: params,
     toolContext: input.toolContext,
+    // Runtime-loaded plugins can declare target aliases that are unavailable in
+    // the bootstrap-only metadata registry (for example messageId for pin).
+    resolveChannelPlugin: (id) => resolveOutboundChannelPlugin({ channel: id, cfg }),
   });
 
   const channel = await resolveChannel(cfg, params, input.toolContext);

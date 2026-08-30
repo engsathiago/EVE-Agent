@@ -395,6 +395,7 @@ export const uk: TranslationMap = {
   nav: {
     chat: "Чат",
     control: "Керування",
+    workspace: "Робоча область",
     agent: "Агент",
     settings: "Налаштування",
     expand: "Розгорнути бічну панель",
@@ -406,6 +407,11 @@ export const uk: TranslationMap = {
     activity: "Активність",
     overview: "Огляд",
     workboard: "Робоча дошка",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Канали",
     instances: "Екземпляри",
     sessions: "Сеанси",
@@ -431,6 +437,11 @@ export const uk: TranslationMap = {
     activity: "Підсумки активності інструментів, локальні для браузера.",
     overview: "Стан, точки входу, справність.",
     workboard: "Черга завдань агента та передавання сеансів.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Канали та налаштування.",
     instances: "Підключені клієнти та вузли.",
     sessions: "Активні сеанси та типові значення.",
@@ -1318,8 +1329,7 @@ export const uk: TranslationMap = {
         title: "Не вдалося підключитися",
         summary:
           "Браузер не зміг завершити з’єднання з Gateway. Перевірте ціль і транспорт перед повторною спробою з обліковими даними.",
-        stepGateway:
-          "Підтвердьте, що Gateway працює, через eve status або eve gateway run.",
+        stepGateway: "Підтвердьте, що Gateway працює, через eve status або eve gateway run.",
         stepUrl:
           "Перевірте WebSocket URL і використовуйте wss://, коли Gateway знаходиться за HTTPS/Tailscale Serve.",
         stepDashboard:

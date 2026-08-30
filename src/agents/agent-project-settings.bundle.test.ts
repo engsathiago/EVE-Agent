@@ -42,12 +42,7 @@ const bundleTestDeps = await vi.hoisted(async () => {
     workspaceDir: string;
     cfg?: { mcp?: { servers?: Record<string, unknown> } };
   }) => {
-    const pluginRoot = pathModule.join(
-      params.workspaceDir,
-      ".eve",
-      "extensions",
-      "claude-bundle",
-    );
+    const pluginRoot = pathModule.join(params.workspaceDir, ".eve", "extensions", "claude-bundle");
     const mcpPath = pathModule.join(pluginRoot, ".mcp.json");
     let bundleServers: Record<string, unknown> = {};
     if (fsSync.existsSync(mcpPath)) {

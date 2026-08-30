@@ -429,8 +429,7 @@ describe("renderSkills", () => {
               requestedVersion: "1.2.3",
               slug: "agentreceipt",
               version: "1.2.3",
-              securityAuditUrl:
-                "https://clawhub.ai/eve/agentreceipt/security-audit?version=1.2.3",
+              securityAuditUrl: "https://clawhub.ai/eve/agentreceipt/security-audit?version=1.2.3",
               securityStatus: "suspicious",
               securityPassed: false,
             },
@@ -464,8 +463,7 @@ describe("renderSkills", () => {
               reasons: ["security.suspicious"],
               requestedSlug: "agentreceipt",
               requestedVersion: "1.2.3",
-              securityAuditUrl:
-                "https://clawhub.ai/eve/agentreceipt/security-audit?version=1.2.3",
+              securityAuditUrl: "https://clawhub.ai/eve/agentreceipt/security-audit?version=1.2.3",
               securityStatus: "suspicious",
               securityPassed: false,
             },

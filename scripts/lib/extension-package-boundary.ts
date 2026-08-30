@@ -86,9 +86,7 @@ export const EXTENSION_PACKAGE_BOUNDARY_BASE_PATHS = {
   "@eve/slack/api.js": ["../dist/plugin-sdk/extensions/slack/api.d.ts"],
   "@eve/whatsapp/api.js": ["../dist/plugin-sdk/extensions/whatsapp/api.d.ts"],
   "@eve/llm-core": ["../dist/plugin-sdk/packages/llm-core/src/index.d.ts"],
-  "@eve/llm-core/diagnostics": [
-    "../dist/plugin-sdk/packages/llm-core/src/utils/diagnostics.d.ts",
-  ],
+  "@eve/llm-core/diagnostics": ["../dist/plugin-sdk/packages/llm-core/src/utils/diagnostics.d.ts"],
   "@eve/llm-core/event-stream": [
     "../dist/plugin-sdk/packages/llm-core/src/utils/event-stream.d.ts",
   ],
@@ -149,9 +147,7 @@ export const EXTENSION_PACKAGE_BOUNDARY_BASE_PATHS = {
   "@eve/media-generation-core/normalization": [
     "../dist/plugin-sdk/packages/media-generation-core/src/normalization.d.ts",
   ],
-  "@eve/media-generation-core/*": [
-    "../dist/plugin-sdk/packages/media-generation-core/src/*.d.ts",
-  ],
+  "@eve/media-generation-core/*": ["../dist/plugin-sdk/packages/media-generation-core/src/*.d.ts"],
   "@eve/media-core": ["../dist/plugin-sdk/packages/media-core/src/index.d.ts"],
   "@eve/media-core/base64": ["../dist/plugin-sdk/packages/media-core/src/base64.d.ts"],
   "@eve/media-core/constants": ["../dist/plugin-sdk/packages/media-core/src/constants.d.ts"],
@@ -215,9 +211,7 @@ export const EXTENSION_PACKAGE_BOUNDARY_BASE_PATHS = {
     "../dist/plugin-sdk/packages/terminal-core/src/prompt-style.d.ts",
   ],
   "@eve/terminal-core/restore": ["../dist/plugin-sdk/packages/terminal-core/src/restore.d.ts"],
-  "@eve/terminal-core/safe-text": [
-    "../dist/plugin-sdk/packages/terminal-core/src/safe-text.d.ts",
-  ],
+  "@eve/terminal-core/safe-text": ["../dist/plugin-sdk/packages/terminal-core/src/safe-text.d.ts"],
   "@eve/terminal-core/stream-writer": [
     "../dist/plugin-sdk/packages/terminal-core/src/stream-writer.d.ts",
   ],

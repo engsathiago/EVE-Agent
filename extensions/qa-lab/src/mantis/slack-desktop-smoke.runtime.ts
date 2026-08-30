@@ -1,8 +1,8 @@
 // Qa Lab plugin module implements slack desktop smoke behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatErrorMessage } from "eve/plugin-sdk/error-runtime";
-import { pathExists } from "eve/plugin-sdk/security-runtime";
+import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
+import { pathExists } from "eve-agent/plugin-sdk/security-runtime";
 import { ensureRepoBoundDirectory, resolveRepoRelativeOutputDir } from "../cli-paths.js";
 import {
   acquireQaCredentialLease,
@@ -400,10 +400,7 @@ function buildCrabboxEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   ) {
     next.EVE_MANTIS_SLACK_APP_TOKEN = next.EVE_QA_SLACK_SUT_APP_TOKEN;
   }
-  if (
-    !trimToValue(next.EVE_MANTIS_SLACK_CHANNEL_ID) &&
-    trimToValue(next.EVE_QA_SLACK_CHANNEL_ID)
-  ) {
+  if (!trimToValue(next.EVE_MANTIS_SLACK_CHANNEL_ID) && trimToValue(next.EVE_QA_SLACK_CHANNEL_ID)) {
     next.EVE_MANTIS_SLACK_CHANNEL_ID = next.EVE_QA_SLACK_CHANNEL_ID;
   }
   return next;

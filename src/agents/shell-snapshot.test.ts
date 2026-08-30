@@ -109,16 +109,12 @@ describe("exec shell snapshots", () => {
 
   it("does not honor per-call env for selecting the snapshot state dir", async () => {
     // Per-call env may be model/tool-controlled, so snapshot roots come from process env.
-    const trustedStateDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), "eve-snapshot-trusted-state-"),
-    );
+    const trustedStateDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-snapshot-trusted-state-"));
     const untrustedStateDir = fs.mkdtempSync(
       path.join(os.tmpdir(), "eve-snapshot-untrusted-state-"),
     );
     const home = fs.mkdtempSync(path.join(os.tmpdir(), "eve-snapshot-state-home-"));
-    const untrustedHome = fs.mkdtempSync(
-      path.join(os.tmpdir(), "eve-snapshot-untrusted-home-"),
-    );
+    const untrustedHome = fs.mkdtempSync(path.join(os.tmpdir(), "eve-snapshot-untrusted-home-"));
     const sideEffectPath = path.join(untrustedHome, "side-effect");
     tempDirs.push(trustedStateDir, untrustedStateDir, home, untrustedHome);
     setSnapshotStateForTest(trustedStateDir, { home });
@@ -146,9 +142,7 @@ describe("exec shell snapshots", () => {
     expect(fs.existsSync(resolveShellSnapshotDir({ EVE_STATE_DIR: untrustedStateDir }))).toBe(
       false,
     );
-    expect(fs.existsSync(resolveShellSnapshotDir({ EVE_STATE_DIR: trustedStateDir }))).toBe(
-      true,
-    );
+    expect(fs.existsSync(resolveShellSnapshotDir({ EVE_STATE_DIR: trustedStateDir }))).toBe(true);
     expect(fs.existsSync(sideEffectPath)).toBe(false);
   });
 

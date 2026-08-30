@@ -235,16 +235,16 @@ if (!entrySet.has("npm-shrinkwrap.json")) {
   try {
     const shrinkwrap = JSON.parse(readTarEntry("npm-shrinkwrap.json"));
     const rootPackage = shrinkwrap.packages?.[""];
-    if (shrinkwrap.name !== "eve") {
-      errors.push("npm-shrinkwrap.json root name must be eve");
+    if (shrinkwrap.name !== "eve-agent") {
+      errors.push("npm-shrinkwrap.json root name must be eve-agent");
     }
     if (shrinkwrap.version !== packageVersion) {
       errors.push(
         `npm-shrinkwrap.json version ${shrinkwrap.version ?? "<missing>"} does not match package.json version ${packageVersion || "<missing>"}`,
       );
     }
-    if (!rootPackage || rootPackage.name !== "eve") {
-      errors.push("npm-shrinkwrap.json packages root must name eve");
+    if (!rootPackage || rootPackage.name !== "eve-agent") {
+      errors.push("npm-shrinkwrap.json packages root must name eve-agent");
     }
     if (rootPackage?.version !== packageVersion) {
       errors.push(

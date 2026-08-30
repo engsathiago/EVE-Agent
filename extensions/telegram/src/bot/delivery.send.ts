@@ -1,9 +1,9 @@
-// Telegram plugin module implements delivery.send behavior.
-import { type Bot, GrammyError } from "grammy";
 import type { MarkdownTableMode } from "eve-agent/plugin-sdk/config-contracts";
 import { createTelegramRetryRunner } from "eve-agent/plugin-sdk/retry-runtime";
 import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/ssrf-runtime";
+// Telegram plugin module implements delivery.send behavior.
+import { type Bot, GrammyError } from "grammy";
 import { withTelegramApiErrorLogging } from "../api-logging.js";
 import { markdownToTelegramHtml } from "../format.js";
 import { isSafeToRetrySendError, isTelegramRateLimitError } from "../network-errors.js";

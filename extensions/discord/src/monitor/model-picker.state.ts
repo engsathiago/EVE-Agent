@@ -1,7 +1,10 @@
 // Discord plugin module implements model picker.state behavior.
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import type { ModelsProviderData } from "eve-agent/plugin-sdk/models-provider-runtime";
-import { parseStrictInteger, parseStrictPositiveInteger } from "eve-agent/plugin-sdk/number-runtime";
+import {
+  parseStrictInteger,
+  parseStrictPositiveInteger,
+} from "eve-agent/plugin-sdk/number-runtime";
 import { normalizeProviderId } from "eve-agent/plugin-sdk/provider-model-shared";
 import type { ComponentData } from "../internal/discord.js";
 

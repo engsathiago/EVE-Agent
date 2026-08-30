@@ -2,12 +2,9 @@
 // and plugin alias-aware message-action normalization.
 import { describe, expect, it, vi } from "vitest";
 import { normalizeMessageActionInput } from "./message-action-normalization.js";
+import { createPinboardMessageActionBootstrapRegistryMock } from "./message-action-test-fixtures.js";
 
-vi.mock("../../channels/plugins/bootstrap-registry.js", async () => ({
-  getBootstrapChannelPlugin: (
-    await import("./message-action-test-fixtures.js")
-  ).createPinboardMessageActionBootstrapRegistryMock(),
-}));
+const resolveChannelPlugin = createPinboardMessageActionBootstrapRegistryMock();
 
 vi.mock("../../utils/message-channel.js", () => ({
   isDeliverableMessageChannel: (value: string) => ["workspace", "forum"].includes(value),
@@ -185,7 +182,7 @@ describe("normalizeMessageActionInput", () => {
   ] satisfies NormalizeMessageActionInputCase[])(
     "normalizes message action input for %j",
     ({ input, expectedFields, absentFields }) => {
-      const normalized = normalizeMessageActionInput(input);
+      const normalized = normalizeMessageActionInput({ ...input, resolveChannelPlugin });
       if (expectedFields) {
         for (const [field, value] of Object.entries(expectedFields)) {
           expect(normalized[field]).toBe(value);

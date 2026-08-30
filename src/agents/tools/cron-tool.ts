@@ -1108,7 +1108,7 @@ Use jobId canonical; id accepted compat. contextMessages (0-10) adds previous me
           // Without this, the wake gateway call goes through with no session
           // key and the system event lands on the heartbeat / main default
           // rather than the originating conversation lane. Closes the
-          // upstream half of eve/eve#46886 (#64556 — agentId/
+          // upstream half of engsathiago/eve-agent#46886 (#64556 — agentId/
           // sessionKey silently ignored for `action: "wake"`). Explicit
           // params on the tool call still take precedence over the inferred
           // value, so call sites that want to wake a different session can

@@ -173,10 +173,7 @@ function resolveComfyMode(config: ComfyProviderConfig): ComfyMode {
   return normalizeOptionalString(config.mode) === "cloud" ? "cloud" : "local";
 }
 
-function resolveComfyApiKey(
-  config: ComfyProviderConfig,
-  cfg?: EVEConfig,
-): ComfyApiKeyResolution {
+function resolveComfyApiKey(config: ComfyProviderConfig, cfg?: EVEConfig): ComfyApiKeyResolution {
   const resolved = resolveSecretInputString({
     value: config.apiKey,
     path: "plugins.entries.comfy.config.apiKey",

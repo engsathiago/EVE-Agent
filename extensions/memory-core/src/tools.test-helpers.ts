@@ -29,9 +29,7 @@ export function createMemorySearchToolOrThrow(params?: {
   return tool;
 }
 
-export function createMemoryGetToolOrThrow(
-  config: EVEConfig = createDefaultMemoryToolConfig(),
-) {
+export function createMemoryGetToolOrThrow(config: EVEConfig = createDefaultMemoryToolConfig()) {
   const tool = createMemoryGetTool({ config });
   if (!tool) {
     throw new Error("tool missing");

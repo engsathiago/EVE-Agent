@@ -178,8 +178,7 @@ export function buildSessionPresentation(params: {
       id: ACP_THOUGHT_LEVEL_CONFIG_ID,
       name: "Thought level",
       category: "thought_level",
-      description:
-        "Controls how much deliberate reasoning EVE requests from the Gateway model.",
+      description: "Controls how much deliberate reasoning EVE requests from the Gateway model.",
       currentValue: currentModeId,
       values: availableLevelIds,
     }),
@@ -215,8 +214,7 @@ export function buildSessionPresentation(params: {
     buildSelectConfigOption({
       id: ACP_RESPONSE_USAGE_CONFIG_ID,
       name: "Usage detail",
-      description:
-        "Controls how much usage information EVE attaches to responses for the session.",
+      description: "Controls how much usage information EVE attaches to responses for the session.",
       currentValue: normalizeOptionalString(row.responseUsage) || "off",
       values: ["off", "tokens", "full"],
     }),

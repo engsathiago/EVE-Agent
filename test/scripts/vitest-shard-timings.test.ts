@@ -86,9 +86,8 @@ describe("scripts/lib/vitest-shard-timings.mjs", () => {
         ["test/vitest/vitest.auto-reply-reply.config.ts#auto-reply-reply-agent-runner", 1234],
       ]),
     );
-    const persistedTiming = JSON.parse(
-      fs.readFileSync(env.EVE_TEST_PROJECTS_TIMINGS_PATH, "utf8"),
-    ).configs["test/vitest/vitest.auto-reply-reply.config.ts#auto-reply-reply-agent-runner"];
+    const persistedTiming = JSON.parse(fs.readFileSync(env.EVE_TEST_PROJECTS_TIMINGS_PATH, "utf8"))
+      .configs["test/vitest/vitest.auto-reply-reply.config.ts#auto-reply-reply-agent-runner"];
     expect(typeof persistedTiming.updatedAt).toBe("string");
     expect(persistedTiming.updatedAt.length).toBeGreaterThan(0);
     expect({ ...persistedTiming, updatedAt: "<dynamic>" }).toStrictEqual({

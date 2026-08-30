@@ -34,11 +34,7 @@ import {
   terminateProcess,
   writeProcess,
 } from "./sandbox-exec-server/processes.js";
-import type {
-  JsonRpcRequest,
-  ManagedProcess,
-  EVEExecServer,
-} from "./sandbox-exec-server/types.js";
+import type { JsonRpcRequest, ManagedProcess, EVEExecServer } from "./sandbox-exec-server/types.js";
 import { MIN_CODEX_SANDBOX_EXEC_SERVER_APP_SERVER_VERSION } from "./version.js";
 
 /** Codex environment metadata registered for one sandbox exec-server lease. */

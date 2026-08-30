@@ -53,9 +53,9 @@ describe("Nix integration (U3, U5, U9)", () => {
 
     it("STATE_DIR respects EVE_HOME when state override is unset", () => {
       const customHome = path.join(path.sep, "custom", "home");
-      expect(
-        resolveStateDir(envWith({ EVE_HOME: customHome, EVE_STATE_DIR: undefined })),
-      ).toBe(path.join(path.resolve(customHome), ".eve"));
+      expect(resolveStateDir(envWith({ EVE_HOME: customHome, EVE_STATE_DIR: undefined }))).toBe(
+        path.join(path.resolve(customHome), ".eve"),
+      );
     });
 
     it("CONFIG_PATH defaults to EVE_HOME/.eve/eve.json", () => {
@@ -81,9 +81,7 @@ describe("Nix integration (U3, U5, U9)", () => {
 
     it("CONFIG_PATH respects EVE_CONFIG_PATH override", () => {
       expect(
-        resolveConfigPathCandidate(
-          envWith({ EVE_CONFIG_PATH: "/nix/store/abc/eve.json" }),
-        ),
+        resolveConfigPathCandidate(envWith({ EVE_CONFIG_PATH: "/nix/store/abc/eve.json" })),
       ).toBe(path.resolve("/nix/store/abc/eve.json"));
     });
 
@@ -117,19 +115,13 @@ describe("Nix integration (U3, U5, U9)", () => {
 
     it("prefers EVE_GATEWAY_PORT over config", () => {
       expect(
-        resolveGatewayPort(
-          { gateway: { port: 19002 } },
-          envWith({ EVE_GATEWAY_PORT: "19001" }),
-        ),
+        resolveGatewayPort({ gateway: { port: 19002 } }, envWith({ EVE_GATEWAY_PORT: "19001" })),
       ).toBe(19001);
     });
 
     it("falls back to config when env is invalid", () => {
       expect(
-        resolveGatewayPort(
-          { gateway: { port: 19003 } },
-          envWith({ EVE_GATEWAY_PORT: "nope" }),
-        ),
+        resolveGatewayPort({ gateway: { port: 19003 } }, envWith({ EVE_GATEWAY_PORT: "nope" })),
       ).toBe(19003);
     });
   });

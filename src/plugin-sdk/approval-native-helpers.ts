@@ -949,10 +949,7 @@ export function createChannelApproverDmTargetResolver<
   /** Optional gate; returning false skips approver DM delivery for the request. */
   shouldHandleRequest?: (params: ApprovalResolverParams) => boolean;
   /** Resolves approver records from config and optional account scope. */
-  resolveApprovers: (params: {
-    cfg: EVEConfig;
-    accountId?: string | null;
-  }) => readonly TApprover[];
+  resolveApprovers: (params: { cfg: EVEConfig; accountId?: string | null }) => readonly TApprover[];
   /** Maps one approver record to a native DM target; nullish results are skipped. */
   mapApprover: (approver: TApprover, params: ApprovalResolverParams) => TTarget | null | undefined;
 }) {

@@ -43,10 +43,7 @@ async function connectMcpWithoutGateway(params?: { claudeChannelMode?: "auto" | 
   };
 }
 
-function attachReadyGateway(
-  bridge: EVEChannelBridge,
-  gatewayRequest: ReturnType<typeof vi.fn>,
-) {
+function attachReadyGateway(bridge: EVEChannelBridge, gatewayRequest: ReturnType<typeof vi.fn>) {
   (
     bridge as unknown as {
       gateway: { request: typeof gatewayRequest; stopAndWait: () => Promise<void> };
@@ -208,9 +205,7 @@ describe("eve channel mcp server", () => {
         const messages = await bridge.readMessages(sessionKey, 5);
         expect(messages[0]?.role).toBe("assistant");
         expect(messages[0]?.content).toEqual([{ type: "text", text: "hello from transcript" }]);
-        expect((messages[1]?.["__eve"] as { id?: string } | undefined)?.id).toBe(
-          "msg-attachment",
-        );
+        expect((messages[1]?.["__eve"] as { id?: string } | undefined)?.id).toBe("msg-attachment");
         expect(
           extractAttachmentsFromMessage(messages[1]).some(
             (entry) => (entry as { type?: unknown }).type === "image",

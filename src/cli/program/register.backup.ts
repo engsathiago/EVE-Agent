@@ -2,6 +2,7 @@
 import type { Command } from "commander";
 import { formatDocsLink } from "../../../packages/terminal-core/src/links.js";
 import { theme } from "../../../packages/terminal-core/src/theme.js";
+import { backupRestoreCommand } from "../../commands/backup-restore.js";
 import { backupVerifyCommand } from "../../commands/backup-verify.js";
 import { backupCreateCommand } from "../../commands/backup.js";
 import { defaultRuntime } from "../../runtime.js";
@@ -88,6 +89,51 @@ export function registerBackupCommand(program: Command) {
         await backupVerifyCommand(defaultRuntime, {
           archive: archive as string,
           json: Boolean(opts.json),
+        });
+      });
+    });
+
+  backup
+    .command("restore <archive>")
+    .description("Verify and restore a portable backup into this EVE installation")
+    .option("--apply", "Apply the restore (the default is a dry-run plan)", false)
+    .option("--state-dir <path>", "Override the target state directory")
+    .option("--config-path <path>", "Override the target config path")
+    .option("--oauth-dir <path>", "Override the target credential directory")
+    .option("--workspace-root <path>", "Override the first workspace target")
+    .option("--pre-restore-output <path>", "Path for the automatic pre-restore backup")
+    .option("--skip-pre-restore-backup", "Do not create a rollback backup before applying", false)
+    .option("--json", "Output JSON", false)
+    .addHelpText(
+      "after",
+      () =>
+        `\n${theme.heading("Examples:")}\n${formatHelpExamples([
+          [
+            "eve backup restore ./eve-backup.tar.gz",
+            "Verify the archive and print the restore plan.",
+          ],
+          [
+            "eve backup restore ./eve-backup.tar.gz --apply",
+            "Create a rollback backup and restore into the current EVE paths.",
+          ],
+          [
+            "eve backup restore ./eve-backup.tar.gz --apply --workspace-root /srv/eve/workspace",
+            "Relocate the restored workspace on a VPS.",
+          ],
+        ])}`,
+    )
+    .action(async (archive, opts) => {
+      await runCommandWithRuntime(defaultRuntime, async () => {
+        await backupRestoreCommand(defaultRuntime, {
+          archive: archive as string,
+          apply: Boolean(opts.apply),
+          json: Boolean(opts.json),
+          stateDir: opts.stateDir as string | undefined,
+          configPath: opts.configPath as string | undefined,
+          oauthDir: opts.oauthDir as string | undefined,
+          workspaceRoot: opts.workspaceRoot as string | undefined,
+          preRestoreOutput: opts.preRestoreOutput as string | undefined,
+          skipPreRestoreBackup: Boolean(opts.skipPreRestoreBackup),
         });
       });
     });

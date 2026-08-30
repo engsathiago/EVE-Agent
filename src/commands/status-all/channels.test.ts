@@ -135,8 +135,7 @@ describe("buildChannelsTable", () => {
           label: "Feishu",
           enabled: true,
           state: "warn",
-          detail:
-            "plugin not installed - run eve plugins install @eve/feishu or eve doctor --fix",
+          detail: "plugin not installed - run eve plugins install @eve/feishu or eve doctor --fix",
         },
       ],
       details: [],

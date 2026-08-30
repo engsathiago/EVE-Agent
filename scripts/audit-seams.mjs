@@ -504,7 +504,7 @@ async function buildMissingPackages(params = {}) {
       continue;
     }
     const missing = Object.keys(pkg.dependencies ?? {})
-      .filter((dep) => dep !== "eve" && !rootDeps.has(dep))
+      .filter((dep) => dep !== "eve-agent" && !rootDeps.has(dep))
       .toSorted(compareStrings);
     if (missing.length === 0) {
       continue;

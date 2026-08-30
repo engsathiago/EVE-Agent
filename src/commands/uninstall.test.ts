@@ -28,9 +28,7 @@ describe("uninstallCommand", () => {
     });
 
     expect(
-      cleanupCommandLogMessages(runtime).some((message) =>
-        message.includes("eve backup create"),
-      ),
+      cleanupCommandLogMessages(runtime).some((message) => message.includes("eve backup create")),
     ).toBe(true);
   });
 
@@ -43,9 +41,7 @@ describe("uninstallCommand", () => {
     });
 
     expect(
-      cleanupCommandLogMessages(runtime).some((message) =>
-        message.includes("eve backup create"),
-      ),
+      cleanupCommandLogMessages(runtime).some((message) => message.includes("eve backup create")),
     ).toBe(false);
   });
 
@@ -94,10 +90,8 @@ describe("uninstallCommand", () => {
       dryRun: true,
     });
 
-    expect(removeWorkspaceAttestationPaths).toHaveBeenCalledWith(
-      ["/tmp/.eve/workspace"],
-      runtime,
-      { dryRun: true },
-    );
+    expect(removeWorkspaceAttestationPaths).toHaveBeenCalledWith(["/tmp/.eve/workspace"], runtime, {
+      dryRun: true,
+    });
   });
 });

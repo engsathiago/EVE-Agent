@@ -168,12 +168,9 @@ describe("hooks workspace", () => {
     for (const dir of [workspaceHookDir, managedHookDir]) {
       fs.writeFileSync(
         path.join(dir, "HOOK.md"),
-        [
-          "---",
-          "name: session-memory",
-          'metadata: {"eve":{"events":["command:new"]}}',
-          "---",
-        ].join("\n"),
+        ["---", "name: session-memory", 'metadata: {"eve":{"events":["command:new"]}}', "---"].join(
+          "\n",
+        ),
       );
       fs.writeFileSync(path.join(dir, "handler.js"), "export default async () => {};\n");
     }

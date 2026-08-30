@@ -380,9 +380,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
         expect(res.status).toBe(400);
         const json = (await res.json()) as { error?: { type?: string; message?: string } };
         expect(json.error?.type).toBe("invalid_request_error");
-        expect(json.error?.message).toBe(
-          "Invalid `model`. Use `eve` or `eve/<agentId>`.",
-        );
+        expect(json.error?.message).toBe("Invalid `model`. Use `eve` or `eve/<agentId>`.");
         expect(agentCommand).toHaveBeenCalledTimes(0);
       }
 

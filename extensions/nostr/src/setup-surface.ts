@@ -5,7 +5,11 @@ import {
   hasConfiguredSecretInput,
   normalizeSecretInputString,
 } from "eve-agent/plugin-sdk/secret-input";
-import type { ChannelSetupDmPolicy, ChannelSetupWizard, DmPolicy } from "eve-agent/plugin-sdk/setup";
+import type {
+  ChannelSetupDmPolicy,
+  ChannelSetupWizard,
+  DmPolicy,
+} from "eve-agent/plugin-sdk/setup";
 import {
   createSetupTranslator,
   createStandardChannelSetupStatus,

@@ -582,10 +582,7 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
   });
 
   it("keeps runtime tool coverage blocking in release checks", () => {
-    const releaseChecksSource = readFileSync(
-      ".github/workflows/eve-release-checks.yml",
-      "utf8",
-    );
+    const releaseChecksSource = readFileSync(".github/workflows/eve-release-checks.yml", "utf8");
     const releaseChecksWorkflow = parse(releaseChecksSource);
     const runtimeToolCoverage = releaseChecksWorkflow.jobs.runtime_tool_coverage_release_checks;
 

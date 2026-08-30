@@ -9,11 +9,7 @@ import {
   normalizeStringEntries,
   sortUniqueStrings,
 } from "eve-agent/plugin-sdk/string-coerce-runtime";
-import {
-  definePluginEntry,
-  type EVEPluginApi,
-  type EVEPluginService,
-} from "./runtime-api.js";
+import { definePluginEntry, type EVEPluginApi, type EVEPluginService } from "./runtime-api.js";
 
 type ArmGroup = "camera" | "screen" | "writes" | "all";
 

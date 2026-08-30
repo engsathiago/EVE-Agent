@@ -1,6 +1,6 @@
+import type { EVEConfig } from "../config/types.eve.js";
 /** Registry state for plugin memory runtimes, prompt supplements, and flush planning. */
 import type { MemoryCitationsMode } from "../config/types.memory.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import type { MemorySearchManager } from "../memory-host-sdk/host/types.js";
 
 export type MemoryPromptSectionBuilder = (params: {

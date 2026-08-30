@@ -6,9 +6,7 @@ import { loadBundledPluginPublicSurfaceModuleSync } from "./facade-loader.js";
  * @deprecated Compatibility type for the `eve-agent/plugin-sdk/telegram-account` facade.
  * New channel plugins should prefer injected runtime helpers and generic SDK subpaths.
  */
-export type TelegramAccountConfig = NonNullable<
-  NonNullable<EVEConfig["channels"]>["telegram"]
->;
+export type TelegramAccountConfig = NonNullable<NonNullable<EVEConfig["channels"]>["telegram"]>;
 
 /**
  * @deprecated Compatibility type for the `eve-agent/plugin-sdk/telegram-account` facade.

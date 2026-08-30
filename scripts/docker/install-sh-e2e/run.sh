@@ -123,15 +123,15 @@ elif [[ "$MODELS_MODE" == "anthropic" && -z "$ANTHROPIC_API_TOKEN" && -z "$ANTHR
 fi
 
 resolve_npm_versions() {
-  EXPECTED_VERSION="$(quiet_npm view "eve@${INSTALL_TAG}" version)"
+  EXPECTED_VERSION="$(quiet_npm view "eve-agent@${INSTALL_TAG}" version)"
   if [[ -z "$EXPECTED_VERSION" || "$EXPECTED_VERSION" == "undefined" || "$EXPECTED_VERSION" == "null" ]]; then
-    echo "ERROR: unable to resolve eve@${INSTALL_TAG} version" >&2
+    echo "ERROR: unable to resolve eve-agent@${INSTALL_TAG} version" >&2
     return 2
   fi
   if [[ -n "$E2E_PREVIOUS_VERSION" ]]; then
     PREVIOUS_VERSION="$E2E_PREVIOUS_VERSION"
   else
-    PREVIOUS_VERSION="$(VERSIONS_JSON="$(quiet_npm view eve versions --json)" node - <<'NODE'
+    PREVIOUS_VERSION="$(VERSIONS_JSON="$(quiet_npm view eve-agent versions --json)" node - <<'NODE'
 const versions = JSON.parse(process.env.VERSIONS_JSON || "[]");
 if (!Array.isArray(versions) || versions.length === 0) process.exit(1);
 process.stdout.write(versions.length >= 2 ? versions[versions.length - 2] : versions[0]);
@@ -146,7 +146,7 @@ preinstall_previous_version() {
     echo "Skip preinstall previous (EVE_INSTALL_E2E_SKIP_PREVIOUS=1)"
   else
     echo "Preinstall previous (forces installer upgrade path; avoids read() prompt)"
-    quiet_npm install -g "eve@${PREVIOUS_VERSION}"
+    quiet_npm install -g "eve-agent@${PREVIOUS_VERSION}"
   fi
 }
 
@@ -165,7 +165,7 @@ verify_installed_version() {
   INSTALLED_VERSION="$(extract_eve_semver "$INSTALLED_VERSION")"
   echo "installed=$INSTALLED_VERSION expected=$EXPECTED_VERSION"
   if [[ "$INSTALLED_VERSION" != "$EXPECTED_VERSION" ]]; then
-    echo "ERROR: expected eve@$EXPECTED_VERSION, got eve@$INSTALLED_VERSION" >&2
+    echo "ERROR: expected eve-agent@$EXPECTED_VERSION, got eve-agent@$INSTALLED_VERSION" >&2
     return 1
   fi
 }

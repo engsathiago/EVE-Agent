@@ -40,9 +40,7 @@ function hasNativeDomainRestrictions(config: EVEConfig | undefined): boolean {
   );
 }
 
-export function buildCodexNativeWebSearchThreadConfig(
-  config: EVEConfig | undefined,
-): JsonObject {
+export function buildCodexNativeWebSearchThreadConfig(config: EVEConfig | undefined): JsonObject {
   const nativeConfig = config?.tools?.web?.search?.openaiCodex;
   const threadConfig: JsonObject = {
     // Production app-server traffic rejects standalone web.run's user-defined

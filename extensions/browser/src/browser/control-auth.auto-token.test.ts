@@ -30,11 +30,7 @@ const mocks = vi.hoisted(() => ({
     },
   ),
   resolveGatewayAuth: vi.fn(
-    ({
-      authConfig,
-    }: {
-      authConfig?: NonNullable<NonNullable<EVEConfig["gateway"]>["auth"]>;
-    }) => {
+    ({ authConfig }: { authConfig?: NonNullable<NonNullable<EVEConfig["gateway"]>["auth"]> }) => {
       const token =
         typeof authConfig?.token === "string"
           ? authConfig.token

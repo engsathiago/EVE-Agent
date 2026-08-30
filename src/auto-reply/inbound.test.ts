@@ -1042,7 +1042,7 @@ describe("mention helpers", () => {
   });
 
   it("normalizes zero-width characters", () => {
-    expect(normalizeMentionText("open\u200bclaw")).toBe("eve");
+    expect(normalizeMentionText("e\u200bve")).toBe("eve");
   });
 
   it("matches patterns case-insensitively", () => {

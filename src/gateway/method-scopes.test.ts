@@ -408,6 +408,7 @@ describe("core gateway method classification", () => {
       "skills.proposals.update",
       "skills.proposals.revise",
       "skills.proposals.apply",
+      "skills.proposals.rollback",
       "skills.proposals.reject",
       "skills.proposals.quarantine",
     ]) {

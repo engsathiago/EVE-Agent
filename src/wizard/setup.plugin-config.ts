@@ -56,10 +56,7 @@ function resolveJsonSchemaProperty(
   return cursor && typeof cursor === "object" ? (cursor as JsonSchemaProperty) : undefined;
 }
 
-function getExistingPluginConfig(
-  config: EVEConfig,
-  pluginId: string,
-): Record<string, unknown> {
+function getExistingPluginConfig(config: EVEConfig, pluginId: string): Record<string, unknown> {
   return (config.plugins?.entries?.[pluginId]?.config as Record<string, unknown>) ?? {};
 }
 

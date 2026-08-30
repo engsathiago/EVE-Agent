@@ -15,7 +15,7 @@ import {
 } from "./host-hook-runtime.js";
 import type { PluginHostCleanupReason } from "./host-hooks.js";
 import type { PluginRegistry } from "./registry-types.js";
-import { getActivePluginRegistry } from "./runtime.js";
+import { getPluginRegistryState } from "./runtime-state.js";
 import { normalizeSessionEntrySlotKey } from "./session-entry-slot-keys.js";
 
 export { clearPluginOwnedSessionState };
@@ -177,7 +177,7 @@ export async function runPluginHostCleanup(params: {
   }
   const registry = params.registry;
   const sessionEntrySlotKeys = collectSessionEntrySlotKeys(
-    registry ?? getActivePluginRegistry(),
+    registry ?? getPluginRegistryState()?.activeRegistry,
     params.pluginId,
   );
   const restartPromotedSessionEntrySlotKeys =

@@ -119,11 +119,11 @@ Important lanes:
 Useful published-upgrade survivor variants:
 
 ```bash
-EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=eve@2026.4.23 \
+EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=eve-agent@2026.4.23 \
 EVE_UPGRADE_SURVIVOR_SCENARIO=versioned-runtime-deps \
 pnpm test:docker:published-upgrade-survivor
 
-EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=eve@latest \
+EVE_UPGRADE_SURVIVOR_BASELINE_SPEC=eve-agent@latest \
 EVE_UPGRADE_SURVIVOR_SCENARIO=bootstrap-persona \
 pnpm test:docker:published-upgrade-survivor
 ```
@@ -158,7 +158,7 @@ older trusted releases.
 
 Candidate sources:
 
-- `source=npm`: validate `eve@beta`, `eve@latest`, or an exact
+- `source=npm`: validate `eve-agent@beta`, `eve-agent@latest`, or an exact
   published version.
 - `source=ref`: pack a trusted branch, tag, or commit with the selected current
   harness.
@@ -175,7 +175,7 @@ Candidate sources:
 
 Full Release Validation uses `source=artifact` by default, built from the
 resolved release SHA. For post-publish proof, pass
-`package_acceptance_package_spec=eve@YYYY.M.PATCH` so the same upgrade matrix
+`package_acceptance_package_spec=eve-agent@YYYY.M.PATCH` so the same upgrade matrix
 targets the shipped npm package instead.
 
 Release checks call Package Acceptance with the package/update/restart/plugin set:
@@ -220,7 +220,7 @@ gh workflow run package-acceptance.yml \
   --ref main \
   -f workflow_ref=main \
   -f source=npm \
-  -f package_spec=eve@beta \
+  -f package_spec=eve-agent@beta \
   -f suite_profile=package \
   -f published_upgrade_survivor_baselines="last-stable-4 2026.4.23 2026.5.2 2026.4.15" \
   -f published_upgrade_survivor_scenarios=reported-issues \

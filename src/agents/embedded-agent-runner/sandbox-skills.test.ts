@@ -12,11 +12,11 @@ import {
   resolveSandboxSkillRuntimeInputs,
 } from "./sandbox-skills.js";
 
-const hostSkillPath = "/usr/lib/node_modules/eve/skills/demo/SKILL.md";
-const hostSkillBaseDir = "/usr/lib/node_modules/eve/skills/demo";
+const hostSkillPath = "/usr/lib/node_modules/eve-agent/skills/demo/SKILL.md";
+const hostSkillBaseDir = "/usr/lib/node_modules/eve-agent/skills/demo";
 const snapshot: SkillSnapshot = {
   prompt:
-    "<available_skills><skill><location>/usr/lib/node_modules/eve/skills/demo/SKILL.md</location></skill></available_skills>",
+    "<available_skills><skill><location>/usr/lib/node_modules/eve-agent/skills/demo/SKILL.md</location></skill></available_skills>",
   skills: [{ name: "demo" }],
   resolvedSkills: [
     {

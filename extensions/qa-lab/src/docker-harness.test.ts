@@ -181,8 +181,6 @@ describe("qa docker harness", () => {
     expect(services["qa-lab"]?.volumes).toContain(
       "../repo #hash/extensions/qa-lab/web/dist:/opt/eve-qa-lab-ui:ro",
     );
-    expect(services["eve-qa-gateway"]?.volumes).toContain(
-      "../repo #hash:/opt/eve-repo:ro",
-    );
+    expect(services["eve-qa-gateway"]?.volumes).toContain("../repo #hash:/opt/eve-repo:ro");
   });
 });

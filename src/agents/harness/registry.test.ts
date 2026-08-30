@@ -130,9 +130,7 @@ describe("agent harness registry", () => {
     // plugin has registered its harness in this process.
     process.env.EVE_AGENT_RUNTIME = "auto";
 
-    expect(selectAgentHarness({ provider: "plugin-models", modelId: "custom-1" }).id).toBe(
-      "eve",
-    );
+    expect(selectAgentHarness({ provider: "plugin-models", modelId: "custom-1" }).id).toBe("eve");
 
     registerAgentHarness(makeHarness("custom", { providers: ["plugin-models"] }), {
       ownerPluginId: "plugin-a",
@@ -146,9 +144,7 @@ describe("agent harness registry", () => {
   it("falls back to EVE for other models", () => {
     process.env.EVE_AGENT_RUNTIME = "auto";
 
-    expect(selectAgentHarness({ provider: "anthropic", modelId: "sonnet-4.6" }).id).toBe(
-      "eve",
-    );
+    expect(selectAgentHarness({ provider: "anthropic", modelId: "sonnet-4.6" }).id).toBe("eve");
   });
 
   it("lets a plugin harness win in auto mode by priority", () => {

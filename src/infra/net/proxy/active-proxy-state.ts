@@ -43,8 +43,7 @@ function readInheritedActiveManagedProxyLoopbackMode(): ActiveManagedProxyLoopba
   // Child processes inherit loopback policy through env even when they do not
   // own the in-process proxy registration.
   return (
-    parseActiveManagedProxyLoopbackMode(process.env["EVE_PROXY_LOOPBACK_MODE"]) ??
-    "gateway-only"
+    parseActiveManagedProxyLoopbackMode(process.env["EVE_PROXY_LOOPBACK_MODE"]) ?? "gateway-only"
   );
 }
 

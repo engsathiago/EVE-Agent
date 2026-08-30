@@ -61,11 +61,7 @@ export function readToolSearchGatewayFetchLimits(
       1024 * 1024,
       env,
     ),
-    timeoutMs: readPositiveIntEnv(
-      "EVE_TOOL_SEARCH_GATEWAY_E2E_FETCH_TIMEOUT_MS",
-      180_000,
-      env,
-    ),
+    timeoutMs: readPositiveIntEnv("EVE_TOOL_SEARCH_GATEWAY_E2E_FETCH_TIMEOUT_MS", 180_000, env),
   };
 }
 
@@ -89,10 +85,7 @@ export function snapshotToolSearchGatewayEnv(
 
 function restoreEnvValue(
   env: NodeJS.ProcessEnv,
-  key: keyof Pick<
-    NodeJS.ProcessEnv,
-    "EVE_CONFIG_PATH" | "EVE_STATE_DIR" | "EVE_TEST_FAST"
-  >,
+  key: keyof Pick<NodeJS.ProcessEnv, "EVE_CONFIG_PATH" | "EVE_STATE_DIR" | "EVE_TEST_FAST">,
   value: string | undefined,
 ): void {
   if (value === undefined) {

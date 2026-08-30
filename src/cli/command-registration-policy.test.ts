@@ -85,9 +85,7 @@ describe("command-registration-policy", () => {
     expect(shouldEagerRegisterSubcommands({ EVE_DISABLE_LAZY_SUBCOMMANDS: "1" })).toBe(true);
     expect(shouldEagerRegisterSubcommands({ EVE_DISABLE_LAZY_SUBCOMMANDS: "0" })).toBe(false);
     expect(shouldRegisterPrimarySubcommandOnly(["node", "eve", "acp"], {})).toBe(true);
-    expect(shouldRegisterPrimarySubcommandOnly(["node", "eve", "acp", "--help"], {})).toBe(
-      true,
-    );
+    expect(shouldRegisterPrimarySubcommandOnly(["node", "eve", "acp", "--help"], {})).toBe(true);
     expect(
       shouldRegisterPrimarySubcommandOnly(["node", "eve", "acp"], {
         EVE_DISABLE_LAZY_SUBCOMMANDS: "1",

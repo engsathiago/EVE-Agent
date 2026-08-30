@@ -21,10 +21,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
 });
 
-function seedRunningProfileState(
-  state: ReturnType<typeof makeState>,
-  profileName = "eve",
-): void {
+function seedRunningProfileState(state: ReturnType<typeof makeState>, profileName = "eve"): void {
   (state.profiles as Map<string, unknown>).set(profileName, {
     profile: { name: profileName },
     running: { pid: 1234, proc: { on: vi.fn() } },

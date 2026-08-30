@@ -149,6 +149,7 @@ export function registerWorkboardCli(params: { program: Command; store: Workboar
     .option("--agent <id>", "Assigned agent id")
     .option("--board <id>", "Board id")
     .option("--labels <items>", "Comma-separated labels")
+    .option("--toolset <items>", "Comma-separated toolsets or auto")
     .option("--json", "Print JSON", false)
     .action(
       async (
@@ -160,6 +161,7 @@ export function registerWorkboardCli(params: { program: Command; store: Workboar
           agent?: string;
           board?: string;
           labels?: string;
+          toolset?: string;
         },
       ) => {
         const card = await params.store.create({
@@ -170,6 +172,7 @@ export function registerWorkboardCli(params: { program: Command; store: Workboar
           agentId: options.agent,
           boardId: options.board,
           labels: splitLabels(options.labels),
+          toolsets: splitLabels(options.toolset),
         });
         if (options.json) {
           writeJson({ card: redactClaimToken(card) });

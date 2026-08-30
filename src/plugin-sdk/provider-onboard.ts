@@ -10,12 +10,12 @@ import {
   normalizeAgentModelRefForConfig,
 } from "../config/model-input.js";
 import type { AgentModelEntryConfig } from "../config/types.agent-defaults.js";
+import type { EVEConfig } from "../config/types.eve.js";
 import type {
   ModelApi,
   ModelDefinitionConfig,
   ModelProviderConfig,
 } from "../config/types.models.js";
-import type { EVEConfig } from "../config/types.eve.js";
 
 export type { EVEConfig, ModelApi, ModelDefinitionConfig, ModelProviderConfig };
 export {
@@ -287,10 +287,7 @@ export function applyOnboardAuthAgentModelsAndProviders(
 }
 
 /** Set the agent default primary model while preserving normalized fallbacks and provider models. */
-export function applyAgentDefaultModelPrimary(
-  cfg: EVEConfig,
-  primary: string,
-): EVEConfig {
+export function applyAgentDefaultModelPrimary(cfg: EVEConfig, primary: string): EVEConfig {
   const defaults = cfg.agents?.defaults;
   const existingFallbacks = extractAgentDefaultModelFallbacks(cfg.agents?.defaults?.model);
   const normalizedFallbacks = existingFallbacks?.map((fallback) =>

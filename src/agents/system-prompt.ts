@@ -42,10 +42,7 @@ import {
   normalizePromptCapabilityIds,
   normalizeStructuredPromptSection,
 } from "./prompt-cache-stability.js";
-import {
-  buildEVEToolFallbackText,
-  shouldRenderEVEToolWorkflowHints,
-} from "./prompt-surface.js";
+import { buildEVEToolFallbackText, shouldRenderEVEToolWorkflowHints } from "./prompt-surface.js";
 import { sanitizeForPromptLiteral } from "./sanitize-for-prompt.js";
 import {
   buildSkillWorkshopPromptSection,

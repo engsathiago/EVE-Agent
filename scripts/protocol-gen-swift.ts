@@ -25,15 +25,7 @@ type JsonSchema = {
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const outPaths = [
-  path.join(
-    repoRoot,
-    "apps",
-    "shared",
-    "EVEKit",
-    "Sources",
-    "EVEProtocol",
-    "GatewayModels.swift",
-  ),
+  path.join(repoRoot, "apps", "shared", "EVEKit", "Sources", "EVEProtocol", "GatewayModels.swift"),
 ];
 
 const STRICT_LITERAL_STRUCTS = new Set([

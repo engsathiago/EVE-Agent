@@ -787,9 +787,7 @@ describe("listSessionsFromStore subagent metadata", () => {
   });
 
   test("reuses one subagent registry disk snapshot across sessions.list filtering and row enrichment", () => {
-    const tempRoot = fs.mkdtempSync(
-      path.join(os.tmpdir(), "eve-session-utils-subagent-cache-"),
-    );
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-session-utils-subagent-cache-"));
     const stateDir = path.join(tempRoot, "state");
     const registryPath = path.join(stateDir, "subagents", "runs.json");
     fs.mkdirSync(path.dirname(registryPath), { recursive: true });

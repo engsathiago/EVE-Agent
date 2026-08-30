@@ -2,8 +2,6 @@
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { readRegularFile, statRegularFile } from "./fs-utils.js";
-import { hashText } from "./hash.js";
 import { createSubsystemLogger, redactSensitiveText } from "./eve-runtime-io.js";
 import {
   HEARTBEAT_PROMPT,
@@ -21,6 +19,8 @@ import {
   stripInboundMetadata,
   stripInternalRuntimeContext,
 } from "./eve-runtime-session.js";
+import { readRegularFile, statRegularFile } from "./fs-utils.js";
+import { hashText } from "./hash.js";
 import { retryTransientMemoryRead } from "./read-retry.js";
 
 const DREAMING_NARRATIVE_RUN_PREFIX = "dreaming-narrative-";

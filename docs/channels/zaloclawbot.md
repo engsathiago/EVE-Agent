@@ -13,8 +13,8 @@ code.
 ## Compatibility
 
 | Plugin Version | EVE Version | npm dist-tag | Status        |
-| -------------- | ---------------- | ------------ | ------------- |
-| 0.1.x          | >=2026.4.10      | `latest`     | Active / Beta |
+| -------------- | ----------- | ------------ | ------------- |
+| 0.1.x          | >=2026.4.10 | `latest`     | Active / Beta |
 
 ## Prerequisites
 

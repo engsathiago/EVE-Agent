@@ -619,7 +619,7 @@ describe("bundled plugin postinstall", () => {
 
   it("prunes legacy plugin runtime deps state during packaged postinstall", async () => {
     const prefix = await createTempDirAsync("eve-packaged-prefix-");
-    const packageRoot = path.join(prefix, "lib", "node_modules", "eve");
+    const packageRoot = path.join(prefix, "lib", "node_modules", "eve-agent");
     const nodeModulesRoot = path.dirname(packageRoot);
     const home = await createTempDirAsync("eve-packaged-home-");
     const stateOverride = path.join(home, "custom-state");
@@ -638,7 +638,7 @@ describe("bundled plugin postinstall", () => {
     const currentFile = path.join(packageRoot, "dist", "entry.js");
     const legacySymlinkTarget = path.join(
       defaultLegacyRoot,
-      "eve-2026.4.29-slack",
+      "eve-agent-2026.4.29-slack",
       "node_modules",
       "@slack",
       "web-api",
@@ -695,12 +695,12 @@ describe("bundled plugin postinstall", () => {
   it("prunes global plugin-runtime symlinks before deleting their legacy targets", async () => {
     const prefix = await createTempDirAsync("eve-packaged-prefix-");
     const home = await createTempDirAsync("eve-packaged-home-");
-    const packageRoot = path.join(prefix, "lib", "node_modules", "eve");
+    const packageRoot = path.join(prefix, "lib", "node_modules", "eve-agent");
     const nodeModulesRoot = path.dirname(packageRoot);
     const legacyRuntimeRoot = path.join(home, ".eve", "plugin-runtime-deps");
     const legacyTarget = path.join(
       legacyRuntimeRoot,
-      "eve-2026.4.29-slack",
+      "eve-agent-2026.4.29-slack",
       "node_modules",
       "@slack",
       "web-api",
@@ -830,13 +830,7 @@ describe("bundled plugin postinstall", () => {
     const packageRoot = await createTempDirAsync("eve-packaged-install-qa-compat-");
     const currentFile = path.join(packageRoot, "dist", "entry.js");
     const stalePackage = path.join(packageRoot, "dist", "extensions", "qa-lab", "package.json");
-    const staleManifest = path.join(
-      packageRoot,
-      "dist",
-      "extensions",
-      "qa-lab",
-      "eve.plugin.json",
-    );
+    const staleManifest = path.join(packageRoot, "dist", "extensions", "qa-lab", "eve.plugin.json");
     await fs.mkdir(path.dirname(stalePackage), { recursive: true });
     await fs.writeFile(currentFile, "export {};\n");
     await writePackageDistInventory(packageRoot);

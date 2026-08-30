@@ -326,8 +326,8 @@ describe("non-extension test boundaries", () => {
 
   it("keeps extension tests off legacy broad testing barrels and repo helper bridges", () => {
     const bannedPatterns = [
-      /["']eve\/plugin-sdk\/testing["']/u,
-      /["']eve\/plugin-sdk\/test-utils["']/u,
+      /["']eve-agent\/plugin-sdk\/testing["']/u,
+      /["']eve-agent\/plugin-sdk\/test-utils["']/u,
       /["'](?:\.\.\/)+(?:test\/helpers\/channels\/)[^"']+["']/u,
       /["'](?:\.\.\/)+(?:src\/channels\/plugins\/contracts\/test-helpers\/)[^"']+["']/u,
       /["'](?:\.\.\/)+(?:test\/helpers\/plugins\/)[^"']+["']/u,

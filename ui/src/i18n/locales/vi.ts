@@ -394,6 +394,7 @@ export const vi: TranslationMap = {
   nav: {
     chat: "Trò chuyện",
     control: "Điều khiển",
+    workspace: "Không gian làm việc",
     agent: "Agent",
     settings: "Cài đặt",
     expand: "Mở rộng thanh bên",
@@ -405,6 +406,11 @@ export const vi: TranslationMap = {
     activity: "Hoạt động",
     overview: "Tổng quan",
     workboard: "Bảng công việc",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Kênh",
     instances: "Phiên bản",
     sessions: "Phiên",
@@ -430,6 +436,11 @@ export const vi: TranslationMap = {
     activity: "Tóm tắt hoạt động công cụ cục bộ trên trình duyệt.",
     overview: "Trạng thái, điểm vào, tình trạng.",
     workboard: "Hàng đợi công việc của tác nhân và bàn giao phiên.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Kênh và cài đặt.",
     instances: "Máy khách và nút đã kết nối.",
     sessions: "Phiên đang hoạt động và mặc định.",
@@ -1301,8 +1312,7 @@ export const vi: TranslationMap = {
           "Mở lại dashboard được phục vụ bằng eve dashboard để UI và Gateway đến từ cùng một bản cài đặt.",
         stepDevUi:
           "Nếu dùng pnpm ui:dev, hãy build lại hoặc khởi động lại UI dev theo checkout hiện tại.",
-        stepRestart:
-          "Khởi động lại Gateway sau khi cập nhật EVE để nó phục vụ giao thức hiện tại.",
+        stepRestart: "Khởi động lại Gateway sau khi cập nhật EVE để nó phục vụ giao thức hiện tại.",
       },
       network: {
         title: "Không thể kết nối",

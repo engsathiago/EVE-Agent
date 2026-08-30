@@ -355,8 +355,7 @@ function resolveAuthLabel(cfg: EVEPluginApi["config"]): ResolveAuthLabelResult {
   const token =
     pickFirstDefined([process.env.EVE_GATEWAY_TOKEN, cfg.gateway?.auth?.token]) ?? undefined;
   const password =
-    pickFirstDefined([process.env.EVE_GATEWAY_PASSWORD, cfg.gateway?.auth?.password]) ??
-    undefined;
+    pickFirstDefined([process.env.EVE_GATEWAY_PASSWORD, cfg.gateway?.auth?.password]) ?? undefined;
 
   if (mode === "token" || mode === "password") {
     return resolveRequiredAuthLabel(mode, { token, password });
@@ -802,9 +801,7 @@ export default definePluginEntry({
                 api,
                 ctx,
                 target,
-                caption: ["Scan this QR code with the EVE iOS app:", "", ...infoLines].join(
-                  "\n",
-                ),
+                caption: ["Scan this QR code with the EVE iOS app:", "", ...infoLines].join("\n"),
                 qrFilePath,
               });
               if (sent) {

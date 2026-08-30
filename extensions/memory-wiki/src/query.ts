@@ -2,7 +2,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { MemorySearchResult } from "eve-agent/plugin-sdk/memory-core-host-runtime-files";
-import { resolveDefaultAgentId, resolveSessionAgentId } from "eve-agent/plugin-sdk/memory-host-core";
+import {
+  resolveDefaultAgentId,
+  resolveSessionAgentId,
+} from "eve-agent/plugin-sdk/memory-host-core";
 import { getActiveMemorySearchManager } from "eve-agent/plugin-sdk/memory-host-search";
 import {
   extractTranscriptIdentityFromSessionsMemoryHit,

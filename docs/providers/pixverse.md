@@ -12,7 +12,7 @@ EVE provides `pixverse` as an official external plugin for hosted PixVerse video
 | Property           | Value                                                                |
 | ------------------ | -------------------------------------------------------------------- |
 | Provider id        | `pixverse`                                                           |
-| Plugin package     | `@eve/pixverse-provider`                                        |
+| Plugin package     | `@eve/pixverse-provider`                                             |
 | Auth env var       | `PIXVERSE_API_KEY`                                                   |
 | Onboarding flag    | `--auth-choice pixverse-api-key`                                     |
 | Direct CLI flag    | `--pixverse-api-key <key>`                                           |

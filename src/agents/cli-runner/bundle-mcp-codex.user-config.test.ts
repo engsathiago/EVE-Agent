@@ -7,9 +7,7 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
   it("returns undefined when cfg has no mcp.servers (regression: #80814)", () => {
     expect(buildCodexUserMcpServersThreadConfigPatch(undefined)).toBeUndefined();
     expect(buildCodexUserMcpServersThreadConfigPatch({} as EVEConfig)).toBeUndefined();
-    expect(
-      buildCodexUserMcpServersThreadConfigPatch({ mcp: {} } as EVEConfig),
-    ).toBeUndefined();
+    expect(buildCodexUserMcpServersThreadConfigPatch({ mcp: {} } as EVEConfig)).toBeUndefined();
     expect(
       buildCodexUserMcpServersThreadConfigPatch({ mcp: { servers: {} } } as EVEConfig),
     ).toBeUndefined();

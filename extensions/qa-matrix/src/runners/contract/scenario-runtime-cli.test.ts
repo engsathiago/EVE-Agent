@@ -72,9 +72,7 @@ describe("Matrix QA CLI runtime", () => {
   });
 
   it("can preserve expected non-zero CLI output for negative scenarios", async () => {
-    const root = await mkdtemp(
-      path.join(resolvePreferredEVETmpDir(), "matrix-qa-cli-nonzero-"),
-    );
+    const root = await mkdtemp(path.join(resolvePreferredEVETmpDir(), "matrix-qa-cli-nonzero-"));
     try {
       await mkdir(path.join(root, "dist"));
       await writeFile(
@@ -166,9 +164,7 @@ describe("Matrix QA CLI runtime", () => {
   });
 
   it("includes timed-out CLI output in diagnostics", async () => {
-    const root = await mkdtemp(
-      path.join(resolvePreferredEVETmpDir(), "matrix-qa-cli-timeout-"),
-    );
+    const root = await mkdtemp(path.join(resolvePreferredEVETmpDir(), "matrix-qa-cli-timeout-"));
     try {
       await mkdir(path.join(root, "dist"));
       await writeFile(

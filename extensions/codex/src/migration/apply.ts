@@ -66,8 +66,7 @@ const CODEX_PLUGIN_LOAD_WARNING =
   "Some Codex plugins could not be migrated. Run `eve migrate codex` after onboarding.";
 const TARGET_CODEX_MARKETPLACE_DISCOVERY_POLL_MS = 250;
 const TARGET_CODEX_MARKETPLACE_DISCOVERY_TIMEOUT_MS = 30_000;
-const TARGET_CODEX_MARKETPLACE_DISCOVERY_TIMEOUT_ENV =
-  "EVE_CODEX_MIGRATION_PLUGIN_LIST_TIMEOUT_MS";
+const TARGET_CODEX_MARKETPLACE_DISCOVERY_TIMEOUT_ENV = "EVE_CODEX_MIGRATION_PLUGIN_LIST_TIMEOUT_MS";
 
 export type CodexMigrationTargetAppServerPreparation = {
   dispose: () => Promise<void>;

@@ -374,10 +374,7 @@ function hasExplicitHeartbeatAgents(cfg: EVEConfig) {
   return list.some((entry) => Boolean(entry?.heartbeat));
 }
 
-function resolveHeartbeatConfig(
-  cfg: EVEConfig,
-  agentId?: string,
-): HeartbeatConfig | undefined {
+function resolveHeartbeatConfig(cfg: EVEConfig, agentId?: string): HeartbeatConfig | undefined {
   const defaults = cfg.agents?.defaults?.heartbeat;
   if (!agentId) {
     return defaults;

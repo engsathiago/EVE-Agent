@@ -3,10 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { clearRuntimeAuthProfileStoreSnapshots } from "../agents/auth-profiles/store.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import { maybeRepairCanonicalApiKeyFieldAlias } from "./doctor-auth-flat-profiles.js";
 import type { DoctorPrompter } from "./doctor-prompter.js";
 
@@ -43,10 +40,7 @@ async function makeTestState(): Promise<EVETestState> {
   return state;
 }
 
-async function writeLegacyAuthProfilesJson(
-  state: EVETestState,
-  value: unknown,
-): Promise<string> {
+async function writeLegacyAuthProfilesJson(state: EVETestState, value: unknown): Promise<string> {
   return await state.writeText(
     "agents/main/agent/auth-profiles.json",
     `${JSON.stringify(value, null, 2)}\n`,

@@ -40,7 +40,8 @@ vi.mock("eve-agent/plugin-sdk/provider-auth-runtime", async (importOriginal) => 
 });
 
 vi.mock("eve-agent/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const original = await importOriginal<typeof import("eve-agent/plugin-sdk/provider-web-search")>();
+  const original =
+    await importOriginal<typeof import("eve-agent/plugin-sdk/provider-web-search")>();
   return {
     ...original,
     postTrustedWebToolsJson: async (

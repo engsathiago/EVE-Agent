@@ -154,10 +154,7 @@ type SynologyChatPlugin = Omit<
       allowFrom?: Array<string | number>;
       normalizeEntry?: (raw: string) => string;
     } | null;
-    collectWarnings: (params: {
-      cfg: EVEConfig;
-      account: ResolvedSynologyChatAccount;
-    }) => string[];
+    collectWarnings: (params: { cfg: EVEConfig; account: ResolvedSynologyChatAccount }) => string[];
   };
   messaging: {
     targetPrefixes?: readonly string[];

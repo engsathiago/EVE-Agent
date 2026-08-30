@@ -1,10 +1,10 @@
-// Telegram helper module supports body helpers behavior.
-import type { Chat, Message, MessageOrigin, User } from "grammy/types";
 import type { NormalizedLocation } from "eve-agent/plugin-sdk/channel-inbound";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
 } from "eve-agent/plugin-sdk/string-coerce-runtime";
+// Telegram helper module supports body helpers behavior.
+import type { Chat, Message, MessageOrigin, User } from "grammy/types";
 
 type TelegramMediaMessage = Pick<
   Message,

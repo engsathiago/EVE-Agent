@@ -8,16 +8,16 @@ O diretório indicado inicialmente, /Users/fate/Desktop/EVE, estava vazio. A an�
 
 Identificação da versão analisada:
 
-| Item | Valor |
-|---|---|
-| Repositório remoto | https://github.com/openclaw/openclaw.git |
-| Branch | main |
-| Commit | 66f84a9bf1082de26f92b2b3741cc2f34aba34fa |
-| Data do commit | 2026-06-21 00:06:55 -0400 |
-| Assunto do commit | fix(opencode-go): add current Go models |
-| Versão do pacote | 2026.6.8 |
-| Node.js mínimo | 22.19.0 |
-| Gerenciador de pacotes | pnpm 11.2.2 |
+| Item                   | Valor                                    |
+| ---------------------- | ---------------------------------------- |
+| Repositório remoto     | https://github.com/openclaw/openclaw.git |
+| Branch                 | main                                     |
+| Commit                 | 66f84a9bf1082de26f92b2b3741cc2f34aba34fa |
+| Data do commit         | 2026-06-21 00:06:55 -0400                |
+| Assunto do commit      | fix(opencode-go): add current Go models  |
+| Versão do pacote       | 2026.6.8                                 |
+| Node.js mínimo         | 22.19.0                                  |
+| Gerenciador de pacotes | pnpm 11.2.2                              |
 
 O repositório usa sparse checkout. Parte dos diretórios estava materializada no disco e parte foi lida diretamente do objeto Git correspondente ao commit acima. Nenhum arquivo do código-fonte foi alterado.
 
@@ -44,85 +44,85 @@ O modelo de segurança é explícito: uma instalação representa um operador co
 
 ### 3.1 Inventário geral
 
-| Métrica | Quantidade |
-|---|---:|
-| Arquivos rastreados | 20.381 |
-| Arquivos TypeScript | 16.494 |
-| Arquivos Markdown | 1.048 |
-| Arquivos Swift | 691 |
-| Arquivos JSON | 635 |
-| Arquivos MJS | 377 |
-| Arquivos shell | 189 |
-| Arquivos Kotlin | 188 |
-| Arquivos YAML/YML | 266 |
-| Arquivos Go | 28 |
-| Extensões de plugin | 138 |
-| Manifestos de plugin | 134 |
-| Pacotes internos | 21 |
-| Skills incluídas | 57 |
-| Scripts declarados no package.json | 468 |
-| Exportações públicas declaradas | 324 |
+| Métrica                            | Quantidade |
+| ---------------------------------- | ---------: |
+| Arquivos rastreados                |     20.381 |
+| Arquivos TypeScript                |     16.494 |
+| Arquivos Markdown                  |      1.048 |
+| Arquivos Swift                     |        691 |
+| Arquivos JSON                      |        635 |
+| Arquivos MJS                       |        377 |
+| Arquivos shell                     |        189 |
+| Arquivos Kotlin                    |        188 |
+| Arquivos YAML/YML                  |        266 |
+| Arquivos Go                        |         28 |
+| Extensões de plugin                |        138 |
+| Manifestos de plugin               |        134 |
+| Pacotes internos                   |         21 |
+| Skills incluídas                   |         57 |
+| Scripts declarados no package.json |        468 |
+| Exportações públicas declaradas    |        324 |
 
 Contagem aproximada das áreas principais:
 
-| Área | Arquivos |
-|---|---:|
-| src | 8.975 |
-| extensions | 6.656 |
-| apps | 1.064 |
-| scripts | 831 |
-| docs | 765 |
-| test | 603 |
-| ui | 515 |
-| packages | 434 |
-| qa | 147 |
-| .agents | 136 |
-| .github | 112 |
-| skills | 83 |
+| Área       | Arquivos |
+| ---------- | -------: |
+| src        |    8.975 |
+| extensions |    6.656 |
+| apps       |    1.064 |
+| scripts    |      831 |
+| docs       |      765 |
+| test       |      603 |
+| ui         |      515 |
+| packages   |      434 |
+| qa         |      147 |
+| .agents    |      136 |
+| .github    |      112 |
+| skills     |       83 |
 
 Nos diretórios TypeScript materializados, a contagem é de aproximadamente 4.526.841 linhas. Scripts JavaScript/MJS/shell somam cerca de 142.764 linhas, e a documentação Markdown cerca de 156.749 linhas.
 
 ### 3.2 Maiores concentrações dentro de src
 
 | Subsistema | Arquivos |
-|---|---:|
-| agents | 1.817 |
-| infra | 785 |
-| gateway | 729 |
-| commands | 694 |
-| plugins | 628 |
-| plugin-sdk | 588 |
-| auto-reply | 558 |
-| cli | 453 |
-| config | 384 |
-| channels | 380 |
-| cron | 213 |
-| secrets | 127 |
-| shared | 119 |
-| skills | 115 |
-| acp | 98 |
-| llm | 82 |
-| security | 81 |
-| logging | 72 |
-| daemon | 71 |
+| ---------- | -------: |
+| agents     |    1.817 |
+| infra      |      785 |
+| gateway    |      729 |
+| commands   |      694 |
+| plugins    |      628 |
+| plugin-sdk |      588 |
+| auto-reply |      558 |
+| cli        |      453 |
+| config     |      384 |
+| channels   |      380 |
+| cron       |      213 |
+| secrets    |      127 |
+| shared     |      119 |
+| skills     |      115 |
+| acp        |       98 |
+| llm        |       82 |
+| security   |       81 |
+| logging    |       72 |
+| daemon     |       71 |
 
 ### 3.3 Arquivos de maior complexidade aparente
 
-| Arquivo | Linhas aproximadas | Papel |
-|---|---:|---|
-| src/agents/embedded-agent-runner/run/attempt.ts | 5.789 | Montagem e execução de uma tentativa de turno |
-| extensions/policy/src/doctor/register.ts | 5.570 | Diagnóstico e reparos da extensão de política |
-| src/gateway/server-methods/chat.ts | 5.104 | RPC e streaming de chat |
-| src/agents/openai-transport-stream.ts | 4.427 | Adaptação do stream OpenAI |
-| extensions/workboard/src/store.ts | 4.331 | Estado do workboard |
-| extensions/qa-lab/web/src/ui-render.ts | 4.207 | Renderização da interface do laboratório |
-| ui/src/ui/controllers/workboard.ts | 4.127 | Controlador web do workboard |
-| src/infra/state-migrations.ts | 4.097 | Migrações de estado |
-| ui/src/ui/app-render.ts | 4.074 | Composição principal da UI |
-| src/agents/embedded-agent-runner/run.ts | 4.064 | Orquestração de tentativas, retry e fallback |
-| src/cli/update-cli/update-command.ts | 4.001 | Atualização da instalação |
-| extensions/diagnostics-otel/src/service.ts | 3.810 | Telemetria OpenTelemetry |
-| extensions/active-memory/index.ts | 3.755 | Memória ativa |
+| Arquivo                                         | Linhas aproximadas | Papel                                         |
+| ----------------------------------------------- | -----------------: | --------------------------------------------- |
+| src/agents/embedded-agent-runner/run/attempt.ts |              5.789 | Montagem e execução de uma tentativa de turno |
+| extensions/policy/src/doctor/register.ts        |              5.570 | Diagnóstico e reparos da extensão de política |
+| src/gateway/server-methods/chat.ts              |              5.104 | RPC e streaming de chat                       |
+| src/agents/openai-transport-stream.ts           |              4.427 | Adaptação do stream OpenAI                    |
+| extensions/workboard/src/store.ts               |              4.331 | Estado do workboard                           |
+| extensions/qa-lab/web/src/ui-render.ts          |              4.207 | Renderização da interface do laboratório      |
+| ui/src/ui/controllers/workboard.ts              |              4.127 | Controlador web do workboard                  |
+| src/infra/state-migrations.ts                   |              4.097 | Migrações de estado                           |
+| ui/src/ui/app-render.ts                         |              4.074 | Composição principal da UI                    |
+| src/agents/embedded-agent-runner/run.ts         |              4.064 | Orquestração de tentativas, retry e fallback  |
+| src/cli/update-cli/update-command.ts            |              4.001 | Atualização da instalação                     |
+| extensions/diagnostics-otel/src/service.ts      |              3.810 | Telemetria OpenTelemetry                      |
+| extensions/active-memory/index.ts               |              3.755 | Memória ativa                                 |
 
 Esses números não provam baixa qualidade, mas indicam os pontos de maior acoplamento e maior risco de regressão.
 
@@ -235,7 +235,7 @@ startGatewayServer executa, em alto nível:
 9. ligação dos handlers RPC;
 10. configuração de reload e diagnóstico.
 
-O padrão é escutar em 127.0.0.1:18789. As superfícies Canvas e A2UI são expostas em caminhos reservados abaixo de /__openclaw__.
+O padrão é escutar em 127.0.0.1:18789. As superfícies Canvas e A2UI são expostas em caminhos reservados abaixo de /**openclaw**.
 
 ### 6.2 Protocolo
 
@@ -837,21 +837,21 @@ Plugins são código confiável dentro do processo. Eles têm os mesmos privilé
 
 As 138 pastas em extensions são:
 
-| Categoria | Extensões |
-|---|---|
-| Runtimes e agentes | acpx, codex, codex-supervisor, copilot, copilot-proxy, github-copilot, kilocode, opencode, open-prose |
-| Provedores e gateways LLM | alibaba, amazon-bedrock, amazon-bedrock-mantle, anthropic, anthropic-vertex, arcee, byteplus, cerebras, chutes, cloudflare-ai-gateway, cohere, deepinfra, deepseek, fireworks, gmi, google, groq, huggingface, kimi-coding, litellm, llama-cpp, lmstudio, microsoft, microsoft-foundry, minimax, mistral, moonshot, novita, nvidia, ollama, openai, opencode-go, openrouter, qianfan, qwen, sglang, stepfun, synthetic, tencent, together, venice, vercel-ai-gateway, vllm, volcengine, xai, xiaomi, zai |
-| Canais | clickclack, discord, feishu, googlechat, imessage, irc, line, matrix, mattermost, msteams, nextcloud-talk, nostr, qa-channel, qqbot, signal, slack, sms, synology-chat, telegram, tlon, twitch, whatsapp, zalo, zalouser |
-| Busca e conteúdo web | brave, duckduckgo, exa, firecrawl, parallel, perplexity, searxng, tavily, web-readability |
-| Navegação e superfícies | browser, canvas, device-pair, phone-control |
-| Áudio, voz e fala | azure-speech, deepgram, elevenlabs, gradium, inworld, senseaudio, sherpa-related core through plugins, talk-voice, tts-local-cli, voice-call |
-| Imagem, vídeo e mídia | comfy, document-extract, fal, image-generation-core, media-understanding-core, pixverse, runway, video-generation-core |
-| Memória | active-memory, memory-core, memory-lancedb, memory-wiki, tokenjuice |
-| Observabilidade e operação | admin-http-rpc, bonjour, diagnostics-otel, diagnostics-prometheus, oc-path, policy, webhooks |
-| Produtividade e workflow | diffs, diffs-language-pack, google-meet, llm-task, lobster, migrate-claude, migrate-hermes, workboard |
-| QA e suporte | qa-lab, qa-matrix, test-support |
-| Segurança e ownership | openshell, thread-ownership |
-| Outros provedores de mídia/voz | image-generation-core, media-understanding-core, video-generation-core |
+| Categoria                      | Extensões                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtimes e agentes             | acpx, codex, codex-supervisor, copilot, copilot-proxy, github-copilot, kilocode, opencode, open-prose                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Provedores e gateways LLM      | alibaba, amazon-bedrock, amazon-bedrock-mantle, anthropic, anthropic-vertex, arcee, byteplus, cerebras, chutes, cloudflare-ai-gateway, cohere, deepinfra, deepseek, fireworks, gmi, google, groq, huggingface, kimi-coding, litellm, llama-cpp, lmstudio, microsoft, microsoft-foundry, minimax, mistral, moonshot, novita, nvidia, ollama, openai, opencode-go, openrouter, qianfan, qwen, sglang, stepfun, synthetic, tencent, together, venice, vercel-ai-gateway, vllm, volcengine, xai, xiaomi, zai |
+| Canais                         | clickclack, discord, feishu, googlechat, imessage, irc, line, matrix, mattermost, msteams, nextcloud-talk, nostr, qa-channel, qqbot, signal, slack, sms, synology-chat, telegram, tlon, twitch, whatsapp, zalo, zalouser                                                                                                                                                                                                                                                                                 |
+| Busca e conteúdo web           | brave, duckduckgo, exa, firecrawl, parallel, perplexity, searxng, tavily, web-readability                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Navegação e superfícies        | browser, canvas, device-pair, phone-control                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Áudio, voz e fala              | azure-speech, deepgram, elevenlabs, gradium, inworld, senseaudio, sherpa-related core through plugins, talk-voice, tts-local-cli, voice-call                                                                                                                                                                                                                                                                                                                                                             |
+| Imagem, vídeo e mídia          | comfy, document-extract, fal, image-generation-core, media-understanding-core, pixverse, runway, video-generation-core                                                                                                                                                                                                                                                                                                                                                                                   |
+| Memória                        | active-memory, memory-core, memory-lancedb, memory-wiki, tokenjuice                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Observabilidade e operação     | admin-http-rpc, bonjour, diagnostics-otel, diagnostics-prometheus, oc-path, policy, webhooks                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Produtividade e workflow       | diffs, diffs-language-pack, google-meet, llm-task, lobster, migrate-claude, migrate-hermes, workboard                                                                                                                                                                                                                                                                                                                                                                                                    |
+| QA e suporte                   | qa-lab, qa-matrix, test-support                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Segurança e ownership          | openshell, thread-ownership                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Outros provedores de mídia/voz | image-generation-core, media-understanding-core, video-generation-core                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 Lista alfabética exata:
 
@@ -1201,29 +1201,29 @@ macos-mlx-tts fornece TTS local. swabble usa APIs de fala on-device para voice w
 
 O workspace pnpm inclui 21 pacotes:
 
-| Pacote | Responsabilidade |
-|---|---|
-| acp-core | Contratos e utilitários ACP |
-| agent-core | Tipos e lógica comum de agente |
-| gateway-client | Cliente, readiness, auth e timeout do gateway |
-| gateway-protocol | Schemas, validadores, erros e versão do protocolo |
-| llm-core | Tipos neutros de modelo e inferência |
-| llm-runtime | Execução e transporte LLM |
-| markdown-core | Processamento Markdown reutilizável |
-| media-core | Tipos e operações comuns de mídia |
-| media-generation-core | Contratos de geração de mídia |
-| media-understanding-common | Contratos de compreensão de mídia |
-| memory-host-sdk | Interface host para memória |
-| model-catalog-core | Catálogo e referências de modelo |
-| net-policy | Política comum de rede |
-| normalization-core | Normalização compartilhada |
-| plugin-package-contract | Contrato de empacotamento de plugin |
-| plugin-sdk | SDK de plugins |
-| sdk | SDK pública de alto nível |
-| speech-core | Tipos de speech e áudio |
-| terminal-core | Abstrações de terminal |
-| tool-call-repair | Reparo de chamadas de ferramenta |
-| web-content-core | Conteúdo e fetch web comuns |
+| Pacote                     | Responsabilidade                                  |
+| -------------------------- | ------------------------------------------------- |
+| acp-core                   | Contratos e utilitários ACP                       |
+| agent-core                 | Tipos e lógica comum de agente                    |
+| gateway-client             | Cliente, readiness, auth e timeout do gateway     |
+| gateway-protocol           | Schemas, validadores, erros e versão do protocolo |
+| llm-core                   | Tipos neutros de modelo e inferência              |
+| llm-runtime                | Execução e transporte LLM                         |
+| markdown-core              | Processamento Markdown reutilizável               |
+| media-core                 | Tipos e operações comuns de mídia                 |
+| media-generation-core      | Contratos de geração de mídia                     |
+| media-understanding-common | Contratos de compreensão de mídia                 |
+| memory-host-sdk            | Interface host para memória                       |
+| model-catalog-core         | Catálogo e referências de modelo                  |
+| net-policy                 | Política comum de rede                            |
+| normalization-core         | Normalização compartilhada                        |
+| plugin-package-contract    | Contrato de empacotamento de plugin               |
+| plugin-sdk                 | SDK de plugins                                    |
+| sdk                        | SDK pública de alto nível                         |
+| speech-core                | Tipos de speech e áudio                           |
+| terminal-core              | Abstrações de terminal                            |
+| tool-call-repair           | Reparo de chamadas de ferramenta                  |
+| web-content-core           | Conteúdo e fetch web comuns                       |
 
 A maioria tem versão 0.0.0-private e existe para impor limites de dependência. gateway-protocol é o contrato wire. gateway-client implementa conexão, device auth, readiness e timeout. A SDK pública organiza namespaces para Agent, Agents, Approvals, Artifacts, Environments, Models, Sessions, Tasks, Tools, Run, transport e event hub.
 
@@ -1542,43 +1542,43 @@ Para manutenção do código:
 
 ### 26.1 Raiz
 
-| Caminho | Papel |
-|---|---|
-| openclaw.mjs | Bootstrap do executável |
-| package.json | Scripts, dependências, binário e exports |
-| pnpm-workspace.yaml | Monorepo e política de dependências |
-| tsconfig.json | Compilação TypeScript |
-| src | Núcleo da aplicação |
-| extensions | Plugins e integrações |
-| packages | Bibliotecas e contratos internos |
-| ui | Control UI web |
-| apps | Android, iOS, macOS e auxiliares |
-| skills | Skills bundled |
-| docs | Documentação |
-| scripts | Build, release, QA e manutenção |
-| test | Harnesses e suites transversais |
-| qa | Cenários de qualidade |
-| security | Política e assets de segurança |
-| deploy | Empacotamento e implantação |
-| config | Configuração de ferramentas do repositório |
-| patches | Patches de dependências |
-| .github | CI, templates e automações |
-| .agents | Instruções e recursos de agentes de desenvolvimento |
+| Caminho             | Papel                                               |
+| ------------------- | --------------------------------------------------- |
+| openclaw.mjs        | Bootstrap do executável                             |
+| package.json        | Scripts, dependências, binário e exports            |
+| pnpm-workspace.yaml | Monorepo e política de dependências                 |
+| tsconfig.json       | Compilação TypeScript                               |
+| src                 | Núcleo da aplicação                                 |
+| extensions          | Plugins e integrações                               |
+| packages            | Bibliotecas e contratos internos                    |
+| ui                  | Control UI web                                      |
+| apps                | Android, iOS, macOS e auxiliares                    |
+| skills              | Skills bundled                                      |
+| docs                | Documentação                                        |
+| scripts             | Build, release, QA e manutenção                     |
+| test                | Harnesses e suites transversais                     |
+| qa                  | Cenários de qualidade                               |
+| security            | Política e assets de segurança                      |
+| deploy              | Empacotamento e implantação                         |
+| config              | Configuração de ferramentas do repositório          |
+| patches             | Patches de dependências                             |
+| .github             | CI, templates e automações                          |
+| .agents             | Instruções e recursos de agentes de desenvolvimento |
 
 ### 26.2 src por responsabilidade
 
-| Grupo | Diretórios |
-|---|---|
-| Execução de agente | agents, auto-reply, context-engine, llm, models |
-| Controle | gateway, commands, cli, daemon, config |
-| Extensibilidade | plugins, plugin-sdk, hooks, skills |
-| Comunicação | channels, infra/outbound, media, media-understanding, speech |
-| Estado | sessions, state, memory, secrets, tasks, cron |
-| Segurança | security, approvals, sandbox |
-| Integrações de protocolo | acp, mcp, nodes |
-| Interfaces | tui, terminal |
-| Operação | logging, diagnostics, infra, shared |
-| Outros domínios | browser, canvas, web, usage, update, backup, pairing |
+| Grupo                    | Diretórios                                                   |
+| ------------------------ | ------------------------------------------------------------ |
+| Execução de agente       | agents, auto-reply, context-engine, llm, models              |
+| Controle                 | gateway, commands, cli, daemon, config                       |
+| Extensibilidade          | plugins, plugin-sdk, hooks, skills                           |
+| Comunicação              | channels, infra/outbound, media, media-understanding, speech |
+| Estado                   | sessions, state, memory, secrets, tasks, cron                |
+| Segurança                | security, approvals, sandbox                                 |
+| Integrações de protocolo | acp, mcp, nodes                                              |
+| Interfaces               | tui, terminal                                                |
+| Operação                 | logging, diagnostics, infra, shared                          |
+| Outros domínios          | browser, canvas, web, usage, update, backup, pairing         |
 
 ## 27. Índice de arquivos-chave
 

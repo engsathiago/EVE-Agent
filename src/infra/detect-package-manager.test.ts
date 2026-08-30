@@ -24,7 +24,7 @@ async function writePublishedEVERoot(root: string): Promise<void> {
   await fs.mkdir(root, { recursive: true });
   await fs.writeFile(
     path.join(root, "package.json"),
-    JSON.stringify({ name: "eve", packageManager: "pnpm@11.2.2" }),
+    JSON.stringify({ name: "eve-agent", packageManager: "pnpm@11.2.2" }),
     "utf8",
   );
   await fs.writeFile(path.join(root, "npm-shrinkwrap.json"), "{}", "utf8");
@@ -96,7 +96,7 @@ describe("detectPackageManager", () => {
   it("keeps pnpm-owned direct package roots that ship npm-shrinkwrap", async () => {
     await withTempDir({ prefix: "eve-detect-pm-pnpm-direct-" }, async (base) => {
       const nodeModulesRoot = path.join(base, "pnpm-global", "node_modules");
-      const packageRoot = path.join(nodeModulesRoot, "eve");
+      const packageRoot = path.join(nodeModulesRoot, "eve-agent");
       await writePublishedEVERoot(packageRoot);
       await fs.writeFile(path.join(nodeModulesRoot, ".modules.yaml"), "layoutVersion: 5", "utf8");
 
@@ -110,7 +110,7 @@ describe("detectPackageManager", () => {
       const packageRoot = path.join(
         nodeModulesRoot,
         ".pnpm",
-        "eve@2026.5.27",
+        "eve-agent@2026.5.27",
         "node_modules",
         "eve",
       );
@@ -125,7 +125,7 @@ describe("detectPackageManager", () => {
     await withTempDir({ prefix: "eve-detect-pm-bun-" }, async (base) => {
       const bunInstall = path.join(base, "bun-home");
       await withEnvAsync({ BUN_INSTALL: bunInstall }, async () => {
-        const packageRoot = path.join(bunInstall, "install", "global", "node_modules", "eve");
+        const packageRoot = path.join(bunInstall, "install", "global", "node_modules", "eve-agent");
         await writePublishedEVERoot(packageRoot);
 
         await expect(detectPackageManager(packageRoot)).resolves.toBe("bun");

@@ -883,7 +883,7 @@ jobs:
             return "$status"
           }
 
-          args=(-f package_spec="${PACKAGE_SPEC:-eve@beta}" -f harness_ref="$TARGET_SHA" -f provider_mode="$PROVIDER_MODE")
+          args=(-f package_spec="${PACKAGE_SPEC:-eve-agent@beta}" -f harness_ref="$TARGET_SHA" -f provider_mode="$PROVIDER_MODE")
           if [[ -z "${PACKAGE_SPEC// }" ]]; then
             if [[ "$PREPARE_PACKAGE_RESULT" != "success" || -z "${PACKAGE_ARTIFACT_NAME// }" ]]; then
               echo "Full release Telegram requires either npm_telegram_package_spec or a prepared release-package-under-test artifact." >&2
@@ -1478,13 +1478,13 @@ jobs:
           if [[ -z "${evidence_package_spec// }" ]]; then
             tag_ref="${TARGET_REF#refs/tags/}"
             if [[ "$tag_ref" =~ ^v([0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*((-(alpha|beta)\.[1-9][0-9]*)|(-[1-9][0-9]*))?)$ ]]; then
-              evidence_package_spec="eve@${BASH_REMATCH[1]}"
+              evidence_package_spec="eve-agent@${BASH_REMATCH[1]}"
             fi
           fi
 
           release_id="${TARGET_REF#refs/tags/}"
           release_id="${release_id#v}"
-          if [[ "$evidence_package_spec" =~ ^eve@(.+)$ ]]; then
+          if [[ "$evidence_package_spec" =~ ^eve-agent@(.+)$ ]]; then
             release_id="${BASH_REMATCH[1]}"
           fi
           release_id="$(printf '%s' "$release_id" | tr '/:@ ' '----' | tr -cd 'A-Za-z0-9._-')"

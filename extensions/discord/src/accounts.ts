@@ -44,10 +44,7 @@ export function resolveDiscordAccountConfig(
   return resolveAccountEntry(cfg.channels?.discord?.accounts, accountId);
 }
 
-export function mergeDiscordAccountConfig(
-  cfg: EVEConfig,
-  accountId: string,
-): DiscordAccountConfig {
+export function mergeDiscordAccountConfig(cfg: EVEConfig, accountId: string): DiscordAccountConfig {
   const merged = resolveMergedAccountConfig<DiscordAccountConfig>({
     channelConfig: cfg.channels?.discord as DiscordAccountConfig | undefined,
     accounts: cfg.channels?.discord?.accounts as

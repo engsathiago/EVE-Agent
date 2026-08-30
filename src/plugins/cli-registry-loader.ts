@@ -15,11 +15,7 @@ import {
   resolvePluginRuntimeLoadContext,
   type PluginRuntimeLoadContext,
 } from "./runtime/load-context.js";
-import type {
-  EVEPluginCliCommandDescriptor,
-  EVEPluginCliContext,
-  PluginLogger,
-} from "./types.js";
+import type { EVEPluginCliCommandDescriptor, EVEPluginCliContext, PluginLogger } from "./types.js";
 
 export type PluginCliLoaderOptions = Pick<PluginLoadOptions, "pluginSdkResolution">;
 

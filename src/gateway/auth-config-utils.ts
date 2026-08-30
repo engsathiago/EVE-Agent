@@ -1,7 +1,7 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Gateway auth config utilities materialize token/password SecretRefs only for
 // the auth mode that can actually consume them.
 import type { GatewayAuthConfig } from "../config/types.gateway.js";
-import type { EVEConfig } from "../config/types.eve.js";
 import { hasConfiguredSecretInput, resolveSecretInputRef } from "../config/types.secrets.js";
 import { resolveRequiredConfiguredSecretRefInputString } from "./resolve-configured-secret-input-string.js";
 import {

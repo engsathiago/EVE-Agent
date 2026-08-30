@@ -170,9 +170,7 @@ describe("buildQaRuntimeEnv", () => {
     expect(env.EVE_EMBEDDED_ABORT_SETTLE_TIMEOUT_MS).toBe("2000");
     expect(env.EVE_QA_PARENT_PID).toBe(String(process.pid));
     expect(env.EVE_QA_TEMP_ROOT).toBe("/tmp/eve-qa");
-    expect(env.EVE_QA_STAGED_RUNTIME_ROOT).toBe(
-      "/repo/.artifacts/qa-runtime/eve-qa-suite-test",
-    );
+    expect(env.EVE_QA_STAGED_RUNTIME_ROOT).toBe("/repo/.artifacts/qa-runtime/eve-qa-suite-test");
     expect(env.EVE_QA_ALLOW_LOCAL_IMAGE_PROVIDER).toBe("1");
     expect(env.EVE_ALLOW_SLOW_REPLY_TESTS).toBe("1");
     expect(env.EVE_BUNDLED_PLUGINS_DIR).toBe("/tmp/eve-qa/bundled-plugins");
@@ -1473,7 +1471,7 @@ describe("qa bundled plugin dir", () => {
     });
     await writeFile(
       path.join(repoRoot, "package.json"),
-      JSON.stringify({ name: "eve", type: "module" }, null, 2),
+      JSON.stringify({ name: "eve-agent", type: "module" }, null, 2),
       "utf8",
     );
     await mkdir(path.join(repoRoot, "dist"), { recursive: true });
@@ -1549,7 +1547,7 @@ describe("qa bundled plugin dir", () => {
     });
     await writeFile(
       path.join(repoRoot, "package.json"),
-      JSON.stringify({ name: "eve", type: "module" }, null, 2),
+      JSON.stringify({ name: "eve-agent", type: "module" }, null, 2),
       "utf8",
     );
     const tempRoot = await mkdtemp(path.join(os.tmpdir(), "qa-bundled-invalid-target-"));

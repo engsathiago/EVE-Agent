@@ -247,20 +247,16 @@ describe("command-path-policy", () => {
   });
 
   it("defaults unknown command paths to network proxy routing", () => {
-    expect(resolveCliNetworkProxyPolicy(["node", "eve", "googlemeet", "login"])).toBe(
-      "default",
-    );
-    expect(resolveCliNetworkProxyPolicy(["node", "eve", "tool", "image_generate"])).toBe(
-      "bypass",
-    );
+    expect(resolveCliNetworkProxyPolicy(["node", "eve", "googlemeet", "login"])).toBe("default");
+    expect(resolveCliNetworkProxyPolicy(["node", "eve", "tool", "image_generate"])).toBe("bypass");
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "tools", "effective"])).toBe("bypass");
   });
 
   it("resolves static network proxy bypass policies from the catalog", () => {
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "status"])).toBe("bypass");
-    expect(
-      resolveCliNetworkProxyPolicy(["node", "eve", "config", "get", "proxy.enabled"]),
-    ).toBe("bypass");
+    expect(resolveCliNetworkProxyPolicy(["node", "eve", "config", "get", "proxy.enabled"])).toBe(
+      "bypass",
+    );
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "proxy", "start"])).toBe("bypass");
   });
 
@@ -273,9 +269,9 @@ describe("command-path-policy", () => {
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "agent", "--local"])).toBe("default");
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "agent", "run"])).toBe("bypass");
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "channels", "status"])).toBe("bypass");
-    expect(
-      resolveCliNetworkProxyPolicy(["node", "eve", "channels", "status", "--probe"]),
-    ).toBe("default");
+    expect(resolveCliNetworkProxyPolicy(["node", "eve", "channels", "status", "--probe"])).toBe(
+      "default",
+    );
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "models", "status"])).toBe("bypass");
     expect(resolveCliNetworkProxyPolicy(["node", "eve", "models", "status", "--probe"])).toBe(
       "default",
@@ -312,9 +308,11 @@ describe("command-path-policy", () => {
       "./command-path-policy.js?catalog-overrides",
     );
 
-    expect(
-      resolveCliCatalogCommandPathLocal(["node", "eve", "nodes", "camera", "snap"]),
-    ).toEqual(["nodes", "camera", "snap"]);
+    expect(resolveCliCatalogCommandPathLocal(["node", "eve", "nodes", "camera", "snap"])).toEqual([
+      "nodes",
+      "camera",
+      "snap",
+    ]);
     expect(resolveCliNetworkProxyPolicyLocal(["node", "eve", "nodes", "camera", "snap"])).toBe(
       "default",
     );
@@ -324,9 +322,9 @@ describe("command-path-policy", () => {
   });
 
   it("stops catalog command path resolution before positional arguments", () => {
-    expect(
-      resolveCliCatalogCommandPath(["node", "eve", "config", "get", "proxy.enabled"]),
-    ).toEqual(["config", "get"]);
+    expect(resolveCliCatalogCommandPath(["node", "eve", "config", "get", "proxy.enabled"])).toEqual(
+      ["config", "get"],
+    );
     expect(
       resolveCliCatalogCommandPath(["node", "eve", "message", "send", "--to", "demo"]),
     ).toEqual(["message"]);

@@ -30,7 +30,7 @@ Create an EasyRunner app with a Compose file shaped like this:
 ```yaml
 services:
   eve:
-    image: ghcr.io/eve/eve:latest
+    image: ghcr.io/engsathiago/eve-agent:latest
     restart: unless-stopped
     environment:
       EVE_GATEWAY_TOKEN: ${EVE_GATEWAY_TOKEN}

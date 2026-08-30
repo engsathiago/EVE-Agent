@@ -74,8 +74,7 @@ const resolveSignalExitCode = (signal) => {
 
 const runWithTimeout = async (timeout, command, commandArgs) => {
   const killGrace = parsePositiveNumber(
-    process.env.EVE_BUN_GLOBAL_SMOKE_TIMEOUT_KILL_GRACE_MS ??
-      String(DEFAULT_TIMEOUT_KILL_GRACE_MS),
+    process.env.EVE_BUN_GLOBAL_SMOKE_TIMEOUT_KILL_GRACE_MS ?? String(DEFAULT_TIMEOUT_KILL_GRACE_MS),
     "EVE_BUN_GLOBAL_SMOKE_TIMEOUT_KILL_GRACE_MS",
   );
   const child = spawn(command, commandArgs, {

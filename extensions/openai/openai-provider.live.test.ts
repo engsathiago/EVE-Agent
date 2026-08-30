@@ -1,6 +1,6 @@
+import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/plugin-entry";
 // Openai tests cover openai provider plugin behavior.
 import OpenAI from "openai";
-import type { ProviderRuntimeModel } from "eve-agent/plugin-sdk/plugin-entry";
 import { describe, expect, it } from "vitest";
 import { buildOpenAIProvider } from "./openai-provider.js";
 

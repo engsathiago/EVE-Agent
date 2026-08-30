@@ -58,7 +58,7 @@ const DIST_RUNTIME_EXTENSION_INDEX = "dist-runtime/extensions/demo/index.js";
 const DIST_RUNTIME_EXTENSION_MANIFEST = "dist-runtime/extensions/demo/eve.plugin.json";
 const DIST_RUNTIME_EXTENSION_PACKAGE = "dist-runtime/extensions/demo/package.json";
 const DIST_RUNTIME_EXTENSION_SKILL = "dist-runtime/extensions/demo/skills/SKILL.md";
-const DIST_EVE_ALIAS_PACKAGE = "dist/extensions/node_modules/eve/package.json";
+const DIST_EVE_ALIAS_PACKAGE = "dist/extensions/node_modules/eve-agent/package.json";
 const DIST_EVE_ALIAS_PLUGIN_SDK_INDEX =
   "dist/extensions/node_modules/eve-agent/plugin-sdk/index.js";
 const DIST_EVE_ALIAS_PLUGIN_SDK_STRING_COERCE =
@@ -153,7 +153,7 @@ async function writeRuntimePostBuildScaffold(tmp: string): Promise<void> {
     [DIST_LEGACY_CLI_EXIT_COMPAT]: "export function hasMemoryRuntime() { return false; }\n",
     [DIST_LEGACY_CLI_EXIT_COMPAT_ALT]: "export function hasMemoryRuntime() { return false; }\n",
     [DIST_EVE_ALIAS_PACKAGE]:
-      '{"name":"eve","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js"}}\n',
+      '{"name":"eve-agent","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js"}}\n',
   });
   await touchProjectFiles(
     tmp,
@@ -2274,9 +2274,8 @@ describe("run-node script", () => {
           [ROOT_SRC]: "export const value = 1;\n",
           [DIST_PLUGIN_SDK_INDEX]: "export * from './core.js';\n",
           [DIST_EVE_ALIAS_PACKAGE]:
-            '{"name":"eve","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js"}}\n',
-          [DIST_EVE_ALIAS_PLUGIN_SDK_INDEX]:
-            "export * from '../../../../plugin-sdk/index.js';\n",
+            '{"name":"eve-agent","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js"}}\n',
+          [DIST_EVE_ALIAS_PLUGIN_SDK_INDEX]: "export * from '../../../../plugin-sdk/index.js';\n",
           [RUNTIME_POSTBUILD_STAMP]: '{"head":"abc123"}\n',
         },
         buildPaths: [
@@ -2325,9 +2324,8 @@ describe("run-node script", () => {
           "dist/plugin-sdk/string-coerce-runtime.js": "export const publicRuntime = true;\n",
           "dist/plugin-sdk/ssrf-runtime-internal.js": "export const internal = true;\n",
           [DIST_EVE_ALIAS_PACKAGE]:
-            '{"name":"eve","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js","./plugin-sdk/string-coerce-runtime":"./plugin-sdk/string-coerce-runtime.js"}}\n',
-          [DIST_EVE_ALIAS_PLUGIN_SDK_INDEX]:
-            "export * from '../../../../plugin-sdk/index.js';\n",
+            '{"name":"eve-agent","type":"module","exports":{"./plugin-sdk":"./plugin-sdk/index.js","./plugin-sdk/string-coerce-runtime":"./plugin-sdk/string-coerce-runtime.js"}}\n',
+          [DIST_EVE_ALIAS_PLUGIN_SDK_INDEX]: "export * from '../../../../plugin-sdk/index.js';\n",
           [DIST_EVE_ALIAS_PLUGIN_SDK_STRING_COERCE]:
             "export * from '../../../../plugin-sdk/string-coerce-runtime.js';\n",
           [RUNTIME_POSTBUILD_STAMP]: '{"head":"abc123"}\n',

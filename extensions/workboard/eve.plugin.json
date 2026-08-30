@@ -1,9 +1,9 @@
 {
   "id": "workboard",
-  "enabledByDefault": false,
+  "enabledByDefault": true,
   "activation": {
     "onStartup": true,
-    "onCommands": ["workboard"]
+    "onCommands": ["workboard", "mission", "projects"]
   },
   "name": "Workboard",
   "description": "Dashboard workboard for agent-owned issues and sessions.",
@@ -50,6 +50,14 @@
       "name": "workboard",
       "kind": "runtime-slash",
       "cliCommand": "workboard"
+    },
+    {
+      "name": "mission",
+      "kind": "cli"
+    },
+    {
+      "name": "projects",
+      "kind": "cli"
     }
   ],
   "toolMetadata": {
@@ -159,6 +167,13 @@
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
-    "properties": {}
+    "properties": {
+      "completionEvidence": {
+        "type": "string",
+        "enum": ["off", "record", "require"],
+        "default": "record",
+        "description": "Record completion evidence or require passed proof/artifacts before completion."
+      }
+    }
   }
 }

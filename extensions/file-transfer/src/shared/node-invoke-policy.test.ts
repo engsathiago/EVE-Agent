@@ -80,9 +80,7 @@ function createCtx(overrides: {
   approvals?: EVEPluginNodeInvokePolicyContext["approvals"];
 }) {
   const invokeNode = vi.fn<EVEPluginNodeInvokePolicyContext["invokeNode"]>(
-    async ({
-      params,
-    }: Parameters<EVEPluginNodeInvokePolicyContext["invokeNode"]>[0] = {}) => ({
+    async ({ params }: Parameters<EVEPluginNodeInvokePolicyContext["invokeNode"]>[0] = {}) => ({
       ok: true,
       payload: {
         ok: true,

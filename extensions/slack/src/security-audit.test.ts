@@ -23,9 +23,7 @@ function createSlackAccount(config: NonNullable<EVEConfig["channels"]>["slack"])
   } as ResolvedSlackAccount;
 }
 
-function createSlashCommandSlackConfig(
-  options: { useAccessGroups?: boolean } = {},
-): EVEConfig {
+function createSlashCommandSlackConfig(options: { useAccessGroups?: boolean } = {}): EVEConfig {
   return {
     ...(options.useAccessGroups === undefined
       ? {}

@@ -1,7 +1,6 @@
 /** CLI entrypoint for non-mutating doctor lint health checks. */
 import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import { readConfigFileSnapshot } from "../config/config.js";
-import { registerBundledHealthChecks } from "../flows/bundled-health-checks.js";
 import { configValidationIssuesToHealthFindings } from "../flows/doctor-core-checks.js";
 import { resolveDoctorContributionHealthChecks } from "../flows/doctor-health-contributions.js";
 import {
@@ -77,7 +76,6 @@ export async function runDoctorLintCli(
     allowExecSecretRefs: opts.allowExec === true,
     ...(snapshot.path !== undefined ? { configPath: snapshot.path } : {}),
   };
-  registerBundledHealthChecks({ cfg: snapshot.config, cwd: ctx.cwd });
   const coreChecks = await resolveDoctorContributionHealthChecks();
   const extensionChecks = listExtensionHealthChecksForDoctor(coreChecks);
 

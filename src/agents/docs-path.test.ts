@@ -9,7 +9,7 @@ async function makePackageRoot(prefix: string): Promise<string> {
   // Tests create minimal package roots so path resolution is checked without
   // depending on this checkout's real docs or git state.
   const root = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
-  await fs.writeFile(path.join(root, "package.json"), '{"name":"eve"}\n');
+  await fs.writeFile(path.join(root, "package.json"), '{"name":"eve-agent"}\n');
   return root;
 }
 

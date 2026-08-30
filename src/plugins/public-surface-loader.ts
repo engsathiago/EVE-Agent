@@ -133,8 +133,7 @@ export function loadBundledPluginPublicArtifactModuleSync<T extends object>(para
   const opened = openRootFileSync({
     absolutePath: location.modulePath,
     rootPath: location.boundaryRoot,
-    boundaryLabel:
-      location.boundaryRoot === EVE_PACKAGE_ROOT ? "EVE package root" : "plugin root",
+    boundaryLabel: location.boundaryRoot === EVE_PACKAGE_ROOT ? "EVE package root" : "plugin root",
     rejectHardlinks: false,
   });
   if (!opened.ok) {

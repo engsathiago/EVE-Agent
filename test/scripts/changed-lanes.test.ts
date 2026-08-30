@@ -785,9 +785,9 @@ describe("scripts/changed-lanes", () => {
     expect(shouldDelegateChangedCheckToCrabbox(["--dry-run"], {})).toBe(false);
     expect(shouldDelegateChangedCheckToCrabbox([], { GITHUB_ACTIONS: "true" })).toBe(false);
     expect(shouldDelegateChangedCheckToCrabbox([], { CI: "1" })).toBe(false);
-    expect(
-      shouldDelegateChangedCheckToCrabbox([], { EVE_CHECK_CHANGED_REMOTE_CHILD: "1" }),
-    ).toBe(false);
+    expect(shouldDelegateChangedCheckToCrabbox([], { EVE_CHECK_CHANGED_REMOTE_CHILD: "1" })).toBe(
+      false,
+    );
   });
 
   it("runs changed-check lint lanes under the parent heavy-check lock", () => {

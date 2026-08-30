@@ -487,7 +487,7 @@ afterAll(() => {
 
 describe("listReadOnlyChannelPluginsForConfig", () => {
   it("keeps built plugin loader candidates inside the installed package dist root", () => {
-    const packageRoot = path.join(makeTempDir(), "node_modules", "eve");
+    const packageRoot = path.join(makeTempDir(), "node_modules", "eve-agent");
     const importerPath = path.join(packageRoot, "dist", "read-only-B4EkEtUx.js");
     const candidates = listPluginLoaderModuleCandidateUrls(pathToFileURL(importerPath).href).map(
       (candidate) => fileURLToPath(candidate),

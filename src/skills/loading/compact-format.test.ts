@@ -275,11 +275,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     // skills that actually fit after compaction.
     const home = os.homedir();
     const skills = Array.from({ length: 30 }, (_, i) =>
-      makeSkill(
-        `skill-${i}`,
-        "A".repeat(200),
-        `${home}/.eve/workspace/skills/skill-${i}/SKILL.md`,
-      ),
+      makeSkill(`skill-${i}`, "A".repeat(200), `${home}/.eve/workspace/skills/skill-${i}/SKILL.md`),
     );
     // Compute compacted lengths (what the prompt will actually contain)
     const compactedSkills = skills.map((s) => ({

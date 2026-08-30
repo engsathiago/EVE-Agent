@@ -788,11 +788,7 @@ export function createAccountScopedGroupAccessSection<TResolved>(params: {
     NonNullable<ChannelSetupWizard["groupAccess"]>["resolveAllowlist"]
   >;
   fallbackResolved: (entries: string[]) => TResolved;
-  applyAllowlist: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-    resolved: TResolved;
-  }) => EVEConfig;
+  applyAllowlist: (params: { cfg: EVEConfig; accountId: string; resolved: TResolved }) => EVEConfig;
 }): NonNullable<ChannelSetupWizard["groupAccess"]> {
   return {
     label: params.label,
@@ -1274,10 +1270,7 @@ export async function promptParsedAllowFromForScopedChannel(params: {
   message: string;
   placeholder: string;
   parseEntries: (raw: string) => ParsedAllowFromResult;
-  getExistingAllowFrom: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-  }) => Array<string | number>;
+  getExistingAllowFrom: (params: { cfg: EVEConfig; accountId: string }) => Array<string | number>;
 }): Promise<EVEConfig> {
   return await promptParsedAllowFromForAccount({
     cfg: params.cfg,

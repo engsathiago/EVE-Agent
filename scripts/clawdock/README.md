@@ -32,7 +32,7 @@ Inspired by Simon Willison's [Running EVE in Docker](https://til.simonwillison.n
 **Install:**
 
 ```bash
-mkdir -p ~/.clawdock && curl -sL https://raw.githubusercontent.com/eve/eve/main/scripts/clawdock/clawdock-helpers.sh -o ~/.clawdock/clawdock-helpers.sh
+mkdir -p ~/.clawdock && curl -sL https://raw.githubusercontent.com/engsathiago/eve-agent/main/scripts/clawdock/clawdock-helpers.sh -o ~/.clawdock/clawdock-helpers.sh
 ```
 
 ```bash
@@ -98,7 +98,7 @@ clawdock-approve <request-id>
 | Command                   | Description                                    |
 | ------------------------- | ---------------------------------------------- |
 | `clawdock-shell`          | Interactive shell inside the gateway container |
-| `clawdock-cli <command>`  | Run EVE CLI commands                      |
+| `clawdock-cli <command>`  | Run EVE CLI commands                           |
 | `clawdock-exec <command>` | Execute arbitrary commands in the container    |
 
 ### Web UI & Devices
@@ -129,8 +129,8 @@ clawdock-approve <request-id>
 | ---------------------- | ----------------------------------------- |
 | `clawdock-health`      | Run gateway health check                  |
 | `clawdock-token`       | Display the gateway authentication token  |
-| `clawdock-cd`          | Jump to the EVE project directory    |
-| `clawdock-config`      | Open the EVE config directory        |
+| `clawdock-cd`          | Jump to the EVE project directory         |
+| `clawdock-config`      | Open the EVE config directory             |
 | `clawdock-show-config` | Print config files with redacted values   |
 | `clawdock-workspace`   | Open the workspace directory              |
 | `clawdock-help`        | Show all available commands with examples |
@@ -143,8 +143,8 @@ The Docker setup uses three config files on the host. The container never stores
 
 | File                          | Purpose                                                                        |
 | ----------------------------- | ------------------------------------------------------------------------------ |
-| `Dockerfile`                  | Builds the `eve:local` image (Node 22, pnpm, non-root `node` user)        |
-| `docker-compose.yml`          | Defines `eve-gateway` and `eve-cli` services, bind-mounts, ports     |
+| `Dockerfile`                  | Builds the `eve:local` image (Node 22, pnpm, non-root `node` user)             |
+| `docker-compose.yml`          | Defines `eve-gateway` and `eve-cli` services, bind-mounts, ports               |
 | `docker-compose.override.yml` | Standard Docker Compose overrides — auto-loaded by ClawDock helpers if present |
 | `docker-compose.extra.yml`    | Additional overrides — loaded after the standard override if present           |
 | `scripts/docker/setup.sh`     | First-time setup — builds image, creates `.env` from `.env.example`            |
@@ -152,11 +152,11 @@ The Docker setup uses three config files on the host. The container never stores
 
 ### Config Files
 
-| File                        | Purpose                                          | Examples                                                                                                |
-| --------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `<project>/.env`            | **Docker infra** — image, ports, gateway token   | `EVE_GATEWAY_TOKEN`, `EVE_IMAGE`, `EVE_GATEWAY_PORT`, `EVE_AUTH_PROFILE_SECRET_DIR` |
-| `~/.eve/.env`          | **Secrets** — API keys and bot tokens            | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `TELEGRAM_BOT_TOKEN`                                             |
-| `~/.eve/eve.json` | **Behavior config** — models, channels, policies | Model selection, WhatsApp allowlists, agent settings                                                    |
+| File              | Purpose                                          | Examples                                                                            |
+| ----------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `<project>/.env`  | **Docker infra** — image, ports, gateway token   | `EVE_GATEWAY_TOKEN`, `EVE_IMAGE`, `EVE_GATEWAY_PORT`, `EVE_AUTH_PROFILE_SECRET_DIR` |
+| `~/.eve/.env`     | **Secrets** — API keys and bot tokens            | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `TELEGRAM_BOT_TOKEN`                         |
+| `~/.eve/eve.json` | **Behavior config** — models, channels, policies | Model selection, WhatsApp allowlists, agent settings                                |
 
 **Do NOT** put API keys or bot tokens in `eve.json`. Use `~/.eve/.env` for all secrets.
 

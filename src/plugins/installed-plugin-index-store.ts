@@ -2,10 +2,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { z } from "zod";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../state/eve-state-db.js";
 import { safeParseWithSchema } from "../utils/zod-parse.js";
 import { resolveCompatibilityHostVersion } from "../version.js";
 import { normalizePluginsConfig, resolveEffectiveEnableState } from "./config-state.js";
@@ -289,9 +286,7 @@ function readPersistedInstalledPluginIndexFromSqlite(
     return null;
   }
   try {
-    const database = openEVEStateDatabase(
-      resolveInstalledPluginIndexStateDatabaseOptions(options),
-    );
+    const database = openEVEStateDatabase(resolveInstalledPluginIndexStateDatabaseOptions(options));
     const row = database.db
       .prepare(
         `

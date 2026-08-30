@@ -1,8 +1,7 @@
 // Covers provider install catalog entries from plugin metadata.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-type LoadEVEProviderIndex =
-  typeof import("../model-catalog/index.js").loadEVEProviderIndex;
+type LoadEVEProviderIndex = typeof import("../model-catalog/index.js").loadEVEProviderIndex;
 type LoadPluginRegistrySnapshot = typeof import("./plugin-registry.js").loadPluginRegistrySnapshot;
 type ResolveManifestProviderAuthChoices =
   typeof import("./provider-auth-choices.js").resolveManifestProviderAuthChoices;

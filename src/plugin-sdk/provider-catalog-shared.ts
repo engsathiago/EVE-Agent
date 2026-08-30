@@ -14,8 +14,8 @@ import {
 } from "../../packages/normalization-core/src/number-coercion.js";
 import { normalizeConfiguredProviderCatalogModelId } from "../agents/model-ref-shared.js";
 import { resolveProviderRequestCapabilities } from "../agents/provider-attribution.js";
-import type { ModelDefinitionConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelDefinitionConfig } from "../config/types.models.js";
 import type { ModelProviderConfig } from "./provider-model-shared.js";
 
 export type { ProviderCatalogContext, ProviderCatalogResult } from "../plugins/types.js";

@@ -305,10 +305,7 @@ function resolveDirectProviderEntryAuthFromProfileReference(params: {
   return undefined;
 }
 
-function hasCodexSyntheticMediaRoute(params: {
-  cfg?: EVEConfig;
-  workspaceDir?: string;
-}): boolean {
+function hasCodexSyntheticMediaRoute(params: { cfg?: EVEConfig; workspaceDir?: string }): boolean {
   return hasRuntimeAvailableProviderAuth({
     provider: CODEX_MEDIA_PROVIDER_ID,
     cfg: params.cfg,

@@ -17,10 +17,7 @@ import {
 } from "../infra/sqlite-wal.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { DB as EVEStateKyselyDatabase } from "./eve-state-db.generated.js";
-import {
-  resolveEVEStateSqliteDir,
-  resolveEVEStateSqlitePath,
-} from "./eve-state-db.paths.js";
+import { resolveEVEStateSqliteDir, resolveEVEStateSqlitePath } from "./eve-state-db.paths.js";
 import { EVE_STATE_SCHEMA_SQL } from "./eve-state-schema.generated.js";
 
 /**
@@ -862,9 +859,7 @@ function resolveDatabasePath(options: EVEStateDatabaseOptions = {}): string {
 }
 
 /** Open or return a cached shared state database after schema and migration checks. */
-export function openEVEStateDatabase(
-  options: EVEStateDatabaseOptions = {},
-): EVEStateDatabase {
+export function openEVEStateDatabase(options: EVEStateDatabaseOptions = {}): EVEStateDatabase {
   const env = options.env ?? process.env;
   const pathname = resolveDatabasePath(options);
   const cached = cachedDatabases.get(pathname);

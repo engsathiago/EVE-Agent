@@ -42,7 +42,7 @@ function countMatching<T>(items: readonly T[], predicate: (item: T) => boolean):
 
 function withEVEPackageArgv<T>(packageRoot: string, fn: () => T): T {
   mkdirSafe(path.join(packageRoot, "bin"));
-  fs.writeFileSync(path.join(packageRoot, "package.json"), '{"name":"eve"}\n', "utf-8");
+  fs.writeFileSync(path.join(packageRoot, "package.json"), '{"name":"eve-agent"}\n', "utf-8");
   const originalArgv = process.argv;
   process.argv = [originalArgv[0] ?? "node", path.join(packageRoot, "bin", "eve")];
   try {
@@ -714,11 +714,7 @@ describe("discoverEVEPlugins", () => {
       "packages:\n  - .\n  - extensions/*\n",
       "utf-8",
     );
-    fs.writeFileSync(
-      path.join(extensionDir, "package.json"),
-      '{"name":"@eve/twitch"}\n',
-      "utf-8",
-    );
+    fs.writeFileSync(path.join(extensionDir, "package.json"), '{"name":"@eve/twitch"}\n', "utf-8");
     fs.writeFileSync(path.join(extensionDir, "eve.plugin.json"), '{"id":"twitch"}\n', "utf-8");
 
     const result = withEVEPackageArgv(packageRoot, () =>
@@ -732,7 +728,7 @@ describe("discoverEVEPlugins", () => {
 
   it("does not treat repo-level live or test files as plugin entrypoints", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledDir = path.join(packageRoot, "dist", "extensions");
     mkdirSafe(bundledDir);
 
@@ -766,7 +762,7 @@ describe("discoverEVEPlugins", () => {
 
   it("ignores packaged bundled plugin paths in configured load paths", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const bundledPluginDir = path.join(bundledRoot, "feishu");
     mkdirSafe(bundledPluginDir);
@@ -797,7 +793,7 @@ describe("discoverEVEPlugins", () => {
 
   it("ignores legacy bundled plugin load paths that would shadow packaged bundled plugins", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist-runtime", "extensions");
     const bundledPluginDir = path.join(bundledRoot, "telegram");
     const legacyPluginDir = path.join(packageRoot, "extensions", "telegram");
@@ -833,7 +829,7 @@ describe("discoverEVEPlugins", () => {
 
   it("discovers bind-mounted bundled source overlays before packaged dist bundles", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const bundledPluginDir = path.join(bundledRoot, "synology-chat");
     const sourcePluginDir = path.join(packageRoot, "extensions", "synology-chat");
@@ -887,7 +883,7 @@ describe("discoverEVEPlugins", () => {
 
   it("keeps copied source plugin dirs inert when they are not mounted overlays", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const bundledPluginDir = path.join(bundledRoot, "synology-chat");
     const sourcePluginDir = path.join(packageRoot, "extensions", "synology-chat");
@@ -1738,7 +1734,7 @@ describe("discoverEVEPlugins", () => {
 
   it("discovers source-checkout-only bundled plugins alongside built bundled plugins", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "eve");
+    const packageRoot = path.join(stateDir, "eve-agent");
     const bundledDir = path.join(packageRoot, "dist", "extensions");
     const sourceDir = path.join(packageRoot, "extensions");
     const builtPluginDir = path.join(bundledDir, "shipped");
@@ -1799,7 +1795,7 @@ describe("discoverEVEPlugins", () => {
     const nestedDiffsDir = path.join(
       pluginDir,
       "node_modules",
-      "eve",
+      "eve-agent",
       "dist",
       "extensions",
       "diffs",
@@ -1826,8 +1822,8 @@ describe("discoverEVEPlugins", () => {
     );
 
     writePluginPackageManifest({
-      packageDir: path.join(pluginDir, "node_modules", "eve"),
-      packageName: "eve",
+      packageDir: path.join(pluginDir, "node_modules", "eve-agent"),
+      packageName: "eve-agent",
       extensions: [`./${bundledDistPluginFile("diffs", "index.js")}`],
     });
     writePluginManifest({ pluginDir: nestedDiffsDir, id: "diffs" });
@@ -1846,7 +1842,7 @@ describe("discoverEVEPlugins", () => {
     const workspaceDir = path.join(stateDir, "workspace");
     const workspaceRoot = path.join(workspaceDir, ".eve", "extensions");
     const workspacePluginDir = path.join(workspaceRoot, "workspace-plugin");
-    const nestedNodeModulesDir = path.join(workspaceRoot, "node_modules", "eve");
+    const nestedNodeModulesDir = path.join(workspaceRoot, "node_modules", "eve-agent");
     const nestedDistDir = path.join(workspaceRoot, "dist", "extensions", "diffs");
     mkdirSafe(path.join(workspacePluginDir, "src"));
     mkdirSafe(path.join(nestedNodeModulesDir, "src"));
@@ -1860,7 +1856,7 @@ describe("discoverEVEPlugins", () => {
 
     createPackagePluginWithEntry({
       packageDir: nestedNodeModulesDir,
-      packageName: "eve",
+      packageName: "eve-agent",
       pluginId: "node-modules-copy",
     });
 
@@ -2306,7 +2302,7 @@ describe("discoverEVEPlugins", () => {
     "repairs world-writable bundled plugin dirs before loading them",
     async () => {
       const stateDir = makeTempDir();
-      const packageRoot = path.join(stateDir, "node_modules", "eve");
+      const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
       const bundledDir = path.join(packageRoot, "dist", "extensions");
       const packDir = path.join(bundledDir, "demo-pack");
       mkdirSafe(packDir);
@@ -2438,7 +2434,7 @@ describe("discoverEVEPlugins", () => {
 
   it("discovers bundled and global plugins for each workspace-specific scan", () => {
     const stateDir = makeTempDir();
-    const packageRoot = path.join(stateDir, "node_modules", "eve");
+    const packageRoot = path.join(stateDir, "node_modules", "eve-agent");
     const bundledDir = path.join(packageRoot, "dist", "extensions");
     const globalExt = path.join(stateDir, "extensions");
     const workspaceA = path.join(stateDir, "workspace-a");

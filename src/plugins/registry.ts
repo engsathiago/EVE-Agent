@@ -1498,9 +1498,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
             }
           : null;
       })
-      .filter(
-        (descriptor): descriptor is EVEPluginCliCommandDescriptor => descriptor !== null,
-      );
+      .filter((descriptor): descriptor is EVEPluginCliCommandDescriptor => descriptor !== null);
     const commands = [
       ...(opts?.commands ?? []),
       ...descriptors.map((descriptor) => descriptor.name),
@@ -1585,10 +1583,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     });
   };
 
-  const registerNodeHostCommand = (
-    record: PluginRecord,
-    nodeCommand: EVEPluginNodeHostCommand,
-  ) => {
+  const registerNodeHostCommand = (record: PluginRecord, nodeCommand: EVEPluginNodeHostCommand) => {
     const command = nodeCommand.command.trim();
     if (!command) {
       pushDiagnostic({

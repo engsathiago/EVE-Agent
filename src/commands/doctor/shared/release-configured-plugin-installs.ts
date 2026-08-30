@@ -150,10 +150,7 @@ function collectConfiguredChannelIds(cfg: EVEConfig, env: NodeJS.ProcessEnv): st
   return [...ids].toSorted((left, right) => left.localeCompare(right));
 }
 
-function collectAgentHarnessRuntimePluginIds(
-  cfg: EVEConfig,
-  _env: NodeJS.ProcessEnv,
-): string[] {
+function collectAgentHarnessRuntimePluginIds(cfg: EVEConfig, _env: NodeJS.ProcessEnv): string[] {
   return collectConfiguredAgentHarnessRuntimes(cfg)
     .map((runtime) => AGENT_HARNESS_RUNTIME_PLUGIN_IDS[runtime])
     .filter((pluginId): pluginId is string => Boolean(pluginId))

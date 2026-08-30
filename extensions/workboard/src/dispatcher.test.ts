@@ -1,6 +1,10 @@
 // Workboard tests cover dispatcher plugin behavior.
 import { describe, expect, it, vi } from "vitest";
-import { dispatchAndStartWorkboardCards } from "./dispatcher.js";
+import {
+  dispatchAndStartWorkboardCards,
+  resolveWorkboardToolAllowlist,
+  resolveWorkboardToolsets,
+} from "./dispatcher.js";
 import { WorkboardStore, type PersistedWorkboardCard, type WorkboardKeyedStore } from "./store.js";
 
 function createMemoryStore<T = PersistedWorkboardCard>(): WorkboardKeyedStore<T> {
@@ -22,6 +26,59 @@ function createMemoryStore<T = PersistedWorkboardCard>(): WorkboardKeyedStore<T>
 }
 
 describe("dispatchAndStartWorkboardCards", () => {
+  it("infers capability toolsets while preserving explicit task hints", async () => {
+    const store = new WorkboardStore(createMemoryStore());
+    const inferred = await store.create({
+      title: "Implement API tests and deploy the VPS",
+      labels: ["ui"],
+    });
+    const configured = await store.create({
+      title: "Any task",
+      toolsets: ["custom", "research", "custom"],
+    });
+    const automatic = await store.create({
+      title: "Pesquisar fontes na web",
+      toolsets: ["auto"],
+    });
+
+    expect(resolveWorkboardToolsets(inferred)).toEqual(["coding", "operations", "visual"]);
+    expect(resolveWorkboardToolsets(configured)).toEqual(["custom", "research"]);
+    expect(resolveWorkboardToolsets(automatic)).toEqual(["research"]);
+    expect(resolveWorkboardToolAllowlist(inferred)).toBeUndefined();
+    expect(resolveWorkboardToolAllowlist(automatic)).toEqual([
+      "workboard_*",
+      "group:memory",
+      "session_status",
+      "group:web",
+      "group:ui",
+      "group:sessions",
+    ]);
+  });
+
+  it("applies auto toolsets as a narrowing child-session allowlist", async () => {
+    const store = new WorkboardStore(createMemoryStore());
+    const card = await store.create({
+      title: "Implement API tests",
+      status: "ready",
+      toolsets: ["auto"],
+    });
+    const run = vi.fn().mockResolvedValue({ runId: "run-auto-tools" });
+
+    await dispatchAndStartWorkboardCards({ store, subagent: { run } });
+
+    expect(run).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sessionKey: `subagent:workboard-default-${card.id}`,
+        inheritedToolAllow: expect.arrayContaining([
+          "workboard_*",
+          "group:memory",
+          "group:fs",
+          "group:runtime",
+        ]),
+      }),
+    );
+  });
+
   it("claims ready cards and starts bounded subagent worker runs", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const first = await store.create({
@@ -64,6 +121,7 @@ describe("dispatchAndStartWorkboardCards", () => {
     });
     expect(run.mock.calls[0]?.[0]?.message).toContain("Claim token:");
     expect(run.mock.calls[0]?.[0]?.message).toContain("workboard_complete with the card id");
+    expect(run.mock.calls[0]?.[0]?.message).toContain("Selected toolsets: general");
     expect(run.mock.calls[0]?.[0]?.message).not.toContain("ownerId and token");
     await expect(store.get(first.id)).resolves.toMatchObject({
       status: "running",

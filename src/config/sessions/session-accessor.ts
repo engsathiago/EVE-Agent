@@ -1259,11 +1259,7 @@ function resolveManualCompactTranscriptCandidates(params: {
     }
   }
 
-  const legacyDir = path.join(
-    resolveRequiredHomeDir(process.env, os.homedir),
-    ".eve",
-    "sessions",
-  );
+  const legacyDir = path.join(resolveRequiredHomeDir(process.env, os.homedir), ".eve", "sessions");
   pushCandidate(() => resolveSessionTranscriptPathInDir(params.sessionId, legacyDir));
   return candidates;
 }

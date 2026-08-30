@@ -1,7 +1,8 @@
 import { sendDurableMessageBatch as sendDurableMessageBatchImpl } from "eve-agent/plugin-sdk/channel-outbound";
 import { transcribeFirstAudio as transcribeFirstAudioImpl } from "eve-agent/plugin-sdk/media-runtime";
 
-type TranscribeFirstAudio = typeof import("eve-agent/plugin-sdk/media-runtime").transcribeFirstAudio;
+type TranscribeFirstAudio =
+  typeof import("eve-agent/plugin-sdk/media-runtime").transcribeFirstAudio;
 type SendDurableMessageBatch =
   typeof import("eve-agent/plugin-sdk/channel-outbound").sendDurableMessageBatch;
 

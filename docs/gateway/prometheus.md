@@ -87,8 +87,8 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
 
 ## Metrics exported
 
-| Metric                                           | Type      | Labels                                                                                    |
-| ------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------- |
+| Metric                                      | Type      | Labels                                                                                    |
+| ------------------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
 | `eve_run_completed_total`                   | counter   | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
 | `eve_run_duration_seconds`                  | histogram | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
 | `eve_model_call_total`                      | counter   | `api`, `error_category`, `model`, `outcome`, `provider`, `transport`                      |

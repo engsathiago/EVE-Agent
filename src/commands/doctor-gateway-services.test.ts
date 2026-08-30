@@ -153,10 +153,7 @@ async function runRepair(cfg: EVEConfig, options: { allowExecSecretRefs?: boolea
   await maybeRepairGatewayServiceConfig(cfg, "local", makeDoctorIo(), makeDoctorPrompts(), options);
 }
 
-async function runNonInteractiveRepair(params: {
-  cfg?: EVEConfig;
-  updateInProgress?: boolean;
-}) {
+async function runNonInteractiveRepair(params: { cfg?: EVEConfig; updateInProgress?: boolean }) {
   Object.defineProperty(process.stdin, "isTTY", {
     value: false,
     configurable: true,
@@ -572,14 +569,14 @@ describe("maybeRepairGatewayServiceConfig", () => {
 
   it("does not flag entrypoint mismatch when symlink and realpath match", async () => {
     setupGatewayEntrypointRepairScenario({
-      currentEntrypoint: "/Users/test/Library/pnpm/global/5/node_modules/eve/dist/index.js",
+      currentEntrypoint: "/Users/test/Library/pnpm/global/5/node_modules/eve-agent/dist/index.js",
       installEntrypoint:
-        "/Users/test/Library/pnpm/global/5/node_modules/.pnpm/eve@2026.3.12/node_modules/eve/dist/index.js",
+        "/Users/test/Library/pnpm/global/5/node_modules/.pnpm/eve-agent@2026.3.12/node_modules/eve-agent/dist/index.js",
       realpath: async (value: string) => {
-        if (value.includes("/global/5/node_modules/eve/")) {
+        if (value.includes("/global/5/node_modules/eve-agent/")) {
           return value.replace(
-            "/global/5/node_modules/eve/",
-            "/global/5/node_modules/.pnpm/eve@2026.3.12/node_modules/eve/",
+            "/global/5/node_modules/eve-agent/",
+            "/global/5/node_modules/.pnpm/eve-agent@2026.3.12/node_modules/eve-agent/",
           );
         }
         return value;
@@ -658,8 +655,8 @@ describe("maybeRepairGatewayServiceConfig", () => {
   it("still flags entrypoint mismatch when canonicalized paths differ", async () => {
     setupGatewayEntrypointRepairScenario({
       currentEntrypoint:
-        "/Users/test/.nvm/versions/node/v22.0.0/lib/node_modules/eve/dist/index.js",
-      installEntrypoint: "/Users/test/Library/pnpm/global/5/node_modules/eve/dist/index.js",
+        "/Users/test/.nvm/versions/node/v22.0.0/lib/node_modules/eve-agent/dist/index.js",
+      installEntrypoint: "/Users/test/Library/pnpm/global/5/node_modules/eve-agent/dist/index.js",
     });
 
     await runRepair({ gateway: {} });
@@ -770,8 +767,8 @@ describe("maybeRepairGatewayServiceConfig", () => {
 
   it("skips entrypoint rewrite in non-interactive fix mode", async () => {
     setupGatewayEntrypointRepairScenario({
-      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/entry.js",
-      installEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/index.js",
+      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/entry.js",
+      installEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/index.js",
       installWorkingDirectory: "/tmp",
     });
 
@@ -792,8 +789,8 @@ describe("maybeRepairGatewayServiceConfig", () => {
   it("defers systemd service config rewrites during non-interactive update repairs", async () => {
     mockProcessPlatform("linux");
     setupGatewayEntrypointRepairScenario({
-      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/entry.js",
-      installEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/index.js",
+      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/entry.js",
+      installEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/index.js",
       installWorkingDirectory: "/tmp",
     });
 
@@ -814,8 +811,8 @@ describe("maybeRepairGatewayServiceConfig", () => {
   it("keeps staging non-systemd service config repairs during non-interactive update repairs", async () => {
     mockProcessPlatform("darwin");
     setupGatewayEntrypointRepairScenario({
-      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/entry.js",
-      installEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/index.js",
+      currentEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/entry.js",
+      installEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/index.js",
       installWorkingDirectory: "/tmp",
     });
 
@@ -982,8 +979,8 @@ describe("maybeRepairGatewayServiceConfig", () => {
   it("reports service config drift but skips service rewrite when service repair policy is external", async () => {
     await withEnvAsync({ EVE_SERVICE_REPAIR_POLICY: "external" }, async () => {
       setupGatewayEntrypointRepairScenario({
-        currentEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/entry.js",
-        installEntrypoint: "/Users/test/Library/npm/node_modules/eve/dist/index.js",
+        currentEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/entry.js",
+        installEntrypoint: "/Users/test/Library/npm/node_modules/eve-agent/dist/index.js",
         installWorkingDirectory: "/tmp",
       });
 
@@ -1014,7 +1011,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
         await fs.mkdir(path.join(root, "dist"), { recursive: true });
         await fs.writeFile(
           path.join(root, "package.json"),
-          JSON.stringify({ name: "eve", version: "0.0.0-test" }),
+          JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }),
           "utf8",
         );
         const entrypoint = path.join(root, "dist", "index.js");
@@ -1035,9 +1032,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
 
   it("does not duplicate Gateway service config panels for a source-checkout entrypoint with audit findings", async () => {
     await withEnvAsync({}, async () => {
-      const root = await fs.mkdtemp(
-        path.join(os.tmpdir(), "eve-doctor-service-config-dedup-"),
-      );
+      const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-doctor-service-config-dedup-"));
       try {
         await fs.mkdir(path.join(root, ".git"), { recursive: true });
         await fs.mkdir(path.join(root, "src"), { recursive: true });
@@ -1045,12 +1040,12 @@ describe("maybeRepairGatewayServiceConfig", () => {
         await fs.mkdir(path.join(root, "dist"), { recursive: true });
         await fs.writeFile(
           path.join(root, "package.json"),
-          JSON.stringify({ name: "eve", version: "0.0.0-test" }),
+          JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }),
           "utf8",
         );
         const sourceCheckoutEntrypoint = path.join(root, "dist", "index.js");
         await fs.writeFile(sourceCheckoutEntrypoint, "export {};\n", "utf8");
-        const installEntrypoint = "/usr/local/lib/node_modules/eve/dist/index.js";
+        const installEntrypoint = "/usr/local/lib/node_modules/eve-agent/dist/index.js";
         setupGatewayEntrypointRepairScenario({
           currentEntrypoint: sourceCheckoutEntrypoint,
           installEntrypoint,
@@ -1088,12 +1083,12 @@ describe("maybeRepairGatewayServiceConfig", () => {
         await fs.mkdir(path.join(root, "dist"), { recursive: true });
         await fs.writeFile(
           path.join(root, "package.json"),
-          JSON.stringify({ name: "eve", version: "0.0.0-test" }),
+          JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }),
           "utf8",
         );
         const sourceCheckoutEntrypoint = path.join(root, "dist", "index.js");
         await fs.writeFile(sourceCheckoutEntrypoint, "export {};\n", "utf8");
-        const installEntrypoint = "/usr/local/lib/node_modules/eve/dist/index.js";
+        const installEntrypoint = "/usr/local/lib/node_modules/eve-agent/dist/index.js";
         setupGatewayEntrypointRepairScenario({
           currentEntrypoint: sourceCheckoutEntrypoint,
           installEntrypoint,

@@ -337,10 +337,7 @@ export function resolveAgentExecutionContract(
   return agentContract ?? defaultContract;
 }
 
-export function resolveAgentSkillsFilter(
-  cfg: EVEConfig,
-  agentId: string,
-): string[] | undefined {
+export function resolveAgentSkillsFilter(cfg: EVEConfig, agentId: string): string[] | undefined {
   return resolveEffectiveAgentSkillFilter(cfg, agentId);
 }
 
@@ -588,10 +585,7 @@ function normalizePathForComparison(input: string): string {
   return normalized;
 }
 
-export function resolveAgentIdsByWorkspacePath(
-  cfg: EVEConfig,
-  workspacePath: string,
-): string[] {
+export function resolveAgentIdsByWorkspacePath(cfg: EVEConfig, workspacePath: string): string[] {
   const normalizedWorkspacePath = normalizePathForComparison(workspacePath);
   const ids = listAgentIds(cfg);
   const matches: Array<{ id: string; workspaceDir: string; order: number }> = [];

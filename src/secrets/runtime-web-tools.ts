@@ -92,10 +92,7 @@ function needsRuntimeWebFetchProviderDiscovery(params: {
   return hasCredentialBearingObjectValue(params.fetch, params.defaults);
 }
 
-function hasPluginScopedWebToolConfig(
-  config: EVEConfig,
-  key: "webSearch" | "webFetch",
-): boolean {
+function hasPluginScopedWebToolConfig(config: EVEConfig, key: "webSearch" | "webFetch"): boolean {
   const entries = config.plugins?.entries;
   if (!entries) {
     return false;

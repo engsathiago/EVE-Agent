@@ -150,10 +150,7 @@ describe("resolveCommandsSystemPromptBundle", () => {
   it("opts command tool builds into gateway subagent binding", async () => {
     await resolveCommandsSystemPromptBundle(makeParams());
 
-    const toolParams = requireFirstArg(
-      vi.mocked(createEVECodingTools),
-      "createEVECodingTools",
-    );
+    const toolParams = requireFirstArg(vi.mocked(createEVECodingTools), "createEVECodingTools");
     expect(toolParams.allowGatewaySubagentBinding).toBe(true);
     expect(toolParams.sessionKey).toBe("agent:main:default");
     expect(toolParams.workspaceDir).toBe("/tmp/workspace");
@@ -188,10 +185,7 @@ describe("resolveCommandsSystemPromptBundle", () => {
 
     await resolveCommandsSystemPromptBundle(params);
 
-    const toolParams = requireFirstArg(
-      vi.mocked(createEVECodingTools),
-      "createEVECodingTools",
-    );
+    const toolParams = requireFirstArg(vi.mocked(createEVECodingTools), "createEVECodingTools");
     expect(toolParams.agentId).toBe("target");
     expect(toolParams.sessionKey).toBe("agent:target:telegram:direct:target-session");
     const bootstrapParams = requireFirstArg(
@@ -240,10 +234,7 @@ describe("resolveCommandsSystemPromptBundle", () => {
         sessionId: "target-session",
       }),
     );
-    const toolParams = requireFirstArg(
-      vi.mocked(createEVECodingTools),
-      "createEVECodingTools",
-    );
+    const toolParams = requireFirstArg(vi.mocked(createEVECodingTools), "createEVECodingTools");
     expect(toolParams.groupId).toBe("target-group");
     expect(toolParams.groupChannel).toBe("#target");
     expect(toolParams.groupSpace).toBe("target-space");
@@ -314,7 +305,7 @@ describe("resolveCommandsSystemPromptBundle", () => {
       vi.mocked(resolveReusableWorkspaceSkillSnapshot).mockReturnValue({
         snapshot: {
           prompt:
-            "<available_skills>~/.npm-global/lib/node_modules/eve/skills/gog/SKILL.md</available_skills>",
+            "<available_skills>~/.npm-global/lib/node_modules/eve-agent/skills/gog/SKILL.md</available_skills>",
           skills: [],
           resolvedSkills: [],
         },
@@ -324,9 +315,7 @@ describe("resolveCommandsSystemPromptBundle", () => {
 
       const result = await resolveCommandsSystemPromptBundle(params);
 
-      expect(result.skillsPrompt).toContain(
-        "/workspace/.eve/sandbox-skills/skills/gog/SKILL.md",
-      );
+      expect(result.skillsPrompt).toContain("/workspace/.eve/sandbox-skills/skills/gog/SKILL.md");
       expect(result.skillsPrompt).not.toContain("~/.npm-global");
       expect(vi.mocked(resolveReusableWorkspaceSkillSnapshot)).not.toHaveBeenCalled();
       const promptParams = requireFirstArg(

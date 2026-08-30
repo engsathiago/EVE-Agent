@@ -41,6 +41,7 @@ import {
   readSkillProposalDraftDirectory,
   readSkillProposalDraftFile,
   rejectSkillProposal,
+  rollbackSkillProposal,
   reviseSkillProposal,
 } from "../skills/workshop/service.js";
 import type {
@@ -815,6 +816,40 @@ export function registerSkillsCli(program: Command) {
             return;
           }
           defaultRuntime.writeStdout(`Rejected ${record.id}\n`);
+        } catch (err) {
+          defaultRuntime.error(String(err));
+          defaultRuntime.exit(1);
+        }
+      },
+    );
+
+  workshop
+    .command("rollback")
+    .description("Roll back an applied skill proposal if its files are unchanged")
+    .argument("<proposal-id>", "Skill proposal id")
+    .option("--reason <text>", "Reason for rollback")
+    .option("--json", "Output as JSON", false)
+    .action(
+      async (
+        proposalId: string,
+        opts: { reason?: string; json?: boolean; agent?: string },
+        command: Command,
+      ) => {
+        try {
+          const { config, workspaceDir } = resolveSkillsWorkspaceForCommand(command.parent, opts);
+          const rolledBack = await rollbackSkillProposal({
+            workspaceDir,
+            config,
+            proposalId,
+            reason: opts.reason,
+          });
+          if (opts.json) {
+            defaultRuntime.writeJson(rolledBack);
+            return;
+          }
+          defaultRuntime.writeStdout(
+            `Rolled back ${rolledBack.record.id} -> ${rolledBack.targetSkillFile}\n`,
+          );
         } catch (err) {
           defaultRuntime.error(String(err));
           defaultRuntime.exit(1);

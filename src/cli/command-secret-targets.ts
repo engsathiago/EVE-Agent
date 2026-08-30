@@ -907,10 +907,7 @@ type CapabilityWebCommandSecretTargetParams = {
   providerId?: string | null;
   disabled: boolean;
   baseTargetIds: () => Set<string>;
-  resolveSelectedProviderId: (
-    config: EVEConfig,
-    providerId?: string | null,
-  ) => string | undefined;
+  resolveSelectedProviderId: (config: EVEConfig, providerId?: string | null) => string | undefined;
   autoDetectTargets: (config: EVEConfig) => CommandSecretTargetScope;
   selectedProviderTargetIds: (
     config: EVEConfig,

@@ -345,9 +345,7 @@ function addMediaModelProviders(target: Set<string>, value: unknown): void {
   }
 }
 
-function collectRequestedMediaUnderstandingProviderIds(
-  cfg: EVEConfig | undefined,
-): Set<string> {
+function collectRequestedMediaUnderstandingProviderIds(cfg: EVEConfig | undefined): Set<string> {
   const requested = new Set<string>();
   const media = cfg?.tools?.media;
   addMediaModelProviders(requested, media?.models);

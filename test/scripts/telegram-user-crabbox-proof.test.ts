@@ -232,7 +232,7 @@ describe("telegram user Crabbox proof log polling", () => {
     const stagedDir = stageFullSessionArtifacts(outputDir);
 
     expect(stagedDir).toBe(publishDir);
-    expect(fs.readdirSync(stagedDir).sort()).toEqual([
+    expect(fs.readdirSync(stagedDir).toSorted()).toEqual([
       "probe-2026-06-20T16-47-48-123Z.json",
       "probe.json",
       "status.json",

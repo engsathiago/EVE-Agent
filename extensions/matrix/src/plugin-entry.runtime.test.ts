@@ -37,7 +37,7 @@ function writeEVEPackageFixture(fixtureRoot: string) {
     "package.json",
     JSON.stringify(
       {
-        name: "eve",
+        name: "eve-agent",
         type: "module",
         exports: {
           "./plugin-sdk": "./dist/plugin-sdk/index.js",

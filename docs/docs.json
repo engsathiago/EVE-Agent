@@ -1007,7 +1007,13 @@
             "groups": [
               {
                 "group": "Overview",
-                "pages": ["index", "start/showcase", "concepts/features"]
+                "pages": [
+                  "index",
+                  "concepts/eve-platform",
+                  "concepts/owner-policy",
+                  "start/showcase",
+                  "concepts/features"
+                ]
               },
               {
                 "group": "First steps",
@@ -1669,6 +1675,7 @@
                       "cli/doctor",
                       "cli/gateway",
                       "cli/health",
+                      "cli/offline",
                       "cli/logs",
                       "cli/migrate",
                       "cli/onboard",
@@ -1688,6 +1695,7 @@
                       "cli/agents",
                       "cli/hooks",
                       "cli/infer",
+                      "cli/intelligence",
                       "cli/memory",
                       "cli/commitments",
                       "cli/message",

@@ -706,9 +706,7 @@ describe("run-oxlint", () => {
       resolveWindowsExtensionChunkSize({
         EVE_OXLINT_WINDOWS_EXTENSION_CHUNK_SIZE: "8 chunks",
       }),
-    ).toThrow(
-      "EVE_OXLINT_WINDOWS_EXTENSION_CHUNK_SIZE must be a positive integer; got: 8 chunks",
-    );
+    ).toThrow("EVE_OXLINT_WINDOWS_EXTENSION_CHUNK_SIZE must be a positive integer; got: 8 chunks");
   });
 
   it("filters tracked targets missing from sparse checkouts", () => {

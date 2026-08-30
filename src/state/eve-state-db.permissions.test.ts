@@ -77,9 +77,7 @@ describe("state database permission hardening without chmod support", () => {
     chmodFailHook.error = chmodError("EPERM");
     chmodFailHook.failProbe = false;
 
-    expect(() => openEVEStateDatabase({ env: { EVE_STATE_DIR: stateDir } })).toThrow(
-      /EPERM/,
-    );
+    expect(() => openEVEStateDatabase({ env: { EVE_STATE_DIR: stateDir } })).toThrow(/EPERM/);
   });
 
   it("opens when EPERM leaves existing permissions restrictive", () => {
@@ -109,9 +107,7 @@ describe("state database permission hardening without chmod support", () => {
     stateDir = fs.mkdtempSync(join(tmpdir(), "eve-state-chmod-"));
     chmodFailHook.error = chmodError("EACCES");
 
-    expect(() => openEVEStateDatabase({ env: { EVE_STATE_DIR: stateDir } })).toThrow(
-      /EACCES/,
-    );
+    expect(() => openEVEStateDatabase({ env: { EVE_STATE_DIR: stateDir } })).toThrow(/EACCES/);
   });
 
   it("repairs the schema when chmodSync throws ENOTSUP", () => {
@@ -121,9 +117,7 @@ describe("state database permission hardening without chmod support", () => {
 
     chmodFailHook.error = enotsupError();
 
-    expect(() =>
-      repairEVEStateDatabaseSchema({ env: { EVE_STATE_DIR: stateDir } }),
-    ).not.toThrow();
+    expect(() => repairEVEStateDatabaseSchema({ env: { EVE_STATE_DIR: stateDir } })).not.toThrow();
   });
 
   it("commits write transactions when chmodSync throws ENOTSUP", () => {

@@ -25,9 +25,7 @@ const PRERELEASE_VERSION_PATTERN =
 export function resolvePackageChangelogVersions(packageVersion) {
   const match = RELEASE_VERSION_PATTERN.exec(packageVersion);
   if (!match) {
-    throw new Error(
-      `Unsupported EVE package version for changelog packaging: ${packageVersion}`,
-    );
+    throw new Error(`Unsupported EVE package version for changelog packaging: ${packageVersion}`);
   }
   if (PRERELEASE_VERSION_PATTERN.test(packageVersion)) {
     return [packageVersion, match[1], UNRELEASED_HEADING];

@@ -205,9 +205,7 @@ export async function createWaSocket(
           const status = getStatusCode(lastDisconnect?.error);
           if (status === LOGGED_OUT_STATUS) {
             console.error(
-              danger(
-                `WhatsApp session logged out. Run: ${formatCliCommand("eve channels login")}`,
-              ),
+              danger(`WhatsApp session logged out. Run: ${formatCliCommand("eve channels login")}`),
             );
           }
         }

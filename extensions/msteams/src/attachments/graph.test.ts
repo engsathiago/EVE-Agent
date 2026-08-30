@@ -247,9 +247,7 @@ describe("downloadMSTeamsGraphMedia hosted content $value fallback", () => {
       const headers = call.init?.headers;
       expect(headers).toBeInstanceOf(Headers);
       expect((headers as Headers).get("Authorization")).toBe("Bearer test-token");
-      expect((headers as Headers).get("User-Agent")).toMatch(
-        /^teams\.ts\[apps\]\/.+ EVE\/.+$/,
-      );
+      expect((headers as Headers).get("User-Agent")).toMatch(/^teams\.ts\[apps\]\/.+ EVE\/.+$/);
     }
   });
 

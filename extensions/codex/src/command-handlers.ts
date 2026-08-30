@@ -840,9 +840,7 @@ async function resumeThread(
     model: isJsonObject(response) ? readString(response, "model") : undefined,
     modelProvider: isJsonObject(response) ? readString(response, "modelProvider") : undefined,
   });
-  return `Attached this EVE session to Codex thread ${formatCodexDisplayText(
-    effectiveThreadId,
-  )}.`;
+  return `Attached this EVE session to Codex thread ${formatCodexDisplayText(effectiveThreadId)}.`;
 }
 
 async function bindCodexCliNodeSession(

@@ -1032,10 +1032,7 @@ function warnIfConfigFromFuture(cfg: EVEConfig, logger: Pick<typeof console, "wa
 }
 
 function shouldSuppressFutureVersionWarningForEnv(env: NodeJS.ProcessEnv): boolean {
-  return (
-    isTruthyEnvValue(env.EVE_UPDATE_IN_PROGRESS) ||
-    isTruthyEnvValue(env.EVE_UPDATE_POST_CORE)
-  );
+  return isTruthyEnvValue(env.EVE_UPDATE_IN_PROGRESS) || isTruthyEnvValue(env.EVE_UPDATE_POST_CORE);
 }
 
 function resolveConfigPathForDeps(deps: Required<ConfigIoDeps>): string {
@@ -1768,13 +1765,10 @@ export function createConfigIO(
         });
         return {};
       }
-      const preValidationDuplicates = findDuplicateAgentDirs(
-        validationConfigRaw as EVEConfig,
-        {
-          env: deps.env,
-          homedir: deps.homedir,
-        },
-      );
+      const preValidationDuplicates = findDuplicateAgentDirs(validationConfigRaw as EVEConfig, {
+        env: deps.env,
+        homedir: deps.homedir,
+      });
       if (preValidationDuplicates.length > 0) {
         throw new DuplicateAgentDirError(preValidationDuplicates);
       }
@@ -2450,11 +2444,7 @@ export function createConfigIO(
           // TOCTOU issues where env changes between load and write. Falls back to
           // live env if no snapshot exists (e.g., first write before any load).
           const configBeforeIdentityRestore = cfgToWrite;
-          cfgToWrite = restoreEnvVarRefs(
-            cfgToWrite,
-            parsedRes.parsed,
-            envForRestore,
-          ) as EVEConfig;
+          cfgToWrite = restoreEnvVarRefs(cfgToWrite, parsedRes.parsed, envForRestore) as EVEConfig;
           collectChangedPaths(configBeforeIdentityRestore, cfgToWrite, "", identityRestoredPaths);
         }
       }

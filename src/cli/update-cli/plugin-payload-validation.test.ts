@@ -42,7 +42,11 @@ describe("runPluginPayloadSmokeCheck", () => {
 
   async function linkEVEPeerToHost(dir: string): Promise<void> {
     await fs.mkdir(path.join(dir, "node_modules"), { recursive: true });
-    await fs.symlink(resolveTestHostRoot(), path.join(dir, "node_modules", "eve"), "junction");
+    await fs.symlink(
+      resolveTestHostRoot(),
+      path.join(dir, "node_modules", "eve-agent"),
+      "junction",
+    );
   }
 
   async function resolveRealPath(target: string): Promise<string> {
@@ -190,8 +194,7 @@ describe("runPluginPayloadSmokeCheck", () => {
         pluginId: "brave",
         installPath: dir,
         reason: "missing-extension-entry",
-        detail:
-          "Plugin extension entry validation failed: package.json eve.extensions is empty",
+        detail: "Plugin extension entry validation failed: package.json eve.extensions is empty",
       },
     ]);
   });
@@ -240,7 +243,7 @@ describe("runPluginPayloadSmokeCheck", () => {
       {
         name: "@eve/codex",
         main: "dist/index.js",
-        peerDependencies: { eve: ">=2026.5.18-beta.1" },
+        peerDependencies: { "eve-agent": ">=2026.5.18-beta.1" },
       },
       "export default {};\n",
     );
@@ -255,10 +258,10 @@ describe("runPluginPayloadSmokeCheck", () => {
         pluginId: "codex",
         installPath: dir,
         reason: "missing-eve-peer-link",
-        detail: `Plugin declares peerDependency "eve" but peer link audit failed: missing ${path.join(
+        detail: `Plugin declares peerDependency "eve-agent" but peer link audit failed: missing ${path.join(
           dir,
           "node_modules",
-          "eve",
+          "eve-agent",
         )}.`,
       },
     ]);
@@ -271,11 +274,11 @@ describe("runPluginPayloadSmokeCheck", () => {
       {
         name: "@eve/codex",
         main: "dist/index.js",
-        peerDependencies: { eve: ">=2026.5.18-beta.1" },
+        peerDependencies: { "eve-agent": ">=2026.5.18-beta.1" },
       },
       "export default {};\n",
     );
-    const stalePeerDir = path.join(dir, "node_modules", "eve");
+    const stalePeerDir = path.join(dir, "node_modules", "eve-agent");
     await fs.mkdir(stalePeerDir, { recursive: true });
 
     const result = await runPluginPayloadSmokeCheck({
@@ -302,14 +305,14 @@ describe("runPluginPayloadSmokeCheck", () => {
       {
         name: "@eve/codex",
         main: "dist/index.js",
-        peerDependencies: { eve: ">=2026.5.18-beta.1" },
+        peerDependencies: { "eve-agent": ">=2026.5.18-beta.1" },
       },
       "export default {};\n",
     );
     const wrongHostRoot = path.join(tmpRoot, "old-eve");
     await fs.mkdir(wrongHostRoot, { recursive: true });
     await fs.mkdir(path.join(dir, "node_modules"), { recursive: true });
-    await fs.symlink(wrongHostRoot, path.join(dir, "node_modules", "eve"), "junction");
+    await fs.symlink(wrongHostRoot, path.join(dir, "node_modules", "eve-agent"), "junction");
 
     const result = await runPluginPayloadSmokeCheck({
       records: { codex: { source: "npm", installPath: dir } },
@@ -326,7 +329,7 @@ describe("runPluginPayloadSmokeCheck", () => {
       `${path.join(
         dir,
         "node_modules",
-        "eve",
+        "eve-agent",
       )} points to ${await resolveRealPath(wrongHostRoot)} instead of ${await resolveRealPath(
         resolveTestHostRoot(),
       )}`,
@@ -340,7 +343,7 @@ describe("runPluginPayloadSmokeCheck", () => {
       {
         name: "@eve/codex",
         main: "dist/index.js",
-        peerDependencies: { eve: ">=2026.5.18-beta.1" },
+        peerDependencies: { "eve-agent": ">=2026.5.18-beta.1" },
       },
       "export default {};\n",
     );

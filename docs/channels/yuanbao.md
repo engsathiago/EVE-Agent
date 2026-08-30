@@ -159,7 +159,7 @@ Replying to the bot's message in a group chat is treated as an implicit mention.
 | `/status`  | Show bot status             |
 | `/new`     | Start a new session         |
 | `/stop`    | Stop the current run        |
-| `/restart` | Restart EVE            |
+| `/restart` | Restart EVE                 |
 | `/compact` | Compact the session context |
 
 > Yuanbao supports native slash-command menus. Commands are synced to the platform automatically when the gateway starts.

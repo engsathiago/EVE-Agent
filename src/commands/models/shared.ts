@@ -8,11 +8,7 @@ import {
   resolveModelRefFromString,
 } from "../../agents/model-selection.js";
 import { formatCliCommand } from "../../cli/command-format.js";
-import {
-  type EVEConfig,
-  readConfigFileSnapshot,
-  replaceConfigFile,
-} from "../../config/config.js";
+import { type EVEConfig, readConfigFileSnapshot, replaceConfigFile } from "../../config/config.js";
 import { formatConfigIssueLines } from "../../config/issue-format.js";
 import { normalizeAgentModelRefForConfig, toAgentModelListLike } from "../../config/model-input.js";
 import type { AgentModelEntryConfig } from "../../config/types.agent-defaults.js";

@@ -369,8 +369,7 @@ function buildRuntimeParityScenarioResult(params: {
     steps: [
       {
         name: eveCell.runtime,
-        status:
-          eveCell.runtimeErrorClass || eveCell.transportErrorClass ? "fail" : "pass",
+        status: eveCell.runtimeErrorClass || eveCell.transportErrorClass ? "fail" : "pass",
         details: formatRuntimeParityCellDetails(eveCell),
       },
       {
@@ -1045,9 +1044,7 @@ export async function runQaFlowSuite(params?: QaSuiteRunParams): Promise<QaSuite
     ...new Set([
       ...collectQaSuitePluginIds(selectedScenarios),
       ...(params?.enabledPluginIds ?? []).map((pluginId) => pluginId.trim()).filter(Boolean),
-      ...(params?.forcedRuntime && params.forcedRuntime !== "eve"
-        ? [params.forcedRuntime]
-        : []),
+      ...(params?.forcedRuntime && params.forcedRuntime !== "eve" ? [params.forcedRuntime] : []),
     ]),
   ];
   const gatewayConfigPatch = collectQaSuiteGatewayConfigPatch(selectedScenarios);

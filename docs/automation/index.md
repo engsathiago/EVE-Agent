@@ -44,7 +44,7 @@ flowchart TD
 | Check in after a mentioned interview    | Inferred Commitments   | Memory-like follow-up, no exact reminder request |
 | Gentle care check-in after user context | Inferred Commitments   | Scoped to the same agent and channel             |
 | Inspect status of a subagent or ACP run | Background Tasks       | Tasks ledger tracks all detached work            |
-| Audit what ran and when                 | Background Tasks       | `eve tasks list` and `eve tasks audit` |
+| Audit what ran and when                 | Background Tasks       | `eve tasks list` and `eve tasks audit`           |
 | Multi-step research then summarize      | Task Flow              | Durable orchestration with revision tracking     |
 | Run a script on session reset           | Hooks                  | Event-driven, fires on lifecycle events          |
 | Execute code on every tool call         | Plugin hooks           | In-process hooks can intercept tool calls        |

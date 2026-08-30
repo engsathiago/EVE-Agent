@@ -1459,9 +1459,7 @@ describe("config io write", () => {
       );
 
       const initialConfig = JSON.parse(await fs.readFile(configPath, "utf-8")) as EVEConfig;
-      const persisted = JSON.parse(
-        await fs.readFile(configuredNextPath, "utf-8"),
-      ) as EVEConfig;
+      const persisted = JSON.parse(await fs.readFile(configuredNextPath, "utf-8")) as EVEConfig;
       expect(initialConfig.gateway?.mode).toBe("local");
       expect(persisted.gateway?.mode).toBe("remote");
     });
@@ -1497,9 +1495,7 @@ describe("config io write", () => {
       const expectedConfig = JSON.parse(
         await fs.readFile(expectedConfigPath, "utf-8"),
       ) as EVEConfig;
-      const activeConfig = JSON.parse(
-        await fs.readFile(activeConfigPath, "utf-8"),
-      ) as EVEConfig;
+      const activeConfig = JSON.parse(await fs.readFile(activeConfigPath, "utf-8")) as EVEConfig;
       expect(expectedConfig.gateway?.mode).toBe("local");
       expect(activeConfig.gateway?.mode).toBe("remote");
     });

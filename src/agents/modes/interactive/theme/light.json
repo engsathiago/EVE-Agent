@@ -1,5 +1,5 @@
 {
-	"$schema": "https://raw.githubusercontent.com/eve/eve/main/src/agents/modes/interactive/theme/theme-schema.json",
+	"$schema": "https://raw.githubusercontent.com/engsathiago/eve-agent/main/src/agents/modes/interactive/theme/theme-schema.json",
 	"name": "light",
 	"vars": {
 		"teal": "#5a8080",

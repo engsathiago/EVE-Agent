@@ -342,7 +342,7 @@ function usage(): string {
   return `Usage: bash scripts/e2e/parallels-npm-update-smoke.sh [options]
 
 Options:
-  --package-spec <npm-spec>  Baseline npm package spec. Default: eve@latest
+  --package-spec <npm-spec>  Baseline npm package spec. Default: eve-agent@latest
   --update-target <target>    Target passed to guest 'eve update --tag'.
                              Default: host-served tgz packed from current checkout.
   --target-tarball <path>     Host-serve this prepared tgz for update and fresh install.
@@ -588,7 +588,7 @@ export class NpmUpdateSmoke {
 
   protected async runSteps(): Promise<void> {
     this.latestVersion = resolveLatestVersion();
-    this.packageSpec = this.options.packageSpec || `eve@${this.latestVersion}`;
+    this.packageSpec = this.options.packageSpec || `eve-agent@${this.latestVersion}`;
     this.currentHead = run("git", ["rev-parse", "HEAD"], { quiet: true }).stdout.trim();
     this.currentHeadShort = run("git", ["rev-parse", "--short=7", "HEAD"], {
       quiet: true,
@@ -856,7 +856,7 @@ export class NpmUpdateSmoke {
     if (this.isExplicitPackageTarget(target)) {
       return { gitHead: "", tarball: "", version: "" };
     }
-    const spec = target.startsWith("eve@") ? target : `eve@${target}`;
+    const spec = target.startsWith("eve-agent@") ? target : `eve-agent@${target}`;
     const output = run("npm", ["view", spec, "version", "dist.tarball", "gitHead", "--json"], {
       check: false,
       quiet: true,
@@ -1316,7 +1316,7 @@ export class NpmUpdateSmoke {
     const target = resolveEVERegistryVersion(this.options.updateTarget);
     if (baseline && target && baseline === target) {
       die(
-        `--update-target ${this.options.updateTarget} resolves to eve@${target}, same as baseline ${this.packageSpec}; publish or choose a newer --update-target before running VM update coverage`,
+        `--update-target ${this.options.updateTarget} resolves to eve-agent@${target}, same as baseline ${this.packageSpec}; publish or choose a newer --update-target before running VM update coverage`,
       );
     }
   }
@@ -1374,8 +1374,8 @@ export class NpmUpdateSmoke {
         die(`could not resolve beta validation target: ${this.options.betaValidation}`);
       }
       this.options.updateTarget = version;
-      this.options.freshTargetSpec = `eve@${version}`;
-      say(`Beta validation target: eve@${version}`);
+      this.options.freshTargetSpec = `eve-agent@${version}`;
+      say(`Beta validation target: eve-agent@${version}`);
     } else if (
       this.options.updateTarget &&
       this.options.updateTarget !== "local-main" &&
@@ -1389,7 +1389,7 @@ export class NpmUpdateSmoke {
 
     if (this.options.freshTargetSpec) {
       const version = resolveEVERegistryVersion(this.options.freshTargetSpec);
-      this.freshTargetSpec = version ? `eve@${version}` : this.options.freshTargetSpec;
+      this.freshTargetSpec = version ? `eve-agent@${version}` : this.options.freshTargetSpec;
     }
   }
 

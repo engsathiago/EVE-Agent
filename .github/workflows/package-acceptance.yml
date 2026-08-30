@@ -27,7 +27,7 @@ on:
       package_spec:
         description: Published package spec when source=npm
         required: false
-        default: eve@beta
+        default: eve-agent@beta
         type: string
       package_url:
         description: HTTPS .tgz URL when source=url or source=trusted-url
@@ -73,7 +73,7 @@ on:
       published_upgrade_survivor_baseline:
         description: Published EVE package baseline for the published-upgrade-survivor Docker lane
         required: false
-        default: eve@latest
+        default: eve-agent@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional baseline list for published-upgrade-survivor/update-migration; use last-stable-4, all-since-2026.4.23, release-history, or exact versions
@@ -128,7 +128,7 @@ on:
       package_spec:
         description: Published package spec when source=npm
         required: false
-        default: eve@beta
+        default: eve-agent@beta
         type: string
       package_url:
         description: HTTPS .tgz URL when source=url or source=trusted-url
@@ -168,7 +168,7 @@ on:
       published_upgrade_survivor_baseline:
         description: Published EVE package baseline for the published-upgrade-survivor Docker lane
         required: false
-        default: eve@latest
+        default: eve-agent@latest
         type: string
       published_upgrade_survivor_baselines:
         description: Optional baseline list for published-upgrade-survivor/update-migration; use last-stable-4, all-since-2026.4.23, release-history, or exact versions
@@ -473,7 +473,7 @@ jobs:
             npm_versions_json=".artifacts/package-candidate-input/eve-npm-versions.json"
             mkdir -p "$(dirname "$releases_json")"
             gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName,publishedAt,isPrerelease > "$releases_json"
-            npm view eve versions --json > "$npm_versions_json"
+            npm view eve-agent versions --json > "$npm_versions_json"
           fi
           args=(
             --requested "$REQUESTED_BASELINES"
@@ -639,7 +639,7 @@ jobs:
       advisory: ${{ inputs.advisory }}
       package_spec: ${{ inputs.package_spec }}
       package_artifact_name: ${{ needs.resolve_package.outputs.package_artifact_name }}
-      package_label: eve@${{ needs.resolve_package.outputs.package_version }}
+      package_label: eve-agent@${{ needs.resolve_package.outputs.package_version }}
       harness_ref: ${{ needs.resolve_package.outputs.package_source_sha || inputs.workflow_ref }}
       provider_mode: ${{ needs.resolve_package.outputs.telegram_mode }}
       scenario: ${{ inputs.telegram_scenarios }}

@@ -6,13 +6,7 @@ import { applyCliProfileEnv, parseCliProfileArgs } from "./profile.js";
 
 describe("parseCliProfileArgs", () => {
   it("leaves gateway --dev for subcommands", () => {
-    const res = parseCliProfileArgs([
-      "node",
-      "eve",
-      "gateway",
-      "--dev",
-      "--allow-unconfigured",
-    ]);
+    const res = parseCliProfileArgs(["node", "eve", "gateway", "--dev", "--allow-unconfigured"]);
     if (!res.ok) {
       throw new Error(res.error);
     }
@@ -84,15 +78,7 @@ describe("parseCliProfileArgs", () => {
       throw new Error(res.error);
     }
     expect(res.profile).toBeNull();
-    expect(res.argv).toEqual([
-      "node",
-      "eve",
-      "qa",
-      "matrix",
-      "--profile",
-      "fast",
-      "--fail-fast",
-    ]);
+    expect(res.argv).toEqual(["node", "eve", "qa", "matrix", "--profile", "fast", "--fail-fast"]);
   });
 
   it("preserves Matrix QA --profile after leading root options", () => {
@@ -319,9 +305,7 @@ describe("applyCliProfileEnv", () => {
 
     const resolvedHome = path.resolve("/srv/eve-home");
     expect(env.EVE_STATE_DIR).toBe(path.join(resolvedHome, ".eve-work"));
-    expect(env.EVE_CONFIG_PATH).toBe(
-      path.join(resolvedHome, ".eve-work", "eve.json"),
-    );
+    expect(env.EVE_CONFIG_PATH).toBe(path.join(resolvedHome, ".eve-work", "eve.json"));
   });
 });
 
@@ -380,9 +364,7 @@ describe("formatCliCommand", () => {
   });
 
   it("handles command with no args after eve", () => {
-    expect(formatCliCommand("eve", { EVE_PROFILE: "test" })).toBe(
-      "eve --profile test",
-    );
+    expect(formatCliCommand("eve", { EVE_PROFILE: "test" })).toBe("eve --profile test");
   });
 
   it("handles pnpm wrapper", () => {
@@ -392,9 +374,9 @@ describe("formatCliCommand", () => {
   });
 
   it("inserts --container when a container hint is set", () => {
-    expect(
-      formatCliCommand("eve gateway status --deep", { EVE_CONTAINER_HINT: "demo" }),
-    ).toBe("eve --container demo gateway status --deep");
+    expect(formatCliCommand("eve gateway status --deep", { EVE_CONTAINER_HINT: "demo" })).toBe(
+      "eve --container demo gateway status --deep",
+    );
   });
 
   it("ignores unsafe container hints", () => {
@@ -415,11 +397,9 @@ describe("formatCliCommand", () => {
   });
 
   it("does not prepend --container for update commands", () => {
-    expect(formatCliCommand("eve update", { EVE_CONTAINER_HINT: "demo" })).toBe(
-      "eve update",
+    expect(formatCliCommand("eve update", { EVE_CONTAINER_HINT: "demo" })).toBe("eve update");
+    expect(formatCliCommand("pnpm eve update --channel beta", { EVE_CONTAINER_HINT: "demo" })).toBe(
+      "pnpm eve update --channel beta",
     );
-    expect(
-      formatCliCommand("pnpm eve update --channel beta", { EVE_CONTAINER_HINT: "demo" }),
-    ).toBe("pnpm eve update --channel beta");
   });
 });

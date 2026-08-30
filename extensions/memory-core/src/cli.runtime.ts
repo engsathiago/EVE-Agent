@@ -36,6 +36,7 @@ import type {
   MemoryCommandOptions,
   MemoryPromoteCommandOptions,
   MemoryPromoteExplainOptions,
+  MemoryReflectCommandOptions,
   MemoryRemBackfillOptions,
   MemoryRemHarnessOptions,
   MemorySearchCommandOptions,
@@ -51,6 +52,7 @@ import {
 import { asRecord } from "./dreaming-shared.js";
 import { resolveShortTermPromotionDreamingConfig } from "./dreaming.js";
 import { formatMemoryVectorDegradedWriteReason } from "./memory/manager-vector-warning.js";
+import { appendStructuredReflection } from "./reflection.js";
 import { previewGroundedRemMarkdown } from "./rem-evidence.js";
 import { previewRemHarness } from "./rem-harness.js";
 import {
@@ -193,9 +195,7 @@ async function createHistoricalRemHarnessWorkspace(params: {
   skippedPaths: string[];
 }> {
   const sourceFiles = await listHistoricalDailyFiles(params.inputPath);
-  const workspaceDir = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-rem-harness-"),
-  );
+  const workspaceDir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-rem-harness-"));
   const memoryDir = path.join(workspaceDir, "memory");
   await fs.mkdir(memoryDir, { recursive: true });
   for (const filePath of sourceFiles) {
@@ -1318,6 +1318,40 @@ export async function runMemorySearch(
         lines.push("");
       }
       defaultRuntime.log(lines.join("\n").trim());
+    },
+  });
+}
+
+export async function runMemoryReflect(opts: MemoryReflectCommandOptions) {
+  const { config: cfg, diagnostics } = await loadMemoryCommandConfig("memory reflect");
+  emitMemorySecretResolveDiagnostics(diagnostics, { json: Boolean(opts.json) });
+  const agentId = resolveAgent(cfg, opts.agent);
+
+  await withMemoryManagerForAgent({
+    cfg,
+    agentId,
+    purpose: opts.index ? "cli" : "status",
+    run: async (manager) => {
+      const workspaceDir = manager.status().workspaceDir?.trim();
+      if (!workspaceDir) {
+        defaultRuntime.error("Memory reflect requires a resolvable workspace directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const result = await appendStructuredReflection(workspaceDir, opts);
+        if (opts.index && manager.sync) {
+          await manager.sync({ reason: "cli", force: false });
+        }
+        if (opts.json) {
+          defaultRuntime.writeJson({ agentId, workspaceDir, reflection: result });
+          return;
+        }
+        defaultRuntime.log(`Reflection recorded in ${shortenHomePath(result.path)}`);
+      } catch (err) {
+        defaultRuntime.error(`Memory reflect failed: ${formatErrorMessage(err)}`);
+        process.exitCode = 1;
+      }
     },
   });
 }

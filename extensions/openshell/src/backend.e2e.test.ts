@@ -16,8 +16,7 @@ import { resolveOpenShellPluginConfig } from "./config.js";
 
 const EVE_OPENSHELL_E2E = process.env.EVE_E2E_OPENSHELL === "1";
 const EVE_OPENSHELL_E2E_TIMEOUT_MS = 12 * 60_000;
-const EVE_OPENSHELL_COMMAND =
-  process.env.EVE_E2E_OPENSHELL_COMMAND?.trim() || "openshell";
+const EVE_OPENSHELL_COMMAND = process.env.EVE_E2E_OPENSHELL_COMMAND?.trim() || "openshell";
 
 const CUSTOM_IMAGE_DOCKERFILE = `FROM python:3.13-slim
 

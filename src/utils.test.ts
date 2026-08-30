@@ -125,11 +125,9 @@ describe("shortenHomePath", () => {
 describe("shortenHomeInString", () => {
   it("uses $EVE_HOME replacement when EVE_HOME is set", () => {
     withEnv({ EVE_HOME: "/srv/eve-home", HOME: "/home/other" }, () => {
-      expect(
-        shortenHomeInString(
-          `config: ${path.resolve("/srv/eve-home")}/.eve/eve.json`,
-        ),
-      ).toBe("config: $EVE_HOME/.eve/eve.json");
+      expect(shortenHomeInString(`config: ${path.resolve("/srv/eve-home")}/.eve/eve.json`)).toBe(
+        "config: $EVE_HOME/.eve/eve.json",
+      );
     });
   });
 });

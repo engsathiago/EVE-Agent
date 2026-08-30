@@ -339,9 +339,9 @@ print_log_tail "$LOG_PATH"
     expect(runCleanupDefaultPlatform({ CI: "true" }, "aarch64")).toBe("linux/arm64");
     expect(runCleanupDefaultPlatform({ GITHUB_ACTIONS: "true" }, "x86_64")).toBe("linux/amd64");
     expect(runCleanupDefaultPlatform({}, "arm64")).toBe("linux/arm64");
-    expect(
-      runCleanupDefaultPlatform({ EVE_CLEANUP_SMOKE_PLATFORM: "linux/s390x" }, "x86_64"),
-    ).toBe("linux/s390x");
+    expect(runCleanupDefaultPlatform({ EVE_CLEANUP_SMOKE_PLATFORM: "linux/s390x" }, "x86_64")).toBe(
+      "linux/s390x",
+    );
   });
 
   it("lets Testbox fall back to building when a reused Docker image is missing", () => {
@@ -361,9 +361,7 @@ print_log_tail "$LOG_PATH"
     expect(liveBuild).toContain(
       'DOCKER_COMMAND_TIMEOUT="${DOCKER_COMMAND_TIMEOUT:-${EVE_LIVE_DOCKER_PULL_TIMEOUT:-600s}}"',
     );
-    expect(liveBuild).toContain(
-      'LIVE_IMAGE_PULL_ATTEMPTS="${EVE_LIVE_DOCKER_PULL_ATTEMPTS:-3}"',
-    );
+    expect(liveBuild).toContain('LIVE_IMAGE_PULL_ATTEMPTS="${EVE_LIVE_DOCKER_PULL_ATTEMPTS:-3}"');
     expect(liveBuild).toContain('docker_e2e_docker_cmd image inspect "$LIVE_IMAGE_NAME"');
     expect(liveBuild).toContain('docker_e2e_docker_cmd pull "$LIVE_IMAGE_NAME"');
     expect(liveBuild).not.toContain('docker image inspect "$LIVE_IMAGE_NAME"');
@@ -716,12 +714,7 @@ source "$ROOT_DIR/scripts/lib/docker-build.sh"
   });
 
   it.each([
-    [
-      "retry count",
-      "EVE_DOCKER_BUILD_RETRIES",
-      "2x",
-      "invalid EVE_DOCKER_BUILD_RETRIES: 2x",
-    ],
+    ["retry count", "EVE_DOCKER_BUILD_RETRIES", "2x", "invalid EVE_DOCKER_BUILD_RETRIES: 2x"],
     [
       "heartbeat interval",
       "EVE_DOCKER_BUILD_HEARTBEAT_SECONDS",
@@ -1888,15 +1881,11 @@ grep -qx -- "EVE_E2E_COMMAND_TIMEOUT=23s" "$TMPDIR/package-args"
     expect(runner).toContain("append_positive_int_env()");
     expect(runner).toContain("append_positive_number_env()");
     expect(runner).toContain("append_positive_int_env EVE_PLUGIN_LIFECYCLE_PHASE_TIMEOUT_MS");
-    expect(runner).toContain(
-      "append_positive_int_env EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS",
-    );
+    expect(runner).toContain("append_positive_int_env EVE_PLUGIN_LIFECYCLE_TIMEOUT_KILL_GRACE_MS");
     expect(runner).toContain("append_positive_int_env EVE_PLUGIN_LIFECYCLE_METRIC_POLL_MS");
     expect(runner).toContain("append_positive_int_env EVE_PLUGIN_LIFECYCLE_MAX_RSS_KB");
     expect(runner).toContain("append_positive_int_env EVE_PLUGIN_LIFECYCLE_MAX_WALL_MS");
-    expect(runner).toContain(
-      "append_positive_number_env EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO",
-    );
+    expect(runner).toContain("append_positive_number_env EVE_PLUGIN_LIFECYCLE_MAX_CPU_CORE_RATIO");
     expect(runner).toContain('docker_e2e_run_with_harness \\\n  "${DOCKER_ENV_ARGS[@]}"');
   });
 
@@ -2028,8 +2017,7 @@ grep -qx -- "EVE_E2E_COMMAND_TIMEOUT=23s" "$TMPDIR/package-args"
       },
       {
         path: RELEASE_USER_JOURNEY_SCENARIO_PATH,
-        scratch:
-          'scenario_tmp="$(mktemp -d "${TMPDIR:-/tmp}/eve-release-user-journey.XXXXXX")"',
+        scratch: 'scenario_tmp="$(mktemp -d "${TMPDIR:-/tmp}/eve-release-user-journey.XXXXXX")"',
         logDir: 'LOG_DIR="$scenario_tmp/logs"',
         requestLog: 'MOCK_REQUEST_LOG="$scenario_tmp/openai-requests.jsonl"',
         extraState: 'CLICKCLACK_STATE="$scenario_tmp/clickclack.json"',
@@ -2137,9 +2125,7 @@ grep -qx -- "EVE_E2E_COMMAND_TIMEOUT=23s" "$TMPDIR/package-args"
   it("keeps multi-node update Docker artifacts isolated by default", () => {
     const multiNode = readFileSync(MULTI_NODE_UPDATE_DOCKER_E2E_PATH, "utf8");
 
-    expect(multiNode).toContain(
-      'RUN_ID="${EVE_MULTI_NODE_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"',
-    );
+    expect(multiNode).toContain('RUN_ID="${EVE_MULTI_NODE_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"');
     expect(multiNode).toContain(
       'ARTIFACT_DIR="${EVE_MULTI_NODE_ARTIFACT_DIR:-$ROOT_DIR/.artifacts/multi-node-update/$RUN_ID}"',
     );
@@ -2242,28 +2228,16 @@ fi
     expect(runner).toContain(
       'STATUS_BUDGET="$(eve_e2e_read_positive_int_env EVE_UPGRADE_SURVIVOR_STATUS_BUDGET_SECONDS 30)"',
     );
-    expect(runner).toContain(
-      'COMMAND_TIMEOUT="${EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"',
-    );
+    expect(runner).toContain('COMMAND_TIMEOUT="${EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"');
     expect(runner).toContain('-e EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT="$COMMAND_TIMEOUT"');
-    expect(runner).toContain(
-      'command_timeout="${EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"',
-    );
-    expect(runner).toContain(
-      'eve_e2e_maybe_timeout "$command_timeout" env -u EVE_GATEWAY_TOKEN',
-    );
+    expect(runner).toContain('command_timeout="${EVE_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"');
+    expect(runner).toContain('eve_e2e_maybe_timeout "$command_timeout" env -u EVE_GATEWAY_TOKEN');
     expect(runner).toContain(
       'eve_e2e_maybe_timeout "$command_timeout" eve doctor --fix --non-interactive',
     );
-    expect(runner).toContain(
-      'eve_e2e_maybe_timeout "$command_timeout" eve config validate',
-    );
-    expect(runner).toContain(
-      'eve_e2e_maybe_timeout "$command_timeout" eve gateway status',
-    );
-    expect(runner).toContain(
-      'eve gateway --port "$PORT" --bind loopback --allow-unconfigured',
-    );
+    expect(runner).toContain('eve_e2e_maybe_timeout "$command_timeout" eve config validate');
+    expect(runner).toContain('eve_e2e_maybe_timeout "$command_timeout" eve gateway status');
+    expect(runner).toContain('eve gateway --port "$PORT" --bind loopback --allow-unconfigured');
     expect(runner).toContain(
       'PROBE_TIMEOUT_MS="$(eve_e2e_read_nonnegative_int_env EVE_UPGRADE_SURVIVOR_PROBE_TIMEOUT_MS 60000)"',
     );
@@ -2303,9 +2277,7 @@ fi
     expect(publishedRunner).toContain(
       'eve_e2e_maybe_timeout "$COMMAND_TIMEOUT" env -u EVE_GATEWAY_TOKEN',
     );
-    expect(publishedRunner).toContain(
-      'eve_e2e_maybe_timeout "$COMMAND_TIMEOUT" eve --version',
-    );
+    expect(publishedRunner).toContain('eve_e2e_maybe_timeout "$COMMAND_TIMEOUT" eve --version');
     expect(publishedRunner).toContain(
       'eve_e2e_maybe_timeout "$COMMAND_TIMEOUT" eve config validate >"$BASELINE_CONFIG_VALIDATE_LOG"',
     );
@@ -2711,12 +2683,7 @@ grep -Fxq preserved "$TMPDIR/caller-fd"
       "EVE_NPM_ONBOARD_JSON_ARTIFACT_MAX_BYTES",
       "64kb",
     ],
-    [
-      "plugins",
-      PLUGINS_DOCKER_E2E_PATH,
-      "EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS",
-      "soon",
-    ],
+    ["plugins", PLUGINS_DOCKER_E2E_PATH, "EVE_PLUGINS_E2E_CLAWHUB_PREFLIGHT_TIMEOUT_MS", "soon"],
     [
       "release user journey",
       RELEASE_USER_JOURNEY_DOCKER_E2E_PATH,
@@ -2935,9 +2902,7 @@ grep -Fxq preserved "$TMPDIR/caller-fd"
     expect(runner).toContain(
       "docker_e2e_read_positive_int_env EVE_DOCKER_E2E_LOG_PRINT_BYTES 65536",
     );
-    expect(runner).toContain(
-      '-e "EVE_DOCKER_E2E_LOG_PRINT_BYTES=$EVE_DOCKER_E2E_LOG_PRINT_BYTES"',
-    );
+    expect(runner).toContain('-e "EVE_DOCKER_E2E_LOG_PRINT_BYTES=$EVE_DOCKER_E2E_LOG_PRINT_BYTES"');
     expect(runner).toContain("docker_e2e_run_logged_print_with_harness \\");
     expect(runner).not.toContain("docker_e2e_run_logged_with_harness plugins-run");
   });
@@ -3307,9 +3272,7 @@ output="$(cat "$sampler_log")"
     );
     expect(runner).toContain('-e "EVE_E2E_COMMAND_TIMEOUT=$COMMAND_TIMEOUT"');
     expect(runner).toContain('-e "EVE_ONBOARD_GATEWAY_WAIT_ATTEMPTS=$GATEWAY_WAIT_ATTEMPTS"');
-    expect(runner).toContain(
-      '-e "EVE_ONBOARD_GATEWAY_WAIT_INTERVAL_S=$GATEWAY_WAIT_INTERVAL_S"',
-    );
+    expect(runner).toContain('-e "EVE_ONBOARD_GATEWAY_WAIT_INTERVAL_S=$GATEWAY_WAIT_INTERVAL_S"');
     expect(runner).toContain('--name "$CONTAINER_NAME"');
     expect(runner).toContain("docker_e2e_sample_stats_until_exit \\");
     expect(runner).toContain('"$STATS_LOG" \\');
@@ -3487,18 +3450,12 @@ output="$(cat "$sampler_log")"
     expect(runner).toContain(
       'LOG_TAIL_MAX_BYTES="$(docker_e2e_read_positive_int_env EVE_CODEX_MEDIA_PATH_LOG_TAIL_MAX_BYTES 2097152)"',
     );
-    expect(runner).toContain(
-      '-e "EVE_CODEX_MEDIA_PATH_LOG_TAIL_MAX_BYTES=$LOG_TAIL_MAX_BYTES"',
-    );
+    expect(runner).toContain('-e "EVE_CODEX_MEDIA_PATH_LOG_TAIL_MAX_BYTES=$LOG_TAIL_MAX_BYTES"');
   });
 
   it.each([
     [MCP_CODE_MODE_GATEWAY_DOCKER_E2E_PATH, "EVE_MCP_CODE_MODE_CLIENT_TIMEOUT_MS", "1e3"],
-    [
-      MCP_CODE_MODE_GATEWAY_DOCKER_E2E_PATH,
-      "EVE_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES",
-      "64bytes",
-    ],
+    [MCP_CODE_MODE_GATEWAY_DOCKER_E2E_PATH, "EVE_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES", "64bytes"],
     [MCP_CODE_MODE_GATEWAY_LIVE_DOCKER_E2E_PATH, "EVE_MCP_CODE_MODE_CLIENT_TIMEOUT_MS", "1e3"],
     [
       MCP_CODE_MODE_GATEWAY_LIVE_DOCKER_E2E_PATH,
@@ -3567,9 +3524,7 @@ output="$(cat "$sampler_log")"
       ),
     );
     const forwarded = new Set(
-      [...runner.matchAll(/-e\s+"(EVE_OPENAI_CHAT_TOOLS_[A-Z0-9_]+)=/gu)].map(
-        (match) => match[1],
-      ),
+      [...runner.matchAll(/-e\s+"(EVE_OPENAI_CHAT_TOOLS_[A-Z0-9_]+)=/gu)].map((match) => match[1]),
     );
     const missing = [...consumed].filter((envName) => !forwarded.has(envName)).toSorted();
 
@@ -3616,9 +3571,7 @@ output="$(cat "$sampler_log")"
     expect(runner).toContain(
       '-e "EVE_CLAWHUB_FIXTURE_WAIT_ATTEMPTS=$CLAW_HUB_FIXTURE_WAIT_ATTEMPTS"',
     );
-    expect(runner).toContain(
-      '-e "EVE_DOCKER_E2E_LOG_PRINT_BYTES=$EVE_DOCKER_E2E_LOG_PRINT_BYTES"',
-    );
+    expect(runner).toContain('-e "EVE_DOCKER_E2E_LOG_PRINT_BYTES=$EVE_DOCKER_E2E_LOG_PRINT_BYTES"');
     expect(runner).toContain('-e "KITCHEN_SINK_CLI_TIMEOUT=$KITCHEN_SINK_CLI_TIMEOUT"');
     expect(sweep).toContain('KITCHEN_SINK_CLI_TIMEOUT="${KITCHEN_SINK_CLI_TIMEOUT:-180s}"');
     expect(sweep).toContain("run_kitchen_sink_eve_logged()");
@@ -3902,20 +3855,14 @@ output="$(cat "$sampler_log")"
     const scenario = readFileSync(DOCTOR_SWITCH_SCENARIO_PATH, "utf8");
 
     expect(runner).toContain('NPM_INSTALL_TIMEOUT="${EVE_E2E_NPM_INSTALL_TIMEOUT:-600s}"');
-    expect(runner).toContain(
-      'COMMAND_TIMEOUT="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"',
-    );
+    expect(runner).toContain('COMMAND_TIMEOUT="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"');
     expect(runner).toContain('-e "EVE_E2E_NPM_INSTALL_TIMEOUT=$NPM_INSTALL_TIMEOUT"');
     expect(runner).toContain('-e "EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT=$COMMAND_TIMEOUT"');
     expect(scenario).toContain(
       'command_timeout="${EVE_DOCKER_DOCTOR_SWITCH_COMMAND_TIMEOUT:-900s}"',
     );
-    expect(scenario).toContain(
-      'eve_e2e_maybe_timeout "$command_timeout" bash -c "$install_cmd"',
-    );
-    expect(scenario).toContain(
-      'eve_e2e_maybe_timeout "$command_timeout" bash -c "$doctor_cmd"',
-    );
+    expect(scenario).toContain('eve_e2e_maybe_timeout "$command_timeout" bash -c "$install_cmd"');
+    expect(scenario).toContain('eve_e2e_maybe_timeout "$command_timeout" bash -c "$doctor_cmd"');
     expect(scenario).toContain(
       'eve_e2e_maybe_timeout "$command_timeout" "$npm_bin" gateway install --wrapper "$wrapper" --force',
     );
@@ -3948,7 +3895,7 @@ output="$(cat "$sampler_log")"
       mkdirSync(join(root, "patches"));
       writeFileSync(
         join(root, "package.json"),
-        `${JSON.stringify({ name: "eve", version: "2026.5.6", scripts: {} }, null, 2)}\n`,
+        `${JSON.stringify({ name: "eve-agent", version: "2026.5.6", scripts: {} }, null, 2)}\n`,
         "utf8",
       );
       writeFileSync(
@@ -4090,9 +4037,7 @@ output="$(cat "$sampler_log")"
     expect(runner).toContain('curl -fsSL "$INSTALL_URL" | EVE_BETA=1 bash');
     expect(runner).toContain('curl -fsSL "$INSTALL_URL" | EVE_VERSION="$INSTALL_TAG" bash');
     expect(runner).not.toContain('EVE_BETA=1 curl -fsSL "$INSTALL_URL" | bash');
-    expect(runner).not.toContain(
-      'EVE_VERSION="$INSTALL_TAG" curl -fsSL "$INSTALL_URL" | bash',
-    );
+    expect(runner).not.toContain('EVE_VERSION="$INSTALL_TAG" curl -fsSL "$INSTALL_URL" | bash');
   });
 
   it("keeps installer E2E agent turns out of the interactive bootstrap ritual", () => {
@@ -4226,7 +4171,7 @@ output="$(cat "$sampler_log")"
     expect(runner).toContain("expected focused Vitest summary for exactly 3 passed tests");
     expect(dockerfile).toContain("EVE_DISABLE_BUNDLED_PLUGIN_POSTINSTALL=1");
     expect(dockerfile).toContain(
-      "pnpm install --frozen-lockfile --ignore-scripts --filter eve",
+      "pnpm install --frozen-lockfile --ignore-scripts --filter eve-agent",
     );
   });
 

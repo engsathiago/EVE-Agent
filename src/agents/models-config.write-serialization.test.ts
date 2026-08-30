@@ -430,10 +430,7 @@ describe("models-config write serialization", () => {
         },
       );
 
-      const writes = Promise.all([
-        ensureEVEModelsJson(first),
-        ensureEVEModelsJson(second),
-      ]);
+      const writes = Promise.all([ensureEVEModelsJson(first), ensureEVEModelsJson(second)]);
       await firstModelsWriteStarted;
       await Promise.resolve();
       releaseModelsWrites();

@@ -275,10 +275,7 @@ function readFirecrawlPluginApiKey(config: EVEConfig): string | undefined {
   return pluginConfig?.webSearch?.apiKey;
 }
 
-async function runBlankPerplexityKeyEntry(
-  apiKey: string,
-  enabled?: boolean,
-): Promise<EVEConfig> {
+async function runBlankPerplexityKeyEntry(apiKey: string, enabled?: boolean): Promise<EVEConfig> {
   const cfg = createPerplexityConfig(apiKey, enabled);
   const { prompter } = createPrompter({
     selectValue: "perplexity",

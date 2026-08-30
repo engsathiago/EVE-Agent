@@ -56,10 +56,7 @@ function findCommand(
   return command;
 }
 
-function createCommandContext(
-  config: EVEConfig,
-  from: string | undefined,
-): PluginCommandContext {
+function createCommandContext(config: EVEConfig, from: string | undefined): PluginCommandContext {
   return {
     senderId: "TRUSTED_OPENID",
     channel: "qqbot",

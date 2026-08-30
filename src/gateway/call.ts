@@ -673,9 +673,7 @@ async function resolveGatewayCallContext(
 ): Promise<ResolvedGatewayCallContext> {
   const cliUrlOverride = trimToUndefined(opts.url);
   const explicitAuth = resolveExplicitGatewayAuth({ token: opts.token, password: opts.password });
-  const envUrlOverride = cliUrlOverride
-    ? undefined
-    : trimToUndefined(process.env.EVE_GATEWAY_URL);
+  const envUrlOverride = cliUrlOverride ? undefined : trimToUndefined(process.env.EVE_GATEWAY_URL);
   const urlOverride = cliUrlOverride ?? envUrlOverride;
   const urlOverrideSource = cliUrlOverride ? "cli" : envUrlOverride ? "env" : undefined;
   const canSkipConfigLoad = canSkipGatewayConfigLoad({
@@ -683,8 +681,7 @@ async function resolveGatewayCallContext(
     urlOverride,
     explicitAuth,
   });
-  const config =
-    opts.config ?? (canSkipConfigLoad ? ({} as EVEConfig) : await loadGatewayConfig());
+  const config = opts.config ?? (canSkipConfigLoad ? ({} as EVEConfig) : await loadGatewayConfig());
   const configPath = opts.configPath ?? resolveGatewayConfigPath(process.env);
   const isRemoteMode = config.gateway?.mode === "remote";
   const remote = isRemoteMode

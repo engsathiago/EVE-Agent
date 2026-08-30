@@ -126,10 +126,10 @@ function resolveDefaultGatewayTarget(params: {
   return "local";
 }
 
-function validateGatewayUrlOverrideForAgentTools(params: {
-  cfg: EVEConfig;
-  urlOverride: string;
-}): { url: string; target: GatewayOverrideTarget } {
+function validateGatewayUrlOverrideForAgentTools(params: { cfg: EVEConfig; urlOverride: string }): {
+  url: string;
+  target: GatewayOverrideTarget;
+} {
   const { cfg } = params;
   const localAllowed = resolveLocalGatewayUrlKeys(cfg);
   const remoteKey = resolveConfiguredRemoteGatewayKey(cfg);

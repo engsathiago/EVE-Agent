@@ -652,9 +652,9 @@ describe("exec approvals store helpers", () => {
 
     saveExecApprovals({ version: 1, defaults: { security: "full" }, agents: {} });
 
-    expect(
-      fs.readFileSync(path.join(realHome, ".eve", "exec-approvals.json"), "utf8"),
-    ).toContain('"security": "full"');
+    expect(fs.readFileSync(path.join(realHome, ".eve", "exec-approvals.json"), "utf8")).toContain(
+      '"security": "full"',
+    );
   });
 
   it("refuses to traverse symlinked approvals components below a symlinked home", () => {

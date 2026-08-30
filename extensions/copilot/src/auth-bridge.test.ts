@@ -488,9 +488,7 @@ describe("resolveCopilotAuth - defaults wiring", () => {
     });
     // We don't know the actual home, just that the resolver did not throw and
     // produced an absolute path containing the per-agent suffix.
-    expect(result.copilotHome.endsWith(join(".eve", "agents", "agent-1", "copilot"))).toBe(
-      true,
-    );
+    expect(result.copilotHome.endsWith(join(".eve", "agents", "agent-1", "copilot"))).toBe(true);
   });
 
   it("falls back to process.cwd() if homeDir throws", () => {
@@ -502,8 +500,6 @@ describe("resolveCopilotAuth - defaults wiring", () => {
       },
     });
     // Should not throw; should produce a path under cwd.
-    expect(result.copilotHome.includes(join(".eve", "agents", "agent-1", "copilot"))).toBe(
-      true,
-    );
+    expect(result.copilotHome.includes(join(".eve", "agents", "agent-1", "copilot"))).toBe(true);
   });
 });

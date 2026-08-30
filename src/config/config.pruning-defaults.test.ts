@@ -20,10 +20,7 @@ describe("config pruning defaults", () => {
   beforeEach(() => {
     setBundledPluginsDirOverrideForTest(path.resolve(import.meta.dirname, "../../extensions"));
     resetBundledPluginPublicArtifactLoaderForTest();
-    vi.stubEnv(
-      "EVE_BUNDLED_PLUGINS_DIR",
-      path.resolve(import.meta.dirname, "../../extensions"),
-    );
+    vi.stubEnv("EVE_BUNDLED_PLUGINS_DIR", path.resolve(import.meta.dirname, "../../extensions"));
   });
 
   afterEach(() => {

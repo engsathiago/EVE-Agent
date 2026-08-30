@@ -257,9 +257,7 @@ export function listEVERegisteredAgentDatabases(
 }
 
 /** Open or return a cached per-agent database after schema and owner validation. */
-export function openEVEAgentDatabase(
-  options: EVEAgentDatabaseOptions,
-): EVEAgentDatabase {
+export function openEVEAgentDatabase(options: EVEAgentDatabaseOptions): EVEAgentDatabase {
   const agentId = normalizeAgentId(options.agentId);
   const databaseOptions = { ...options, agentId };
   const pathname = resolveEVEAgentSqlitePath(databaseOptions);

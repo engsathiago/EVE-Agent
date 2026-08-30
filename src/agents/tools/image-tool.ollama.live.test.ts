@@ -6,10 +6,8 @@ import { describe, expect, it } from "vitest";
 import type { EVEConfig } from "../../config/types.eve.js";
 import { createImageTool } from "./image-tool.js";
 
-const LIVE =
-  process.env.EVE_LIVE_TEST === "1" && process.env.EVE_LIVE_OLLAMA_IMAGE === "1";
-const OLLAMA_BASE_URL =
-  process.env.EVE_LIVE_OLLAMA_BASE_URL?.trim() || "http://127.0.0.1:11434";
+const LIVE = process.env.EVE_LIVE_TEST === "1" && process.env.EVE_LIVE_OLLAMA_IMAGE === "1";
+const OLLAMA_BASE_URL = process.env.EVE_LIVE_OLLAMA_BASE_URL?.trim() || "http://127.0.0.1:11434";
 const OLLAMA_IMAGE_MODEL = process.env.EVE_LIVE_OLLAMA_IMAGE_MODEL?.trim() || "qwen2.5vl:7b";
 
 function resolveLiveNumCtx(): number {

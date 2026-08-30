@@ -67,12 +67,7 @@ export function mergeInstallInvocationEnv(params: {
       }
       continue;
     }
-    if (
-      upper === "HOME" ||
-      upper === "PATH" ||
-      upper === "TMPDIR" ||
-      upper.startsWith("EVE_")
-    ) {
+    if (upper === "HOME" || upper === "PATH" || upper === "TMPDIR" || upper.startsWith("EVE_")) {
       continue;
     }
     // Existing service env may contain host-specific secrets or loader overrides; keep only
@@ -223,9 +218,7 @@ export async function runDaemonInstall(opts: DaemonInstallOptions) {
         });
         if (!json) {
           defaultRuntime.log(`Gateway service already ${service.loadedText}.`);
-          defaultRuntime.log(
-            `Reinstall with: ${formatCliCommand("eve gateway install --force")}`,
-          );
+          defaultRuntime.log(`Reinstall with: ${formatCliCommand("eve gateway install --force")}`);
         }
         return;
       }

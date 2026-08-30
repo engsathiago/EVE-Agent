@@ -13,8 +13,8 @@ import {
   createProviderApiKeyResolver,
   createProviderAuthResolver,
 } from "../../agents/models-config.providers.secrets.js";
-import type { ModelProviderConfig } from "../../config/types.models.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ModelProviderConfig } from "../../config/types.models.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import type { Model } from "../../llm/types.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";

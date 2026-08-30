@@ -185,9 +185,7 @@ export function buildEVEReleaseClawHubRuntimeState(
   };
 }
 
-export function parseEVEReleaseClawHubPlanArgs(
-  argv: string[],
-): EVEReleaseClawHubPlanArgs {
+export function parseEVEReleaseClawHubPlanArgs(argv: string[]): EVEReleaseClawHubPlanArgs {
   const values = [...argv];
   if (values[0] === "--") {
     values.shift();

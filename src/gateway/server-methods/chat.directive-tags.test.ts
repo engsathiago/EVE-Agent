@@ -2614,9 +2614,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
   });
 
   it("deduplicates slash-command media when file URLs and paths reference the same attachment", async () => {
-    const transcriptDir = createTranscriptFixture(
-      "eve-chat-send-command-block-media-file-url-",
-    );
+    const transcriptDir = createTranscriptFixture("eve-chat-send-command-block-media-file-url-");
     const audioPath = path.join(transcriptDir, "voice.mp3");
     fs.writeFileSync(audioPath, Buffer.from([0xff, 0xfb, 0x90, 0x00]));
     mockState.config = {
@@ -2912,9 +2910,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
   });
 
   it("uses canonical mediaUrls when deduplicating slash-command block media", async () => {
-    const transcriptDir = createTranscriptFixture(
-      "eve-chat-send-command-block-media-canonical-",
-    );
+    const transcriptDir = createTranscriptFixture("eve-chat-send-command-block-media-canonical-");
     const blockAudioPath = path.join(transcriptDir, "block.mp3");
     const finalAudioPath = path.join(transcriptDir, "final.mp3");
     fs.writeFileSync(blockAudioPath, Buffer.from([0xff, 0xfb, 0x90, 0x00]));
@@ -2980,9 +2976,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
   });
 
   it("does not spread duplicate final media flags across multi-media command blocks", async () => {
-    const transcriptDir = createTranscriptFixture(
-      "eve-chat-send-command-block-media-partial-",
-    );
+    const transcriptDir = createTranscriptFixture("eve-chat-send-command-block-media-partial-");
     const firstAudioPath = path.join(transcriptDir, "first.mp3");
     const secondAudioPath = path.join(transcriptDir, "second.mp3");
     fs.writeFileSync(firstAudioPath, Buffer.from([0xff, 0xfb, 0x90, 0x00]));
@@ -3097,9 +3091,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
   });
 
   it("keeps reordered slash-command final media instead of treating it as duplicate", async () => {
-    const transcriptDir = createTranscriptFixture(
-      "eve-chat-send-command-block-media-reordered-",
-    );
+    const transcriptDir = createTranscriptFixture("eve-chat-send-command-block-media-reordered-");
     const firstAudioPath = path.join(transcriptDir, "first.mp3");
     const secondAudioPath = path.join(transcriptDir, "second.mp3");
     fs.writeFileSync(firstAudioPath, Buffer.from([0xff, 0xfb, 0x90, 0x00]));
@@ -5200,9 +5192,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
     expect(mockState.lastDispatchCtx?.MediaPaths).toEqual([
       "/home/user/.eve/media/inbound/report.pdf",
     ]);
-    expect(mockState.lastDispatchCtx?.MediaPath).toBe(
-      "/home/user/.eve/media/inbound/report.pdf",
-    );
+    expect(mockState.lastDispatchCtx?.MediaPath).toBe("/home/user/.eve/media/inbound/report.pdf");
     expect(mockState.lastDispatchCtx?.MediaTypes).toEqual(["application/pdf"]);
     expect(mockState.lastDispatchCtx?.MediaType).toBe("application/pdf");
     // Non-image offloads MUST NOT inject a media://URI into the prompt body —
@@ -5645,9 +5635,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
 
     // Reaches dispatch with the managed media path; not staged into the sandbox,
     // so no workspace dir, and the media-store entry is kept (not cleaned up).
-    expect(mockState.lastDispatchCtx?.MediaPath).toBe(
-      "/home/user/.eve/media/inbound/huge.pdf",
-    );
+    expect(mockState.lastDispatchCtx?.MediaPath).toBe("/home/user/.eve/media/inbound/huge.pdf");
     expect(mockState.lastDispatchCtx?.MediaPaths).toEqual([
       "/home/user/.eve/media/inbound/huge.pdf",
     ]);
@@ -5706,9 +5694,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
 
     // Falls back to the absolute managed path; nothing staged (so no workspace
     // dir) and the media-store entry is preserved for host-side extraction.
-    expect(mockState.lastDispatchCtx?.MediaPath).toBe(
-      "/home/user/.eve/media/inbound/report.pdf",
-    );
+    expect(mockState.lastDispatchCtx?.MediaPath).toBe("/home/user/.eve/media/inbound/report.pdf");
     expect(mockState.lastDispatchCtx?.MediaPaths).toEqual([
       "/home/user/.eve/media/inbound/report.pdf",
     ]);
@@ -5760,9 +5746,7 @@ describe("chat directive tag stripping for non-streaming final payloads", () => 
       expectBroadcast: false,
     });
 
-    expect(mockState.lastDispatchCtx?.MediaPath).toBe(
-      "/home/user/.eve/media/inbound/report.pdf",
-    );
+    expect(mockState.lastDispatchCtx?.MediaPath).toBe("/home/user/.eve/media/inbound/report.pdf");
     expect(mockState.lastDispatchCtx?.MediaPaths).toEqual([
       "/home/user/.eve/media/inbound/report.pdf",
     ]);

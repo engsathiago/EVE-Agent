@@ -63,11 +63,7 @@ const allowFailing = new Set(
 const allowDegradedReady =
   args.includes("--allow-degraded-ready") ||
   process.env.EVE_UPGRADE_SURVIVOR_READYZ_ALLOW_DEGRADED === "1";
-const timeoutOption = optionValue(
-  "--timeout-ms",
-  "EVE_UPGRADE_SURVIVOR_PROBE_TIMEOUT_MS",
-  "60000",
-);
+const timeoutOption = optionValue("--timeout-ms", "EVE_UPGRADE_SURVIVOR_PROBE_TIMEOUT_MS", "60000");
 const attemptTimeoutOption = optionValue(
   "--attempt-timeout-ms",
   "EVE_UPGRADE_SURVIVOR_PROBE_ATTEMPT_TIMEOUT_MS",

@@ -353,9 +353,7 @@ describe("chat abort transcript persistence", () => {
   });
 
   it("persists session-scoped abort partials with rpc metadata", async () => {
-    const { transcriptPath, sessionId } = await createTranscriptFixture(
-      "eve-chat-abort-session-",
-    );
+    const { transcriptPath, sessionId } = await createTranscriptFixture("eve-chat-abort-session-");
     const respond = vi.fn();
     const context = createChatAbortContext({
       chatAbortControllers: new Map([

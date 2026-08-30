@@ -396,6 +396,7 @@ export const fr: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Contrôle",
+    workspace: "Espace de travail",
     agent: "Agent",
     settings: "Paramètres",
     expand: "Développer la barre latérale",
@@ -407,6 +408,11 @@ export const fr: TranslationMap = {
     activity: "Activité",
     overview: "Aperçu",
     workboard: "Tableau de travail",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Canaux",
     instances: "Instances",
     sessions: "Sessions",
@@ -432,6 +438,11 @@ export const fr: TranslationMap = {
     activity: "Résumés d’activité des outils locaux au navigateur.",
     overview: "Statut, points d’entrée, santé.",
     workboard: "File de travail de l’agent et transfert de session.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Canaux et paramètres.",
     instances: "Clients et nœuds connectés.",
     sessions: "Sessions actives et valeurs par défaut.",
@@ -1329,8 +1340,7 @@ export const fr: TranslationMap = {
         title: "Connexion impossible",
         summary:
           "Le navigateur n’a pas pu terminer la connexion au Gateway. Vérifiez la cible et le transport avant de réessayer les identifiants.",
-        stepGateway:
-          "Confirmez que le Gateway fonctionne avec eve status ou eve gateway run.",
+        stepGateway: "Confirmez que le Gateway fonctionne avec eve status ou eve gateway run.",
         stepUrl:
           "Vérifiez l’URL WebSocket et utilisez wss:// lorsque le Gateway est derrière HTTPS/Tailscale Serve.",
         stepDashboard:

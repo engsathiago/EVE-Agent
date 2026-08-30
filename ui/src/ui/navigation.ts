@@ -9,6 +9,10 @@ export const TAB_GROUPS = [
     label: "control",
     tabs: ["overview", "activity", "workboard", "instances", "sessions", "usage", "cron"],
   },
+  {
+    label: "workspace",
+    tabs: ["projects", "studio", "environments", "integrations", "intelligence"],
+  },
   { label: "agent", tabs: ["agents", "skills", "skillWorkshop", "nodes", "dreams"] },
   {
     label: "settings",
@@ -21,6 +25,11 @@ export type Tab =
   | "activity"
   | "overview"
   | "workboard"
+  | "projects"
+  | "studio"
+  | "environments"
+  | "integrations"
+  | "intelligence"
   | "channels"
   | "instances"
   | "sessions"
@@ -59,6 +68,11 @@ const TAB_PATHS: Record<Tab, string> = {
   activity: "/activity",
   overview: "/overview",
   workboard: "/workboard",
+  projects: "/projects",
+  studio: "/studio",
+  environments: "/environments",
+  integrations: "/integrations",
+  intelligence: "/intelligence",
   channels: "/channels",
   instances: "/instances",
   sessions: "/sessions",
@@ -191,6 +205,16 @@ export function iconForTab(tab: Tab): IconName {
       return "activity";
     case "workboard":
       return "folder";
+    case "projects":
+      return "folder";
+    case "studio":
+      return "spark";
+    case "environments":
+      return "monitor";
+    case "integrations":
+      return "link";
+    case "intelligence":
+      return "brain";
     case "channels":
       return "link";
     case "instances":

@@ -378,19 +378,16 @@ describe("gateway-cli coverage", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-gateway-cli-support-"));
     try {
       const outputPath = path.join(tempDir, "diagnostics.zip");
-      await withEnvOverride(
-        { EVE_STATE_DIR: tempDir, EVE_TEST_FILE_LOG: undefined },
-        async () => {
-          await runGatewayCommand([
-            "gateway",
-            "diagnostics",
-            "export",
-            "--output",
-            outputPath,
-            "--json",
-          ]);
-        },
-      );
+      await withEnvOverride({ EVE_STATE_DIR: tempDir, EVE_TEST_FILE_LOG: undefined }, async () => {
+        await runGatewayCommand([
+          "gateway",
+          "diagnostics",
+          "export",
+          "--output",
+          outputPath,
+          "--json",
+        ]);
+      });
 
       expect(callGateway).toHaveBeenCalledTimes(1);
       const healthCall = firstMockArg(callGateway) as { method?: string; timeoutMs?: number };

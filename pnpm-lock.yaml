@@ -884,6 +884,22 @@ importers:
         specifier: workspace:*
         version: link:../../packages/plugin-sdk
 
+  extensions/intelligence:
+    dependencies:
+      typebox:
+        specifier: 1.1.39
+        version: 1.1.39
+      yaml:
+        specifier: 2.9.0
+        version: 2.9.0
+    devDependencies:
+      '@eve/plugin-sdk':
+        specifier: workspace:*
+        version: link:../../packages/plugin-sdk
+      eve-agent:
+        specifier: workspace:*
+        version: link:../..
+
   extensions/irc:
     dependencies:
       zod:

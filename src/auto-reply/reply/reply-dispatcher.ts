@@ -1,7 +1,7 @@
 // Dispatches final reply payloads through visible senders and message tools.
 import type { TypingCallbacks } from "../../channels/typing.js";
-import type { HumanDelayConfig } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { HumanDelayConfig } from "../../config/types.js";
 import { generateSecureInt } from "../../infra/secure-random.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import type { SilentReplyConversationType } from "../../shared/silent-reply-policy.js";

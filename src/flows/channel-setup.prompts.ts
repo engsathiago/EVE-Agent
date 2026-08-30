@@ -9,8 +9,8 @@ import type {
   ChannelSetupWizardAdapter,
 } from "../commands/channel-setup/types.js";
 import type { ChannelChoice } from "../commands/onboard-types.js";
-import type { DmPolicy } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { DmPolicy } from "../config/types.js";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../routing/session-key.js";
 import { t } from "../wizard/i18n/index.js";
 import type { WizardPrompter, WizardSelectOption } from "../wizard/prompts.js";

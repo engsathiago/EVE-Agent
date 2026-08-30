@@ -40,9 +40,7 @@ type ResolveEVEPluginToolsOptions = EVEPluginToolOptions & {
   authProfileStore?: AuthProfileStore;
 };
 
-function resolveApplicablePluginRuntimeConfig(
-  inputConfig?: EVEConfig,
-): EVEConfig | undefined {
+function resolveApplicablePluginRuntimeConfig(inputConfig?: EVEConfig): EVEConfig | undefined {
   const runtimeConfig = getRuntimeConfigSnapshot() ?? undefined;
   if (!runtimeConfig) {
     return inputConfig;

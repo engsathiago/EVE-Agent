@@ -19,8 +19,8 @@ import {
   normalizeProviderConfigForConfigDefaults,
 } from "./provider-policy.js";
 import { normalizeTalkConfig } from "./talk.js";
-import type { ModelDefinitionConfig } from "./types.models.js";
 import type { EVEConfig } from "./types.eve.js";
+import type { ModelDefinitionConfig } from "./types.models.js";
 
 type WarnState = { warned: boolean };
 type ProviderPolicyDefaultsOptions = {

@@ -31,9 +31,7 @@ const READ_SCOPE = "operator.read" as const;
 const WRITE_SCOPE = "operator.write" as const;
 const ADMIN_SCOPE = "operator.admin" as const;
 const LOCAL_FILE_INGEST_SCOPE = ADMIN_SCOPE;
-type GatewayMethodContext = Parameters<
-  Parameters<EVEPluginApi["registerGatewayMethod"]>[1]
->[0];
+type GatewayMethodContext = Parameters<Parameters<EVEPluginApi["registerGatewayMethod"]>[1]>[0];
 type GatewayRespond = GatewayMethodContext["respond"];
 
 function readStringParam(params: Record<string, unknown>, key: string): string | undefined;

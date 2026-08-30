@@ -1,8 +1,7 @@
 ---
 name: tavily
 description: Tavily web search, content extraction, and research tools.
-metadata:
-  { "eve": { "emoji": "🔍", "requires": { "config": ["plugins.entries.tavily.enabled"] } } }
+metadata: { "eve": { "emoji": "🔍", "requires": { "config": ["plugins.entries.tavily.enabled"] } } }
 ---
 
 # Tavily Tools

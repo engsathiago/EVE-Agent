@@ -6,7 +6,8 @@ import {
 
 type DescribeImageWithModel =
   typeof import("eve-agent/plugin-sdk/media-runtime").describeImageWithModel;
-type TranscribeFirstAudio = typeof import("eve-agent/plugin-sdk/media-runtime").transcribeFirstAudio;
+type TranscribeFirstAudio =
+  typeof import("eve-agent/plugin-sdk/media-runtime").transcribeFirstAudio;
 
 export async function describeImageWithModel(
   ...args: Parameters<DescribeImageWithModel>

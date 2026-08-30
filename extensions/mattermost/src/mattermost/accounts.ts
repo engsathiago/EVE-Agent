@@ -63,10 +63,7 @@ export function resolveDefaultMattermostAccountId(cfg: EVEConfig): string {
   return mattermostAccountHelpers.resolveDefaultAccountId(cfg);
 }
 
-function mergeMattermostAccountConfig(
-  cfg: EVEConfig,
-  accountId: string,
-): MattermostAccountConfig {
+function mergeMattermostAccountConfig(cfg: EVEConfig, accountId: string): MattermostAccountConfig {
   return resolveMergedAccountConfig<MattermostAccountConfig>({
     channelConfig: cfg.channels?.mattermost as MattermostAccountConfig | undefined,
     accounts: cfg.channels?.mattermost?.accounts as

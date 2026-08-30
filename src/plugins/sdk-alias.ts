@@ -4,8 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
-import { tryReadJsonSync } from "../infra/json-files.js";
 import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
+import { tryReadJsonSync } from "../infra/json-files.js";
 import { resolveEVEDevSourceRoot } from "./dev-source-root.js";
 import { PluginLruCache } from "./plugin-cache-primitives.js";
 
@@ -187,10 +187,7 @@ function readPluginSdkSubpathsFromPackageRoot(packageRoot: string): string[] | n
   return subpaths.length > 0 ? subpaths : null;
 }
 
-function resolveTrustedEVERootFromArgvHint(params: {
-  argv1?: string;
-  cwd: string;
-}): string | null {
+function resolveTrustedEVERootFromArgvHint(params: { argv1?: string; cwd: string }): string | null {
   if (!params.argv1) {
     return null;
   }
@@ -320,9 +317,8 @@ function listArgvRuntimeFallbackStartDirs(argv1: string | undefined): string[] {
   const parts = normalized.split(path.sep);
   const binIndex = parts.lastIndexOf(".bin");
   if (binIndex > 0 && parts[binIndex - 1] === "node_modules") {
-    const binName = path.basename(normalized);
     const nodeModulesDir = parts.slice(0, binIndex).join(path.sep);
-    starts.push(path.join(nodeModulesDir, binName));
+    starts.push(path.join(nodeModulesDir, "eve-agent"));
   }
   try {
     const resolved = fs.realpathSync(normalized);

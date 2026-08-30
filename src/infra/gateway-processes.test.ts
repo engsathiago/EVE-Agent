@@ -56,6 +56,8 @@ vi.mock("../channels/chat-meta.js", () => ({
   getChatChannelMeta: vi.fn(() => null),
 }));
 
+vi.resetModules();
+
 const {
   findVerifiedGatewayListenerPidsOnPortSync,
   formatGatewayPidList,

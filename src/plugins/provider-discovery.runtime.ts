@@ -3,8 +3,8 @@ import path from "node:path";
 import type { NormalizedModelCatalogRow } from "@eve/model-catalog-core/model-catalog-types";
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { sortUniqueStrings } from "../../packages/normalization-core/src/string-normalization.js";
-import type { ModelDefinitionConfig, ModelProviderConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelDefinitionConfig, ModelProviderConfig } from "../config/types.models.js";
 import { planManifestModelCatalogRows } from "../model-catalog/manifest-planner.js";
 import { loadManifestMetadataSnapshot } from "./manifest-contract-eligibility.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
@@ -217,7 +217,11 @@ function resolveManifestModelCatalogProviders(
     }
     const plan = planManifestModelCatalogRows({ registry: { plugins: [plugin] } });
     for (const entry of plan.entries) {
-      if (entry.rows.length === 0 || entry.discovery === "runtime" || entry.discovery === "refreshable") {
+      if (
+        entry.rows.length === 0 ||
+        entry.discovery === "runtime" ||
+        entry.discovery === "refreshable"
+      ) {
         continue;
       }
       const providerConfig = providerConfigFromManifestRows(entry.rows);
@@ -249,7 +253,8 @@ function resolveRuntimeManifestCatalogPluginIds(
     );
     const ownsRuntimeDiscovery = Object.entries(plugin.modelCatalog?.discovery ?? {}).some(
       ([provider, discovery]) =>
-        (discovery === "runtime" || discovery === "refreshable") && ownedProviders.has(normalizeProviderId(provider)),
+        (discovery === "runtime" || discovery === "refreshable") &&
+        ownedProviders.has(normalizeProviderId(provider)),
     );
     if (ownsRuntimeDiscovery) {
       pluginIds.add(plugin.id);
@@ -259,7 +264,11 @@ function resolveRuntimeManifestCatalogPluginIds(
       continue;
     }
     const plan = planManifestModelCatalogRows({ registry: { plugins: [plugin] } });
-    if (plan.entries.some((entry) => entry.discovery === "runtime" || entry.discovery === "refreshable")) {
+    if (
+      plan.entries.some(
+        (entry) => entry.discovery === "runtime" || entry.discovery === "refreshable",
+      )
+    ) {
       pluginIds.add(plugin.id);
     }
   }

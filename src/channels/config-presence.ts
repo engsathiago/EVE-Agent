@@ -26,11 +26,7 @@ type ChannelPresenceOptions = {
   includePersistedAuthState?: boolean;
   persistedAuthStateProbe?: {
     listChannelIds: () => readonly string[];
-    hasState: (params: {
-      channelId: string;
-      cfg: EVEConfig;
-      env: NodeJS.ProcessEnv;
-    }) => boolean;
+    hasState: (params: { channelId: string; cfg: EVEConfig; env: NodeJS.ProcessEnv }) => boolean;
   };
 };
 

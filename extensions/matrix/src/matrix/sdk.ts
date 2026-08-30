@@ -1,5 +1,12 @@
 // Matrix plugin module implements sdk behavior.
 import { EventEmitter } from "node:events";
+import { KeyedAsyncQueue } from "eve-agent/plugin-sdk/keyed-async-queue";
+import type { PinnedDispatcherPolicy } from "eve-agent/plugin-sdk/ssrf-dispatcher";
+import {
+  normalizeNullableString,
+  normalizeStringEntries,
+  uniqueStrings,
+} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import {
   ClientEvent,
   Filter,
@@ -12,13 +19,6 @@ import {
 } from "matrix-js-sdk/lib/matrix.js";
 import type { Direction } from "matrix-js-sdk/lib/models/event-timeline.js";
 import { VerificationMethod } from "matrix-js-sdk/lib/types.js";
-import { KeyedAsyncQueue } from "eve-agent/plugin-sdk/keyed-async-queue";
-import type { PinnedDispatcherPolicy } from "eve-agent/plugin-sdk/ssrf-dispatcher";
-import {
-  normalizeNullableString,
-  normalizeStringEntries,
-  uniqueStrings,
-} from "eve-agent/plugin-sdk/string-coerce-runtime";
 import type { SsrFPolicy } from "../runtime-api.js";
 import { resolveMatrixRoomKeyBackupReadinessError } from "./backup-health.js";
 import { SqliteBackedMatrixSyncStore } from "./client/file-sync-store.js";

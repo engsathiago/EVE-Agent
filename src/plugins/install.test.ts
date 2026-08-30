@@ -9,8 +9,8 @@ import {
   resetDiagnosticEventsForTest,
   type DiagnosticSecurityEvent,
 } from "../infra/diagnostic-events.js";
-import { safePathSegmentHashed } from "../infra/install-safe-path.js";
 import { resolveEVEPackageRootSync } from "../infra/eve-root.js";
+import { safePathSegmentHashed } from "../infra/install-safe-path.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { initializeGlobalHookRunner, resetGlobalHookRunner } from "./hook-runner-global.js";
 import { createMockPluginRegistry } from "./hooks.test-helpers.js";
@@ -968,7 +968,7 @@ describe("installPluginFromArchive", () => {
       captured.stop();
     }
 
-    expect(result!.ok).toBe(true);
+    expect(result!.ok, result && !result.ok ? result.error : undefined).toBe(true);
     expect(captured.events).toHaveLength(1);
     expect(captured.events[0]).toMatchObject({
       action: "plugin.installed",
@@ -2476,7 +2476,7 @@ describe("installPluginFromNpmSpec", () => {
       captured.stop();
     }
 
-    expect(result!.ok).toBe(true);
+    expect(result!.ok, result && !result.ok ? result.error : undefined).toBe(true);
     expect(captured.events).toHaveLength(1);
     expect(captured.events[0]).toMatchObject({
       category: "plugin",
@@ -2534,7 +2534,7 @@ describe("installPluginFromNpmSpec", () => {
       captured.stop();
     }
 
-    expect(result!.ok).toBe(true);
+    expect(result!.ok, result && !result.ok ? result.error : undefined).toBe(true);
     expect(captured.events).toHaveLength(1);
     expect(captured.events[0]).toMatchObject({
       category: "plugin",
@@ -2579,12 +2579,14 @@ describe("installPluginFromNpmSpec", () => {
       ]),
     });
     mockSuccessfulManagedNpmInstall({ packageName, version: "1.2.3" });
-    const scanSpy = vi.spyOn(installSecurityScan, "scanPackageInstallSource").mockResolvedValueOnce({
-      blocked: {
-        code: "security_scan_blocked",
-        reason: "blocked by package scan",
-      },
-    });
+    const scanSpy = vi
+      .spyOn(installSecurityScan, "scanPackageInstallSource")
+      .mockResolvedValueOnce({
+        blocked: {
+          code: "security_scan_blocked",
+          reason: "blocked by package scan",
+        },
+      });
     const captured = captureSecurityEvents();
 
     let result: Awaited<ReturnType<typeof installPluginFromNpmPackArchive>>;
@@ -2961,7 +2963,7 @@ describe("installPluginFromDir", () => {
   it("preserves local package manifests without dependency surgery", async () => {
     const { pluginDir, extensionsDir } = setupInstallPluginFromDirFixture({
       devDependencies: {
-        eve: "workspace:*",
+        "eve-agent": "workspace:*",
         vitest: "^3.0.0",
       },
     });
@@ -2980,7 +2982,7 @@ describe("installPluginFromDir", () => {
     ) as {
       devDependencies?: Record<string, string>;
     };
-    expect(manifest.devDependencies?.eve).toBe("workspace:*");
+    expect(manifest.devDependencies?.["eve-agent"]).toBe("workspace:*");
     expect(manifest.devDependencies?.vitest).toBe("^3.0.0");
     expect(vi.mocked(runCommandWithTimeout)).not.toHaveBeenCalled();
   });
@@ -3826,13 +3828,13 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     fs.writeFileSync(path.join(pluginDir, "index.js"), "export {};\n", "utf-8");
   }
 
-  it("creates a node_modules/eve symlink when peerDependencies declares eve", async () => {
+  it("creates a node_modules/eve-agent symlink when peerDependencies declares eve", async () => {
     const { pluginDir, extensionsDir } = setupPluginInstallDirs();
     const fakeHostRoot = suiteTempRootTracker.makeTempDir();
     const run = vi.mocked(runCommandWithTimeout);
     resolveRootMock.mockReturnValue(fakeHostRoot);
 
-    writePluginWithPeerDeps(pluginDir, { eve: "*" });
+    writePluginWithPeerDeps(pluginDir, { "eve-agent": "*" });
 
     const { result } = await installFromDirWithWarnings({ pluginDir, extensionsDir });
 
@@ -3841,7 +3843,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
       return;
     }
 
-    const symlinkPath = path.join(result.targetDir, "node_modules", "eve");
+    const symlinkPath = path.join(result.targetDir, "node_modules", "eve-agent");
     const stat = fs.lstatSync(symlinkPath);
     expect(stat.isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(symlinkPath)).toBe(fs.realpathSync(fakeHostRoot));
@@ -3853,7 +3855,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     const fakeHostRoot = suiteTempRootTracker.makeTempDir();
     resolveRootMock.mockReturnValue(fakeHostRoot);
 
-    writePluginWithPeerDeps(pluginDir, { eve: "*" }, { "is-number": "7.0.0" });
+    writePluginWithPeerDeps(pluginDir, { "eve-agent": "*" }, { "is-number": "7.0.0" });
     fs.mkdirSync(path.join(pluginDir, "node_modules", "is-number"), { recursive: true });
     fs.writeFileSync(
       path.join(pluginDir, "node_modules", "is-number", "package.json"),
@@ -3868,7 +3870,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
       return;
     }
 
-    const symlinkPath = path.join(result.targetDir, "node_modules", "eve");
+    const symlinkPath = path.join(result.targetDir, "node_modules", "eve-agent");
     expect(fs.lstatSync(symlinkPath).isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(symlinkPath)).toBe(fs.realpathSync(fakeHostRoot));
     expect(fs.existsSync(path.join(result.targetDir, "node_modules", "is-number"))).toBe(true);
@@ -3880,11 +3882,11 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     const fakeHostRoot = suiteTempRootTracker.makeTempDir();
     resolveRootMock.mockReturnValue(fakeHostRoot);
 
-    writePluginWithPeerDeps(pluginDir, { eve: "*" });
-    fs.mkdirSync(path.join(pluginDir, "node_modules", "eve"), { recursive: true });
+    writePluginWithPeerDeps(pluginDir, { "eve-agent": "*" });
+    fs.mkdirSync(path.join(pluginDir, "node_modules", "eve-agent"), { recursive: true });
     fs.writeFileSync(
-      path.join(pluginDir, "node_modules", "eve", "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.5.31" }),
+      path.join(pluginDir, "node_modules", "eve-agent", "package.json"),
+      JSON.stringify({ name: "eve-agent", version: "2026.5.31" }),
       "utf-8",
     );
 
@@ -3896,7 +3898,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
       return;
     }
 
-    const symlinkPath = path.join(result.targetDir, "node_modules", "eve");
+    const symlinkPath = path.join(result.targetDir, "node_modules", "eve-agent");
     expect(fs.lstatSync(symlinkPath).isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(symlinkPath)).toBe(fs.realpathSync(fakeHostRoot));
   });
@@ -3915,7 +3917,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     }
 
     const nodeModulesDir = path.join(result.targetDir, "node_modules");
-    const symlinkPath = path.join(nodeModulesDir, "eve");
+    const symlinkPath = path.join(nodeModulesDir, "eve-agent");
     expect(fs.existsSync(symlinkPath)).toBe(false);
   });
 
@@ -3924,7 +3926,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     const fakeHostRoot = suiteTempRootTracker.makeTempDir();
     resolveRootMock.mockReturnValue(fakeHostRoot);
 
-    writePluginWithPeerDeps(pluginDir, { eve: "*" });
+    writePluginWithPeerDeps(pluginDir, { "eve-agent": "*" });
 
     // First install
     const { result: first } = await installFromDirWithWarnings({ pluginDir, extensionsDir });
@@ -3942,7 +3944,7 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     if (!second.ok) {
       return;
     }
-    const symlinkPath = path.join(second.targetDir, "node_modules", "eve");
+    const symlinkPath = path.join(second.targetDir, "node_modules", "eve-agent");
     expect(fs.lstatSync(symlinkPath).isSymbolicLink()).toBe(true);
   });
 
@@ -3950,14 +3952,14 @@ describe("linkEVEPeerDependencies (via installPluginFromDir)", () => {
     const { pluginDir, extensionsDir } = setupPluginInstallDirs();
     resolveRootMock.mockReturnValue(null);
 
-    writePluginWithPeerDeps(pluginDir, { eve: "*" });
+    writePluginWithPeerDeps(pluginDir, { "eve-agent": "*" });
 
     const { result, warnings } = await installFromDirWithWarnings({ pluginDir, extensionsDir });
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.error).toContain("plugin-local node_modules/eve link");
+      expect(result.error).toContain("plugin-local node_modules/eve-agent link");
     }
-    expectWarningIncludes(warnings, "Could not locate eve package root");
+    expectWarningIncludes(warnings, "Could not locate eve-agent package root");
   });
 });

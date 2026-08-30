@@ -585,9 +585,7 @@ async function startMatrixQaLiveLaneGateway(params: {
   repoRoot: string;
   transport: {
     requiredPluginIds: readonly string[];
-    createGatewayConfig: (params: {
-      baseUrl: string;
-    }) => Pick<EVEConfig, "channels" | "messages">;
+    createGatewayConfig: (params: { baseUrl: string }) => Pick<EVEConfig, "channels" | "messages">;
   };
   transportBaseUrl: string;
   providerMode: "mock-openai" | "live-frontier";

@@ -821,16 +821,16 @@ describe("telegram live qa runtime", () => {
     const catalog = testing.listTelegramQaScenarioCatalog("mock-openai");
     const status = requireScenario(catalog, "telegram-status-command");
     expect(status.defaultEnabled).toBe(true);
-    expect(status.regressionRefs).toEqual(["eve/eve#74698"]);
+    expect(status.regressionRefs).toEqual(["engsathiago/eve-agent#74698"]);
     expect(requireScenario(catalog, "telegram-current-session-status-tool").defaultEnabled).toBe(
       false,
     );
     const usageFooter = requireScenario(catalog, "telegram-tool-only-usage-footer");
     expect(usageFooter.defaultEnabled).toBe(false);
-    expect(usageFooter.regressionRefs).toEqual(["eve/eve#87392"]);
+    expect(usageFooter.regressionRefs).toEqual(["engsathiago/eve-agent#87392"]);
     const streamSingle = requireScenario(catalog, "telegram-stream-final-single-message");
     expect(streamSingle.defaultEnabled).toBe(false);
-    expect(streamSingle.regressionRefs).toEqual(["eve/eve#39905"]);
+    expect(streamSingle.regressionRefs).toEqual(["engsathiago/eve-agent#39905"]);
     expect(requireScenario(catalog, "telegram-reply-chain-exact-marker").defaultEnabled).toBe(
       false,
     );

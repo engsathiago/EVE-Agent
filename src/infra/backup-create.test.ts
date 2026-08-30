@@ -8,10 +8,7 @@ import { saveAuthProfileStore } from "../agents/auth-profiles/store.js";
 import { backupVerifyCommand } from "../commands/backup-verify.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { closeEVEAgentDatabasesForTest } from "../state/eve-agent-db.js";
-import {
-  closeEVEStateDatabase,
-  openEVEStateDatabase,
-} from "../state/eve-state-db.js";
+import { closeEVEStateDatabase, openEVEStateDatabase } from "../state/eve-state-db.js";
 import { withEVETestState } from "../test-utils/eve-test-state.js";
 import {
   testApi as backupCreateInternals,
@@ -307,9 +304,9 @@ describe("buildExtensionsNodeModulesFilter", () => {
     const filter = buildExtensionsNodeModulesFilter("C:\\Users\\me\\.eve\\");
 
     expect(filter(String.raw`C:\Users\me\.eve\extensions\demo\index.js`)).toBe(true);
-    expect(
-      filter(String.raw`C:\Users\me\.eve\extensions\demo\node_modules\dep\index.js`),
-    ).toBe(false);
+    expect(filter(String.raw`C:\Users\me\.eve\extensions\demo\node_modules\dep\index.js`)).toBe(
+      false,
+    );
   });
 });
 
@@ -557,9 +554,7 @@ describe("createBackupArchive", () => {
         );
         expect(archivedDbEntry).toBeDefined();
         expect(
-          entries.some((entry) =>
-            entry.endsWith("/state/agents/main/agent/eve-agent.sqlite-wal"),
-          ),
+          entries.some((entry) => entry.endsWith("/state/agents/main/agent/eve-agent.sqlite-wal")),
         ).toBe(false);
 
         await tar.x({ file: result.archivePath, gzip: true, cwd: extractDir });
@@ -716,7 +711,8 @@ describe("createBackupArchive", () => {
         },
         async (state) => {
           const outputDir = state.path("backups");
-          const latePath = state.statePath(lateName);
+          const canonicalStateDir = await fs.realpath(state.stateDir);
+          const latePath = path.join(canonicalStateDir, lateName);
           await fs.mkdir(outputDir, { recursive: true });
 
           const originalReaddir = fs.readdir.bind(fs);
@@ -727,10 +723,8 @@ describe("createBackupArchive", () => {
             const entries = await (
               originalReaddir as (...readdirArgs: unknown[]) => Promise<unknown>
             )(...args);
-            if (
-              !createdLatePath &&
-              path.resolve(String(args[0])) === path.resolve(state.stateDir)
-            ) {
+            const requestedDir = await fs.realpath(String(args[0])).catch(() => "");
+            if (!createdLatePath && requestedDir === canonicalStateDir) {
               createdLatePath = true;
               await fs.writeFile(latePath, "late SQLite state");
             }

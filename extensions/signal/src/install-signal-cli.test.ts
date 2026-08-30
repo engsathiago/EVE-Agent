@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import JSZip from "jszip";
 import type { RuntimeEnv } from "eve-agent/plugin-sdk/runtime-env";
+import JSZip from "jszip";
 import * as tar from "tar";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ReleaseAsset } from "./install-signal-cli.js";

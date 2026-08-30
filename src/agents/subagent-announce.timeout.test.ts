@@ -136,8 +136,7 @@ vi.mock("./subagent-announce-delivery.js", () => ({
     });
     const timeoutMs =
       clampTimerTimeoutMs(configOverride.agents?.defaults?.subagents?.announceTimeoutMs) ?? 120_000;
-    const retryDelaysMs =
-      process.env.EVE_TEST_FAST === "1" ? [8, 16, 32] : [5_000, 10_000, 20_000];
+    const retryDelaysMs = process.env.EVE_TEST_FAST === "1" ? [8, 16, 32] : [5_000, 10_000, 20_000];
     for (const delayMs of [...retryDelaysMs, undefined]) {
       const request = buildRequest();
       gatewayCalls.push(request);

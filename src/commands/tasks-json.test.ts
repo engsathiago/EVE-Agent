@@ -55,21 +55,18 @@ function jsonRoundTrip<T>(value: T): T {
 }
 
 async function withTaskJsonStateDir(run: () => Promise<void>): Promise<void> {
-  await withEVETestState(
-    { layout: "state-only", prefix: "eve-tasks-json-command-" },
-    async () => {
+  await withEVETestState({ layout: "state-only", prefix: "eve-tasks-json-command-" }, async () => {
+    resetTaskRegistryDeliveryRuntimeForTests();
+    resetTaskRegistryForTests({ persist: false });
+    resetTaskFlowRegistryForTests({ persist: false });
+    try {
+      await run();
+    } finally {
       resetTaskRegistryDeliveryRuntimeForTests();
       resetTaskRegistryForTests({ persist: false });
       resetTaskFlowRegistryForTests({ persist: false });
-      try {
-        await run();
-      } finally {
-        resetTaskRegistryDeliveryRuntimeForTests();
-        resetTaskRegistryForTests({ persist: false });
-        resetTaskFlowRegistryForTests({ persist: false });
-      }
-    },
-  );
+    }
+  });
 }
 
 describe("tasks JSON commands", () => {

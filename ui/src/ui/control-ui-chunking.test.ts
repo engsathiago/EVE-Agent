@@ -11,9 +11,9 @@ describe("Control UI build chunking", () => {
     expect(controlUiManualChunk("/repo/ui/node_modules/highlight.js/lib/core.js")).toBe(
       "markdown-runtime",
     );
-    expect(
-      controlUiManualChunk("/tmp/eve-pnpm-node-modules/dompurify/dist/purify.es.mjs"),
-    ).toBe("markdown-runtime");
+    expect(controlUiManualChunk("/tmp/eve-pnpm-node-modules/dompurify/dist/purify.es.mjs")).toBe(
+      "markdown-runtime",
+    );
     expect(controlUiManualChunk("/tmp/eve-pnpm-node-modules/zod/v4/core/schemas.js")).toBe(
       "config-runtime",
     );

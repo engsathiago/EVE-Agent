@@ -1,10 +1,10 @@
-// Telegram plugin module implements dm access behavior.
-import type { Bot } from "grammy";
-import type { Message } from "grammy/types";
 import { createChannelPairingChallengeIssuer } from "eve-agent/plugin-sdk/channel-pairing";
 import type { DmPolicy } from "eve-agent/plugin-sdk/config-contracts";
 import { upsertChannelPairingRequest } from "eve-agent/plugin-sdk/conversation-runtime";
 import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+// Telegram plugin module implements dm access behavior.
+import type { Bot } from "grammy";
+import type { Message } from "grammy/types";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import type { NormalizedAllowFrom } from "./bot-access.js";
 import { renderTelegramHtmlText } from "./format.js";

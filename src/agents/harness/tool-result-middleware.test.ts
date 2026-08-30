@@ -152,9 +152,7 @@ describe("createAgentToolResultMiddlewareRunner", () => {
       client,
     };
     client.message = payload;
-    const runner = createAgentToolResultMiddlewareRunner({ runtime: "eve" }, [
-      () => undefined,
-    ]);
+    const runner = createAgentToolResultMiddlewareRunner({ runtime: "eve" }, [() => undefined]);
 
     const result = await runner.applyToolResultMiddleware({
       toolCallId: "call-1",
@@ -531,9 +529,7 @@ describe("createAgentToolResultMiddlewareRunner", () => {
   });
 
   it("collapses oversized incoming details to a truncation marker", async () => {
-    const runner = createAgentToolResultMiddlewareRunner({ runtime: "eve" }, [
-      () => undefined,
-    ]);
+    const runner = createAgentToolResultMiddlewareRunner({ runtime: "eve" }, [() => undefined]);
 
     const result = await runner.applyToolResultMiddleware({
       toolCallId: "call-1",

@@ -100,10 +100,7 @@ async function main() {
 
   const promptLine = await fs.readFile(promptLogPath, "utf8");
   assert(promptLine.includes("User request:"), "fake Claude CLI did not receive planner prompt");
-  assert(
-    promptLine.includes("EVE docs:"),
-    "planner prompt did not include docs reference context",
-  );
+  assert(promptLine.includes("EVE docs:"), "planner prompt did not include docs reference context");
 
   const config = JSON.parse(await fs.readFile(configPath, "utf8"));
   assert(

@@ -64,8 +64,8 @@ function resolveNativeUserHomeDir(): string | undefined {
 }
 
 function resolveCompactHomePrefixes(): string[] {
-  const homes = [resolveUserHomeDir(), resolveNativeUserHomeDir()].filter(
-    (home): home is string => Boolean(home),
+  const homes = [resolveUserHomeDir(), resolveNativeUserHomeDir()].filter((home): home is string =>
+    Boolean(home),
   );
   const resolvedHomes = homes.map((home) => path.resolve(home));
   const realHomes = resolvedHomes
@@ -111,10 +111,7 @@ function resolvePromptTildeRoots(): string[] {
     return [];
   }
   const realNativeHome = tryRealpath(resolvedNativeHome);
-  return uniqueStrings([
-    resolvedNativeHome,
-    ...(realNativeHome ? [realNativeHome] : []),
-  ]);
+  return uniqueStrings([resolvedNativeHome, ...(realNativeHome ? [realNativeHome] : [])]);
 }
 
 function isContainerStateHomeWherePromptTildeEscapes(home: string): boolean {
@@ -726,11 +723,7 @@ function shouldEnforceConfiguredSkillRootContainment(source: string): boolean {
 }
 
 function shouldUseConfiguredSymlinkTargets(source: string): boolean {
-  return (
-    source === "eve-workspace" ||
-    source === "eve-extra" ||
-    source === "agents-skills-project"
-  );
+  return source === "eve-workspace" || source === "eve-extra" || source === "agents-skills-project";
 }
 
 function resolveSkillRootCandidatePath(params: {

@@ -23,12 +23,10 @@ type ProviderMonitorTestMocks = {
   clientConstructorOptionsMock: Mock<(options?: unknown) => void>;
   createDiscordAutoPresenceControllerMock: Mock<() => unknown>;
   createDiscordExecApprovalButtonContextMock: Mock<
-    (params?: {
-      cfg?: EVEConfig;
-      accountId?: string;
-      config?: unknown;
-      gatewayUrl?: string;
-    }) => { getApprovers: () => string[]; resolveApproval: () => Promise<boolean> }
+    (params?: { cfg?: EVEConfig; accountId?: string; config?: unknown; gatewayUrl?: string }) => {
+      getApprovers: () => string[];
+      resolveApproval: () => Promise<boolean>;
+    }
   >;
   createExecApprovalButtonMock: Mock<(ctx?: unknown) => unknown>;
   createDiscordNativeCommandMock: Mock<(params?: { command?: { name?: string } }) => unknown>;

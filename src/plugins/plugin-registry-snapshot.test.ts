@@ -526,9 +526,7 @@ describe("loadPluginRegistrySnapshotWithMetadata", () => {
     if (!record?.packageJson?.fileSignature || !record.manifestFile) {
       throw new Error("expected package plugin index record with file signatures");
     }
-    expect(record.manifestFile.size).toBe(
-      fs.statSync(path.join(rootDir, "eve.plugin.json")).size,
-    );
+    expect(record.manifestFile.size).toBe(fs.statSync(path.join(rootDir, "eve.plugin.json")).size);
     expect(record.packageJson.fileSignature.size).toBe(
       fs.statSync(path.join(rootDir, "package.json")).size,
     );
@@ -793,7 +791,7 @@ describe("loadPluginRegistrySnapshotWithMetadata", () => {
 
   it("keeps mixed source-checkout bundled roots from the same checkout", () => {
     const tempRoot = makeTempDir();
-    const packageRoot = path.join(tempRoot, "eve");
+    const packageRoot = path.join(tempRoot, "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const sourceRoot = path.join(packageRoot, "extensions");
     const stateDir = path.join(tempRoot, "state");
@@ -827,7 +825,7 @@ describe("loadPluginRegistrySnapshotWithMetadata", () => {
 
   it("treats a persisted source bundled root as stale once its built peer appears", () => {
     const tempRoot = makeTempDir();
-    const packageRoot = path.join(tempRoot, "eve");
+    const packageRoot = path.join(tempRoot, "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const sourceRoot = path.join(packageRoot, "extensions");
     const stateDir = path.join(tempRoot, "state");
@@ -862,7 +860,7 @@ describe("loadPluginRegistrySnapshotWithMetadata", () => {
 
   it("keeps a persisted bind-mounted source overlay when its built peer exists", () => {
     const tempRoot = makeTempDir();
-    const packageRoot = path.join(tempRoot, "eve");
+    const packageRoot = path.join(tempRoot, "eve-agent");
     const bundledRoot = path.join(packageRoot, "dist", "extensions");
     const sourcePluginDir = path.join(packageRoot, "extensions", "whatsapp");
     const stateDir = path.join(tempRoot, "state");

@@ -477,9 +477,7 @@ describe("resolveSharedMemoryStatusSnapshot", () => {
     };
     const resolveMemoryConfig = vi.fn(() => null);
     const getMemorySearchManager = vi.fn(async () => ({ manager }));
-    const requireDefaultDatabasePath = vi.fn(
-      () => `/tmp/eve-missing-memory-${process.pid}.sqlite`,
-    );
+    const requireDefaultDatabasePath = vi.fn(() => `/tmp/eve-missing-memory-${process.pid}.sqlite`);
 
     const result = await resolveSharedMemoryStatusSnapshot({
       cfg: {

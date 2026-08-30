@@ -137,8 +137,8 @@ eve tasks flow show <lookup>
 eve tasks flow cancel <lookup>
 ```
 
-| Command                           | Description                                   |
-| --------------------------------- | --------------------------------------------- |
+| Command                      | Description                                   |
+| ---------------------------- | --------------------------------------------- |
 | `eve tasks flow list`        | Shows tracked flows with status and sync mode |
 | `eve tasks flow show <id>`   | Inspect one flow by flow id or lookup key     |
 | `eve tasks flow cancel <id>` | Cancel a running flow and its active tasks    |

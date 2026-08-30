@@ -244,9 +244,7 @@ function hasEnvHttpProxyForTelegramApi(env: NodeJS.ProcessEnv = process.env): bo
   return hasEnvHttpProxyAgentConfigured(env);
 }
 
-function resolveEVEProxyUrlForTelegram(
-  env: NodeJS.ProcessEnv = process.env,
-): string | undefined {
+function resolveEVEProxyUrlForTelegram(env: NodeJS.ProcessEnv = process.env): string | undefined {
   const proxyUrl = env.EVE_PROXY_URL?.trim();
   return proxyUrl ? proxyUrl : undefined;
 }

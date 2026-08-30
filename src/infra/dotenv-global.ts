@@ -27,6 +27,7 @@ type GlobalRuntimeDotEnvOptions = {
   entryFilter?: (key: string, value: string) => boolean;
   quiet?: boolean;
   stateEnvPath?: string;
+  warn?: (message: string, metadata?: Record<string, unknown>) => void;
 };
 
 function readGlobalRuntimeDotEnvFile(params: {
@@ -67,7 +68,11 @@ function readGlobalRuntimeDotEnvFile(params: {
   return { filePath: params.filePath, entries };
 }
 
-function loadParsedDotEnvFiles(files: LoadedDotEnvFile[]): Map<string, string[]> {
+function loadParsedDotEnvFiles(
+  files: LoadedDotEnvFile[],
+  warn: (message: string, metadata?: Record<string, unknown>) => void = (message, metadata) =>
+    logger.warn(message, metadata),
+): Map<string, string[]> {
   const preExistingKeys = new Set(Object.keys(process.env));
   const conflicts = new Map<string, { keptPath: string; ignoredPath: string; keys: Set<string> }>();
   const firstSeen = new Map<string, { value: string; filePath: string }>();
@@ -115,7 +120,7 @@ function loadParsedDotEnvFiles(files: LoadedDotEnvFile[]): Map<string, string[]>
     if (keys.length === 0) {
       continue;
     }
-    logger.warn(
+    warn(
       `Conflicting values in ${conflict.keptPath} and ${conflict.ignoredPath} for ${keys.join(", ")}; keeping ${conflict.keptPath}.`,
       { keptPath: conflict.keptPath, ignoredPath: conflict.ignoredPath, keys },
     );
@@ -155,7 +160,7 @@ export function loadGlobalRuntimeDotEnvFiles(opts?: GlobalRuntimeDotEnvOptions) 
     parsedFiles.push(gatewayEnv);
   }
   const parsed = parsedFiles.filter((file): file is LoadedDotEnvFile => file !== null);
-  const appliedKeysByFile = loadParsedDotEnvFiles(parsed);
+  const appliedKeysByFile = loadParsedDotEnvFiles(parsed, opts?.warn);
   return {
     stateEnvAppliedKeys: globalEnvs.flatMap((file) =>
       file ? (appliedKeysByFile.get(file.filePath) ?? []) : [],

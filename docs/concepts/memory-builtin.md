@@ -70,7 +70,7 @@ eve plugins install @eve/llama-cpp-provider
 | DeepInfra         | `deepinfra`         | Default: `BAAI/bge-m3`              |
 | Gemini            | `gemini`            | Supports multimodal (image + audio) |
 | GitHub Copilot    | `github-copilot`    | Uses Copilot subscription           |
-| Local             | `local`             | `@eve/llama-cpp-provider`      |
+| Local             | `local`             | `@eve/llama-cpp-provider`           |
 | Mistral           | `mistral`           |                                     |
 | Ollama            | `ollama`            | Local/self-hosted                   |
 | OpenAI            | `openai`            | Default: `text-embedding-3-small`   |

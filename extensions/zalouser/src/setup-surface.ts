@@ -58,11 +58,7 @@ function setZalouserAccountScopedConfig(
   });
 }
 
-function setZalouserDmPolicy(
-  cfg: EVEConfig,
-  accountId: string,
-  policy: DmPolicy,
-): EVEConfig {
+function setZalouserDmPolicy(cfg: EVEConfig, accountId: string, policy: DmPolicy): EVEConfig {
   const resolvedAccountId = normalizeAccountId(accountId) ?? DEFAULT_ACCOUNT_ID;
   const resolved = resolveZalouserAccountSync({ cfg, accountId: resolvedAccountId });
   return setZalouserAccountScopedConfig(

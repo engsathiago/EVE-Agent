@@ -1,10 +1,7 @@
 // Builds provider install catalog entries from plugin metadata.
 import { isRecord } from "@eve/normalization-core/record-coerce";
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
-import {
-  loadEVEProviderIndex,
-  type EVEProviderIndexProvider,
-} from "../model-catalog/index.js";
+import { loadEVEProviderIndex, type EVEProviderIndexProvider } from "../model-catalog/index.js";
 import { normalizePluginsConfig, resolveEffectiveEnableState } from "./config-state.js";
 import {
   describePluginInstallSource,

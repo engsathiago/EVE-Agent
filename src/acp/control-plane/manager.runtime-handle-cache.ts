@@ -3,11 +3,7 @@ import {
   resolveRuntimeHandleIdentifiersFromIdentity,
   resolveSessionIdentityFromMeta,
 } from "@eve/acp-core/runtime/session-identity";
-import type {
-  AcpRuntime,
-  AcpRuntimeHandle,
-  AcpRuntimeStatus,
-} from "@eve/acp-core/runtime/types";
+import type { AcpRuntime, AcpRuntimeHandle, AcpRuntimeStatus } from "@eve/acp-core/runtime/types";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import type { EVEConfig } from "../../config/types.eve.js";
 import { logVerbose } from "../../globals.js";

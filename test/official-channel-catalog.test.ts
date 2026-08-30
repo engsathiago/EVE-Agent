@@ -178,9 +178,7 @@ describe("buildOfficialChannelCatalog", () => {
       },
     });
     expect(
-      summarizeCatalogEntry(
-        findCatalogEntry(entries, (entry) => entry.name === "@eve/whatsapp"),
-      ),
+      summarizeCatalogEntry(findCatalogEntry(entries, (entry) => entry.name === "@eve/whatsapp")),
     ).toEqual({
       name: "@eve/whatsapp",
       description: "EVE WhatsApp channel plugin",
@@ -304,13 +302,10 @@ describe("buildOfficialChannelCatalog", () => {
     expect(entries.map((entry: { name?: string }) => entry.name)).toContain(
       "@wecom/wecom-eve-plugin",
     );
-    expect(entries.map((entry: { name?: string }) => entry.name)).toContain(
-      "eve-plugin-yuanbao",
-    );
+    expect(entries.map((entry: { name?: string }) => entry.name)).toContain("eve-plugin-yuanbao");
     const whatsappEntry = findCatalogEntry(
       entries,
-      (entry: { eve?: { channel?: { id?: string } } }) =>
-        entry.eve?.channel?.id === "whatsapp",
+      (entry: { eve?: { channel?: { id?: string } } }) => entry.eve?.channel?.id === "whatsapp",
     );
     expect(summarizeCatalogEntry(whatsappEntry)).toEqual({
       name: "@eve/whatsapp",
@@ -335,8 +330,7 @@ describe("buildOfficialChannelCatalog", () => {
       },
     });
     const whatsappEntries = entries.filter(
-      (entry: { eve?: { channel?: { id?: string } } }) =>
-        entry.eve?.channel?.id === "whatsapp",
+      (entry: { eve?: { channel?: { id?: string } } }) => entry.eve?.channel?.id === "whatsapp",
     );
     expect(whatsappEntries).toHaveLength(1);
   });

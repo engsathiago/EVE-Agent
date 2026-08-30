@@ -29,8 +29,8 @@ prompting even if session or config defaults request `ask: "on-miss"`.
 
 ## Inspecting the effective policy
 
-| Command                                                          | What it shows                                                                          |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Command                                                     | What it shows                                                                          |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `eve approvals get` / `--gateway` / `--node <id\|name\|ip>` | Requested policy, host policy sources, and the effective result.                       |
 | `eve exec-policy show`                                      | Local-machine merged view.                                                             |
 | `eve exec-policy set` / `preset`                            | Synchronize the local requested policy with the local host approvals file in one step. |

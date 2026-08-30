@@ -2,10 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import { createTrackedTempDirs } from "../../test-utils/tracked-temp-dirs.js";
 import { buildWorkspaceSkillStatus } from "../discovery/status.js";
 import {
@@ -23,6 +20,7 @@ import {
   readSkillProposalDraftDirectory,
   rejectSkillProposal,
   resolvePendingSkillProposal,
+  rollbackSkillProposal,
   reviseSkillProposal,
 } from "./service.js";
 import {
@@ -545,7 +543,7 @@ describe("skill workshop proposals", () => {
     expect((await inspectSkillProposal(proposal.record.id))?.record.status).toBe("stale");
   });
 
-  it("applies update proposals with rollback metadata", async () => {
+  it("rolls applied update proposals back to their previous files", async () => {
     const workspaceDir = await makeWorkspace();
     const skillDir = path.join(workspaceDir, "skills", "qa-check");
     await writeSkill({
@@ -584,6 +582,48 @@ describe("skill workshop proposals", () => {
     await expect(fs.readFile(path.join(skillDir, "references", "qa.md"), "utf8")).resolves.toBe(
       "New support file.\n",
     );
+
+    const beforeRollbackVersion = getSkillsSnapshotVersion(workspaceDir);
+    const rolledBack = await rollbackSkillProposal({
+      workspaceDir,
+      proposalId: proposal.record.id,
+      reason: "restore old QA steps",
+    });
+    expect(rolledBack.record).toMatchObject({
+      status: "rolled_back",
+      statusReason: "restore old QA steps",
+    });
+    expect(getSkillsSnapshotVersion(workspaceDir)).toBeGreaterThan(beforeRollbackVersion);
+    await expect(fs.readFile(path.join(skillDir, "SKILL.md"), "utf8")).resolves.toContain(
+      "Old checklist.",
+    );
+    await expect(fs.readFile(path.join(skillDir, "references", "qa.md"), "utf8")).resolves.toBe(
+      "Old support file.\n",
+    );
+  });
+
+  it("refuses rollback after an applied skill is edited", async () => {
+    const workspaceDir = await makeWorkspace();
+    const proposal = await proposeCreateSkill({
+      workspaceDir,
+      name: "Rollback Guard",
+      description: "Protect edits made after apply",
+      content: "# Rollback Guard\n\nApplied content.\n",
+    });
+    await applySkillProposal({ workspaceDir, proposalId: proposal.record.id });
+    await fs.writeFile(
+      path.join(workspaceDir, "skills", "rollback-guard", "SKILL.md"),
+      "# Rollback Guard\n\nEdited after apply.\n",
+      "utf8",
+    );
+
+    await expect(
+      rollbackSkillProposal({ workspaceDir, proposalId: proposal.record.id }),
+    ).rejects.toThrow("changed after proposal application; rollback refused");
+    expect((await inspectSkillProposal(proposal.record.id))?.record.status).toBe("applied");
+    await expect(
+      fs.readFile(path.join(workspaceDir, "skills", "rollback-guard", "SKILL.md"), "utf8"),
+    ).resolves.toContain("Edited after apply.");
   });
 
   it("marks update proposals stale when target support files change before apply", async () => {

@@ -68,7 +68,7 @@ describe("resolveQQBotPluginVersion", () => {
     const root = newTree();
     // Parent package.json belongs to the framework, not the plugin.
     writeJson(path.join(root, "package.json"), {
-      name: "eve",
+      name: "eve-agent",
       version: "9.9.9",
     });
     const pluginDir = path.join(root, "extensions", "qqbot");

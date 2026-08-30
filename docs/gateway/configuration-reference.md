@@ -1056,7 +1056,7 @@ Notes:
 {
   logging: {
     level: "info",
-    file: "/tmp/eve/eve.log",
+    file: "/tmp/engsathiago/eve-agent.log",
     consoleLevel: "info",
     consoleStyle: "pretty", // pretty | compact | json
     redactSensitive: "tools", // off | tools

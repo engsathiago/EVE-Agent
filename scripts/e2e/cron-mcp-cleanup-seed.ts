@@ -53,8 +53,7 @@ await server.connect(new StdioServerTransport());
 
 async function main() {
   const stateDir = process.env.EVE_STATE_DIR?.trim() || path.join(os.homedir(), ".eve");
-  const configPath =
-    process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
+  const configPath = process.env.EVE_CONFIG_PATH?.trim() || path.join(stateDir, "eve.json");
   const probeDir = path.join(stateDir, "cron-mcp-cleanup");
   const serverPath = path.join(probeDir, "probe-server.mjs");
   const pidPath = path.join(probeDir, "probe.pid");

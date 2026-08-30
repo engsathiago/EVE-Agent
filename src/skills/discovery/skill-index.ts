@@ -136,8 +136,7 @@ function createSkillIndexEntry(
     normalizedSkillKey: normalizeSkillIndexName(skillKey),
     source,
     bundled:
-      source === "eve-bundled" ||
-      (source === "unknown" && opts?.bundledNames?.has(name) === true),
+      source === "eve-bundled" || (source === "unknown" && opts?.bundledNames?.has(name) === true),
     agentAllowed: agentSkillSet === undefined || agentSkillSet.has(name),
     runtimeVisible: isSkillRuntimeVisible(entry),
     promptVisible: isSkillPromptVisible(entry),

@@ -217,11 +217,7 @@ function seedState() {
     const version = process.env.EVE_UPGRADE_SURVIVOR_BASELINE_VERSION || "2026.4.24";
     for (const plugin of ["discord", "feishu", "telegram", "whatsapp"]) {
       writeJson(
-        path.join(
-          runtimeRoot,
-          `eve-${version}-${plugin}`,
-          ".eve-runtime-deps-stamp.json",
-        ),
+        path.join(runtimeRoot, `eve-${version}-${plugin}`, ".eve-runtime-deps-stamp.json"),
         {
           packageVersion: version,
           plugin,

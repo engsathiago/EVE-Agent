@@ -43,8 +43,7 @@ export function resolveBundledPluginSources(params: {
   discovery?: PluginDiscoveryResult;
 }): Map<string, BundledPluginSource> {
   const discovery =
-    params.discovery ??
-    discoverEVEPlugins({ workspaceDir: params.workspaceDir, env: params.env });
+    params.discovery ?? discoverEVEPlugins({ workspaceDir: params.workspaceDir, env: params.env });
   const bundled = new Map<string, BundledPluginSource>();
 
   for (const candidate of discovery.candidates) {

@@ -393,6 +393,7 @@ export const ar: TranslationMap = {
   nav: {
     chat: "الدردشة",
     control: "التحكم",
+    workspace: "مساحة العمل",
     agent: "الوكيل",
     settings: "الإعدادات",
     expand: "توسيع الشريط الجانبي",
@@ -404,6 +405,11 @@ export const ar: TranslationMap = {
     activity: "النشاط",
     overview: "نظرة عامة",
     workboard: "لوحة العمل",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "القنوات",
     instances: "المثيلات",
     sessions: "الجلسات",
@@ -429,6 +435,11 @@ export const ar: TranslationMap = {
     activity: "ملخصات نشاط الأدوات المحلية في المتصفح.",
     overview: "الحالة، ونقاط الدخول، والصحة.",
     workboard: "قائمة عمل الوكيل وتسليم الجلسات.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "القنوات والإعدادات.",
     instances: "العملاء والعقد المتصلة.",
     sessions: "الجلسات النشطة والافتراضيات.",
@@ -1242,8 +1253,7 @@ export const ar: TranslationMap = {
         title: "بيانات المصادقة غير مطابقة",
         summary:
           "تم رفض بيانات الاعتماد المقدمة. السبب الأكثر شيوعا هو رمز مميز قديم أو رمز منسوخ من عنوان Gateway آخر.",
-        stepDashboard:
-          "شغل eve dashboard --no-open وافتح عنوان URL الجديد أو الصق رمزه المميز.",
+        stepDashboard: "شغل eve dashboard --no-open وافتح عنوان URL الجديد أو الصق رمزه المميز.",
         stepReplace:
           "استبدل قيم الرمز المميز/كلمة المرور القديمة؛ لا تعد استخدام رمز من عنوان Gateway آخر.",
         stepMode:

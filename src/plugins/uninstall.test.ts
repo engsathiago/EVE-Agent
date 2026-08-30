@@ -1096,7 +1096,7 @@ describe("uninstallPlugin", () => {
     const npmRoot = path.join(stateDir, "npm");
     const removedPluginDir = path.join(npmRoot, "node_modules", "removed-plugin");
     const peerPluginDir = path.join(npmRoot, "node_modules", "peer-plugin");
-    const peerLink = path.join(peerPluginDir, "node_modules", "eve");
+    const peerLink = path.join(peerPluginDir, "node_modules", "eve-agent");
     await fs.mkdir(removedPluginDir, { recursive: true });
     await fs.mkdir(path.dirname(peerLink), { recursive: true });
     await fs.writeFile(
@@ -1120,7 +1120,7 @@ describe("uninstallPlugin", () => {
         {
           name: "peer-plugin",
           version: "1.0.0",
-          peerDependencies: { eve: ">=2026.0.0" },
+          peerDependencies: { "eve-agent": ">=2026.0.0" },
         },
         null,
         2,
@@ -1130,7 +1130,7 @@ describe("uninstallPlugin", () => {
     runCommandWithTimeoutMock.mockImplementationOnce(async (argv: string[]) => {
       await fs.rm(peerLink, { recursive: true, force: true });
       if (!argv.includes("--legacy-peer-deps")) {
-        await fs.mkdir(path.join(npmRoot, "node_modules", "eve"), { recursive: true });
+        await fs.mkdir(path.join(npmRoot, "node_modules", "eve-agent"), { recursive: true });
       }
       return {
         code: 0,
@@ -1153,7 +1153,7 @@ describe("uninstallPlugin", () => {
 
     expect(applied).toEqual({ directoryRemoved: true, warnings: [] });
     await expectPathAccessState(removedPluginDir, "missing");
-    await expectPathAccessState(path.join(npmRoot, "node_modules", "eve"), "missing");
+    await expectPathAccessState(path.join(npmRoot, "node_modules", "eve-agent"), "missing");
     await expect(fs.lstat(peerLink).then((stat) => stat.isSymbolicLink())).resolves.toBe(true);
   });
 
@@ -1279,7 +1279,7 @@ describe("uninstallPlugin", () => {
     const npmRoot = path.join(stateDir, "npm");
     const pluginDir = path.join(npmRoot, "node_modules", "missing-plugin");
     const peerPluginDir = path.join(npmRoot, "node_modules", "peer-plugin");
-    const peerLink = path.join(peerPluginDir, "node_modules", "eve");
+    const peerLink = path.join(peerPluginDir, "node_modules", "eve-agent");
     await fs.mkdir(path.dirname(peerLink), { recursive: true });
     await fs.writeFile(
       path.join(npmRoot, "package.json"),
@@ -1301,7 +1301,7 @@ describe("uninstallPlugin", () => {
         {
           name: "peer-plugin",
           version: "1.0.0",
-          peerDependencies: { eve: ">=2026.0.0" },
+          peerDependencies: { "eve-agent": ">=2026.0.0" },
         },
         null,
         2,
@@ -1894,11 +1894,7 @@ describe("resolveUninstallDirectoryTarget", () => {
 
   it("uses configured installPath when it is under the recorded managed extensions root", () => {
     const currentExtensionsDir = path.join(os.tmpdir(), "eve-uninstall-current", "extensions");
-    const recordedExtensionsDir = path.join(
-      os.tmpdir(),
-      "eve-uninstall-recorded",
-      "extensions",
-    );
+    const recordedExtensionsDir = path.join(os.tmpdir(), "eve-uninstall-recorded", "extensions");
     const installPath = resolvePluginInstallDir("my-plugin", recordedExtensionsDir);
 
     expect(

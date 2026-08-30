@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { stripLeadingPackageManagerSeparator } from "./lib/arg-utils.mjs";
 import { readBoundedResponseText } from "./lib/bounded-response.mjs";
 
-const DEFAULT_REPO = "eve/eve";
+const DEFAULT_REPO = "engsathiago/eve-agent";
 const DEFAULT_PROVIDER = "openai";
 const DEFAULT_MODE = "both";
 const DEFAULT_NPM_DIST_TAG = "beta";
@@ -18,10 +18,7 @@ const DEFAULT_GITHUB_API_TIMEOUT_MS = 30_000;
 const DEFAULT_GITHUB_API_RESPONSE_BODY_MAX_BYTES = 16 * 1024 * 1024;
 const WINDOWS_NODE_TAG_PATTERN = /^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$/u;
 const WINDOWS_NODE_REPO = "eve/eve-windows-node";
-const WINDOWS_NODE_REQUIRED_ASSETS = [
-  "EVECompanion-Setup-x64.exe",
-  "EVECompanion-Setup-arm64.exe",
-];
+const WINDOWS_NODE_REQUIRED_ASSETS = ["EVECompanion-Setup-x64.exe", "EVECompanion-Setup-arm64.exe"];
 const SHA256_DIGEST_PATTERN = /^sha256:[a-f0-9]{64}$/u;
 
 function usage() {
@@ -702,7 +699,7 @@ async function runTelegramIfNeeded(options, artifactName) {
   }
   const workflowFile = "npm-telegram-beta-e2e.yml";
   const runId = dispatchWorkflow(options.repo, workflowFile, options.workflowRef, {
-    package_spec: `eve@${options.tag.replace(/^v/u, "")}`,
+    package_spec: `eve-agent@${options.tag.replace(/^v/u, "")}`,
     package_label: options.tag,
     package_artifact_name: artifactName,
     package_artifact_run_id: options.npmPreflightRunId,

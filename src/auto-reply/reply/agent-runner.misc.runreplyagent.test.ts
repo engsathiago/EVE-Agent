@@ -645,9 +645,7 @@ describe("runReplyAgent auto-compaction token update", () => {
   });
 
   it("reads opted-in post-compaction context from the queued workspace instead of process cwd", async () => {
-    const workspaceDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-post-compaction-workspace-"),
-    );
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-post-compaction-workspace-"));
     const cwdDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-post-compaction-cwd-"));
     await fs.writeFile(
       path.join(workspaceDir, "AGENTS.md"),

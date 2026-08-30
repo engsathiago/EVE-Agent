@@ -15,12 +15,7 @@ export function readIfExists(filePath) {
 function collectTrackedBundledPluginSourceCandidates(repoRoot) {
   const result = spawnSync(
     "git",
-    [
-      "ls-files",
-      "--",
-      ":(glob)extensions/*/eve.plugin.json",
-      ":(glob)extensions/*/package.json",
-    ],
+    ["ls-files", "--", ":(glob)extensions/*/eve.plugin.json", ":(glob)extensions/*/package.json"],
     {
       cwd: repoRoot,
       encoding: "utf8",

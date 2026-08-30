@@ -268,9 +268,7 @@ describe("mirrorCopilotTranscript", () => {
     });
 
     const raw = await fs.readFile(sessionFile, "utf8");
-    expect(raw).toContain(
-      '"idempotencyKey":"copilot:eve-session-1:sdk-session-1:assistant:0"',
-    );
+    expect(raw).toContain('"idempotencyKey":"copilot:eve-session-1:sdk-session-1:assistant:0"');
     expect(raw).not.toContain(expectedFingerprint(baseMessage));
   });
 

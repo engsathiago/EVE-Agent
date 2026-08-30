@@ -1,10 +1,7 @@
 // Log file path helpers resolve log output paths for local runtime logs.
 import path from "node:path";
 import type { EVEConfig } from "../config/types.js";
-import {
-  POSIX_EVE_TMP_DIR,
-  resolvePreferredEVETmpDir,
-} from "../infra/tmp-eve-dir.js";
+import { POSIX_EVE_TMP_DIR, resolvePreferredEVETmpDir } from "../infra/tmp-eve-dir.js";
 
 // Default logger path uses the preferred tmp directory when Node fs is available.
 const LOG_PREFIX = "eve";

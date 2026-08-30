@@ -1,5 +1,3 @@
-// Telegram helper module supports helpers behavior.
-import type { Chat, Message } from "grammy/types";
 import { formatLocationText } from "eve-agent/plugin-sdk/channel-inbound";
 import {
   resolveCommandAuthorization,
@@ -19,6 +17,8 @@ import {
 } from "eve-agent/plugin-sdk/number-runtime";
 import { normalizeAccountId } from "eve-agent/plugin-sdk/routing";
 import { normalizeOptionalString } from "eve-agent/plugin-sdk/string-coerce-runtime";
+// Telegram helper module supports helpers behavior.
+import type { Chat, Message } from "grammy/types";
 import { expandTelegramAllowFromWithAccessGroups } from "../access-groups.js";
 import {
   firstDefined,

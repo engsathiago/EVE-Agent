@@ -473,9 +473,7 @@ export function createGatewayReloadHandlers(params: GatewayReloadHandlerParams) 
               isCancelled: () => restartAbortController.signal.aborted,
               signal: restartAbortController.signal,
               onSkipped: () =>
-                params.logHooks.info(
-                  "skipping gmail watcher restart (EVE_SKIP_GMAIL_WATCHER=1)",
-                ),
+                params.logHooks.info("skipping gmail watcher restart (EVE_SKIP_GMAIL_WATCHER=1)"),
             });
           }
         }

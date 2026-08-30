@@ -13,7 +13,7 @@ Internal note for the docs publish pipeline. This file is under `docs/.i18n`, wh
 
 ## Event flow
 
-1. `eve/eve` syncs English docs into `eve/docs`.
+1. `engsathiago/eve-agent` syncs English docs into `eve/docs`.
 2. GitHub Pages deploys English/source changes immediately from the sync commit.
 3. `Translate All` is triggered by the sync commit, release dispatch, manual dispatch, or weekly schedule.
 4. The coordinator waits a cooldown window before starting translation.

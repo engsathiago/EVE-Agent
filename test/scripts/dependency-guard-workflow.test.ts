@@ -237,12 +237,8 @@ describe("dependency guard workflow", () => {
 
   it("requires secops review for future workflow or guard changes", () => {
     const codeowners = readFileSync(CODEOWNERS, "utf8");
-    expect(codeowners).toContain(
-      "/.github/workflows/dependency-guard.yml @eve/eve-secops",
-    );
-    expect(codeowners).toContain(
-      "/test/scripts/dependency-guard-workflow.test.ts @eve/eve-secops",
-    );
+    expect(codeowners).toContain("/.github/workflows/dependency-guard.yml @eve/eve-secops");
+    expect(codeowners).toContain("/test/scripts/dependency-guard-workflow.test.ts @eve/eve-secops");
     expect(codeowners).toContain("/scripts/github/dependency-guard.mjs @eve/eve-secops");
     expect(codeowners).toContain("/package-lock.json @eve/eve-secops");
     expect(codeowners).toContain("/npm-shrinkwrap.json @eve/eve-secops");

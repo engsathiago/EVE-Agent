@@ -42,8 +42,8 @@ Repo resolution order:
 Examples:
 
 - `scripts/gh-read pr view 123`
-- `scripts/gh-read run list -R eve/eve`
-- `scripts/gh-read api repos/eve/eve/pulls/123`
+- `scripts/gh-read run list -R engsathiago/eve-agent`
+- `scripts/gh-read api repos/engsathiago/eve-agent/pulls/123`
 
 ## When adding scripts
 

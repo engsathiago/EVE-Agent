@@ -101,9 +101,7 @@ describe("mantis Telegram desktop builder runtime", () => {
       (entry) => entry.command === "/tmp/crabbox" && entry.args[0] === "run",
     );
     expect(runCommand?.env?.EVE_LIVE_OPENAI_KEY).toBe("openai-runtime-key");
-    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64).toBe(
-      "profile-archive",
-    );
+    expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DESKTOP_PROFILE_TGZ_B64).toBe("profile-archive");
     expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_DRIVER_BOT_TOKEN).toBe("driver-token");
     expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_GROUP_ID).toBe("-1001234567890");
     expect(runCommand?.env?.EVE_MANTIS_TELEGRAM_SUT_BOT_TOKEN).toBe("sut-token");

@@ -17,9 +17,7 @@ function migrateLegacyConfigForTest(raw: unknown): {
   for (const migration of LEGACY_CONFIG_MIGRATIONS) {
     migration.apply(next, changes);
   }
-  return changes.length === 0
-    ? { config: null, changes }
-    : { config: next as EVEConfig, changes };
+  return changes.length === 0 ? { config: null, changes } : { config: next as EVEConfig, changes };
 }
 
 function expectMigrationChangesToIncludeFragments(changes: string[], fragments: string[]): void {

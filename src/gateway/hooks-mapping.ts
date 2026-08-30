@@ -2,10 +2,7 @@
 // Normalizes hook presets, templates, transforms, and resolved hook actions.
 import fs from "node:fs";
 import path from "node:path";
-import {
-  normalizeOptionalString,
-  readStringValue,
-} from "@eve/normalization-core/string-coerce";
+import { normalizeOptionalString, readStringValue } from "@eve/normalization-core/string-coerce";
 import { resolveConfigPathCandidate } from "../config/paths.js";
 import type { HookMappingConfig, HooksConfig } from "../config/types.hooks.js";
 import { importFileModule, resolveFunctionModuleExport } from "../hooks/module-loader.js";

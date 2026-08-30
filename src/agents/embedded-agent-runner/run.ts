@@ -1402,8 +1402,7 @@ async function runEmbeddedAgentInternal(
               : lastProfileId,
           )
         : attemptAuthProfileStore;
-      const harnessBuildsEVETools =
-        agentHarness.id === "codex" || agentHarness.id === "copilot";
+      const harnessBuildsEVETools = agentHarness.id === "codex" || agentHarness.id === "copilot";
       const { sessionAgentId } = resolveSessionAgentIds({
         sessionKey: params.sessionKey,
         config: params.config,

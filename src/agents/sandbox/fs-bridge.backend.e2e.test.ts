@@ -17,13 +17,9 @@ async function runLocalShellCommand(
   // This backend shim executes the exact shell script the fs bridge emits, so
   // failures prove the generated POSIX script rather than a mocked Docker call.
   return await new Promise<SandboxBackendCommandResult>((resolve, reject) => {
-    const child = spawn(
-      "sh",
-      ["-c", params.script, "eve-sandbox-fs", ...(params.args ?? [])],
-      {
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
+    const child = spawn("sh", ["-c", params.script, "eve-sandbox-fs", ...(params.args ?? [])], {
+      stdio: ["pipe", "pipe", "pipe"],
+    });
 
     const stdoutChunks: Buffer[] = [];
     const stderrChunks: Buffer[] = [];

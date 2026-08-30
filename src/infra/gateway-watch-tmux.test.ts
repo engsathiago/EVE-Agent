@@ -262,8 +262,7 @@ describe("gateway-watch tmux wrapper", () => {
 
     expect(code).toBe(0);
     expect(
-      expectSpawn(spawnSync, 0, "tmux", ["has-session", "-t", "eve-gateway-watch-main"])
-        .encoding,
+      expectSpawn(spawnSync, 0, "tmux", ["has-session", "-t", "eve-gateway-watch-main"]).encoding,
     ).toBe("utf8");
     const newSessionCall = spawnCall(spawnSync, 1);
     expect(newSessionCall[0]).toBe("tmux");
@@ -331,8 +330,7 @@ describe("gateway-watch tmux wrapper", () => {
 
     expect(code).toBe(0);
     expect(
-      expectSpawn(spawnSync, 4, "tmux", ["attach-session", "-t", "eve-gateway-watch-main"])
-        .stdio,
+      expectSpawn(spawnSync, 4, "tmux", ["attach-session", "-t", "eve-gateway-watch-main"]).stdio,
     ).toBe("inherit");
     expect(stdout.chunks.join("")).not.toContain("tmux attach -t");
   });
@@ -362,8 +360,7 @@ describe("gateway-watch tmux wrapper", () => {
 
     expect(code).toBe(0);
     expect(
-      expectSpawn(spawnSync, 4, "tmux", ["switch-client", "-t", "eve-gateway-watch-main"])
-        .stdio,
+      expectSpawn(spawnSync, 4, "tmux", ["switch-client", "-t", "eve-gateway-watch-main"]).stdio,
     ).toBe("inherit");
   });
 
@@ -470,8 +467,7 @@ describe("gateway-watch tmux wrapper", () => {
     expect(String(staleRespawnArgs[6])).toContain("scripts/watch-node.mjs");
     expect(requireRecord(staleRespawnCall[2], "spawn options").encoding).toBe("utf8");
     expect(
-      expectSpawn(spawnSync, 2, "tmux", ["kill-session", "-t", "eve-gateway-watch-main"])
-        .encoding,
+      expectSpawn(spawnSync, 2, "tmux", ["kill-session", "-t", "eve-gateway-watch-main"]).encoding,
     ).toBe("utf8");
     const recreatedCall = spawnCall(spawnSync, 3);
     expect(recreatedCall[0]).toBe("tmux");

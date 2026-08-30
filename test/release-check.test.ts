@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve as resolvePath, win32 } from "node:path";
 import { bundledDistPluginFile, bundledPluginFile } from "eve-agent/plugin-sdk/test-fixtures";
 import { describe, expect, it } from "vitest";
+import { collectInstalledRootDependencyManifestErrors } from "../scripts/eve-npm-postpublish-verify.ts";
 import { listBundledPluginPackArtifacts } from "../scripts/lib/bundled-plugin-build-entries.mjs";
 import {
   listPluginSdkDistArtifacts,
@@ -13,7 +14,6 @@ import {
   WORKSPACE_TEMPLATE_PACK_PATHS,
   createWorkspaceBootstrapSmokeEnv,
 } from "../scripts/lib/workspace-bootstrap-smoke.mjs";
-import { collectInstalledRootDependencyManifestErrors } from "../scripts/eve-npm-postpublish-verify.ts";
 import {
   collectAppcastSparkleVersionErrors,
   collectBundledExtensionManifestErrors,
@@ -384,7 +384,7 @@ describe("bundled plugin package dependency checks", () => {
       mkdirSync(join(tempRoot, "dist", "extensions", "memory-lancedb"), { recursive: true });
       writeFileSync(
         join(tempRoot, "package.json"),
-        `{"name":"eve","dependencies":{}}\n`,
+        `{"name":"eve-agent","dependencies":{}}\n`,
         "utf8",
       );
       writeFileSync(
@@ -411,7 +411,7 @@ describe("bundled plugin package dependency checks", () => {
       mkdirSync(join(tempRoot, "dist", "extensions", "memory-lancedb"), { recursive: true });
       writeFileSync(
         join(tempRoot, "package.json"),
-        `{"name":"eve","dependencies":{}}\n`,
+        `{"name":"eve-agent","dependencies":{}}\n`,
         "utf8",
       );
       writeFileSync(
@@ -724,12 +724,12 @@ describe("collectMissingPackPaths", () => {
   it("runs postpublish package integrity checks against the packed install before publish", () => {
     const root = mkdtempSync(join(tmpdir(), "release-check-packed-install-"));
     try {
-      const packageRoot = join(root, "eve");
+      const packageRoot = join(root, "eve-agent");
       const distDir = join(packageRoot, "dist");
       mkdirSync(distDir, { recursive: true });
       writeFileSync(
         join(packageRoot, "package.json"),
-        `${JSON.stringify({ name: "eve", version: "2026.5.14-beta.3", dependencies: {} })}\n`,
+        `${JSON.stringify({ name: "eve-agent", version: "2026.5.14-beta.3", dependencies: {} })}\n`,
       );
       writeFileSync(join(distDir, "typescript-compiler.js"), "x".repeat(6 * 1024 * 1024 + 1));
 
@@ -751,12 +751,12 @@ describe("collectMissingPackPaths", () => {
   it("rejects packed plugin SDK root aliases that depend on minified export letters", () => {
     const root = mkdtempSync(join(tmpdir(), "release-check-packed-root-alias-"));
     try {
-      const packageRoot = join(root, "eve");
+      const packageRoot = join(root, "eve-agent");
       const pluginSdkDir = join(packageRoot, "dist", "plugin-sdk");
       mkdirSync(pluginSdkDir, { recursive: true });
       writeFileSync(
         join(packageRoot, "package.json"),
-        `${JSON.stringify({ name: "eve", version: "2026.5.14-beta.3", dependencies: {} })}\n`,
+        `${JSON.stringify({ name: "eve-agent", version: "2026.5.14-beta.3", dependencies: {} })}\n`,
       );
       writeFileSync(
         join(pluginSdkDir, "root-alias.cjs"),
@@ -817,7 +817,7 @@ describe("createPackedPluginSdkTypescriptSmokeProject", () => {
     const root = mkdtempSync(join(tmpdir(), "release-check-plugin-sdk-types-"));
     try {
       const consumerDir = join(root, "consumer");
-      const packageRoot = join(root, "eve");
+      const packageRoot = join(root, "eve-agent");
       createPackedPluginSdkTypescriptSmokeProject({
         consumerDir,
         packageSpec: `file:${packageRoot}`,
@@ -855,22 +855,22 @@ describe("createPackedPluginSdkTypescriptSmokeProject", () => {
 describe("collectPackUnpackedSizeErrors", () => {
   it("accepts pack results within the unpacked size budget", () => {
     expect(
-      collectPackUnpackedSizeErrors([makePackResult("eve-2026.3.14.tgz", 120_354_302)]),
+      collectPackUnpackedSizeErrors([makePackResult("eve-agent-2026.3.14.tgz", 120_354_302)]),
     ).toStrictEqual([]);
   });
 
   it("flags oversized pack results that risk low-memory startup failures", () => {
     expect(
-      collectPackUnpackedSizeErrors([makePackResult("eve-2026.3.12.tgz", 224_002_564)]),
+      collectPackUnpackedSizeErrors([makePackResult("eve-agent-2026.3.12.tgz", 224_002_564)]),
     ).toEqual([
-      "eve-2026.3.12.tgz unpackedSize 224002564 bytes (213.6 MiB) exceeds budget 211812352 bytes (202.0 MiB). Investigate duplicate channel shims, copied extension trees, or other accidental pack bloat before release.",
+      "eve-agent-2026.3.12.tgz unpackedSize 224002564 bytes (213.6 MiB) exceeds budget 211812352 bytes (202.0 MiB). Investigate duplicate channel shims, copied extension trees, or other accidental pack bloat before release.",
     ]);
   });
 
   it("fails closed when npm pack output omits unpackedSize for every result", () => {
     expect(
       collectPackUnpackedSizeErrors([
-        { filename: "eve-2026.3.14.tgz" },
+        { filename: "eve-agent-2026.3.14.tgz" },
         { filename: "eve-extra.tgz", unpackedSize: Number.NaN },
       ]),
     ).toEqual([
@@ -882,8 +882,8 @@ describe("collectPackUnpackedSizeErrors", () => {
 describe("resolvePackedTarballPath", () => {
   it("resolves one local npm pack tarball filename inside the pack destination", () => {
     expect(
-      resolvePackedTarballPath("/tmp/eve-pack", [{ filename: "eve-2026.6.17.tgz" }]),
-    ).toBe(resolvePath("/tmp/eve-pack", "eve-2026.6.17.tgz"));
+      resolvePackedTarballPath("/tmp/eve-pack", [{ filename: "eve-agent-2026.6.17.tgz" }]),
+    ).toBe(resolvePath("/tmp/eve-pack", "eve-agent-2026.6.17.tgz"));
   });
 
   it("rejects path-like npm pack tarball filenames", () => {

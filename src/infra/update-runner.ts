@@ -207,8 +207,7 @@ const UPDATE_DEFER_CONFIGURED_PLUGIN_INSTALL_REPAIR_ENV =
   "EVE_UPDATE_DEFER_CONFIGURED_PLUGIN_INSTALL_REPAIR";
 const UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE_ENV =
   "EVE_UPDATE_PARENT_SUPPORTS_DOCTOR_CONFIG_WRITE";
-const PREFLIGHT_TEMP_PREFIX =
-  process.platform === "win32" ? "ocu-pf-" : "eve-update-preflight-";
+const PREFLIGHT_TEMP_PREFIX = process.platform === "win32" ? "ocu-pf-" : "eve-update-preflight-";
 const PREFLIGHT_WORKTREE_DIRNAME = process.platform === "win32" ? "wt" : "worktree";
 const PREFLIGHT_CLEANUP_TIMEOUT_MS = 60_000;
 const WINDOWS_PREFLIGHT_BASE_DIR = "ocu";

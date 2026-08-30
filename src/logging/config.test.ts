@@ -70,12 +70,9 @@ describe("readLoggingConfig", () => {
   });
 
   it("returns undefined for missing or malformed config files", () => {
-    withEnv(
-      { EVE_CONFIG_PATH: path.join(os.tmpdir(), "eve-missing-config.json") },
-      () => {
-        expect(readLoggingConfig()).toBeUndefined();
-      },
-    );
+    withEnv({ EVE_CONFIG_PATH: path.join(os.tmpdir(), "eve-missing-config.json") }, () => {
+      expect(readLoggingConfig()).toBeUndefined();
+    });
 
     const configPath = writeConfig(`{ logging: `);
     withEnv({ EVE_CONFIG_PATH: configPath }, () => {

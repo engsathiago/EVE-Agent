@@ -320,10 +320,7 @@ function githubWorkflowRerunCommand(laneNames, ref) {
     );
   }
   if (process.env.EVE_DOCKER_E2E_BARE_IMAGE) {
-    fields.push(
-      "-f",
-      `docker_e2e_bare_image=${shellQuote(process.env.EVE_DOCKER_E2E_BARE_IMAGE)}`,
-    );
+    fields.push("-f", `docker_e2e_bare_image=${shellQuote(process.env.EVE_DOCKER_E2E_BARE_IMAGE)}`);
   }
   if (process.env.EVE_DOCKER_E2E_FUNCTIONAL_IMAGE) {
     fields.push(
@@ -540,9 +537,7 @@ export function dockerPreflightContainerNames(raw) {
   return raw
     .split(/\r?\n/)
     .map((line) => line.trim().split(/\s+/, 1)[0])
-    .filter((name) =>
-      /^(?:eve-[a-z0-9-]+-e2e-\d+|eve-openwebui(?:-gateway)?-\d+)$/u.test(name),
-    );
+    .filter((name) => /^(?:eve-[a-z0-9-]+-e2e-\d+|eve-openwebui(?:-gateway)?-\d+)$/u.test(name));
 }
 
 export function resolveDockerPreflightPlatform(arch = process.arch) {
@@ -1421,8 +1416,7 @@ async function main() {
   const preflightCleanup = parseBool(process.env.EVE_DOCKER_ALL_PREFLIGHT_CLEANUP, true);
   const timingsEnabled = parseBool(process.env.EVE_DOCKER_ALL_TIMINGS, true);
   const buildEnabled = parseBool(process.env.EVE_DOCKER_ALL_BUILD, true);
-  const planJson =
-    cliOptions.planJson || parseBool(process.env.EVE_DOCKER_ALL_PLAN_JSON, false);
+  const planJson = cliOptions.planJson || parseBool(process.env.EVE_DOCKER_ALL_PLAN_JSON, false);
   const planReleaseAll = parseBool(process.env.EVE_DOCKER_ALL_PLAN_RELEASE_ALL, false);
   const profile = parseProfile(process.env.EVE_DOCKER_ALL_PROFILE);
   const releaseProfile = normalizeReleaseProfile(
@@ -1445,13 +1439,10 @@ async function main() {
     DEFAULT_LIVE_RETRIES,
     "EVE_DOCKER_ALL_LIVE_RETRIES",
   );
-  const timingsFile = path.resolve(
-    process.env.EVE_DOCKER_ALL_TIMINGS_FILE || DEFAULT_TIMINGS_FILE,
-  );
+  const timingsFile = path.resolve(process.env.EVE_DOCKER_ALL_TIMINGS_FILE || DEFAULT_TIMINGS_FILE);
   const runId = process.env.EVE_DOCKER_ALL_RUN_ID || utcStampForPath();
   const logDir = path.resolve(
-    process.env.EVE_DOCKER_ALL_LOG_DIR ||
-      path.join(ROOT_DIR, ".artifacts/docker-tests", runId),
+    process.env.EVE_DOCKER_ALL_LOG_DIR || path.join(ROOT_DIR, ".artifacts/docker-tests", runId),
   );
 
   const baseEnv = commandEnv({

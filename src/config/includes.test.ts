@@ -707,10 +707,7 @@ describe("security: path traversal protection (CWE-22)", () => {
         }
 
         expect(() =>
-          resolveConfigIncludes(
-            { $include: "./extra.json5" },
-            path.join(configDir, "eve.json"),
-          ),
+          resolveConfigIncludes({ $include: "./extra.json5" }, path.join(configDir, "eve.json")),
         ).toThrow(/security checks|hardlink/i);
       });
     });

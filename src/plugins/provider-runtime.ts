@@ -4,10 +4,7 @@ import {
   normalizeProviderId,
 } from "@eve/model-catalog-core/provider-id";
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
-import {
-  sortUniqueStrings,
-  uniqueStrings,
-} from "@eve/normalization-core/string-normalization";
+import { sortUniqueStrings, uniqueStrings } from "@eve/normalization-core/string-normalization";
 import { sanitizeForLog } from "../../packages/terminal-core/src/ansi.js";
 import type { AuthProfileCredential, OAuthCredential } from "../agents/auth-profiles/types.js";
 import { resolveGpt5SystemPromptContribution } from "../agents/gpt5-prompt-overlay.js";
@@ -16,8 +13,8 @@ import {
   mergePluginTextTransforms,
 } from "../agents/plugin-text-transforms.js";
 import type { ProviderSystemPromptContribution } from "../agents/system-prompt-contribution.js";
-import type { ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderConfig } from "../config/types.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { normalizeProviderModelIdWithManifest } from "./manifest-model-id-normalization.js";
 import type { PluginManifestRecord } from "./manifest-registry.js";
@@ -151,10 +148,7 @@ function hasExplicitProviderRuntimePluginActivation(params: {
   return ownerPluginIds.some((pluginId) => allow.has(pluginId) || entries[pluginId] !== undefined);
 }
 
-function hasConfiguredModelProvider(params: {
-  provider: string;
-  config?: EVEConfig;
-}): boolean {
+function hasConfiguredModelProvider(params: { provider: string; config?: EVEConfig }): boolean {
   return (
     findNormalizedProviderValue(params.config?.models?.providers, params.provider) !== undefined
   );

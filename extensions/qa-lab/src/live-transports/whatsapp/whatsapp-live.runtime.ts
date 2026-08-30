@@ -1436,10 +1436,7 @@ function resolveWhatsAppQaRuntimeEnv(env: NodeJS.ProcessEnv = process.env): What
     {
       driverPhoneE164: resolveEnvValue(env, "EVE_QA_WHATSAPP_DRIVER_PHONE_E164"),
       sutPhoneE164: resolveEnvValue(env, "EVE_QA_WHATSAPP_SUT_PHONE_E164"),
-      driverAuthArchiveBase64: resolveEnvValue(
-        env,
-        "EVE_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64",
-      ),
+      driverAuthArchiveBase64: resolveEnvValue(env, "EVE_QA_WHATSAPP_DRIVER_AUTH_ARCHIVE_BASE64"),
       sutAuthArchiveBase64: resolveEnvValue(env, "EVE_QA_WHATSAPP_SUT_AUTH_ARCHIVE_BASE64"),
       groupJid: env.EVE_QA_WHATSAPP_GROUP_JID?.trim() || undefined,
     },
@@ -3055,9 +3052,7 @@ export async function runWhatsAppQaLive(params: {
       leaseHeartbeat?.throwIfFailed();
     };
     runtimeEnv = credentialLease.payload;
-    tempAuthRoot = await fs.mkdtemp(
-      path.join(resolvePreferredEVETmpDir(), "eve-whatsapp-qa-"),
-    );
+    tempAuthRoot = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-whatsapp-qa-"));
     preScenarioPhase = "auth archive unpack";
     const [driverAuthDir, sutAuthDir] = await Promise.all([
       unpackWhatsAppAuthArchive({

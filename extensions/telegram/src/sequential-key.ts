@@ -1,5 +1,3 @@
-// Telegram plugin module implements sequential key behavior.
-import type { Message, UserFromGetMe } from "grammy/types";
 import { parseExecApprovalCommandText } from "eve-agent/plugin-sdk/approval-reply-runtime";
 import {
   listChatCommands,
@@ -10,6 +8,8 @@ import {
   isAbortRequestText,
   isBtwRequestText,
 } from "eve-agent/plugin-sdk/command-primitives-runtime";
+// Telegram plugin module implements sequential key behavior.
+import type { Message, UserFromGetMe } from "grammy/types";
 import {
   resolveTelegramForumThreadId,
   resolveTelegramMessageForumFlagHint,

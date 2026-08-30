@@ -95,9 +95,7 @@ describe("generate-npm-shrinkwrap", () => {
   });
 
   it("parses nested scoped package paths", () => {
-    expect(
-      parseLockPackagePath("node_modules/@eve/codex/node_modules/@anthropic-ai/sdk"),
-    ).toEqual([
+    expect(parseLockPackagePath("node_modules/@eve/codex/node_modules/@anthropic-ai/sdk")).toEqual([
       {
         name: "@eve/codex",
         path: "node_modules/@eve/codex",
@@ -154,9 +152,7 @@ describe("generate-npm-shrinkwrap", () => {
       "node_modules/@eve/codex",
     ]);
     expect(lockfile.packages["node_modules/@eve/codex"]).not.toHaveProperty("hasShrinkwrap");
-    expect(
-      lockfile.packages["node_modules/@eve/codex/node_modules/protobufjs"],
-    ).toBeUndefined();
+    expect(lockfile.packages["node_modules/@eve/codex/node_modules/protobufjs"]).toBeUndefined();
   });
 
   it("detects shrinkwrap packages that bypass the pnpm lock", () => {
@@ -381,8 +377,8 @@ describe("generate-npm-shrinkwrap", () => {
     expect(
       shouldUseLegacyPeerDepsForShrinkwrap({
         dependencies: { zod: "4.4.3" },
-        peerDependencies: { eve: ">=2026.5.30" },
-        peerDependenciesMeta: { eve: { optional: true } },
+        peerDependencies: { "eve-agent": ">=2026.5.30" },
+        peerDependenciesMeta: { "eve-agent": { optional: true } },
       }),
     ).toBe(true);
   });

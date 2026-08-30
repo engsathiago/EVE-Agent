@@ -162,8 +162,7 @@ describe("debug proxy managed-proxy direct upstream policy", () => {
     if (originalAllowDirect === undefined) {
       delete process.env["EVE_DEBUG_PROXY_ALLOW_DIRECT_CONNECT_WITH_MANAGED_PROXY"];
     } else {
-      process.env["EVE_DEBUG_PROXY_ALLOW_DIRECT_CONNECT_WITH_MANAGED_PROXY"] =
-        originalAllowDirect;
+      process.env["EVE_DEBUG_PROXY_ALLOW_DIRECT_CONNECT_WITH_MANAGED_PROXY"] = originalAllowDirect;
     }
     await cleanupTestDirs();
   });

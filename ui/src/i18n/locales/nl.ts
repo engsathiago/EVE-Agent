@@ -396,6 +396,7 @@ export const nl: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Control",
+    workspace: "Werkruimte",
     agent: "Agent",
     settings: "Instellingen",
     expand: "Zijbalk uitvouwen",
@@ -407,6 +408,11 @@ export const nl: TranslationMap = {
     activity: "Activiteit",
     overview: "Overzicht",
     workboard: "Werkbord",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Kanalen",
     instances: "Instanties",
     sessions: "Sessies",
@@ -432,6 +438,11 @@ export const nl: TranslationMap = {
     activity: "Browserlokale samenvattingen van toolactiviteit.",
     overview: "Status, toegangspunten, gezondheid.",
     workboard: "Werkwachtrij voor agents en sessieoverdracht.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Kanalen en instellingen.",
     instances: "Verbonden clients en nodes.",
     sessions: "Actieve sessies en standaarden.",
@@ -1256,8 +1267,7 @@ export const nl: TranslationMap = {
         title: "Authenticatie komt niet overeen",
         summary:
           "De opgegeven referentie is geweigerd. De meest voorkomende oorzaak is een verlopen token of een token dat van een andere Gateway-URL is gekopieerd.",
-        stepDashboard:
-          "Voer eve dashboard --no-open uit en open de nieuwe URL of plak het token.",
+        stepDashboard: "Voer eve dashboard --no-open uit en open de nieuwe URL of plak het token.",
         stepReplace:
           "Vervang verlopen token-/wachtwoordwaarden; hergebruik geen token van een andere Gateway-URL.",
         stepMode:

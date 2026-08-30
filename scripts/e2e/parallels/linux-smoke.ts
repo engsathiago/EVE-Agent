@@ -246,10 +246,7 @@ function stripLeadingPackageManagerSeparator(argv: string[]): string[] {
 class LinuxSmoke extends SmokeRunController<LinuxOptions> {
   private auth: ProviderAuth;
   private disableBonjour = parseBoolEnv(process.env.EVE_PARALLELS_LINUX_DISABLE_BONJOUR);
-  private agentTimeoutSeconds = readPositiveIntEnv(
-    "EVE_PARALLELS_LINUX_AGENT_TIMEOUT_S",
-    1500,
-  );
+  private agentTimeoutSeconds = readPositiveIntEnv("EVE_PARALLELS_LINUX_AGENT_TIMEOUT_S", 1500);
   private artifact: PackageArtifact | null = null;
   private latestVersion = "";
   private snapshot!: SnapshotInfo;
@@ -326,9 +323,7 @@ class LinuxSmoke extends SmokeRunController<LinuxOptions> {
     );
     await this.phase("fresh.preflight", 90, () => this.logGuestPreflight());
     await this.phase("fresh.install-latest-bootstrap", 420, () => this.installLatestRelease());
-    await this.phase("fresh.install-main", 420, () =>
-      this.installMainTgz("eve-main-fresh.tgz"),
-    );
+    await this.phase("fresh.install-main", 420, () => this.installMainTgz("eve-main-fresh.tgz"));
     this.status.freshVersion = await this.extractLastVersion("fresh.install-main");
     await this.phase("fresh.verify-main-version", 90, () => this.verifyTargetVersion());
     await this.phase("fresh.onboard-ref", 180, () => this.runRefOnboard());
@@ -514,9 +509,7 @@ if command -v curl >/dev/null 2>&1; then
     url,
   )} -o ${shellQuote(outputPath)}
 else
-  wget -q --timeout=10 --read-timeout=120 --tries=3 -O ${shellQuote(outputPath)} ${shellQuote(
-    url,
-  )}
+  wget -q --timeout=10 --read-timeout=120 --tries=3 -O ${shellQuote(outputPath)} ${shellQuote(url)}
 fi`);
   }
 
@@ -828,11 +821,7 @@ fi`,
   }
 
   private async extractLastVersion(phaseId: string): Promise<string> {
-    return await extractLastEVEVersion(
-      this.runDir,
-      phaseId,
-      /(EVE [^\r\n]+ \([0-9a-f]{7,}\))/g,
-    );
+    return await extractLastEVEVersion(this.runDir, phaseId, /(EVE [^\r\n]+ \([0-9a-f]{7,}\))/g);
   }
 
   protected async writeSummary(): Promise<string> {

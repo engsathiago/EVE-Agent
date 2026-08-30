@@ -256,9 +256,7 @@ export function buildStatusSecurityAuditLines(params: {
       lines.push(params.theme.muted(`… +${importantFindings.length - shown.length} more`));
     }
   }
-  lines.push(
-    params.theme.muted(`Full report: ${params.formatCliCommand("eve security audit")}`),
-  );
+  lines.push(params.theme.muted(`Full report: ${params.formatCliCommand("eve security audit")}`));
   lines.push(
     params.theme.muted(`Deep probe: ${params.formatCliCommand("eve security audit --deep")}`),
   );

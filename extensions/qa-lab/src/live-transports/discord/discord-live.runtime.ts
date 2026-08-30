@@ -3,11 +3,7 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import {
-  DiscordApiError,
-  handleDiscordMessageAction,
-  requestDiscord,
-} from "@eve/discord/api.js";
+import { DiscordApiError, handleDiscordMessageAction, requestDiscord } from "@eve/discord/api.js";
 import { DEFAULT_EMOJIS } from "eve-agent/plugin-sdk/channel-feedback";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";

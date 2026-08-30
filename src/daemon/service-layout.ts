@@ -88,7 +88,7 @@ async function resolveEVEPackageRoot(entrypoint: string): Promise<string | undef
     const packageJson = path.join(current, "package.json");
     if (await pathExists(packageJson)) {
       const name = await readPackageName(current);
-      if (name === "eve") {
+      if (name === "eve-agent") {
         return current;
       }
     }

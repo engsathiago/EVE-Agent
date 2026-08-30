@@ -13,9 +13,7 @@ type DdgPluginConfig = {
   };
 };
 
-function resolveDdgWebSearchConfig(
-  config?: EVEConfig,
-): DdgPluginConfig["webSearch"] | undefined {
+function resolveDdgWebSearchConfig(config?: EVEConfig): DdgPluginConfig["webSearch"] | undefined {
   const pluginConfig = config?.plugins?.entries?.duckduckgo?.config as DdgPluginConfig | undefined;
   const webSearch = pluginConfig?.webSearch;
   if (webSearch && typeof webSearch === "object" && !Array.isArray(webSearch)) {

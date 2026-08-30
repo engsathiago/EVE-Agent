@@ -116,10 +116,7 @@ type WorkerPollErrorListener = (message: {
 type WorkerMessageListener = (message: TelegramIngressWorkerMessage) => void;
 type AsyncVoidFn = () => Promise<void>;
 type MockCallSource = { mock: { calls: Array<Array<unknown>> } };
-type TelegramPollingTestDatabase = Pick<
-  EVEStateKyselyDatabaseForTests,
-  "channel_ingress_events"
->;
+type TelegramPollingTestDatabase = Pick<EVEStateKyselyDatabaseForTests, "channel_ingress_events">;
 
 const POLLING_TEST_WATCHDOG_INTERVAL_MS = 30_000;
 
@@ -637,9 +634,7 @@ describe("TelegramPollingSession", () => {
     sleepWithAbortMock.mockReset().mockResolvedValue(undefined);
     drainPendingDeliveriesMock.mockReset().mockResolvedValue(undefined);
     resetTelegramReplyFenceForTests();
-    installTelegramIngressQueueRuntime(() =>
-      path.join(os.tmpdir(), "eve-telegram-test-state"),
-    );
+    installTelegramIngressQueueRuntime(() => path.join(os.tmpdir(), "eve-telegram-test-state"));
   });
 
   afterEach(() => {
@@ -2715,8 +2710,7 @@ describe("TelegramPollingSession", () => {
       expect(
         statusPatches(setStatus).some(
           (patch) =>
-            patch.connected === false &&
-            String(patch.lastError).includes("Another EVE gateway"),
+            patch.connected === false && String(patch.lastError).includes("Another EVE gateway"),
         ),
       ).toBe(true);
     } finally {

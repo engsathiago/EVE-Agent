@@ -35,9 +35,7 @@ describe("buildStatusCommandReportData", () => {
       Item: "OS",
       Value: "macOS · node " + process.versions.node,
     });
-    expect(result.taskMaintenanceHint).toBe(
-      "Task maintenance: cmd:eve tasks maintenance --apply",
-    );
+    expect(result.taskMaintenanceHint).toBe("Task maintenance: cmd:eve tasks maintenance --apply");
     expect(result.pluginCompatibilityLines).toEqual(["  warn(WARN) legacy"]);
     expect(result.pairingRecoveryLines[0]).toBe("warn(Gateway pairing approval required.)");
     expect(result.modelSelectionLines).toEqual([]);

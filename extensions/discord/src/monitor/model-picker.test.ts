@@ -1079,9 +1079,7 @@ describe("Discord model picker rendering", () => {
       throw new Error("models view did not render a runtime select");
     }
     expect(runtimeSelect.options?.find((option) => option.value === "codex")?.default).toBe(true);
-    expect(runtimeSelect.options?.find((option) => option.value === "eve")?.default).toBe(
-      false,
-    );
+    expect(runtimeSelect.options?.find((option) => option.value === "eve")?.default).toBe(false);
 
     const modelSelect = rows[2]?.components?.find(
       (component) => component.type === DISCORD_STRING_SELECT_COMPONENT_TYPE,

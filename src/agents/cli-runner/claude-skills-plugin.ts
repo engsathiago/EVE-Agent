@@ -103,9 +103,7 @@ export async function prepareClaudeCliSkillsPlugin(params: {
     return { args: [], cleanup: async () => {} };
   }
 
-  const tempDir = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-claude-skills-"),
-  );
+  const tempDir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-claude-skills-"));
   const pluginDir = path.join(tempDir, EVE_CLAUDE_PLUGIN_NAME);
   const manifestDir = path.join(pluginDir, ".claude-plugin");
   const skillsDir = path.join(pluginDir, "skills");

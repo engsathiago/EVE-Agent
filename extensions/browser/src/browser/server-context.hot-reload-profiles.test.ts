@@ -199,10 +199,7 @@ describe("server-context hot-reload profiles", () => {
   it("marks existing runtime state for reconcile when profile invariants change", () => {
     const cfg = getRuntimeConfig();
     const resolved = resolveBrowserConfig(cfg.browser, cfg);
-    const eveProfile = requireValue(
-      resolveProfile(resolved, "eve"),
-      "eve profile missing",
-    );
+    const eveProfile = requireValue(resolveProfile(resolved, "eve"), "eve profile missing");
     const state: BrowserServerState = {
       server: null,
       port: 18791,
@@ -238,10 +235,7 @@ describe("server-context hot-reload profiles", () => {
   it("marks local managed runtime state for reconcile when profile headless changes", () => {
     const cfg = getRuntimeConfig();
     const resolved = resolveBrowserConfig(cfg.browser, cfg);
-    const eveProfile = requireValue(
-      resolveProfile(resolved, "eve"),
-      "eve profile missing",
-    );
+    const eveProfile = requireValue(resolveProfile(resolved, "eve"), "eve profile missing");
     expect(eveProfile.headless).toBe(true);
     const state: BrowserServerState = {
       server: null,
@@ -288,10 +282,7 @@ describe("server-context hot-reload profiles", () => {
     mockState.cachedConfig = null;
     const cfg = getRuntimeConfig();
     const resolved = resolveBrowserConfig(cfg.browser, cfg);
-    const eveProfile = requireValue(
-      resolveProfile(resolved, "eve"),
-      "eve profile missing",
-    );
+    const eveProfile = requireValue(resolveProfile(resolved, "eve"), "eve profile missing");
     expect(eveProfile.executablePath).toBe("/usr/bin/chrome-old");
     const state: BrowserServerState = {
       server: null,

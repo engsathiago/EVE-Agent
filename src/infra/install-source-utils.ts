@@ -10,6 +10,8 @@ import { pathExists } from "./fs-safe.js";
 import { applyNpmFreshnessBypassEnv, type NpmProjectInstallEnvOptions } from "./npm-install-env.js";
 import { withTempWorkspace } from "./private-temp-workspace.js";
 
+type InstallSourceCommandRunner = typeof runCommandWithTimeout;
+
 /** Metadata npm reports when resolving a registry spec or packed archive. */
 export type NpmSpecResolution = {
   name?: string;
@@ -76,7 +78,11 @@ function normalizeNpmViewMetadata(value: unknown): NpmSpecResolution | null {
 }
 
 /** Reads npm registry metadata for a package spec without running package scripts. */
-export async function resolveNpmSpecMetadata(params: { spec: string; timeoutMs?: number }): Promise<
+export async function resolveNpmSpecMetadata(params: {
+  spec: string;
+  timeoutMs?: number;
+  commandRunner?: InstallSourceCommandRunner;
+}): Promise<
   | {
       ok: true;
       metadata: NpmSpecResolution;
@@ -86,7 +92,7 @@ export async function resolveNpmSpecMetadata(params: { spec: string; timeoutMs?:
       error: string;
     }
 > {
-  const res = await runCommandWithTimeout(
+  const res = await (params.commandRunner ?? runCommandWithTimeout)(
     [
       "npm",
       "view",
@@ -296,6 +302,7 @@ export async function packNpmSpecToArchive(params: {
   spec: string;
   timeoutMs: number;
   cwd: string;
+  commandRunner?: InstallSourceCommandRunner;
 }): Promise<
   | {
       ok: true;
@@ -307,7 +314,7 @@ export async function packNpmSpecToArchive(params: {
       error: string;
     }
 > {
-  const res = await runCommandWithTimeout(
+  const res = await (params.commandRunner ?? runCommandWithTimeout)(
     ["npm", "pack", params.spec, "--ignore-scripts", "--json"],
     {
       timeoutMs: Math.max(params.timeoutMs, 300_000),
@@ -359,6 +366,7 @@ export async function packNpmSpecToArchive(params: {
 export async function resolveNpmPackArchiveMetadata(params: {
   archivePath: string;
   timeoutMs?: number;
+  commandRunner?: InstallSourceCommandRunner;
 }): Promise<
   | {
       ok: true;
@@ -379,7 +387,7 @@ export async function resolveNpmPackArchiveMetadata(params: {
   const archiveStat = await fs.stat(archivePath).catch(() => null);
   const archiveMetadataTimeoutMs =
     archiveStat && archiveStat.size > 100 * 1024 * 1024 ? 300_000 : 60_000;
-  const res = await runCommandWithTimeout(
+  const res = await (params.commandRunner ?? runCommandWithTimeout)(
     ["npm", "pack", archivePath, "--ignore-scripts", "--dry-run", "--json"],
     {
       timeoutMs: Math.max(params.timeoutMs ?? archiveMetadataTimeoutMs, archiveMetadataTimeoutMs),

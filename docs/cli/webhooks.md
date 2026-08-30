@@ -17,10 +17,10 @@ eve webhooks gmail setup --account <email> [...]
 eve webhooks gmail run   [--account <email>] [...]
 ```
 
-| Subcommand    | Description                                                                                  |
-| ------------- | -------------------------------------------------------------------------------------------- |
+| Subcommand    | Description                                                                             |
+| ------------- | --------------------------------------------------------------------------------------- |
 | `gmail setup` | Configure Gmail watch, Pub/Sub topic/subscription, and the EVE webhook delivery target. |
-| `gmail run`   | Run `gog watch serve` plus the watch auto-renew loop.                                        |
+| `gmail run`   | Run `gog watch serve` plus the watch auto-renew loop.                                   |
 
 ## `webhooks gmail setup`
 
@@ -52,8 +52,8 @@ eve webhooks gmail setup --account you@example.com --hook-url https://gateway.ex
 
 | Flag                   | Default | Description                                |
 | ---------------------- | ------- | ------------------------------------------ |
-| `--hook-url <url>`     | (none)  | EVE webhook URL.                      |
-| `--hook-token <token>` | (none)  | EVE webhook token.                    |
+| `--hook-url <url>`     | (none)  | EVE webhook URL.                           |
+| `--hook-token <token>` | (none)  | EVE webhook token.                         |
 | `--push-token <token>` | (none)  | Push token forwarded to `gog watch serve`. |
 
 ### `gog watch serve` options
@@ -98,7 +98,7 @@ eve webhooks gmail run --account you@example.com
 | Category          | Flags                                                                            |
 | ----------------- | -------------------------------------------------------------------------------- |
 | Pub/Sub           | `--account`, `--topic`, `--subscription`, `--label`                              |
-| EVE delivery | `--hook-url`, `--hook-token`, `--push-token`                                     |
+| EVE delivery      | `--hook-url`, `--hook-token`, `--push-token`                                     |
 | `gog watch serve` | `--bind`, `--port`, `--path`, `--include-body`, `--max-bytes`, `--renew-minutes` |
 | Tailscale         | `--tailscale`, `--tailscale-path`, `--tailscale-target`                          |
 

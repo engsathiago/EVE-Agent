@@ -121,9 +121,7 @@ export function configureProgramHelp(
 
   if (isRootVersionInvocation(process.argv)) {
     const commit = resolveCommitHash({ moduleUrl: import.meta.url });
-    console.log(
-      commit ? `EVE ${ctx.programVersion} (${commit})` : `EVE ${ctx.programVersion}`,
-    );
+    console.log(commit ? `EVE ${ctx.programVersion} (${commit})` : `EVE ${ctx.programVersion}`);
     process.exit(0);
   }
 

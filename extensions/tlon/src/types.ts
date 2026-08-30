@@ -76,10 +76,7 @@ function resolveMergedTlonAccountConfig(
   });
 }
 
-export function resolveTlonAccount(
-  cfg: EVEConfig,
-  accountId?: string | null,
-): TlonResolvedAccount {
+export function resolveTlonAccount(cfg: EVEConfig, accountId?: string | null): TlonResolvedAccount {
   const resolvedAccountId = normalizeAccountId(accountId);
   const base = resolveTlonChannelConfig(cfg);
 

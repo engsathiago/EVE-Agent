@@ -458,9 +458,7 @@ describe("resolveSandboxContext", () => {
       /^\/remote\/eve\/eve-ssh-agent-main-main-[a-f0-9]{8}\/workspace$/,
     );
     expect(result?.containerWorkdir).not.toBe("/workspace");
-    expect(result?.skillsWorkspaceDir).toContain(
-      path.join(".eve", "sandbox", "skills-workspaces"),
-    );
+    expect(result?.skillsWorkspaceDir).toContain(path.join(".eve", "sandbox", "skills-workspaces"));
   }, 15_000);
 
   it("materializes skills for shared writable sandboxes even when roots match", async () => {

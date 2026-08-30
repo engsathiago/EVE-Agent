@@ -11,8 +11,7 @@ import { readPositiveIntEnv, readTcpPortEnv } from "./limits.mjs";
 const portText = process.env.PORT;
 const token = process.env.EVE_GATEWAY_TOKEN;
 const appServerLog =
-  process.env.EVE_CODEX_MEDIA_PATH_APP_SERVER_LOG ??
-  "/tmp/eve-codex-media-path-app-server.jsonl";
+  process.env.EVE_CODEX_MEDIA_PATH_APP_SERVER_LOG ?? "/tmp/eve-codex-media-path-app-server.jsonl";
 const timeoutSeconds = readPositiveIntEnv("EVE_CODEX_MEDIA_PATH_TIMEOUT_SECONDS", 180);
 const logTailMaxBytes = readPositiveIntEnv(
   "EVE_CODEX_MEDIA_PATH_LOG_TAIL_MAX_BYTES",

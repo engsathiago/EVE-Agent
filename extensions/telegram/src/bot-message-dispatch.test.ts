@@ -1,11 +1,11 @@
-// Telegram tests cover bot message dispatch plugin behavior.
-import type { Bot } from "grammy";
 import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
 } from "eve-agent/plugin-sdk/plugin-state-test-runtime";
 import { setReplyPayloadMetadata } from "eve-agent/plugin-sdk/reply-payload-testing";
+// Telegram tests cover bot message dispatch plugin behavior.
+import type { Bot } from "grammy";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { resolveAutoTopicLabelConfig as resolveAutoTopicLabelConfigRuntime } from "./auto-topic-label-config.js";
 import type { TelegramBotDeps } from "./bot-deps.js";
@@ -120,7 +120,8 @@ vi.mock("eve-agent/plugin-sdk/channel-outbound", async (importOriginal) => {
 });
 
 vi.mock("eve-agent/plugin-sdk/agent-harness-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/agent-harness-runtime")>();
+  const actual =
+    await importOriginal<typeof import("eve-agent/plugin-sdk/agent-harness-runtime")>();
   return {
     ...actual,
     appendSessionTranscriptMessage,

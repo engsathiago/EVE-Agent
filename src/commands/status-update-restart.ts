@@ -44,9 +44,7 @@ export function formatUpdateRestartStatusValue(
   const muted = opts.muted ?? ((value: string) => value);
 
   if (payload.status === "error") {
-    return warn(
-      `failed · ${reason ?? "restart failed"} · run eve gateway status --deep${age}`,
-    );
+    return warn(`failed · ${reason ?? "restart failed"} · run eve gateway status --deep${age}`);
   }
 
   if (payload.status === "skipped") {

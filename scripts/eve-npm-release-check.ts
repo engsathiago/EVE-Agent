@@ -350,8 +350,8 @@ export function collectReleasePackageMetadataErrors(pkg: PackageJson): string[] 
   );
   const errors: string[] = [];
 
-  if (pkg.name !== "eve") {
-    errors.push(`package.json name must be "eve"; found "${pkg.name ?? ""}".`);
+  if (pkg.name !== "eve-agent") {
+    errors.push(`package.json name must be "eve-agent"; found "${pkg.name ?? ""}".`);
   }
   if (!pkg.description?.trim()) {
     errors.push("package.json description must be non-empty.");
@@ -367,9 +367,7 @@ export function collectReleasePackageMetadataErrors(pkg: PackageJson): string[] 
     );
   }
   if (pkg.bin?.eve !== "eve.mjs") {
-    errors.push(
-      `package.json bin.eve must be "eve.mjs"; found "${pkg.bin?.eve ?? ""}".`,
-    );
+    errors.push(`package.json bin.eve must be "eve.mjs"; found "${pkg.bin?.eve ?? ""}".`);
   }
   if (pkg.dependencies?.[OPTIONAL_LOCAL_EMBEDDING_RUNTIME_PACKAGE]) {
     errors.push(

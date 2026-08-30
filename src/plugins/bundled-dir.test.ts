@@ -53,7 +53,7 @@ function createEVERoot(params: {
   }
   fs.writeFileSync(
     path.join(repoRoot, "package.json"),
-    `${JSON.stringify({ name: "eve" }, null, 2)}\n`,
+    `${JSON.stringify({ name: "eve-agent" }, null, 2)}\n`,
     "utf8",
   );
   return repoRoot;

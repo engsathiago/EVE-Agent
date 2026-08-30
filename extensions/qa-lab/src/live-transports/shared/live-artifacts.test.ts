@@ -4,9 +4,7 @@ import { redactQaLiveLaneDetails, redactQaLiveLaneIssues } from "./live-artifact
 
 describe("live transport artifacts", () => {
   it("uses a stable public metadata redaction marker", () => {
-    expect(redactQaLiveLaneDetails()).toBe(
-      "details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)",
-    );
+    expect(redactQaLiveLaneDetails()).toBe("details redacted (EVE_QA_REDACT_PUBLIC_METADATA=1)");
   });
 
   it("preserves cleanup phase labels while redacting details", () => {

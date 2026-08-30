@@ -44,8 +44,6 @@ describe("resolveTelegramSessionTarget", () => {
   });
 
   it("normalizes channel session ids to lookup targets", () => {
-    expect(resolveTelegramSessionTarget({ kind: "channel", id: "@EVETeam" })).toBe(
-      "@EVETeam",
-    );
+    expect(resolveTelegramSessionTarget({ kind: "channel", id: "@EVETeam" })).toBe("@EVETeam");
   });
 });

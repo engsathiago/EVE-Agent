@@ -646,8 +646,7 @@ export async function resolveApnsAuthConfigFromEnv(
   if (!keyPath) {
     return {
       ok: false,
-      error:
-        "APNs private key missing: set EVE_APNS_PRIVATE_KEY_P8 or EVE_APNS_PRIVATE_KEY_PATH",
+      error: "APNs private key missing: set EVE_APNS_PRIVATE_KEY_P8 or EVE_APNS_PRIVATE_KEY_PATH",
     };
   }
   try {

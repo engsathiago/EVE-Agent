@@ -534,10 +534,7 @@ describe("launchctl list detection", () => {
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-      expect(state.launchctlCalls).toContainEqual([
-        "disable",
-        `${domain}/ai.eve.update.2026.5.12`,
-      ]);
+      expect(state.launchctlCalls).toContainEqual(["disable", `${domain}/ai.eve.update.2026.5.12`]);
       expect(launchctlCommandNames()).not.toContain("remove");
     },
   );
@@ -570,10 +567,7 @@ describe("launchctl list detection", () => {
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-      expect(state.launchctlCalls).toContainEqual([
-        "disable",
-        `${domain}/ai.eve.update.2026.5.12`,
-      ]);
+      expect(state.launchctlCalls).toContainEqual(["disable", `${domain}/ai.eve.update.2026.5.12`]);
     },
   );
 
@@ -588,10 +582,7 @@ describe("launchctl list detection", () => {
       ).resolves.toBe(true);
 
       const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-      expect(state.launchctlCalls).toContainEqual([
-        "disable",
-        `${domain}/ai.eve.update.2026.5.12`,
-      ]);
+      expect(state.launchctlCalls).toContainEqual(["disable", `${domain}/ai.eve.update.2026.5.12`]);
     },
   );
 
@@ -666,21 +657,14 @@ describe("launchctl list detection", () => {
   );
 
   it.runIf(process.platform === "darwin")("disables explicit legacy updater jobs", async () => {
-    await expect(disableEVEUpdateLaunchdJob("ai.eve.update.2026.5.12")).resolves.toBe(
-      true,
-    );
+    await expect(disableEVEUpdateLaunchdJob("ai.eve.update.2026.5.12")).resolves.toBe(true);
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
-    expect(state.launchctlCalls).toContainEqual([
-      "disable",
-      `${domain}/ai.eve.update.2026.5.12`,
-    ]);
+    expect(state.launchctlCalls).toContainEqual(["disable", `${domain}/ai.eve.update.2026.5.12`]);
   });
 
   it.runIf(process.platform === "darwin")("disables explicit manual updater jobs", async () => {
-    await expect(
-      disableEVEUpdateLaunchdJob("ai.eve.manual-update.1717168800"),
-    ).resolves.toBe(true);
+    await expect(disableEVEUpdateLaunchdJob("ai.eve.manual-update.1717168800")).resolves.toBe(true);
 
     const domain = typeof process.getuid === "function" ? `gui/${process.getuid()}` : "gui/501";
     expect(state.launchctlCalls).toContainEqual([
@@ -867,8 +851,7 @@ describe("launchd install", () => {
     const wrapperPath =
       "/Users/test/service-env/custom-state/service-env/ai.eve.gateway-env-wrapper.sh";
     const callerEnvFilePath = "/Users/test/.eve/service-env/ai.eve.gateway.env";
-    const callerWrapperPath =
-      "/Users/test/.eve/service-env/ai.eve.gateway-env-wrapper.sh";
+    const callerWrapperPath = "/Users/test/.eve/service-env/ai.eve.gateway-env-wrapper.sh";
     const mangledEnvFilePath =
       "/Users/test/service-env/custom-state/service-env/[ai.eve.gateway.env](http:/ai.eve.gateway.env)";
     const mangledWrapperPath =
@@ -898,9 +881,7 @@ describe("launchd install", () => {
     expect(rewritten).not.toContain(mangledWrapperPath);
     const rewrittenEnv = state.files.get(callerEnvFilePath) ?? "";
     expect(rewrittenEnv).toContain("export EVE_GATEWAY_PORT='18789'");
-    expect(rewrittenEnv).toContain(
-      "export EVE_STATE_DIR='/Users/test/service-env/custom-state'",
-    );
+    expect(rewrittenEnv).toContain("export EVE_STATE_DIR='/Users/test/service-env/custom-state'");
   });
 
   it("creates the LaunchAgent TMPDIR before bootstrap", async () => {

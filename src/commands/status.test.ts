@@ -354,9 +354,7 @@ async function createMockStatusScanResult(params: { includePluginCompatibility?:
     gatewayConnection: { url: "ws://127.0.0.1:18789" },
     remoteUrlMissing: false,
     gatewayMode: "local" as const,
-    gatewayProbeAuth: process.env.EVE_GATEWAY_TOKEN
-      ? { token: process.env.EVE_GATEWAY_TOKEN }
-      : {},
+    gatewayProbeAuth: process.env.EVE_GATEWAY_TOKEN ? { token: process.env.EVE_GATEWAY_TOKEN } : {},
     gatewayProbeAuthWarning: gatewayAuthWarning,
     gatewayProbe,
     gatewayReachable,

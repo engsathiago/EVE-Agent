@@ -143,7 +143,9 @@ function isBundledRuntimeSkillsPath(cachedPath: string, skillRootIndex: number):
   return (
     lower.some(
       (segment) =>
-        segment === "dist-runtime" || segment === "node_modules" || segment.startsWith("eve@"),
+        segment === "dist-runtime" ||
+        segment === "node_modules" ||
+        segment.startsWith("eve-agent@"),
     ) || isTempBackedEVERoot(beforeSkillRoot)
   );
 }

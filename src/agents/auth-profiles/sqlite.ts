@@ -16,10 +16,7 @@ import {
 import { requireNodeSqlite } from "../../infra/node-sqlite.js";
 import { resolveSqliteDatabaseFilePaths } from "../../infra/sqlite-files.js";
 import type { DB as EVEAgentKyselyDatabase } from "../../state/eve-agent-db.generated.js";
-import {
-  runEVEAgentWriteTransaction,
-  type EVEAgentDatabase,
-} from "../../state/eve-agent-db.js";
+import { runEVEAgentWriteTransaction, type EVEAgentDatabase } from "../../state/eve-agent-db.js";
 import { EVE_SQLITE_BUSY_TIMEOUT_MS } from "../../state/eve-state-db.js";
 import { resolveUserPath } from "../../utils.js";
 import { resolveRegisteredAgentIdForDir } from "../agent-dir-registry.js";

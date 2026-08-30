@@ -208,9 +208,7 @@ async function isPluginConfigured(plugin: ChannelPlugin, cfg: EVEConfig): Promis
 }
 
 /** Lists deliverable channels with at least one enabled, configured account. */
-export async function listConfiguredMessageChannels(
-  cfg: EVEConfig,
-): Promise<MessageChannelId[]> {
+export async function listConfiguredMessageChannels(cfg: EVEConfig): Promise<MessageChannelId[]> {
   const channels: MessageChannelId[] = [];
   for (const plugin of listChannelPlugins()) {
     if (!isKnownChannel(plugin.id)) {

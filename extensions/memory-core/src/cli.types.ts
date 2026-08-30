@@ -15,6 +15,13 @@ export type MemorySearchCommandOptions = MemoryCommandOptions & {
   minScore?: number;
 };
 
+export type MemoryReflectCommandOptions = MemoryCommandOptions & {
+  delivered?: string;
+  quality?: string;
+  next?: string;
+  lesson?: string;
+};
+
 export type MemoryPromoteCommandOptions = MemoryCommandOptions & {
   limit?: number;
   minScore?: number;

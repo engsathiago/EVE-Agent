@@ -1,6 +1,10 @@
 // Signal plugin module implements message actions behavior.
 import { resolveReactionMessageId } from "eve-agent/plugin-sdk/channel-actions";
-import { createActionGate, jsonResult, readStringParam } from "eve-agent/plugin-sdk/channel-actions";
+import {
+  createActionGate,
+  jsonResult,
+  readStringParam,
+} from "eve-agent/plugin-sdk/channel-actions";
 import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,

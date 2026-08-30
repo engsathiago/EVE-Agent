@@ -1,10 +1,10 @@
+import type { EVEConfig } from "../../config/types.eve.js";
 /**
  * Declarative channel setup wizard contract.
  *
  * Defines status, credentials, prompts, group access, and finalization types for setup flows.
  */
 import type { DmPolicy } from "../../config/types.js";
-import type { EVEConfig } from "../../config/types.eve.js";
 import type { RuntimeEnv } from "../../runtime.js";
 import type { WizardPrompter } from "../../wizard/prompts.js";
 import type { ChannelAccessPolicy } from "./setup-group-access.js";
@@ -33,10 +33,7 @@ export type ChannelSetupWizardStatus = {
   unconfiguredHint?: string;
   configuredScore?: number;
   unconfiguredScore?: number;
-  resolveConfigured: (params: {
-    cfg: EVEConfig;
-    accountId?: string;
-  }) => boolean | Promise<boolean>;
+  resolveConfigured: (params: { cfg: EVEConfig; accountId?: string }) => boolean | Promise<boolean>;
   resolveStatusLines?: (params: {
     cfg: EVEConfig;
     accountId?: string;
@@ -80,10 +77,7 @@ export type ChannelSetupWizardEnvShortcut = {
   prompt: string;
   preferredEnvVar?: string;
   isAvailable: (params: { cfg: EVEConfig; accountId: string }) => boolean;
-  apply: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-  }) => EVEConfig | Promise<EVEConfig>;
+  apply: (params: { cfg: EVEConfig; accountId: string }) => EVEConfig | Promise<EVEConfig>;
 };
 
 /** Declarative secret/input step for a channel account credential. */
@@ -98,10 +92,7 @@ export type ChannelSetupWizardCredential = {
   keepPrompt: string;
   inputPrompt: string;
   allowEnv?: (params: { cfg: EVEConfig; accountId: string }) => boolean;
-  inspect: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-  }) => ChannelSetupWizardCredentialState;
+  inspect: (params: { cfg: EVEConfig; accountId: string }) => ChannelSetupWizardCredentialState;
   shouldPrompt?: (params: {
     cfg: EVEConfig;
     accountId: string;
@@ -109,10 +100,7 @@ export type ChannelSetupWizardCredential = {
     currentValue?: string;
     state: ChannelSetupWizardCredentialState;
   }) => boolean | Promise<boolean>;
-  applyUseEnv?: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-  }) => EVEConfig | Promise<EVEConfig>;
+  applyUseEnv?: (params: { cfg: EVEConfig; accountId: string }) => EVEConfig | Promise<EVEConfig>;
   applySet?: (params: {
     cfg: EVEConfig;
     accountId: string;
@@ -220,11 +208,7 @@ export type ChannelSetupWizardGroupAccess = {
     entries: string[];
     prompter: Pick<WizardPrompter, "note">;
   }) => Promise<unknown>;
-  applyAllowlist?: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-    resolved: unknown;
-  }) => EVEConfig;
+  applyAllowlist?: (params: { cfg: EVEConfig; accountId: string; resolved: unknown }) => EVEConfig;
 };
 
 /** Optional pre-step hook for deriving helper config or credential values. */

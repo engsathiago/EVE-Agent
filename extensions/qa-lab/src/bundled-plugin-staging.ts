@@ -278,7 +278,7 @@ async function seedQaStagedNodeModules(params: { repoRoot: string; stagedRoot: s
   const stagedNodeModulesDir = path.join(params.stagedRoot, "node_modules");
   await fs.mkdir(stagedNodeModulesDir, { recursive: true });
   for (const entry of await fs.readdir(sourceNodeModulesDir, { withFileTypes: true })) {
-    if (entry.name === "eve") {
+    if (entry.name === "eve-agent") {
       continue;
     }
     await symlinkQaStagedDirEntry({
@@ -412,7 +412,7 @@ export async function createQaBundledPluginsDir(params: {
     repoRoot: params.repoRoot,
     stagedRoot,
   });
-  const stagedEVEPackageDir = path.join(stagedRoot, "node_modules", "eve");
+  const stagedEVEPackageDir = path.join(stagedRoot, "node_modules", "eve-agent");
   await fs.mkdir(stagedEVEPackageDir, { recursive: true });
   await fs.copyFile(
     path.join(params.repoRoot, "package.json"),

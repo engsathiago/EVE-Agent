@@ -11,9 +11,7 @@ import {
 describe("resolveGatewayDevMode", () => {
   it("detects src ts entrypoints", () => {
     expect(resolveGatewayDevMode(["node", "/Users/me/eve/src/cli/index.ts"])).toBe(true);
-    expect(resolveGatewayDevMode(["node", "C:\\Users\\me\\eve\\src\\cli\\index.ts"])).toBe(
-      true,
-    );
+    expect(resolveGatewayDevMode(["node", "C:\\Users\\me\\eve\\src\\cli\\index.ts"])).toBe(true);
     expect(resolveGatewayDevMode(["node", "/Users/me/eve/dist/cli/index.js"])).toBe(false);
   });
 });
@@ -58,17 +56,14 @@ describe("resolveDaemonEVEBinDir", () => {
   it("finds the PATH shim that resolves to the active package entrypoint", () => {
     const realpaths = new Map([
       ["/Users/testuser/.npm-global/bin/eve", "/pkg/eve/eve.mjs"],
-      [
-        "/Users/testuser/.npm-global/lib/node_modules/eve/eve.mjs",
-        "/pkg/eve/eve.mjs",
-      ],
+      ["/Users/testuser/.npm-global/lib/node_modules/eve-agent/eve.mjs", "/pkg/eve/eve.mjs"],
     ]);
 
     expect(
       resolveDaemonEVEBinDir({
         argv: [
           "node",
-          "/Users/testuser/.npm-global/lib/node_modules/eve/eve.mjs",
+          "/Users/testuser/.npm-global/lib/node_modules/eve-agent/eve.mjs",
           "gateway",
           "install",
         ],
@@ -88,9 +83,7 @@ describe("resolveDaemonEVEBinDir", () => {
         platform: "darwin",
         existsSync: () => true,
         realpathSync: (candidate) =>
-          candidate === "/Users/testuser/.npm-global/bin/eve"
-            ? "/other/eve.mjs"
-            : candidate,
+          candidate === "/Users/testuser/.npm-global/bin/eve" ? "/other/eve.mjs" : candidate,
       }),
     ).toBeUndefined();
   });

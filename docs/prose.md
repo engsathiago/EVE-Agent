@@ -106,7 +106,7 @@ context: { findings, draft }
 
 OpenProse programs map to EVE primitives:
 
-| OpenProse concept         | EVE tool    |
+| OpenProse concept         | EVE tool         |
 | ------------------------- | ---------------- |
 | Spawn session / Task tool | `sessions_spawn` |
 | File read / write         | `read` / `write` |

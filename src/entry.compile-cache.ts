@@ -115,12 +115,7 @@ export function resolveEVECompileCacheDirectory(params: {
     env.NODE_COMPILE_CACHE && !isNodeCompileCacheDisabled(env)
       ? env.NODE_COMPILE_CACHE
       : path.join(os.tmpdir(), "node-compile-cache");
-  return path.join(
-    baseDirectory,
-    "eve",
-    version,
-    sanitizeCompileCachePathSegment(installMarker),
-  );
+  return path.join(baseDirectory, "eve", version, sanitizeCompileCachePathSegment(installMarker));
 }
 
 type EVECompileCacheRespawnPlan = {

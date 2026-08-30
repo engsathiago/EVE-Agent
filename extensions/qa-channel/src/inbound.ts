@@ -125,10 +125,7 @@ export async function handleQaInbound(params: {
   const wasMentioned = isGroup
     ? runtime.channel.mentions.matchesMentionPatterns(
         inbound.text,
-        runtime.channel.mentions.buildMentionRegexes(
-          params.config as EVEConfig,
-          route.agentId,
-        ),
+        runtime.channel.mentions.buildMentionRegexes(params.config as EVEConfig, route.agentId),
       )
     : undefined;
   const groupConfig = isGroup

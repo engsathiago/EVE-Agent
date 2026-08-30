@@ -18,8 +18,8 @@ Use this skill for repo security advisory workflow only. Keep general release wo
 Fetch the current advisory and the latest published npm version:
 
 ```bash
-gh api /repos/eve/eve/security-advisories/<GHSA>
-npm view eve version --userconfig "$(mktemp)"
+gh api /repos/engsathiago/eve-agent/security-advisories/<GHSA>
+npm view eve-agent version --userconfig "$(mktemp)"
 ```
 
 Use the fetch output to confirm the advisory state, linked private fork, and vulnerability payload shape before patching.
@@ -29,7 +29,7 @@ Use the fetch output to confirm the advisory state, linked private fork, and vul
 Before publishing, verify that the advisory's private fork has no open PRs:
 
 ```bash
-fork=$(gh api /repos/eve/eve/security-advisories/<GHSA> | jq -r .private_fork.full_name)
+fork=$(gh api /repos/engsathiago/eve-agent/security-advisories/<GHSA> | jq -r .private_fork.full_name)
 gh pr list -R "$fork" --state open
 ```
 
@@ -61,7 +61,7 @@ jq -n --rawfile desc /tmp/ghsa.desc.md \
 Example shape:
 
 ```bash
-gh api -X PATCH /repos/eve/eve/security-advisories/<GHSA> \
+gh api -X PATCH /repos/engsathiago/eve-agent/security-advisories/<GHSA> \
   --input /tmp/ghsa.patch.json
 ```
 
@@ -76,7 +76,7 @@ After publish, re-fetch the advisory and confirm:
 Verification pattern:
 
 ```bash
-gh api /repos/eve/eve/security-advisories/<GHSA>
+gh api /repos/engsathiago/eve-agent/security-advisories/<GHSA>
 jq -r .description < /tmp/ghsa.refetch.json | rg '\\\\n'
 ```
 

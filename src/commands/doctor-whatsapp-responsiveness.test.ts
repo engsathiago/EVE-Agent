@@ -29,7 +29,7 @@ describe("doctor WhatsApp responsiveness", () => {
       status: 0,
       stdout: [
         " 101 eve-tui",
-        " 102 /usr/bin/node /usr/lib/node_modules/eve/dist/index.js gateway --port 18789",
+        " 102 /usr/bin/node /usr/lib/node_modules/eve-agent/dist/index.js gateway --port 18789",
         " 103 eve channels",
         " 104 eve tui --local",
         " 105 /usr/bin/eve chat",

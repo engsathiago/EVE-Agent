@@ -137,7 +137,7 @@ EVE_NAMESPACE=my-namespace ./scripts/k8s/deploy.sh
 Edit the `image` field in `scripts/k8s/manifests/deployment.yaml`:
 
 ```yaml
-image: ghcr.io/eve/eve:latest # or pin to a specific version from https://github.com/engsathiago/eve-agent/releases
+image: ghcr.io/engsathiago/eve-agent:latest # or pin to a specific version from https://github.com/engsathiago/eve-agent/releases
 ```
 
 ### Expose beyond port-forward

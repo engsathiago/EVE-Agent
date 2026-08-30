@@ -1,10 +1,6 @@
 // Ollama setup module handles plugin onboarding behavior.
 import { formatErrorMessage } from "eve-agent/plugin-sdk/error-runtime";
-import type {
-  EVEConfig,
-  SecretInput,
-  SecretInputMode,
-} from "eve-agent/plugin-sdk/provider-auth";
+import type { EVEConfig, SecretInput, SecretInputMode } from "eve-agent/plugin-sdk/provider-auth";
 import {
   ensureApiKeyFromOptionEnvOrPrompt,
   isNonSecretApiKeyMarker,

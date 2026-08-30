@@ -148,12 +148,8 @@ describe("diagnostics-prometheus service", () => {
 
     const rendered = testApi.renderPrometheusMetrics(store);
 
-    expect(rendered).toContain(
-      'eve_diagnostic_async_queue_dropped_total{drop_class="total"} 3',
-    );
-    expect(rendered).toContain(
-      'eve_diagnostic_async_queue_dropped_total{drop_class="trusted"} 1',
-    );
+    expect(rendered).toContain('eve_diagnostic_async_queue_dropped_total{drop_class="total"} 3');
+    expect(rendered).toContain('eve_diagnostic_async_queue_dropped_total{drop_class="trusted"} 1');
     expect(rendered).toContain(
       'eve_diagnostic_async_queue_dropped_total{drop_class="untrusted"} 2',
     );
@@ -324,9 +320,7 @@ describe("diagnostics-prometheus service", () => {
     expect(rendered).toContain(
       'eve_webhook_received_total{channel="telegram",webhook="message"} 1',
     );
-    expect(rendered).toContain(
-      'eve_webhook_error_total{channel="telegram",webhook="message"} 1',
-    );
+    expect(rendered).toContain('eve_webhook_error_total{channel="telegram",webhook="message"} 1');
     expect(rendered).toContain(
       'eve_webhook_duration_seconds_sum{channel="telegram",webhook="message"} 0.25',
     );
@@ -557,9 +551,7 @@ describe("diagnostics-prometheus service", () => {
 
     const rendered = testApi.renderPrometheusMetrics(store);
 
-    expect(rendered).toContain(
-      'eve_message_received_total{channel="telegram",source="webhook"} 1',
-    );
+    expect(rendered).toContain('eve_message_received_total{channel="telegram",source="webhook"} 1');
     expect(rendered).toContain(
       'eve_message_dispatch_started_total{channel="telegram",source="webhook"} 1',
     );

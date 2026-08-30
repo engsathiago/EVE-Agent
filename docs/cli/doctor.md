@@ -24,8 +24,8 @@ wrong.
 
 Doctor has three postures:
 
-| Posture | Command                  | Behavior                                                                        |
-| ------- | ------------------------ | ------------------------------------------------------------------------------- |
+| Posture | Command             | Behavior                                                                        |
+| ------- | ------------------- | ------------------------------------------------------------------------------- |
 | Inspect | `eve doctor`        | Human-oriented checks and guided prompts.                                       |
 | Repair  | `eve doctor --fix`  | Applies supported repairs, using prompts unless non-interactive repair is safe. |
 | Lint    | `eve doctor --lint` | Read-only structured findings for CI, preflight, and review gates.              |

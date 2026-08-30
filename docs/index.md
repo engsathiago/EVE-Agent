@@ -98,7 +98,7 @@ The Gateway is the single source of truth for sessions, routing, and channel con
 <Steps>
   <Step title="Install EVE">
     ```bash
-    npm install -g eve@latest
+    npm install -g eve-agent@latest
     ```
   </Step>
   <Step title="Onboard and install the service">

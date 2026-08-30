@@ -268,12 +268,7 @@ describe("doctor state integrity oauth dir checks", () => {
 
   it("does not warn when EVE_AGENT_DIR points at the live compatibility agent dir", async () => {
     createAgentDir("legacy");
-    const legacyAgentDir = path.join(
-      process.env.EVE_STATE_DIR ?? "",
-      "agents",
-      "legacy",
-      "agent",
-    );
+    const legacyAgentDir = path.join(process.env.EVE_STATE_DIR ?? "", "agents", "legacy", "agent");
     process.env.EVE_AGENT_DIR = legacyAgentDir;
 
     const text = await runStateIntegrityText({
@@ -532,9 +527,7 @@ describe("doctor state integrity oauth dir checks", () => {
     expect(text).toContain("recent sessions are missing transcripts");
     expect(text).toMatch(/eve sessions --store ".*sessions\.json"/);
     expect(text).toMatch(/eve sessions cleanup --store ".*sessions\.json" --dry-run/);
-    expect(text).toMatch(
-      /eve sessions cleanup --store ".*sessions\.json" --enforce --fix-missing/,
-    );
+    expect(text).toMatch(/eve sessions cleanup --store ".*sessions\.json" --enforce --fix-missing/);
     expect(text).not.toContain("--active");
     expect(text).not.toContain(" ls ");
   });

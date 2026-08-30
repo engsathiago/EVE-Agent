@@ -599,10 +599,7 @@ export type ChannelMessagingAdapter = {
     cfg: EVEConfig;
     accountId?: string | null;
   }) => ReplyPayload | null;
-  enableInteractiveReplies?: (params: {
-    cfg: EVEConfig;
-    accountId?: string | null;
-  }) => boolean;
+  enableInteractiveReplies?: (params: { cfg: EVEConfig; accountId?: string | null }) => boolean;
   hasStructuredReplyPayload?: (params: { payload: ReplyPayload }) => boolean;
   targetResolver?: {
     looksLikeId?: (raw: string, normalized?: string) => boolean;

@@ -449,10 +449,7 @@ export async function runWatchMain(params = {}) {
 
     const runAutoDoctorAndRestart = () => {
       autoDoctorAttempted = true;
-      logWatcher(
-        "Gateway exited early; running `eve doctor --fix --non-interactive` once.",
-        deps,
-      );
+      logWatcher("Gateway exited early; running `eve doctor --fix --non-interactive` once.", deps);
       watchProcess = deps.spawn(deps.process.execPath, buildDoctorRunnerArgs(), {
         cwd: deps.cwd,
         detached: useChildProcessGroup,

@@ -546,7 +546,7 @@ describe("evidence summary", () => {
     const evidence = buildLiveTransportEvidenceSummary({
       artifactPaths: [{ kind: "summary", path: QA_EVIDENCE_FILENAME }],
       env: {
-        EVE_QA_PACKAGE_SOURCE: "eve@beta",
+        EVE_QA_PACKAGE_SOURCE: "eve-agent@beta",
         EVE_QA_PACKAGE_SOURCE_KIND: "npm-package",
         EVE_QA_PACKAGE_SOURCE_SHA: "def456",
       } as NodeJS.ProcessEnv,
@@ -567,7 +567,7 @@ describe("evidence summary", () => {
 
     expect(evidence.entries[0]?.execution?.packageSource).toEqual({
       kind: "npm-package",
-      spec: "eve@beta",
+      spec: "eve-agent@beta",
       sha: "def456",
     });
   });
@@ -576,7 +576,7 @@ describe("evidence summary", () => {
     const evidence = buildLiveTransportEvidenceSummary({
       artifactPaths: [{ kind: "summary", path: QA_EVIDENCE_FILENAME }],
       env: {
-        EVE_NPM_TELEGRAM_INSTALL_SOURCE: "eve@beta",
+        EVE_NPM_TELEGRAM_INSTALL_SOURCE: "eve-agent@beta",
       } as NodeJS.ProcessEnv,
       generatedAt: "2026-06-07T12:16:00.000Z",
       primaryModel: "openai/gpt-5.5",

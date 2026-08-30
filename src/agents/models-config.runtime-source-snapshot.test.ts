@@ -50,17 +50,16 @@ let setRuntimeConfigSnapshot: typeof import("../config/io.js").setRuntimeConfigS
 let ensureEVEModelsJson: typeof import("./models-config.js").ensureEVEModelsJson;
 let resetModelsJsonReadyCacheForTest: typeof import("./models-config.js").resetModelsJsonReadyCacheForTest;
 let planEVEModelsJsonWithDeps: typeof import("./models-config.plan.js").planEVEModelsJsonWithDeps;
-let readGeneratedModelsJson: typeof import("./models-config.test-utils.js").readGeneratedModelsJson;
+let readGeneratedModelProviders: typeof import("./models-config.test-utils.js").readGeneratedModelProviders;
 const fixtureSuite = createFixtureSuite("eve-models-runtime-source-");
 
 beforeAll(async () => {
   await fixtureSuite.setup();
   ({ clearConfigCache, clearRuntimeConfigSnapshot, setRuntimeConfigSnapshot } =
     await import("../config/io.js"));
-  ({ ensureEVEModelsJson, resetModelsJsonReadyCacheForTest } =
-    await import("./models-config.js"));
+  ({ ensureEVEModelsJson, resetModelsJsonReadyCacheForTest } = await import("./models-config.js"));
   ({ planEVEModelsJsonWithDeps } = await import("./models-config.plan.js"));
-  ({ readGeneratedModelsJson } = await import("./models-config.test-utils.js"));
+  ({ readGeneratedModelProviders } = await import("./models-config.test-utils.js"));
 });
 
 afterEach(() => {
@@ -214,10 +213,8 @@ async function expectGeneratedProviderApiKey(
   providerId: string,
   expected: string,
 ) {
-  const parsed = await readGeneratedModelsJson<{
-    providers: Record<string, { apiKey?: string }>;
-  }>(agentDir);
-  expect(parsed.providers[providerId]?.apiKey).toBe(expected);
+  const providers = await readGeneratedModelProviders<{ apiKey?: string }>(agentDir);
+  expect(providers[providerId]?.apiKey).toBe(expected);
 }
 
 async function planGeneratedProviders(params: {
@@ -376,27 +373,25 @@ describe("models-config runtime source snapshot", () => {
       try {
         setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
         await ensureEVEModelsJson(firstCandidate, agentDir);
-        let parsed = await readGeneratedModelsJson<{
-          providers: Record<
-            string,
-            { baseUrl?: string; apiKey?: string; headers?: Record<string, string> }
-          >;
+        let providers = await readGeneratedModelProviders<{
+          baseUrl?: string;
+          apiKey?: string;
+          headers?: Record<string, string>;
         }>(agentDir);
-        expect(parsed.providers.openai?.baseUrl).toBe("https://api.openai.com/v1");
-        expect(parsed.providers.openai?.apiKey).toBe("OPENAI_API_KEY"); // pragma: allowlist secret
-        expect(parsed.providers.openai?.headers?.["X-EVE-Test"]).toBe("one");
+        expect(providers.openai?.baseUrl).toBe("https://api.openai.com/v1");
+        expect(providers.openai?.apiKey).toBe("OPENAI_API_KEY"); // pragma: allowlist secret
+        expect(providers.openai?.headers?.["X-EVE-Test"]).toBe("one");
 
         // Header changes still rewrite models.json, but merge mode preserves the existing baseUrl.
         await ensureEVEModelsJson(secondCandidate, agentDir);
-        parsed = await readGeneratedModelsJson<{
-          providers: Record<
-            string,
-            { baseUrl?: string; apiKey?: string; headers?: Record<string, string> }
-          >;
+        providers = await readGeneratedModelProviders<{
+          baseUrl?: string;
+          apiKey?: string;
+          headers?: Record<string, string>;
         }>(agentDir);
-        expect(parsed.providers.openai?.baseUrl).toBe("https://api.openai.com/v1");
-        expect(parsed.providers.openai?.apiKey).toBe("OPENAI_API_KEY"); // pragma: allowlist secret
-        expect(parsed.providers.openai?.headers?.["X-EVE-Test"]).toBe("two");
+        expect(providers.openai?.baseUrl).toBe("https://api.openai.com/v1");
+        expect(providers.openai?.apiKey).toBe("OPENAI_API_KEY"); // pragma: allowlist secret
+        expect(providers.openai?.headers?.["X-EVE-Test"]).toBe("two");
       } finally {
         clearRuntimeConfigSnapshot();
         clearConfigCache();

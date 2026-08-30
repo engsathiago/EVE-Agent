@@ -396,6 +396,7 @@ export const tr: TranslationMap = {
   nav: {
     chat: "Sohbet",
     control: "Kontrol",
+    workspace: "Çalışma alanı",
     agent: "Aracı",
     settings: "Ayarlar",
     expand: "Kenar çubuğunu genişlet",
@@ -407,6 +408,11 @@ export const tr: TranslationMap = {
     activity: "Etkinlik",
     overview: "Genel Bakış",
     workboard: "Çalışma panosu",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Kanallar",
     instances: "Örnekler",
     sessions: "Oturumlar",
@@ -432,6 +438,11 @@ export const tr: TranslationMap = {
     activity: "Tarayıcıya yerel araç etkinliği özetleri.",
     overview: "Durum, giriş noktaları, sağlık.",
     workboard: "Ajan iş kuyruğu ve oturum devri.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Kanallar ve ayarlar.",
     instances: "Bağlı istemciler ve düğümler.",
     sessions: "Etkin oturumlar ve varsayılanlar.",
@@ -821,8 +832,7 @@ export const tr: TranslationMap = {
       modelAuthExpiresIn: "{when} süresi doluyor",
       modelAuthAttentionExpiredTitle: "Model kimlik doğrulamasının süresi doldu",
       modelAuthAttentionExpiringTitle: "Model kimlik doğrulamasının süresi yakında dolacak",
-      modelAuthAttentionExpiredDesc:
-        "{providers} — eve models auth ile yeniden kimlik doğrulayın",
+      modelAuthAttentionExpiredDesc: "{providers} — eve models auth ile yeniden kimlik doğrulayın",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1320,8 +1330,7 @@ export const tr: TranslationMap = {
         title: "Bağlanılamadı",
         summary:
           "Tarayıcı Gateway bağlantısını tamamlayamadı. Kimlik bilgilerini yeniden denemeden önce hedefi ve taşıma yolunu kontrol edin.",
-        stepGateway:
-          "eve status veya eve gateway run ile Gateway’in çalıştığını doğrulayın.",
+        stepGateway: "eve status veya eve gateway run ile Gateway’in çalıştığını doğrulayın.",
         stepUrl:
           "WebSocket URL’sini kontrol edin ve Gateway HTTPS/Tailscale Serve arkasındaysa wss:// kullanın.",
         stepDashboard:

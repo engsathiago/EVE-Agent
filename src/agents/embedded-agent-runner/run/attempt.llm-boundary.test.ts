@@ -733,10 +733,7 @@ describe("normalizeMessagesForLlmBoundary", () => {
       { type: "text", text: "visible transcript prompt" },
     ]);
     expect(armedRecords[0]?.content).toEqual([{ type: "text", text: "private model prompt" }]);
-    expect(armedResult[0]).toHaveProperty(
-      "__eveTranscriptPromptText",
-      "visible transcript prompt",
-    );
+    expect(armedResult[0]).toHaveProperty("__eveTranscriptPromptText", "visible transcript prompt");
     expect(captured).toHaveLength(2);
     expect(session.agent.transformContext).not.toBeUndefined();
   });

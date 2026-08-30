@@ -15,10 +15,7 @@ import type {
   ChannelIngressEvents,
   DB as EVEStateKyselyDatabase,
 } from "../../state/eve-state-db.generated.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../../state/eve-state-db.js";
 
 /** Pending or retryable inbound channel event stored in the durable ingress queue. */
 export type ChannelIngressQueueRecord<TPayload, TMetadata = unknown> = {

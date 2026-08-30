@@ -103,43 +103,40 @@ describe("plugin session extension SessionEntry projection", () => {
     });
     setActivePluginRegistry(registry.registry);
 
-    await withProjectionSessionStore(
-      "eve-host-hooks-slot-",
-      async ({ storePath, tempConfig }) => {
-        await updateSessionStore(storePath, (store) => {
-          store["agent:main:main"] = {
-            sessionId: "session-id",
-            updatedAt: Date.now(),
-          } as unknown as SessionEntry;
-        });
+    await withProjectionSessionStore("eve-host-hooks-slot-", async ({ storePath, tempConfig }) => {
+      await updateSessionStore(storePath, (store) => {
+        store["agent:main:main"] = {
+          sessionId: "session-id",
+          updatedAt: Date.now(),
+        } as unknown as SessionEntry;
+      });
 
-        const patchResult = await patchPluginSessionExtension({
-          cfg: tempConfig as never,
-          sessionKey: "agent:main:main",
-          pluginId: "promoted-plugin",
-          namespace: "workflow",
-          value: { state: "executing", title: "Deploy approval", internal: 7 },
-        });
-        expect(patchResult.ok).toBe(true);
-        const afterPatch = loadSessionStore(storePath, { skipCache: true });
-        expect(
-          (afterPatch["agent:main:main"] as unknown as Record<string, unknown>).approvalSnapshot,
-        ).toEqual({ state: "executing", title: "Deploy approval" });
+      const patchResult = await patchPluginSessionExtension({
+        cfg: tempConfig as never,
+        sessionKey: "agent:main:main",
+        pluginId: "promoted-plugin",
+        namespace: "workflow",
+        value: { state: "executing", title: "Deploy approval", internal: 7 },
+      });
+      expect(patchResult.ok).toBe(true);
+      const afterPatch = loadSessionStore(storePath, { skipCache: true });
+      expect(
+        (afterPatch["agent:main:main"] as unknown as Record<string, unknown>).approvalSnapshot,
+      ).toEqual({ state: "executing", title: "Deploy approval" });
 
-        const unsetResult = await patchPluginSessionExtension({
-          cfg: tempConfig as never,
-          sessionKey: "agent:main:main",
-          pluginId: "promoted-plugin",
-          namespace: "workflow",
-          unset: true,
-        });
-        expect(unsetResult.ok).toBe(true);
-        const afterUnset = loadSessionStore(storePath, { skipCache: true });
-        expect(
-          (afterUnset["agent:main:main"] as unknown as Record<string, unknown>).approvalSnapshot,
-        ).toBeUndefined();
-      },
-    );
+      const unsetResult = await patchPluginSessionExtension({
+        cfg: tempConfig as never,
+        sessionKey: "agent:main:main",
+        pluginId: "promoted-plugin",
+        namespace: "workflow",
+        unset: true,
+      });
+      expect(unsetResult.ok).toBe(true);
+      const afterUnset = loadSessionStore(storePath, { skipCache: true });
+      expect(
+        (afterUnset["agent:main:main"] as unknown as Record<string, unknown>).approvalSnapshot,
+      ).toBeUndefined();
+    });
   });
 
   it("clears promoted SessionEntry slots when projectors fail", async () => {

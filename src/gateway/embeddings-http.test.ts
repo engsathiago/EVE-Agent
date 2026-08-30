@@ -436,10 +436,7 @@ describe("OpenAI-compatible embeddings HTTP API (e2e)", () => {
       model: "ollama/nomic-embed-text",
       input: "hello",
     });
-    await expectInvalidEmbeddingRequest(
-      res,
-      "Invalid `model`. Use `eve` or `eve/<agentId>`.",
-    );
+    await expectInvalidEmbeddingRequest(res, "Invalid `model`. Use `eve` or `eve/<agentId>`.");
   });
 
   it("rejects disallowed x-eve-model provider overrides", async () => {

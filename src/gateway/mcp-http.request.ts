@@ -367,14 +367,11 @@ export function resolveMcpRequestContext(
   return {
     sessionKey: resolveScopedSessionKey(cfg, getHeader(req, "x-session-key")),
     sessionId: normalizeOptionalString(getHeader(req, "x-eve-session-id")),
-    messageProvider:
-      normalizeMessageChannel(getHeader(req, "x-eve-message-channel")) ?? undefined,
+    messageProvider: normalizeMessageChannel(getHeader(req, "x-eve-message-channel")) ?? undefined,
     currentChannelId: normalizeOptionalString(getHeader(req, "x-eve-current-channel-id")),
     currentThreadTs: normalizeOptionalString(getHeader(req, "x-eve-current-thread-ts")),
     currentMessageId: normalizeOptionalString(getHeader(req, "x-eve-current-message-id")),
-    currentInboundAudio: normalizeMcpBooleanHeader(
-      getHeader(req, "x-eve-current-inbound-audio"),
-    ),
+    currentInboundAudio: normalizeMcpBooleanHeader(getHeader(req, "x-eve-current-inbound-audio")),
     accountId: normalizeOptionalString(getHeader(req, "x-eve-account-id")),
     inboundEventKind: normalizeMcpInboundEventKind(getHeader(req, "x-eve-inbound-event-kind")),
     sourceReplyDeliveryMode: normalizeMcpSourceReplyDeliveryMode(

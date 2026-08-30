@@ -220,6 +220,7 @@ export const AgentParamsSchema = Type.Object(
     bootstrapContextRunKind: Type.Optional(
       Type.Union([Type.Literal("default"), Type.Literal("heartbeat"), Type.Literal("cron")]),
     ),
+    inheritedToolAllow: Type.Optional(Type.Array(NonEmptyString, { minItems: 1 })),
     acpTurnSource: Type.Optional(Type.Literal("manual_spawn")),
     internalRuntimeHandoffId: Type.Optional(NonEmptyString),
     execApprovalFollowupExpectedSessionId: Type.Optional(NonEmptyString),

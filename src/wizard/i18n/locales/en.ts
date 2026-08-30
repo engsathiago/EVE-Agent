@@ -969,8 +969,7 @@ export const en = {
       nodeMac: "macOS app (system + notifications)",
       optionalApps: "Optional apps",
       outroDashboardLink: "Onboarding complete. Use the dashboard link above to control EVE.",
-      outroDashboardOpened:
-        "Onboarding complete. Dashboard opened; keep that tab to control EVE.",
+      outroDashboardOpened: "Onboarding complete. Dashboard opened; keep that tab to control EVE.",
       outroSeeded:
         "Onboarding complete. Web UI seeded in the background; open it anytime with the dashboard link above.",
       quickstartNodeRuntime: "QuickStart uses Node for the Gateway service (stable + supported).",

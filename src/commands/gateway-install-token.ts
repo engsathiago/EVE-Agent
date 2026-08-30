@@ -2,8 +2,8 @@
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { formatCliCommand } from "../cli/command-format.js";
 import type { ConfigWriteOptions } from "../config/io.js";
-import type { EVEConfig } from "../config/types.js";
 import type { ConfigFileSnapshot } from "../config/types.eve.js";
+import type { EVEConfig } from "../config/types.js";
 import { resolveSecretInputRef } from "../config/types.secrets.js";
 import { shouldRequireGatewayTokenForInstall } from "../gateway/auth-install-policy.js";
 import { hasAmbiguousGatewayAuthModeConfig } from "../gateway/auth-mode-policy.js";

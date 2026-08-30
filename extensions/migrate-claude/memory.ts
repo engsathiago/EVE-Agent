@@ -1,6 +1,9 @@
 // Migrate Claude plugin module implements memory behavior.
 import path from "node:path";
-import { createMigrationItem, MIGRATION_REASON_TARGET_EXISTS } from "eve-agent/plugin-sdk/migration";
+import {
+  createMigrationItem,
+  MIGRATION_REASON_TARGET_EXISTS,
+} from "eve-agent/plugin-sdk/migration";
 import type { MigrationItem } from "eve-agent/plugin-sdk/plugin-entry";
 import { exists } from "./helpers.js";
 import type { ClaudeSource } from "./source.js";

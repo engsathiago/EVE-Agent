@@ -112,10 +112,7 @@ function createBackendSandboxConfig(params?: { binds?: string[]; target?: string
       ...(params?.binds ? { binds: params.binds } : {}),
     },
     ssh: {
-      ...createSandboxSshConfig(
-        "/remote/eve",
-        params?.target ? { target: params.target } : {},
-      ),
+      ...createSandboxSshConfig("/remote/eve", params?.target ? { target: params.target } : {}),
     },
     browser: createSandboxBrowserConfig({
       image: "img",

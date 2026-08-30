@@ -109,7 +109,7 @@ interface MacosSummary {
 const guestPath =
   "/opt/homebrew/bin:/opt/homebrew/opt/node/bin:/usr/local/bin:/usr/local/sbin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin";
 const guestEVE = "eve";
-const guestEVEEntry = '"$(npm root -g)/eve/eve.mjs"';
+const guestEVEEntry = '"$(npm root -g)/eve-agent/eve.mjs"';
 const guestEVEEntryRunner = `node ${guestEVEEntry}`;
 const guestNode = "node";
 const guestNpm = "npm";
@@ -611,7 +611,7 @@ class MacosSmoke {
     const argv = args.map((arg) => shellQuote(arg)).join(" ");
     return this.guestSh(
       `set -e
-entry="$(npm root -g)/eve/eve.mjs"
+entry="$(npm root -g)/eve-agent/eve.mjs"
 exec node "$entry" ${argv}`,
       options.env,
     );

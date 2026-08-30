@@ -110,8 +110,7 @@ describe("scripts/run-vitest", () => {
         env: { PNPM_CONFIG_MODULES_DIR: "/runner/eve-pnpm-node-modules" },
         fsImpl: {
           existsSync: (filePath: string) =>
-            filePath.replaceAll("\\", "/") ===
-            "/runner/eve-pnpm-node-modules/vitest/package.json",
+            filePath.replaceAll("\\", "/") === "/runner/eve-pnpm-node-modules/vitest/package.json",
           symlinkSync: (target: string, path: string, type: string) => {
             symlinks.push({ target, path, type });
           },
@@ -145,8 +144,7 @@ describe("scripts/run-vitest", () => {
         env: { npm_config_modules_dir: "/runner/eve-pnpm-node-modules" },
         fsImpl: {
           existsSync: (filePath: string) =>
-            filePath.replaceAll("\\", "/") ===
-            "/runner/eve-pnpm-node-modules/vitest/package.json",
+            filePath.replaceAll("\\", "/") === "/runner/eve-pnpm-node-modules/vitest/package.json",
           symlinkSync: (target: string, path: string, type: string) => {
             symlinks.push({ target, path, type });
           },
@@ -463,15 +461,9 @@ describe("scripts/run-vitest", () => {
 
   it("parses the optional no-output timeout env", () => {
     expect(resolveVitestNoOutputTimeoutMs({})).toBeNull();
-    expect(resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500" })).toBe(
-      2500,
-    );
-    expect(
-      resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0" }),
-    ).toBeNull();
-    expect(
-      resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "1e3" }),
-    ).toBeNull();
+    expect(resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500" })).toBe(2500);
+    expect(resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0" })).toBeNull();
+    expect(resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "1e3" })).toBeNull();
     expect(
       resolveVitestNoOutputTimeoutMs({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "2500ms" }),
     ).toBeNull();
@@ -512,9 +504,7 @@ describe("scripts/run-vitest", () => {
       },
     );
     expect(
-      resolveRunVitestSpawnEnv({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0", PATH: "/usr/bin" }, [
-        "run",
-      ]),
+      resolveRunVitestSpawnEnv({ EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0", PATH: "/usr/bin" }, ["run"]),
     ).toEqual({
       EVE_VITEST_NO_OUTPUT_TIMEOUT_MS: "0",
       PATH: "/usr/bin",
@@ -1057,12 +1047,10 @@ describe("scripts/run-vitest", () => {
   });
 
   it("parses the optional watchdog heartbeat interval", () => {
-    expect(
-      resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "120000" }),
-    ).toBe(120000);
-    expect(
-      resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "0" }),
-    ).toBeNull();
+    expect(resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "120000" })).toBe(
+      120000,
+    );
+    expect(resolveVitestNoOutputHeartbeatMs({ EVE_VITEST_NO_OUTPUT_HEARTBEAT_MS: "0" })).toBeNull();
   });
 });
 

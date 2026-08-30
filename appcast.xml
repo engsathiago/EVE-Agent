@@ -5,7 +5,7 @@
         <item>
             <title>2026.6.8</title>
             <pubDate>Tue, 16 Jun 2026 17:17:20 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/engsathiago/eve-agent/main/appcast.xml</link>
             <sparkle:version>2606000890</sparkle:version>
             <sparkle:shortVersionString>2026.6.8</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
@@ -47,7 +47,7 @@
         <item>
             <title>2026.6.5</title>
             <pubDate>Tue, 09 Jun 2026 19:06:49 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/engsathiago/eve-agent/main/appcast.xml</link>
             <sparkle:version>2606000590</sparkle:version>
             <sparkle:shortVersionString>2026.6.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
@@ -127,7 +127,7 @@
         <item>
             <title>2026.6.1</title>
             <pubDate>Wed, 03 Jun 2026 21:26:22 +0000</pubDate>
-            <link>https://raw.githubusercontent.com/eve/eve/main/appcast.xml</link>
+            <link>https://raw.githubusercontent.com/engsathiago/eve-agent/main/appcast.xml</link>
             <sparkle:version>2026060190</sparkle:version>
             <sparkle:shortVersionString>2026.6.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>

@@ -184,9 +184,7 @@ describe("plugin node capability helpers", () => {
         nowMs: Number.NaN,
       }),
     ).toBeUndefined();
-    expect(client.pluginSurfaceUrls?.canvas).toBe(
-      "http://127.0.0.1:18789/__eve__/cap/old-token",
-    );
+    expect(client.pluginSurfaceUrls?.canvas).toBe("http://127.0.0.1:18789/__eve__/cap/old-token");
     expect(client.pluginNodeCapabilities).toBeUndefined();
   });
 

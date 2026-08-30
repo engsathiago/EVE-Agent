@@ -309,9 +309,7 @@ describe("gateway config methods", () => {
       }>(requireWs(), "config.get", {});
       expect(after.ok).toBe(true);
       expect(after.payload?.config?.browser?.cdpUrl).toBe("__EVE_REDACTED__");
-      expect(after.payload?.config?.browser?.profiles?.remote?.cdpUrl).toBe(
-        "__EVE_REDACTED__",
-      );
+      expect(after.payload?.config?.browser?.profiles?.remote?.cdpUrl).toBe("__EVE_REDACTED__");
       expect(after.payload?.config?.browser?.profiles?.local?.cdpUrl).toBe("ws://127.0.0.1:9222");
       if (typeof after.payload?.raw === "string") {
         expect(after.payload.raw).toContain("__EVE_REDACTED__");

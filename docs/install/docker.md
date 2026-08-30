@@ -36,7 +36,7 @@ Docker is **optional**. Use it only if you want a containerized gateway or to va
     This builds the gateway image locally. To use a pre-built image instead:
 
     ```bash
-    export EVE_IMAGE="ghcr.io/eve/eve:latest"
+    export EVE_IMAGE="ghcr.io/engsathiago/eve-agent:latest"
     ./scripts/docker/setup.sh
     ```
 
@@ -51,7 +51,7 @@ Docker is **optional**. Use it only if you want a containerized gateway or to va
 
     ```bash
     docker load -i eve-image.tar
-    export EVE_IMAGE="ghcr.io/eve/eve:latest"
+    export EVE_IMAGE="ghcr.io/engsathiago/eve-agent:latest"
     ./scripts/docker/setup.sh --offline
     ```
 
@@ -148,8 +148,8 @@ and setup-time config writes through `eve-gateway` with
 
 The setup script accepts these optional environment variables:
 
-| Variable                                   | Purpose                                                               |
-| ------------------------------------------ | --------------------------------------------------------------------- |
+| Variable                              | Purpose                                                               |
+| ------------------------------------- | --------------------------------------------------------------------- |
 | `EVE_IMAGE`                           | Use a remote image instead of building locally                        |
 | `EVE_IMAGE_APT_PACKAGES`              | Install extra apt packages during build (space-separated)             |
 | `EVE_IMAGE_PIP_PACKAGES`              | Install extra Python packages during build (space-separated)          |
@@ -161,11 +161,11 @@ The setup script accepts these optional environment variables:
 | `EVE_DOCKER_SOCKET`                   | Override Docker socket path                                           |
 | `EVE_DISABLE_BONJOUR`                 | Disable Bonjour/mDNS advertising (defaults to `1` for Docker)         |
 | `EVE_DISABLE_BUNDLED_SOURCE_OVERLAYS` | Disable bundled plugin source bind-mount overlays                     |
-| `OTEL_EXPORTER_OTLP_ENDPOINT`              | Shared OTLP/HTTP collector endpoint for OpenTelemetry export          |
-| `OTEL_EXPORTER_OTLP_*_ENDPOINT`            | Signal-specific OTLP endpoints for traces, metrics, or logs           |
-| `OTEL_EXPORTER_OTLP_PROTOCOL`              | OTLP protocol override. Only `http/protobuf` is supported today       |
-| `OTEL_SERVICE_NAME`                        | Service name used for OpenTelemetry resources                         |
-| `OTEL_SEMCONV_STABILITY_OPT_IN`            | Opt in to latest experimental GenAI semantic attributes               |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`         | Shared OTLP/HTTP collector endpoint for OpenTelemetry export          |
+| `OTEL_EXPORTER_OTLP_*_ENDPOINT`       | Signal-specific OTLP endpoints for traces, metrics, or logs           |
+| `OTEL_EXPORTER_OTLP_PROTOCOL`         | OTLP protocol override. Only `http/protobuf` is supported today       |
+| `OTEL_SERVICE_NAME`                   | Service name used for OpenTelemetry resources                         |
+| `OTEL_SEMCONV_STABILITY_OPT_IN`       | Opt in to latest experimental GenAI semantic attributes               |
 | `EVE_OTEL_PRELOADED`                  | Skip starting a second OpenTelemetry SDK when one is preloaded        |
 
 The official Docker image does not ship Homebrew. During onboarding, EVE
@@ -328,7 +328,7 @@ under `/tmp/eve/`.
 For easier day-to-day Docker management, install `ClawDock`:
 
 ```bash
-mkdir -p ~/.clawdock && curl -sL https://raw.githubusercontent.com/eve/eve/main/scripts/clawdock/clawdock-helpers.sh -o ~/.clawdock/clawdock-helpers.sh
+mkdir -p ~/.clawdock && curl -sL https://raw.githubusercontent.com/engsathiago/eve-agent/main/scripts/clawdock/clawdock-helpers.sh -o ~/.clawdock/clawdock-helpers.sh
 echo 'source ~/.clawdock/clawdock-helpers.sh' >> ~/.zshrc && source ~/.zshrc
 ```
 

@@ -74,9 +74,7 @@ function parseTargetModelRefs(raw: string | undefined): TargetModelRef[] {
     const [provider, ...rest] = ref.split("/");
     const modelId = rest.join("/").trim();
     if (!provider?.trim() || !modelId) {
-      throw new Error(
-        `Invalid EVE_LIVE_TOOL_REPLAY_REPAIR_MODELS entry: ${JSON.stringify(ref)}`,
-      );
+      throw new Error(`Invalid EVE_LIVE_TOOL_REPLAY_REPAIR_MODELS entry: ${JSON.stringify(ref)}`);
     }
     refs.push({ ref, provider: provider.trim(), modelId });
   }

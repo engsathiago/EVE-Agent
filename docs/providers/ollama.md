@@ -198,9 +198,9 @@ When you set `OLLAMA_API_KEY` (or an auth profile) and **do not** define `models
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Catalog query        | Queries `/api/tags`                                                                                                                                                  |
 | Capability detection | Uses best-effort `/api/show` lookups to read `contextWindow`, expanded `num_ctx` Modelfile parameters, and capabilities including vision/tools                       |
-| Vision models        | Models with a `vision` capability reported by `/api/show` are marked as image-capable (`input: ["text", "image"]`), so EVE auto-injects images into the prompt  |
+| Vision models        | Models with a `vision` capability reported by `/api/show` are marked as image-capable (`input: ["text", "image"]`), so EVE auto-injects images into the prompt       |
 | Reasoning detection  | Uses `/api/show` capabilities when available, including `thinking`; falls back to a model-name heuristic (`r1`, `reasoning`, `think`) when Ollama omits capabilities |
-| Token limits         | Sets `maxTokens` to the default Ollama max-token cap used by EVE                                                                                                |
+| Token limits         | Sets `maxTokens` to the default Ollama max-token cap used by EVE                                                                                                     |
 | Costs                | Sets all costs to `0`                                                                                                                                                |
 
 This avoids manual model entries while keeping the catalog aligned with the local Ollama instance. You can use a full ref such as `ollama/<pulled-model>:latest` in local `infer model run`; EVE resolves that installed model from Ollama's live catalog without requiring a hand-written `models.json` entry.

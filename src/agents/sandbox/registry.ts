@@ -9,10 +9,7 @@ import type { Insertable, Selectable, Updateable } from "kysely";
 import { z } from "zod";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../../infra/kysely-sync.js";
 import type { DB as EVEStateKyselyDatabase } from "../../state/eve-state-db.generated.js";
-import {
-  openEVEStateDatabase,
-  runEVEStateWriteTransaction,
-} from "../../state/eve-state-db.js";
+import { openEVEStateDatabase, runEVEStateWriteTransaction } from "../../state/eve-state-db.js";
 import { safeParseJsonWithSchema } from "../../utils/zod-parse.js";
 import { acquireSessionWriteLock } from "../session-write-lock.js";
 import {

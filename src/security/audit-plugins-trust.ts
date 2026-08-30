@@ -64,10 +64,7 @@ function readChannelCommandSetting(
   return (commands as Record<string, unknown>)[key];
 }
 
-async function isChannelPluginConfigured(
-  cfg: EVEConfig,
-  plugin: ChannelPlugin,
-): Promise<boolean> {
+async function isChannelPluginConfigured(cfg: EVEConfig, plugin: ChannelPlugin): Promise<boolean> {
   const accountIds = plugin.config.listAccountIds(cfg);
   const candidates = accountIds.length > 0 ? accountIds : [undefined];
   for (const accountId of candidates) {

@@ -785,9 +785,8 @@ describe("session-compaction-checkpoints", () => {
   });
 
   test("persist stores codex-style checkpoint metadata and trims old legacy snapshot files", async () => {
-    const { dir, storePath, sessionId, sessionKey, now } = await makeTempSessionStore(
-      "eve-checkpoint-trim-",
-    );
+    const { dir, storePath, sessionId, sessionKey, now } =
+      await makeTempSessionStore("eve-checkpoint-trim-");
     const existingCheckpoints = await createLegacyCheckpointFixtures({
       dir,
       sessionId,
@@ -830,9 +829,8 @@ describe("session-compaction-checkpoints", () => {
   });
 
   test("persist skips codex-style checkpoints without a stable post-compaction leaf", async () => {
-    const { storePath, sessionId, sessionKey, now } = await makeTempSessionStore(
-      "eve-checkpoint-no-leaf-",
-    );
+    const { storePath, sessionId, sessionKey, now } =
+      await makeTempSessionStore("eve-checkpoint-no-leaf-");
     await writeSessionStore(storePath, sessionKey, {
       sessionId,
       updatedAt: now,

@@ -51,9 +51,7 @@ describe("Dockerfile", () => {
   it("installs CA certificates in the slim runtime stage", async () => {
     const dockerfile = await readFile(dockerfilePath, "utf8");
     const collapsed = collapseDockerContinuations(dockerfile);
-    const runtimeIndex = collapsed.indexOf(
-      "FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
-    );
+    const runtimeIndex = collapsed.indexOf("FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime");
     const caInstallIndex = collapsed.indexOf(
       "ca-certificates curl git hostname lsof openssl procps python3",
     );
@@ -67,9 +65,7 @@ describe("Dockerfile", () => {
 
   it("installs python3 and tini in the slim runtime stage", async () => {
     const dockerfile = collapseDockerContinuations(await readFile(dockerfilePath, "utf8"));
-    const runtimeIndex = dockerfile.indexOf(
-      "FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime",
-    );
+    const runtimeIndex = dockerfile.indexOf("FROM ${EVE_NODE_BOOKWORM_SLIM_IMAGE} AS base-runtime");
     const pythonInstallIndex = dockerfile.indexOf(
       "ca-certificates curl git hostname lsof openssl procps python3",
     );
@@ -441,9 +437,7 @@ describe("Dockerfile", () => {
     expect(dockerfile).not.toContain("mkdir -p /home/node/.eve");
     expect(dockerfile).toContain("/home/node/.eve/workspace");
     expect(dockerfile).toContain("/home/node/.config/eve");
-    expect(dockerfile).toContain(
-      "stat -c '%U:%G %a' /home/node/.eve | grep -qx 'node:node 700'",
-    );
+    expect(dockerfile).toContain("stat -c '%U:%G %a' /home/node/.eve | grep -qx 'node:node 700'");
     expect(dockerfile).toContain(
       "stat -c '%U:%G %a' /home/node/.eve/workspace | grep -qx 'node:node 700'",
     );

@@ -4,7 +4,6 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { WORKSPACE_TEMPLATE_PACK_PATHS } from "../scripts/lib/workspace-bootstrap-smoke.mjs";
 import {
   compareReleaseVersions,
   collectControlUiPackErrors,
@@ -23,6 +22,7 @@ import {
   runNpmReleaseCheckCommand,
   shouldSkipPackedTarballValidation,
 } from "../scripts/eve-npm-release-check.ts";
+import { WORKSPACE_TEMPLATE_PACK_PATHS } from "../scripts/lib/workspace-bootstrap-smoke.mjs";
 import {
   LOCAL_BUILD_METADATA_DIST_PATHS,
   PACKAGE_DIST_INVENTORY_RELATIVE_PATH,
@@ -310,13 +310,13 @@ describe("resolveNpmCommandInvocation", () => {
     expect(
       resolveNpmCommandInvocation({
         npmExecPath: "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
-        npmArgs: ["view", "eve", "version"],
+        npmArgs: ["view", "eve-agent", "version"],
         nodeExecPath: "/usr/local/bin/node",
         platform: "linux",
       }),
     ).toEqual({
       command: "/usr/local/bin/node",
-      args: ["/usr/local/lib/node_modules/npm/bin/npm-cli.js", "view", "eve", "version"],
+      args: ["/usr/local/lib/node_modules/npm/bin/npm-cli.js", "view", "eve-agent", "version"],
     });
   });
 
@@ -338,13 +338,13 @@ describe("resolveNpmCommandInvocation", () => {
     expect(
       resolveNpmCommandInvocation({
         comSpec: "C:\\Windows\\System32\\cmd.exe",
-        npmArgs: ["view", "eve@beta", "version"],
+        npmArgs: ["view", "eve-agent@beta", "version"],
         npmExecPath: "",
         platform: "win32",
       }),
     ).toEqual({
       command: "C:\\Windows\\System32\\cmd.exe",
-      args: ["/d", "/s", "/c", "npm.cmd view eve@beta version"],
+      args: ["/d", "/s", "/c", "npm.cmd view eve-agent@beta version"],
       windowsVerbatimArguments: true,
     });
   });
@@ -353,13 +353,13 @@ describe("resolveNpmCommandInvocation", () => {
     expect(
       resolveNpmCommandInvocation({
         comSpec: "C:\\Windows\\System32\\cmd.exe",
-        npmArgs: ["view", "eve@beta", "version"],
+        npmArgs: ["view", "eve-agent@beta", "version"],
         npmExecPath: "npm",
         platform: "win32",
       }),
     ).toEqual({
       command: "C:\\Windows\\System32\\cmd.exe",
-      args: ["/d", "/s", "/c", "npm.cmd view eve@beta version"],
+      args: ["/d", "/s", "/c", "npm.cmd view eve-agent@beta version"],
       windowsVerbatimArguments: true,
     });
   });
@@ -417,7 +417,7 @@ describe("resolveNpmCommandInvocation", () => {
 
         const invocation = resolveNpmCommandInvocation({
           comSpec: process.env.ComSpec ?? "cmd.exe",
-          npmArgs: ["view", "eve@beta", "version"],
+          npmArgs: ["view", "eve-agent@beta", "version"],
           npmExecPath: "",
           platform: "win32",
         });
@@ -433,7 +433,7 @@ describe("resolveNpmCommandInvocation", () => {
 
         expect(JSON.parse(readFileSync(outputPath, "utf8"))).toEqual([
           "view",
-          "eve@beta",
+          "eve-agent@beta",
           "version",
         ]);
       } finally {
@@ -511,7 +511,7 @@ describe("parseNpmPackJsonOutput", () => {
     const stdout = [
       'npm warn Unknown project config "node-linker".',
       "",
-      "> eve@2026.3.23 prepack",
+      "> eve-agent@2026.3.23 prepack",
       "> pnpm build && pnpm ui:build",
       "",
       "[copy-hook-metadata] Copied 4 hook metadata files.",
@@ -527,7 +527,7 @@ describe("parseNpmPackJsonOutput", () => {
   });
 
   it("returns null when no JSON payload is present", () => {
-    expect(parseNpmPackJsonOutput("> eve@2026.3.23 prepack")).toBeNull();
+    expect(parseNpmPackJsonOutput("> eve-agent@2026.3.23 prepack")).toBeNull();
   });
 });
 
@@ -808,7 +808,7 @@ describe("collectReleasePackageMetadataErrors", () => {
   it("validates the expected npm package metadata", () => {
     expect(
       collectReleasePackageMetadataErrors({
-        name: "eve",
+        name: "eve-agent",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
         repository: { url: "git+https://github.com/engsathiago/eve-agent.git" },
@@ -820,7 +820,7 @@ describe("collectReleasePackageMetadataErrors", () => {
   it("rejects node-llama-cpp as a peer dependency", () => {
     expect(
       collectReleasePackageMetadataErrors({
-        name: "eve",
+        name: "eve-agent",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
         repository: { url: "git+https://github.com/engsathiago/eve-agent.git" },
@@ -837,7 +837,7 @@ describe("collectReleasePackageMetadataErrors", () => {
   it("rejects node-llama-cpp as a direct runtime dependency", () => {
     expect(
       collectReleasePackageMetadataErrors({
-        name: "eve",
+        name: "eve-agent",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
         repository: { url: "git+https://github.com/engsathiago/eve-agent.git" },
@@ -850,7 +850,7 @@ describe("collectReleasePackageMetadataErrors", () => {
   it("rejects local fs-safe dependency specs for npm release", () => {
     expect(
       collectReleasePackageMetadataErrors({
-        name: "eve",
+        name: "eve-agent",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
         repository: { url: "git+https://github.com/engsathiago/eve-agent.git" },
@@ -865,7 +865,7 @@ describe("collectReleasePackageMetadataErrors", () => {
   it("rejects node-llama-cpp as an optional dependency", () => {
     expect(
       collectReleasePackageMetadataErrors({
-        name: "eve",
+        name: "eve-agent",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
         repository: { url: "git+https://github.com/engsathiago/eve-agent.git" },

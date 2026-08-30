@@ -69,7 +69,7 @@ describe("secret scanning maintainer script", () => {
       redacted: true,
     });
     expect(fs.readFileSync(ghLog, "utf8")).toContain(
-      `api repos/eve/eve/issues/123 -X PATCH -F body=@${redactedBody}`,
+      `api repos/engsathiago/eve-agent/issues/123 -X PATCH -F body=@${redactedBody}`,
     );
   });
 

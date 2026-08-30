@@ -228,9 +228,7 @@ export async function buildCodexWorkspaceBootstrapContext(params: {
     const developerInstructionFiles = shouldInjectCodexEVEPromptContext(params.params)
       ? selectCodexWorkspaceInheritedDeveloperInstructionFiles(contextFiles)
       : [];
-    const turnScopedDeveloperInstructionFiles = shouldInjectCodexEVEPromptContext(
-      params.params,
-    )
+    const turnScopedDeveloperInstructionFiles = shouldInjectCodexEVEPromptContext(params.params)
       ? selectCodexWorkspaceTurnScopedDeveloperInstructionFiles(contextFiles)
       : [];
     const heartbeatReferenceFiles = selectCodexWorkspaceHeartbeatReferenceFiles(contextFiles);
@@ -571,9 +569,7 @@ export function prependCodexEVEPromptContext(
   if (!context?.trim() && (!deliveryHint || options.preservePromptWithoutContext)) {
     return prompt;
   }
-  const promptSection = promptWithoutDeliveryHint.startsWith(
-    "EVE assembled context for this turn:",
-  )
+  const promptSection = promptWithoutDeliveryHint.startsWith("EVE assembled context for this turn:")
     ? promptWithoutDeliveryHint
     : ["Current user request:", promptWithoutDeliveryHint].join("\n");
   const deliverySection = deliveryHint

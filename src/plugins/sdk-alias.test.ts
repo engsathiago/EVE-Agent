@@ -60,7 +60,7 @@ function createTrustedEVEPackageFixture(version: string) {
     path.join(root, "package.json"),
     JSON.stringify(
       {
-        name: "eve",
+        name: "eve-agent",
         version,
         bin: { eve: "eve.mjs" },
         exports: { "./plugin-sdk": { default: "./dist/plugin-sdk/index.js" } },
@@ -101,7 +101,7 @@ function createPluginSdkAliasFixture(params?: {
     params?.trustedRootIndicatorMode ??
     (params?.trustedRootIndicators === false ? "none" : "bin+marker");
   const packageJson: Record<string, unknown> = {
-    name: "eve",
+    name: "eve-agent",
     type: "module",
   };
   if (trustedRootIndicatorMode === "bin+marker") {
@@ -147,7 +147,7 @@ function createExtensionApiAliasFixture(params?: {
   mkdirSafeDir(path.dirname(distFile));
   fs.writeFileSync(
     path.join(root, "package.json"),
-    JSON.stringify({ name: "eve", type: "module" }, null, 2),
+    JSON.stringify({ name: "eve-agent", type: "module" }, null, 2),
     "utf-8",
   );
   fs.writeFileSync(path.join(root, "eve.mjs"), "export {};\n", "utf-8");
@@ -179,7 +179,7 @@ function createPluginRuntimeAliasFixture(params?: { srcBody?: string; distBody?:
   mkdirSafeDir(path.dirname(distFile));
   fs.writeFileSync(
     path.join(root, "package.json"),
-    JSON.stringify({ name: "eve", type: "module" }, null, 2),
+    JSON.stringify({ name: "eve-agent", type: "module" }, null, 2),
     "utf-8",
   );
   fs.writeFileSync(
@@ -1106,9 +1106,8 @@ describe("plugin sdk alias helpers", () => {
     );
     fs.writeFileSync(shadowCodexEntry, 'export const plugin = "shadow";\n', "utf-8");
 
-    const aliases = withEnv(
-      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
-      () => buildPluginLoaderAliasMap(sourcePluginEntry),
+    const aliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      buildPluginLoaderAliasMap(sourcePluginEntry),
     );
     const otherAliases = withEnv(
       { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
@@ -1283,9 +1282,8 @@ describe("plugin sdk alias helpers", () => {
       { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
       () => buildPluginLoaderAliasMap(sourceBrowserEntry),
     );
-    const distAliases = withEnv(
-      { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
-      () => buildPluginLoaderAliasMap(distOllamaEntry, undefined, undefined, "dist"),
+    const distAliases = withEnv({ EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined }, () =>
+      buildPluginLoaderAliasMap(distOllamaEntry, undefined, undefined, "dist"),
     );
     const distBrowserAliases = withEnv(
       { EVE_ENABLE_PRIVATE_QA_CLI: undefined, NODE_ENV: undefined },
@@ -1337,7 +1335,9 @@ describe("plugin sdk alias helpers", () => {
       fs.realpathSync(distRuntimeAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
     ).toBe(fs.realpathSync(distSsrFInternalPath));
     expect(
-      fs.realpathSync(distRuntimeBrowserAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? ""),
+      fs.realpathSync(
+        distRuntimeBrowserAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"] ?? "",
+      ),
     ).toBe(fs.realpathSync(distSsrFInternalPath));
     expect(otherAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
     expect(privateQaOtherAliases["eve-agent/plugin-sdk/ssrf-runtime-internal"]).toBeUndefined();
@@ -1599,9 +1599,7 @@ describe("plugin sdk alias helpers", () => {
     expect(fs.realpathSync(aliases["@eve/media-core/mime"] ?? "")).toBe(
       fs.realpathSync(mediaCoreMime.srcFile),
     );
-    expect(fs.realpathSync(aliases["@eve/acp-core"] ?? "")).toBe(
-      fs.realpathSync(acpCore.srcFile),
-    );
+    expect(fs.realpathSync(aliases["@eve/acp-core"] ?? "")).toBe(fs.realpathSync(acpCore.srcFile));
     expect(fs.realpathSync(aliases["@eve/acp-core/runtime/types"] ?? "")).toBe(
       fs.realpathSync(acpCoreRuntimeTypes.srcFile),
     );
@@ -1826,9 +1824,7 @@ describe("plugin sdk alias helpers", () => {
       buildPluginLoaderAliasMap(sourcePluginEntry, undefined, undefined, "dist"),
     );
 
-    expect(fs.realpathSync(aliases["@eve/slack/api.js"] ?? "")).toBe(
-      fs.realpathSync(distApiPath),
-    );
+    expect(fs.realpathSync(aliases["@eve/slack/api.js"] ?? "")).toBe(fs.realpathSync(distApiPath));
     expect(fs.realpathSync(aliases["@eve/slack/runtime-api.js"] ?? "")).toBe(
       fs.realpathSync(distRuntimeApiPath),
     );
@@ -2388,7 +2384,7 @@ export const syntheticRuntimeMarker = {
 
   it("resolves runtime fallback through npm .bin startup argv", () => {
     const root = makeTempDir();
-    const packageRoot = path.join(root, "node_modules", "eve");
+    const packageRoot = path.join(root, "node_modules", "eve-agent");
     const distFile = path.join(packageRoot, "dist", "plugins", "runtime", "index.js");
     const projectDistFile = path.join(root, "dist", "plugins", "runtime", "index.js");
     const binFile = path.join(root, "node_modules", ".bin", "eve");
@@ -2416,7 +2412,7 @@ export const syntheticRuntimeMarker = {
     const modulePath = path.join(root, "dist", "plugins", "loader.js");
     fs.writeFileSync(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "eve", type: "module" }, null, 2),
+      JSON.stringify({ name: "eve-agent", type: "module" }, null, 2),
       "utf-8",
     );
     mkdirSafeDir(path.dirname(modulePath));
@@ -2645,9 +2641,7 @@ describe("buildPluginLoaderJitiOptions", () => {
 
     expect(guardedFsCache).toContain(path.join("jiti", "eve", "1.2.3-beta.4") + path.sep);
     expect(guardedFsCache.startsWith(path.join(root, "jiti") + path.sep)).toBe(false);
-    expect(respectedFsCache).toContain(
-      path.join(root, "jiti", "eve", "1.2.3-beta.4") + path.sep,
-    );
+    expect(respectedFsCache).toContain(path.join(root, "jiti", "eve", "1.2.3-beta.4") + path.sep);
   });
 
   it("adds the versioned fs cache directory to plugin loader jiti options", () => {

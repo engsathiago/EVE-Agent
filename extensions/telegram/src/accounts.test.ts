@@ -27,11 +27,7 @@ function expectNoMissingDefaultWarning() {
   expect(warningLines().join("\n")).not.toContain("accounts.default is missing");
 }
 
-function resolveAccountWithEnv(
-  env: Record<string, string>,
-  cfg: EVEConfig,
-  accountId?: string,
-) {
+function resolveAccountWithEnv(env: Record<string, string>, cfg: EVEConfig, accountId?: string) {
   return withEnv(env, () => resolveTelegramAccount({ cfg, ...(accountId ? { accountId } : {}) }));
 }
 

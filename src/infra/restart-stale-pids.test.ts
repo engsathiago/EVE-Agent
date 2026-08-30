@@ -196,6 +196,7 @@ function expectWarningContaining(text: string): void {
 
 describe.skipIf(isWindows)("restart-stale-pids", () => {
   beforeAll(async () => {
+    vi.resetModules();
     ({ testing, cleanStaleGatewayProcessesSync, findGatewayPidsOnPortSync } =
       await import("./restart-stale-pids.js"));
   });

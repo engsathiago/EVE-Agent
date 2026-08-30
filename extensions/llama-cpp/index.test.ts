@@ -437,8 +437,6 @@ describe("llama.cpp provider plugin", () => {
       code: "ERR_MODULE_NOT_FOUND",
     });
 
-    expect(formatLlamaCppSetupError(err)).toContain(
-      "eve plugins install @eve/llama-cpp-provider",
-    );
+    expect(formatLlamaCppSetupError(err)).toContain("eve plugins install @eve/llama-cpp-provider");
   });
 });

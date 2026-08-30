@@ -41,18 +41,18 @@ function resolveNpmPackTarballFilename(value: unknown): string {
 
 export function resolveEVERegistryVersion(specOrAlias: string): string {
   const rawValue = specOrAlias.trim();
-  const value = rawValue.startsWith("eve@") ? rawValue.slice("eve@".length) : rawValue;
+  const value = rawValue.startsWith("eve-agent@") ? rawValue.slice("eve-agent@".length) : rawValue;
   if (!value) {
     return "";
   }
   if (value === "latest" || value === "beta" || /^\d/.test(value)) {
-    return npmViewVersion(`eve@${value}`);
+    return npmViewVersion(`eve-agent@${value}`);
   }
   const betaMatch = /^beta(\d+)$/u.exec(value);
   if (betaMatch) {
     const betaSuffix = `-beta.${betaMatch[1]}`;
     const versions = JSON.parse(
-      run("npm", ["view", "eve", "versions", "--json"], { quiet: true }).stdout,
+      run("npm", ["view", "eve-agent", "versions", "--json"], { quiet: true }).stdout,
     ) as string[];
     const match = versions
       .filter((version) => version.endsWith(betaSuffix))

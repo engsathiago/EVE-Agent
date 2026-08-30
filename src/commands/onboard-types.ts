@@ -71,6 +71,7 @@ export type OnboardOptions = OnboardDynamicProviderOptions & {
   customImageInput?: boolean;
   gatewayPort?: number;
   gatewayBind?: GatewayBind;
+  gatewayCustomBindHost?: string;
   gatewayAuth?: GatewayAuthChoice;
   gatewayToken?: string;
   gatewayTokenRefEnv?: string;

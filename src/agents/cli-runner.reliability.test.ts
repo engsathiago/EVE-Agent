@@ -216,9 +216,7 @@ function buildPreparedContext(params?: {
     systemPrompt: "You are a helpful assistant.",
     systemPromptReport: {} as PreparedCliRunContext["systemPromptReport"],
     bootstrapPromptWarningLines: [],
-    ...(params?.eveHistoryPrompt
-      ? { eveHistoryPrompt: params.eveHistoryPrompt }
-      : {}),
+    ...(params?.eveHistoryPrompt ? { eveHistoryPrompt: params.eveHistoryPrompt } : {}),
     authEpochVersion: 2,
   };
 }
@@ -1160,9 +1158,7 @@ describe("runCliAgent reliability", () => {
     });
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
-      const captureHandle = markMcpLoopbackRequestStarted(
-        input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "",
-      );
+      const captureHandle = markMcpLoopbackRequestStarted(input.env?.EVE_MCP_CLI_CAPTURE_KEY ?? "");
       if (!captureHandle) {
         throw new Error("Expected request delivery capture");
       }
@@ -2741,9 +2737,7 @@ describe("runCliAgent reliability", () => {
       );
       expect(JSON.stringify(blockedLine)).not.toContain("secret prompt");
       expect(JSON.stringify(blockedLine)).not.toContain("matched secret prompt");
-      expect(blockedLine.message["__eve"].beforeAgentRunBlocked.blockedBy).toBe(
-        "policy-plugin",
-      );
+      expect(blockedLine.message["__eve"].beforeAgentRunBlocked.blockedBy).toBe("policy-plugin");
       expect(blockedLine.message["__eve"].beforeAgentRunBlocked).not.toHaveProperty("reason");
       expect(Object.hasOwn(blockedLine.message["__eve"], "beforeAgentRunBlocked")).toBe(true);
     } finally {

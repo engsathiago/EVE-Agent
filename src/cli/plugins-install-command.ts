@@ -195,10 +195,7 @@ function hasValidBundledPluginConfig(params: {
   }).ok;
 }
 
-function prepareConfigForDisabledBundledInstall(
-  config: EVEConfig,
-  pluginId: string,
-): EVEConfig {
+function prepareConfigForDisabledBundledInstall(config: EVEConfig, pluginId: string): EVEConfig {
   const entries = config.plugins?.entries ?? {};
   const { [pluginId]: _removedEntry, ...nextEntries } = entries;
   return {

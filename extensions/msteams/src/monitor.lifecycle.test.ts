@@ -1,7 +1,7 @@
 // Msteams tests cover monitor.lifecycle plugin behavior.
 import { EventEmitter } from "node:events";
 import type { Request, Response } from "express";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { EVEConfig, RuntimeEnv } from "../runtime-api.js";
 import type { MSTeamsConversationStore } from "./conversation-store.js";
 import type { MSTeamsActivityHandler, MSTeamsMessageHandlerDeps } from "./monitor-handler.js";
@@ -266,9 +266,7 @@ function createStores() {
 }
 
 function requireRegisteredMSTeamsConfig(): EVEConfig {
-  const registered = registerMSTeamsHandlers.mock.calls[0]?.[1] as
-    | { cfg?: EVEConfig }
-    | undefined;
+  const registered = registerMSTeamsHandlers.mock.calls[0]?.[1] as { cfg?: EVEConfig } | undefined;
   if (!registered?.cfg) {
     throw new Error("expected registered MSTeams handler config");
   }
@@ -276,6 +274,10 @@ function requireRegisteredMSTeamsConfig(): EVEConfig {
 }
 
 describe("monitorMSTeamsProvider lifecycle", () => {
+  beforeEach(() => {
+    vi.useRealTimers();
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
     expressControl.mode.value = "listening";

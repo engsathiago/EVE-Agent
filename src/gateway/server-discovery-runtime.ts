@@ -56,9 +56,7 @@ export async function startGatewayDiscovery(params: {
   const tailnetDns = needsTailnetDns
     ? await resolveTailnetDnsHint({ enabled: tailscaleEnabled })
     : undefined;
-  const sshPort = mdnsMinimal
-    ? undefined
-    : (parseTcpPort(process.env.EVE_SSH_PORT) ?? undefined);
+  const sshPort = mdnsMinimal ? undefined : (parseTcpPort(process.env.EVE_SSH_PORT) ?? undefined);
   const cliPath = mdnsMinimal ? undefined : resolveBonjourCliPath();
 
   if (localDiscoveryEnabled) {

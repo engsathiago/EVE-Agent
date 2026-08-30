@@ -131,9 +131,9 @@ function expectNpmInstallObserved(argsPath: string, expectedArgs: string, prefix
     expect(fs.readFileSync(argsPath, "utf8").trim()).toBe(expectedArgs);
     return;
   }
-  expect(
-    fs.existsSync(path.join(prefix, "lib/node_modules/eve-e2e-fixture/package.json")),
-  ).toBe(true);
+  expect(fs.existsSync(path.join(prefix, "lib/node_modules/eve-e2e-fixture/package.json"))).toBe(
+    true,
+  );
 }
 
 describe("scripts/lib/eve-e2e-instance.sh", () => {
@@ -168,10 +168,9 @@ describe("scripts/lib/eve-e2e-instance.sh", () => {
       'printf "%s" "$(eve_e2e_read_positive_int_env EVE_E2E_SAMPLE_SECONDS 180)"',
       { EVE_E2E_SAMPLE_SECONDS: "008" },
     );
-    const duration = runSourcedHelper(
-      "eve_e2e_read_positive_int_env EVE_E2E_SAMPLE_SECONDS 180",
-      { EVE_E2E_SAMPLE_SECONDS: "30s" },
-    );
+    const duration = runSourcedHelper("eve_e2e_read_positive_int_env EVE_E2E_SAMPLE_SECONDS 180", {
+      EVE_E2E_SAMPLE_SECONDS: "30s",
+    });
 
     expectShellSuccess(fallback);
     expect(fallback.stdout).toBe("180");
@@ -189,10 +188,9 @@ describe("scripts/lib/eve-e2e-instance.sh", () => {
       'printf "%s" "$(eve_e2e_read_nonnegative_int_env EVE_E2E_SAMPLE_BYTES 262144)"',
       { EVE_E2E_SAMPLE_BYTES: "0" },
     );
-    const size = runSourcedHelper(
-      "eve_e2e_read_nonnegative_int_env EVE_E2E_SAMPLE_BYTES 262144",
-      { EVE_E2E_SAMPLE_BYTES: "64kb" },
-    );
+    const size = runSourcedHelper("eve_e2e_read_nonnegative_int_env EVE_E2E_SAMPLE_BYTES 262144", {
+      EVE_E2E_SAMPLE_BYTES: "64kb",
+    });
 
     expectShellSuccess(fallback);
     expect(fallback.stdout).toBe("262144");

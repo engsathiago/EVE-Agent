@@ -78,9 +78,7 @@ function expectDockerSetupCommand(command: string) {
   ).toBe(true);
 }
 
-function createDefaultsSandboxConfig(
-  scope: "agent" | "shared" | "session" = "agent",
-): EVEConfig {
+function createDefaultsSandboxConfig(scope: "agent" | "shared" | "session" = "agent"): EVEConfig {
   return {
     agents: {
       defaults: {

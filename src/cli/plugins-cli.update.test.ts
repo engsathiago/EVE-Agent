@@ -586,11 +586,7 @@ describe("plugins cli update", () => {
   );
 
   it("blocks possible legacy id migration when an included plugins section is unresolved", async () => {
-    const externalPath = path.join(
-      path.parse(process.cwd()).root,
-      "external-eve",
-      "plugins.json5",
-    );
+    const externalPath = path.join(path.parse(process.cwd()).root, "external-eve", "plugins.json5");
     const cfg = { plugins: {} } as EVEConfig;
     primeUpdateConfigSnapshot({
       config: cfg,

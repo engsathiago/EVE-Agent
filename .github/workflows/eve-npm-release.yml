@@ -127,16 +127,16 @@ jobs:
           set -euo pipefail
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-          if npm view "eve@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+          if npm view "eve-agent@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
             if [[ "${PREFLIGHT_ONLY}" == "true" ]]; then
-              echo "eve@${PACKAGE_VERSION} is already published on npm; continuing because preflight_only=true."
+              echo "eve-agent@${PACKAGE_VERSION} is already published on npm; continuing because preflight_only=true."
               exit 0
             fi
-            echo "eve@${PACKAGE_VERSION} is already published on npm."
+            echo "eve-agent@${PACKAGE_VERSION} is already published on npm."
             exit 1
           fi
 
-          echo "Publishing eve@${PACKAGE_VERSION}"
+          echo "Publishing eve-agent@${PACKAGE_VERSION}"
 
       - name: Check
         env:
@@ -324,7 +324,7 @@ jobs:
             releaseTag: process.env.RELEASE_TAG,
             releaseSha: process.env.RELEASE_SHA,
             npmDistTag: process.env.RELEASE_NPM_DIST_TAG,
-            packageName: "eve",
+            packageName: "eve-agent",
             packageVersion: process.env.PACKAGE_VERSION,
             tarballName: process.env.TARBALL_NAME,
             tarballSha256: process.env.TARBALL_SHA256,
@@ -530,12 +530,12 @@ jobs:
           set -euo pipefail
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-          if npm view "eve@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
-            echo "eve@${PACKAGE_VERSION} is already published on npm."
+          if npm view "eve-agent@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "eve-agent@${PACKAGE_VERSION} is already published on npm."
             exit 1
           fi
 
-          echo "Publishing eve@${PACKAGE_VERSION}"
+          echo "Publishing eve-agent@${PACKAGE_VERSION}"
 
       - name: Verify preflight run metadata
         env:

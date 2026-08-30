@@ -20,9 +20,7 @@ export function listRegisteredMemoryEmbeddingProviderAdapters(): MemoryEmbedding
 }
 
 /** Lists memory embedding providers from runtime config and registered adapters. */
-export function listMemoryEmbeddingProviders(
-  cfg?: EVEConfig,
-): MemoryEmbeddingProviderAdapter[] {
+export function listMemoryEmbeddingProviders(cfg?: EVEConfig): MemoryEmbeddingProviderAdapter[] {
   return listRuntimeEmbeddingProviderAdapters({
     key: "memoryEmbeddingProviders",
     cfg,

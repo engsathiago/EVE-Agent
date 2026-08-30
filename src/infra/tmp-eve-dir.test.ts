@@ -400,9 +400,7 @@ describe("resolvePreferredEVETmpDir", () => {
 
     expect(resolved).toBe(fallbackPath);
     expect(chmodSync).toHaveBeenCalledWith(fallbackPath, 0o700);
-    expect(warn).toHaveBeenCalledWith(
-      `[eve] tightened permissions on temp dir: ${fallbackPath}`,
-    );
+    expect(warn).toHaveBeenCalledWith(`[eve] tightened permissions on temp dir: ${fallbackPath}`);
   });
 
   it("uses /tmp/eve when another process tightened permissions before repair", () => {

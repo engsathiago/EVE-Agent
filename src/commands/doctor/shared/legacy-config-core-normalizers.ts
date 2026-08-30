@@ -20,10 +20,7 @@ import {
 export { normalizeLegacyTalkConfig } from "./legacy-talk-config-normalizer.js";
 
 /** Remove deprecated command config keys that no runtime reads anymore. */
-export function normalizeLegacyCommandsConfig(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyCommandsConfig(cfg: EVEConfig, changes: string[]): EVEConfig {
   const rawCommands = cfg.commands;
   if (!isRecord(rawCommands) || !("modelsWrite" in rawCommands)) {
     return cfg;
@@ -40,10 +37,7 @@ export function normalizeLegacyCommandsConfig(
 }
 
 /** Migrate legacy browser/Chrome relay config to current browser profile settings. */
-export function normalizeLegacyBrowserConfig(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyBrowserConfig(cfg: EVEConfig, changes: string[]): EVEConfig {
   const rawBrowser = cfg.browser;
   if (!isRecord(rawBrowser)) {
     return cfg;
@@ -652,10 +646,7 @@ function normalizeLegacyCodexCliProviderRuntimePins(
 }
 
 /** Move legacy runtime-tagged model/provider refs onto current agentRuntime policy fields. */
-export function normalizeLegacyRuntimeModelRefs(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyRuntimeModelRefs(cfg: EVEConfig, changes: string[]): EVEConfig {
   const providerPinned = normalizeLegacyCodexCliProviderRuntimePins(cfg, changes);
   const cfgWithProviders = providerPinned.config;
   const rawAgents = cfgWithProviders.agents;
@@ -845,10 +836,7 @@ export function normalizeLegacyOpenAIModelProviderApi(
 }
 
 /** Remove retired bundled nano-banana skill config after migrating image generation models. */
-export function normalizeLegacyNanoBananaSkill(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyNanoBananaSkill(cfg: EVEConfig, changes: string[]): EVEConfig {
   const NANO_BANANA_SKILL_KEY = "nano-banana-pro";
   const NANO_BANANA_MODEL = "google/gemini-3-pro-image-preview";
   const rawSkills = cfg.skills;
@@ -1077,10 +1065,7 @@ function migrateLegacyDeepgramCompat(params: {
 }
 
 /** Move legacy media provider option aliases into providerOptions maps. */
-export function normalizeLegacyMediaProviderOptions(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyMediaProviderOptions(cfg: EVEConfig, changes: string[]): EVEConfig {
   const rawTools = cfg.tools;
   if (!isRecord(rawTools)) {
     return cfg;
@@ -1408,10 +1393,7 @@ function normalizeLegacyMistralModelCost<T extends Record<string, unknown>>(para
 }
 
 /** Normalize stale Mistral model defaults such as prompt-cache read cost. */
-export function normalizeLegacyMistralModelDefaults(
-  cfg: EVEConfig,
-  changes: string[],
-): EVEConfig {
+export function normalizeLegacyMistralModelDefaults(cfg: EVEConfig, changes: string[]): EVEConfig {
   const rawProviders = cfg.models?.providers;
   if (!isRecord(rawProviders)) {
     return cfg;

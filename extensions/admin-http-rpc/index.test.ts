@@ -1,7 +1,7 @@
 // Admin Http Rpc tests cover index plugin behavior.
 import { describe, expect, it } from "vitest";
-import plugin from "./index.js";
 import manifest from "./eve.plugin.json" with { type: "json" };
+import plugin from "./index.js";
 
 describe("admin-http-rpc plugin entry", () => {
   it("stays startup-off until the plugin entry is explicitly enabled", () => {

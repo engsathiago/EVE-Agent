@@ -78,8 +78,8 @@ describe("isChannelConfigured", () => {
   });
 
   it("does not treat persisted Matrix credentials as configured channel state", () => {
-    expect(
-      isChannelConfigured({}, "matrix", { EVE_STATE_DIR: "state-with-matrix-creds" }),
-    ).toBe(false);
+    expect(isChannelConfigured({}, "matrix", { EVE_STATE_DIR: "state-with-matrix-creds" })).toBe(
+      false,
+    );
   });
 });

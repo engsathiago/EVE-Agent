@@ -27,10 +27,7 @@ describe("resolveGatewayTokenForUrlEdit", () => {
 
   it("loads a scoped token when the normalized gateway endpoint changes", () => {
     vi.stubGlobal("sessionStorage", createStorageMock());
-    sessionStorage.setItem(
-      "eve.control.token.v1:wss://other-gateway.example/eve",
-      "other-token",
-    );
+    sessionStorage.setItem("eve.control.token.v1:wss://other-gateway.example/eve", "other-token");
 
     expect(
       resolveGatewayTokenForUrlEdit(

@@ -43,7 +43,7 @@ function collectExcludedDistExtensionIds() {
 }
 
 function packageRootLooksInstalled(root) {
-  return root.replaceAll("\\", "/").endsWith("/node_modules/eve");
+  return root.replaceAll("\\", "/").endsWith("/node_modules/eve-agent");
 }
 
 function smokeInInstalledLayoutIfNeeded() {
@@ -53,7 +53,7 @@ function smokeInInstalledLayoutIfNeeded() {
 
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "eve-channel-entry-smoke-"));
   const nodeModulesRoot = path.join(tempRoot, "node_modules");
-  const installedPackageRoot = path.join(nodeModulesRoot, "eve");
+  const installedPackageRoot = path.join(nodeModulesRoot, "eve-agent");
   fs.mkdirSync(nodeModulesRoot, { recursive: true });
   fs.symlinkSync(packageRoot, installedPackageRoot, "dir");
 

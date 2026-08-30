@@ -131,10 +131,7 @@ describe("findOcPaths — slash-deep JSONC paths", () => {
   ).ast;
 
   it("expands * in a slash-deep JSON object path", () => {
-    const out = findOcPaths(
-      jsonc,
-      parseOcPath("oc://eve.json/mcp/servers/*/env/GITHUB_TOKEN"),
-    );
+    const out = findOcPaths(jsonc, parseOcPath("oc://eve.json/mcp/servers/*/env/GITHUB_TOKEN"));
     expect(out).toHaveLength(2);
     const values = out.map((m) => (m.match.kind === "leaf" ? m.match.valueText : ""));
     expect(values.toSorted()).toEqual(["gh-token", "gl-token"]);

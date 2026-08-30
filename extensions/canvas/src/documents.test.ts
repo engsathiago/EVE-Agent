@@ -53,9 +53,7 @@ describe("canvas documents", () => {
 
   it("encodes special characters in hosted entrypoint path segments", () => {
     const url = buildCanvasDocumentEntryUrl("cv_example", "bundle#1/entry%20point?.html");
-    expect(url).toBe(
-      "/__eve__/canvas/documents/cv_example/bundle%231/entry%2520point%3F.html",
-    );
+    expect(url).toBe("/__eve__/canvas/documents/cv_example/bundle%231/entry%2520point%3F.html");
   });
 
   it("materializes inline html bundles as index documents", async () => {
@@ -234,10 +232,9 @@ describe("canvas documents", () => {
     tempDirs.push(stateDir);
 
     expect(
-      resolveCanvasHttpPathToLocalPath(
-        "/__eve__/canvas/documents/../collection.media/index.html",
-        { stateDir },
-      ),
+      resolveCanvasHttpPathToLocalPath("/__eve__/canvas/documents/../collection.media/index.html", {
+        stateDir,
+      }),
     ).toBeNull();
   });
 
@@ -250,10 +247,9 @@ describe("canvas documents", () => {
     await writeFile(path.join(documentDir, "%E0%A4%A.html"), "literal-percent-name", "utf8");
 
     expect(
-      resolveCanvasHttpPathToLocalPath(
-        `/__eve__/canvas/documents/${documentId}/%E0%A4%A.html`,
-        { stateDir },
-      ),
+      resolveCanvasHttpPathToLocalPath(`/__eve__/canvas/documents/${documentId}/%E0%A4%A.html`, {
+        stateDir,
+      }),
     ).toBeNull();
     expect(
       resolveCanvasHttpPathToLocalPath(

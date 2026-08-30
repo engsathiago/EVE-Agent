@@ -81,10 +81,7 @@ function collectPluginRegistryState(
 }
 
 /** Return true when plugin discovery errors should pause stale-plugin auto-removal. */
-export function isStalePluginAutoRepairBlocked(
-  cfg: EVEConfig,
-  env?: NodeJS.ProcessEnv,
-): boolean {
+export function isStalePluginAutoRepairBlocked(cfg: EVEConfig, env?: NodeJS.ProcessEnv): boolean {
   if (cfg.plugins?.enabled === false) {
     return false;
   }

@@ -201,7 +201,7 @@ This is idempotent and safe to run multiple times.
     sudo docker images | grep eve-sandbox
 
     # Build sandbox image if missing (requires source checkout)
-    cd /opt/eve/eve
+    cd /opt/engsathiago/eve-agent
     sudo -u eve ./scripts/sandbox-setup.sh
     # For npm installs without a source checkout, see
     # https://docs.eve.ai/gateway/sandboxing#images-and-setup

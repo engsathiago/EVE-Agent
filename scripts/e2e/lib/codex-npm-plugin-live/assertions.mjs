@@ -480,16 +480,10 @@ function assertAgentError() {
     );
   }
   const stdout = fs.existsSync("/tmp/eve-codex-agent-after-uninstall.json")
-    ? readTextFileTail(
-        "/tmp/eve-codex-agent-after-uninstall.json",
-        "post-uninstall agent stdout",
-      )
+    ? readTextFileTail("/tmp/eve-codex-agent-after-uninstall.json", "post-uninstall agent stdout")
     : "";
   const stderr = fs.existsSync("/tmp/eve-codex-agent-after-uninstall.err")
-    ? readTextFileTail(
-        "/tmp/eve-codex-agent-after-uninstall.err",
-        "post-uninstall agent stderr",
-      )
+    ? readTextFileTail("/tmp/eve-codex-agent-after-uninstall.err", "post-uninstall agent stderr")
     : "";
   const combined = `${stdout}\n${stderr}`;
   if (

@@ -462,10 +462,7 @@ function isEVESessionOwnerArgv(args: string[]): boolean {
   if (
     normalized.some(
       (arg) =>
-        arg === "eve" ||
-        arg.endsWith("/eve") ||
-        arg === "eve.mjs" ||
-        arg.endsWith("/eve.mjs"),
+        arg === "eve" || arg.endsWith("/eve") || arg === "eve.mjs" || arg.endsWith("/eve.mjs"),
     )
   ) {
     return true;

@@ -98,9 +98,7 @@ describe("plugins search command", () => {
       limit: 5,
     });
     expect(mocks.logs.join("\n")).toContain("eve-calendar");
-    expect(mocks.logs.join("\n")).toContain(
-      "Install: eve plugins install clawhub:eve-calendar",
-    );
+    expect(mocks.logs.join("\n")).toContain("Install: eve plugins install clawhub:eve-calendar");
   });
 
   it("writes JSON results when requested", async () => {

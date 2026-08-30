@@ -574,9 +574,7 @@ describe("matrix message actions", () => {
     expect(doRequest).not.toHaveBeenCalled();
     expect(getEvent).toHaveBeenCalledWith("!room:example.org", "$thread-root");
     expect(result.messages.map((message) => message.eventId)).toEqual(["$thread-root"]);
-    expect(result.nextBatch).toEqual(
-      expect.stringContaining("eve.matrix.thread-relations-start:"),
-    );
+    expect(result.nextBatch).toEqual(expect.stringContaining("eve.matrix.thread-relations-start:"));
 
     const next = await readMatrixMessages("room:!room:example.org", {
       client,

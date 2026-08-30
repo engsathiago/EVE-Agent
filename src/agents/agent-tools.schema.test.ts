@@ -12,10 +12,7 @@ import {
   testing as beforeToolCallTesting,
   wrapToolWithBeforeToolCallHook,
 } from "./agent-tools.before-tool-call.js";
-import {
-  normalizeToolParameterSchema,
-  normalizeToolParameters,
-} from "./agent-tools.schema.js";
+import { normalizeToolParameterSchema, normalizeToolParameters } from "./agent-tools.schema.js";
 import type { AnyAgentTool } from "./agent-tools.types.js";
 
 const TEST_USAGE = {

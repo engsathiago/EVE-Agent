@@ -8,8 +8,8 @@ import { createRequire } from "node:module";
 import * as os from "node:os";
 import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import type { createJiti } from "jiti/static";
 import * as bundledLlm from "eve-agent/plugin-sdk/llm";
+import type { createJiti } from "jiti/static";
 // Static imports of packages that extensions may use.
 // These MUST be static so Bun bundles them into the compiled binary.
 // The virtualModules option then makes them available to extensions.
@@ -67,7 +67,7 @@ let createJitiLoaderFactory: typeof createJiti | undefined;
 let extensionSourceTransformLoader: ReturnType<typeof createJiti> | undefined;
 let nativeExtensionLoadCounter = 0;
 const EXTENSION_LOADER_ALIAS_IMPORT_PATTERN =
-  /(?:@eve\/plugin-sdk|eve\/plugin-sdk|@sinclair\/typebox|typebox)(?:\/[A-Za-z0-9_-]+)?/u;
+  /(?:@eve\/plugin-sdk|eve-agent\/plugin-sdk|@sinclair\/typebox|typebox)(?:\/[A-Za-z0-9_-]+)?/u;
 const RELATIVE_EXTENSION_IMPORT_PATTERN =
   /(?:import\s*(?:[^'"]*?\s*from\s*)?["']\.{1,2}\/|export\s*(?:[^'"]*?\s*from\s*)["']\.{1,2}\/|import\s*\(\s*["']\.{1,2}\/|require\s*\(\s*["']\.{1,2}\/)/u;
 const COMMONJS_EXTENSION_EXPORT_PATTERN = /\b(?:module\.exports|exports\.)/u;

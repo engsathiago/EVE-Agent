@@ -114,10 +114,7 @@ function pathsEqual(left, right) {
 }
 
 function configPath() {
-  return (
-    process.env.EVE_CONFIG_PATH ??
-    path.join(process.env.HOME ?? "", ".eve", "eve.json")
-  );
+  return process.env.EVE_CONFIG_PATH ?? path.join(process.env.HOME ?? "", ".eve", "eve.json");
 }
 
 function assert(condition, message) {
@@ -142,10 +139,7 @@ function assertOnboard() {
   const stateRaw =
     fs.readFileSync(configPath(), "utf8") +
     (fs.existsSync(authPath) ? fs.readFileSync(authPath, "utf8") : "");
-  assert(
-    !stateRaw.includes("sk-eve-release-user-journey"),
-    "onboard persisted raw OpenAI key",
-  );
+  assert(!stateRaw.includes("sk-eve-release-user-journey"), "onboard persisted raw OpenAI key");
 }
 
 function configureMockModel() {

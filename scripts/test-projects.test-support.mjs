@@ -1040,10 +1040,7 @@ const TOOLING_SOURCE_TEST_TARGETS = new Map([
   ["scripts/eve-npm-postpublish-verify.ts", ["test/eve-npm-postpublish-verify.test.ts"]],
   ["scripts/eve-npm-release-check.ts", ["test/eve-npm-release-check.test.ts"]],
   ["scripts/eve-prepack.ts", ["test/eve-prepack.test.ts"]],
-  [
-    "scripts/check-eve-package-tarball.mjs",
-    ["test/scripts/check-eve-package-tarball.test.ts"],
-  ],
+  ["scripts/check-eve-package-tarball.mjs", ["test/scripts/check-eve-package-tarball.test.ts"]],
   ["scripts/check-package-dist-imports.mjs", ["test/scripts/check-package-dist-imports.test.ts"]],
   [
     "scripts/check-plugin-npm-runtime-builds.mjs",
@@ -3503,9 +3500,7 @@ export function shouldUseLocalFullSuiteParallelByDefault(env = process.env) {
   if (hasConservativeVitestWorkerBudget(env)) {
     return false;
   }
-  return (
-    env.EVE_TEST_PROJECTS_SERIAL !== "1" && env.CI !== "true" && env.GITHUB_ACTIONS !== "true"
-  );
+  return env.EVE_TEST_PROJECTS_SERIAL !== "1" && env.CI !== "true" && env.GITHUB_ACTIONS !== "true";
 }
 
 export function shouldExpandLocalFullSuiteShardsByDefault(env = process.env) {
@@ -3530,9 +3525,7 @@ function parsePositiveInt(value, label) {
 function hasConservativeVitestWorkerBudget(env) {
   const workerBudget = parsePositiveInt(
     env.EVE_VITEST_MAX_WORKERS ?? env.EVE_TEST_WORKERS,
-    env.EVE_VITEST_MAX_WORKERS === undefined
-      ? "EVE_TEST_WORKERS"
-      : "EVE_VITEST_MAX_WORKERS",
+    env.EVE_VITEST_MAX_WORKERS === undefined ? "EVE_TEST_WORKERS" : "EVE_VITEST_MAX_WORKERS",
   );
   return workerBudget !== null && workerBudget <= 1;
 }
@@ -3540,10 +3533,7 @@ function hasConservativeVitestWorkerBudget(env) {
 export function resolveParallelFullSuiteConcurrency(specCount, envInput, hostInfo) {
   let env = envInput;
   env ??= process.env;
-  const override = parsePositiveInt(
-    env.EVE_TEST_PROJECTS_PARALLEL,
-    "EVE_TEST_PROJECTS_PARALLEL",
-  );
+  const override = parsePositiveInt(env.EVE_TEST_PROJECTS_PARALLEL, "EVE_TEST_PROJECTS_PARALLEL");
   if (override !== null) {
     return Math.min(override, specCount);
   }
@@ -3556,10 +3546,7 @@ export function resolveParallelFullSuiteConcurrency(specCount, envInput, hostInf
   if (hasConservativeVitestWorkerBudget(env)) {
     return 1;
   }
-  if (
-    env.EVE_TEST_PROJECTS_LEAF_SHARDS !== "1" &&
-    !shouldUseLocalFullSuiteParallelByDefault(env)
-  ) {
+  if (env.EVE_TEST_PROJECTS_LEAF_SHARDS !== "1" && !shouldUseLocalFullSuiteParallelByDefault(env)) {
     return 1;
   }
   return Math.min(resolveLocalFullSuiteProfile(env, hostInfo).shardParallelism, specCount);
@@ -3660,10 +3647,7 @@ export function createVitestRunSpecs(args, params = {}) {
   );
   return plans.map((plan, index) => {
     const includeFilePath = plan.includePatterns
-      ? path.join(
-          params.tempDir ?? os.tmpdir(),
-          `eve-vitest-include-${randomUUID()}-${index}.json`,
-        )
+      ? path.join(params.tempDir ?? os.tmpdir(), `eve-vitest-include-${randomUUID()}-${index}.json`)
       : null;
     return {
       config: plan.config,

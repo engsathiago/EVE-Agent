@@ -44,6 +44,7 @@ import {
   loadWikiMemoryPalace,
   type DreamingState,
 } from "./controllers/dreaming.ts";
+import { loadEveProduct, type EveProductSection } from "./controllers/eve-suite.ts";
 import { loadExecApprovals, type ExecApprovalsState } from "./controllers/exec-approvals.ts";
 import { loadLogs, type LogsState } from "./controllers/logs.ts";
 import {
@@ -443,6 +444,19 @@ export async function refreshActiveTab(host: SettingsHost, opts?: { chatStartup?
         await loadOverview(host);
         break;
       case "activity":
+        break;
+      case "projects":
+      case "environments":
+      case "studio":
+      case "integrations":
+      case "intelligence":
+        await loadEveProduct({
+          host,
+          client: app.client,
+          section: host.tab as EveProductSection,
+          force: true,
+          requestUpdate: host.requestUpdate,
+        });
         break;
       case "workboard":
         await Promise.all([

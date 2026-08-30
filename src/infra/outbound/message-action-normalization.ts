@@ -1,6 +1,7 @@
 // Message-action input normalization infers channel/target context and rewrites
 // legacy target fields before dispatch validation.
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
+import type { getBootstrapChannelPlugin } from "../../channels/plugins/bootstrap-registry.js";
 import type {
   ChannelMessageActionName,
   ChannelThreadingToolContext,
@@ -17,6 +18,7 @@ export function normalizeMessageActionInput(params: {
   action: ChannelMessageActionName;
   args: Record<string, unknown>;
   toolContext?: ChannelThreadingToolContext;
+  resolveChannelPlugin?: typeof getBootstrapChannelPlugin;
 }): Record<string, unknown> {
   const normalizedArgs = { ...params.args };
   const { action, toolContext } = params;
@@ -41,7 +43,10 @@ export function normalizeMessageActionInput(params: {
     !explicitTarget &&
     !hasLegacyTarget &&
     actionRequiresTarget(action) &&
-    !actionHasTarget(action, normalizedArgs, { channel: inferredChannel })
+    !actionHasTarget(action, normalizedArgs, {
+      channel: inferredChannel,
+      resolveChannelPlugin: params.resolveChannelPlugin,
+    })
   ) {
     const inferredTarget =
       normalizeOptionalString(toolContext?.currentChannelId) ??
@@ -71,7 +76,10 @@ export function normalizeMessageActionInput(params: {
   applyTargetToParams({ action, args: normalizedArgs });
   if (
     actionRequiresTarget(action) &&
-    !actionHasTarget(action, normalizedArgs, { channel: inferredChannel })
+    !actionHasTarget(action, normalizedArgs, {
+      channel: inferredChannel,
+      resolveChannelPlugin: params.resolveChannelPlugin,
+    })
   ) {
     throw new Error(`Action ${action} requires a target.`);
   }

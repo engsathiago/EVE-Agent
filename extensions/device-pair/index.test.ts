@@ -2,10 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type {
-  EVEPluginCommandDefinition,
-  PluginCommandContext,
-} from "eve-agent/plugin-sdk/core";
+import type { EVEPluginCommandDefinition, PluginCommandContext } from "eve-agent/plugin-sdk/core";
 import { createTestPluginApi } from "eve-agent/plugin-sdk/plugin-test-api";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { EVEPluginApi } from "./api.js";

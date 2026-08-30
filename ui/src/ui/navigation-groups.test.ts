@@ -29,6 +29,17 @@ describe("TAB_GROUPS", () => {
     expect(SETTINGS_TABS).toContain("channels");
   });
 
+  it("publishes the native EVE product workspace", () => {
+    const workspace = TAB_GROUPS.find((group) => group.label === "workspace");
+    expect(workspace?.tabs).toEqual([
+      "projects",
+      "studio",
+      "environments",
+      "integrations",
+      "intelligence",
+    ]);
+  });
+
   it("keeps the settings group active for nested settings routes", () => {
     const settings = TAB_GROUPS.find((group) => group.label === "settings");
     if (!settings) {

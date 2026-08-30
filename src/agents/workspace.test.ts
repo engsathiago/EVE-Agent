@@ -6,10 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { makeTempWorkspace, writeWorkspaceFile } from "../test-helpers/workspace.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import {
   DEFAULT_AGENTS_FILENAME,
   DEFAULT_BOOTSTRAP_FILENAME,
@@ -136,6 +133,7 @@ describe("ensureAgentWorkspace", () => {
     await ensureAgentWorkspace({ dir: tempDir, ensureBootstrapFiles: true });
 
     await expectBootstrapSeeded(tempDir);
+    await expect(fs.readFile(path.join(tempDir, "SOUL.md"), "utf8")).resolves.toBe("");
     await expectPathMissing(path.join(tempDir, ...LEGACY_WORKSPACE_STATE_PATH_SEGMENTS));
     expect((await readWorkspaceState(tempDir)).setupCompletedAt).toBeUndefined();
   });

@@ -463,7 +463,7 @@ const listRequiredEVEExtensionAliasOutputs = (deps) => {
   }
 
   const exportedPluginSdkFileNames = readPackageJsonPluginSdkAliasFileNames(deps);
-  const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve");
+  const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve-agent");
   return [
     path.join(aliasDir, "package.json"),
     ...dirents
@@ -1135,9 +1135,7 @@ const closeRunNodeOutputTee = async (deps, exitCode) => {
   try {
     await deps.outputTee.close();
   } catch (error) {
-    deps.stderr.write(
-      `[eve] Failed to write output log: ${error?.message ?? "unknown error"}\n`,
-    );
+    deps.stderr.write(`[eve] Failed to write output log: ${error?.message ?? "unknown error"}\n`);
     return exitCode === 0 ? 1 : exitCode;
   }
   return exitCode;

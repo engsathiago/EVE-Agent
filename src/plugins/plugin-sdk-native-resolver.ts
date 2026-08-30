@@ -169,7 +169,7 @@ function resolveLoaderPackageRootFromModulePath(modulePath: string): string {
           name?: unknown;
         };
         if (
-          packageJson.name === "eve" ||
+          packageJson.name === "eve-agent" ||
           (typeof packageJson.bin === "object" &&
             packageJson.bin !== null &&
             typeof (packageJson.bin as { eve?: unknown }).eve === "string")
@@ -193,9 +193,7 @@ function resolveAllowedParentRoot(modulePath: string): string {
   return findBundledPluginRoot(modulePath) ?? findNearestPackageRoot(modulePath);
 }
 
-function resolveAllowedParentRoots(
-  options: InstallEVEPluginSdkNativeResolverOptions,
-): string[] {
+function resolveAllowedParentRoots(options: InstallEVEPluginSdkNativeResolverOptions): string[] {
   const roots = new Set<string>();
   if (options.pluginModulePath) {
     roots.add(normalizePathForBoundary(resolveAllowedParentRoot(options.pluginModulePath)));

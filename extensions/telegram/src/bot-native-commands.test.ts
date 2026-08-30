@@ -437,9 +437,7 @@ describe("registerTelegramNativeCommands", () => {
     const deliverParams = firstDeliverRepliesParams();
     expect(deliverParams.mediaMaxBytes).toBe(mediaMaxBytes);
     const mediaLocalRoots = deliverParams.mediaLocalRoots as Array<string> | undefined;
-    expect(mediaLocalRoots?.some((root) => /[\\/]\.eve[\\/]workspace-work$/.test(root))).toBe(
-      true,
-    );
+    expect(mediaLocalRoots?.some((root) => /[\\/]\.eve[\\/]workspace-work$/.test(root))).toBe(true);
     expect(sendMessage).not.toHaveBeenCalledWith(123, "Command not found.");
   });
 

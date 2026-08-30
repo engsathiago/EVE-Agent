@@ -10,7 +10,10 @@ import {
   resolvePairingIdLabel,
   upsertChannelPairingRequest,
 } from "eve-agent/plugin-sdk/conversation-runtime";
-import { createClaimableDedupe, type ClaimableDedupe } from "eve-agent/plugin-sdk/persistent-dedupe";
+import {
+  createClaimableDedupe,
+  type ClaimableDedupe,
+} from "eve-agent/plugin-sdk/persistent-dedupe";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   createChannelHistoryWindow,

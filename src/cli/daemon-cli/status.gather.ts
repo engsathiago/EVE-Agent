@@ -340,7 +340,7 @@ export type DaemonStatus = {
   /**
    * Plugin version drift report. Surfaces active official external plugins
    * whose installed version does not match the running gateway version, which
-   * can happen after `npm install -g eve@<v>` updates the gateway binary
+   * can happen after `npm install -g eve-agent@<v>` updates the gateway binary
    * without a corresponding `eve plugins update`.
    */
   pluginVersionDrift?: PluginVersionDriftReport;
@@ -608,9 +608,7 @@ export async function gatherDaemonStatus(
   const staleUpdateLaunchdJobs =
     opts.deep && process.platform === "darwin"
       ? await loadLaunchdModule()
-          .then(({ findStaleEVEUpdateLaunchdJobs }) =>
-            findStaleEVEUpdateLaunchdJobs(serviceEnv),
-          )
+          .then(({ findStaleEVEUpdateLaunchdJobs }) => findStaleEVEUpdateLaunchdJobs(serviceEnv))
           .catch(() => [])
       : [];
 

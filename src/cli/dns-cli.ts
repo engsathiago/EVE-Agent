@@ -164,9 +164,7 @@ export function registerDnsCli(program: Command) {
       );
       defaultRuntime.log("");
       defaultRuntime.log(
-        theme.heading(
-          "Recommended config ($EVE_CONFIG_PATH, default ~/.eve/eve.json):",
-        ),
+        theme.heading("Recommended config ($EVE_CONFIG_PATH, default ~/.eve/eve.json):"),
       );
       defaultRuntime.writeJson({
         gateway: { bind: "auto" },

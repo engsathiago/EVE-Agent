@@ -28,8 +28,7 @@ import type {
 
 export type AnyAgentTool = import("../plugins/types.js").AnyAgentTool;
 export type EVEPluginApi = import("../plugins/types.js").EVEPluginApi;
-export type EVEPluginCommandDefinition =
-  import("../plugins/types.js").EVEPluginCommandDefinition;
+export type EVEPluginCommandDefinition = import("../plugins/types.js").EVEPluginCommandDefinition;
 export type PluginCommandContext = import("../plugins/types.js").PluginCommandContext;
 
 export type {

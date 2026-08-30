@@ -1,6 +1,6 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Defines provider config context types for plugin-owned providers.
 import type { ModelProviderConfig } from "../config/types.js";
-import type { EVEConfig } from "../config/types.eve.js";
 
 /**
  * Provider-owned config normalization for `models.providers.<id>` entries.

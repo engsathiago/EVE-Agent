@@ -4,10 +4,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import { createTrackedTempDirs } from "../../test-utils/tracked-temp-dirs.js";
 import { callGatewayHandler } from "./skills.test-helpers.js";
 
@@ -156,6 +153,15 @@ describe("skills proposal gateway handlers", () => {
         "utf8",
       ),
     ).resolves.toContain("Use current weather");
+
+    const rollback = await callHandler("skills.proposals.rollback", {
+      proposalId: created.record.id,
+    });
+    expect(rollback.ok).toBe(true);
+    expect((rollback.response as { record: { status: string } }).record.status).toBe("rolled_back");
+    await expect(
+      fs.stat(path.join(mocks.workspaceDir, "skills", "weather-planner", "SKILL.md")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   it("scopes list and inspect to the resolved agent workspace", async () => {

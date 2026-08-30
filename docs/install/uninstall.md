@@ -123,7 +123,7 @@ If you used a profile, delete the matching task name and `~\.eve-<profile>\gatew
 
 ### Normal install (install.sh / npm / pnpm / bun)
 
-If you used `https://eve.ai/install.sh` or `install.ps1`, the CLI was installed with `npm install -g eve@latest`.
+If you used `https://eve.ai/install.sh` or `install.ps1`, the CLI was installed with `npm install -g eve-agent@latest`.
 Remove it with `npm rm -g eve` (or `pnpm remove -g` / `bun remove -g` if you installed that way).
 
 ### Source checkout (git clone)

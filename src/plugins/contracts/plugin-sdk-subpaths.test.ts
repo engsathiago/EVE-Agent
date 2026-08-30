@@ -488,7 +488,7 @@ describe("plugin-sdk subpath exports", () => {
         resolve(REPO_ROOT, "test"),
       ],
       pattern:
-        /(?:from\s+|import\s+(?:type\s+)?|import\s*\(\s*)["']eve\/plugin-sdk\/channel-runtime(?=["'])/u,
+        /(?:from\s+|import\s+(?:type\s+)?|import\s*\(\s*)["']eve-agent\/plugin-sdk\/channel-runtime(?=["'])/u,
       exclude: [
         "src/plugins/compat/registry.ts",
         "src/plugins/sdk-alias.test.ts",
@@ -1347,7 +1347,9 @@ describe("plugin-sdk subpath exports", () => {
     const globalSingletonSdk = await importResolvedPluginSdkSubpath(
       "eve-agent/plugin-sdk/global-singleton",
     );
-    const pluginEntrySdk = await importResolvedPluginSdkSubpath("eve-agent/plugin-sdk/plugin-entry");
+    const pluginEntrySdk = await importResolvedPluginSdkSubpath(
+      "eve-agent/plugin-sdk/plugin-entry",
+    );
     const channelLifecycleSdk = await importResolvedPluginSdkSubpath(
       "eve-agent/plugin-sdk/channel-lifecycle",
     );
@@ -1359,7 +1361,9 @@ describe("plugin-sdk subpath exports", () => {
     );
     const representativeModules = [];
     for (const id of representativeRuntimeSmokeSubpaths) {
-      representativeModules.push(await importResolvedPluginSdkSubpath(`eve-agent/plugin-sdk/${id}`));
+      representativeModules.push(
+        await importResolvedPluginSdkSubpath(`eve-agent/plugin-sdk/${id}`),
+      );
     }
 
     expect(coreSdk.definePluginEntry).toBe(pluginEntrySdk.definePluginEntry);

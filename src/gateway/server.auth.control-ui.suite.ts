@@ -178,9 +178,7 @@ export function registerControlUiAndPairingSuite(): void {
     };
   };
 
-  const startControlUiServerWithOperatorIdentity = async (
-    identityPrefix = "eve-device-scope-",
-  ) => {
+  const startControlUiServerWithOperatorIdentity = async (identityPrefix = "eve-device-scope-") => {
     const { server, port, prevToken } = await startControlUiServer("secret");
     const { identityPath, identity, client } = await createOperatorIdentityFixture(identityPrefix);
     return { server, port, prevToken, identityPath, identity, client };
@@ -1142,9 +1140,7 @@ export function registerControlUiAndPairingSuite(): void {
       await import("../infra/device-pairing.js");
     const { server, port, prevToken } = await startControlUiServer("secret");
 
-    const { identityPath, identity } = await createOperatorIdentityFixture(
-      "eve-bootstrap-node-",
-    );
+    const { identityPath, identity } = await createOperatorIdentityFixture("eve-bootstrap-node-");
     const client = {
       id: "eve-ios",
       version: "2026.3.30",
@@ -1778,9 +1774,8 @@ export function registerControlUiAndPairingSuite(): void {
     const { getPairedDevice, listDevicePairing } = await import("../infra/device-pairing.js");
     const { server, port, prevToken } = await startControlUiServer("secret");
 
-    const { identityPath, identity, client } = await createOperatorIdentityFixture(
-      "eve-bootstrap-operator-",
-    );
+    const { identityPath, identity, client } =
+      await createOperatorIdentityFixture("eve-bootstrap-operator-");
 
     try {
       const issued = await issueDeviceBootstrapToken({
@@ -1919,9 +1914,8 @@ export function registerControlUiAndPairingSuite(): void {
     const { publicKeyRawBase64UrlFromPem } = await import("../infra/device-identity.js");
     const { approveDevicePairing, getPairedDevice, listDevicePairing, requestDevicePairing } =
       await import("../infra/device-pairing.js");
-    const { identityPath, identity } = await createOperatorIdentityFixture(
-      "eve-device-legacy-meta-",
-    );
+    const { identityPath, identity } =
+      await createOperatorIdentityFixture("eve-device-legacy-meta-");
     const deviceId = identity.deviceId;
     const publicKey = publicKeyRawBase64UrlFromPem(identity.publicKeyPem);
     const pending = await requestDevicePairing({
@@ -2134,8 +2128,7 @@ export function registerControlUiAndPairingSuite(): void {
     const { server, port, prevToken } = await startControlUiServer("secret");
     const wsDockerCli = await openWs(port, { host: "172.17.0.2:18789" });
     try {
-      const { identity, identityPath } =
-        await createOperatorIdentityFixture("eve-cli-docker-");
+      const { identity, identityPath } = await createOperatorIdentityFixture("eve-cli-docker-");
       const nonce = await readConnectChallengeNonce(wsDockerCli);
       const dockerCli = await connectReq(wsDockerCli, {
         token: "secret",

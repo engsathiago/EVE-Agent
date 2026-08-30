@@ -17,8 +17,7 @@ vi.mock("../process/exec.js", () => ({
 }));
 
 vi.mock("../infra/eve-root.js", () => ({
-  resolveEVEPackageRootSync: (...args: unknown[]) =>
-    resolveEVEPackageRootSyncMock(...args),
+  resolveEVEPackageRootSync: (...args: unknown[]) => resolveEVEPackageRootSyncMock(...args),
 }));
 
 vi.resetModules();
@@ -67,17 +66,7 @@ function failedSpawn(stderr: string, stdout = "") {
 }
 
 function npmViewArgv(spec: string): string[] {
-  return [
-    "npm",
-    "view",
-    spec,
-    "name",
-    "version",
-    "dist.integrity",
-    "dist.shasum",
-    "eve",
-    "--json",
-  ];
+  return ["npm", "view", spec, "name", "version", "dist.integrity", "dist.shasum", "eve", "--json"];
 }
 
 function npmViewVersionsArgv(spec: string): string[] {
@@ -274,7 +263,7 @@ function writeNpmRootPackageLock(params: {
       integrity: pkg.installedIntegrity ?? pkg.integrity ?? "sha512-plugin-test",
     };
     if (pkg.materializesRootEVE) {
-      lockPackages["node_modules/eve"] = {
+      lockPackages["node_modules/eve-agent"] = {
         peer: true,
         version: "2026.5.3",
       };
@@ -468,12 +457,12 @@ function mockNpmViewAndInstallMany(packages: MockNpmPackage[]) {
         const installedPackages: MockNpmPackage[] = [];
         prunePluginLocalEVEPeerLinks(npmRoot);
         for (const packageName of Object.keys(manifest.dependencies ?? {})) {
-          if (packageName === "eve") {
-            const eveRoot = path.join(npmRoot, "node_modules", "eve");
+          if (packageName === "eve-agent") {
+            const eveRoot = path.join(npmRoot, "node_modules", "eve-agent");
             fs.mkdirSync(eveRoot, { recursive: true });
             fs.writeFileSync(
               path.join(eveRoot, "package.json"),
-              JSON.stringify({ name: "eve", version: "0.0.0-test" }),
+              JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }),
               "utf8",
             );
             continue;
@@ -500,11 +489,11 @@ function mockNpmViewAndInstallMany(packages: MockNpmPackage[]) {
             version: pkg.installedVersion ?? pkg.version,
           });
           if (pkg.materializesRootEVE) {
-            const eveRoot = path.join(npmRoot, "node_modules", "eve");
+            const eveRoot = path.join(npmRoot, "node_modules", "eve-agent");
             fs.mkdirSync(eveRoot, { recursive: true });
             fs.writeFileSync(
               path.join(eveRoot, "package.json"),
-              JSON.stringify({ name: "eve", version: "2026.5.3" }),
+              JSON.stringify({ name: "eve-agent", version: "2026.5.3" }),
               "utf8",
             );
           }
@@ -519,12 +508,12 @@ function mockNpmViewAndInstallMany(packages: MockNpmPackage[]) {
       }
       if (argv[0] === "npm" && argv[1] === "uninstall") {
         const packageName = (argv as string[]).at(-1);
-        if (packageName === "eve") {
+        if (packageName === "eve-agent") {
           const npmRoot = options?.cwd;
           if (!npmRoot) {
             throw new Error(`unexpected npm uninstall command: ${(argv as string[]).join(" ")}`);
           }
-          fs.rmSync(path.join(npmRoot, "node_modules", "eve"), {
+          fs.rmSync(path.join(npmRoot, "node_modules", "eve-agent"), {
             recursive: true,
             force: true,
           });
@@ -570,7 +559,7 @@ beforeEach(() => {
   const hostRoot = suiteTempRootTracker.makeTempDir();
   fs.writeFileSync(
     path.join(hostRoot, "package.json"),
-    `${JSON.stringify({ name: "eve", version: "0.0.0-test" }, null, 2)}\n`,
+    `${JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }, null, 2)}\n`,
     "utf8",
   );
   resolveEVEPackageRootSyncMock.mockReturnValue(hostRoot);
@@ -584,7 +573,7 @@ beforeAll(async () => {
   const hostRoot = suiteTempRootTracker.makeTempDir();
   fs.writeFileSync(
     path.join(hostRoot, "package.json"),
-    `${JSON.stringify({ name: "eve", version: "0.0.0-test" }, null, 2)}\n`,
+    `${JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }, null, 2)}\n`,
     "utf8",
   );
   resolveEVEPackageRootSyncMock.mockReturnValue(hostRoot);
@@ -649,7 +638,7 @@ beforeAll(async () => {
   const hostRoot = suiteTempRootTracker.makeTempDir();
   fs.writeFileSync(
     path.join(hostRoot, "package.json"),
-    `${JSON.stringify({ name: "eve", version: "0.0.0-test" }, null, 2)}\n`,
+    `${JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }, null, 2)}\n`,
     "utf8",
   );
   resolveEVEPackageRootSyncMock.mockReturnValue(hostRoot);
@@ -1336,7 +1325,7 @@ describe("installPluginFromNpmSpec", () => {
           version: "1.0.0",
           pluginId: "peer-plugin",
           npmRoot,
-          peerDependencies: { eve: "^2026.0.0" },
+          peerDependencies: { "eve-agent": "^2026.0.0" },
         },
         {
           spec: "next-plugin@1.0.0",
@@ -1355,7 +1344,7 @@ describe("installPluginFromNpmSpec", () => {
       expect(first.ok).toBe(true);
       const peerPluginDir = resolveTestPluginPackageDir(npmRoot, "peer-plugin");
       expect(
-        fs.lstatSync(path.join(peerPluginDir, "node_modules", "eve")).isSymbolicLink(),
+        fs.lstatSync(path.join(peerPluginDir, "node_modules", "eve-agent")).isSymbolicLink(),
       ).toBe(true);
 
       const second = await installPluginFromNpmSpec({
@@ -1366,10 +1355,10 @@ describe("installPluginFromNpmSpec", () => {
 
       expect(second.ok).toBe(true);
       if (!second.ok) {
-        expect(second.error).not.toContain("peer-plugin/node_modules/eve");
+        expect(second.error).not.toContain("peer-plugin/node_modules/eve-agent");
       }
       expect(
-        fs.lstatSync(path.join(peerPluginDir, "node_modules", "eve")).isSymbolicLink(),
+        fs.lstatSync(path.join(peerPluginDir, "node_modules", "eve-agent")).isSymbolicLink(),
       ).toBe(true);
     },
   );
@@ -1388,7 +1377,7 @@ describe("installPluginFromNpmSpec", () => {
           version: "1.0.0",
           pluginId: "peer-plugin",
           npmRoot,
-          peerDependencies: { eve: "^2026.0.0" },
+          peerDependencies: { "eve-agent": "^2026.0.0" },
         },
         {
           spec: "next-plugin@1.0.0",
@@ -1436,7 +1425,7 @@ describe("installPluginFromNpmSpec", () => {
       version: "2026.5.7",
       pluginId: "@eve/codex",
       npmRoot,
-      peerDependencies: { eve: ">=2026.5.7" },
+      peerDependencies: { "eve-agent": ">=2026.5.7" },
     });
 
     const result = await installPluginFromNpmSpec({
@@ -1450,9 +1439,9 @@ describe("installPluginFromNpmSpec", () => {
       return;
     }
     expect(result.error).toContain("@eve/codex");
-    expect(result.error).toContain("plugin-local node_modules/eve link");
+    expect(result.error).toContain("plugin-local node_modules/eve-agent link");
     expect(
-      warnings.some((warning) => warning.includes("Could not locate eve package root")),
+      warnings.some((warning) => warning.includes("Could not locate eve-agent package root")),
     ).toBe(true);
     expect(fs.existsSync(resolveTestPluginPackageDir(npmRoot, "@eve/codex"))).toBe(false);
     const npmProjectRoot = resolvePluginNpmProjectDir({
@@ -1473,7 +1462,7 @@ describe("installPluginFromNpmSpec", () => {
       version: "2026.5.27",
       pluginId: "whatsapp",
       npmRoot,
-      peerDependencies: { eve: ">=2026.5.27" },
+      peerDependencies: { "eve-agent": ">=2026.5.27" },
       eve: {
         extensions: ["./dist/index.js"],
         install: { minHostVersion: ">=2026.4.25" },
@@ -1696,9 +1685,7 @@ describe("installPluginFromNpmSpec", () => {
     }
     expect(result.npmResolution?.resolvedSpec).toBe("@eve/msteams@2026.5.28-beta.3");
     expect(result.npmResolution?.version).toBe("2026.5.28-beta.3");
-    expect(warnings.join("\n")).toContain(
-      "using newest compatible @eve/msteams@2026.5.28-beta.3",
-    );
+    expect(warnings.join("\n")).toContain("using newest compatible @eve/msteams@2026.5.28-beta.3");
     const npmProjectRoot = resolvePluginNpmProjectDir({
       npmDir: npmRoot,
       packageName: "@eve/msteams",
@@ -1797,7 +1784,7 @@ describe("installPluginFromNpmSpec", () => {
         version: "1.0.0",
         pluginId: "required-peer-plugin",
         npmRoot,
-        peerDependencies: { eve: "^2026.0.0" },
+        peerDependencies: { "eve-agent": "^2026.0.0" },
         materializesRootEVE: true,
       });
 
@@ -1813,15 +1800,17 @@ describe("installPluginFromNpmSpec", () => {
         packageName: "required-peer-plugin",
       });
       const requiredPeerPluginDir = resolveTestPluginPackageDir(npmRoot, "required-peer-plugin");
-      expect(fs.existsSync(path.join(npmProjectRoot, "node_modules", "eve"))).toBe(false);
+      expect(fs.existsSync(path.join(npmProjectRoot, "node_modules", "eve-agent"))).toBe(false);
       const lockfile = JSON.parse(
         fs.readFileSync(path.join(npmProjectRoot, "package-lock.json"), "utf8"),
       ) as {
         packages?: Record<string, unknown>;
       };
-      expect(lockfile.packages?.["node_modules/eve"]).toBeUndefined();
+      expect(lockfile.packages?.["node_modules/eve-agent"]).toBeUndefined();
       expect(
-        fs.lstatSync(path.join(requiredPeerPluginDir, "node_modules", "eve")).isSymbolicLink(),
+        fs
+          .lstatSync(path.join(requiredPeerPluginDir, "node_modules", "eve-agent"))
+          .isSymbolicLink(),
       ).toBe(true);
     },
   );
@@ -1833,14 +1822,14 @@ describe("installPluginFromNpmSpec", () => {
       npmDir: npmRoot,
       packageName: "@eve/discord",
     });
-    fs.mkdirSync(path.join(npmProjectRoot, "node_modules", "eve"), { recursive: true });
+    fs.mkdirSync(path.join(npmProjectRoot, "node_modules", "eve-agent"), { recursive: true });
     fs.writeFileSync(
       path.join(npmProjectRoot, "package.json"),
       JSON.stringify(
         {
           private: true,
           dependencies: {
-            eve: "2026.5.4",
+            "eve-agent": "2026.5.4",
           },
         },
         null,
@@ -1856,16 +1845,16 @@ describe("installPluginFromNpmSpec", () => {
           packages: {
             "": {
               dependencies: {
-                eve: "2026.5.4",
+                "eve-agent": "2026.5.4",
               },
             },
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.4",
-              resolved: "https://registry.npmjs.org/eve/-/eve-2026.5.4.tgz",
+              resolved: "https://registry.npmjs.org/eve/-/eve-agent-2026.5.4.tgz",
             },
           },
           dependencies: {
-            eve: {
+            "eve-agent": {
               version: "2026.5.4",
             },
           },
@@ -1876,9 +1865,9 @@ describe("installPluginFromNpmSpec", () => {
       "utf-8",
     );
     fs.writeFileSync(
-      path.join(npmProjectRoot, "node_modules", "eve", "package.json"),
+      path.join(npmProjectRoot, "node_modules", "eve-agent", "package.json"),
       JSON.stringify({
-        name: "eve",
+        name: "eve-agent",
         version: "2026.5.4",
       }),
       "utf-8",
@@ -1890,7 +1879,7 @@ describe("installPluginFromNpmSpec", () => {
       version: "2026.5.5-beta.1",
       pluginId: "discord",
       npmRoot,
-      peerDependencies: { eve: ">=2026.5.5-beta.1" },
+      peerDependencies: { "eve-agent": ">=2026.5.5-beta.1" },
       expectedDependencySpec: "2026.5.5-beta.1",
     });
 
@@ -1904,7 +1893,7 @@ describe("installPluginFromNpmSpec", () => {
     const manifest = JSON.parse(
       fs.readFileSync(path.join(npmProjectRoot, "package.json"), "utf8"),
     ) as { dependencies?: Record<string, string> };
-    expect(manifest.dependencies).not.toHaveProperty("eve");
+    expect(manifest.dependencies).not.toHaveProperty("eve-agent");
     expect(manifest.dependencies?.["@eve/discord"]).toBe("2026.5.5-beta.1");
     const lockfile = JSON.parse(
       fs.readFileSync(path.join(npmProjectRoot, "package-lock.json"), "utf8"),
@@ -1912,14 +1901,14 @@ describe("installPluginFromNpmSpec", () => {
       packages?: Record<string, unknown>;
       dependencies?: Record<string, unknown>;
     };
-    expect(lockfile.packages?.["node_modules/eve"]).toBeUndefined();
-    expect(lockfile.dependencies?.eve).toBeUndefined();
+    expect(lockfile.packages?.["node_modules/eve-agent"]).toBeUndefined();
+    expect(lockfile.dependencies?.["eve-agent"]).toBeUndefined();
   });
 
   it("preserves the active host eve runtime package during npm plugin installs", async () => {
     const stateDir = suiteTempRootTracker.makeTempDir();
     const npmRoot = path.join(stateDir, "npm");
-    const hostPackageRoot = path.join(npmRoot, "node_modules", "eve");
+    const hostPackageRoot = path.join(npmRoot, "node_modules", "eve-agent");
     fs.mkdirSync(hostPackageRoot, { recursive: true });
     fs.writeFileSync(
       path.join(npmRoot, "package.json"),
@@ -1927,7 +1916,7 @@ describe("installPluginFromNpmSpec", () => {
         {
           private: true,
           dependencies: {
-            eve: "2026.5.12-beta.6",
+            "eve-agent": "2026.5.12-beta.6",
           },
         },
         null,
@@ -1943,10 +1932,10 @@ describe("installPluginFromNpmSpec", () => {
           packages: {
             "": {
               dependencies: {
-                eve: "2026.5.12-beta.6",
+                "eve-agent": "2026.5.12-beta.6",
               },
             },
-            "node_modules/eve": {
+            "node_modules/eve-agent": {
               version: "2026.5.12-beta.6",
             },
           },
@@ -1959,7 +1948,7 @@ describe("installPluginFromNpmSpec", () => {
     fs.writeFileSync(
       path.join(hostPackageRoot, "package.json"),
       JSON.stringify({
-        name: "eve",
+        name: "eve-agent",
         version: "2026.5.12-beta.6",
       }),
       "utf-8",
@@ -1988,7 +1977,7 @@ describe("installPluginFromNpmSpec", () => {
     const baseManifest = JSON.parse(
       fs.readFileSync(path.join(npmRoot, "package.json"), "utf8"),
     ) as { dependencies?: Record<string, string> };
-    expect(baseManifest.dependencies?.eve).toBe("2026.5.12-beta.6");
+    expect(baseManifest.dependencies?.["eve-agent"]).toBe("2026.5.12-beta.6");
     expect(baseManifest.dependencies?.["@xdarkicex/eve-memory-libravdb"]).toBeUndefined();
     const npmProjectRoot = resolvePluginNpmProjectDir({
       npmDir: npmRoot,
@@ -2093,7 +2082,7 @@ describe("installPluginFromNpmSpec", () => {
         }
         if (argv[0] === "npm" && argv[1] === "uninstall") {
           if (!(argv as string[]).includes("--legacy-peer-deps")) {
-            fs.mkdirSync(path.join(options?.cwd ?? npmRoot, "node_modules", "eve"), {
+            fs.mkdirSync(path.join(options?.cwd ?? npmRoot, "node_modules", "eve-agent"), {
               recursive: true,
             });
           }
@@ -2117,7 +2106,7 @@ describe("installPluginFromNpmSpec", () => {
       fs.promises.access(path.join(npmProjectRoot, "package.json")),
     ).rejects.toHaveProperty("code", "ENOENT");
     await expect(
-      fs.promises.access(path.join(npmProjectRoot, "node_modules", "eve")),
+      fs.promises.access(path.join(npmProjectRoot, "node_modules", "eve-agent")),
     ).rejects.toHaveProperty("code", "ENOENT");
   });
 
@@ -2156,7 +2145,7 @@ describe("installPluginFromNpmSpec", () => {
     const hostRoot = suiteTempRootTracker.makeTempDir();
     fs.writeFileSync(
       path.join(hostRoot, "package.json"),
-      `${JSON.stringify({ name: "eve", version: "0.0.0-test" }, null, 2)}\n`,
+      `${JSON.stringify({ name: "eve-agent", version: "0.0.0-test" }, null, 2)}\n`,
       "utf8",
     );
     resolveEVEPackageRootSyncMock.mockReturnValue(hostRoot);
@@ -2164,9 +2153,9 @@ describe("installPluginFromNpmSpec", () => {
       npmRoot: npmProjectRoot,
       packageName: "@eve/codex",
       version: "0.0.1",
-      peerDependencies: { eve: "*" },
+      peerDependencies: { "eve-agent": "*" },
     });
-    const peerLink = path.join(installedDir, "node_modules", "eve");
+    const peerLink = path.join(installedDir, "node_modules", "eve-agent");
     fs.mkdirSync(path.dirname(peerLink), { recursive: true });
     fs.symlinkSync(hostRoot, peerLink, "junction");
 
@@ -2179,13 +2168,7 @@ describe("installPluginFromNpmSpec", () => {
       ];
       const nodeModulesDir = path.join(npmProjectRoot, "node_modules");
       if (source === nodeModulesDir && fs.existsSync(peerLink)) {
-        const destinationPeerLink = path.join(
-          destination,
-          "@eve",
-          "codex",
-          "node_modules",
-          "eve",
-        );
+        const destinationPeerLink = path.join(destination, "@eve", "codex", "node_modules", "eve");
         const shouldCopyPeerLink = options.filter
           ? await options.filter(peerLink, destinationPeerLink)
           : true;
@@ -2279,7 +2262,7 @@ describe("installPluginFromNpmSpec", () => {
       path.join(hostRoot, "package.json"),
       `${JSON.stringify(
         {
-          name: "eve",
+          name: "eve-agent",
         },
         null,
         2,

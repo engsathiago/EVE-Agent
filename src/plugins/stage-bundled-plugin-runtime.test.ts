@@ -132,14 +132,14 @@ describe("stageBundledPluginRuntime", () => {
     expect(
       fs
         .lstatSync(
-          path.join(repoRoot, "dist", "extensions", "node_modules", "eve", "plugin-sdk"),
+          path.join(repoRoot, "dist", "extensions", "node_modules", "eve-agent", "plugin-sdk"),
         )
         .isSymbolicLink(),
     ).toBe(false);
     expect(
       JSON.parse(
         fs.readFileSync(
-          path.join(repoRoot, "dist", "extensions", "node_modules", "eve", "package.json"),
+          path.join(repoRoot, "dist", "extensions", "node_modules", "eve-agent", "package.json"),
           "utf8",
         ),
       ).exports,
@@ -149,7 +149,7 @@ describe("stageBundledPluginRuntime", () => {
     });
     expect(
       fs.readFileSync(
-        path.join(repoRoot, "dist", "extensions", "node_modules", "eve", "package.json"),
+        path.join(repoRoot, "dist", "extensions", "node_modules", "eve-agent", "package.json"),
         "utf8",
       ),
     ).not.toContain('"./plugin-sdk/*"');
@@ -160,7 +160,7 @@ describe("stageBundledPluginRuntime", () => {
           "dist",
           "extensions",
           "node_modules",
-          "eve",
+          "eve-agent",
           "plugin-sdk",
           "channel-entry-contract.js",
         ),
@@ -174,13 +174,13 @@ describe("stageBundledPluginRuntime", () => {
           "dist",
           "extensions",
           "node_modules",
-          "eve",
+          "eve-agent",
           "plugin-sdk",
           "ssrf-runtime-internal.js",
         ),
       ),
     ).toBe(false);
-    expect(fs.existsSync(path.join(runtimePluginDir, "node_modules", "eve"))).toBe(false);
+    expect(fs.existsSync(path.join(runtimePluginDir, "node_modules", "eve-agent"))).toBe(false);
   });
 
   it("stages only public plugin-sdk package exports for bundled runtime aliases", () => {
@@ -189,7 +189,7 @@ describe("stageBundledPluginRuntime", () => {
     setupRepoFiles(repoRoot, {
       "package.json": JSON.stringify(
         {
-          name: "eve",
+          name: "eve-agent",
           type: "module",
           exports: {
             "./plugin-sdk": "./dist/plugin-sdk/index.js",
@@ -208,7 +208,7 @@ describe("stageBundledPluginRuntime", () => {
 
     stageBundledPluginRuntime({ repoRoot });
 
-    const aliasRoot = path.join(repoRoot, "dist", "extensions", "node_modules", "eve");
+    const aliasRoot = path.join(repoRoot, "dist", "extensions", "node_modules", "eve-agent");
     const packageJson = JSON.parse(
       fs.readFileSync(path.join(aliasRoot, "package.json"), "utf8"),
     ) as { exports: Record<string, string> };
@@ -243,7 +243,7 @@ describe("stageBundledPluginRuntime", () => {
       "dist",
       "extensions",
       "node_modules",
-      "eve",
+      "eve-agent",
       "plugin-sdk",
       "channel-entry-contract.js",
     );

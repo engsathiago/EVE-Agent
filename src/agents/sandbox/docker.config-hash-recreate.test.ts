@@ -423,8 +423,6 @@ describe("ensureSandboxContainer config-hash recreation", () => {
     registryMocks.readRegistryEntry.mockResolvedValue(null);
 
     const createCall = await ensureSandboxCreateCallForTest({ cfg, workspaceDir });
-    expect(createCall.args).toContain(
-      `eve.mountFormatVersion=${SANDBOX_MOUNT_FORMAT_VERSION}`,
-    );
+    expect(createCall.args).toContain(`eve.mountFormatVersion=${SANDBOX_MOUNT_FORMAT_VERSION}`);
   });
 });

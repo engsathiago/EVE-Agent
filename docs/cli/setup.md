@@ -17,18 +17,18 @@ Initialize the baseline config and agent workspace. With any onboarding flag pre
 
 ## Options
 
-| Flag                       | Description                                                                                         |
-| -------------------------- | --------------------------------------------------------------------------------------------------- |
+| Flag                       | Description                                                                                    |
+| -------------------------- | ---------------------------------------------------------------------------------------------- |
 | `--workspace <dir>`        | Agent workspace directory (default `~/.eve/workspace`; stored as `agents.defaults.workspace`). |
-| `--wizard`                 | Run interactive onboarding.                                                                         |
-| `--non-interactive`        | Run onboarding without prompts.                                                                     |
-| `--accept-risk`            | Acknowledge full-system agent access risk; required with `--non-interactive`.                       |
-| `--mode <mode>`            | Onboarding mode: `local` or `remote`.                                                               |
-| `--import-from <provider>` | Migration provider to run during onboarding.                                                        |
-| `--import-source <path>`   | Source agent home for `--import-from`.                                                              |
-| `--import-secrets`         | Import supported secrets during onboarding migration.                                               |
-| `--remote-url <url>`       | Remote Gateway WebSocket URL.                                                                       |
-| `--remote-token <token>`   | Remote Gateway token (optional).                                                                    |
+| `--wizard`                 | Run interactive onboarding.                                                                    |
+| `--non-interactive`        | Run onboarding without prompts.                                                                |
+| `--accept-risk`            | Acknowledge full-system agent access risk; required with `--non-interactive`.                  |
+| `--mode <mode>`            | Onboarding mode: `local` or `remote`.                                                          |
+| `--import-from <provider>` | Migration provider to run during onboarding.                                                   |
+| `--import-source <path>`   | Source agent home for `--import-from`.                                                         |
+| `--import-secrets`         | Import supported secrets during onboarding migration.                                          |
+| `--remote-url <url>`       | Remote Gateway WebSocket URL.                                                                  |
+| `--remote-token <token>`   | Remote Gateway token (optional).                                                               |
 
 ### Wizard auto-trigger
 

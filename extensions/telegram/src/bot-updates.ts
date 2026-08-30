@@ -1,6 +1,6 @@
+import { createDedupeCache } from "eve-agent/plugin-sdk/dedupe-runtime";
 // Telegram plugin module implements bot updates behavior.
 import type { Message } from "grammy/types";
-import { createDedupeCache } from "eve-agent/plugin-sdk/dedupe-runtime";
 import type { TelegramContext } from "./bot/types.js";
 
 const MEDIA_GROUP_TIMEOUT_MS = 500;

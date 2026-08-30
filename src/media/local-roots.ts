@@ -58,10 +58,7 @@ export function getDefaultMediaLocalRoots(): readonly string[] {
 }
 
 /** Adds the active agent workspace to the default media roots without exposing all agent state. */
-export function getAgentScopedMediaLocalRoots(
-  cfg: EVEConfig,
-  agentId?: string,
-): readonly string[] {
+export function getAgentScopedMediaLocalRoots(cfg: EVEConfig, agentId?: string): readonly string[] {
   const roots = buildMediaLocalRoots(resolveStateDir(), resolveConfigDir());
   const normalizedAgentId = normalizeOptionalString(agentId);
   if (!normalizedAgentId) {

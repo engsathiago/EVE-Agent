@@ -153,9 +153,7 @@ export function createUnitVitestConfigWithOptions(
       ...(isolate ? { runner: undefined } : { runner: nonIsolatedRunnerPath }),
       setupFiles: [
         ...new Set(
-          [...(sharedTest.setupFiles ?? []), "test/setup-eve-runtime.ts"].map(
-            resolveRepoRootPath,
-          ),
+          [...(sharedTest.setupFiles ?? []), "test/setup-eve-runtime.ts"].map(resolveRepoRootPath),
         ),
       ],
       include: envIncludePatterns ?? cliIncludePatterns ?? defaultIncludePatterns,

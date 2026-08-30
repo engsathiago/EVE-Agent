@@ -43,6 +43,7 @@ const EXPECTED_BUNDLED_STARTUP_PLUGIN_IDS = [
   "diffs-language-pack",
   "file-transfer",
   "google-meet",
+  "intelligence",
   "llm-task",
   "lobster",
   "memory-wiki",
@@ -61,9 +62,11 @@ const EXPECTED_EMPTY_CONFIG_GATEWAY_STARTUP_PLUGIN_IDS = [
   "canvas",
   "device-pair",
   "file-transfer",
+  "intelligence",
   "memory-core",
   "phone-control",
   "talk-voice",
+  "workboard",
 ] as const;
 
 installGeneratedPluginTempRootCleanup();
@@ -181,15 +184,7 @@ function listGitRepoBundledPluginManifestFiles(): string[] | null {
 function listFindRepoBundledPluginManifestFiles(): string[] | null {
   const result = spawnSync(
     "find",
-    [
-      path.join(repoRoot, "extensions"),
-      "-maxdepth",
-      "2",
-      "-type",
-      "f",
-      "-name",
-      "eve.plugin.json",
-    ],
+    [path.join(repoRoot, "extensions"), "-maxdepth", "2", "-type", "f", "-name", "eve.plugin.json"],
     {
       cwd: repoRoot,
       encoding: "utf8",

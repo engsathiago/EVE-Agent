@@ -9,15 +9,15 @@ Generated locale trees and live translation memory now live in the publish repo:
 
 ## Source of truth
 
-- English docs are authored in `eve/eve`.
+- English docs are authored in `engsathiago/eve-agent`.
 - The source docs tree lives under `docs/`.
 - The source repo no longer keeps committed generated locale trees such as `docs/zh-CN/**`, `docs/zh-TW/**`, `docs/ja-JP/**`, `docs/es/**`, `docs/pt-BR/**`, `docs/ko/**`, `docs/de/**`, `docs/fr/**`, `docs/ar/**`, `docs/it/**`, `docs/vi/**`, `docs/nl/**`, `docs/fa/**`, `docs/tr/**`, `docs/uk/**`, `docs/id/**`, `docs/pl/**`, or `docs/th/**`.
 
 ## End-to-end flow
 
-1. Edit English docs in `eve/eve`.
+1. Edit English docs in `engsathiago/eve-agent`.
 2. Push to `main`.
-3. `eve/eve/.github/workflows/docs-sync-publish.yml` mirrors the docs tree into `eve/docs`.
+3. `engsathiago/eve-agent/.github/workflows/docs-sync-publish.yml` mirrors the docs tree into `eve/docs`.
 4. The sync script rewrites the publish `docs/docs.json` so the generated locale picker blocks exist there even though they are no longer committed in the source repo.
 5. `eve/docs/.github/workflows/translate-all.yml` waits for `main` to settle, translates only stale or missing locale pages, and uploads per-locale artifacts.
 6. The publish repo finalizer applies successful locale artifacts and pushes one aggregate `chore(i18n): refresh translations` commit.

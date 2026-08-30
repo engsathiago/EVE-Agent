@@ -145,7 +145,7 @@ export function createDependencyEvidenceManifest({
     releaseRef,
     releaseSha,
     npmDistTag,
-    packageName: "eve",
+    packageName: "eve-agent",
     packageVersion,
     workflowRunId,
     workflowRunAttempt,

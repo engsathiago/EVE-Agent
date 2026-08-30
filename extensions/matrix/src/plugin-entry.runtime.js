@@ -41,7 +41,7 @@ function findEVEPackageRoot(startDir) {
   let cursor = path.resolve(startDir);
   for (let i = 0; i < 12; i += 1) {
     const pkg = readPackageJson(cursor);
-    if (pkg?.name === "eve" && hasTrustedEVERootIndicator(cursor, pkg)) {
+    if (pkg?.name === "eve-agent" && hasTrustedEVERootIndicator(cursor, pkg)) {
       return { packageRoot: cursor, packageJson: pkg };
     }
     const parent = path.dirname(cursor);

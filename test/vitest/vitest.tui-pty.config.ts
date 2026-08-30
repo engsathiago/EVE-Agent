@@ -41,9 +41,7 @@ export function createTuiPtyVitestConfig(env?: Record<string, string | undefined
       maxWorkers: 1,
       setupFiles: [
         ...new Set(
-          [...(baseTest.setupFiles ?? []), "test/setup-eve-runtime.ts"].map(
-            resolveRepoRootPath,
-          ),
+          [...(baseTest.setupFiles ?? []), "test/setup-eve-runtime.ts"].map(resolveRepoRootPath),
         ),
       ],
       sequence: {

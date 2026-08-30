@@ -62,9 +62,7 @@ function createModelDefaultsConfig(params: {
   } as EVEConfig;
 }
 
-function createLegacyRuntimeListConfig(
-  models?: Record<string, Record<string, never>>,
-): EVEConfig {
+function createLegacyRuntimeListConfig(models?: Record<string, Record<string, never>>): EVEConfig {
   return createModelDefaultsConfig({
     primary: "google-gemini-cli/gemini-3.1-pro-preview",
     ...(models ? { models } : {}),

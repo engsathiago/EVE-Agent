@@ -226,10 +226,7 @@ describe("config io audit helpers", () => {
       record,
     });
 
-    const raw = fs.readFileSync(
-      path.join(home, ".eve", "logs", "config-audit.jsonl"),
-      "utf-8",
-    );
+    const raw = fs.readFileSync(path.join(home, ".eve", "logs", "config-audit.jsonl"), "utf-8");
     expect(raw).not.toContain("AIzaSyD-very-real-looking");
     expect(raw).not.toContain("ya29.fake-access-token");
     expect(raw).not.toContain("abcd-efgh-ijkl-mnop");

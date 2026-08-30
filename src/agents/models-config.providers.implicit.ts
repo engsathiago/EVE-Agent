@@ -74,8 +74,7 @@ type ImplicitProviderContext = ImplicitProviderParams & {
 };
 
 function resolveLiveProviderCatalogTimeoutMs(env: NodeJS.ProcessEnv): number | null {
-  const live =
-    env.EVE_LIVE_TEST === "1" || env.EVE_LIVE_GATEWAY === "1" || env.LIVE === "1";
+  const live = env.EVE_LIVE_TEST === "1" || env.EVE_LIVE_GATEWAY === "1" || env.LIVE === "1";
   if (!live) {
     return null;
   }
@@ -112,15 +111,13 @@ function resolveProviderDiscoveryFilter(params: {
       resolveOwners: params.resolveOwners,
     });
   }
-  const live =
-    env.EVE_LIVE_TEST === "1" || env.EVE_LIVE_GATEWAY === "1" || env.LIVE === "1";
+  const live = env.EVE_LIVE_TEST === "1" || env.EVE_LIVE_GATEWAY === "1" || env.LIVE === "1";
   if (!live) {
     return undefined;
   }
-  const rawValues = [
-    env.EVE_LIVE_PROVIDERS?.trim(),
-    env.EVE_LIVE_GATEWAY_PROVIDERS?.trim(),
-  ].filter((value): value is string => Boolean(value && value !== "all"));
+  const rawValues = [env.EVE_LIVE_PROVIDERS?.trim(), env.EVE_LIVE_GATEWAY_PROVIDERS?.trim()].filter(
+    (value): value is string => Boolean(value && value !== "all"),
+  );
   if (rawValues.length === 0) {
     return undefined;
   }

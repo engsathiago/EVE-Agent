@@ -1488,9 +1488,7 @@ describe("plugins cli install", () => {
     const enabledCfg = createEnabledPluginConfig("wecom-eve-plugin");
     loadConfig.mockReturnValue(cfg);
     findBundledPluginSourceMock.mockReturnValue(undefined);
-    installPluginFromNpmSpec.mockResolvedValue(
-      createNpmPluginInstallResult("wecom-eve-plugin"),
-    );
+    installPluginFromNpmSpec.mockResolvedValue(createNpmPluginInstallResult("wecom-eve-plugin"));
     enablePluginInConfig.mockReturnValue({ config: enabledCfg });
     applyExclusiveSlotSelection.mockReturnValue({
       config: enabledCfg,
@@ -1544,8 +1542,7 @@ describe("plugins cli install", () => {
     });
     installHooksFromNpmSpec.mockResolvedValue({
       ok: false,
-      error:
-        "aborted: npm package integrity drift detected for @wecom/wecom-eve-plugin@2026.5.7",
+      error: "aborted: npm package integrity drift detected for @wecom/wecom-eve-plugin@2026.5.7",
     });
 
     await expect(runPluginsCommand(["plugins", "install", "wecom"])).rejects.toThrow("__exit__:1");
@@ -1775,13 +1772,7 @@ describe("plugins cli install", () => {
       warnings: [],
     });
 
-    await runPluginsCommand([
-      "plugins",
-      "install",
-      "@eve/discord@2026.5.20",
-      "--pin",
-      "--force",
-    ]);
+    await runPluginsCommand(["plugins", "install", "@eve/discord@2026.5.20", "--pin", "--force"]);
 
     expect(installPluginFromNpmSpec).not.toHaveBeenCalled();
     expect(findBundledPluginSourceMock).toHaveBeenCalledWith({
@@ -1805,9 +1796,7 @@ describe("plugins cli install", () => {
 
     loadConfig.mockReturnValue(cfg);
     findBundledPluginSourceMock.mockReturnValue(undefined);
-    installPluginFromNpmSpec.mockResolvedValue(
-      createNpmPluginInstallResult("wecom-eve-plugin"),
-    );
+    installPluginFromNpmSpec.mockResolvedValue(createNpmPluginInstallResult("wecom-eve-plugin"));
     enablePluginInConfig.mockReturnValue({ config: enabledCfg });
     recordPluginInstall.mockReturnValue(enabledCfg);
     applyExclusiveSlotSelection.mockReturnValue({
@@ -1909,9 +1898,9 @@ describe("plugins cli install", () => {
       error: "package.json missing eve.hooks",
     });
 
-    await expect(
-      runPluginsCommand(["plugins", "install", "npm:@eve/whatsapp"]),
-    ).rejects.toThrow("__exit__:1");
+    await expect(runPluginsCommand(["plugins", "install", "npm:@eve/whatsapp"])).rejects.toThrow(
+      "__exit__:1",
+    );
 
     expect(installPluginFromClawHub).not.toHaveBeenCalled();
     expect(runtimeErrors.at(-1)).toContain(
@@ -2176,8 +2165,7 @@ describe("plugins cli install", () => {
     mockClawHubPackageNotFound("@example/lossless-claw");
     installPluginFromNpmSpec.mockResolvedValue({
       ok: false,
-      error:
-        "plugin already exists: /home/eve/.eve/extensions/lossless-claw (delete it first)",
+      error: "plugin already exists: /home/eve/.eve/extensions/lossless-claw (delete it first)",
     });
     installHooksFromNpmSpec.mockResolvedValue({
       ok: false,

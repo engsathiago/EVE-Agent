@@ -202,10 +202,7 @@ function mergeModelConfigEntry(
   return existing ?? patch;
 }
 
-function applyOAuthModelConfigsToConfig(
-  cfg: EVEConfig,
-  result: ProviderAuthResult,
-): EVEConfig {
+function applyOAuthModelConfigsToConfig(cfg: EVEConfig, result: ProviderAuthResult): EVEConfig {
   const patchModels = readProviderAuthModelConfigs(result);
   const existingModels = cfg.agents?.defaults?.models ?? {};
   const models: AgentDefaultModelConfigs = result.replaceDefaultModels

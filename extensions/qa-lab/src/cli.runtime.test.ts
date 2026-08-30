@@ -278,7 +278,7 @@ describe("qa cli runtime", () => {
         title: "Telegram status command reply",
         defaultEnabled: true,
         rationale: "status rationale",
-        regressionRefs: ["eve/eve#74698"],
+        regressionRefs: ["engsathiago/eve-agent#74698"],
       },
     ]);
     startQaLabServer.mockResolvedValue({
@@ -690,7 +690,7 @@ describe("qa cli runtime", () => {
     expect(runTelegramQaLive).not.toHaveBeenCalled();
     expectWriteContains(
       stdoutWrite,
-      "telegram-status-command\tdefault\tTelegram status command reply\tstatus rationale refs=eve/eve#74698",
+      "telegram-status-command\tdefault\tTelegram status command reply\tstatus rationale refs=engsathiago/eve-agent#74698",
     );
   });
 
@@ -2201,9 +2201,7 @@ describe("qa cli runtime", () => {
           kind: "telegram",
           payloadFile: payloadPath,
         }),
-      ).rejects.toThrow(
-        "Payload file exceeds EVE_QA_CREDENTIAL_PAYLOAD_MAX_BYTES (32 bytes).",
-      );
+      ).rejects.toThrow("Payload file exceeds EVE_QA_CREDENTIAL_PAYLOAD_MAX_BYTES (32 bytes).");
     } finally {
       if (previousMaxBytes === undefined) {
         delete process.env.EVE_QA_CREDENTIAL_PAYLOAD_MAX_BYTES;

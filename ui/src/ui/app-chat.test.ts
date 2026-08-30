@@ -791,9 +791,7 @@ describe("refreshChatAvatar", () => {
     });
     await refreshChatAvatar(host);
 
-    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe(
-      "/eve/avatar/main?meta=1",
-    );
+    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe("/eve/avatar/main?meta=1");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).method).toBe("GET");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).headers).toEqual({
       Authorization: "Bearer device-token",
@@ -843,9 +841,7 @@ describe("refreshChatAvatar", () => {
     });
     await refreshChatAvatar(host);
 
-    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe(
-      "/eve/avatar/main?meta=1",
-    );
+    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe("/eve/avatar/main?meta=1");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).method).toBe("GET");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).headers).toEqual({
       Authorization: "Bearer session-token",

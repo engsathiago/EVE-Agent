@@ -30,11 +30,11 @@ fallback if API providers are unavailable.
 
 A CLI backend plugin has three contracts:
 
-| Contract             | File                   | Purpose                                                   |
-| -------------------- | ---------------------- | --------------------------------------------------------- |
-| Package entry        | `package.json`         | Points EVE at the plugin runtime module              |
+| Contract             | File              | Purpose                                                   |
+| -------------------- | ----------------- | --------------------------------------------------------- |
+| Package entry        | `package.json`    | Points EVE at the plugin runtime module                   |
 | Manifest ownership   | `eve.plugin.json` | Declares the backend id before runtime loads              |
-| Runtime registration | `index.ts`             | Calls `api.registerCliBackend(...)` with command defaults |
+| Runtime registration | `index.ts`        | Calls `api.registerCliBackend(...)` with command defaults |
 
 The manifest is discovery metadata. It does not execute the CLI and does not
 register runtime behavior. Runtime behavior starts when the plugin entry calls
@@ -180,10 +180,10 @@ register runtime behavior. Runtime behavior starts when the plugin entry calls
 | `output` / `resumeOutput`                 | Parser: `json`, `jsonl`, or `text`                          |
 | `input`                                   | Prompt transport: `arg` or `stdin`                          |
 | `modelArg`                                | Flag used before the model id                               |
-| `modelAliases`                            | Map EVE model ids to CLI-native ids                    |
+| `modelAliases`                            | Map EVE model ids to CLI-native ids                         |
 | `sessionArg` / `sessionArgs`              | How to pass a session id                                    |
 | `sessionMode`                             | `always`, `existing`, or `none`                             |
-| `sessionIdFields`                         | JSON fields EVE reads from CLI output                  |
+| `sessionIdFields`                         | JSON fields EVE reads from CLI output                       |
 | `systemPromptArg` / `systemPromptFileArg` | System prompt transport                                     |
 | `systemPromptWhen`                        | `first`, `always`, or `never`                               |
 | `imageArg` / `imageMode`                  | Image path support                                          |
@@ -204,12 +204,12 @@ only for behavior that really belongs to the backend.
 | `prepareExecution(ctx)`            | Create temporary auth or config bridges before launch                       |
 | `transformSystemPrompt(ctx)`       | Apply a final CLI-specific system prompt transform                          |
 | `textTransforms`                   | Bidirectional prompt/output replacements                                    |
-| `defaultAuthProfileId`             | Prefer a specific EVE auth profile                                     |
+| `defaultAuthProfileId`             | Prefer a specific EVE auth profile                                          |
 | `authEpochMode`                    | Decide how auth changes invalidate stored CLI sessions                      |
 | `nativeToolMode`                   | Declare whether the CLI has always-on native tools                          |
 | `sideQuestionToolMode`             | Declare disabled native tools for `/btw` side questions                     |
-| `bundleMcp` / `bundleMcpMode`      | Opt into EVE's loopback MCP tool bridge                                |
-| `ownsNativeCompaction`             | Backend owns its own compaction - EVE defers                           |
+| `bundleMcp` / `bundleMcpMode`      | Opt into EVE's loopback MCP tool bridge                                     |
+| `ownsNativeCompaction`             | Backend owns its own compaction - EVE defers                                |
 
 Keep these hooks provider-owned. Do not add CLI-specific branches to core when a
 backend hook can express the behavior.

@@ -9,12 +9,7 @@ import { normalizeExecSafeBinProfilesInConfig } from "./normalize-exec-safe-bin.
 import { withTempHome } from "./test-helpers.js";
 import type { EVEConfig } from "./types.eve.js";
 
-async function writeConfig(
-  home: string,
-  dirname: ".eve",
-  port: number,
-  filename = "eve.json",
-) {
+async function writeConfig(home: string, dirname: ".eve", port: number, filename = "eve.json") {
   const dir = path.join(home, dirname);
   await fs.mkdir(dir, { recursive: true });
   const configPath = path.join(dir, filename);

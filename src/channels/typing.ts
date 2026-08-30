@@ -1,8 +1,5 @@
 // Typing indicator lifecycle controller for reply dispatchers.
-import {
-  parseFiniteNumber,
-  resolveTimerTimeoutMs,
-} from "@eve/normalization-core/number-coercion";
+import { parseFiniteNumber, resolveTimerTimeoutMs } from "@eve/normalization-core/number-coercion";
 import { createTypingKeepaliveLoop } from "./typing-lifecycle.js";
 import { createTypingStartGuard } from "./typing-start-guard.js";
 

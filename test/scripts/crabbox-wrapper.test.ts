@@ -484,9 +484,7 @@ const remoteChangedGateFetch =
 
 function expectChangedGateGitBootstrap(remoteCommand: string): void {
   expect(remoteCommand).toContain("command -v git");
-  expect(remoteCommand).toContain(
-    "eve_changed_gate_base=${EVE_CHANGED_GATE_BASE:-abc123}",
-  );
+  expect(remoteCommand).toContain("eve_changed_gate_base=${EVE_CHANGED_GATE_BASE:-abc123}");
   expect(remoteCommand).toContain(
     'eve_changed_gate_remote_base="$(git rev-parse --verify refs/remotes/origin/main 2>/dev/null || true)"',
   );
@@ -837,9 +835,7 @@ describe.concurrent("scripts/crabbox-wrapper", () => {
     expect(result.status).toBe(2);
     expect(result.stdout).toBe("");
     expect(result.stderr).toContain("provider=aws requires a configured Crabbox broker");
-    expect(result.stderr).toContain(
-      "crabbox login --url https://crabbox.eve.ai --provider aws",
-    );
+    expect(result.stderr).toContain("crabbox login --url https://crabbox.eve.ai --provider aws");
   });
 
   it("fails closed for AWS proof when broker auth is stale", () => {

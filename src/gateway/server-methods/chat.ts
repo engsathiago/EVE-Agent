@@ -4515,9 +4515,7 @@ export const chatHandlers: GatewayRequestHandlers = {
                             : {}),
                         ...(fallbackText ? { text: fallbackText } : {}),
                         timestamp: nowValue,
-                        ...(ttsSupplementMarker
-                          ? { eveTtsSupplement: ttsSupplementMarker }
-                          : {}),
+                        ...(ttsSupplementMarker ? { eveTtsSupplement: ttsSupplementMarker } : {}),
                         // Keep this compatible with runner stopReason enums even though this message isn't
                         // persisted to the transcript due to the append failure.
                         stopReason: "stop",

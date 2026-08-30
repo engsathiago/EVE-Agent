@@ -159,11 +159,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
     params: {
       config?: Partial<Parameters<typeof createConfig>[0]>;
       session?: Partial<Parameters<typeof seedMainSessionStore>[2]>;
-      beforeSeed?: (params: {
-        tmpDir: string;
-        storePath: string;
-        cfg: EVEConfig;
-      }) => Promise<void>;
+      beforeSeed?: (params: { tmpDir: string; storePath: string; cfg: EVEConfig }) => Promise<void>;
     } = {},
   ) {
     return await withTempTelegramHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {

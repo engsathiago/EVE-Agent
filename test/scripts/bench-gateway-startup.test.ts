@@ -394,10 +394,7 @@ describe("gateway startup benchmark script", () => {
       expect(config.plugins?.load?.paths).toEqual([path.join(root, "plugins")]);
       expect(config.plugins?.allow).toEqual(["bench-plugin-01", "bench-plugin-02"]);
       const manifest = JSON.parse(
-        fs.readFileSync(
-          path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"),
-          "utf8",
-        ),
+        fs.readFileSync(path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"), "utf8"),
       ) as { activation?: { onStartup?: boolean } };
       expect(manifest.activation?.onStartup).toBe(true);
     } finally {
@@ -416,10 +413,7 @@ describe("gateway startup benchmark script", () => {
         pluginCount: 1,
       });
       const manifest = JSON.parse(
-        fs.readFileSync(
-          path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"),
-          "utf8",
-        ),
+        fs.readFileSync(path.join(root, "plugins", "bench-plugin-01", "eve.plugin.json"), "utf8"),
       ) as { activation?: { onStartup?: boolean } };
       expect(manifest.activation?.onStartup).toBe(false);
     } finally {

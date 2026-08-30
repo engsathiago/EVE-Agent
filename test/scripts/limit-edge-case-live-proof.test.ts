@@ -21,9 +21,7 @@ describe("limit-edge-case live proof", () => {
 
       expect(proofRoot).not.toBe("");
       expect(existsSync(proofRoot)).toBe(false);
-      expect(readdirSync(tempRoot).filter((entry) => entry.startsWith("eve-proof-"))).toEqual(
-        [],
-      );
+      expect(readdirSync(tempRoot).filter((entry) => entry.startsWith("eve-proof-"))).toEqual([]);
     } finally {
       rmSync(tempRoot, { force: true, recursive: true });
     }

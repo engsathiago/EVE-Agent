@@ -1413,9 +1413,7 @@ describe("getApiKeyForModel", () => {
 
   it("resolveEnvApiKey('google-vertex') does not synthesize APPDATA from USERPROFILE", async () => {
     const homeDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-google-adc-home-"));
-    const userProfileDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-google-adc-userprofile-"),
-    );
+    const userProfileDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-google-adc-userprofile-"));
     const fallbackDir = path.join(userProfileDir, "AppData", "Roaming", "gcloud");
     await fs.mkdir(fallbackDir, { recursive: true });
     await fs.writeFile(

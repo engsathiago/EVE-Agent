@@ -7,19 +7,19 @@ type Offender = { file: string; hint: string; line?: number; specifier?: string 
 
 const FORBIDDEN_PATTERNS: Array<{ pattern: RegExp; hint: string }> = [
   {
-    pattern: /["']eve\/plugin-sdk["']/,
+    pattern: /["']eve-agent\/plugin-sdk["']/,
     hint: "Use eve-agent/plugin-sdk/<subpath> instead of the monolithic root entry.",
   },
   {
-    pattern: /["']eve\/plugin-sdk\/test-utils["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/test-utils["']/,
     hint: "Use a focused plugin-sdk test subpath for the public extension test surface.",
   },
   {
-    pattern: /["']eve\/plugin-sdk\/testing["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/testing["']/,
     hint: "Use a focused plugin-sdk test subpath instead of the broad compatibility testing barrel.",
   },
   {
-    pattern: /["']eve\/plugin-sdk\/compat["']/,
+    pattern: /["']eve-agent\/plugin-sdk\/compat["']/,
     hint: "Use a focused public plugin-sdk subpath instead of compat.",
   },
   {

@@ -28,10 +28,7 @@ function assert(condition, message) {
 }
 
 function configPath() {
-  return (
-    process.env.EVE_CONFIG_PATH ??
-    path.join(process.env.HOME ?? "", ".eve", "eve.json")
-  );
+  return process.env.EVE_CONFIG_PATH ?? path.join(process.env.HOME ?? "", ".eve", "eve.json");
 }
 
 function writeConfig(cfg) {
@@ -39,25 +36,11 @@ function writeConfig(cfg) {
 }
 
 function authProfilesPath() {
-  return path.join(
-    process.env.HOME ?? "",
-    ".eve",
-    "agents",
-    "main",
-    "agent",
-    "auth-profiles.json",
-  );
+  return path.join(process.env.HOME ?? "", ".eve", "agents", "main", "agent", "auth-profiles.json");
 }
 
 function authProfilesDatabasePath() {
-  return path.join(
-    process.env.HOME ?? "",
-    ".eve",
-    "agents",
-    "main",
-    "agent",
-    "eve-agent.sqlite",
-  );
+  return path.join(process.env.HOME ?? "", ".eve", "agents", "main", "agent", "eve-agent.sqlite");
 }
 
 function readAuthProfileStoreSqliteText() {
@@ -182,13 +165,7 @@ function assertPluginUninstalled() {
   const installRecords = readPluginInstallRecords({ configPath: configPath() });
   assert(!installRecords[pluginId], `install record still present for ${pluginId}`);
   assert(!cfg.plugins?.entries?.[pluginId], `plugin config entry still present for ${pluginId}`);
-  const managedRoot = path.join(
-    process.env.HOME ?? "",
-    ".eve",
-    "plugins",
-    "installed",
-    pluginId,
-  );
+  const managedRoot = path.join(process.env.HOME ?? "", ".eve", "plugins", "installed", pluginId);
   assert(!fs.existsSync(managedRoot), `managed plugin directory still present: ${managedRoot}`);
   if (cliRoot) {
     const list = JSON.stringify(installRecords);

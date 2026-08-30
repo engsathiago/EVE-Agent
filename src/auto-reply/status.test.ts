@@ -2230,14 +2230,7 @@ describe("buildStatusMessage", () => {
     await withTempHome(
       async (dir) => {
         const sessionId = "sess-cache-delivery-mirror";
-        const logPath = path.join(
-          dir,
-          ".eve",
-          "agents",
-          "main",
-          "sessions",
-          `${sessionId}.jsonl`,
-        );
+        const logPath = path.join(dir, ".eve", "agents", "main", "sessions", `${sessionId}.jsonl`);
         fs.mkdirSync(path.dirname(logPath), { recursive: true });
         fs.writeFileSync(
           logPath,

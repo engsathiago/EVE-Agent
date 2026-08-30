@@ -1085,9 +1085,7 @@ describe("embedded attempt session lock lifecycle", () => {
   });
 
   it("reloads a trusted first-turn rewrite for every active session fence", async () => {
-    const dir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-attempt-session-shared-rewrite-"),
-    );
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-attempt-session-shared-rewrite-"));
     tempDirs.push(dir);
     const sessionFile = path.join(dir, "session.jsonl");
     await fs.writeFile(

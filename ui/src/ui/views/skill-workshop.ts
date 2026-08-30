@@ -7,6 +7,7 @@ import "../components/file-preview-modal.ts";
 export type SkillWorkshopProposalStatus =
   | "pending"
   | "applied"
+  | "rolled_back"
   | "rejected"
   | "quarantined"
   | "stale";
@@ -40,7 +41,7 @@ export type SkillWorkshopProposal = {
 };
 
 export type SkillWorkshopStatusFilter = "all" | SkillWorkshopProposalStatus;
-export type SkillWorkshopAction = "apply" | "revise" | "reject";
+export type SkillWorkshopAction = "apply" | "rollback" | "revise" | "reject";
 export type SkillWorkshopMode = "board" | "today";
 
 export type SkillWorkshopActionBusy = {
@@ -83,6 +84,7 @@ export type SkillWorkshopProps = {
   onPrev: () => void;
   onNext: () => void;
   onApply: (key: string) => void;
+  onRollback: (key: string) => void;
   onRevise: (key: string) => void;
   onReject: (key: string) => void;
   onRevisionDraftChange: (draft: string) => void;
@@ -96,6 +98,7 @@ const STATUS_TABS: SkillWorkshopStatusFilter[] = [
   "all",
   "pending",
   "applied",
+  "rolled_back",
   "rejected",
   "quarantined",
   "stale",
@@ -105,6 +108,7 @@ const STATUS_LABEL: Record<SkillWorkshopStatusFilter, string> = {
   all: "All",
   pending: "Pending",
   applied: "Applied",
+  rolled_back: "Rolled back",
   rejected: "Rejected",
   quarantined: "Quarantined",
   stale: "Stale",
@@ -453,6 +457,7 @@ function renderDetail(props: SkillWorkshopProps, proposal: SkillWorkshopProposal
 
       ${props.actionNotice?.key === proposal.key ? renderActionNotice(props.actionNotice) : nothing}
       ${proposal.status === "pending" ? renderPendingActions(props, proposal) : nothing}
+      ${proposal.status === "applied" ? renderAppliedActions(props, proposal) : nothing}
     </div>
   `;
 }
@@ -492,6 +497,21 @@ function renderPendingActions(props: SkillWorkshopProps, proposal: SkillWorkshop
         @click=${() => props.onReject(proposal.key)}
       >
         ${busy === "reject" ? "Rejecting…" : "Reject"}
+      </button>
+    </div>
+  `;
+}
+
+function renderAppliedActions(props: SkillWorkshopProps, proposal: SkillWorkshopProposal) {
+  const busy = props.actionBusy?.key === proposal.key ? props.actionBusy.action : null;
+  return html`
+    <div class="sw-action-bar" aria-busy=${busy ? "true" : "false"}>
+      <button
+        class="sw-btn sw-btn--ghost sw-btn--danger ${busy === "rollback" ? "is-busy" : ""}"
+        ?disabled=${Boolean(props.actionBusy)}
+        @click=${() => props.onRollback(proposal.key)}
+      >
+        ${busy === "rollback" ? "Rolling back…" : "Roll back"}
       </button>
     </div>
   `;
@@ -537,6 +557,12 @@ function resolveBoardEmptyState(props: SkillWorkshopProps): {
         icon: "check",
         title: "Nothing applied yet",
         body: "Use a pending proposal and it will appear here as a live skill.",
+      };
+    case "rolled_back":
+      return {
+        icon: "refresh",
+        title: "Nothing rolled back",
+        body: "Reverted skill proposals will remain here in the audit history.",
       };
     case "rejected":
       return {
@@ -754,6 +780,20 @@ function renderToday(
                 >
                   ${busy === "reject" ? "Skipping…" : "Skip"}
                   <span class="sw-today__big-sub">Not for me</span>
+                </button>
+              </div>
+            `
+          : nothing}
+        ${hero.status === "applied"
+          ? html`
+              <div class="sw-today__actions" aria-busy=${busy ? "true" : "false"}>
+                <button
+                  class="sw-today__big sw-today__big--skip ${busy === "rollback" ? "is-busy" : ""}"
+                  ?disabled=${disabled}
+                  @click=${() => props.onRollback(hero.key)}
+                >
+                  ${busy === "rollback" ? "Rolling back…" : "Roll back"}
+                  <span class="sw-today__big-sub">Restore the previous skill state</span>
                 </button>
               </div>
             `

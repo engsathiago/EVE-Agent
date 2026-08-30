@@ -105,9 +105,9 @@ describe("isVolatileBackupPath", () => {
   });
 
   it("matches tar filter paths when node-tar omits the leading slash", () => {
-    expect(
-      isVolatileBackupPath("opt/eve/state/agents/main/sessions/transcript.jsonl", plan),
-    ).toBe(true);
+    expect(isVolatileBackupPath("opt/eve/state/agents/main/sessions/transcript.jsonl", plan)).toBe(
+      true,
+    );
   });
 
   it("treats session-delivery-queue json files under stateDir as volatile", () => {

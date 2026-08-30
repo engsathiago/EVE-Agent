@@ -279,9 +279,7 @@ export function noteClaudeCliHealth(
       )} to rewrite the profile cleanly.`,
     );
   } else {
-    lines.push(
-      `- EVE auth profile: ${CLAUDE_CLI_PROFILE_ID} (provider ${CLAUDE_CLI_PROVIDER}).`,
-    );
+    lines.push(`- EVE auth profile: ${CLAUDE_CLI_PROFILE_ID} (provider ${CLAUDE_CLI_PROVIDER}).`);
   }
 
   for (const target of workspaceTargets) {

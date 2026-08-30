@@ -164,7 +164,7 @@ describe("mantis Slack desktop smoke runtime", () => {
       commandRunner: runner,
       crabboxBin: "/tmp/crabbox",
       env: runtimeEnv,
-      freshPr: "eve/eve#85141",
+      freshPr: "engsathiago/eve-agent#85141",
       now: () => new Date("2026-05-04T13:00:00.000Z"),
       outputDir: ".artifacts/qa-e2e/mantis/slack-desktop-test",
       primaryModel: "openai/gpt-5.4",
@@ -182,15 +182,15 @@ describe("mantis Slack desktop smoke runtime", () => {
       ["rsync", "-az"],
       ["/tmp/crabbox", "stop"],
     ]);
-    expect(
-      commands.every((entry) => entry.env?.EVE_LIVE_OPENAI_KEY === "openai-runtime-key"),
-    ).toBe(true);
+    expect(commands.every((entry) => entry.env?.EVE_LIVE_OPENAI_KEY === "openai-runtime-key")).toBe(
+      true,
+    );
     const runArgs = commands.find(
       (entry) => entry.command === "/tmp/crabbox" && entry.args[0] === "run",
     )?.args;
     expect(runArgs).toContain("--no-hydrate");
     expect(runArgs).toContain("--fresh-pr");
-    expect(runArgs).toContain("eve/eve#85141");
+    expect(runArgs).toContain("engsathiago/eve-agent#85141");
     expect(runArgs).not.toContain("--no-sync");
     const remoteScript = runArgs?.at(-1);
     expect(remoteScript).toContain("hydrate_mode='source'");

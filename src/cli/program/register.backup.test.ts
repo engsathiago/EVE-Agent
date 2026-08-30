@@ -6,6 +6,7 @@ import { registerBackupCommand } from "./register.backup.js";
 const mocks = vi.hoisted(() => ({
   backupCreateCommand: vi.fn(),
   backupVerifyCommand: vi.fn(),
+  backupRestoreCommand: vi.fn(),
   runtime: {
     log: vi.fn(),
     error: vi.fn(),
@@ -15,6 +16,7 @@ const mocks = vi.hoisted(() => ({
 
 const backupCreateCommand = mocks.backupCreateCommand;
 const backupVerifyCommand = mocks.backupVerifyCommand;
+const backupRestoreCommand = mocks.backupRestoreCommand;
 const runtime = mocks.runtime;
 
 vi.mock("../../commands/backup.js", () => ({
@@ -23,6 +25,10 @@ vi.mock("../../commands/backup.js", () => ({
 
 vi.mock("../../commands/backup-verify.js", () => ({
   backupVerifyCommand: mocks.backupVerifyCommand,
+}));
+
+vi.mock("../../commands/backup-restore.js", () => ({
+  backupRestoreCommand: mocks.backupRestoreCommand,
 }));
 
 vi.mock("../../runtime.js", () => ({
@@ -40,6 +46,7 @@ describe("registerBackupCommand", () => {
     vi.clearAllMocks();
     backupCreateCommand.mockResolvedValue(undefined);
     backupVerifyCommand.mockResolvedValue(undefined);
+    backupRestoreCommand.mockResolvedValue(undefined);
   });
 
   function expectForwardedOptions(command: typeof backupCreateCommand): Record<string, unknown> {
@@ -92,5 +99,29 @@ describe("registerBackupCommand", () => {
     const options = expectForwardedOptions(backupVerifyCommand);
     expect(options.archive).toBe("/tmp/eve-backup.tar.gz");
     expect(options.json).toBe(true);
+  });
+
+  it("plans and applies portable restores with target overrides", async () => {
+    await runCli([
+      "backup",
+      "restore",
+      "/tmp/eve-backup.tar.gz",
+      "--apply",
+      "--state-dir",
+      "/srv/eve/state",
+      "--workspace-root",
+      "/srv/eve/workspace",
+      "--json",
+    ]);
+
+    const options = expectForwardedOptions(backupRestoreCommand);
+    expect(options).toMatchObject({
+      archive: "/tmp/eve-backup.tar.gz",
+      apply: true,
+      stateDir: "/srv/eve/state",
+      workspaceRoot: "/srv/eve/workspace",
+      json: true,
+      skipPreRestoreBackup: false,
+    });
   });
 });

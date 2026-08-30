@@ -4,14 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { pathToFileURL } from "node:url";
-import {
-  openEVEAgentDatabase,
-  closeEVEAgentDatabasesForTest,
-} from "../src/state/eve-agent-db.js";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "../src/state/eve-state-db.js";
+import { openEVEAgentDatabase, closeEVEAgentDatabasesForTest } from "../src/state/eve-agent-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "../src/state/eve-state-db.js";
 import { parseStrictIntegerOption } from "./lib/dev-tooling-safety.ts";
 
 type ProfileId = "smoke" | "default" | "large";
@@ -571,8 +565,7 @@ function main(): void {
   }
   const options = parseOptions(argv);
   const config = applyScale(PROFILES[options.profile]);
-  const stateDir =
-    options.stateDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-perf-"));
+  const stateDir = options.stateDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "eve-sqlite-perf-"));
   const env = { EVE_STATE_DIR: stateDir };
   const started = nowMs();
   try {

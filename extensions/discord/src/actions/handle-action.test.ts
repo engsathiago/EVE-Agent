@@ -24,11 +24,7 @@ function defaultActionOptions() {
   };
 }
 
-function expectDiscordActionCall(params: {
-  payload: unknown;
-  cfg: EVEConfig;
-  options?: unknown;
-}) {
+function expectDiscordActionCall(params: { payload: unknown; cfg: EVEConfig; options?: unknown }) {
   expect(handleDiscordActionMock).toHaveBeenCalledTimes(1);
   const [call] = handleDiscordActionMock.mock.calls;
   if (!call) {

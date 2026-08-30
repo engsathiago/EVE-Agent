@@ -21,7 +21,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/bin/node /home/eve/.npm-global/lib/node_modules/eve/dist/entry.js gateway --port 18789
+ExecStart=/usr/bin/node /home/eve/.npm-global/lib/node_modules/eve-agent/dist/entry.js gateway --port 18789
 Restart=always
 Environment=EVE_SERVICE_MARKER=eve
 Environment=EVE_SERVICE_KIND=gateway
@@ -126,10 +126,7 @@ describe("findExtraGatewayServices (linux / scanSystemdDir) — real filesystem"
       const systemdDir = path.join(tmpHome, ".config", "systemd", "user");
       try {
         await fs.mkdir(systemdDir, { recursive: true });
-        await fs.writeFile(
-          path.join(systemdDir, "eve-gateway.service"),
-          GATEWAY_SERVICE_CONTENTS,
-        );
+        await fs.writeFile(path.join(systemdDir, "eve-gateway.service"), GATEWAY_SERVICE_CONTENTS);
         const result = await findExtraGatewayServices({ HOME: tmpHome });
         expect(result).toStrictEqual([]);
       } finally {
@@ -183,31 +180,28 @@ describe("findExtraGatewayServices (linux / scanSystemdDir) — real filesystem"
     },
   );
 
-  it.skipIf(!isLinux)(
-    "reports custom-named gateway units that execute eve gateway",
-    async () => {
-      const tmpHome = await fs.mkdtemp(path.join(os.tmpdir(), "eve-test-"));
-      const systemdDir = path.join(tmpHome, ".config", "systemd", "user");
-      const unitPath = path.join(systemdDir, "custom-eve.service");
-      try {
-        await fs.mkdir(systemdDir, { recursive: true });
-        await fs.writeFile(unitPath, CUSTOM_EVE_GATEWAY_CONTENTS);
-        const result = await findExtraGatewayServices({ HOME: tmpHome });
-        expect(result).toEqual([
-          {
-            platform: "linux",
-            label: "custom-eve.service",
-            detail: `unit: ${unitPath}`,
-            scope: "user",
-            marker: "eve",
-            legacy: false,
-          },
-        ]);
-      } finally {
-        await fs.rm(tmpHome, { recursive: true, force: true });
-      }
-    },
-  );
+  it.skipIf(!isLinux)("reports custom-named gateway units that execute eve gateway", async () => {
+    const tmpHome = await fs.mkdtemp(path.join(os.tmpdir(), "eve-test-"));
+    const systemdDir = path.join(tmpHome, ".config", "systemd", "user");
+    const unitPath = path.join(systemdDir, "custom-eve.service");
+    try {
+      await fs.mkdir(systemdDir, { recursive: true });
+      await fs.writeFile(unitPath, CUSTOM_EVE_GATEWAY_CONTENTS);
+      const result = await findExtraGatewayServices({ HOME: tmpHome });
+      expect(result).toEqual([
+        {
+          platform: "linux",
+          label: "custom-eve.service",
+          detail: `unit: ${unitPath}`,
+          scope: "user",
+          marker: "eve",
+          legacy: false,
+        },
+      ]);
+    } finally {
+      await fs.rm(tmpHome, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("findExtraGatewayServices (darwin / scanLaunchdDir) — real filesystem", () => {
@@ -411,8 +405,7 @@ describe("findExtraGatewayServices (win32)", () => {
       {
         platform: "win32",
         label: "\\EVE Gateway Backup",
-        detail:
-          "task: \\EVE Gateway Backup, run: C:\\Program Files\\EVE\\eve.exe gateway run",
+        detail: "task: \\EVE Gateway Backup, run: C:\\Program Files\\EVE\\eve.exe gateway run",
         scope: "system",
         marker: "eve",
         legacy: false,

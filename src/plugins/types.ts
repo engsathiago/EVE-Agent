@@ -22,8 +22,8 @@ import type { PromptMode } from "../agents/system-prompt.types.js";
 import type { AnyAgentTool } from "../agents/tools/common.js";
 import type { ReplyPayload } from "../auto-reply/reply-payload.js";
 import type { ThinkLevel } from "../auto-reply/thinking.shared.js";
-import type { ModelProviderConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelProviderConfig } from "../config/types.js";
 import type { OperatorScope } from "../gateway/operator-scopes.js";
 import type { GatewayRequestHandler } from "../gateway/server-methods/types.js";
 import type { InternalHookHandler } from "../hooks/internal-hook-types.js";
@@ -424,9 +424,7 @@ export type ProviderAuthMethod = {
    */
   wizard?: ProviderPluginWizardSetup;
   run: (ctx: ProviderAuthContext) => Promise<ProviderAuthResult>;
-  runNonInteractive?: (
-    ctx: ProviderAuthMethodNonInteractiveContext,
-  ) => Promise<EVEConfig | null>;
+  runNonInteractive?: (ctx: ProviderAuthMethodNonInteractiveContext) => Promise<EVEConfig | null>;
 };
 
 export type ProviderCatalogOrder = "simple" | "profile" | "paired" | "late";
@@ -1721,9 +1719,7 @@ export type ProviderPlugin = {
    * Use this when config materialization needs provider-specific defaults that
    * depend on auth mode, env, or provider model-family semantics.
    */
-  applyConfigDefaults?: (
-    ctx: ProviderApplyConfigDefaultsContext,
-  ) => EVEConfig | null | undefined;
+  applyConfigDefaults?: (ctx: ProviderApplyConfigDefaultsContext) => EVEConfig | null | undefined;
   /**
    * Provider-owned "modern model" matcher used by live profile/smoke filters.
    *
@@ -2637,10 +2633,7 @@ export type EVEPluginApi = {
   runContext: EVEPluginRunContextApi;
   /** Grouped facade for plugin-owned lifecycle cleanup hooks. */
   lifecycle: EVEPluginLifecycleApi;
-  registerTool: (
-    tool: AnyAgentTool | EVEPluginToolFactory,
-    opts?: EVEPluginToolOptions,
-  ) => void;
+  registerTool: (tool: AnyAgentTool | EVEPluginToolFactory, opts?: EVEPluginToolOptions) => void;
   registerHook: (
     events: string | string[],
     handler: InternalHookHandler,

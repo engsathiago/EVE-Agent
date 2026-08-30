@@ -69,10 +69,7 @@ import {
   type ResolvedBrowserConfig,
   type ResolvedBrowserProfile,
 } from "./config.js";
-import {
-  DEFAULT_EVE_BROWSER_COLOR,
-  DEFAULT_EVE_BROWSER_PROFILE_NAME,
-} from "./constants.js";
+import { DEFAULT_EVE_BROWSER_COLOR, DEFAULT_EVE_BROWSER_PROFILE_NAME } from "./constants.js";
 import { BrowserProfileUnavailableError } from "./errors.js";
 import { ensureOutputDirectory } from "./output-directories.js";
 import { DEFAULT_DOWNLOAD_DIR } from "./paths.js";
@@ -1130,10 +1127,7 @@ export async function launchEVEChrome(
 }
 
 /** Stop a managed Chrome process and wait for shutdown. */
-export async function stopEVEChrome(
-  running: RunningChrome,
-  timeoutMs = CHROME_STOP_TIMEOUT_MS,
-) {
+export async function stopEVEChrome(running: RunningChrome, timeoutMs = CHROME_STOP_TIMEOUT_MS) {
   const proc = running.proc;
   try {
     if (proc.killed) {

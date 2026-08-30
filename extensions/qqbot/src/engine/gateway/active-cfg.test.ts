@@ -37,10 +37,7 @@ describe("createActiveCfgProvider", () => {
     const fallback = asCfg({ bindings: [] });
     const first = asCfg({ bindings: [{ id: "first" }] });
     const second = asCfg({ bindings: [{ id: "second" }] });
-    const load = vi
-      .fn<() => EVEConfig>()
-      .mockReturnValueOnce(first)
-      .mockReturnValueOnce(second);
+    const load = vi.fn<() => EVEConfig>().mockReturnValueOnce(first).mockReturnValueOnce(second);
 
     const provider = createActiveCfgProvider({ fallback, load });
 

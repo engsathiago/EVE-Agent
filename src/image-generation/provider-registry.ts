@@ -22,9 +22,7 @@ function isSafeImageGenerationProviderId(id: string | undefined): id is string {
   return Boolean(id && !UNSAFE_PROVIDER_IDS.has(id));
 }
 
-function resolvePluginImageGenerationProviders(
-  cfg?: EVEConfig,
-): ImageGenerationProviderPlugin[] {
+function resolvePluginImageGenerationProviders(cfg?: EVEConfig): ImageGenerationProviderPlugin[] {
   return capabilityProviderRuntime.resolvePluginCapabilityProviders({
     key: "imageGenerationProviders",
     cfg,
@@ -65,9 +63,7 @@ function buildProviderMaps(cfg?: EVEConfig): {
 }
 
 /** Lists canonical image-generation providers visible for config. */
-export function listImageGenerationProviders(
-  cfg?: EVEConfig,
-): ImageGenerationProviderPlugin[] {
+export function listImageGenerationProviders(cfg?: EVEConfig): ImageGenerationProviderPlugin[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
 

@@ -245,9 +245,7 @@ export function validateToolPluginProject(params: {
   }
   if (extra.length > 0) {
     errors.push(
-      `eve.plugin.json contracts.tools has no matching defineToolPlugin tool: ${extra.join(
-        ", ",
-      )}`,
+      `eve.plugin.json contracts.tools has no matching defineToolPlugin tool: ${extra.join(", ")}`,
     );
   }
   const extensionResolution = resolvePackageExtensionEntries(params.packageManifest);

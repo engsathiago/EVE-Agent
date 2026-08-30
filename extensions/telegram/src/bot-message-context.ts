@@ -1,5 +1,3 @@
-// Telegram plugin module implements bot message context behavior.
-import type { ReactionTypeEmoji } from "grammy/types";
 import {
   resolveAckReaction,
   shouldAckReaction as shouldAckReactionGate,
@@ -12,6 +10,8 @@ import type {
 import { deriveLastRoutePolicy } from "eve-agent/plugin-sdk/routing";
 import { normalizeAccountId, resolveThreadSessionKeys } from "eve-agent/plugin-sdk/routing";
 import { logVerbose } from "eve-agent/plugin-sdk/runtime-env";
+// Telegram plugin module implements bot message context behavior.
+import type { ReactionTypeEmoji } from "grammy/types";
 import {
   expandTelegramAllowFromWithAccessGroups,
   resolveTelegramDmAllow,

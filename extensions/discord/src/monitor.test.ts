@@ -247,9 +247,9 @@ describe("discord allowlist helpers", () => {
     expect(allowListMatches(allow, { name: "steipete" })).toBe(false);
     expect(allowListMatches(allow, { name: "friends-of-eve" })).toBe(false);
     expect(allowListMatches(allow, { name: "steipete" }, { allowNameMatching: true })).toBe(true);
-    expect(
-      allowListMatches(allow, { name: "friends-of-eve" }, { allowNameMatching: true }),
-    ).toBe(true);
+    expect(allowListMatches(allow, { name: "friends-of-eve" }, { allowNameMatching: true })).toBe(
+      true,
+    );
     expect(allowListMatches(allow, { name: "other" })).toBe(false);
   });
 

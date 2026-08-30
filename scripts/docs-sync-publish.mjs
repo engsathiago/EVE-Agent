@@ -184,8 +184,7 @@ export function parseArgs(argv) {
     sourceRepo: "",
     sourceSha: "",
     clawhubRepo: process.env[CLAWHUB_REPO_ENV] || "",
-    clawhubSourceRepo:
-      process.env.EVE_DOCS_SYNC_CLAWHUB_SOURCE_REPO || DEFAULT_CLAWHUB_SOURCE_REPO,
+    clawhubSourceRepo: process.env.EVE_DOCS_SYNC_CLAWHUB_SOURCE_REPO || DEFAULT_CLAWHUB_SOURCE_REPO,
     clawhubSourceSha: process.env.EVE_DOCS_SYNC_CLAWHUB_SOURCE_SHA || "",
   };
 

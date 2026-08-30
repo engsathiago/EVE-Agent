@@ -314,8 +314,7 @@ export async function runAgentHarnessAttempt(
     agentHarnessRuntimeOverride: params.agentHarnessRuntimeOverride,
   });
   const harness = selection.harness;
-  const attemptParams =
-    harness.id === "eve" ? params : applyPluginHarnessDenyAllToolPolicy(params);
+  const attemptParams = harness.id === "eve" ? params : applyPluginHarnessDenyAllToolPolicy(params);
   logAgentHarnessSelection(selection, {
     provider: params.provider,
     modelId: params.modelId,

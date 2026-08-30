@@ -2,7 +2,7 @@
 summary: "Create and update workspace skills through Skill Workshop review"
 read_when:
   - You want the agent to create or update a skill from chat
-  - You need to review, apply, reject, or quarantine a generated skill draft
+  - You need to review, apply, roll back, reject, or quarantine a generated skill draft
   - You are configuring Skill Workshop approval, autonomy, storage, or limits
 title: "Skill Workshop"
 sidebarTitle: "Skill Workshop"
@@ -32,6 +32,8 @@ plugin, ClawHub, extra-root, managed, personal-agent, or system skills.
   stale if the live skill changes before apply.
 - **Scanner gated:** apply reruns scanning before writing.
 - **Recoverable:** apply writes rollback metadata before changing live files.
+- **Edit-safe rollback:** rollback restores the captured files only while the
+  applied skill and support files still match the proposal.
 - **Consistent surfaces:** chat, CLI, and Gateway all call the same Skill
   Workshop service.
 
@@ -41,12 +43,14 @@ plugin, ClawHub, extra-root, managed, personal-agent, or system skills.
 create/update -> pending
 revise        -> pending
 apply         -> applied
+rollback      -> rolled_back
 reject        -> rejected
 quarantine    -> quarantined
 target change -> stale
 ```
 
 Only `pending` proposals can be revised, applied, rejected, or quarantined.
+Only `applied` proposals can be rolled back.
 
 ## Chat
 
@@ -111,6 +115,7 @@ Close out the proposal:
 
 ```bash
 eve skills workshop apply <proposal-id>
+eve skills workshop rollback <proposal-id> --reason "Restore the previous version"
 eve skills workshop reject <proposal-id> --reason "Duplicate"
 eve skills workshop quarantine <proposal-id> --reason "Needs security review"
 ```
@@ -164,7 +169,7 @@ non-UTF-8 text, null bytes, and files outside the standard support folders.
 The model uses `skill_workshop`:
 
 ```text
-action: create | update | revise | list | inspect | apply | reject | quarantine
+action: create | update | revise | list | inspect | apply | rollback | reject | quarantine
 ```
 
 Agents must use `skill_workshop` for generated skill work. They must not create
@@ -205,7 +210,7 @@ agent session or the CLI.
   symlinks whose real target is listed in `skills.load.allowSymlinkTargets`.
   Default: `false`.
 - `approvalPolicy: "pending"`: requires an approval prompt before
-  agent-initiated `apply`, `reject`, or `quarantine`.
+  agent-initiated `apply`, `rollback`, `reject`, or `quarantine`.
 - `approvalPolicy: "auto"`: skips that approval prompt. The agent must still
   call the action.
 - `maxPending`: caps pending and quarantined proposals per workspace.
@@ -222,6 +227,7 @@ skills.proposals.create
 skills.proposals.update
 skills.proposals.revise
 skills.proposals.apply
+skills.proposals.rollback
 skills.proposals.reject
 skills.proposals.quarantine
 ```
@@ -269,9 +275,10 @@ Default state directory: `~/.eve`.
 | `Skill proposal content is too large`          | Shorten the proposal body or raise `skills.workshop.maxSkillBytes`.                                                                                                                                         |
 | `Target skill changed after proposal creation` | Revise the proposal against the current target, or create a new proposal.                                                                                                                                   |
 | `Proposal scan failed`                         | Inspect scanner findings, then revise or quarantine the proposal.                                                                                                                                           |
+| `rollback refused`                             | Preserve the edit made after apply and create a new proposal; rollback never overwrites a changed skill or support file.                                                                                    |
 | `untrusted symlink target`                     | Configure `skills.load.allowSymlinkTargets` and enable `skills.workshop.allowSymlinkTargetWrites` only for intentional shared skill roots.                                                                  |
 | `Support file paths must be under one of...`   | Move support files under `assets/`, `examples/`, `references/`, `scripts/`, or `templates/`.                                                                                                                |
-| Proposal does not show in list                 | Check the selected `--agent` workspace and `EVE_STATE_DIR`.                                                                                                                                            |
+| Proposal does not show in list                 | Check the selected `--agent` workspace and `EVE_STATE_DIR`.                                                                                                                                                 |
 | Agent cannot call `skill_workshop`             | Check the active tool policy and run mode. `coding` includes the tool; restrictive `tools.allow` policies must list it explicitly, and sandboxed runs must use a normal host-side agent session or the CLI. |
 
 ## Related

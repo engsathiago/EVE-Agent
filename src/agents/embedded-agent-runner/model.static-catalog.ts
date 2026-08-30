@@ -3,8 +3,8 @@
  */
 import type { NormalizedModelCatalogRow } from "@eve/model-catalog-core/model-catalog-types";
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
-import type { ModelProviderConfig } from "../../config/types.models.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ModelProviderConfig } from "../../config/types.models.js";
 import { planManifestModelCatalogRows } from "../../model-catalog/manifest-planner.js";
 import { listEVEPluginManifestMetadata } from "../../plugins/manifest-metadata-scan.js";
 import { loadPluginManifestRegistry } from "../../plugins/manifest-registry.js";

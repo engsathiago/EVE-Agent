@@ -1,7 +1,10 @@
 // Whatsapp plugin module implements outbound media contract behavior.
 import path from "node:path";
 import { sanitizeForPlainText } from "eve-agent/plugin-sdk/channel-outbound";
-import { MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS, runFfmpeg } from "eve-agent/plugin-sdk/media-runtime";
+import {
+  MEDIA_FFMPEG_MAX_AUDIO_DURATION_SECS,
+  runFfmpeg,
+} from "eve-agent/plugin-sdk/media-runtime";
 import { writeExternalFileWithinRoot } from "eve-agent/plugin-sdk/security-runtime";
 import { uniqueStrings } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { resolvePreferredEVETmpDir, withTempWorkspace } from "eve-agent/plugin-sdk/temp-path";

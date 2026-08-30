@@ -13,7 +13,7 @@ const ENABLE_VYDRA_VIDEO_LIVE = process.env.EVE_LIVE_VYDRA_VIDEO === "1";
 const LIVE_IMAGE_MODEL = process.env.EVE_LIVE_VYDRA_IMAGE_MODEL?.trim() || "grok-imagine";
 const LIVE_VIDEO_MODEL = process.env.EVE_LIVE_VYDRA_VIDEO_MODEL?.trim() || "veo3";
 const DEFAULT_LIVE_KLING_IMAGE_URL =
-  "https://raw.githubusercontent.com/eve/eve/main/docs/assets/showcase/roof-camera-sky.jpg";
+  "https://raw.githubusercontent.com/engsathiago/eve-agent/main/docs/assets/showcase/roof-camera-sky.jpg";
 const LIVE_KLING_IMAGE_URL =
   process.env.EVE_LIVE_VYDRA_KLING_IMAGE_URL?.trim() || DEFAULT_LIVE_KLING_IMAGE_URL;
 const VYDRA_KLING_TIMEOUT_MS = 12 * 60_000;

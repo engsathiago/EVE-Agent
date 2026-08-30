@@ -29,10 +29,7 @@ import {
   resolveBrowserExecutableForPlatform,
   stopEVEChrome,
 } from "./chrome.js";
-import {
-  DEFAULT_EVE_BROWSER_COLOR,
-  DEFAULT_EVE_BROWSER_PROFILE_NAME,
-} from "./constants.js";
+import { DEFAULT_EVE_BROWSER_COLOR, DEFAULT_EVE_BROWSER_PROFILE_NAME } from "./constants.js";
 import { BrowserCdpEndpointBlockedError } from "./errors.js";
 import { DEFAULT_DOWNLOAD_DIR } from "./paths.js";
 
@@ -193,10 +190,7 @@ describe("browser chrome profile decoration", () => {
     expect(prefs.download).toBeUndefined();
     expect(prefs.savefile).toBeUndefined();
 
-    const marker = await fsp.readFile(
-      path.join(userDataDir, ".eve-profile-decorated"),
-      "utf-8",
-    );
+    const marker = await fsp.readFile(path.join(userDataDir, ".eve-profile-decorated"), "utf-8");
     expect(marker.trim()).toMatch(/^\d+$/);
   });
 

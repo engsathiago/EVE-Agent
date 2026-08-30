@@ -15,7 +15,7 @@ function makeResult(
     steps: [
       {
         name: stepName,
-        command: "npm i -g eve@latest",
+        command: "npm i -g eve-agent@latest",
         cwd: "/tmp",
         durationMs: 1,
         exitCode: 1,

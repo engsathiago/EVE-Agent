@@ -48,7 +48,7 @@ gh workflow run mantis-slack-desktop-smoke.yml \
 
 Allowed `candidate_ref` values are intentionally narrow because the workflow
 uses live credentials: current `main` ancestry, release tags, or an open PR head
-from `eve/eve`.
+from `engsathiago/eve-agent`.
 
 The workflow writes:
 

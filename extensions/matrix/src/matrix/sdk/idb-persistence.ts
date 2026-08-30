@@ -1,8 +1,8 @@
 // Matrix plugin module implements idb persistence behavior.
 import fs from "node:fs";
 import path from "node:path";
-import { indexedDB as fakeIndexedDB } from "fake-indexeddb";
 import { withFileLock } from "eve-agent/plugin-sdk/file-lock";
+import { indexedDB as fakeIndexedDB } from "fake-indexeddb";
 import {
   MATRIX_IDB_SNAPSHOT_FILENAME,
   readMatrixIdbSnapshotJson,
@@ -223,8 +223,7 @@ async function restoreIndexedDatabases(snapshot: IdbDatabaseSnapshot[]): Promise
 }
 
 function resolveDefaultIdbSnapshotPath(): string {
-  const stateDir =
-    process.env.EVE_STATE_DIR || path.join(process.env.HOME || "/tmp", ".eve");
+  const stateDir = process.env.EVE_STATE_DIR || path.join(process.env.HOME || "/tmp", ".eve");
   return path.join(stateDir, "matrix", "crypto-idb-snapshot.json");
 }
 

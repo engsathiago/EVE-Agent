@@ -55,12 +55,12 @@ surfaces until review and verification finish.
 
 Use this checklist before you publish:
 
-| Requirement          | Why                                                 |
-| -------------------- | --------------------------------------------------- |
+| Requirement          | Why                                            |
+| -------------------- | ---------------------------------------------- |
 | Published on ClawHub | Users need `eve plugins install` hints to work |
-| Public GitHub repo   | Source review, issue tracking, transparency         |
-| Setup and usage docs | Users need to know how to configure it              |
-| Active maintenance   | Recent updates or responsive issue handling         |
+| Public GitHub repo   | Source review, issue tracking, transparency    |
+| Setup and usage docs | Users need to know how to configure it         |
+| Active maintenance   | Recent updates or responsive issue handling    |
 
 Use these pages for the full publishing contract:
 

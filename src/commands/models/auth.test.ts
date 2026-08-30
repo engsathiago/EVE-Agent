@@ -382,13 +382,11 @@ describe("modelsAuthLoginCommand", () => {
       diagnostics: [],
     });
     mocks.loadValidConfigOrThrow.mockImplementation(async () => currentConfig);
-    mocks.updateConfig.mockImplementation(
-      async (mutator: (cfg: EVEConfig) => EVEConfig) => {
-        lastUpdatedConfig = mutator(currentConfig);
-        currentConfig = lastUpdatedConfig;
-        return lastUpdatedConfig;
-      },
-    );
+    mocks.updateConfig.mockImplementation(async (mutator: (cfg: EVEConfig) => EVEConfig) => {
+      lastUpdatedConfig = mutator(currentConfig);
+      currentConfig = lastUpdatedConfig;
+      return lastUpdatedConfig;
+    });
     mocks.createClackPrompter.mockReturnValue({
       note: vi.fn(async () => {}),
       select: vi.fn(),
@@ -806,16 +804,13 @@ describe("modelsAuthLoginCommand", () => {
 
     expect(mocks.resolveDefaultAgentId).not.toHaveBeenCalled();
     expect(mocks.resolveAgentDir).toHaveBeenCalledWith(originalConfig, "coder");
-    expect(mocks.loadAuthProfileStoreForRuntime).toHaveBeenCalledWith(
-      "/tmp/eve/agents/coder",
-      {
-        externalCli: {
-          mode: "scoped",
-          allowKeychainPrompt: false,
-          providerIds: ["openai"],
-        },
+    expect(mocks.loadAuthProfileStoreForRuntime).toHaveBeenCalledWith("/tmp/eve/agents/coder", {
+      externalCli: {
+        mode: "scoped",
+        allowKeychainPrompt: false,
+        providerIds: ["openai"],
       },
-    );
+    });
     const authRunCall = readMockCallArg(runProviderAuth) as AuthRunCall;
     expect(authRunCall.agentDir).toBe("/tmp/eve/agents/coder");
     expect(authRunCall.workspaceDir).toBe("/tmp/eve/workspaces/coder");
@@ -1333,9 +1328,7 @@ describe("modelsAuthLoginCommand", () => {
       },
       agentDir: "/tmp/eve/agents/main",
     });
-    expect(runtime.log).toHaveBeenCalledWith(
-      "Anthropic setup-token auth is supported in EVE.",
-    );
+    expect(runtime.log).toHaveBeenCalledWith("Anthropic setup-token auth is supported in EVE.");
     expect(runtime.log).toHaveBeenCalledWith(
       "EVE prefers Claude CLI reuse when it is available on the host.",
     );

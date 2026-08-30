@@ -96,7 +96,7 @@ describe("renderTable", () => {
 
   it("trims leading spaces on wrapped ANSI-colored continuation lines", () => {
     const out = renderTable({
-      width: 113,
+      width: 108,
       columns: [
         { key: "Status", header: "Status", minWidth: 10 },
         { key: "Skill", header: "Skill", minWidth: 18, flex: true },

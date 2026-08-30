@@ -1,7 +1,7 @@
+import type { EVEConfig } from "../config/types.eve.js";
 // Gateway reload settings resolver.
 // Normalizes reload mode and debounce config for watcher/reload handlers.
 import type { GatewayReloadMode } from "../config/types.gateway.js";
-import type { EVEConfig } from "../config/types.eve.js";
 
 type GatewayReloadSettings = {
   mode: GatewayReloadMode;

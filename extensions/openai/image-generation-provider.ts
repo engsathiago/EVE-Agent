@@ -281,10 +281,7 @@ function resolveOpenAIImageRequestSize(params: {
   };
 }
 
-function shouldAllowPrivateImageEndpoint(req: {
-  provider: string;
-  cfg: EVEConfig | undefined;
-}) {
+function shouldAllowPrivateImageEndpoint(req: { provider: string; cfg: EVEConfig | undefined }) {
   if (req.provider === MOCK_OPENAI_PROVIDER_ID) {
     return true;
   }
@@ -314,10 +311,7 @@ function resolveRequestAuthStore(req: {
   });
 }
 
-function hasDirectOpenAIImageApiKeyAuth(params: {
-  cfg?: EVEConfig;
-  agentDir?: string;
-}): boolean {
+function hasDirectOpenAIImageApiKeyAuth(params: { cfg?: EVEConfig; agentDir?: string }): boolean {
   if (hasExplicitOpenAIImageApiKeyConfig(params.cfg)) {
     return true;
   }

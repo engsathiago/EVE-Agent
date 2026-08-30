@@ -802,10 +802,7 @@ function isActiveMemoryGloballyEnabled(cfg: EVEConfig): boolean {
   return pluginConfig?.enabled !== false;
 }
 
-function updateActiveMemoryGlobalEnabledInConfig(
-  cfg: EVEConfig,
-  enabled: boolean,
-): EVEConfig {
+function updateActiveMemoryGlobalEnabledInConfig(cfg: EVEConfig, enabled: boolean): EVEConfig {
   const entries = { ...cfg.plugins?.entries };
   const existingEntry = asRecord(entries["active-memory"]) ?? {};
   const existingConfig = asRecord(existingEntry.config) ?? {};
@@ -3459,9 +3456,7 @@ export default definePluginEntry({
     warnDeprecatedModelFallbackPolicy(api.pluginConfig);
     const refreshLiveConfigFromRuntime = () => {
       const livePluginConfig = resolveLivePluginConfigObject(
-        api.runtime.config?.current
-          ? () => api.runtime.config.current() as EVEConfig
-          : undefined,
+        api.runtime.config?.current ? () => api.runtime.config.current() as EVEConfig : undefined,
         "active-memory",
         api.pluginConfig as Record<string, unknown>,
       );

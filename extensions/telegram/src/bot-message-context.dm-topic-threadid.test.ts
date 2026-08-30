@@ -79,7 +79,8 @@ describe("buildTelegramMessageContext DM topic threadId in deliveryContext (#889
   });
 
   it("builds Telegram payloads through the shared channel turn context", async () => {
-    const { buildChannelInboundEventContext } = await import("eve-agent/plugin-sdk/channel-inbound");
+    const { buildChannelInboundEventContext } =
+      await import("eve-agent/plugin-sdk/channel-inbound");
     const buildChannelInboundEventContextMock = vi.fn(buildChannelInboundEventContext);
 
     const ctx = await buildCtx({

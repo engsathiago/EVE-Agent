@@ -32,9 +32,7 @@ describe("plugin host cleanup session stores", () => {
   });
 
   it("does not rewrite session stores when cleanup scans find no plugin-owned state", async () => {
-    stateDir = await fs.mkdtemp(
-      path.join(resolvePreferredEVETmpDir(), "eve-host-cleanup-noop-"),
-    );
+    stateDir = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-host-cleanup-noop-"));
     previousStateDir = process.env.EVE_STATE_DIR;
     process.env.EVE_STATE_DIR = stateDir;
     const storePath = path.join(stateDir, "sessions.json");

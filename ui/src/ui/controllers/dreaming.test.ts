@@ -1289,8 +1289,7 @@ describe("dreaming controller", () => {
 
   it("copies the dreaming repair archive path", async () => {
     const { state } = createState();
-    state.dreamDiaryActionArchivePath =
-      "/tmp/eve/.eve-repair/dreaming/2026-04-11T22-10-00-000Z";
+    state.dreamDiaryActionArchivePath = "/tmp/eve/.eve-repair/dreaming/2026-04-11T22-10-00-000Z";
     const writeText = vi.fn().mockResolvedValue(undefined);
     vi.stubGlobal("navigator", { clipboard: { writeText } } as unknown as Navigator);
 

@@ -198,8 +198,7 @@ function resolveUpdateStatusBanner(params: { status?: string; reason?: string })
       "no-upstream": "Set an upstream branch, then retry.",
       "not-git-install":
         "Not a git checkout. Run `eve update` from the CLI for a global reinstall.",
-      "not-eve-root":
-        "Run the update from an EVE checkout or use the CLI global reinstall path.",
+      "not-eve-root": "Run the update from an EVE checkout or use the CLI global reinstall path.",
       "deps-install-failed": "Dependency install failed. Fix the install error and retry.",
       "build-failed": "Build failed. Fix the build error and retry.",
       "ui-build-failed": "The control UI rebuild failed. Fix the UI build error and retry.",

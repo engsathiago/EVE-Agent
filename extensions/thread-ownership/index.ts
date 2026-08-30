@@ -83,9 +83,7 @@ export default definePluginEntry({
     const resolveCurrentState = () => {
       const currentConfig = (api.runtime.config?.current?.() ?? api.config) as EVEConfig;
       const livePluginCfg = resolveLivePluginConfigObject(
-        api.runtime.config?.current
-          ? () => api.runtime.config.current() as EVEConfig
-          : undefined,
+        api.runtime.config?.current ? () => api.runtime.config.current() as EVEConfig : undefined,
         "thread-ownership",
         isThreadOwnershipConfig(api.pluginConfig)
           ? (api.pluginConfig as Record<string, unknown>)

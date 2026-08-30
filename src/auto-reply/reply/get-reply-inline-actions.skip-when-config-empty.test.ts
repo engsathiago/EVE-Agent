@@ -828,9 +828,9 @@ describe("handleInlineActions", () => {
     );
 
     expect(result).toEqual({ kind: "reply", reply: { text: "✅ Done." } });
-    expect(
-      mockObjectArg(createEVEToolsMock, "createEVETools").requesterAgentIdOverride,
-    ).toBe("named-worker");
+    expect(mockObjectArg(createEVEToolsMock, "createEVETools").requesterAgentIdOverride).toBe(
+      "named-worker",
+    );
     expect(toolExecute).toHaveBeenCalledTimes(1);
   });
 
@@ -1178,7 +1178,7 @@ describe("handleInlineActions", () => {
     expect(toolExecute).not.toHaveBeenCalled();
   });
 
-  it("applies subagent policy to ACP envelope inline dispatch sessions", async () => {
+  it("keeps ACP envelope inline dispatch available without a configured owner policy", async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-inline-acp-policy-"));
     try {
       const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
@@ -1248,9 +1248,9 @@ describe("handleInlineActions", () => {
 
       expect(result).toEqual({
         kind: "reply",
-        reply: { text: "❌ Tool not available: sessions_spawn" },
+        reply: { text: "spawned" },
       });
-      expect(toolExecute).not.toHaveBeenCalled();
+      expect(toolExecute).toHaveBeenCalledOnce();
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

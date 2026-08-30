@@ -154,7 +154,7 @@ struct OnboardingView: View {
 
     var devLinkCommand: String {
         let version = GatewayEnvironment.expectedGatewayVersionString() ?? "latest"
-        return "npm install -g eve@\(version)"
+        return "npm install -g eve-agent@\(version)"
     }
 
     struct LocalGatewayProbe: Equatable {

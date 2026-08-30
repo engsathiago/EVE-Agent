@@ -141,9 +141,7 @@ describe("scripts/lib/eve-test-state", () => {
       const customPayload = JSON.parse(customProbe.stdout);
       expect(customPayload.tmpRoot).toBe(customTemp);
       expect(customPayload.home).toMatch(
-        new RegExp(
-          `^${escapeRegex(customTemp)}/eve-update-channel-switch-update-stable-home\\.`,
-        ),
+        new RegExp(`^${escapeRegex(customTemp)}/eve-update-channel-switch-update-stable-home\\.`),
       );
 
       const trailingSlashProbe = await execFileAsync("bash", [
@@ -153,9 +151,7 @@ describe("scripts/lib/eve-test-state", () => {
       const trailingSlashPayload = JSON.parse(trailingSlashProbe.stdout);
       expect(trailingSlashPayload.tmpRoot).toBe(customTemp);
       expect(trailingSlashPayload.home).toMatch(
-        new RegExp(
-          `^${escapeRegex(customTemp)}/eve-update-channel-switch-update-stable-home\\.`,
-        ),
+        new RegExp(`^${escapeRegex(customTemp)}/eve-update-channel-switch-update-stable-home\\.`),
       );
       expect(trailingSlashPayload.stateDir).toBe(`${trailingSlashPayload.home}/.eve`);
     } finally {

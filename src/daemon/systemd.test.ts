@@ -353,9 +353,9 @@ describe("systemd availability", () => {
       cb(null, "", "");
     });
 
-    await expect(
-      isSystemdUserServiceAvailable({ USER: "eve", SUDO_USER: "admin" }),
-    ).resolves.toBe(true);
+    await expect(isSystemdUserServiceAvailable({ USER: "eve", SUDO_USER: "admin" })).resolves.toBe(
+      true,
+    );
     expect(execFileMock).toHaveBeenCalledTimes(1);
   });
 });
@@ -498,9 +498,9 @@ describe("isSystemdServiceEnabled", () => {
         err.code = 1;
         cb(err, "", "permission denied");
       });
-    await expect(
-      isSystemdServiceEnabled({ env: { HOME: "/tmp/eve-test-home" } }),
-    ).rejects.toThrow("systemctl is-enabled unavailable: permission denied");
+    await expect(isSystemdServiceEnabled({ env: { HOME: "/tmp/eve-test-home" } })).rejects.toThrow(
+      "systemctl is-enabled unavailable: permission denied",
+    );
   });
 
   it("returns false when systemctl is-enabled exits with code 4 (not-found)", async () => {
@@ -709,12 +709,9 @@ describe("system-scope gateway unit detection (eve#87577)", () => {
       expect(args).not.toContain("--user");
       cb(
         null,
-        [
-          "Id=eve-gateway.service",
-          "ActiveState=active",
-          "SubState=running",
-          "MainPID=4242",
-        ].join("\n"),
+        ["Id=eve-gateway.service", "ActiveState=active", "SubState=running", "MainPID=4242"].join(
+          "\n",
+        ),
         "",
       );
     });
@@ -730,9 +727,7 @@ describe("system-scope gateway unit detection (eve#87577)", () => {
     const { stdout, write } = createWritableStreamMock();
     await expect(
       restartSystemdService({ stdout, env: { HOME: TEST_MANAGED_HOME } }),
-    ).rejects.toThrow(
-      /system-scope unit .* run `sudo systemctl restart eve-gateway\.service`/,
-    );
+    ).rejects.toThrow(/system-scope unit .* run `sudo systemctl restart eve-gateway\.service`/);
     expect(execFileMock).not.toHaveBeenCalled();
     expect(write).not.toHaveBeenCalled();
   });
@@ -969,9 +964,7 @@ describe("splitArgsPreservingQuotes", () => {
 
 describe("parseSystemdEnvAssignments", () => {
   it("parses single-quoted whole assignments", () => {
-    expect(
-      parseSystemdEnvAssignments("'EVE_GATEWAY_TOKEN=single quoted token' FOO=bar"),
-    ).toEqual([
+    expect(parseSystemdEnvAssignments("'EVE_GATEWAY_TOKEN=single quoted token' FOO=bar")).toEqual([
       { key: "EVE_GATEWAY_TOKEN", value: "single quoted token" },
       { key: "FOO", value: "bar" },
     ]);
@@ -1440,9 +1433,8 @@ describe("stageSystemdService", () => {
       // operator previously wrote there but staging now supplies inline.
       await fs.writeFile(
         envFilePath,
-        ["EVE_GATEWAY_TOKEN=stale-gateway-token", "OPENROUTER_API_KEY=or-operator-key"].join(
+        ["EVE_GATEWAY_TOKEN=stale-gateway-token", "OPENROUTER_API_KEY=or-operator-key"].join("\n") +
           "\n",
-        ) + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
 

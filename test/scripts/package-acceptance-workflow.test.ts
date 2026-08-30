@@ -169,9 +169,7 @@ describe("package acceptance workflow", () => {
       "REPAIR_PARTIAL_CLOSEOUT: ${{ needs.resolve.outputs.repair_partial_closeout }}",
     );
     expect(workflow).toContain('--allow-stale-rollback-drill "$REPAIR_PARTIAL_CLOSEOUT"');
-    expect(workflow).toContain(
-      'awk -v asset="eve-${release_version}-stable-main-closeout.json"',
-    );
+    expect(workflow).toContain('awk -v asset="eve-${release_version}-stable-main-closeout.json"');
     expect(workflow).toContain("attach_or_verify \\");
     expect(checksumIndex).toBeGreaterThan(-1);
     expect(evidenceReadIndex).toBeGreaterThan(checksumIndex);
@@ -404,9 +402,7 @@ describe("package acceptance workflow", () => {
     expect(workflow).toContain('gh run download "$ARTIFACT_RUN_ID"');
     expect(workflow).toContain("name: ${{ env.PACKAGE_ARTIFACT_NAME }}");
     expect(workflow).toContain("pull-requests: read");
-    expect(workflow).toContain(
-      "uses: ./.github/workflows/eve-live-and-e2e-checks-reusable.yml",
-    );
+    expect(workflow).toContain("uses: ./.github/workflows/eve-live-and-e2e-checks-reusable.yml");
     expect(workflow).toContain(
       "ref: ${{ needs.resolve_package.outputs.package_source_sha || inputs.workflow_ref }}",
     );
@@ -456,7 +452,7 @@ describe("package acceptance workflow", () => {
     expect(workflow).toContain("telegram_scenarios:");
     expect(workflow).toContain("scenario: ${{ inputs.telegram_scenarios }}");
     expect(workflow).toContain(
-      "package_label: eve@${{ needs.resolve_package.outputs.package_version }}",
+      "package_label: eve-agent@${{ needs.resolve_package.outputs.package_version }}",
     );
     expect(npmTelegramWorkflow).toContain("package_artifact_run_id:");
     expect(npmTelegramWorkflow).toContain("Download package-under-test artifact from release run");
@@ -536,7 +532,7 @@ describe("package acceptance workflow", () => {
       "source: ${{ (needs.resolve_target.outputs.package_acceptance_package_spec != '' || needs.resolve_target.outputs.release_package_spec != '') && 'npm' || 'artifact' }}",
     );
     expect(releaseChecksWorkflow).toContain(
-      "package_spec: ${{ needs.resolve_target.outputs.package_acceptance_package_spec || needs.resolve_target.outputs.release_package_spec || 'eve@beta' }}",
+      "package_spec: ${{ needs.resolve_target.outputs.package_acceptance_package_spec || needs.resolve_target.outputs.release_package_spec || 'eve-agent@beta' }}",
     );
   });
 
@@ -603,8 +599,7 @@ describe("package artifact reuse", () => {
       INCLUDE_RELEASE_PATH_SUITES: "${{ inputs.include_release_path_suites }}",
       LANES: "${{ inputs.docker_lanes }}",
       EVE_UPGRADE_SURVIVOR_BASELINE_SPEC: "${{ inputs.published_upgrade_survivor_baseline }}",
-      EVE_UPGRADE_SURVIVOR_BASELINE_SPECS:
-        "${{ inputs.published_upgrade_survivor_baselines }}",
+      EVE_UPGRADE_SURVIVOR_BASELINE_SPECS: "${{ inputs.published_upgrade_survivor_baselines }}",
       EVE_UPGRADE_SURVIVOR_SCENARIOS: "${{ inputs.published_upgrade_survivor_scenarios }}",
       RELEASE_TEST_PROFILE: "${{ inputs.release_test_profile }}",
     });
@@ -644,7 +639,7 @@ describe("package artifact reuse", () => {
       "env -u EVE_GATEWAY_TOKEN -u EVE_GATEWAY_PASSWORD eve",
     );
     expect(publishedUpgradeSurvivor).toContain("phase prepare-update-restart-probe");
-    expect(publishedUpgradeSurvivor).toContain("eve@(alpha|beta|latest|");
+    expect(publishedUpgradeSurvivor).toContain("eve-agent@(alpha|beta|latest|");
     expect(publishedUpgradeSurvivor).toContain("plugin_deps_cleanup_plugin_dirs");
     expect(publishedUpgradeSurvivor).toContain('"$(package_root)/extensions/$plugin"');
     expect(publishedUpgradeSurvivor).toContain("probe_gateway_endpoint");
@@ -673,9 +668,7 @@ describe("package artifact reuse", () => {
     expect(pullHelper).toContain("EVE_DOCKER_PULL_ATTEMPTS");
     expect(pullHelper).toContain("EVE_DOCKER_PULL_TIMEOUT_SECONDS");
     expect(pullHelper).toContain('timeout_seconds="${EVE_DOCKER_PULL_TIMEOUT_SECONDS:-180}"');
-    expect(pullHelper).toContain(
-      'retry_delay_seconds="${EVE_DOCKER_PULL_RETRY_DELAY_SECONDS:-5}"',
-    );
+    expect(pullHelper).toContain('retry_delay_seconds="${EVE_DOCKER_PULL_RETRY_DELAY_SECONDS:-5}"');
     expect(pullHelper).toContain('source "$SCRIPT_DIR/lib/host-timeout.sh"');
     expect(pullHelper).toContain("eve_host_timeout_bin");
     expect(pullHelper).toContain('"$timeout_bin" --kill-after=1s 1s true');
@@ -959,9 +952,7 @@ describe("package artifact reuse", () => {
     expect(liveDockerAuth).toContain("eve_live_uses_managed_bind_dirs()");
     expect(liveDockerAuth).toContain('eve_live_truthy "${EVE_TESTBOX:-}"');
     expect(liveDockerAuth).toContain('[[ -n "${EVE_DOCKER_CACHE_HOME_DIR:-}" ]]');
-    expect(liveDockerAuth).toContain(
-      'timeout_value="${2:-${EVE_LIVE_DOCKER_RUN_TIMEOUT:-2700s}}"',
-    );
+    expect(liveDockerAuth).toContain('timeout_value="${2:-${EVE_LIVE_DOCKER_RUN_TIMEOUT:-2700s}}"');
     expect(harness).toContain('source "$TRUSTED_HARNESS_DIR/scripts/lib/live-docker-auth.sh"');
     expect(harness).not.toContain('source "$ROOT_DIR/scripts/lib/live-docker-auth.sh"');
     expect(harness).toContain(
@@ -1072,9 +1063,7 @@ describe("package artifact reuse", () => {
     expect(build).toContain('LIVE_IMAGE_PULL_ATTEMPTS="${EVE_LIVE_DOCKER_PULL_ATTEMPTS:-3}"');
     expect(build).toContain('docker_e2e_docker_cmd pull "$LIVE_IMAGE_NAME"');
     expect(build).not.toContain('docker pull "$LIVE_IMAGE_NAME"');
-    expect(stage).toContain(
-      'local scripts_dir="${EVE_LIVE_DOCKER_SCRIPTS_DIR:-/src/scripts}"',
-    );
+    expect(stage).toContain('local scripts_dir="${EVE_LIVE_DOCKER_SCRIPTS_DIR:-/src/scripts}"');
     expect(stage).toContain('node --import tsx "$scripts_dir/live-docker-normalize-config.ts"');
   });
 
@@ -1271,7 +1260,7 @@ describe("package artifact reuse", () => {
       "source: ${{ (needs.resolve_target.outputs.package_acceptance_package_spec != '' || needs.resolve_target.outputs.release_package_spec != '') && 'npm' || 'artifact' }}",
     );
     expect(workflow).toContain(
-      "package_spec: ${{ needs.resolve_target.outputs.package_acceptance_package_spec || needs.resolve_target.outputs.release_package_spec || 'eve@beta' }}",
+      "package_spec: ${{ needs.resolve_target.outputs.package_acceptance_package_spec || needs.resolve_target.outputs.release_package_spec || 'eve-agent@beta' }}",
     );
     expect(workflow).toContain(".artifacts/docker-e2e-package/package-candidate.json");
     expect(workflow).toContain(
@@ -1296,12 +1285,8 @@ describe("package artifact reuse", () => {
     );
     expect(workflow).toContain("ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}");
     expect(workflow).toContain("ANTHROPIC_API_TOKEN: ${{ secrets.ANTHROPIC_API_TOKEN }}");
-    expect(workflow).toContain(
-      "EVE_QA_CONVEX_SITE_URL: ${{ secrets.EVE_QA_CONVEX_SITE_URL }}",
-    );
-    expect(workflow).toContain(
-      "EVE_QA_CONVEX_SECRET_CI: ${{ secrets.EVE_QA_CONVEX_SECRET_CI }}",
-    );
+    expect(workflow).toContain("EVE_QA_CONVEX_SITE_URL: ${{ secrets.EVE_QA_CONVEX_SITE_URL }}");
+    expect(workflow).toContain("EVE_QA_CONVEX_SECRET_CI: ${{ secrets.EVE_QA_CONVEX_SECRET_CI }}");
     expect(workflow).toContain("rerun_group:");
     expect(workflow).toContain("live_suite_filter:");
     expect(workflow).toContain("cross_os_suite_filter:");
@@ -1488,7 +1473,7 @@ describe("package artifact reuse", () => {
       "sed -nE 's#.*actions/runs/([0-9]+).*#\\1#p'",
       "did not return an Actions run URL; refusing to guess from recent workflow_dispatch runs",
       '-f harness_ref="$TARGET_SHA"',
-      'args=(-f package_spec="${PACKAGE_SPEC:-eve@beta}"',
+      'args=(-f package_spec="${PACKAGE_SPEC:-eve-agent@beta}"',
       'if [[ -z "${PACKAGE_SPEC// }" ]]; then',
       '-f package_artifact_name="$PACKAGE_ARTIFACT_NAME"',
       '-f package_artifact_run_id="${GITHUB_RUN_ID}"',
@@ -1575,7 +1560,7 @@ describe("package artifact reuse", () => {
     });
     expectTextToIncludeAll(validateStep.run, [
       'if [[ -z "${PACKAGE_ARTIFACT_NAME// }" ]]; then',
-      "package_spec must be eve@alpha",
+      "package_spec must be eve-agent@alpha",
     ]);
     expectTextToIncludeAll(runStep.run, [
       'export EVE_NPM_TELEGRAM_PACKAGE_TGZ="${package_tgzs[0]}"',
@@ -1791,14 +1776,9 @@ describe("package artifact reuse", () => {
     const releaseWorkflow = readFileSync(RELEASE_PUBLISH_WORKFLOW, "utf8");
     const windowsWorkflow = readFileSync(WINDOWS_NODE_RELEASE_WORKFLOW, "utf8");
     const releaseDocs = readFileSync("docs/reference/RELEASING.md", "utf8");
-    const releaseSkill = readFileSync(
-      ".agents/skills/release-eve-maintainer/SKILL.md",
-      "utf8",
-    );
+    const releaseSkill = readFileSync(".agents/skills/release-eve-maintainer/SKILL.md", "utf8");
 
-    expect(releaseWorkflow).toContain(
-      "Stable EVE publish requires an explicit windows_node_tag.",
-    );
+    expect(releaseWorkflow).toContain("Stable EVE publish requires an explicit windows_node_tag.");
     expect(releaseWorkflow).toContain(
       "Stable EVE publish requires candidate-approved windows_node_installer_digests.",
     );
@@ -2092,7 +2072,7 @@ describe("package artifact reuse", () => {
     );
     expect(releaseWorkflow).toContain("registry tarball");
     expect(releaseWorkflow).toContain("eveNpmTarball");
-    expect(releaseWorkflow).not.toContain('npm view "eve@${release_version}" dist.tarball');
+    expect(releaseWorkflow).not.toContain('npm view "eve-agent@${release_version}" dist.tarball');
     expect(releaseWorkflow).toContain("release SHA");
     expect(clawHubReleasePlanScript).toContain("not awaited by this proof");
     expect(releaseWorkflow).toContain("wait_for_job_success");
@@ -2192,7 +2172,9 @@ describe("package artifact reuse", () => {
     expect(clawHubNewWorkflow).toContain("verify_bootstrap_clawhub_package:");
     expect(clawHubNewWorkflow).toContain("Verify bootstrap ClawHub package and trusted publisher");
     expect(clawHubNewWorkflow).toContain("/trusted-publisher");
-    expect(clawHubNewWorkflow).toContain('trustedPublisher?.repository !== "eve/eve"');
+    expect(clawHubNewWorkflow).toContain(
+      'trustedPublisher?.repository !== "engsathiago/eve-agent"',
+    );
     expect(eveNpmWorkflow).toContain("environment: npm-release");
     expect(releaseWorkflow).toContain("default: from-validation");
     expect(releaseWorkflow).toContain('--release-publish-branch "${CHILD_WORKFLOW_REF}"');

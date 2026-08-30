@@ -292,9 +292,7 @@ async function execLaunchctl(
   return await execFileUtf8(file, fileArgs, isWindows ? { windowsHide: true } : {});
 }
 
-export function parseLaunchctlListEVEUpdateJobs(
-  output: string,
-): StaleEVEUpdateLaunchdJob[] {
+export function parseLaunchctlListEVEUpdateJobs(output: string): StaleEVEUpdateLaunchdJob[] {
   const jobs: StaleEVEUpdateLaunchdJob[] = [];
   for (const rawLine of output.split(/\r?\n/)) {
     const line = rawLine.trim();

@@ -348,8 +348,7 @@ function auditGatewayToken(
   }
   issues.push({
     code: SERVICE_AUDIT_CODES.gatewayTokenMismatch,
-    message:
-      "Gateway service EVE_GATEWAY_TOKEN does not match gateway.auth.token in eve.json",
+    message: "Gateway service EVE_GATEWAY_TOKEN does not match gateway.auth.token in eve.json",
     detail: "service token is stale",
     level: "recommended",
   });

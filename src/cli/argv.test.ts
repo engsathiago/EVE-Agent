@@ -181,16 +181,7 @@ describe("argv helpers", () => {
     {
       name: "keeps existing root options first",
       argv: ["node", "eve", "--profile", "work", "doctor", "--no-color", "--lint", "--json"],
-      expected: [
-        "node",
-        "eve",
-        "--profile",
-        "work",
-        "--no-color",
-        "doctor",
-        "--lint",
-        "--json",
-      ],
+      expected: ["node", "eve", "--profile", "work", "--no-color", "doctor", "--lint", "--json"],
     },
     {
       name: "keeps no-color after possible command option value",
@@ -578,9 +569,7 @@ describe("argv helpers", () => {
   it("parses verbose flags", () => {
     expect(getVerboseFlag(["node", "eve", "status", "--verbose"])).toBe(true);
     expect(getVerboseFlag(["node", "eve", "status", "--debug"])).toBe(false);
-    expect(getVerboseFlag(["node", "eve", "status", "--debug"], { includeDebug: true })).toBe(
-      true,
-    );
+    expect(getVerboseFlag(["node", "eve", "status", "--debug"], { includeDebug: true })).toBe(true);
   });
 
   it.each([

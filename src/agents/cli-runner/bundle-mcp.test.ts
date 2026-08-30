@@ -142,9 +142,8 @@ describe("prepareCliBundleMcpConfig", () => {
   });
 
   it("preserves extra env values alongside generated MCP config", async () => {
-    const workspaceDir = await cliBundleMcpHarness.tempHarness.createTempDir(
-      "eve-cli-bundle-mcp-env-",
-    );
+    const workspaceDir =
+      await cliBundleMcpHarness.tempHarness.createTempDir("eve-cli-bundle-mcp-env-");
 
     const prepared = await prepareCliBundleMcpConfig({
       enabled: true,

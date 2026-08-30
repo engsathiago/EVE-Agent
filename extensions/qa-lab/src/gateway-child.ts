@@ -578,9 +578,7 @@ export async function startQaGatewayChild(params: {
   mutateConfig?: (cfg: EVEConfig) => EVEConfig;
   runtimeEnvPatch?: NodeJS.ProcessEnv;
 }) {
-  const tempRoot = await fs.mkdtemp(
-    path.join(resolvePreferredEVETmpDir(), "eve-qa-suite-"),
-  );
+  const tempRoot = await fs.mkdtemp(path.join(resolvePreferredEVETmpDir(), "eve-qa-suite-"));
   const runtimeCwd = tempRoot;
   const distEntryPath = path.join(params.repoRoot, "dist", "index.js");
   const gatewayCommand = params.command;

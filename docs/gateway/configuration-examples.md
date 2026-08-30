@@ -95,7 +95,7 @@ Save to `~/.eve/eve.json` and you can DM the bot from that number.
   // Logging
   logging: {
     level: "info",
-    file: "/tmp/eve/eve.log",
+    file: "/tmp/engsathiago/eve-agent.log",
     consoleLevel: "info",
     consoleStyle: "pretty",
     redactSensitive: "tools",

@@ -8,8 +8,8 @@ import { NON_ENV_SECRETREF_MARKER } from "eve-agent/plugin-sdk/provider-auth-run
 import { clearLiveCatalogCacheForTests } from "eve-agent/plugin-sdk/provider-catalog-live-runtime";
 import { expectPassthroughReplayPolicy } from "eve-agent/plugin-sdk/provider-test-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import plugin from "./index.js";
 import manifest from "./eve.plugin.json" with { type: "json" };
+import plugin from "./index.js";
 import { buildOpencodeGoLiveProviderConfig } from "./provider-catalog.js";
 import opencodeGoProviderDiscovery from "./provider-discovery.js";
 

@@ -84,9 +84,7 @@ export function buildCrestodianAssistantUserPrompt(params: {
     `OpenAI API key: ${params.overview.tools.apiKeys.openai ? "found" : "not found"}`,
     `Anthropic API key: ${params.overview.tools.apiKeys.anthropic ? "found" : "not found"}`,
     `EVE docs: ${params.overview.references.docsPath ?? params.overview.references.docsUrl}`,
-    `EVE source: ${
-      params.overview.references.sourcePath ?? params.overview.references.sourceUrl
-    }`,
+    `EVE source: ${params.overview.references.sourcePath ?? params.overview.references.sourceUrl}`,
     params.overview.references.sourcePath
       ? "Source mode: local git checkout; inspect source directly when docs are insufficient."
       : "Source mode: package/install; use GitHub source when docs are insufficient.",

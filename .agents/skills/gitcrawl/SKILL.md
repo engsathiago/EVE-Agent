@@ -25,19 +25,19 @@ gitcrawl doctor --json
 Find candidates:
 
 ```bash
-gitcrawl threads eve/eve --numbers <issue-or-pr-number> --include-closed --json
-gitcrawl neighbors eve/eve --number <issue-or-pr-number> --limit 12 --json
-gitcrawl search issues "query" -R eve/eve --state open --json number,title,url
-gitcrawl clusters eve/eve --sort size --min-size 5
-gitcrawl cluster-detail eve/eve --id <cluster-id>
+gitcrawl threads engsathiago/eve-agent --numbers <issue-or-pr-number> --include-closed --json
+gitcrawl neighbors engsathiago/eve-agent --number <issue-or-pr-number> --limit 12 --json
+gitcrawl search issues "query" -R engsathiago/eve-agent --state open --json number,title,url
+gitcrawl clusters engsathiago/eve-agent --sort size --min-size 5
+gitcrawl cluster-detail engsathiago/eve-agent --id <cluster-id>
 ```
 
 For PR triage, start cached and go live only before mutation/merge decisions:
 
 ```bash
-gitcrawl gh pr status <number-or-url> -R eve/eve --compact
-gitcrawl gh pr view <number-or-url> -R eve/eve --json number,title,state,url,isDraft,headRef,headSha
-gitcrawl gh --live pr status <number-or-url> -R eve/eve --compact
+gitcrawl gh pr status <number-or-url> -R engsathiago/eve-agent --compact
+gitcrawl gh pr view <number-or-url> -R engsathiago/eve-agent --json number,title,state,url,isDraft,headRef,headSha
+gitcrawl gh --live pr status <number-or-url> -R engsathiago/eve-agent --compact
 ```
 
 Use live `gh` plus checkout proof before commenting, labeling, closing, reopening, merging, or filing a PR review:

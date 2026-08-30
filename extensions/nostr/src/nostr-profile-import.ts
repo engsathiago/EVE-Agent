@@ -5,8 +5,8 @@
  * Used to import existing profiles before editing.
  */
 
-import { SimplePool, verifyEvent, type Event } from "nostr-tools";
 import { resolveTimerTimeoutMs } from "eve-agent/plugin-sdk/number-runtime";
+import { SimplePool, verifyEvent, type Event } from "nostr-tools";
 import type { NostrProfile } from "./config-schema.js";
 import { validateUrlSafety } from "./nostr-profile-url-safety.js";
 import { contentToProfile, type ProfileContent } from "./nostr-profile.js";

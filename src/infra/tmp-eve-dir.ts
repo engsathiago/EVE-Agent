@@ -37,9 +37,7 @@ function isNodeErrorWithCode(err: unknown, code: string): err is MaybeNodeError 
 }
 
 /** Resolves a safe EVE temp root, falling back to user-scoped os.tmpdir paths when needed. */
-export function resolvePreferredEVETmpDir(
-  options: ResolvePreferredEVETmpDirOptions = {},
-): string {
+export function resolvePreferredEVETmpDir(options: ResolvePreferredEVETmpDirOptions = {}): string {
   const accessMode = fs.constants.W_OK | fs.constants.X_OK;
   const accessSync = options.accessSync ?? fs.accessSync;
   const chmodSync = options.chmodSync ?? fs.chmodSync;

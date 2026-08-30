@@ -71,12 +71,10 @@ describe("managed Codex app-server binary", () => {
 
   it("uses the package root when the resolver is bundled into a dist chunk", () => {
     expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/dist")).toBe("/repo/eve");
-    expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/dist-runtime")).toBe(
-      "/repo/eve",
+    expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/dist-runtime")).toBe("/repo/eve");
+    expect(testing.resolveDefaultCodexPluginRoot("/repo/eve/extensions/codex/src/app-server")).toBe(
+      "/repo/eve/extensions/codex",
     );
-    expect(
-      testing.resolveDefaultCodexPluginRoot("/repo/eve/extensions/codex/src/app-server"),
-    ).toBe("/repo/eve/extensions/codex");
   });
 
   it("finds Codex in the package install root used by packaged plugins", async () => {

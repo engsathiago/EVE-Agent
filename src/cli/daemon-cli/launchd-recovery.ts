@@ -35,8 +35,7 @@ export async function recoverInstalledLaunchAgent(params: {
   }));
   if (!repaired.ok) {
     if (repaired.status === "gui-session-unavailable") {
-      const actionHint =
-        params.result === "started" ? "eve gateway start" : "eve gateway restart";
+      const actionHint = params.result === "started" ? "eve gateway start" : "eve gateway restart";
       throw new Error(
         formatLaunchAgentGuiSessionError({
           detail: repaired.detail,

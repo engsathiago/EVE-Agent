@@ -90,9 +90,7 @@ describe("scripts/test-live-codex-harness-docker.sh", () => {
   it("forwards the live Codex bind provider override into Docker", () => {
     const script = fs.readFileSync(SCRIPT_PATH, "utf8");
 
-    expect(script).toContain(
-      '-e EVE_LIVE_CODEX_BIND_PROVIDER="${EVE_LIVE_CODEX_BIND_PROVIDER:-}"',
-    );
+    expect(script).toContain('-e EVE_LIVE_CODEX_BIND_PROVIDER="${EVE_LIVE_CODEX_BIND_PROVIDER:-}"');
   });
 
   it("installs the plugin-pinned Codex CLI package for app-server proof", () => {
@@ -101,9 +99,7 @@ describe("scripts/test-live-codex-harness-docker.sh", () => {
     expect(script).toContain('"$ROOT_DIR/extensions/codex/package.json"');
     expect(script).toContain("process.stdout.write(`@openai/codex@${version}`);");
     expect(script).toContain('-e EVE_LIVE_CODEX_CLI_PACKAGE_SPEC="$CODEX_CLI_PACKAGE_SPEC"');
-    expect(script).toContain(
-      'run_setup_command npm install -g "$EVE_LIVE_CODEX_CLI_PACKAGE_SPEC"',
-    );
+    expect(script).toContain('run_setup_command npm install -g "$EVE_LIVE_CODEX_CLI_PACKAGE_SPEC"');
     expect(script).not.toContain("run_setup_command npm install -g @openai/codex");
   });
 
@@ -137,9 +133,7 @@ describe("scripts/test-live-codex-harness-docker.sh", () => {
     });
 
     expect(result.status).toBe(2);
-    expect(result.stderr).toContain(
-      "invalid EVE_LIVE_CODEX_HARNESS_SETUP_TIMEOUT_SECONDS: 180s",
-    );
+    expect(result.stderr).toContain("invalid EVE_LIVE_CODEX_HARNESS_SETUP_TIMEOUT_SECONDS: 180s");
     expect(result.stderr).not.toContain("requires ~/.codex/auth.json");
     expect(result.stderr).not.toContain("docker");
   });

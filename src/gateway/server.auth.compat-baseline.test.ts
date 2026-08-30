@@ -191,10 +191,7 @@ describe("gateway auth compatibility baseline", () => {
     });
 
     test("keeps local backend device-token reconnects out of pairing", async () => {
-      const identityPath = path.join(
-        os.tmpdir(),
-        `eve-backend-device-${process.pid}-${port}.json`,
-      );
+      const identityPath = path.join(os.tmpdir(), `eve-backend-device-${process.pid}-${port}.json`);
       const { loadOrCreateDeviceIdentity, publicKeyRawBase64UrlFromPem } =
         await import("../infra/device-identity.js");
       const { approveDevicePairing, requestDevicePairing, rotateDeviceToken } =

@@ -264,11 +264,7 @@ function resolveGatewaySessionTargetFromKey(
   return { cfg, target, storePath: target.storePath };
 }
 
-function loadSessionEntriesForTarget(params: {
-  key: string;
-  cfg: EVEConfig;
-  agentId?: string;
-}) {
+function loadSessionEntriesForTarget(params: { key: string; cfg: EVEConfig; agentId?: string }) {
   const target = resolveGatewaySessionStoreTargetWithStore({
     cfg: params.cfg,
     key: params.key,

@@ -102,9 +102,7 @@ function readLegacyGrokApiKeyResult(cfg?: EVEConfig): ConfiguredRuntimeApiKeyRes
   );
 }
 
-function readPluginXaiWebSearchApiKeyResult(
-  cfg?: EVEConfig,
-): ConfiguredRuntimeApiKeyResolution {
+function readPluginXaiWebSearchApiKeyResult(cfg?: EVEConfig): ConfiguredRuntimeApiKeyResolution {
   return readConfiguredRuntimeApiKey(
     resolveProviderWebSearchPluginConfig(cfg as Record<string, unknown> | undefined, "xai")?.apiKey,
     "plugins.entries.xai.config.webSearch.apiKey",

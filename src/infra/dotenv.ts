@@ -295,12 +295,15 @@ export function loadWorkspaceDotEnvFile(filePath: string, opts?: { quiet?: boole
 
 export { loadGlobalRuntimeDotEnvFiles };
 
-export function loadDotEnv(opts?: { quiet?: boolean }) {
+export function loadDotEnv(opts?: {
+  quiet?: boolean;
+  warn?: (message: string, metadata?: Record<string, unknown>) => void;
+}) {
   const quiet = opts?.quiet ?? true;
   const cwdEnvPath = path.join(process.cwd(), ".env");
   loadWorkspaceDotEnvFile(cwdEnvPath, { quiet });
 
   // Then load global fallback: ~/.eve/.env (or EVE_STATE_DIR/.env),
   // without overriding any env vars already present.
-  loadGlobalRuntimeDotEnvFiles({ quiet });
+  loadGlobalRuntimeDotEnvFiles({ quiet, warn: opts?.warn });
 }

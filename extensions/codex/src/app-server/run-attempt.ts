@@ -1799,7 +1799,7 @@ export async function runCodexAppServerAttempt(
     turnCrossedToolHandoff = notificationState.turnCrossedToolHandoff;
     // Determine terminal-turn status before invoking the projector so a throw
     // inside projector.handleNotification still releases the session lane.
-    // See eve/eve#67996.
+    // See engsathiago/eve-agent#67996.
     if (notificationState.isTurnTerminal) {
       terminalTurnNotificationQueued = true;
     }

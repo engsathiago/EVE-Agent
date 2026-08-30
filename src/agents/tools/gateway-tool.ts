@@ -5,10 +5,7 @@
  */
 import { isDeepStrictEqual } from "node:util";
 import { isRecord as isPlainObject } from "@eve/normalization-core/record-coerce";
-import {
-  normalizeOptionalString,
-  readStringValue,
-} from "@eve/normalization-core/string-coerce";
+import { normalizeOptionalString, readStringValue } from "@eve/normalization-core/string-coerce";
 import { Type } from "typebox";
 import { isRestartEnabled } from "../../config/commands.flags.js";
 import { parseConfigJson5, resolveConfigSnapshotHash } from "../../config/io.js";

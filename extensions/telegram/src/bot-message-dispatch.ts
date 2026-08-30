@@ -1,6 +1,5 @@
 // Telegram plugin module implements bot message dispatch behavior.
 import path from "node:path";
-import type { Bot } from "grammy";
 import {
   appendSessionTranscriptMessage,
   emitSessionTranscriptUpdate,
@@ -55,6 +54,7 @@ import {
   logVerbose,
   sleepWithAbort,
 } from "eve-agent/plugin-sdk/runtime-env";
+import type { Bot } from "grammy";
 import { resolveTelegramConfigReasoningDefault } from "./agent-config.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import type { TelegramBotDeps } from "./bot-deps.js";

@@ -10,7 +10,6 @@ import { withMockedWindowsPlatform } from "../test-utils/vitest-spies.js";
 import { pathExists } from "../utils.js";
 import { writePackageDistInventory } from "./package-dist-inventory.js";
 import { resolveStableNodePath } from "./stable-node-path.js";
-import { runGatewayUpdate } from "./update-runner.js";
 
 const execFileSyncMock = vi.hoisted(() => vi.fn(() => "/tmp/eve-test-global-npmrc\n"));
 
@@ -21,6 +20,10 @@ vi.mock("node:child_process", async (importOriginal) => {
     execFileSync: execFileSyncMock,
   };
 });
+
+vi.resetModules();
+
+const { runGatewayUpdate } = await import("./update-runner.js");
 
 type CommandResponse = { stdout?: string; stderr?: string; code?: number | null };
 type CommandResult = { stdout: string; stderr: string; code: number | null };
@@ -129,7 +132,7 @@ describe("runGatewayUpdate", () => {
 
   async function setupGitCheckout(options?: { packageManager?: string }) {
     await fs.mkdir(path.join(tempDir, ".git"));
-    const pkg: Record<string, string> = { name: "eve", version: "1.0.0" };
+    const pkg: Record<string, string> = { name: "eve-agent", version: "1.0.0" };
     if (options?.packageManager) {
       pkg.packageManager = options.packageManager;
     }
@@ -152,7 +155,7 @@ describe("runGatewayUpdate", () => {
     await fs.mkdir(root, { recursive: true });
     await fs.writeFile(
       path.join(root, "package.json"),
-      JSON.stringify({ name: "eve", version: "1.0.0", packageManager }),
+      JSON.stringify({ name: "eve-agent", version: "1.0.0", packageManager }),
       "utf-8",
     );
   }
@@ -281,7 +284,7 @@ describe("runGatewayUpdate", () => {
     await fs.mkdir(pkgRoot, { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version }),
+      JSON.stringify({ name: "eve-agent", version }),
       "utf-8",
     );
     await writeBundledRuntimeSidecars(pkgRoot);
@@ -292,7 +295,7 @@ describe("runGatewayUpdate", () => {
     await fs.mkdir(pkgRoot, { recursive: true });
     await fs.writeFile(
       path.join(pkgRoot, "package.json"),
-      JSON.stringify({ name: "eve", version }),
+      JSON.stringify({ name: "eve-agent", version }),
       "utf-8",
     );
     await writeBundledRuntimeSidecars(pkgRoot);
@@ -317,7 +320,7 @@ describe("runGatewayUpdate", () => {
 
   async function createGlobalPackageFixture(rootDir: string) {
     const nodeModules = path.join(rootDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
     return { nodeModules, pkgRoot };
   }
@@ -354,8 +357,8 @@ describe("runGatewayUpdate", () => {
     onBaseInstall?: () => Promise<CommandResult>;
     onOmitOptionalInstall?: () => Promise<CommandResult>;
   }) {
-    const baseInstallKey = npmGlobalInstallCommand("eve@latest");
-    const omitOptionalInstallKey = npmGlobalInstallCommand("eve@latest", ["--omit=optional"]);
+    const baseInstallKey = npmGlobalInstallCommand("eve-agent@latest");
+    const omitOptionalInstallKey = npmGlobalInstallCommand("eve-agent@latest", ["--omit=optional"]);
 
     return async (argv: string[]): Promise<CommandResult> => {
       const key = normalizeNpmFreshnessArgs(argv).join(" ");
@@ -1527,9 +1530,7 @@ describe("runGatewayUpdate", () => {
     expect(calls).toContain("pnpm build");
     expect(calls).not.toContain("pnpm lint");
     expect(calls).toContain("pnpm ui:build");
-    expect(pnpmEnvPaths.filter((envPath) => envPath.includes("eve-update-pnpm-"))).not.toEqual(
-      [],
-    );
+    expect(pnpmEnvPaths.filter((envPath) => envPath.includes("eve-update-pnpm-"))).not.toEqual([]);
   });
 
   it("runs dev preflight lint in constrained mode when explicitly enabled", async () => {
@@ -2368,7 +2369,7 @@ describe("runGatewayUpdate", () => {
   it("skips update when no git root", async () => {
     await fs.writeFile(
       path.join(tempDir, "package.json"),
-      JSON.stringify({ name: "eve", packageManager: "pnpm@8.0.0" }),
+      JSON.stringify({ name: "eve-agent", packageManager: "pnpm@8.0.0" }),
       "utf-8",
     );
     await fs.writeFile(path.join(tempDir, "pnpm-lock.yaml"), "", "utf-8");
@@ -2394,7 +2395,7 @@ describe("runGatewayUpdate", () => {
     tag?: string;
   }): Promise<{ calls: string[]; result: Awaited<ReturnType<typeof runGatewayUpdate>> }> {
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
 
     const { calls, runCommand } = createGlobalInstallHarness({
@@ -2404,7 +2405,7 @@ describe("runGatewayUpdate", () => {
       onInstall: async () => {
         await fs.writeFile(
           path.join(pkgRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2.0.0" }),
+          JSON.stringify({ name: "eve-agent", version: "2.0.0" }),
           "utf-8",
         );
       },
@@ -2458,9 +2459,9 @@ describe("runGatewayUpdate", () => {
         if (!destination) {
           return { stdout: "", stderr: "missing pack destination", code: 1 };
         }
-        await fs.writeFile(path.join(destination, "eve-2.0.0.tgz"), "packed\n", "utf-8");
+        await fs.writeFile(path.join(destination, "eve-agent-2.0.0.tgz"), "packed\n", "utf-8");
         return {
-          stdout: JSON.stringify([{ filename: "eve-2.0.0.tgz" }]),
+          stdout: JSON.stringify([{ filename: "eve-agent-2.0.0.tgz" }]),
           stderr: "",
           code: 0,
         };
@@ -2479,8 +2480,8 @@ describe("runGatewayUpdate", () => {
         if (installCommandMatches(params.installCommand, normalizedInstallCommand)) {
           const packageRoot =
             process.platform === "win32"
-              ? path.join(installPrefix, "node_modules", "eve")
-              : path.join(installPrefix, "lib", "node_modules", "eve");
+              ? path.join(installPrefix, "node_modules", "eve-agent")
+              : path.join(installPrefix, "lib", "node_modules", "eve-agent");
           await params.onInstall?.({
             ...options,
             installPrefix,
@@ -2497,16 +2498,16 @@ describe("runGatewayUpdate", () => {
   it.each([
     {
       title: "updates global npm installs when detected",
-      expectedInstallCommand: npmGlobalInstallCommand("eve@latest"),
+      expectedInstallCommand: npmGlobalInstallCommand("eve-agent@latest"),
     },
     {
       title: "uses update channel for global npm installs when tag is omitted",
-      expectedInstallCommand: npmGlobalInstallCommand("eve@beta"),
+      expectedInstallCommand: npmGlobalInstallCommand("eve-agent@beta"),
       channel: "beta" as const,
     },
     {
       title: "updates global npm installs with tag override",
-      expectedInstallCommand: npmGlobalInstallCommand("eve@beta"),
+      expectedInstallCommand: npmGlobalInstallCommand("eve-agent@beta"),
       tag: "beta",
     },
   ])("$title", async ({ expectedInstallCommand, channel, tag }) => {
@@ -2524,13 +2525,13 @@ describe("runGatewayUpdate", () => {
   });
 
   it("updates global npm installs from the GitHub main package spec", async () => {
-    const sourceSpec = "github:eve/eve#main";
+    const sourceSpec = "github:engsathiago/eve-agent#main";
     const { calls, result } = await runNpmGlobalUpdateCase({
       expectedInstallCommand: (argv) =>
         argv[0] === "npm" &&
         argv[1] === "i" &&
         argv[2] === "-g" &&
-        path.basename(argv[3] ?? "") === "eve-2.0.0.tgz" &&
+        path.basename(argv[3] ?? "") === "eve-agent-2.0.0.tgz" &&
         argv.slice(4).join(" ") === "--no-fund --no-audit --loglevel=error --min-release-age=0",
       tag: "main",
     });
@@ -2541,21 +2542,21 @@ describe("runGatewayUpdate", () => {
     expect(
       calls.some((call) => call.startsWith(`npm pack ${sourceSpec} --pack-destination `)),
     ).toBe(true);
-    const installCall = calls.find((call) => call.includes("eve-2.0.0.tgz"));
+    const installCall = calls.find((call) => call.includes("eve-agent-2.0.0.tgz"));
     expect(installCall).toContain("--no-fund --no-audit --loglevel=error --min-release-age=0");
     expect(installCall).not.toContain(sourceSpec);
   });
 
   it("runs doctor after global npm updates before reporting success", async () => {
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
 
     let doctorEnv: NodeJS.ProcessEnv | undefined;
     const { calls, runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       onInstall: async () => {
         await writeGlobalPackageVersion(pkgRoot);
         await writeGatewayEntrypoint(pkgRoot);
@@ -2589,13 +2590,13 @@ describe("runGatewayUpdate", () => {
 
   it("fails global npm updates when post-update doctor fails", async () => {
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
 
     const { calls, runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       onInstall: async () => {
         await writeGlobalPackageVersion(pkgRoot);
         await writeGatewayEntrypoint(pkgRoot);
@@ -2632,7 +2633,7 @@ describe("runGatewayUpdate", () => {
     const { calls, runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       gitRootMode: "missing",
       onInstall: async () => writeGlobalPackageVersion(pkgRoot),
     });
@@ -2641,13 +2642,13 @@ describe("runGatewayUpdate", () => {
 
     expect(result.status).toBe("ok");
     expect(result.mode).toBe("npm");
-    expect(calls).toContain(npmGlobalInstallCommand("eve@latest"));
+    expect(calls).toContain(npmGlobalInstallCommand("eve-agent@latest"));
   });
 
   it("cleans stale npm rename dirs before global update", async () => {
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
-    const staleDir = path.join(nodeModules, ".eve-stale");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
+    const staleDir = path.join(nodeModules, ".eve-agent-stale");
     await fs.mkdir(staleDir, { recursive: true });
     await seedGlobalPackageRoot(pkgRoot);
 
@@ -2670,7 +2671,7 @@ describe("runGatewayUpdate", () => {
 
   it("retries global npm update with --omit=optional when initial install fails", async () => {
     const nodeModules = path.join(tempDir, "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
 
     let firstAttempt = true;
@@ -2700,7 +2701,7 @@ describe("runGatewayUpdate", () => {
 
   it("fails global npm update when the installed version misses the requested correction", async () => {
     const { calls, result } = await runNpmGlobalUpdateCase({
-      expectedInstallCommand: npmGlobalInstallCommand("eve@2026.3.23-2"),
+      expectedInstallCommand: npmGlobalInstallCommand("eve-agent@2026.3.23-2"),
       tag: "2026.3.23-2",
     });
 
@@ -2710,12 +2711,12 @@ describe("runGatewayUpdate", () => {
     expect(result.steps.at(-1)?.stderrTail).toContain(
       "expected installed version 2026.3.23-2, found 2.0.0",
     );
-    expect(calls).toContain(npmGlobalInstallCommand("eve@2026.3.23-2"));
+    expect(calls).toContain(npmGlobalInstallCommand("eve-agent@2026.3.23-2"));
   });
 
   it("fails global npm update when bundled runtime sidecars are missing after install", async () => {
     const { nodeModules, pkgRoot } = await createGlobalPackageFixture(tempDir);
-    const expectedInstallCommand = npmGlobalInstallCommand("eve@latest");
+    const expectedInstallCommand = npmGlobalInstallCommand("eve-agent@latest");
     const { runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
@@ -2723,7 +2724,7 @@ describe("runGatewayUpdate", () => {
       onInstall: async () => {
         await fs.writeFile(
           path.join(pkgRoot, "package.json"),
-          JSON.stringify({ name: "eve", version: "2.0.0" }),
+          JSON.stringify({ name: "eve-agent", version: "2.0.0" }),
           "utf-8",
         );
         await writeBundledRuntimeSidecars(pkgRoot);
@@ -2754,14 +2755,7 @@ describe("runGatewayUpdate", () => {
       "mingw64",
       "bin",
     );
-    const portableGitUsr = path.join(
-      localAppData,
-      "EVE",
-      "deps",
-      "portable-git",
-      "usr",
-      "bin",
-    );
+    const portableGitUsr = path.join(localAppData, "EVE", "deps", "portable-git", "usr", "bin");
     await fs.mkdir(portableGitMingw, { recursive: true });
     await fs.mkdir(portableGitUsr, { recursive: true });
 
@@ -2770,7 +2764,7 @@ describe("runGatewayUpdate", () => {
     const { runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       onInstall: async (options) => {
         installEnv = options?.env;
         await writeGlobalPackageVersion(options?.packageRoot ?? pkgRoot);
@@ -2796,14 +2790,14 @@ describe("runGatewayUpdate", () => {
   it("reports staged npm swap failures as global install failures", async () => {
     const prefix = path.join(tempDir, "npm-prefix");
     const nodeModules = path.join(prefix, "lib", "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     await seedGlobalPackageRoot(pkgRoot);
     await fs.writeFile(path.join(prefix, "bin"), "not a directory", "utf-8");
 
     const { runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       onInstall: async (options) => {
         await writeGlobalPackageVersion(options?.packageRoot ?? pkgRoot);
         if (options?.installPrefix) {
@@ -2829,7 +2823,7 @@ describe("runGatewayUpdate", () => {
   it("uses clean staged npm swaps for pnpm installs that resolve to an npm global root", async () => {
     const prefix = path.join(tempDir, "npm-prefix");
     const nodeModules = path.join(prefix, "lib", "node_modules");
-    const pkgRoot = path.join(nodeModules, "eve");
+    const pkgRoot = path.join(nodeModules, "eve-agent");
     const staleInstallChunk = path.join(pkgRoot, "dist", "install-C_GuuNz6.js");
     await seedGlobalPackageRoot(pkgRoot);
     await fs.writeFile(
@@ -2841,7 +2835,7 @@ describe("runGatewayUpdate", () => {
     const { calls, runCommand } = createGlobalInstallHarness({
       pkgRoot,
       pnpmRootOutput: nodeModules,
-      installCommand: npmGlobalInstallCommand("eve@latest"),
+      installCommand: npmGlobalInstallCommand("eve-agent@latest"),
       onInstall: async (options) => {
         await writeGlobalPackageVersion(options?.packageRoot ?? pkgRoot);
       },
@@ -2864,9 +2858,7 @@ describe("runGatewayUpdate", () => {
 
   it("uses EVE_UPDATE_PACKAGE_SPEC for global package updates", async () => {
     const { nodeModules, pkgRoot } = await createGlobalPackageFixture(tempDir);
-    const expectedInstallCommand = npmGlobalInstallCommand(
-      "http://10.211.55.2:8138/eve-next.tgz",
-    );
+    const expectedInstallCommand = npmGlobalInstallCommand("http://10.211.55.2:8138/eve-next.tgz");
     const { calls, runCommand } = createGlobalInstallHarness({
       pkgRoot,
       npmRootOutput: nodeModules,
@@ -2894,7 +2886,7 @@ describe("runGatewayUpdate", () => {
 
       const { calls, runCommand } = createGlobalInstallHarness({
         pkgRoot,
-        installCommand: "bun add -g eve@latest",
+        installCommand: "bun add -g eve-agent@latest",
         onInstall: async () => {
           await writeGlobalPackageVersion(pkgRoot);
         },
@@ -2906,7 +2898,7 @@ describe("runGatewayUpdate", () => {
       expect(result.mode).toBe("bun");
       expect(result.before?.version).toBe("1.0.0");
       expect(result.after?.version).toBe("2.0.0");
-      expect(calls).toContain("bun add -g eve@latest");
+      expect(calls).toContain("bun add -g eve-agent@latest");
     });
   });
 

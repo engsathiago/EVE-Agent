@@ -16,7 +16,6 @@ import { join, resolve as resolvePath, win32 } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
-import { LOCAL_BUILD_METADATA_DIST_PATHS } from "../../scripts/lib/local-build-metadata-paths.mjs";
 import {
   agentOutputHasExpectedOkMarker,
   agentTurnUsedEmbeddedFallback,
@@ -98,6 +97,7 @@ import {
   verifyWindowsPackagedUpgradeFallbackInstall,
   writePackageDistInventoryForCandidate,
 } from "../../scripts/eve-cross-os-release-checks.ts";
+import { LOCAL_BUILD_METADATA_DIST_PATHS } from "../../scripts/lib/local-build-metadata-paths.mjs";
 
 function isProcessAlive(pid: number): boolean {
   try {
@@ -392,12 +392,10 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("requires explicit opt-in before cross-OS agent turns become optional", () => {
     expect(resolveCrossOsAgentTurnOptional({})).toBe(false);
-    expect(resolveCrossOsAgentTurnOptional({ EVE_CROSS_OS_AGENT_TURN_OPTIONAL: "1" })).toBe(
-      true,
+    expect(resolveCrossOsAgentTurnOptional({ EVE_CROSS_OS_AGENT_TURN_OPTIONAL: "1" })).toBe(true);
+    expect(resolveCrossOsAgentTurnOptional({ EVE_CROSS_OS_AGENT_TURN_OPTIONAL: "false" })).toBe(
+      false,
     );
-    expect(
-      resolveCrossOsAgentTurnOptional({ EVE_CROSS_OS_AGENT_TURN_OPTIONAL: "false" }),
-    ).toBe(false);
   });
 
   it("detects embedded fallback agent turns as non-gateway proof", () => {
@@ -587,10 +585,10 @@ describe("scripts/eve-cross-os-release-checks", () => {
   });
 
   it("can stage packaged-upgrade baselines without npm lifecycle scripts", () => {
-    expect(buildNpmGlobalInstallArgs("eve@2026.5.2", { ignoreScripts: true })).toEqual([
+    expect(buildNpmGlobalInstallArgs("eve-agent@2026.5.2", { ignoreScripts: true })).toEqual([
       "install",
       "-g",
-      "eve@2026.5.2",
+      "eve-agent@2026.5.2",
       "--omit=dev",
       "--no-fund",
       "--no-audit",
@@ -600,7 +598,9 @@ describe("scripts/eve-cross-os-release-checks", () => {
   });
 
   it("rejects unsafe npm pack tarball filenames before staging release artifacts", () => {
-    expect(resolveNpmPackTarballFileName("eve-2026.6.17.tgz")).toBe("eve-2026.6.17.tgz");
+    expect(resolveNpmPackTarballFileName("eve-agent-2026.6.17.tgz")).toBe(
+      "eve-agent-2026.6.17.tgz",
+    );
 
     const unsafeFilenames = [
       "../eve.tgz",
@@ -931,12 +931,14 @@ describe("scripts/eve-cross-os-release-checks", () => {
   it("serves installer scripts as UTF-8 text and package payloads as binary", () => {
     expect(resolveStaticFileContentType("scripts/install.sh")).toBe("text/plain; charset=utf-8");
     expect(resolveStaticFileContentType("scripts/install.ps1")).toBe("text/plain; charset=utf-8");
-    expect(resolveStaticFileContentType("eve-2026.4.14.tgz")).toBe("application/octet-stream");
+    expect(resolveStaticFileContentType("eve-agent-2026.4.14.tgz")).toBe(
+      "application/octet-stream",
+    );
   });
 
   it("streams release artifacts from the static file server", async () => {
     const dir = mkdtempSync(join(tmpdir(), "eve-cross-os-static-server-"));
-    const filePath = join(dir, "eve-2026.4.14.tgz");
+    const filePath = join(dir, "eve-agent-2026.4.14.tgz");
     const logPath = join(dir, "server.log");
     let server: Awaited<ReturnType<typeof startStaticFileServer>> | undefined;
 
@@ -961,7 +963,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("closes static release artifact sockets left by aborted clients", async () => {
     const dir = mkdtempSync(join(tmpdir(), "eve-cross-os-static-server-close-"));
-    const filePath = join(dir, "eve-2026.4.14.tgz");
+    const filePath = join(dir, "eve-agent-2026.4.14.tgz");
     const logPath = join(dir, "server.log");
     let server: Awaited<ReturnType<typeof startStaticFileServer>> | undefined;
 
@@ -997,7 +999,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("flushes static release artifact logs before close resolves", async () => {
     const dir = mkdtempSync(join(tmpdir(), "eve-cross-os-static-server-log-flush-"));
-    const filePath = join(dir, "eve-2026.4.14.tgz");
+    const filePath = join(dir, "eve-agent-2026.4.14.tgz");
     const logPath = join(dir, "server.log");
     let server: Awaited<ReturnType<typeof startStaticFileServer>> | undefined;
 
@@ -1103,10 +1105,10 @@ describe("scripts/eve-cross-os-release-checks", () => {
     expect(script).toContain("Browser control override start sentinel was not written.");
 
     const installedScript = buildInstalledBrowserOverrideImportProbeScript(
-      "file:///C:/Users/runner/AppData/Roaming/npm/node_modules/eve/dist/plugin-sdk/plugin-runtime.js",
+      "file:///C:/Users/runner/AppData/Roaming/npm/node_modules/eve-agent/dist/plugin-sdk/plugin-runtime.js",
     );
     expect(installedScript).toContain(
-      'from "file:///C:/Users/runner/AppData/Roaming/npm/node_modules/eve/dist/plugin-sdk/plugin-runtime.js"',
+      'from "file:///C:/Users/runner/AppData/Roaming/npm/node_modules/eve-agent/dist/plugin-sdk/plugin-runtime.js"',
     );
     expect(readFileSync("scripts/eve-cross-os-release-checks.ts", "utf8")).toContain(
       "EVE_BROWSER_CONTROL_MODULE: pathToFileURL(overridePath).href",
@@ -1115,14 +1117,10 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("normalizes Windows installed CLI paths to the cmd shim", () => {
     expect(
-      normalizeWindowsInstalledCliPath(
-        String.raw`C:\Users\runner\AppData\Roaming\npm\eve.ps1`,
-      ),
+      normalizeWindowsInstalledCliPath(String.raw`C:\Users\runner\AppData\Roaming\npm\eve.ps1`),
     ).toBe(String.raw`C:\Users\runner\AppData\Roaming\npm\eve.cmd`);
     expect(
-      normalizeWindowsInstalledCliPath(
-        String.raw`C:\Users\runner\AppData\Roaming\npm\eve.cmd`,
-      ),
+      normalizeWindowsInstalledCliPath(String.raw`C:\Users\runner\AppData\Roaming\npm\eve.cmd`),
     ).toBe(String.raw`C:\Users\runner\AppData\Roaming\npm\eve.cmd`);
   });
 
@@ -1142,7 +1140,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
     expect(
       resolveCommandSpawnInvocation(
         String.raw`C:\Program Files\nodejs\npm.cmd`,
-        ["view", "eve@latest", "version"],
+        ["view", "eve-agent@latest", "version"],
         {
           comSpec: String.raw`C:\Windows\System32\cmd.exe`,
           platform: "win32",
@@ -1154,7 +1152,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
         "/d",
         "/s",
         "/c",
-        String.raw`""C:\Program Files\nodejs\npm.cmd" view eve@latest version"`,
+        String.raw`""C:\Program Files\nodejs\npm.cmd" view eve-agent@latest version"`,
       ],
       shell: false,
       windowsVerbatimArguments: true,
@@ -1173,12 +1171,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
       ),
     ).toEqual({
       command: String.raw`C:\Windows\System32\cmd.exe`,
-      args: [
-        "/d",
-        "/s",
-        "/c",
-        String.raw`""C:\EVE Prefix\eve.cmd" gateway run --port 1234"`,
-      ],
+      args: ["/d", "/s", "/c", String.raw`""C:\EVE Prefix\eve.cmd" gateway run --port 1234"`],
       shell: false,
       windowsVerbatimArguments: true,
     });
@@ -1313,9 +1306,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
     const dir = mkdtempSync(join(tmpdir(), "eve-cross-os-run-command-signal-"));
     const childPidPath = join(dir, "child.pid");
-    const scriptUrl = pathToFileURL(
-      resolvePath("scripts/eve-cross-os-release-checks.ts"),
-    ).href;
+    const scriptUrl = pathToFileURL(resolvePath("scripts/eve-cross-os-release-checks.ts")).href;
     let childPid: number | undefined;
     let runnerPid: number | undefined;
 
@@ -1378,9 +1369,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
     const dir = mkdtempSync(join(tmpdir(), "eve-cross-os-run-command-signal-exit-"));
     const childPidPath = join(dir, "child.pid");
     const logPath = join(dir, "signal.log");
-    const scriptUrl = pathToFileURL(
-      resolvePath("scripts/eve-cross-os-release-checks.ts"),
-    ).href;
+    const scriptUrl = pathToFileURL(resolvePath("scripts/eve-cross-os-release-checks.ts")).href;
     let childPid: number | undefined;
     let runnerPid: number | undefined;
 
@@ -1456,12 +1445,12 @@ describe("scripts/eve-cross-os-release-checks", () => {
   it("resolves Linux npm package roots when the CLI is a user-local shim", () => {
     const homeDir = mkdtempSync(join(tmpdir(), "eve-cross-os-linux-home-"));
     try {
-      const packageRoot = join(homeDir, ".npm-global", "lib", "node_modules", "eve");
+      const packageRoot = join(homeDir, ".npm-global", "lib", "node_modules", "eve-agent");
       const distDir = join(packageRoot, "dist");
       const cliDir = join(homeDir, ".local", "bin");
       mkdirSync(distDir, { recursive: true });
       mkdirSync(cliDir, { recursive: true });
-      writeFileSync(join(packageRoot, "package.json"), JSON.stringify({ name: "eve" }));
+      writeFileSync(join(packageRoot, "package.json"), JSON.stringify({ name: "eve-agent" }));
       writeFileSync(join(distDir, "entry.js"), "#!/usr/bin/env node\n");
 
       expect(
@@ -1617,7 +1606,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
             steps: [{ name: "global update", exitCode: 0 }],
           }),
           stderr:
-            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve/dist/memory-state-old.js'",
+            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve-agent/dist/memory-state-old.js'",
         },
         { candidateVersion: "2026.4.27" },
       ),
@@ -1635,7 +1624,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
             steps: [{ name: "global update", exitCode: 0 }],
           }),
           stderr:
-            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve/dist/memory-state-old.js'",
+            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve-agent/dist/memory-state-old.js'",
         },
         { candidateVersion: "2026.4.27" },
       ),
@@ -1653,7 +1642,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
             steps: [{ name: "global update", exitCode: 1 }],
           }),
           stderr:
-            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve/dist/memory-state-old.js'",
+            "[eve] Failed to start CLI: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/prefix/lib/node_modules/eve-agent/dist/memory-state-old.js'",
         },
         { candidateVersion: "2026.4.27" },
       ),
@@ -1687,7 +1676,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("recognizes the shipped Windows updater packaged-upgrade timeout", () => {
     const error = new Error(
-      "Command timed out: C:\\hostedtoolcache\\windows\\node\\24.15.0\\x64\\node.exe C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\eve-upgrade-q9DsA7\\prefix\\node_modules\\eve\\eve.mjs update --tag http://127.0.0.1:49951/eve-2026.5.4-beta.1.tgz --yes --json --no-restart --timeout 1500",
+      "Command timed out: C:\\hostedtoolcache\\windows\\node\\24.15.0\\x64\\node.exe C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\eve-upgrade-q9DsA7\\prefix\\node_modules\\eve\\eve.mjs update --tag http://127.0.0.1:49951/eve-agent-2026.5.4-beta.1.tgz --yes --json --no-restart --timeout 1500",
     );
 
     expect(isRecoverableWindowsPackagedUpgradeTimeoutError(error, "win32")).toBe(true);
@@ -1702,7 +1691,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
     expect(isRecoverableWindowsPackagedUpgradeTimeoutError(error, "linux")).toBe(false);
     expect(
       isRecoverableWindowsPackagedUpgradeTimeoutError(
-        new Error("Command timed out: node eve.mjs update --tag eve@beta"),
+        new Error("Command timed out: node eve.mjs update --tag eve-agent@beta"),
         "win32",
       ),
     ).toBe(false);
@@ -1780,8 +1769,8 @@ describe("scripts/eve-cross-os-release-checks", () => {
 
   it("only treats pinned baseline specs as exact installer version assertions", () => {
     expect(resolveExplicitBaselineVersion("")).toBe("");
-    expect(resolveExplicitBaselineVersion("eve@latest")).toBe("");
-    expect(resolveExplicitBaselineVersion("eve@2026.4.10")).toBe("2026.4.10");
+    expect(resolveExplicitBaselineVersion("eve-agent@latest")).toBe("");
+    expect(resolveExplicitBaselineVersion("eve-agent@2026.4.10")).toBe("2026.4.10");
     expect(resolveExplicitBaselineVersion("2026.4.10")).toBe("2026.4.10");
   });
 
@@ -1790,13 +1779,13 @@ describe("scripts/eve-cross-os-release-checks", () => {
     try {
       const packageRoot =
         process.platform === "win32"
-          ? join(prefixDir, "node_modules", "eve")
-          : join(prefixDir, "lib", "node_modules", "eve");
+          ? join(prefixDir, "node_modules", "eve-agent")
+          : join(prefixDir, "lib", "node_modules", "eve-agent");
       mkdirSync(packageRoot, { recursive: true });
       writeFileSync(
         join(packageRoot, "package.json"),
         JSON.stringify({
-          name: "eve",
+          name: "eve-agent",
           version: "2026.4.10",
         }),
         "utf8",
@@ -1814,7 +1803,7 @@ describe("scripts/eve-cross-os-release-checks", () => {
       writeFileSync(
         join(packageRoot, "package.json"),
         JSON.stringify({
-          name: "eve",
+          name: "eve-agent",
           scripts: {
             build: "pnpm build",
           },

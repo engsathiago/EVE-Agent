@@ -21,9 +21,7 @@ import {
 type DefaultsFallbackKey = "model" | "imageModel";
 
 function listCommandForFallbackKey(key: DefaultsFallbackKey): string {
-  return key === "imageModel"
-    ? "eve models image-fallbacks list"
-    : "eve models fallbacks list";
+  return key === "imageModel" ? "eve models image-fallbacks list" : "eve models fallbacks list";
 }
 
 function getFallbacks(cfg: EVEConfig, key: DefaultsFallbackKey): string[] {

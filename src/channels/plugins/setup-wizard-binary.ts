@@ -26,10 +26,7 @@ export function createDetectedBinaryStatus(params: {
   unconfiguredHint: string;
   configuredScore: number;
   unconfiguredScore: number;
-  resolveConfigured: (params: {
-    cfg: EVEConfig;
-    accountId?: string;
-  }) => boolean | Promise<boolean>;
+  resolveConfigured: (params: { cfg: EVEConfig; accountId?: string }) => boolean | Promise<boolean>;
   resolveBinaryPath: (params: { cfg: EVEConfig; accountId?: string }) => string;
   detectBinary?: (path: string) => Promise<boolean>;
 }): ChannelSetupWizardStatus {

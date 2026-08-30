@@ -393,6 +393,7 @@ export const ko: TranslationMap = {
   nav: {
     chat: "채팅",
     control: "Control",
+    workspace: "작업 공간",
     agent: "에이전트",
     settings: "설정",
     expand: "사이드바 펼치기",
@@ -404,6 +405,11 @@ export const ko: TranslationMap = {
     activity: "활동",
     overview: "개요",
     workboard: "워크보드",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "채널",
     instances: "인스턴스",
     sessions: "세션",
@@ -429,6 +435,11 @@ export const ko: TranslationMap = {
     activity: "브라우저 로컬 도구 활동 요약입니다.",
     overview: "상태, 진입점, 상태 정보.",
     workboard: "에이전트 작업 대기열 및 세션 인계.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "채널 및 설정.",
     instances: "연결된 클라이언트와 노드.",
     sessions: "활성 세션 및 기본값.",
@@ -1298,15 +1309,13 @@ export const ko: TranslationMap = {
           "UI와 Gateway가 같은 설치에서 오도록 eve dashboard로 제공된 dashboard를 다시 여세요.",
         stepDevUi:
           "pnpm ui:dev를 사용하는 경우 현재 checkout 기준으로 개발 UI를 다시 빌드하거나 다시 시작하세요.",
-        stepRestart:
-          "EVE를 업데이트한 뒤 Gateway를 다시 시작하여 현재 프로토콜을 제공하게 하세요.",
+        stepRestart: "EVE를 업데이트한 뒤 Gateway를 다시 시작하여 현재 프로토콜을 제공하게 하세요.",
       },
       network: {
         title: "연결할 수 없음",
         summary:
           "브라우저가 Gateway 연결을 완료할 수 없습니다. 자격 증명을 다시 시도하기 전에 대상과 전송 방식을 확인하세요.",
-        stepGateway:
-          "eve status 또는 eve gateway run으로 Gateway가 실행 중인지 확인하세요.",
+        stepGateway: "eve status 또는 eve gateway run으로 Gateway가 실행 중인지 확인하세요.",
         stepUrl:
           "WebSocket URL을 확인하고 Gateway가 HTTPS/Tailscale Serve 뒤에 있으면 wss://를 사용하세요.",
         stepDashboard:

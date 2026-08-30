@@ -424,10 +424,7 @@ function shouldQueueCronAwareness(params: {
   );
 }
 
-function resolveCronAwarenessMainSessionKey(params: {
-  cfg: EVEConfig;
-  agentId: string;
-}): string {
+function resolveCronAwarenessMainSessionKey(params: { cfg: EVEConfig; agentId: string }): string {
   return params.cfg.session?.scope === "global"
     ? resolveMainSessionKey(params.cfg)
     : resolveAgentMainSessionKey({ cfg: params.cfg, agentId: params.agentId });

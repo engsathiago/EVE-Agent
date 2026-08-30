@@ -20,7 +20,7 @@ function makeTempDir() {
 }
 
 describe("plugin peer links", () => {
-  it("relinks eve peers in the managed npm root", async () => {
+  it("relinks eve-agent peers in the managed npm root", async () => {
     const npmRoot = makeTempDir();
     const packageDir = path.join(npmRoot, "node_modules", "peer-plugin");
     fs.mkdirSync(packageDir, { recursive: true });
@@ -30,7 +30,7 @@ describe("plugin peer links", () => {
         name: "peer-plugin",
         version: "1.0.0",
         peerDependencies: {
-          eve: ">=2026.0.0",
+          "eve-agent": ">=2026.0.0",
         },
       }),
       "utf8",
@@ -45,14 +45,14 @@ describe("plugin peer links", () => {
       },
     });
 
-    const linkPath = path.join(packageDir, "node_modules", "eve");
+    const linkPath = path.join(packageDir, "node_modules", "eve-agent");
     expect(result).toEqual({ checked: 1, attempted: 1, repaired: 1, skipped: 0 });
     expect(fs.lstatSync(linkPath).isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(linkPath)).toBe(fs.realpathSync(process.cwd()));
-    expect(messages.join("\n")).toContain('Linked peerDependency "eve"');
+    expect(messages.join("\n")).toContain('Linked peerDependency "eve-agent"');
   });
 
-  it("audits missing managed npm eve peer links without relinking", async () => {
+  it("audits missing managed npm eve-agent peer links without relinking", async () => {
     const npmRoot = makeTempDir();
     const packageDir = path.join(npmRoot, "node_modules", "peer-plugin");
     fs.mkdirSync(packageDir, { recursive: true });
@@ -62,7 +62,7 @@ describe("plugin peer links", () => {
         name: "peer-plugin",
         version: "1.0.0",
         peerDependencies: {
-          eve: ">=2026.0.0",
+          "eve-agent": ">=2026.0.0",
         },
       }),
       "utf8",
@@ -70,7 +70,7 @@ describe("plugin peer links", () => {
 
     const result = await auditEVEPeerDependenciesInManagedNpmRoot({ npmRoot });
 
-    const linkPath = path.join(packageDir, "node_modules", "eve");
+    const linkPath = path.join(packageDir, "node_modules", "eve-agent");
     expect(result.checked).toBe(1);
     expect(result.broken).toBe(1);
     expect(result.issues[0]?.packageName).toBe("peer-plugin");
@@ -79,7 +79,7 @@ describe("plugin peer links", () => {
   });
 
   it.runIf(process.platform !== "win32")(
-    "does not follow a package-local node_modules symlink while linking eve peers",
+    "does not follow a package-local node_modules symlink while linking eve-agent peers",
     async () => {
       const root = makeTempDir();
       const packageDir = path.join(root, "peer-plugin");
@@ -92,7 +92,7 @@ describe("plugin peer links", () => {
       const result = await linkEVEPeerDependencies({
         installedDir: packageDir,
         peerDependencies: {
-          eve: ">=2026.0.0",
+          "eve-agent": ">=2026.0.0",
         },
         logger: {
           warn: (message) => warnings.push(message),
@@ -100,7 +100,7 @@ describe("plugin peer links", () => {
       });
 
       expect(result).toEqual({ repaired: 0, skipped: 1 });
-      expect(fs.existsSync(path.join(outsideDir, "eve"))).toBe(false);
+      expect(fs.existsSync(path.join(outsideDir, "eve-agent"))).toBe(false);
       expect(warnings.join("\n")).toContain("is not a real directory");
     },
   );
@@ -108,15 +108,15 @@ describe("plugin peer links", () => {
   it("replaces an existing real eve package directory", async () => {
     const root = makeTempDir();
     const packageDir = path.join(root, "peer-plugin");
-    const existingEVEDir = path.join(packageDir, "node_modules", "eve");
+    const existingEVEDir = path.join(packageDir, "node_modules", "eve-agent");
     fs.mkdirSync(existingEVEDir, { recursive: true });
-    fs.writeFileSync(path.join(existingEVEDir, "package.json"), '{"name":"eve"}', "utf8");
+    fs.writeFileSync(path.join(existingEVEDir, "package.json"), '{"name":"eve-agent"}', "utf8");
 
     const messages: string[] = [];
     const result = await linkEVEPeerDependencies({
       installedDir: packageDir,
       peerDependencies: {
-        eve: ">=2026.0.0",
+        "eve-agent": ">=2026.0.0",
       },
       logger: {
         info: (message) => messages.push(message),
@@ -126,25 +126,21 @@ describe("plugin peer links", () => {
     expect(result).toEqual({ repaired: 1, skipped: 0 });
     expect(fs.lstatSync(existingEVEDir).isSymbolicLink()).toBe(true);
     expect(fs.realpathSync(existingEVEDir)).toBe(fs.realpathSync(process.cwd()));
-    expect(messages.join("\n")).toContain('Linked peerDependency "eve"');
+    expect(messages.join("\n")).toContain('Linked peerDependency "eve-agent"');
   });
 
   it("does not delete an unrelated existing package directory", async () => {
     const root = makeTempDir();
     const packageDir = path.join(root, "peer-plugin");
-    const existingEVEDir = path.join(packageDir, "node_modules", "eve");
+    const existingEVEDir = path.join(packageDir, "node_modules", "eve-agent");
     fs.mkdirSync(existingEVEDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(existingEVEDir, "package.json"),
-      '{"name":"not-eve"}',
-      "utf8",
-    );
+    fs.writeFileSync(path.join(existingEVEDir, "package.json"), '{"name":"not-eve"}', "utf8");
 
     const warnings: string[] = [];
     const result = await linkEVEPeerDependencies({
       installedDir: packageDir,
       peerDependencies: {
-        eve: ">=2026.0.0",
+        "eve-agent": ">=2026.0.0",
       },
       logger: {
         warn: (message) => warnings.push(message),

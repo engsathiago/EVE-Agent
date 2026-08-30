@@ -1,7 +1,7 @@
-// Matrix helper module supports format behavior.
-import MarkdownIt from "markdown-it";
 import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
 import { isAutoLinkedFileRef } from "eve-agent/plugin-sdk/text-autolink-runtime";
+// Matrix helper module supports format behavior.
+import MarkdownIt from "markdown-it";
 import type { MatrixClient } from "./sdk.js";
 import { isMatrixQualifiedUserId } from "./target-ids.js";
 

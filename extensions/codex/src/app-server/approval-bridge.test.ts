@@ -1457,8 +1457,7 @@ describe("Codex app-server approval bridge", () => {
     expect(mockCallGatewayTool).not.toHaveBeenCalled();
     findApprovalEvent(params, {
       status: "denied",
-      message:
-        "EVE native hook relay returned an unreadable Codex app-server approval result.",
+      message: "EVE native hook relay returned an unreadable Codex app-server approval result.",
     });
   });
 

@@ -49,12 +49,12 @@ describe("check-memory-fd-repro", () => {
       sampleDelayMs: 0,
     });
 
-    expect(() =>
-      withEnv({ EVE_MEMORY_FD_REPRO_FILES: "17files" }, () => parseArgs([])),
-    ).toThrow("EVE_MEMORY_FD_REPRO_FILES must be a non-negative integer");
-    expect(() =>
-      withEnv({ EVE_MEMORY_FD_REPRO_TIMEOUT_MS: "1e3" }, () => parseArgs([])),
-    ).toThrow("EVE_MEMORY_FD_REPRO_TIMEOUT_MS must be a non-negative integer");
+    expect(() => withEnv({ EVE_MEMORY_FD_REPRO_FILES: "17files" }, () => parseArgs([]))).toThrow(
+      "EVE_MEMORY_FD_REPRO_FILES must be a non-negative integer",
+    );
+    expect(() => withEnv({ EVE_MEMORY_FD_REPRO_TIMEOUT_MS: "1e3" }, () => parseArgs([]))).toThrow(
+      "EVE_MEMORY_FD_REPRO_TIMEOUT_MS must be a non-negative integer",
+    );
   });
 
   it("lets explicit CLI numeric flags override malformed inherited env defaults", () => {

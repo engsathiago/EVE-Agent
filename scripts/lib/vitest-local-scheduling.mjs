@@ -91,9 +91,7 @@ export function resolveLocalVitestScheduling(
 ) {
   const override = parsePositiveInt(
     env.EVE_VITEST_MAX_WORKERS ?? env.EVE_TEST_WORKERS,
-    env.EVE_VITEST_MAX_WORKERS === undefined
-      ? "EVE_TEST_WORKERS"
-      : "EVE_VITEST_MAX_WORKERS",
+    env.EVE_VITEST_MAX_WORKERS === undefined ? "EVE_TEST_WORKERS" : "EVE_VITEST_MAX_WORKERS",
   );
   if (override !== null) {
     const maxWorkers = clamp(override, 1, 16);

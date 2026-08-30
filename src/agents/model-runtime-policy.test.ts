@@ -1,7 +1,7 @@
 // Covers model runtime policy precedence and private QA runtime overrides.
 import { afterEach, describe, expect, it } from "vitest";
-import type { ModelDefinitionConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelDefinitionConfig } from "../config/types.models.js";
 import { deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
 import { resolveModelRuntimePolicy } from "./model-runtime-policy.js";
 

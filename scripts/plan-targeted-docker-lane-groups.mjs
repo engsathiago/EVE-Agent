@@ -18,7 +18,7 @@ function splitTokens(raw) {
 function sanitizeLabel(value) {
   return (
     String(value)
-      .replace(/^eve@/u, "")
+      .replace(/^eve-agent@/u, "")
       .replace(/[^A-Za-z0-9._-]+/g, "-")
       .replace(/^-+|-+$/g, "") || "targeted"
   );

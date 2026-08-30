@@ -91,12 +91,7 @@ const resolvePackagedCompileCacheDirectory = () => {
   const baseDirectory = isNodeCompileCacheRequested()
     ? process.env.NODE_COMPILE_CACHE
     : path.join(os.tmpdir(), "node-compile-cache");
-  return path.join(
-    baseDirectory,
-    "eve",
-    version,
-    sanitizeCompileCachePathSegment(installMarker),
-  );
+  return path.join(baseDirectory, "eve", version, sanitizeCompileCachePathSegment(installMarker));
 };
 
 const respawnSignals =
@@ -362,9 +357,9 @@ const buildMissingEntryErrorMessage = async () => {
     "Build locally with `pnpm install && pnpm build`, or install a built package instead.",
   );
   lines.push(
-    "For pinned GitHub installs, use `npm install -g github:eve/eve#<ref>` instead of a raw `/archive/<ref>.tar.gz` URL.",
+    "For pinned GitHub installs, use `npm install -g github:engsathiago/eve-agent#<ref>` instead of a raw `/archive/<ref>.tar.gz` URL.",
   );
-  lines.push("For releases, use `npm install -g eve@latest`.");
+  lines.push("For releases, use `npm install -g eve-agent@latest`.");
   return lines.join("\n");
 };
 
@@ -387,8 +382,7 @@ const resolvePrecomputedCommandHelp = (argv) => {
   return null;
 };
 
-const isHelpFastPathDisabled = () =>
-  process.env.EVE_DISABLE_CLI_STARTUP_HELP_FAST_PATH === "1";
+const isHelpFastPathDisabled = () => process.env.EVE_DISABLE_CLI_STARTUP_HELP_FAST_PATH === "1";
 
 const normalizeLauncherHomeValue = (value) => {
   const trimmed = value?.trim();

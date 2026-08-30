@@ -114,8 +114,7 @@ vi.mock("./dispatch-acp-manager.runtime.js", () => ({
 }));
 
 vi.mock("../../acp/policy.js", () => ({
-  resolveAcpDispatchPolicyError: (cfg: EVEConfig) =>
-    policyMocks.resolveAcpDispatchPolicyError(cfg),
+  resolveAcpDispatchPolicyError: (cfg: EVEConfig) => policyMocks.resolveAcpDispatchPolicyError(cfg),
   resolveAcpAgentPolicyError: (cfg: EVEConfig, agent: string) =>
     policyMocks.resolveAcpAgentPolicyError(cfg, agent),
 }));

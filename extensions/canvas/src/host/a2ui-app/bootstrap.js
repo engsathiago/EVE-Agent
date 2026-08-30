@@ -3,8 +3,8 @@
  * helpers.
  */
 import { v0_8 } from "@a2ui/lit";
-import { ContextProvider } from "@lit/context";
 import { themeContext } from "@eve/a2ui-theme-context";
+import { ContextProvider } from "@lit/context";
 import { html, css, LitElement, unsafeCSS } from "lit";
 import "@a2ui/lit/ui";
 import { repeat } from "lit/directives/repeat.js";
@@ -491,8 +491,7 @@ class EVEA2UIHost extends LitElement {
     globalThis["__eveLastA2UIAction"] = userAction;
 
     const handler =
-      globalThis.webkit?.messageHandlers?.eveCanvasA2UIAction ??
-      globalThis.eveCanvasA2UIAction;
+      globalThis.webkit?.messageHandlers?.eveCanvasA2UIAction ?? globalThis.eveCanvasA2UIAction;
     if (handler?.postMessage) {
       try {
         // WebKit message handlers support structured objects; Android's JS interface expects strings.

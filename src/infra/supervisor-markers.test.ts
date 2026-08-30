@@ -15,26 +15,20 @@ describe("SUPERVISOR_HINT_ENV_VARS", () => {
 
 describe("detectRespawnSupervisor", () => {
   it("detects launchd from EVE's explicit marker or current gateway launchd job", () => {
-    expect(
-      detectRespawnSupervisor({ EVE_LAUNCHD_LABEL: " ai.eve.gateway " }, "darwin"),
-    ).toBe("launchd");
+    expect(detectRespawnSupervisor({ EVE_LAUNCHD_LABEL: " ai.eve.gateway " }, "darwin")).toBe(
+      "launchd",
+    );
     expect(detectRespawnSupervisor({ EVE_LAUNCHD_LABEL: "   " }, "darwin")).toBeNull();
     expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, "darwin")).toBe(
       "launchd",
     );
     expect(
-      detectRespawnSupervisor(
-        { LAUNCH_JOB_NAME: "ai.eve.work", EVE_PROFILE: "work" },
-        "darwin",
-      ),
+      detectRespawnSupervisor({ LAUNCH_JOB_NAME: "ai.eve.work", EVE_PROFILE: "work" }, "darwin"),
     ).toBe("launchd");
     expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.mac" }, "darwin")).toBeNull();
     expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.eve.mac" }, "darwin")).toBeNull();
     expect(
-      detectRespawnSupervisor(
-        { XPC_SERVICE_NAME: "ai.eve.mac", EVE_PROFILE: "mac" },
-        "darwin",
-      ),
+      detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.eve.mac", EVE_PROFILE: "mac" }, "darwin"),
     ).toBeNull();
     expect(detectRespawnSupervisor({ XPC_SERVICE_NAME: "ai.eve.gateway" }, "darwin")).toBe(
       "launchd",
@@ -80,9 +74,9 @@ describe("detectRespawnSupervisor", () => {
   });
 
   it("detects scheduled-task supervision on Windows from either hint family", () => {
-    expect(
-      detectRespawnSupervisor({ EVE_WINDOWS_TASK_NAME: "EVE Gateway" }, "win32"),
-    ).toBe("schtasks");
+    expect(detectRespawnSupervisor({ EVE_WINDOWS_TASK_NAME: "EVE Gateway" }, "win32")).toBe(
+      "schtasks",
+    );
     expect(
       detectRespawnSupervisor(
         {
@@ -113,8 +107,6 @@ describe("detectRespawnSupervisor", () => {
         "linux",
       ),
     ).toBeNull();
-    expect(
-      detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, "freebsd"),
-    ).toBeNull();
+    expect(detectRespawnSupervisor({ LAUNCH_JOB_LABEL: "ai.eve.gateway" }, "freebsd")).toBeNull();
   });
 });

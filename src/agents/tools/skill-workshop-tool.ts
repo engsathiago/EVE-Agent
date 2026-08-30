@@ -14,6 +14,7 @@ import {
   quarantineSkillProposal,
   rejectSkillProposal,
   resolvePendingSkillProposal,
+  rollbackSkillProposal,
   reviseSkillProposal,
 } from "../../skills/workshop/service.js";
 import type {
@@ -40,12 +41,14 @@ const SKILL_WORKSHOP_ACTIONS = [
   "list",
   "inspect",
   "apply",
+  "rollback",
   "reject",
   "quarantine",
 ] as const;
 const SKILL_PROPOSAL_STATUSES = [
   "pending",
   "applied",
+  "rolled_back",
   "rejected",
   "quarantined",
   "stale",
@@ -55,12 +58,12 @@ const SkillWorkshopToolSchema = Type.Object(
   {
     action: stringEnum(SKILL_WORKSHOP_ACTIONS, {
       description:
-        "create for a new skill proposal, update for an existing skill, revise for a pending proposal, list or inspect proposals for proposal discovery, apply/reject/quarantine for explicit proposal lifecycle actions.",
+        "create for a new skill proposal, update for an existing skill, revise for a pending proposal, list or inspect proposals for proposal discovery, apply/rollback/reject/quarantine for explicit proposal lifecycle actions.",
     }),
     proposal_id: Type.Optional(
       Type.String({
         description:
-          "Existing proposal id for action=inspect, action=revise, action=apply, action=reject, or action=quarantine.",
+          "Existing proposal id for action=inspect, action=revise, action=apply, action=rollback, action=reject, or action=quarantine.",
       }),
     ),
     name: Type.Optional(
@@ -117,7 +120,8 @@ const SkillWorkshopToolSchema = Type.Object(
     evidence: Type.Optional(Type.String({ description: "Short evidence or notes." })),
     reason: Type.Optional(
       Type.String({
-        description: "Optional reason for action=apply, action=reject, or action=quarantine.",
+        description:
+          "Optional reason for action=apply, action=rollback, action=reject, or action=quarantine.",
       }),
     ),
   },
@@ -138,7 +142,7 @@ export function createSkillWorkshopTool(options: SkillWorkshopToolOptions): AnyA
     name: "skill_workshop",
     displaySummary: "Propose a reusable skill",
     description:
-      "Create, update, revise, list, inspect, apply, reject, or quarantine Skill Workshop proposals when reusable procedures should be captured, improved, or explicitly approved.",
+      "Create, update, revise, list, inspect, apply, rollback, reject, or quarantine Skill Workshop proposals when reusable procedures should be captured, improved, or explicitly approved.",
     parameters: SkillWorkshopToolSchema,
     execute: async (_toolCallId, args) => {
       const params = asToolParamsRecord(args);
@@ -177,6 +181,19 @@ export function createSkillWorkshopTool(options: SkillWorkshopToolOptions): AnyA
         return actionResult(applied.record, {
           contentText: `Applied skill proposal ${applied.record.id}.`,
           targetSkillFile: applied.targetSkillFile,
+        });
+      }
+
+      if (action === "rollback") {
+        const rolledBack = await rollbackSkillProposal({
+          workspaceDir: options.workspaceDir,
+          config: options.config,
+          proposalId: readLifecycleProposalIdParam(params),
+          reason: readStringParam(params, "reason"),
+        });
+        return actionResult(rolledBack.record, {
+          contentText: `Rolled back skill proposal ${rolledBack.record.id}.`,
+          targetSkillFile: rolledBack.targetSkillFile,
         });
       }
 

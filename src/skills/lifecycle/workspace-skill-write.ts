@@ -155,6 +155,97 @@ export async function writeWorkspaceSkill(params: {
   }
 }
 
+/** Restore the files captured before a Skill Workshop proposal was applied. */
+export async function restoreWorkspaceSkill(params: {
+  workspaceDir: string;
+  skillDir: string;
+  skillFile: string;
+  previousContent?: string;
+  supportFiles?: readonly PreviousSupportFile[];
+  symlinkPolicy: WorkspaceSkillSymlinkWritePolicy;
+}): Promise<void> {
+  assertInsideWorkspace(params.workspaceDir, params.skillDir, "skill directory");
+  const supportFiles = normalizeRollbackSupportFiles(params.supportFiles ?? []);
+  const targets = [
+    ...supportFiles.map((file) => ({
+      filePath: path.join(params.skillDir, ...file.path.split("/")),
+      previousContent: file.existed ? (file.previousContent ?? "") : undefined,
+    })),
+    { filePath: params.skillFile, previousContent: params.previousContent },
+  ];
+  for (const target of targets) {
+    await resolveWorkspaceSkillWriteTarget({
+      workspaceDir: params.workspaceDir,
+      filePath: target.filePath,
+      symlinkPolicy: params.symlinkPolicy,
+    });
+  }
+  const current = await Promise.all(
+    targets.map(async (target) => ({
+      filePath: target.filePath,
+      content:
+        target.filePath === params.skillFile
+          ? await readWorkspaceSkillFile(target.filePath)
+          : await readWorkspaceSupportFile({
+              skillDir: params.skillDir,
+              relativePath: path
+                .relative(params.skillDir, target.filePath)
+                .split(path.sep)
+                .join("/"),
+            }),
+    })),
+  );
+  try {
+    for (const target of targets) {
+      await restoreWorkspaceFile({
+        workspaceDir: params.workspaceDir,
+        filePath: target.filePath,
+        content: target.previousContent,
+        symlinkPolicy: params.symlinkPolicy,
+      });
+    }
+  } catch (error) {
+    await Promise.allSettled(
+      current.toReversed().map(async (target) => {
+        await restoreWorkspaceFile({
+          workspaceDir: params.workspaceDir,
+          filePath: target.filePath,
+          content: target.content ?? undefined,
+          symlinkPolicy: params.symlinkPolicy,
+        });
+      }),
+    );
+    throw error;
+  }
+}
+
+function normalizeRollbackSupportFiles(
+  supportFiles: readonly PreviousSupportFile[],
+): PreviousSupportFile[] {
+  const normalized = supportFiles.map((file) => ({
+    ...file,
+    path: normalizeWorkspaceSkillSupportPath(file.path),
+  }));
+  if (new Set(normalized.map((file) => file.path)).size !== normalized.length) {
+    throw new Error("Rollback support file paths must be unique.");
+  }
+  assertWorkspaceSkillSupportPathSetIsFileOnly(normalized.map((file) => file.path));
+  return normalized;
+}
+
+async function restoreWorkspaceFile(params: {
+  workspaceDir: string;
+  filePath: string;
+  content?: string;
+  symlinkPolicy: WorkspaceSkillSymlinkWritePolicy;
+}): Promise<void> {
+  if (params.content === undefined) {
+    await removeWorkspaceFile(params);
+    return;
+  }
+  await writeWorkspaceFile({ ...params, content: params.content, overwrite: true });
+}
+
 function normalizeSupportFiles(
   supportFiles: readonly WorkspaceSkillSupportFileWrite[],
 ): WorkspaceSkillSupportFileWrite[] {

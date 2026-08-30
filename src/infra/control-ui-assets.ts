@@ -105,7 +105,7 @@ export async function resolveControlUiDistIndexPath(
     return path.join(packageRoot, "dist", "control-ui", "index.html");
   }
 
-  // Fallback: traverse up and find package.json with name "eve" + dist/control-ui/index.html
+  // Fallback: traverse up and find package.json with name "eve-agent" + dist/control-ui/index.html
   // This handles global installs where path-based resolution might fail.
   const fallbackStartDirs = new Set(
     entrypointCandidates.map((candidate) => path.dirname(candidate)),
@@ -119,7 +119,7 @@ export async function resolveControlUiDistIndexPath(
         try {
           const raw = controlUiFsRuntime.readFileSync(pkgJsonPath, "utf-8");
           const parsed = JSON.parse(raw) as { name?: unknown };
-          if (parsed.name === "eve") {
+          if (parsed.name === "eve-agent") {
             return controlUiFsRuntime.existsSync(indexPath) ? indexPath : null;
           }
           // Stop at the first package boundary to avoid resolving through unrelated ancestors.

@@ -1,11 +1,6 @@
 // Microsoft provider module implements model/runtime integration.
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import {
-  CHROMIUM_FULL_VERSION,
-  TRUSTED_CLIENT_TOKEN,
-  generateSecMsGecToken,
-} from "node-edge-tts/dist/drm.js";
 import { isVoiceCompatibleAudio } from "eve-agent/plugin-sdk/media-runtime";
 import { assertOkOrThrowProviderError } from "eve-agent/plugin-sdk/provider-http";
 import {
@@ -23,6 +18,11 @@ import {
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
 } from "eve-agent/plugin-sdk/ssrf-runtime";
 import { tempWorkspace, resolvePreferredEVETmpDir } from "eve-agent/plugin-sdk/temp-path";
+import {
+  CHROMIUM_FULL_VERSION,
+  TRUSTED_CLIENT_TOKEN,
+  generateSecMsGecToken,
+} from "node-edge-tts/dist/drm.js";
 import { edgeTTS, inferEdgeExtension } from "./tts.js";
 
 const DEFAULT_EDGE_VOICE = "en-US-MichelleNeural";

@@ -6,9 +6,7 @@ import type { SandboxContext } from "eve-agent/plugin-sdk/sandbox";
 import type { EVEExecServer } from "./types.js";
 
 /** Returns the configured sandbox backend or fails the current JSON-RPC request. */
-export function requireBackend(
-  execServer: EVEExecServer,
-): NonNullable<SandboxContext["backend"]> {
+export function requireBackend(execServer: EVEExecServer): NonNullable<SandboxContext["backend"]> {
   const backend = execServer.sandbox.backend;
   if (!backend) {
     throw new Error("EVE sandbox backend is unavailable.");

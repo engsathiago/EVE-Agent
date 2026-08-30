@@ -22,11 +22,7 @@ export function readTelegramBotApiLimits(
   env: NodeJS.ProcessEnv = process.env,
 ): TelegramBotApiLimits {
   return {
-    bodyMaxBytes: readPositiveIntEnv(
-      "EVE_TELEGRAM_USER_BOT_API_BODY_MAX_BYTES",
-      1024 * 1024,
-      env,
-    ),
+    bodyMaxBytes: readPositiveIntEnv("EVE_TELEGRAM_USER_BOT_API_BODY_MAX_BYTES", 1024 * 1024, env),
     timeoutMs: readPositiveIntEnv("EVE_TELEGRAM_USER_BOT_API_TIMEOUT_MS", 30000, env),
   };
 }

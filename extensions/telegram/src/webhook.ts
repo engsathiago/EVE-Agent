@@ -2,7 +2,6 @@
 import { createServer } from "node:http";
 import type { IncomingMessage } from "node:http";
 import net from "node:net";
-import { InputFile } from "grammy";
 import type { ChannelAccountSnapshot } from "eve-agent/plugin-sdk/channel-contract";
 import type { EVEConfig } from "eve-agent/plugin-sdk/config-contracts";
 import { isDiagnosticsEnabled } from "eve-agent/plugin-sdk/diagnostic-runtime";
@@ -30,6 +29,7 @@ import {
   WEBHOOK_RATE_LIMIT_DEFAULTS,
 } from "eve-agent/plugin-sdk/webhook-ingress";
 import { readJsonBodyWithLimit } from "eve-agent/plugin-sdk/webhook-request-guards";
+import { InputFile } from "grammy";
 import { resolveTelegramAllowedUpdates } from "./allowed-updates.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import { createTelegramBot } from "./bot.js";

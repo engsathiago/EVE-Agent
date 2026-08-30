@@ -1276,11 +1276,8 @@ describe("dispatchReplyFromConfig", () => {
       OriginatingTo: "channel:C123",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => ({ text: "hi" }) satisfies ReplyPayload;
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) =>
+      ({ text: "hi" }) satisfies ReplyPayload;
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
 
     expect(mocks.routeReply).not.toHaveBeenCalled();
@@ -1714,11 +1711,8 @@ describe("dispatchReplyFromConfig", () => {
       OriginatingTo: "telegram:999",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => ({ text: "hi" }) satisfies ReplyPayload;
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) =>
+      ({ text: "hi" }) satisfies ReplyPayload;
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
 
     expect(dispatcher.sendFinalReply).not.toHaveBeenCalled();
@@ -2170,11 +2164,8 @@ describe("dispatchReplyFromConfig", () => {
       OriginatingTo: "imessage:+15550001111",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => ({ text: "hi" }) satisfies ReplyPayload;
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) =>
+      ({ text: "hi" }) satisfies ReplyPayload;
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
 
     expect(mocks.routeReply).not.toHaveBeenCalled();
@@ -2195,11 +2186,8 @@ describe("dispatchReplyFromConfig", () => {
       ExplicitDeliverRoute: true,
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => ({ text: "hi" }) satisfies ReplyPayload;
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) =>
+      ({ text: "hi" }) satisfies ReplyPayload;
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
 
     expect(dispatcher.sendFinalReply).not.toHaveBeenCalled();
@@ -2225,11 +2213,7 @@ describe("dispatchReplyFromConfig", () => {
       OriginatingTo: "telegram:999",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({
         text: "NO_REPLY",
@@ -2265,11 +2249,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "tool output" });
       return { text: "hi" } satisfies ReplyPayload;
@@ -2290,11 +2270,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "tool output" });
       return { text: "done" } satisfies ReplyPayload;
@@ -2321,11 +2297,7 @@ describe("dispatchReplyFromConfig", () => {
     });
     let lateToolResult: NonNullable<GetReplyOptions["onToolResult"]> | undefined;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       lateToolResult = requireToolResultHandler(opts?.onToolResult);
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -2346,11 +2318,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "group",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 exec: ls" });
       await onToolResult({
@@ -2387,11 +2355,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 exec: ls" });
       return { text: "hi" } satisfies ReplyPayload;
@@ -2418,11 +2382,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 exec: ls" });
       return { text: "hi" } satisfies ReplyPayload;
@@ -2453,11 +2413,7 @@ describe("dispatchReplyFromConfig", () => {
       From: "matrix:group:!room:example.org",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 exec: pwd" });
       return { text: "hi" } satisfies ReplyPayload;
@@ -2492,11 +2448,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:456@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 exec: date" });
       return { text: "hi" } satisfies ReplyPayload;
@@ -2529,11 +2481,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:789@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       sessionStoreMocks.currentEntry = {
         verboseLevel: "on",
@@ -2571,11 +2519,7 @@ describe("dispatchReplyFromConfig", () => {
     });
     let receivedOptions: GetReplyOptions | undefined;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       receivedOptions = opts;
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       sessionStoreMocks.currentEntry = {
@@ -2623,11 +2567,7 @@ describe("dispatchReplyFromConfig", () => {
     const onCompactionEnd = vi.fn();
     const onToolResult = vi.fn();
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({ itemId: "1", kind: "tool", progressText: "running exec" });
       await opts?.onPlanUpdate?.({ phase: "update", steps: ["Run command"] });
@@ -2699,11 +2639,7 @@ describe("dispatchReplyFromConfig", () => {
     const onItemEvent = vi.fn();
     const onCommandOutput = vi.fn();
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({ itemId: "1", kind: "tool", progressText: "running exec" });
       await opts?.onCommandOutput?.({ phase: "end", name: "exec", status: "ok", exitCode: 0 });
@@ -2745,11 +2681,7 @@ describe("dispatchReplyFromConfig", () => {
     });
 
     let commentaryEnabled: boolean | undefined;
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       commentaryEnabled = opts?.commentaryProgressEnabled;
       await opts?.onItemEvent?.({
         itemId: "c1",
@@ -2790,11 +2722,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onItemEvent?.({
         itemId: "c1",
         kind: "preamble",
@@ -2832,11 +2760,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onItemEvent?.({ itemId: "c1", kind: "preamble", progressText: "drafting" });
       await opts?.onItemEvent?.({
         itemId: "c1",
@@ -2870,11 +2794,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onItemEvent?.({ itemId: "c1", kind: "preamble", progressText: "first block" });
       await opts?.onItemEvent?.({ itemId: "c2", kind: "preamble", progressText: "second block" });
       return { text: "done" } satisfies ReplyPayload;
@@ -2907,11 +2827,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:whatsapp:group:123@g.us",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onItemEvent?.({ itemId: "c1", kind: "preamble", progressText: "scratch that" });
       await opts?.onItemEvent?.({ itemId: "c1", kind: "preamble", progressText: "" });
       return { text: "done" } satisfies ReplyPayload;
@@ -2940,11 +2856,7 @@ describe("dispatchReplyFromConfig", () => {
     const onItemEvent = vi.fn();
 
     let commentaryEnabled: boolean | undefined = false;
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       commentaryEnabled = opts?.commentaryProgressEnabled;
       await opts?.onItemEvent?.({
         itemId: "c1",
@@ -2988,11 +2900,7 @@ describe("dispatchReplyFromConfig", () => {
 
     let isActive: (() => boolean) | undefined;
     let activeDuringRun: boolean | undefined;
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       activeDuringRun = isActive?.();
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -3053,11 +2961,7 @@ describe("dispatchReplyFromConfig", () => {
     const onCommandOutput = vi.fn();
     const onToolResult = vi.fn();
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({ itemId: "1", kind: "tool", progressText: "running exec" });
       await opts?.onCommandOutput?.({ phase: "end", name: "exec", status: "ok", exitCode: 0 });
@@ -3118,11 +3022,7 @@ describe("dispatchReplyFromConfig", () => {
     const onCommandOutput = vi.fn();
     let commentaryEnabled: boolean | undefined;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       commentaryEnabled = opts?.commentaryProgressEnabled;
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({
@@ -3202,11 +3102,7 @@ describe("dispatchReplyFromConfig", () => {
     const onCommandOutput = vi.fn();
     let commentaryEnabled: boolean | undefined;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       commentaryEnabled = opts?.commentaryProgressEnabled;
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({ itemId: "1", kind: "tool", progressText: "running exec" });
@@ -3267,11 +3163,7 @@ describe("dispatchReplyFromConfig", () => {
     const onCommandOutput = vi.fn();
     let commentaryEnabled: boolean | undefined;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       commentaryEnabled = opts?.commentaryProgressEnabled;
       await opts?.onToolStart?.({ name: "exec", phase: "start" });
       await opts?.onItemEvent?.({ itemId: "1", kind: "tool", progressText: "running exec" });
@@ -3320,11 +3212,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "group",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({
         text: "NO_REPLY",
         mediaUrls: ["file://attacker/share/probe.mp3"],
@@ -3366,11 +3254,7 @@ describe("dispatchReplyFromConfig", () => {
       MessageThreadId: 99,
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({ text: "🔧 exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -3390,11 +3274,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "group",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({
         text: "Approval required.\n\n```txt\n/approve 117ba06d allow-once\n```",
         channelData: {
@@ -3437,11 +3317,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       // Simulate tool result emission
       await opts?.onToolResult?.({ text: "🔧 exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
@@ -3465,11 +3341,7 @@ describe("dispatchReplyFromConfig", () => {
       CommandSource: "native",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       const onToolResult = requireToolResultHandler(opts?.onToolResult);
       await onToolResult({ text: "🔧 tools/sessions_send" });
       await onToolResult({
@@ -3533,11 +3405,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPlanUpdate?.({
         phase: "update",
         explanation: "Inspect code, patch it, run tests.",
@@ -3573,11 +3441,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPlanUpdate?.({
         phase: "update",
         steps: ["Inspect code"],
@@ -3615,11 +3479,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPatchSummary?.({
         phase: "end",
         title: "apply patch",
@@ -3652,11 +3512,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "channel",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPlanUpdate?.({
         phase: "update",
         explanation: "Inspect code, patch it, run tests.",
@@ -3702,11 +3558,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:main",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPlanUpdate?.({
         phase: "update",
         explanation: "Inspect code, patch it, run tests.",
@@ -3752,11 +3604,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:main",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       sessionStoreMocks.loadSessionStore.mockClear();
       sessionStoreMocks.resolveSessionStoreEntry.mockClear();
       sessionStoreMocks.readSessionEntry.mockClear();
@@ -3797,11 +3645,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({ text: "🔧 exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -3836,11 +3680,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:discord:channel:C1",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onCommandOutput?.({
         phase: "end",
         title: "Exec",
@@ -3894,11 +3734,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:telegram:direct:U1",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onCommandOutput?.({
         phase: "end",
         title: "Exec",
@@ -4001,11 +3837,7 @@ describe("dispatchReplyFromConfig", () => {
       isError: true,
     } satisfies ReplyPayload;
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.(failedOutput);
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -4252,11 +4084,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:main",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({ text: "🔧 exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -4286,11 +4114,7 @@ describe("dispatchReplyFromConfig", () => {
       SessionKey: "agent:main:main",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onPlanUpdate?.({
         phase: "update",
         explanation: "Inspect code.",
@@ -4436,11 +4260,7 @@ describe("dispatchReplyFromConfig", () => {
       ChatType: "direct",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({ mediaUrl: "https://example.com/tts-preview.opus" });
       return { text: "done" } satisfies ReplyPayload;
     };
@@ -4469,11 +4289,7 @@ describe("dispatchReplyFromConfig", () => {
       CommandSource: "native",
     });
 
-    const replyResolver = async (
-      _ctx: MsgContext,
-      opts?: GetReplyOptions,
-      _cfg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, opts?: GetReplyOptions, _cfg?: EVEConfig) => {
       await opts?.onToolResult?.({
         text: "Approval required.\n\n```txt\n/approve 117ba06d allow-once\n```",
         channelData: {
@@ -7119,9 +6935,7 @@ describe("dispatchReplyFromConfig", () => {
       Body: "hello",
     });
     const replyResolver = vi
-      .fn<
-        (_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) => Promise<ReplyPayload>
-      >()
+      .fn<(_ctx: MsgContext, _opts?: GetReplyOptions, _cfg?: EVEConfig) => Promise<ReplyPayload>>()
       .mockRejectedValueOnce(new Error("dispatch failed"))
       .mockResolvedValueOnce({ text: "retry succeeds" });
 
@@ -7249,11 +7063,7 @@ describe("dispatchReplyFromConfig", () => {
     } as EVEConfig;
 
     let receivedCfg: EVEConfig | undefined;
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      cfgArg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, cfgArg?: EVEConfig) => {
       receivedCfg = cfgArg;
       return { text: "hi" } satisfies ReplyPayload;
     };
@@ -7278,11 +7088,7 @@ describe("dispatchReplyFromConfig", () => {
     const ctx = buildTestCtx({ Provider: "telegram", Surface: "telegram" });
 
     let receivedCfg: EVEConfig | undefined;
-    const replyResolver = async (
-      _ctx: MsgContext,
-      _opts?: GetReplyOptions,
-      cfgArg?: EVEConfig,
-    ) => {
+    const replyResolver = async (_ctx: MsgContext, _opts?: GetReplyOptions, cfgArg?: EVEConfig) => {
       receivedCfg = cfgArg;
       return { text: "hi" } satisfies ReplyPayload;
     };

@@ -1,8 +1,8 @@
 // Verifies channel config loading surfaces visible plugin settings.
 import fs from "node:fs";
 import path from "node:path";
-import type { createJiti as createJitiType } from "jiti";
 import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
+import type { createJiti as createJitiType } from "jiti";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 

@@ -4,12 +4,12 @@ import { testApi } from "./logger.js";
 
 describe("shouldSkipMutatingLoggingConfigRead", () => {
   it("matches config schema and validate invocations", () => {
-    expect(
-      testApi.shouldSkipMutatingLoggingConfigRead(["node", "eve", "config", "schema"]),
-    ).toBe(true);
-    expect(
-      testApi.shouldSkipMutatingLoggingConfigRead(["node", "eve", "config", "validate"]),
-    ).toBe(true);
+    expect(testApi.shouldSkipMutatingLoggingConfigRead(["node", "eve", "config", "schema"])).toBe(
+      true,
+    );
+    expect(testApi.shouldSkipMutatingLoggingConfigRead(["node", "eve", "config", "validate"])).toBe(
+      true,
+    );
   });
 
   it("handles root flags before config validate", () => {

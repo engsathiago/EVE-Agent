@@ -686,6 +686,7 @@ const lazySkillWorkshop = createLazyView(
 const lazySkills = createLazyView(() => import("./views/skills.ts"), notifyLazyViewChanged);
 const lazyUsage = createLazyView(() => import("./views/usage.ts"), notifyLazyViewChanged);
 const lazyWorkboard = createLazyView(() => import("./views/workboard.ts"), notifyLazyViewChanged);
+const lazyEveSuite = createLazyView(() => import("./views/eve-suite.ts"), notifyLazyViewChanged);
 
 type ChatWorkspaceFilesState = {
   activeId: string | null;
@@ -2535,11 +2536,7 @@ export function renderApp(state: AppViewState) {
                 ${navCollapsed
                   ? nothing
                   : html`
-                      <img
-                        class="sidebar-brand__logo"
-                        src="${agentLogoUrl(basePath)}"
-                        alt="EVE"
-                      />
+                      <img class="sidebar-brand__logo" src="${agentLogoUrl(basePath)}" alt="EVE" />
                       <span class="sidebar-brand__copy">
                         <span class="sidebar-brand__eyebrow">${t("nav.control")}</span>
                         <span class="sidebar-brand__title">EVE</span>
@@ -3021,7 +3018,7 @@ export function renderApp(state: AppViewState) {
                 canModelOverride: hasOperatorAdminAccess(auth),
                 pluginEnabled: state.configSnapshot
                   ? isPluginEnabledInConfigSnapshot(state.configSnapshot, "workboard", {
-                      enabledByDefault: false,
+                      enabledByDefault: true,
                     })
                   : null,
                 pluginEnablementError:
@@ -3036,6 +3033,62 @@ export function renderApp(state: AppViewState) {
                 onRequestUpdate: requestHostUpdate,
               });
             })
+          : nothing}
+        ${state.tab === "projects"
+          ? renderLazyView(lazyEveSuite, (m) =>
+              m.renderProjects({
+                host: state,
+                client: state.client,
+                connected: state.connected,
+                canWrite: hasOperatorWriteAccess(state.hello?.auth ?? null),
+                onRequestUpdate: requestHostUpdate,
+              }),
+            )
+          : nothing}
+        ${state.tab === "environments"
+          ? renderLazyView(lazyEveSuite, (m) =>
+              m.renderEnvironments({
+                host: state,
+                client: state.client,
+                connected: state.connected,
+                canWrite: hasOperatorWriteAccess(state.hello?.auth ?? null),
+                onRequestUpdate: requestHostUpdate,
+              }),
+            )
+          : nothing}
+        ${state.tab === "studio"
+          ? renderLazyView(lazyEveSuite, (m) =>
+              m.renderStudio({
+                host: state,
+                client: state.client,
+                connected: state.connected,
+                canWrite: hasOperatorWriteAccess(state.hello?.auth ?? null),
+                onRequestUpdate: requestHostUpdate,
+              }),
+            )
+          : nothing}
+        ${state.tab === "integrations"
+          ? renderLazyView(lazyEveSuite, (m) =>
+              m.renderIntegrations({
+                host: state,
+                basePath: state.basePath,
+                client: state.client,
+                connected: state.connected,
+                canWrite: hasOperatorWriteAccess(state.hello?.auth ?? null),
+                onRequestUpdate: requestHostUpdate,
+              }),
+            )
+          : nothing}
+        ${state.tab === "intelligence"
+          ? renderLazyView(lazyEveSuite, (m) =>
+              m.renderIntelligence({
+                host: state,
+                client: state.client,
+                connected: state.connected,
+                canWrite: hasOperatorWriteAccess(state.hello?.auth ?? null),
+                onRequestUpdate: requestHostUpdate,
+              }),
+            )
           : nothing}
         ${renderUsageTab(state, lazyUsage)}
         ${state.tab === "cron" ? renderCronQuickCreateForTab(state, requestHostUpdate) : nothing}
@@ -3637,6 +3690,7 @@ export function renderApp(state: AppViewState) {
                 onPrev: () => selectRelativeProposal(-1),
                 onNext: () => selectRelativeProposal(1),
                 onApply: (key) => void runSkillWorkshopLifecycleAction(state, "apply", key),
+                onRollback: (key) => void runSkillWorkshopLifecycleAction(state, "rollback", key),
                 onRevise: (key) => {
                   state.skillWorkshopRevisionKey = key;
                   state.skillWorkshopRevisionDraft = "";

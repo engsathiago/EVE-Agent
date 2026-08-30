@@ -801,10 +801,7 @@ function classifyRuntimeParityCells(params: {
     };
   }
 
-  if (
-    hasMissingToolResult(params.eve.toolCalls) ||
-    hasMissingToolResult(params.codex.toolCalls)
-  ) {
+  if (hasMissingToolResult(params.eve.toolCalls) || hasMissingToolResult(params.codex.toolCalls)) {
     return {
       drift: "failure-mode",
       driftDetails: "at least one runtime planned a tool call without a tool result",
@@ -826,10 +823,7 @@ function classifyRuntimeParityCells(params: {
     };
   }
 
-  const toolCallShapeDetails = compareToolCallShape(
-    params.eve.toolCalls,
-    params.codex.toolCalls,
-  );
+  const toolCallShapeDetails = compareToolCallShape(params.eve.toolCalls, params.codex.toolCalls);
   if (toolCallShapeDetails) {
     return { drift: "tool-call-shape", driftDetails: toolCallShapeDetails };
   }
@@ -860,8 +854,7 @@ function classifyRuntimeParityCells(params: {
   }
 
   if (
-    normalizeTextForParity(params.eve.finalText) ===
-    normalizeTextForParity(params.codex.finalText)
+    normalizeTextForParity(params.eve.finalText) === normalizeTextForParity(params.codex.finalText)
   ) {
     return { drift: "none" };
   }

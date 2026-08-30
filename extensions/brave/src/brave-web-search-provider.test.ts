@@ -116,9 +116,7 @@ describe("brave web search provider", () => {
   });
 
   it("points provider metadata at the canonical Brave docs page", () => {
-    expect(createBraveWebSearchProvider().docsUrl).toBe(
-      "https://docs.eve.ai/tools/brave-search",
-    );
+    expect(createBraveWebSearchProvider().docsUrl).toBe("https://docs.eve.ai/tools/brave-search");
     expect(createBraveWebSearchContractProvider().docsUrl).toBe(
       "https://docs.eve.ai/tools/brave-search",
     );

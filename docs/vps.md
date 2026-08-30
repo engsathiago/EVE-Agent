@@ -12,6 +12,49 @@ Run the EVE Gateway on any Linux server or cloud VPS. This page helps you
 pick a provider, explains how cloud deployments work, and covers generic Linux
 tuning that applies everywhere.
 
+## Install from the EVE repository
+
+The repository includes a VPS installer that installs the CLI, configures the
+Gateway, installs the user service, runs diagnostics, and probes startup:
+
+```bash
+git clone https://github.com/engsathiago/eve-agent.git
+cd eve-agent
+bash scripts/install-vps.sh --source-dir "$PWD" --interactive
+```
+
+For an unattended provider-neutral install that keeps the Gateway on loopback:
+
+```bash
+bash scripts/install-vps.sh --source-dir "$PWD" --non-interactive
+```
+
+`--source-dir` builds the exact current commit and never fetches, checks out, or
+updates that supplied checkout. Use `--version` only for npm/repository installs
+that do not pass `--source-dir`.
+
+For a custom IPv4 bind, provide the host explicitly:
+
+```bash
+bash scripts/install-vps.sh \
+  --gateway-bind custom \
+  --gateway-custom-host 10.0.0.5 \
+  --non-interactive
+```
+
+Restore an existing EVE backup during provisioning:
+
+```bash
+bash scripts/install-vps.sh \
+  --source-dir "$PWD" \
+  --restore /srv/backups/eve-backup.tar.gz \
+  --workspace /srv/eve/workspace
+```
+
+Run `bash scripts/install-vps.sh --help` for prefix, version, bind/host, port,
+daemon, and dry-run options. The default prefix is `~/.eve` and the default
+Gateway bind is `loopback`.
+
 ## Pick a provider
 
 <CardGroup cols={2}>

@@ -9,7 +9,7 @@ on:
         default: main
         type: string
       workflow_ref:
-        description: Optional eve/eve ref that provides the reusable workflow harness
+        description: Optional engsathiago/eve-agent ref that provides the reusable workflow harness
         required: false
         default: ""
         type: string
@@ -103,7 +103,7 @@ on:
         required: true
         type: string
       workflow_ref:
-        description: Optional eve/eve ref that provides the reusable workflow harness
+        description: Optional engsathiago/eve-agent ref that provides the reusable workflow harness
         required: false
         default: ""
         type: string
@@ -193,7 +193,7 @@ concurrency:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   NODE_VERSION: "24.15.0"
-  EVE_REPOSITORY: eve/eve
+  EVE_REPOSITORY: engsathiago/eve-agent
   TSX_VERSION: "4.21.0"
   EVE_CROSS_OS_OPENAI_MODEL: ${{ inputs.openai_model || vars.EVE_CROSS_OS_OPENAI_MODEL || 'openai/gpt-5.5' }}
 
@@ -454,11 +454,11 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -n "${INPUT_PREVIOUS_VERSION}" ]]; then
-            echo "value=eve@${INPUT_PREVIOUS_VERSION}" >> "$GITHUB_OUTPUT"
+            echo "value=eve-agent@${INPUT_PREVIOUS_VERSION}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          BASELINE_VERSION="$(npm view eve@latest version)"
-          echo "value=eve@${BASELINE_VERSION}" >> "$GITHUB_OUTPUT"
+          BASELINE_VERSION="$(npm view eve-agent@latest version)"
+          echo "value=eve-agent@${BASELINE_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Pack baseline artifact
         if: ${{ inputs.mode != 'fresh' }}

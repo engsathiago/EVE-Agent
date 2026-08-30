@@ -65,12 +65,9 @@ describe("scheduled task runtime derivation", () => {
   }
 
   function taskQueryOutput(lines: string[]): string {
-    return [
-      "TaskName: \\EVE Gateway",
-      "Last Run Time: 1/8/2026 1:23:45 AM",
-      ...lines,
-      "",
-    ].join("\r\n");
+    return ["TaskName: \\EVE Gateway", "Last Run Time: 1/8/2026 1:23:45 AM", ...lines, ""].join(
+      "\r\n",
+    );
   }
 
   it("treats Running + 0x41301 as running", async () => {

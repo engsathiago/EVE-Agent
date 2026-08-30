@@ -32,13 +32,7 @@ vi.mock("./channel-actions.runtime.js", async () => {
       }
       return true;
     },
-    resolveWhatsAppReactionLevel: ({
-      cfg,
-      accountId,
-    }: {
-      cfg: EVEConfig;
-      accountId?: string;
-    }) => {
+    resolveWhatsAppReactionLevel: ({ cfg, accountId }: { cfg: EVEConfig; accountId?: string }) => {
       const accountLevel =
         accountId == null
           ? undefined

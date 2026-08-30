@@ -55,8 +55,7 @@ function resolveRttOptions(env: NodeJS.ProcessEnv, selectedScenarioIds: readonly
   return {
     rttCount,
     rttTimeoutMs: parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_TIMEOUT_MS"),
-    maxRttFailures:
-      parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_MAX_FAILURES") ?? rttCount,
+    maxRttFailures: parsePositiveIntegerEnv(env, "EVE_NPM_TELEGRAM_RTT_MAX_FAILURES") ?? rttCount,
     rttCheckIds: explicitCheckIds,
   };
 }
@@ -79,9 +78,7 @@ async function resolveTrustedEVECommand(rawCommand: string) {
   }
   const commandName = path.basename(rawCommand);
   if (commandName !== "eve" && commandName !== "eve.cmd") {
-    throw new Error(
-      `EVE_NPM_TELEGRAM_SUT_COMMAND must point to eve; got: ${commandName}`,
-    );
+    throw new Error(`EVE_NPM_TELEGRAM_SUT_COMMAND must point to eve; got: ${commandName}`);
   }
   const npmPrefix = process.env.NPM_CONFIG_PREFIX?.trim();
   if (!npmPrefix) {

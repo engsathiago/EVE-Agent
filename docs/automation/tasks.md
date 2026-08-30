@@ -95,7 +95,7 @@ Not every agent run creates a task. Heartbeat turns and normal interactive chat 
 | ACP background runs    | `acp`        | Spawning a child ACP session                                           | `done_only`           |
 | Subagent orchestration | `subagent`   | Spawning a subagent via `sessions_spawn`                               | `done_only`           |
 | Cron jobs (all types)  | `cron`       | Every cron execution (main-session and isolated)                       | `silent`              |
-| CLI operations         | `cli`        | `eve agent` commands that run through the gateway                 | `silent`              |
+| CLI operations         | `cli`        | `eve agent` commands that run through the gateway                      | `silent`              |
 | Agent media jobs       | `cli`        | Session-backed `image_generate`/`music_generate`/`video_generate` runs | `silent`              |
 
 <AccordionGroup>
@@ -137,7 +137,7 @@ stateDiagram-v2
 | `succeeded` | Completed successfully                                                     |
 | `failed`    | Completed with an error                                                    |
 | `timed_out` | Exceeded the configured timeout                                            |
-| `cancelled` | Stopped by the operator via `eve tasks cancel`                        |
+| `cancelled` | Stopped by the operator via `eve tasks cancel`                             |
 | `lost`      | The runtime lost authoritative backing state after a 5-minute grace period |
 
 Transitions happen automatically - when the associated agent run ends, the task status updates to match.

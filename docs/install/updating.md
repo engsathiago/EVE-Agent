@@ -35,7 +35,7 @@ the beta tag is missing or older than the latest stable release. Use `--tag beta
 if you want the raw npm beta dist-tag for a one-off package update.
 
 Use `--channel dev` for a persistent moving GitHub `main` checkout. For package
-updates, `--tag main` maps to `github:eve/eve#main` for one run, and
+updates, `--tag main` maps to `github:engsathiago/eve-agent#main` for one run, and
 GitHub/git source specs are packed into a temporary tarball before the staged
 npm install.
 
@@ -105,7 +105,7 @@ curl -fsSL https://eve.ai/install.sh | bash -s -- --install-method npm --version
 ## Alternative: manual npm, pnpm, or bun
 
 ```bash
-npm i -g eve@latest
+npm i -g eve-agent@latest
 ```
 
 Prefer `eve update` for supervised installs because it can coordinate the
@@ -124,7 +124,7 @@ that owns the root-owned global prefix on your host:
 
 ```bash
 eve gateway stop
-sudo /usr/bin/npm i -g eve@latest
+sudo /usr/bin/npm i -g eve-agent@latest
 eve gateway install --force
 eve gateway restart
 ```
@@ -154,11 +154,11 @@ quarantine policies, but an explicit EVE update means "install the selected
 EVE release now."
 
 ```bash
-pnpm add -g eve@latest
+pnpm add -g eve-agent@latest
 ```
 
 ```bash
-bun add -g eve@latest
+bun add -g eve-agent@latest
 ```
 
 ### Advanced npm install topics
@@ -167,7 +167,7 @@ bun add -g eve@latest
   <Accordion title="Read-only package tree">
     EVE treats packaged global installs as read-only at runtime, even when the global package directory is writable by the current user. Plugin package installs live in EVE-owned npm/git roots under the user config directory, and Gateway startup does not mutate the EVE package tree.
 
-    Some Linux npm setups install global packages under root-owned directories such as `/usr/lib/node_modules/eve`. EVE supports that layout because plugin install/update commands write outside that global package directory.
+    Some Linux npm setups install global packages under root-owned directories such as `/usr/lib/node_modules/eve-agent`. EVE supports that layout because plugin install/update commands write outside that global package directory.
 
   </Accordion>
   <Accordion title="Hardened systemd units">
@@ -205,7 +205,7 @@ The auto-updater is off by default. Enable it in `~/.eve/eve.json`:
 | -------- | ------------------------------------------------------------------------------------------------------------- |
 | `stable` | Waits `stableDelayHours`, then applies with deterministic jitter across `stableJitterHours` (spread rollout). |
 | `beta`   | Checks every `betaCheckIntervalHours` (default: hourly) and applies immediately.                              |
-| `dev`    | No automatic apply. Use `eve update` manually.                                                           |
+| `dev`    | No automatic apply. Use `eve update` manually.                                                                |
 
 The gateway also logs an update hint on startup (disable with `update.checkOnStart: false`).
 For downgrade or incident recovery, set `EVE_NO_AUTO_UPDATE=1` in the gateway environment to block automatic applies even when `update.auto.enabled` is configured. Startup update hints can still run unless `update.checkOnStart` is also disabled.
@@ -250,13 +250,13 @@ eve health
 ### Pin a version (npm)
 
 ```bash
-npm i -g eve@<version>
+npm i -g eve-agent@<version>
 eve doctor
 eve gateway restart
 ```
 
 <Tip>
-`npm view eve version` shows the current published version.
+`npm view eve-agent version` shows the current published version.
 </Tip>
 
 ### Pin a commit (source)

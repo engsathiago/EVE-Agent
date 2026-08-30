@@ -99,12 +99,13 @@ function createToolsForStoredSession(storeTemplate: string, sessionKey: string) 
   });
 }
 
-function expectNoSubagentControlTools(tools: ReturnType<typeof createEVECodingTools>) {
+function expectSubagentControlTools(tools: ReturnType<typeof createEVECodingTools>) {
   const names = new Set(tools.map((tool) => tool.name));
-  expect(names.has("sessions_spawn")).toBe(false);
-  expect(names.has("sessions_list")).toBe(false);
-  expect(names.has("sessions_history")).toBe(false);
-  expect(names.has("subagents")).toBe(false);
+  expect(names.has("sessions_spawn")).toBe(true);
+  expect(names.has("sessions_list")).toBe(true);
+  expect(names.has("sessions_history")).toBe(true);
+  expect(names.has("sessions_send")).toBe(true);
+  expect(names.has("subagents")).toBe(true);
 }
 
 function applyRuntimeToolsAllow<T extends { name: string }>(tools: T[], toolsAllow: string[]) {
@@ -701,10 +702,7 @@ describe("createEVECodingTools", () => {
     const createEVEToolsMock = vi.mocked(createEVETools);
     createEVEToolsMock.mockClear();
     const agentId = `inherited-allow-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const storeTemplate = path.join(
-      os.tmpdir(),
-      `eve-session-store-${agentId}-{agentId}.json`,
-    );
+    const storeTemplate = path.join(os.tmpdir(), `eve-session-store-${agentId}-{agentId}.json`);
     await writeSessionStore(storeTemplate, agentId, {
       [`agent:${agentId}:subagent:limited`]: {
         sessionId: "limited-session",
@@ -778,9 +776,8 @@ describe("createEVECodingTools", () => {
   it("lets embedded attempts refresh a caller-owned cron creator tool surface", () => {
     const createEVEToolsMock = vi.mocked(createEVETools);
     createEVEToolsMock.mockClear();
-    const cronCreatorToolAllowlistRef: NonNullable<
-      EVEToolsOptions["cronCreatorToolAllowlist"]
-    > = [];
+    const cronCreatorToolAllowlistRef: NonNullable<EVEToolsOptions["cronCreatorToolAllowlist"]> =
+      [];
 
     createEVECodingTools({
       config: { tools: { allow: ["read", "cron"] } },
@@ -854,9 +851,7 @@ describe("createEVECodingTools", () => {
     ]);
     expect(stages.indexOf("tool-policy")).toBeLessThan(stages.indexOf("workspace-policy"));
     expect(stages.indexOf("workspace-policy")).toBeLessThan(stages.indexOf("base-coding-tools"));
-    expect(stages.indexOf("eve-tools:test-helper")).toBeLessThan(
-      stages.indexOf("eve-tools"),
-    );
+    expect(stages.indexOf("eve-tools:test-helper")).toBeLessThan(stages.indexOf("eve-tools"));
     expect(stages.indexOf("schema-normalization")).toBeLessThan(stages.indexOf("tool-hooks"));
   });
 
@@ -1009,16 +1004,16 @@ describe("createEVECodingTools", () => {
     expect(latestCreateEVEToolsOptions().agentChannel).toBe("discord");
   });
 
-  it("filters session tools for sub-agent sessions by default", () => {
+  it("keeps session tools available to sub-agent sessions by default", () => {
     const tools = createEVECodingTools({
       sessionKey: "agent:main:subagent:test",
     });
     const names = new Set(tools.map((tool) => tool.name));
-    expect(names.has("sessions_list")).toBe(false);
-    expect(names.has("sessions_history")).toBe(false);
-    expect(names.has("sessions_send")).toBe(false);
-    expect(names.has("sessions_spawn")).toBe(false);
-    expect(names.has("subagents")).toBe(false);
+    expect(names.has("sessions_list")).toBe(true);
+    expect(names.has("sessions_history")).toBe(true);
+    expect(names.has("sessions_send")).toBe(true);
+    expect(names.has("sessions_spawn")).toBe(true);
+    expect(names.has("subagents")).toBe(true);
 
     expect(names.has("read")).toBe(true);
     expect(names.has("exec")).toBe(true);
@@ -1026,7 +1021,7 @@ describe("createEVECodingTools", () => {
     expect(names.has("apply_patch")).toBe(true);
   });
 
-  it("uses stored spawnDepth to apply leaf tool policy for flat depth-2 session keys", async () => {
+  it("does not synthesize a leaf restriction from stored spawnDepth", async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-depth-policy-"));
     try {
       const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
@@ -1039,13 +1034,13 @@ describe("createEVECodingTools", () => {
       });
 
       const tools = createToolsForStoredSession(storeTemplate, "agent:main:subagent:flat");
-      expectNoSubagentControlTools(tools);
+      expectSubagentControlTools(tools);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
   });
 
-  it("applies subagent tool policy to ACP children spawned under a subagent envelope", async () => {
+  it("does not synthesize subagent restrictions for ACP child envelopes", async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-acp-subagent-policy-"));
     try {
       const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
@@ -1081,7 +1076,7 @@ describe("createEVECodingTools", () => {
         storeTemplate,
         "agent:main:acp:child",
       );
-      expectNoSubagentControlTools(persistedEnvelopeTools);
+      expectSubagentControlTools(persistedEnvelopeTools);
 
       const restrictedTools = createToolsForStoredSession(storeTemplate, "agent:main:acp:plain");
       const restrictedNames = new Set(restrictedTools.map((tool) => tool.name));
@@ -1089,13 +1084,13 @@ describe("createEVECodingTools", () => {
       expect(restrictedNames.has("subagents")).toBe(true);
 
       const ancestryTools = createToolsForStoredSession(storeTemplate, "agent:writer:acp:child");
-      expectNoSubagentControlTools(ancestryTools);
+      expectSubagentControlTools(ancestryTools);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
   });
 
-  it("applies leaf tool policy for cross-agent subagent sessions when spawnDepth is missing", async () => {
+  it("does not synthesize a leaf restriction for cross-agent subagent sessions", async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-cross-agent-subagent-"));
     try {
       const storeTemplate = path.join(tmpDir, "sessions-{agentId}.json");
@@ -1115,7 +1110,7 @@ describe("createEVECodingTools", () => {
       });
 
       const tools = createToolsForStoredSession(storeTemplate, "agent:writer:subagent:child");
-      expectNoSubagentControlTools(tools);
+      expectSubagentControlTools(tools);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

@@ -89,11 +89,7 @@ export type ChannelSetupAdapter = {
     agentId: string;
     accountId?: string;
   }) => string | undefined;
-  applyAccountName?: (params: {
-    cfg: EVEConfig;
-    accountId: string;
-    name?: string;
-  }) => EVEConfig;
+  applyAccountName?: (params: { cfg: EVEConfig; accountId: string; name?: string }) => EVEConfig;
   applyAccountConfig: (params: {
     cfg: EVEConfig;
     accountId: string;
@@ -130,15 +126,11 @@ export type ChannelConfigAdapter<ResolvedAccount> = {
   }) => EVEConfig;
   deleteAccount?: (params: { cfg: EVEConfig; accountId: string }) => EVEConfig;
   isEnabled?: ChannelAdapterCallback<(account: ResolvedAccount, cfg: EVEConfig) => boolean>;
-  disabledReason?: ChannelAdapterCallback<
-    (account: ResolvedAccount, cfg: EVEConfig) => string
-  >;
+  disabledReason?: ChannelAdapterCallback<(account: ResolvedAccount, cfg: EVEConfig) => string>;
   isConfigured?: ChannelAdapterCallback<
     (account: ResolvedAccount, cfg: EVEConfig) => boolean | Promise<boolean>
   >;
-  unconfiguredReason?: ChannelAdapterCallback<
-    (account: ResolvedAccount, cfg: EVEConfig) => string
-  >;
+  unconfiguredReason?: ChannelAdapterCallback<(account: ResolvedAccount, cfg: EVEConfig) => string>;
   describeAccount?: ChannelAdapterCallback<
     (account: ResolvedAccount, cfg: EVEConfig) => ChannelAccountSnapshot
   >;
@@ -153,10 +145,7 @@ export type ChannelConfigAdapter<ResolvedAccount> = {
   }) => string[];
   hasConfiguredState?: (params: { cfg: EVEConfig; env?: NodeJS.ProcessEnv }) => boolean;
   hasPersistedAuthState?: (params: { cfg: EVEConfig; env?: NodeJS.ProcessEnv }) => boolean;
-  resolveDefaultTo?: (params: {
-    cfg: EVEConfig;
-    accountId?: string | null;
-  }) => string | undefined;
+  resolveDefaultTo?: (params: { cfg: EVEConfig; accountId?: string | null }) => string | undefined;
 };
 
 export type ChannelSecretsAdapter = {
@@ -520,9 +509,7 @@ export type ChannelDoctorAdapter = {
     doctorFixCommand: string;
     env?: NodeJS.ProcessEnv;
   }) => string[] | Promise<string[]>;
-  collectMutableAllowlistWarnings?: (params: {
-    cfg: EVEConfig;
-  }) => string[] | Promise<string[]>;
+  collectMutableAllowlistWarnings?: (params: { cfg: EVEConfig }) => string[] | Promise<string[]>;
   repairConfig?: (params: {
     cfg: EVEConfig;
     doctorFixCommand: string;

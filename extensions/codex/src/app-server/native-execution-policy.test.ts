@@ -8,7 +8,8 @@ const sessionStoreMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("eve-agent/plugin-sdk/session-store-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("eve-agent/plugin-sdk/session-store-runtime")>();
+  const actual =
+    await importOriginal<typeof import("eve-agent/plugin-sdk/session-store-runtime")>();
   return {
     ...actual,
     getSessionEntry: sessionStoreMocks.getSessionEntry,

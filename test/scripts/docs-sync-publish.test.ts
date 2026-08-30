@@ -8,7 +8,7 @@ describe("docs-sync-publish", () => {
         "--target",
         "generated-docs",
         "--source-repo",
-        "eve/eve",
+        "engsathiago/eve-agent",
         "--source-sha",
         "abc123",
         "--clawhub-repo",
@@ -22,7 +22,7 @@ describe("docs-sync-publish", () => {
       clawhubRepo: "../clawhub",
       clawhubSourceRepo: "eve/clawhub",
       clawhubSourceSha: "def456",
-      sourceRepo: "eve/eve",
+      sourceRepo: "engsathiago/eve-agent",
       sourceSha: "abc123",
       target: "generated-docs",
     });

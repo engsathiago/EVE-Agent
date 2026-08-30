@@ -310,6 +310,10 @@ describe("runMessageAction plugin dispatch", () => {
         describeMessageTool: () => ({ actions: ["pin", "list-pins", "member-info"] }),
         supportsAction: ({ action }) =>
           action === "pin" || action === "list-pins" || action === "member-info",
+        messageActionTargetAliases: {
+          pin: { aliases: ["messageId"] },
+          "list-pins": { aliases: ["chatId"] },
+        },
         handleAction,
       },
     };

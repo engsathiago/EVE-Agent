@@ -66,8 +66,7 @@ try {
         readBudgetEnvNumber("EVE_STARTUP_BENCH_MAX_DURATION_REGRESSION_PCT") ?? 20,
       maxFirstOutputRegressionPct:
         readBudgetEnvNumber("EVE_STARTUP_BENCH_MAX_FIRST_OUTPUT_REGRESSION_PCT") ?? 20,
-      maxRssRegressionPct:
-        readBudgetEnvNumber("EVE_STARTUP_BENCH_MAX_RSS_REGRESSION_PCT") ?? 20,
+      maxRssRegressionPct: readBudgetEnvNumber("EVE_STARTUP_BENCH_MAX_RSS_REGRESSION_PCT") ?? 20,
       skipBaseline: false,
       skipResponseBudgets: false,
     },

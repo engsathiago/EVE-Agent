@@ -234,10 +234,10 @@ describe("projects vitest config", () => {
     expect(normalizeConfigPath(config.test.runner)).toBe("test/non-isolated-runner.ts");
   });
 
-  it("keeps the unit-fast lane on shared workers without the reset-heavy runner", () => {
+  it("keeps the unit-fast lane on shared workers with per-file state cleanup", () => {
     const config = createUnitFastVitestConfig();
     expect(config.test.isolate).toBe(false);
-    expect(config.test.runner).toBeUndefined();
+    expect(normalizeConfigPath(config.test.runner)).toBe("test/non-isolated-runner.ts");
   });
 
   it("keeps fake-timer unit-fast files serial with the non-isolated runner", () => {

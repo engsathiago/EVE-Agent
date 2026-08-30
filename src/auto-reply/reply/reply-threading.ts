@@ -4,8 +4,8 @@ import { normalizeChatType } from "../../channels/chat-type.js";
 import { getChannelPlugin } from "../../channels/plugins/index.js";
 import type { ChannelThreadingAdapter } from "../../channels/plugins/types.core.js";
 import { normalizeAnyChannelId } from "../../channels/registry.js";
-import type { ReplyToMode } from "../../config/types.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ReplyToMode } from "../../config/types.js";
 import { DEFAULT_ACCOUNT_ID } from "../../routing/account-id.js";
 import {
   copyReplyPayloadMetadata,

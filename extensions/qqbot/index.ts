@@ -7,13 +7,10 @@ import {
 
 function registerQQBotFull(api: EVEPluginApi): void {
   if (api.registrationMode === "tool-discovery") {
-    const registerTools = loadBundledEntryExportSync<(api: EVEPluginApi) => void>(
-      import.meta.url,
-      {
-        specifier: "./tools-api.js",
-        exportName: "registerQQBotTools",
-      },
-    );
+    const registerTools = loadBundledEntryExportSync<(api: EVEPluginApi) => void>(import.meta.url, {
+      specifier: "./tools-api.js",
+      exportName: "registerQQBotTools",
+    });
     registerTools(api);
     return;
   }

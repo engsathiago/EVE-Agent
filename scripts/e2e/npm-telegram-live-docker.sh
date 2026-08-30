@@ -8,7 +8,7 @@ source "$ROOT_DIR/scripts/lib/docker-e2e-image.sh"
 
 IMAGE_NAME="$(docker_e2e_resolve_image "eve-npm-telegram-live-e2e" EVE_NPM_TELEGRAM_LIVE_E2E_IMAGE)"
 DOCKER_TARGET="${EVE_NPM_TELEGRAM_DOCKER_TARGET:-build}"
-PACKAGE_SPEC="${EVE_NPM_TELEGRAM_PACKAGE_SPEC:-eve@beta}"
+PACKAGE_SPEC="${EVE_NPM_TELEGRAM_PACKAGE_SPEC:-eve-agent@beta}"
 PACKAGE_TGZ="${EVE_NPM_TELEGRAM_PACKAGE_TGZ:-${EVE_CURRENT_PACKAGE_TGZ:-}}"
 PACKAGE_LABEL="${EVE_NPM_TELEGRAM_PACKAGE_LABEL:-}"
 RUN_ID="${EVE_NPM_TELEGRAM_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
@@ -47,10 +47,10 @@ resolve_credential_role() {
 
 validate_eve_package_spec() {
   local spec="$1"
-  if [[ "$spec" =~ ^eve@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
+  if [[ "$spec" =~ ^eve-agent@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
     return 0
   fi
-  echo "EVE_NPM_TELEGRAM_PACKAGE_SPEC must be eve@alpha, eve@beta, eve@latest, or an exact EVE release version; got: $spec" >&2
+  echo "EVE_NPM_TELEGRAM_PACKAGE_SPEC must be eve-agent@alpha, eve-agent@beta, eve-agent@latest, or an exact EVE release version; got: $spec" >&2
   exit 1
 }
 
@@ -327,17 +327,17 @@ trap 'status=$?; dump_hotpath_logs "$status"; exit "$status"' ERR
 command -v eve
 eve_e2e_run_command eve --version
 mkdir -p /app/node_modules
-eve_package_dir="/npm-global/lib/node_modules/eve"
+eve_package_dir="/npm-global/lib/node_modules/eve-agent"
 # The mounted QA harness imports eve-agent/plugin-sdk and package dependencies;
 # point those imports at the installed package without copying source plugins into the test image.
-rm -rf /app/node_modules/eve
-ln -sfnT "$eve_package_dir" /app/node_modules/eve
+rm -rf /app/node_modules/eve-agent
+ln -sfnT "$eve_package_dir" /app/node_modules/eve-agent
 rm -rf /app/dist
 ln -sfnT "$eve_package_dir/dist" /app/dist
 cp "$eve_package_dir/package.json" /app/package.json
 node scripts/e2e/lib/npm-telegram-live/prepare-package.mjs \
   /app/package.json \
-  /app/node_modules/eve/package.json
+  /app/node_modules/eve-agent/package.json
 for deps_dir in "$eve_package_dir/node_modules" /npm-global/lib/node_modules; do
   [ -d "$deps_dir" ] || continue
   for dependency_dir in "$deps_dir"/*; do
@@ -367,7 +367,7 @@ done
 
 link_installed_package_dependency() {
   local name="$1"
-  local source="/npm-global/lib/node_modules/eve/node_modules/$name"
+  local source="/npm-global/lib/node_modules/eve-agent/node_modules/$name"
   local target="/app/node_modules/$name"
   if [ ! -e "$source" ]; then
     echo "Installed package dependency is missing: $name" >&2

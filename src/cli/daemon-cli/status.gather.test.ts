@@ -89,9 +89,7 @@ const resolveGatewayBindHost = vi.fn(
 );
 const pickPrimaryTailnetIPv4 = vi.fn(() => "100.64.0.9");
 const resolveGatewayPort = vi.fn((_cfg?: unknown, _env?: unknown) => 18789);
-const resolveStateDir = vi.fn(
-  (env: NodeJS.ProcessEnv) => env.EVE_STATE_DIR ?? "/tmp/eve-cli",
-);
+const resolveStateDir = vi.fn((env: NodeJS.ProcessEnv) => env.EVE_STATE_DIR ?? "/tmp/eve-cli");
 const resolveConfigPath = vi.fn((env: NodeJS.ProcessEnv, stateDir: string) => {
   return env.EVE_CONFIG_PATH ?? `${stateDir}/eve.json`;
 });
@@ -163,8 +161,7 @@ vi.mock("../../daemon/inspect.js", () => ({
 }));
 
 vi.mock("../../daemon/launchd.js", () => ({
-  findStaleEVEUpdateLaunchdJobs: (env?: NodeJS.ProcessEnv) =>
-    findStaleEVEUpdateLaunchdJobs(env),
+  findStaleEVEUpdateLaunchdJobs: (env?: NodeJS.ProcessEnv) => findStaleEVEUpdateLaunchdJobs(env),
 }));
 
 vi.mock("../../daemon/service-audit.js", () => ({
@@ -483,9 +480,9 @@ describe("gatherDaemonStatus", () => {
       deep: false,
     });
 
-    expect(
-      serviceReadRuntime.mock.calls.some(([env]) => env?.EVE_GATEWAY_PORT === "19001"),
-    ).toBe(true);
+    expect(serviceReadRuntime.mock.calls.some(([env]) => env?.EVE_GATEWAY_PORT === "19001")).toBe(
+      true,
+    );
     expect(status.service.runtime?.status).toBe("running");
     expect((status.service.runtime as { detail?: string }).detail).toBe("19001");
   });

@@ -574,13 +574,10 @@ describe("command gating", () => {
   });
 
   it("redacts secret-shaped values from /debug set acknowledgements", async () => {
-    const params = buildParams(
-      '/debug set gateway.auth.token="EVE_DEBUG_SET_CANARY_TOKEN_65623"',
-      {
-        commands: { debug: true, text: true },
-        channels: { whatsapp: { allowFrom: ["*"] } },
-      } as EVEConfig,
-    );
+    const params = buildParams('/debug set gateway.auth.token="EVE_DEBUG_SET_CANARY_TOKEN_65623"', {
+      commands: { debug: true, text: true },
+      channels: { whatsapp: { allowFrom: ["*"] } },
+    } as EVEConfig);
     params.command.senderIsOwner = true;
 
     const result = await handleDebugCommand(params, true);

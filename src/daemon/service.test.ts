@@ -226,7 +226,7 @@ describe("startGatewayService", () => {
       readCommand: vi.fn(async () => ({
         programArguments: [
           "/private/tmp/eve-ai-install-cli-pr118/tools/node/bin/node",
-          "/tmp/eve-ai-install-cli-pr118/lib/node_modules/eve/dist/index.js",
+          "/tmp/eve-ai-install-cli-pr118/lib/node_modules/eve-agent/dist/index.js",
           "gateway",
         ],
         environment: {},

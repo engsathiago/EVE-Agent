@@ -21,9 +21,7 @@ type OllamaProviderConfigOverride = Partial<{
   apiKey: string;
   baseUrl: string;
   baseURL: string;
-  models: NonNullable<
-    NonNullable<NonNullable<EVEConfig["models"]>["providers"]>[string]
-  >["models"];
+  models: NonNullable<NonNullable<NonNullable<EVEConfig["models"]>["providers"]>[string]>["models"];
 }>;
 
 function createOllamaConfig(provider: OllamaProviderConfigOverride = {}): EVEConfig {

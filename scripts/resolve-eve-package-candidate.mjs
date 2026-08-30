@@ -60,7 +60,7 @@ for (const signal of Object.keys(SIGNAL_EXIT_CODES)) {
   });
 }
 export const EVE_PACKAGE_SPEC_RE =
-  /^eve@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$/u;
+  /^eve-agent@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$/u;
 
 function usage() {
   return `Usage: node scripts/resolve-eve-package-candidate.mjs --source <ref|npm|url|trusted-url|artifact> --output-dir <dir> [options]
@@ -146,14 +146,12 @@ function validateOutputName(value) {
 function resolvePackedEVETarballFilename(value) {
   const filename = typeof value === "string" ? value.trim() : "";
   if (
-    !/^eve-[A-Za-z0-9._-]+\.tgz$/u.test(filename) ||
+    !/^eve-agent-[A-Za-z0-9._-]+\.tgz$/u.test(filename) ||
     filename.includes("\0") ||
     filename !== path.basename(filename) ||
     filename !== path.win32.basename(filename)
   ) {
-    throw new Error(
-      `npm pack reported unsafe EVE tarball filename: ${JSON.stringify(filename)}`,
-    );
+    throw new Error(`npm pack reported unsafe EVE tarball filename: ${JSON.stringify(filename)}`);
   }
   return filename;
 }
@@ -161,7 +159,7 @@ function resolvePackedEVETarballFilename(value) {
 export function validateEVEPackageSpec(spec) {
   if (!EVE_PACKAGE_SPEC_RE.test(spec)) {
     throw new Error(
-      `package_spec must be eve@alpha, eve@beta, eve@latest, or an exact EVE release version; got: ${spec}`,
+      `package_spec must be eve-agent@alpha, eve-agent@beta, eve-agent@latest, or an exact EVE release version; got: ${spec}`,
     );
   }
 }
@@ -597,7 +595,7 @@ async function moveNewestPackedTarball(outputDir, packOutput, outputName) {
       const trimmed = line.trim();
       if (
         trimmed.endsWith(".tgz") &&
-        (trimmed.startsWith("eve-") ||
+        (trimmed.startsWith("eve-agent-") ||
           trimmed.includes(":") ||
           trimmed.includes("/") ||
           trimmed.includes("\\"))
@@ -1494,8 +1492,8 @@ async function resolveCandidate(options) {
     version: pkg.version,
   };
 
-  if (pkg.name !== "eve") {
-    throw new Error(`package candidate must be named "eve"; got: ${pkg.name || "<missing>"}`);
+  if (pkg.name !== "eve-agent") {
+    throw new Error(`package candidate must be named "eve-agent"; got: ${pkg.name || "<missing>"}`);
   }
   if (!pkg.version) {
     throw new Error("package candidate package.json has no version");

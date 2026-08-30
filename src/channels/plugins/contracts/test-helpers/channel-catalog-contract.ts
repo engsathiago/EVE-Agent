@@ -71,7 +71,7 @@ export function describeBundledMetadataOnlyChannelCatalogContract(params: {
       fs.mkdirSync(bundledDir, { recursive: true });
       fs.writeFileSync(
         path.join(workspaceDir, "package.json"),
-        JSON.stringify({ name: "eve" }),
+        JSON.stringify({ name: "eve-agent" }),
         "utf8",
       );
       fs.writeFileSync(
@@ -119,9 +119,7 @@ export function describeOfficialFallbackChannelCatalogContract(params: {
 }) {
   describe(`${params.channelId} official fallback channel catalog contract`, () => {
     it("includes shipped official channel catalog entries when bundled metadata is omitted", () => {
-      const dir = fs.mkdtempSync(
-        path.join(resolvePreferredEVETmpDir(), "eve-official-catalog-"),
-      );
+      const dir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-official-catalog-"));
       const catalogPath = path.join(dir, "channel-catalog.json");
       fs.writeFileSync(
         catalogPath,
@@ -152,9 +150,7 @@ export function describeOfficialFallbackChannelCatalogContract(params: {
     });
 
     it("lets external catalogs override shipped fallback channel metadata", () => {
-      const dir = fs.mkdtempSync(
-        path.join(resolvePreferredEVETmpDir(), "eve-fallback-catalog-"),
-      );
+      const dir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-fallback-catalog-"));
       const bundledDir = path.join(dir, "dist", "extensions", params.pluginId);
       const officialCatalogPath = path.join(dir, "channel-catalog.json");
       const externalCatalogPath = path.join(dir, "catalog.json");
@@ -229,9 +225,7 @@ export function describeOfficialFallbackChannelCatalogContract(params: {
     });
 
     it("surfaces package-name drift in external channel catalog install metadata", () => {
-      const dir = fs.mkdtempSync(
-        path.join(resolvePreferredEVETmpDir(), "eve-drifted-catalog-"),
-      );
+      const dir = fs.mkdtempSync(path.join(resolvePreferredEVETmpDir(), "eve-drifted-catalog-"));
       const catalogPath = path.join(dir, "catalog.json");
       fs.writeFileSync(
         catalogPath,

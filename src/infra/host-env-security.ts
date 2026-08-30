@@ -1,7 +1,7 @@
 // Filters host environment variables before passing them to runtimes.
 import { sortUniqueStrings } from "@eve/normalization-core/string-normalization";
-import { HOST_ENV_SECURITY_POLICY } from "./host-env-security-policy.js";
 import { markEVEExecEnv } from "./eve-exec-env.js";
+import { HOST_ENV_SECURITY_POLICY } from "./host-env-security-policy.js";
 
 const PORTABLE_ENV_VAR_KEY = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const WINDOWS_COMPAT_OVERRIDE_ENV_VAR_KEY = /^[A-Za-z_][A-Za-z0-9_()]*$/;

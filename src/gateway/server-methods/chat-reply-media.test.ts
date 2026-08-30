@@ -6,10 +6,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { EVEConfig } from "../../config/types.eve.js";
 import { getAgentScopedMediaLocalRoots } from "../../media/local-roots.js";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../../test-utils/eve-test-state.js";
 import { createManagedOutgoingImageBlocks } from "../managed-image-attachments.js";
 import { normalizeWebchatReplyMediaPathsForDisplay } from "./chat-reply-media.js";
 
@@ -99,10 +96,7 @@ describe("normalizeWebchatReplyMediaPathsForDisplay", () => {
     return `data:image/png;base64,${PNG_BYTES.toString("base64")}`;
   }
 
-  async function normalizeReplyMedia(params: {
-    cfg: EVEConfig;
-    payloads: ReplyMediaPayloads;
-  }) {
+  async function normalizeReplyMedia(params: { cfg: EVEConfig; payloads: ReplyMediaPayloads }) {
     const [payload] = await normalizeWebchatReplyMediaPathsForDisplay({
       cfg: params.cfg,
       sessionKey: TEST_SESSION_KEY,

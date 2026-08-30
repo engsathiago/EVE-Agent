@@ -5,10 +5,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../../infra/kysely-sync.js";
 import type { DB as EVEStateKyselyDatabase } from "../../state/eve-state-db.generated.js";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "../../state/eve-state-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "../../state/eve-state-db.js";
 import { createChannelIngressQueue } from "./ingress-queue.js";
 
 type ChannelIngressTestDatabase = Pick<EVEStateKyselyDatabase, "channel_ingress_events">;

@@ -1401,9 +1401,7 @@ describe("bundled plugin install/uninstall probe", () => {
       EVE_BUNDLED_PLUGIN_LIST_MAX_BUFFER_BYTES: "64bytes",
     });
     expect(maxBuffer.status).toBe(1);
-    expect(maxBuffer.stderr).toContain(
-      "invalid EVE_BUNDLED_PLUGIN_LIST_MAX_BUFFER_BYTES: 64bytes",
-    );
+    expect(maxBuffer.stderr).toContain("invalid EVE_BUNDLED_PLUGIN_LIST_MAX_BUFFER_BYTES: 64bytes");
   });
 
   it("rejects loose bundled plugin sweep shard env values", () => {

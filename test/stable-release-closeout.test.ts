@@ -38,9 +38,7 @@ describe("stable release closeout", () => {
   it("parses stable and correction tags", () => {
     expect(parseStableReleaseTag("v2026.6.8")).toBe("2026.6.8");
     expect(parseStableReleaseTag("v2026.6.8-2")).toBe("2026.6.8");
-    expect(() => parseStableReleaseTag("v2026.6.8-0")).toThrow(
-      "expected a stable release tag",
-    );
+    expect(() => parseStableReleaseTag("v2026.6.8-0")).toThrow("expected a stable release tag");
     expect(() => parseStableReleaseTag("v2026.6.8-beta.1")).toThrow(
       "expected a stable release tag",
     );
@@ -114,10 +112,10 @@ describe("stable release closeout", () => {
       ...validCloseoutParams,
       release: {
         ...release,
-        assets: [{ name: "eve-2026.6.8-dependency-evidence.zip" }],
+        assets: [{ name: "eve-agent-2026.6.8-dependency-evidence.zip" }],
       },
       mainAppcast:
-        "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8/eve-2026.6.8-dependency-evidence.zip\n",
+        "https://github.com/engsathiago/eve-agent/releases/download/v2026.6.8/eve-agent-2026.6.8-dependency-evidence.zip\n",
       nowMs: Date.parse("2026-06-17T00:00:00Z"),
     });
 

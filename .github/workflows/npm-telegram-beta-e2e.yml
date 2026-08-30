@@ -6,7 +6,7 @@ on:
       package_spec:
         description: Published EVE package spec to test when no artifact is supplied
         required: true
-        default: eve@beta
+        default: eve-agent@beta
         type: string
       package_label:
         description: Optional display label for an artifact-backed package candidate
@@ -161,8 +161,8 @@ jobs:
           set -euo pipefail
 
           if [[ -z "${PACKAGE_ARTIFACT_NAME// }" ]]; then
-            if [[ ! "${PACKAGE_SPEC}" =~ ^eve@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
-              echo "package_spec must be eve@alpha, eve@beta, eve@latest, or an exact EVE release version; got: ${PACKAGE_SPEC}" >&2
+            if [[ ! "${PACKAGE_SPEC}" =~ ^eve-agent@(alpha|beta|latest|[0-9]{4}\.[1-9][0-9]*\.[1-9][0-9]*(-[1-9][0-9]*|-(alpha|beta)\.[1-9][0-9]*)?)$ ]]; then
+              echo "package_spec must be eve-agent@alpha, eve-agent@beta, eve-agent@latest, or an exact EVE release version; got: ${PACKAGE_SPEC}" >&2
               exit 1
             fi
           fi

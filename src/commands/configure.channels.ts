@@ -4,8 +4,8 @@ import { sanitizeTerminalText } from "../../packages/terminal-core/src/safe-text
 import { listChatChannels } from "../channels/chat-meta.js";
 import { formatCliCommand } from "../cli/command-format.js";
 import { CONFIG_PATH } from "../config/config.js";
-import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { shortenHomePath } from "../utils.js";
 import { confirm, select } from "./configure.shared.js";
@@ -29,9 +29,7 @@ type ChannelRemovalDoneOption = Extract<ChannelRemovalOption, { value: { kind: "
 const RESERVED_CHANNEL_CONFIG_KEYS = new Set(["defaults", "modelByChannel"]);
 const DONE_VALUE: Extract<ChannelRemovalSelectValue, { kind: "done" }> = { kind: "done" };
 
-function listConfiguredChannelRemovalChoices(
-  cfg: EVEConfig,
-): ConfiguredChannelRemovalChoice[] {
+function listConfiguredChannelRemovalChoices(cfg: EVEConfig): ConfiguredChannelRemovalChoice[] {
   const channels = cfg.channels;
   if (!channels) {
     return [];

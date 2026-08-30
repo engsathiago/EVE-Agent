@@ -273,7 +273,7 @@ function writeBundledPlugin(params: {
 
 function makeEVEDevSourceRoot() {
   const root = makeTempDir();
-  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve" }), "utf-8");
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }), "utf-8");
   mkdirSafe(path.join(root, "src"));
   mkdirSafe(path.join(root, "extensions"));
   return root;
@@ -685,10 +685,7 @@ function createEscapingEntryFixture(params: { id: string; sourceBody: string }) 
   return { pluginDir, outsideEntry, linkedEntry };
 }
 
-function resolveLoadedPluginSource(
-  registry: ReturnType<typeof loadEVEPlugins>,
-  pluginId: string,
-) {
+function resolveLoadedPluginSource(registry: ReturnType<typeof loadEVEPlugins>, pluginId: string) {
   return fs.realpathSync(registry.plugins.find((entry) => entry.id === pluginId)?.source ?? "");
 }
 
@@ -1427,7 +1424,7 @@ describe("loadEVEPlugins", () => {
   it("refreshes bundled plugin-sdk aliases without deleting the shared alias directory", () => {
     const distRoot = makeTempDir();
     const pluginSdkDir = path.join(distRoot, "plugin-sdk");
-    const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve", "plugin-sdk");
+    const aliasDir = path.join(distRoot, "extensions", "node_modules", "eve-agent", "plugin-sdk");
     mkdirSafe(pluginSdkDir);
     mkdirSafe(aliasDir);
     fs.writeFileSync(path.join(pluginSdkDir, "index.js"), "export const value = 1;\n", "utf8");
@@ -1446,7 +1443,7 @@ describe("loadEVEPlugins", () => {
     const packageRoot = makeTempDir();
     const distRoot = path.join(packageRoot, "dist");
     const pluginSdkDir = path.join(distRoot, "plugin-sdk");
-    const aliasRoot = path.join(distRoot, "extensions", "node_modules", "eve");
+    const aliasRoot = path.join(distRoot, "extensions", "node_modules", "eve-agent");
     const aliasDir = path.join(aliasRoot, "plugin-sdk");
     mkdirSafe(pluginSdkDir);
     mkdirSafe(aliasDir);
@@ -1454,7 +1451,7 @@ describe("loadEVEPlugins", () => {
       path.join(packageRoot, "package.json"),
       JSON.stringify(
         {
-          name: "eve",
+          name: "eve-agent",
           version: "2026.4.22",
           type: "module",
           exports: {
@@ -1502,13 +1499,13 @@ describe("loadEVEPlugins", () => {
     const packageRoot = makeTempDir();
     const distRoot = path.join(packageRoot, "dist");
     const pluginSdkDir = path.join(distRoot, "plugin-sdk");
-    const aliasRoot = path.join(distRoot, "extensions", "node_modules", "eve");
+    const aliasRoot = path.join(distRoot, "extensions", "node_modules", "eve-agent");
     const aliasDir = path.join(aliasRoot, "plugin-sdk");
     mkdirSafe(pluginSdkDir);
     mkdirSafe(aliasDir);
     fs.writeFileSync(
       path.join(packageRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.22", type: "module" }, null, 2),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.22", type: "module" }, null, 2),
       "utf8",
     );
     fs.writeFileSync(path.join(pluginSdkDir, "index.js"), "export const root = true;\n", "utf8");
@@ -1581,7 +1578,7 @@ describe("loadEVEPlugins", () => {
     fs.mkdirSync(pluginRoot, { recursive: true });
     fs.writeFileSync(
       path.join(packageRoot, "package.json"),
-      JSON.stringify({ name: "eve", version: "2026.4.22", type: "module" }),
+      JSON.stringify({ name: "eve-agent", version: "2026.4.22", type: "module" }),
       "utf-8",
     );
     fs.writeFileSync(
@@ -2444,10 +2441,8 @@ module.exports = { id: "throws-after-import", register() {} };`,
         const marker = "__eve_loader_reentry_error";
         const reenterFnMarker = "__eve_loader_reentry_fn";
         Reflect.deleteProperty(globalThis, marker);
-        Reflect.set(
-          globalThis,
-          reenterFnMarker,
-          (options: Parameters<typeof loadEVEPlugins>[0]) => loadEVEPlugins(options),
+        Reflect.set(globalThis, reenterFnMarker, (options: Parameters<typeof loadEVEPlugins>[0]) =>
+          loadEVEPlugins(options),
         );
         const pluginDir = makeTempDir();
         const pluginFile = path.join(pluginDir, "reentrant-snapshot.cjs");
@@ -4652,9 +4647,7 @@ module.exports = { id: "throws-after-import", register() {} };`,
     });
 
     expect(
-      fs.realpathSync(
-        registry.plugins.find((entry) => entry.id === "eve-home-demo")?.source ?? "",
-      ),
+      fs.realpathSync(registry.plugins.find((entry) => entry.id === "eve-home-demo")?.source ?? ""),
     ).toBe(fs.realpathSync(plugin.file));
   });
 
@@ -5186,8 +5179,7 @@ module.exports = { id: "throws-after-import", register() {} };`,
         buildBody: (ownerId: string) => `module.exports = { id: "${ownerId}", register(api) {
   api.registerCli(() => {}, { commands: ["shared-cli"] });
 } };`,
-        selectCount: (registry: ReturnType<typeof loadEVEPlugins>) =>
-          registry.cliRegistrars.length,
+        selectCount: (registry: ReturnType<typeof loadEVEPlugins>) => registry.cliRegistrars.length,
         duplicateMessage: "cli command already registered: shared-cli (cli-owner-a)",
         assertPrimaryOwner: (registry: ReturnType<typeof loadEVEPlugins>) => {
           expect(registry.cliRegistrars[0]?.pluginId).toBe("cli-owner-a");
@@ -9224,19 +9216,17 @@ module.exports = {
     });
 
     try {
-      const registry = withEnv(
-        { EVE_BUNDLED_PLUGINS_DIR: "/nonexistent/bundled/plugins" },
-        () =>
-          loadEVEPlugins({
-            cache: false,
-            workspaceDir: plugin.dir,
-            config: {
-              plugins: {
-                load: { paths: [plugin.file] },
-                allow: ["legacy-root-diagnostic-listener"],
-              },
+      const registry = withEnv({ EVE_BUNDLED_PLUGINS_DIR: "/nonexistent/bundled/plugins" }, () =>
+        loadEVEPlugins({
+          cache: false,
+          workspaceDir: plugin.dir,
+          config: {
+            plugins: {
+              load: { paths: [plugin.file] },
+              allow: ["legacy-root-diagnostic-listener"],
             },
-          }),
+          },
+        }),
       );
       const record = registry.plugins.find(
         (entry) => entry.id === "legacy-root-diagnostic-listener",

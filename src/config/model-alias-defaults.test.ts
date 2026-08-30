@@ -9,10 +9,7 @@ import { validateConfigObjectWithPlugins } from "./validation.js";
 
 describe("applyModelDefaults", () => {
   beforeEach(() => {
-    vi.stubEnv(
-      "EVE_BUNDLED_PLUGINS_DIR",
-      path.resolve(import.meta.dirname, "../../extensions"),
-    );
+    vi.stubEnv("EVE_BUNDLED_PLUGINS_DIR", path.resolve(import.meta.dirname, "../../extensions"));
   });
 
   afterEach(() => {

@@ -68,7 +68,7 @@ eve update --tag beta
 eve update --channel dev
 
 # Install a specific npm package spec
-eve update --tag eve@2026.4.1-beta.1
+eve update --tag eve-agent@2026.4.1-beta.1
 
 # Install from GitHub main once without persisting the channel
 eve update --tag main

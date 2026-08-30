@@ -128,9 +128,7 @@ describe("security-sensitive guard workflow", () => {
     expect(detectSteps.at(-1)?.env?.EVE_SECURITY_SENSITIVE_GUARD_MODE).toBe("detect");
     expect(finalSteps.at(-1)?.env?.EVE_SECURITY_SENSITIVE_GUARD_MODE).toBe("enforce");
     expect(finalSteps.at(-1)?.env?.EVE_SECURITY_TEAM_SLUG).toBe("eve-secops");
-    expect(finalSteps.at(-1)?.env?.EVE_SECURITY_APPROVERS).toBe(
-      "vincentkoc,steipete,joshavant",
-    );
+    expect(finalSteps.at(-1)?.env?.EVE_SECURITY_APPROVERS).toBe("vincentkoc,steipete,joshavant");
   });
 
   it("uses a dedicated checked-in script and detects the intended file surfaces", () => {
@@ -152,18 +150,14 @@ describe("security-sensitive guard workflow", () => {
 
   it("requires secops review for future workflow or guard changes", () => {
     const codeowners = readFileSync(CODEOWNERS, "utf8");
-    expect(codeowners).toContain(
-      "/.github/workflows/security-sensitive-guard.yml @eve/eve-secops",
-    );
+    expect(codeowners).toContain("/.github/workflows/security-sensitive-guard.yml @eve/eve-secops");
     expect(codeowners).toContain(
       "/test/scripts/security-sensitive-guard-workflow.test.ts @eve/eve-secops",
     );
     expect(codeowners).toContain(
       "/test/scripts/security-sensitive-guard-script.test.ts @eve/eve-secops",
     );
-    expect(codeowners).toContain(
-      "/scripts/github/security-sensitive-guard.mjs @eve/eve-secops",
-    );
+    expect(codeowners).toContain("/scripts/github/security-sensitive-guard.mjs @eve/eve-secops");
     expect(codeowners).toContain("/.gitignore @eve/eve-secops");
   });
 });

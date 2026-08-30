@@ -199,9 +199,9 @@ describe("test-install-sh-docker", () => {
     expect(runDefaultSmokePlatform({ CI: "true" }, "aarch64")).toBe("linux/arm64");
     expect(runDefaultSmokePlatform({ GITHUB_ACTIONS: "true" }, "x86_64")).toBe("linux/amd64");
     expect(runDefaultSmokePlatform({}, "arm64")).toBe("linux/arm64");
-    expect(
-      runDefaultSmokePlatform({ EVE_INSTALL_SMOKE_PLATFORM: "linux/s390x" }, "x86_64"),
-    ).toBe("linux/s390x");
+    expect(runDefaultSmokePlatform({ EVE_INSTALL_SMOKE_PLATFORM: "linux/s390x" }, "x86_64")).toBe(
+      "linux/s390x",
+    );
   });
 
   it("supports npm update package specs without a separate expected-version env", () => {
@@ -227,9 +227,7 @@ describe("test-install-sh-docker", () => {
     );
     expect(script).toContain('quiet_npm pack "${PACKAGE_NAME}@${UPDATE_BASELINE_VERSION}"');
     expect(script).toContain('UPDATE_BASELINE_VERSION="$(');
-    expect(runner).toContain(
-      'UPDATE_BASELINE_VERSION="${EVE_INSTALL_UPDATE_BASELINE:-latest}"',
-    );
+    expect(runner).toContain('UPDATE_BASELINE_VERSION="${EVE_INSTALL_UPDATE_BASELINE:-latest}"');
     expect(runner).toContain("resolve_update_baseline_version");
     expect(runner).toContain('quiet_npm view "${PACKAGE_NAME}@${UPDATE_BASELINE_VERSION}" version');
     expect(workflow).toContain(
@@ -342,9 +340,7 @@ describe("test-install-sh-docker", () => {
     expect(script).toContain('source "$REPO_PATH/scripts/lib/host-timeout.sh"');
     expect(script).toContain('PODMAN_PULL_TIMEOUT="${EVE_PODMAN_SETUP_PULL_TIMEOUT:-600s}"');
     expect(script).toContain("run_podman_pull()");
-    expect(script).toContain(
-      'eve_host_timeout_cmd "$PODMAN_PULL_TIMEOUT" podman pull "$image"',
-    );
+    expect(script).toContain('eve_host_timeout_cmd "$PODMAN_PULL_TIMEOUT" podman pull "$image"');
     expect(script).toContain('run_podman_pull "$EVE_IMAGE"');
     expect(script).not.toContain('podman pull "$EVE_IMAGE"');
   });
@@ -352,9 +348,7 @@ describe("test-install-sh-docker", () => {
   it("bounds Podman setup image builds", () => {
     const script = readFileSync(PODMAN_SETUP_PATH, "utf8");
 
-    expect(script).toContain(
-      'PODMAN_BUILD_TIMEOUT="${EVE_PODMAN_SETUP_BUILD_TIMEOUT:-1800s}"',
-    );
+    expect(script).toContain('PODMAN_BUILD_TIMEOUT="${EVE_PODMAN_SETUP_BUILD_TIMEOUT:-1800s}"');
     expect(script).toContain("run_podman_build()");
     expect(script).toContain('eve_host_timeout_cmd "$PODMAN_BUILD_TIMEOUT" podman build "$@"');
     expect(script).toContain('run_podman_build -t "$EVE_IMAGE"');
@@ -383,13 +377,9 @@ describe("test-install-sh-docker", () => {
     expect(dockerfile).toContain(
       "python3 -m pip install --no-cache-dir --break-system-packages $EVE_IMAGE_PIP_PACKAGES",
     );
-    expect(dockerSetup).toContain(
-      'export EVE_IMAGE_PIP_PACKAGES="${EVE_IMAGE_PIP_PACKAGES:-}"',
-    );
+    expect(dockerSetup).toContain('export EVE_IMAGE_PIP_PACKAGES="${EVE_IMAGE_PIP_PACKAGES:-}"');
     expect(dockerSetup).toContain("EVE_IMAGE_PIP_PACKAGES \\");
-    expect(dockerSetup).toContain(
-      '--build-arg "EVE_IMAGE_PIP_PACKAGES=${EVE_IMAGE_PIP_PACKAGES}"',
-    );
+    expect(dockerSetup).toContain('--build-arg "EVE_IMAGE_PIP_PACKAGES=${EVE_IMAGE_PIP_PACKAGES}"');
     expect(dockerSetup).not.toContain("EVE_DOCKER_PIP_PACKAGES");
     expect(podmanSetup).toContain('EVE_IMAGE_PIP_PACKAGES="${EVE_IMAGE_PIP_PACKAGES:-}"');
     expect(podmanSetup).toContain(
@@ -445,9 +435,9 @@ describe("test-install-sh-docker", () => {
   });
 
   it("rejects path-like npm pack tarball filenames in update smoke metadata", () => {
-    expect(runReadPackTarballFilename("eve-2026.6.17.tgz")).toMatchObject({
+    expect(runReadPackTarballFilename("eve-agent-2026.6.17.tgz")).toMatchObject({
       status: 0,
-      stdout: "eve-2026.6.17.tgz",
+      stdout: "eve-agent-2026.6.17.tgz",
     });
 
     const unsafeFilenames = [
@@ -532,9 +522,7 @@ describe("install-sh E2E runner", () => {
     expect(wrapper).toContain(
       '-e EVE_INSTALL_E2E_AGENT_TURN_TIMEOUT_SECONDS="$AGENT_TURN_TIMEOUT_SECONDS"',
     );
-    expect(wrapper).toContain(
-      '-e EVE_INSTALL_E2E_AGENT_TURNS_PARALLEL="$AGENT_TURNS_PARALLEL"',
-    );
+    expect(wrapper).toContain('-e EVE_INSTALL_E2E_AGENT_TURNS_PARALLEL="$AGENT_TURNS_PARALLEL"');
     expect(wrapper).toContain('-e EVE_INSTALL_E2E_AGENT_TOOL_SMOKE="$AGENT_TOOL_SMOKE"');
     expect(wrapper).toContain('-e EVE_INSTALL_E2E_SESSION_SCAN_BYTES="$SESSION_SCAN_BYTES"');
     expect(wrapper).toContain('-e EVE_INSTALL_E2E_SESSION_LINE_BYTES="$SESSION_LINE_BYTES"');
@@ -763,10 +751,10 @@ describe("bun global install smoke", () => {
   });
 
   it("rejects path-like npm pack tarball filenames in Bun smoke metadata", () => {
-    const safeResult = runResolvePackTarballPath("eve-2026.6.17.tgz");
+    const safeResult = runResolvePackTarballPath("eve-agent-2026.6.17.tgz");
 
     expect(safeResult.status).toBe(0);
-    expect(safeResult.stdout).toMatch(/\/eve-2026\.6\.17\.tgz$/u);
+    expect(safeResult.stdout).toMatch(/\/eve-agent-2026\.6\.17\.tgz$/u);
 
     const unsafeFilenames = [
       "../eve.tgz",

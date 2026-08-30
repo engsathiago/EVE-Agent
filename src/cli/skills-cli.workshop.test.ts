@@ -3,10 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  createEVETestState,
-  type EVETestState,
-} from "../test-utils/eve-test-state.js";
+import { createEVETestState, type EVETestState } from "../test-utils/eve-test-state.js";
 import { createTrackedTempDirs } from "../test-utils/tracked-temp-dirs.js";
 import { registerSkillsCli } from "./skills-cli.js";
 
@@ -178,6 +175,14 @@ describe("skills workshop cli", () => {
         "utf8",
       ),
     ).resolves.toContain("Use current conditions");
+
+    await runCommand(["skills", "workshop", "rollback", proposalId!]);
+    expect(mocks.runtimeStdout.at(-1)).toContain(`Rolled back ${proposalId}`);
+    await expect(
+      fs.access(path.join(mocks.workspaceDir, "skills", "paris-weather", "SKILL.md")),
+    ).rejects.toThrow();
+    await runCommand(["skills", "workshop", "list"]);
+    expect(mocks.runtimeStdout.at(-1)).toContain(`${proposalId}  rolled_back  create`);
   });
 
   it("scopes list and inspect to the selected workspace", async () => {

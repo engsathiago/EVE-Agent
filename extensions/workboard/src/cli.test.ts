@@ -106,6 +106,27 @@ describe("registerWorkboardCli", () => {
     expect(showOutput).toContain("[redacted]");
   });
 
+  it("creates cards with automatic or explicit toolsets", async () => {
+    const store = new WorkboardStore(createMemoryStore());
+    const program = createProgram(store);
+
+    await captureStdout(async () => {
+      await program.parseAsync(
+        ["workboard", "create", "Research", "the", "API", "--toolset", "auto"],
+        { from: "user" },
+      );
+    });
+
+    await expect(store.list()).resolves.toEqual([
+      expect.objectContaining({
+        title: "Research the API",
+        metadata: expect.objectContaining({
+          automation: expect.objectContaining({ toolsets: ["auto"] }),
+        }),
+      }),
+    ]);
+  });
+
   it("does not fall back to local dispatch for explicit gateway targets", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Remote target", status: "ready" });

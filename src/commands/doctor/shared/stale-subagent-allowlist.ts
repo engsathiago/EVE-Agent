@@ -85,9 +85,7 @@ function collectStaleAllowlistEntries(params: {
 }
 
 /** Find subagent allowlist entries not backed by configured agent or ACP targets. */
-export function scanStaleSubagentAllowlistReferences(
-  cfg: EVEConfig,
-): StaleSubagentAllowlistHit[] {
+export function scanStaleSubagentAllowlistReferences(cfg: EVEConfig): StaleSubagentAllowlistHit[] {
   const configuredTargetIds = collectConfiguredSubagentTargetIds(cfg);
   const hits: StaleSubagentAllowlistHit[] = [];
   hits.push(

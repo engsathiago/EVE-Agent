@@ -1,6 +1,7 @@
 // Onboard channels e2e tests cover setup wizard adapters, plugin install hooks, and channel picker behavior.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChannelPluginCatalogEntry } from "../channels/plugins/catalog.js";
+import { getChannelSetupPlugin } from "../channels/plugins/setup-registry.js";
 import {
   ensureChannelSetupPluginInstalled,
   loadChannelSetupPluginRegistrySnapshotForChannel,
@@ -8,7 +9,6 @@ import {
 import { resolveChannelSetupWizardAdapterForPlugin } from "../commands/channel-setup/registry.js";
 import type { ChannelSetupWizardAdapter } from "../commands/channel-setup/types.js";
 import type { EVEConfig } from "../config/config.js";
-import { getChannelSetupPlugin } from "../channels/plugins/setup-registry.js";
 import { createEmptyPluginRegistry } from "../plugins/registry.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
 import { createChannelTestPluginBase, createTestRegistry } from "../test-utils/channel-plugins.js";
@@ -179,13 +179,7 @@ function setMinimalOnboardingRegistryForTests(): void {
             capabilities: { chatTypes: ["direct", "group"] },
           }),
           setup: {
-            applyAccountConfig: ({
-              cfg,
-              input,
-            }: {
-              cfg: EVEConfig;
-              input: { token?: string };
-            }) =>
+            applyAccountConfig: ({ cfg, input }: { cfg: EVEConfig; input: { token?: string } }) =>
               ({
                 ...cfg,
                 channels: {
@@ -552,13 +546,7 @@ vi.mock("../channels/plugins/bundled.js", () => ({
             resolveAccount: () => ({}),
           },
           setup: {
-            applyAccountConfig: ({
-              cfg,
-              input,
-            }: {
-              cfg: EVEConfig;
-              input: { token?: string };
-            }) =>
+            applyAccountConfig: ({ cfg, input }: { cfg: EVEConfig; input: { token?: string } }) =>
               ({
                 ...cfg,
                 channels: {
@@ -958,15 +946,7 @@ describe("setupChannels", () => {
   it("uses scoped plugin accounts when disabling a configured external channel", async () => {
     setActivePluginRegistry(createEmptyPluginRegistry());
     const setAccountEnabled = vi.fn(
-      ({
-        cfg,
-        accountId,
-        enabled,
-      }: {
-        cfg: EVEConfig;
-        accountId: string;
-        enabled: boolean;
-      }) => ({
+      ({ cfg, accountId, enabled }: { cfg: EVEConfig; accountId: string; enabled: boolean }) => ({
         ...cfg,
         channels: {
           ...cfg.channels,

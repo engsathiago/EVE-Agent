@@ -223,10 +223,7 @@ export function resolveFirecrawlMaxAgeMs(cfg?: EVEConfig, override?: number): nu
   return DEFAULT_FIRECRAWL_MAX_AGE_MS;
 }
 
-export function resolveFirecrawlScrapeTimeoutSeconds(
-  cfg?: EVEConfig,
-  override?: number,
-): number {
+export function resolveFirecrawlScrapeTimeoutSeconds(cfg?: EVEConfig, override?: number): number {
   const fetch = resolveFirecrawlFetchConfig(cfg);
   return resolvePositiveTimeoutSeconds(
     override,

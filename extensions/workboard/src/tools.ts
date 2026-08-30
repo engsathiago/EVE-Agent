@@ -267,7 +267,7 @@ export function createWorkboardTools(params: {
       name: "workboard_create",
       label: "Workboard Create",
       description:
-        "Create a Workboard card, optionally with parent dependencies, tenant, skills, workspace, and idempotency key.",
+        "Create a Workboard card, optionally with parent dependencies, tenant, skills, toolsets, workspace, and idempotency key.",
       parameters: Type.Object(
         {
           title: Type.String({ description: "Card title." }),
@@ -287,6 +287,9 @@ export function createWorkboardTools(params: {
           ),
           idempotencyKey: Type.Optional(Type.String({ description: "Idempotent create key." })),
           skills: Type.Optional(Type.Array(Type.String(), { description: "Suggested skills." })),
+          toolsets: Type.Optional(
+            Type.Array(Type.String(), { description: "Suggested capability toolsets." }),
+          ),
           workspace: Type.Optional(
             Type.Object(
               {
@@ -745,6 +748,9 @@ export function createWorkboardTools(params: {
           boardId: Type.Optional(Type.String({ description: "Board id." })),
           tenant: Type.Optional(Type.String({ description: "Tenant or routing namespace." })),
           skills: Type.Optional(Type.Array(Type.String(), { description: "Suggested skills." })),
+          toolsets: Type.Optional(
+            Type.Array(Type.String(), { description: "Suggested capability toolsets." }),
+          ),
           workspace: Type.Optional(
             Type.Object(
               {
@@ -799,6 +805,7 @@ export function createWorkboardTools(params: {
                 boardId: Type.Optional(Type.String()),
                 tenant: Type.Optional(Type.String()),
                 skills: Type.Optional(Type.Array(Type.String())),
+                toolsets: Type.Optional(Type.Array(Type.String())),
                 workspace: Type.Optional(
                   Type.Object(
                     {

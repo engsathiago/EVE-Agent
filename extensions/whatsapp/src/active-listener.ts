@@ -6,10 +6,7 @@ import type { ActiveWebListener } from "./inbound/types.js";
 
 export type { ActiveWebListener, ActiveWebSendOptions } from "./inbound/types.js";
 
-export function resolveWebAccountId(params: {
-  cfg: EVEConfig;
-  accountId?: string | null;
-}): string {
+export function resolveWebAccountId(params: { cfg: EVEConfig; accountId?: string | null }): string {
   return (params.accountId ?? "").trim() || resolveDefaultWhatsAppAccountId(params.cfg);
 }
 

@@ -570,9 +570,7 @@ describe("runCliAgent spawn path", () => {
     const input = mockCallArg(supervisorSpawnMock) as { env?: Record<string, string> };
     expect(input.env?.STATIC_BACKEND_FLAG).toBe("set");
     expect(input.env?.GEMINI_CLI_HOME).toBe("/tmp/eve-gemini-profile-home");
-    expect(input.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe(
-      "/tmp/eve-gemini-system-settings.json",
-    );
+    expect(input.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe("/tmp/eve-gemini-system-settings.json");
   });
 
   it("passes EVE skills to Claude as a session plugin", async () => {
@@ -3683,9 +3681,7 @@ ${JSON.stringify({
   });
 
   it("loads workspace bootstrap files into the Claude CLI system prompt", async () => {
-    const workspaceDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-cli-bootstrap-context-"),
-    );
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "eve-cli-bootstrap-context-"));
 
     await fs.writeFile(
       path.join(workspaceDir, "AGENTS.md"),

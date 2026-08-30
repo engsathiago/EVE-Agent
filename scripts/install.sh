@@ -548,7 +548,7 @@ cleanup_npm_eve_paths() {
     if [[ -z "$npm_root" || "$npm_root" != *node_modules* ]]; then
         return 1
     fi
-    rm -rf "$npm_root"/.eve-* "$npm_root"/eve 2>/dev/null || true
+    rm -rf "$npm_root"/.eve-* "$npm_root"/eve-agent "$npm_root"/eve 2>/dev/null || true
 }
 
 extract_eve_conflict_path() {
@@ -584,9 +584,9 @@ cleanup_eve_bin_conflict() {
     if [[ -L "$bin_path" ]]; then
         local target=""
         target="$(readlink "$bin_path" 2>/dev/null || true)"
-        if [[ "$target" == *"/node_modules/eve/"* ]]; then
+        if [[ "$target" == *"/node_modules/eve-agent/"* || "$target" == *"/node_modules/eve/"* ]]; then
             rm -f "$bin_path"
-            ui_info "Removed stale eve symlink at ${bin_path}"
+            ui_info "Removed stale or legacy eve symlink at ${bin_path}"
             return 0
         fi
         return 1
@@ -1383,7 +1383,7 @@ detect_eve_checkout() {
     if [[ ! -f "$dir/pnpm-workspace.yaml" ]]; then
         return 1
     fi
-    if ! grep -q '"name"[[:space:]]*:[[:space:]]*"eve"' "$dir/package.json" 2>/dev/null; then
+    if ! grep -q '"name"[[:space:]]*:[[:space:]]*"eve-agent"' "$dir/package.json" 2>/dev/null; then
         return 1
     fi
     echo "$dir"
@@ -1984,7 +1984,7 @@ fix_npm_permissions() {
     ui_info "Configuring npm for user-local installs"
     mkdir -p "$HOME/.npm-global"
     npm config set prefix "$HOME/.npm-global"
-    ui_warn "Avoid sudo npm i -g for future EVE updates; use npm i -g eve@latest so npm keeps using this user prefix instead of a different global prefix."
+    ui_warn "Avoid sudo npm i -g for future EVE updates; use npm i -g eve-agent@latest so npm keeps using this user prefix instead of a different global prefix."
 
     persist_shell_path_prepend "$HOME/.npm-global/bin" "\$HOME/.npm-global/bin" || true
 
@@ -1995,7 +1995,7 @@ fix_npm_permissions() {
 ensure_eve_bin_link() {
     local npm_root=""
     npm_root="$(npm root -g 2>/dev/null || true)"
-    if [[ -z "$npm_root" || ! -d "$npm_root/eve" ]]; then
+    if [[ -z "$npm_root" || ! -d "$npm_root/eve-agent" ]]; then
         return 1
     fi
     local npm_bin=""
@@ -2005,7 +2005,7 @@ ensure_eve_bin_link() {
     fi
     mkdir -p "$npm_bin"
     if [[ ! -x "${npm_bin}/eve" ]]; then
-        ln -sf "$npm_root/eve/dist/entry.js" "${npm_bin}/eve"
+        ln -sf "$npm_root/eve-agent/dist/entry.js" "${npm_bin}/eve"
         ui_info "Created eve bin link at ${npm_bin}/eve"
     fi
     return 0
@@ -2140,7 +2140,7 @@ resolve_git_eve_ref() {
 
     case "$requested" in
         ""|latest)
-            resolved_version="$(npm view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+            resolved_version="$(npm view "eve-agent" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
             if [[ -n "$resolved_version" ]]; then
                 echo "v${resolved_version}"
                 return 0
@@ -2149,7 +2149,7 @@ resolve_git_eve_ref() {
             return 0
             ;;
         next|beta)
-            resolved_version="$(npm view "eve" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
+            resolved_version="$(npm view "eve-agent" "dist-tags.${requested:-latest}" 2>/dev/null || true)"
             if [[ -n "$resolved_version" ]]; then
                 echo "v${resolved_version}"
                 return 0
@@ -2385,7 +2385,7 @@ find_eve_global_installs() {
     local npm_root=""
     while IFS= read -r npm_root; do
         [[ -n "$npm_root" ]] || continue
-        local package_dir="${npm_root%/}/eve"
+        local package_dir="${npm_root%/}/eve-agent"
         local package_json="${package_dir}/package.json"
         [[ -f "$package_json" ]] || continue
 
@@ -2439,7 +2439,7 @@ warn_duplicate_eve_global_installs() {
 
     echo ""
     echo "  Keep one install source, then remove stale installs with that environment's npm:"
-    echo "    npm uninstall -g eve"
+    echo "    npm uninstall -g eve-agent"
 }
 
 refresh_shell_command_cache() {
@@ -2676,7 +2676,7 @@ EOF
 # Install EVE
 resolve_beta_version() {
     local beta=""
-    beta="$(npm view eve dist-tags.beta 2>/dev/null || true)"
+    beta="$(npm view eve-agent dist-tags.beta 2>/dev/null || true)"
     if [[ -z "$beta" || "$beta" == "undefined" || "$beta" == "null" ]]; then
         return 1
     fi
@@ -2697,16 +2697,16 @@ is_eve_source_package_install_spec() {
     local value="${1:-}"
     local normalized_value=""
     normalized_value="$(to_lowercase_ascii "$value")"
-    normalized_value="${normalized_value#eve@}"
+    normalized_value="${normalized_value#eve-agent@}"
 
     [[ "$normalized_value" == "main" ]] && return 0
-    [[ "$normalized_value" =~ ^github:eve/eve($|[#/]) ]] && return 0
+    [[ "$normalized_value" =~ ^github:engsathiago/eve-agent($|[#/]) ]] && return 0
 
     normalized_value="${normalized_value#git+}"
-    [[ "$normalized_value" =~ ^https?://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
-    [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]eve/eve(\.git)?($|[?#]) ]] && return 0
-    [[ "$normalized_value" =~ ^git://github\.com/eve/eve(\.git)?($|[?#]) ]] && return 0
-    [[ "$normalized_value" =~ ^git@github\.com:eve/eve(\.git)?($|[?#]) ]] && return 0
+    [[ "$normalized_value" =~ ^https?://github\.com/engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+    [[ "$normalized_value" =~ ^ssh://git@github\.com[:/]engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+    [[ "$normalized_value" =~ ^git://github\.com/engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
+    [[ "$normalized_value" =~ ^git@github\.com:engsathiago/eve-agent(\.git)?($|[?#]) ]] && return 0
     return 1
 }
 
@@ -2732,7 +2732,7 @@ resolve_package_install_spec() {
     local normalized_value=""
     normalized_value="$(to_lowercase_ascii "$value")"
     if [[ "$normalized_value" == "main" ]]; then
-        echo "github:eve/eve#main"
+        echo "github:engsathiago/eve-agent#main"
         return 0
     fi
     if is_explicit_package_install_spec "$value"; then
@@ -2747,14 +2747,14 @@ resolve_package_install_spec() {
 }
 
 install_eve() {
-    local package_name="eve"
+    local package_name="eve-agent"
     if [[ "$USE_BETA" == "1" ]]; then
         local beta_version=""
         beta_version="$(resolve_beta_version || true)"
         if [[ -n "$beta_version" ]]; then
             EVE_VERSION="$beta_version"
             ui_info "Beta tag detected (${beta_version})"
-            package_name="eve"
+            package_name="eve-agent"
         else
             EVE_VERSION="latest"
             ui_info "No beta tag found; using latest"
@@ -2789,11 +2789,11 @@ install_eve() {
         install_eve_npm "${install_spec}"
     fi
 
-    if [[ "${EVE_VERSION}" == "latest" && "${package_name}" == "eve" ]]; then
+    if [[ "${EVE_VERSION}" == "latest" && "${package_name}" == "eve-agent" ]]; then
         if ! resolve_eve_bin &> /dev/null; then
-            ui_warn "npm install eve@latest failed; retrying eve@next"
+            ui_warn "npm install eve-agent@latest failed; retrying eve-agent@next"
             cleanup_npm_eve_paths
-            install_eve_npm "eve@next"
+            install_eve_npm "eve-agent@next"
         fi
     fi
 
@@ -2948,8 +2948,8 @@ resolve_eve_version() {
     if [[ -z "$version" ]]; then
         local npm_root=""
         npm_root=$(npm root -g 2>/dev/null || true)
-        if [[ -n "$npm_root" && -f "$npm_root/eve/package.json" ]]; then
-            version=$(node -e "console.log(require('${npm_root}/eve/package.json').version)" 2>/dev/null || true)
+        if [[ -n "$npm_root" && -f "$npm_root/eve-agent/package.json" ]]; then
+            version=$(node -e "console.log(require('${npm_root}/eve-agent/package.json').version)" 2>/dev/null || true)
         fi
     fi
     echo "$version"
@@ -3128,9 +3128,9 @@ main() {
     local final_git_dir=""
     if [[ "$INSTALL_METHOD" == "git" ]]; then
         # Clean up npm global install if switching to git
-        if npm list -g eve &>/dev/null; then
+        if npm list -g eve-agent &>/dev/null; then
             ui_info "Removing npm global install (switching to git)"
-            npm uninstall -g eve 2>/dev/null || true
+            npm uninstall -g eve-agent 2>/dev/null || true
             ui_success "npm global install removed"
         fi
 

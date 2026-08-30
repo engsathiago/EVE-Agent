@@ -1,11 +1,11 @@
-// Telegram plugin module implements sendchataction 401 and transient backoff behavior.
-import type { Bot } from "grammy";
 import {
   computeBackoff,
   sleepWithAbort,
   type BackoffPolicy,
 } from "eve-agent/plugin-sdk/runtime-env";
 import { normalizeLowercaseStringOrEmpty } from "eve-agent/plugin-sdk/string-coerce-runtime";
+// Telegram plugin module implements sendchataction 401 and transient backoff behavior.
+import type { Bot } from "grammy";
 import {
   isRecoverableTelegramNetworkError,
   isTelegramRateLimitError,

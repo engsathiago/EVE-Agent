@@ -161,9 +161,7 @@ describe("doctor config flow steps", () => {
 
     expect(result.removed).toEqual(["bogus"]);
     expect(result.state.candidate).toStrictEqual({});
-    expect(result.state.fixHints).toStrictEqual([
-      'Run "eve doctor --fix" to remove these keys.',
-    ]);
+    expect(result.state.fixHints).toStrictEqual(['Run "eve doctor --fix" to remove these keys.']);
   });
 
   it("repairs active malformed auth profile metadata after unknown-key cleanup", () => {

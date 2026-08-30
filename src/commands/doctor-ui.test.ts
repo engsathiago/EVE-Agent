@@ -25,7 +25,7 @@ function issue(overrides: Partial<UiProtocolFreshnessIssue> = {}): UiProtocolFre
 async function createEVERoot(): Promise<string> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "eve-doctor-ui-"));
   tempRoots.push(root);
-  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve" }));
+  await fs.writeFile(path.join(root, "package.json"), JSON.stringify({ name: "eve-agent" }));
   await fs.mkdir(path.join(root, "packages/gateway-protocol/src"), { recursive: true });
   await fs.writeFile(path.join(root, "packages/gateway-protocol/src/schema.ts"), "export {};\n");
   return root;

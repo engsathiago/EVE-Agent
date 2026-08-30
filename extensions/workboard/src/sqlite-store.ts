@@ -16,6 +16,7 @@ import type {
   WorkboardAttachment,
   WorkboardCard,
   WorkboardComment,
+  WorkboardCompletionEvidence,
   WorkboardDiagnostic,
   WorkboardEvent,
   WorkboardExecution,
@@ -28,7 +29,7 @@ import type {
 } from "./types.js";
 
 const WORKBOARD_DB_RELATIVE_PATH = ["plugins", "workboard", "workboard.sqlite"] as const;
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 const WORKBOARD_SQLITE_BUSY_TIMEOUT_MS = 5000;
 const WORKBOARD_SQLITE_DIR_MODE = 0o700;
 const WORKBOARD_SQLITE_FILE_MODE = 0o600;
@@ -185,6 +186,7 @@ function ensureWorkboardSchema(db: DatabaseSync): void {
       execution_updated_at INTEGER,
       automation_json TEXT,
       claim_json TEXT,
+      completion_evidence_json TEXT,
       template_id TEXT,
       archived_at INTEGER,
       stale_json TEXT,
@@ -357,6 +359,7 @@ function ensureWorkboardSchema(db: DatabaseSync): void {
     "lifecycle_status_source_updated_at",
     "lifecycle_status_source_updated_at INTEGER",
   );
+  ensureColumn(db, "workboard_cards", "completion_evidence_json", "completion_evidence_json TEXT");
   db.prepare(
     "INSERT OR IGNORE INTO workboard_schema_migrations (id, applied_at) VALUES (?, ?)",
   ).run(`schema-${SCHEMA_VERSION}`, Date.now());
@@ -665,6 +668,9 @@ function readMetadata(db: DatabaseSync, row: Row): WorkboardMetadata | undefined
     .get(cardId) as Row | undefined;
   const automation = parseJson(row.automation_json) as WorkboardMetadata["automation"] | undefined;
   const claim = parseJson(row.claim_json) as WorkboardMetadata["claim"] | undefined;
+  const completionEvidence = parseJson(row.completion_evidence_json) as
+    | WorkboardCompletionEvidence
+    | undefined;
   const stale = parseJson(row.stale_json) as WorkboardMetadata["stale"] | undefined;
   const lifecycleStatusSourceUpdatedAt = numberValue(row, "lifecycle_status_source_updated_at");
   return optional({
@@ -688,6 +694,7 @@ function readMetadata(db: DatabaseSync, row: Row): WorkboardMetadata | undefined
       : {}),
     ...(automation ? { automation } : {}),
     ...(claim ? { claim } : {}),
+    ...(completionEvidence ? { completionEvidence } : {}),
     ...(diagnostics.length > 0 ? { diagnostics } : {}),
     ...(notifications.length > 0 ? { notifications } : {}),
     ...(stringValue(row, "template_id")
@@ -775,15 +782,17 @@ function insertCard(db: DatabaseSync, card: WorkboardCard): void {
         source_url, position, created_at, updated_at, started_at, completed_at,
         execution_id, execution_kind, execution_engine, execution_mode, execution_status,
         execution_model, execution_session_key, execution_run_id, execution_started_at,
-        execution_updated_at, automation_json, claim_json, template_id, archived_at, stale_json,
+        execution_updated_at, automation_json, claim_json, completion_evidence_json, template_id,
+        archived_at, stale_json,
         lifecycle_status_source_updated_at, failure_count
       ) VALUES (
         @id, @board_id, @title, @notes, @status, @priority, @agent_id, @session_key, @run_id,
         @task_id, @source_url, @position, @created_at, @updated_at, @started_at, @completed_at,
         @execution_id, @execution_kind, @execution_engine, @execution_mode, @execution_status,
         @execution_model, @execution_session_key, @execution_run_id, @execution_started_at,
-        @execution_updated_at, @automation_json, @claim_json, @template_id, @archived_at,
-        @stale_json, @lifecycle_status_source_updated_at, @failure_count
+        @execution_updated_at, @automation_json, @claim_json, @completion_evidence_json,
+        @template_id, @archived_at, @stale_json, @lifecycle_status_source_updated_at,
+        @failure_count
       )
       ON CONFLICT(id) DO UPDATE SET
         board_id = excluded.board_id,
@@ -813,6 +822,7 @@ function insertCard(db: DatabaseSync, card: WorkboardCard): void {
         execution_updated_at = excluded.execution_updated_at,
         automation_json = excluded.automation_json,
         claim_json = excluded.claim_json,
+        completion_evidence_json = excluded.completion_evidence_json,
         template_id = excluded.template_id,
         archived_at = excluded.archived_at,
         stale_json = excluded.stale_json,
@@ -848,6 +858,7 @@ function insertCard(db: DatabaseSync, card: WorkboardCard): void {
     execution_updated_at: bindNull(execution?.updatedAt),
     automation_json: jsonValue(metadata?.automation),
     claim_json: jsonValue(metadata?.claim),
+    completion_evidence_json: jsonValue(metadata?.completionEvidence),
     template_id: bindNull(metadata?.templateId),
     archived_at: bindNull(metadata?.archivedAt),
     stale_json: jsonValue(metadata?.stale),

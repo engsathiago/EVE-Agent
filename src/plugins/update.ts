@@ -1197,7 +1197,7 @@ async function repairEVEPeerLinksForNpmInstalls(params: {
     }
 
     const peerDependencies = readInstalledPackagePeerDependencies(installPath);
-    if (!Object.hasOwn(peerDependencies, "eve")) {
+    if (!Object.hasOwn(peerDependencies, "eve-agent")) {
       continue;
     }
 

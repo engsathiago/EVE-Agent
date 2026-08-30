@@ -235,16 +235,16 @@ describe("resolveOpenAiCompatibleHttpSenderIsOwner", () => {
 
   it("still requires operator.admin for trusted scope-bearing requests", () => {
     expect(
-      resolveOpenAiCompatibleHttpSenderIsOwner(
-        createReq({ "x-eve-scopes": "operator.write" }),
-        { authMethod: "trusted-proxy", trustDeclaredOperatorScopes: true },
-      ),
+      resolveOpenAiCompatibleHttpSenderIsOwner(createReq({ "x-eve-scopes": "operator.write" }), {
+        authMethod: "trusted-proxy",
+        trustDeclaredOperatorScopes: true,
+      }),
     ).toBe(false);
     expect(
-      resolveOpenAiCompatibleHttpSenderIsOwner(
-        createReq({ "x-eve-scopes": "operator.admin" }),
-        { authMethod: "trusted-proxy", trustDeclaredOperatorScopes: true },
-      ),
+      resolveOpenAiCompatibleHttpSenderIsOwner(createReq({ "x-eve-scopes": "operator.admin" }), {
+        authMethod: "trusted-proxy",
+        trustDeclaredOperatorScopes: true,
+      }),
     ).toBe(true);
   });
 });

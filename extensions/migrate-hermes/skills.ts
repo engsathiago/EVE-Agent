@@ -1,7 +1,10 @@
 // Migrate Hermes plugin module implements skills behavior.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createMigrationItem, MIGRATION_REASON_TARGET_EXISTS } from "eve-agent/plugin-sdk/migration";
+import {
+  createMigrationItem,
+  MIGRATION_REASON_TARGET_EXISTS,
+} from "eve-agent/plugin-sdk/migration";
 import type { MigrationItem } from "eve-agent/plugin-sdk/plugin-entry";
 import { exists, sanitizeName } from "./helpers.js";
 import type { HermesSource } from "./source.js";

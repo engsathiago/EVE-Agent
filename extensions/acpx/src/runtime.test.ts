@@ -986,9 +986,9 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     );
     expect(testing.isClaudeAcpCommand("claude-agent-acp")).toBe(true);
     expect(testing.isClaudeAcpCommand("claude-agent-acp.exe")).toBe(true);
-    expect(
-      testing.isClaudeAcpCommand(`node "/tmp/eve/acpx/claude-agent-acp-wrapper.mjs"`),
-    ).toBe(true);
+    expect(testing.isClaudeAcpCommand(`node "/tmp/eve/acpx/claude-agent-acp-wrapper.mjs"`)).toBe(
+      true,
+    );
     expect(
       testing.isClaudeAcpCommand(
         `node.exe "C:/Users/runner/AppData/Local/Temp/eve/acpx/claude-agent-acp-wrapper.mjs"`,

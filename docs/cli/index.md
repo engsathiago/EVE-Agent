@@ -39,14 +39,14 @@ Use the setup commands by intent:
 
 ## Global flags
 
-| Flag                    | Purpose                                                               |
-| ----------------------- | --------------------------------------------------------------------- |
+| Flag                    | Purpose                                                          |
+| ----------------------- | ---------------------------------------------------------------- |
 | `--dev`                 | Isolate state under `~/.eve-dev` and shift default ports         |
 | `--profile <name>`      | Isolate state under `~/.eve-<name>`                              |
-| `--container <name>`    | Target a named container for execution                                |
-| `--no-color`            | Disable ANSI colors (`NO_COLOR=1` is also respected)                  |
+| `--container <name>`    | Target a named container for execution                           |
+| `--no-color`            | Disable ANSI colors (`NO_COLOR=1` is also respected)             |
 | `--update`              | Shorthand for [`eve update`](/cli/update) (source installs only) |
-| `-V`, `--version`, `-v` | Print version and exit                                                |
+| `-V`, `--version`, `-v` | Print version and exit                                           |
 
 ## Output modes
 

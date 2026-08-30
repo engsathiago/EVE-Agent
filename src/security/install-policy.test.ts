@@ -235,8 +235,10 @@ describe("runInstallPolicy", () => {
                   command: forkScriptPath,
                   env: { NODE_BINARY: process.execPath, PID_FILE: pidPath },
                   allowInsecurePath: true,
-                  noOutputTimeoutMs: 150,
-                  timeoutMs: 2000,
+                  // Leave enough time for the shell to spawn Node and persist its PID even on
+                  // saturated CI hosts; the assertion is about process-tree cleanup, not startup.
+                  noOutputTimeoutMs: 1000,
+                  timeoutMs: 4000,
                 },
               },
             },

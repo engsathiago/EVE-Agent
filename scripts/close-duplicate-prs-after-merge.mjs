@@ -40,7 +40,7 @@ export function parseArgs(argv, env = process.env) {
     duplicates: [],
     labels: DEFAULT_LABELS,
     landedPr: undefined,
-    repo: env.GITHUB_REPOSITORY || "eve/eve",
+    repo: env.GITHUB_REPOSITORY || "engsathiago/eve-agent",
   };
 
   for (let index = 0; index < argv.length; index += 1) {

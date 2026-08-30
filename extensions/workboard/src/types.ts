@@ -62,6 +62,7 @@ export const WORKBOARD_LINK_TYPES = [
   "relates_to",
 ] as const;
 export const WORKBOARD_PROOF_STATUSES = ["passed", "failed", "skipped", "unknown"] as const;
+export const WORKBOARD_COMPLETION_EVIDENCE_MODES = ["off", "record", "require"] as const;
 export const WORKBOARD_TEMPLATE_IDS = ["bugfix", "docs", "release", "pr_review", "plugin"] as const;
 export const WORKBOARD_DIAGNOSTIC_KINDS = [
   "stranded_ready",
@@ -83,6 +84,7 @@ export type WorkboardEventKind = (typeof WORKBOARD_EVENT_KINDS)[number];
 export type WorkboardAttemptStatus = (typeof WORKBOARD_ATTEMPT_STATUSES)[number];
 export type WorkboardLinkType = (typeof WORKBOARD_LINK_TYPES)[number];
 export type WorkboardProofStatus = (typeof WORKBOARD_PROOF_STATUSES)[number];
+export type WorkboardCompletionEvidenceMode = (typeof WORKBOARD_COMPLETION_EVIDENCE_MODES)[number];
 export type WorkboardTemplateId = (typeof WORKBOARD_TEMPLATE_IDS)[number];
 export type WorkboardDiagnosticKind = (typeof WORKBOARD_DIAGNOSTIC_KINDS)[number];
 export type WorkboardDiagnosticSeverity = (typeof WORKBOARD_DIAGNOSTIC_SEVERITIES)[number];
@@ -148,6 +150,14 @@ export type WorkboardProof = {
   command?: string;
   url?: string;
   note?: string;
+};
+
+export type WorkboardCompletionEvidence = {
+  mode: WorkboardCompletionEvidenceMode;
+  quality: "unassessed" | "verified" | "claimed" | "failed";
+  evaluatedAt: number;
+  proofIds: string[];
+  artifactIds: string[];
 };
 
 export type WorkboardArtifact = {
@@ -236,6 +246,7 @@ export type WorkboardAutomation = {
   createdByCardId?: string;
   idempotencyKey?: string;
   skills?: string[];
+  toolsets?: string[];
   workspace?: WorkboardWorkspace;
   maxRuntimeSeconds?: number;
   maxRetries?: number;
@@ -287,6 +298,7 @@ export type WorkboardMetadata = {
   comments?: WorkboardComment[];
   links?: WorkboardLink[];
   proof?: WorkboardProof[];
+  completionEvidence?: WorkboardCompletionEvidence;
   artifacts?: WorkboardArtifact[];
   attachments?: WorkboardAttachment[];
   workerLogs?: WorkboardWorkerLog[];

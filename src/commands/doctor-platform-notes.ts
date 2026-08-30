@@ -63,9 +63,7 @@ export async function collectMacStaleEVEUpdateLaunchdJobsWarning(deps?: {
     return null;
   }
   const scanEnv = deps?.env ?? process.env;
-  const jobs = await (deps?.findJobs ?? findStaleEVEUpdateLaunchdJobs)(scanEnv).catch(
-    () => [],
-  );
+  const jobs = await (deps?.findJobs ?? findStaleEVEUpdateLaunchdJobs)(scanEnv).catch(() => []);
   if (jobs.length === 0) {
     return null;
   }
@@ -144,12 +142,8 @@ export async function collectMacLaunchctlGatewayEnvOverrideWarning(
   }
 
   const getenv = deps?.getenv ?? launchctlGetenv;
-  const tokenEntries = [
-    ["EVE_GATEWAY_TOKEN", await getenv("EVE_GATEWAY_TOKEN")],
-  ] as const;
-  const passwordEntries = [
-    ["EVE_GATEWAY_PASSWORD", await getenv("EVE_GATEWAY_PASSWORD")],
-  ] as const;
+  const tokenEntries = [["EVE_GATEWAY_TOKEN", await getenv("EVE_GATEWAY_TOKEN")]] as const;
+  const passwordEntries = [["EVE_GATEWAY_PASSWORD", await getenv("EVE_GATEWAY_PASSWORD")]] as const;
   const tokenEntry = tokenEntries.find(([, value]) => normalizeOptionalString(value));
   const passwordEntry = passwordEntries.find(([, value]) => normalizeOptionalString(value));
   const envToken = normalizeOptionalString(tokenEntry?.[1]) ?? "";

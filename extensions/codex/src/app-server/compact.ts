@@ -44,9 +44,7 @@ export async function maybeCompactCodexAppServerSession(
   return compactCodexNativeThread(params, options);
 }
 
-function warnIfIgnoringEVECompactionOverrides(
-  params: CompactEmbeddedAgentSessionParams,
-): void {
+function warnIfIgnoringEVECompactionOverrides(params: CompactEmbeddedAgentSessionParams): void {
   const ignoredConfig = readIgnoredCompactionOverridePaths(params);
   if (ignoredConfig.length === 0) {
     return;

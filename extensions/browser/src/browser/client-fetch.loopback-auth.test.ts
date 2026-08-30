@@ -536,10 +536,7 @@ describe("fetchBrowserJson loopback auth", () => {
     await expectThrownBrowserFetchError(
       () => fetchBrowserJson<{ ok: boolean }>("http://example.com/"),
       {
-        contains: [
-          "Can't reach the EVE browser control service",
-          "Do NOT retry the browser tool",
-        ],
+        contains: ["Can't reach the EVE browser control service", "Do NOT retry the browser tool"],
       },
     );
   });

@@ -79,9 +79,7 @@ export function normalizePluginId(id: string): string {
   return normalizePluginIdWithLookup(id, getBundledPluginAliasLookup);
 }
 
-export const normalizePluginsConfig = (
-  config?: EVEConfig["plugins"],
-): NormalizedPluginsConfig => {
+export const normalizePluginsConfig = (config?: EVEConfig["plugins"]): NormalizedPluginsConfig => {
   return normalizePluginsConfigWithResolver(config, createScopedPluginIdNormalizer());
 };
 

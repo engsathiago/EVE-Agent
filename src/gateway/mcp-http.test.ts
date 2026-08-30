@@ -1691,12 +1691,8 @@ describe("createMcpLoopbackServerConfig", () => {
       mcpServers?: Record<string, { url?: string; headers?: Record<string, string> }>;
     };
     expect(config.mcpServers?.eve?.url).toBe("http://127.0.0.1:23119/mcp");
-    expect(config.mcpServers?.eve?.headers?.Authorization).toBe(
-      "Bearer ${EVE_MCP_TOKEN}",
-    );
-    expect(config.mcpServers?.eve?.headers?.["x-eve-session-id"]).toBe(
-      "${EVE_MCP_SESSION_ID}",
-    );
+    expect(config.mcpServers?.eve?.headers?.Authorization).toBe("Bearer ${EVE_MCP_TOKEN}");
+    expect(config.mcpServers?.eve?.headers?.["x-eve-session-id"]).toBe("${EVE_MCP_SESSION_ID}");
     expect(config.mcpServers?.eve?.headers?.["x-eve-message-channel"]).toBe(
       "${EVE_MCP_MESSAGE_CHANNEL}",
     );
@@ -1715,9 +1711,9 @@ describe("createMcpLoopbackServerConfig", () => {
     expect(config.mcpServers?.eve?.headers?.["x-eve-source-reply-delivery-mode"]).toBe(
       "${EVE_MCP_SOURCE_REPLY_DELIVERY_MODE}",
     );
-    expect(
-      config.mcpServers?.eve?.headers?.["x-eve-require-explicit-message-target"],
-    ).toBe("${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}");
+    expect(config.mcpServers?.eve?.headers?.["x-eve-require-explicit-message-target"]).toBe(
+      "${EVE_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+    );
     expect(config.mcpServers?.eve?.headers?.["x-eve-cli-capture-key"]).toBe(
       "${EVE_MCP_CLI_CAPTURE_KEY}",
     );

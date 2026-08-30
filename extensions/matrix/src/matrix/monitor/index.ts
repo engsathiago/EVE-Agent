@@ -66,7 +66,9 @@ export type MonitorMatrixOpts = {
   initialSyncLimit?: number;
   replyToMode?: ReplyToMode;
   accountId?: string | null;
-  setStatus?: (next: import("eve-agent/plugin-sdk/channel-contract").ChannelAccountSnapshot) => void;
+  setStatus?: (
+    next: import("eve-agent/plugin-sdk/channel-contract").ChannelAccountSnapshot,
+  ) => void;
 };
 
 function isMatrixStreamingConfig(

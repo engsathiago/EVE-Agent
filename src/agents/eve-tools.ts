@@ -402,9 +402,7 @@ export function createEVETools(
     options?.sourceReplyDeliveryMode === "message_tool_only" ||
     messageExplicitlyAllowed;
   const includeSubagentSpawnTool = !embedded || options?.allowGatewaySubagentBinding === true;
-  const effectiveCallGateway = embedded
-    ? createEmbeddedCallGateway()
-    : eveToolsDeps.callGateway;
+  const effectiveCallGateway = embedded ? createEmbeddedCallGateway() : eveToolsDeps.callGateway;
   const includeUpdatePlanTool = shouldIncludeUpdatePlanToolForEVETools({
     config: resolvedConfig,
     agentSessionKey: options?.agentSessionKey,

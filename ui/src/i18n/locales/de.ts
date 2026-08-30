@@ -397,6 +397,7 @@ export const de: TranslationMap = {
   nav: {
     chat: "Chat",
     control: "Steuerung",
+    workspace: "Arbeitsbereich",
     agent: "Agent",
     settings: "Einstellungen",
     expand: "Seitenleiste ausklappen",
@@ -408,6 +409,11 @@ export const de: TranslationMap = {
     activity: "Aktivität",
     overview: "Übersicht",
     workboard: "Arbeitsbereich",
+    projects: "Projects",
+    studio: "Studio",
+    environments: "Environments",
+    integrations: "Integration Store",
+    intelligence: "Intelligence",
     channels: "Kanäle",
     instances: "Instanzen",
     sessions: "Sitzungen",
@@ -433,6 +439,11 @@ export const de: TranslationMap = {
     activity: "Browser-lokale Zusammenfassungen der Tool-Aktivität.",
     overview: "Gateway-Status, Einstiegspunkte und eine schnelle Zustandsprüfung.",
     workboard: "Agenten-Arbeitswarteschlange und Sitzungsübergabe.",
+    projects: "Persistent folders, boards, and work contexts.",
+    studio: "Create, edit, preview, version, and publish artifacts.",
+    environments: "Managed Docker workspaces with quotas and TTLs.",
+    integrations: "Plugins, channels, and MCP servers in one catalog.",
+    intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
     channels: "Kanäle und Einstellungen verwalten.",
     instances: "Präsenzsignale von verbundenen Clients und Geräten.",
     sessions: "Aktive Sitzungen inspizieren und Standardeinstellungen pro Sitzung anpassen.",
@@ -824,8 +835,7 @@ export const de: TranslationMap = {
       modelAuthExpiresIn: "läuft {when} ab",
       modelAuthAttentionExpiredTitle: "Modell-Authentifizierung abgelaufen",
       modelAuthAttentionExpiringTitle: "Modell-Authentifizierung läuft bald ab",
-      modelAuthAttentionExpiredDesc:
-        "{providers} — mit eve models auth erneut authentifizieren",
+      modelAuthAttentionExpiredDesc: "{providers} — mit eve models auth erneut authentifizieren",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1325,8 +1335,7 @@ export const de: TranslationMap = {
         title: "Verbindung nicht möglich",
         summary:
           "Der Browser konnte die Gateway-Verbindung nicht abschließen. Prüfe Ziel und Transport, bevor du Zugangsdaten erneut versuchst.",
-        stepGateway:
-          "Bestätige mit eve status oder eve gateway run, dass das Gateway läuft.",
+        stepGateway: "Bestätige mit eve status oder eve gateway run, dass das Gateway läuft.",
         stepUrl:
           "Prüfe die WebSocket-URL und verwende wss://, wenn das Gateway hinter HTTPS/Tailscale Serve liegt.",
         stepDashboard:

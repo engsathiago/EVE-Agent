@@ -37,10 +37,7 @@ function readDevicePairPublicUrlFromConfig(cfg: EVEConfig): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
-function shouldResolveLocalGatewayPasswordSecret(
-  cfg: EVEConfig,
-  env: NodeJS.ProcessEnv,
-): boolean {
+function shouldResolveLocalGatewayPasswordSecret(cfg: EVEConfig, env: NodeJS.ProcessEnv): boolean {
   // Default/implicit password auth may require resolving a local SecretRef before encoding setup.
   if (trimToUndefined(env.EVE_GATEWAY_PASSWORD)) {
     return false;

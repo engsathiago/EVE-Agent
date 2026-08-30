@@ -179,10 +179,7 @@ type DiscordRuntimeFacadeModule = {
     label?: string;
     boundBy?: string;
   }) => Promise<ThreadBindingRecord | null>;
-  collectDiscordAuditChannelIds: (params: {
-    cfg: EVEConfig;
-    accountId?: string | null;
-  }) => unknown;
+  collectDiscordAuditChannelIds: (params: { cfg: EVEConfig; accountId?: string | null }) => unknown;
   listThreadBindingsBySessionKey: (params: {
     targetSessionKey: string;
     accountId?: string;

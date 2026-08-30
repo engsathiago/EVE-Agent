@@ -13,6 +13,7 @@ import {
   buildBackupArchiveRoot,
   type BackupAsset,
   resolveBackupPlanFromDisk,
+  resolveBackupPlanFromPaths,
 } from "../commands/backup-shared.js";
 import { isPathWithin } from "../commands/cleanup-utils.js";
 import { resolveEVEStateSqlitePath } from "../state/eve-state-db.paths.js";
@@ -51,6 +52,13 @@ export type BackupCreateOptions = {
   verify?: boolean;
   json?: boolean;
   nowMs?: number;
+  /** Explicit source layout used by pre-restore snapshots and migrations. */
+  sourcePaths?: {
+    stateDir: string;
+    configPath: string;
+    oauthDir: string;
+    workspaceDirs?: string[];
+  };
   /**
    * Optional info logger invoked for non-fatal backup events such as tar
    * retry notices or volatile-file skip counts. When omitted, events are
@@ -697,7 +705,14 @@ export async function createBackupArchive(
   const archiveRoot = buildBackupArchiveRoot(nowMs);
   const onlyConfig = Boolean(opts.onlyConfig);
   const includeWorkspace = onlyConfig ? false : (opts.includeWorkspace ?? true);
-  const plan = await resolveBackupPlanFromDisk({ includeWorkspace, onlyConfig, nowMs });
+  const plan = opts.sourcePaths
+    ? await resolveBackupPlanFromPaths({
+        ...opts.sourcePaths,
+        includeWorkspace,
+        onlyConfig,
+        nowMs,
+      })
+    : await resolveBackupPlanFromDisk({ includeWorkspace, onlyConfig, nowMs });
   const outputPath = await resolveOutputPath({
     output: opts.output,
     nowMs,

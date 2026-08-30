@@ -52,7 +52,7 @@ vi.mock("node:child_process", async (importOriginal) => {
 async function writeGlobalPackageJson(packageRoot: string, version = "1.0.0") {
   await fs.writeFile(
     path.join(packageRoot, "package.json"),
-    JSON.stringify({ name: "eve", version }),
+    JSON.stringify({ name: "eve-agent", version }),
     "utf-8",
   );
 }
@@ -103,16 +103,16 @@ describe("update global helpers", () => {
     envSnapshot = captureEnv(["EVE_UPDATE_PACKAGE_SPEC"]);
     process.env.EVE_UPDATE_PACKAGE_SPEC = "file:/tmp/eve.tgz";
 
-    expect(resolveGlobalInstallSpec({ packageName: "eve", tag: "latest" })).toBe(
+    expect(resolveGlobalInstallSpec({ packageName: "eve-agent", tag: "latest" })).toBe(
       "file:/tmp/eve.tgz",
     );
     expect(
       resolveGlobalInstallSpec({
-        packageName: "eve",
+        packageName: "eve-agent",
         tag: "beta",
-        env: { EVE_UPDATE_PACKAGE_SPEC: "eve@next" },
+        env: { EVE_UPDATE_PACKAGE_SPEC: "eve-agent@next" },
       }),
-    ).toBe("eve@next");
+    ).toBe("eve-agent@next");
   });
 
   it("resolves global roots and package roots from runner output", async () => {
@@ -134,18 +134,18 @@ describe("update global helpers", () => {
   });
 
   it("maps main and explicit install specs for global installs", () => {
-    expect(resolveGlobalInstallSpec({ packageName: "eve", tag: "main" })).toBe(
+    expect(resolveGlobalInstallSpec({ packageName: "eve-agent", tag: "main" })).toBe(
       EVE_MAIN_PACKAGE_SPEC,
     );
     expect(
       resolveGlobalInstallSpec({
-        packageName: "eve",
-        tag: "github:eve/eve#feature/my-branch",
+        packageName: "eve-agent",
+        tag: "github:engsathiago/eve-agent#feature/my-branch",
       }),
-    ).toBe("github:eve/eve#feature/my-branch");
+    ).toBe("github:engsathiago/eve-agent#feature/my-branch");
     expect(
       resolveGlobalInstallSpec({
-        packageName: "eve",
+        packageName: "eve-agent",
         tag: "https://example.com/eve-main.tgz",
       }),
     ).toBe("https://example.com/eve-main.tgz");
@@ -210,13 +210,7 @@ describe("update global helpers", () => {
           "portable-git",
           "cmd",
         );
-        const trustedGitDir = path.join(
-          trustedLocalAppData,
-          "EVE",
-          "deps",
-          "portable-git",
-          "cmd",
-        );
+        const trustedGitDir = path.join(trustedLocalAppData, "EVE", "deps", "portable-git", "cmd");
         await fs.mkdir(injectedGitDir, { recursive: true });
         await fs.mkdir(trustedGitDir, { recursive: true });
 
@@ -243,7 +237,7 @@ describe("update global helpers", () => {
     expect(isMainPackageTarget(" MAIN ")).toBe(true);
     expect(isMainPackageTarget("beta")).toBe(false);
 
-    expect(isExplicitPackageInstallSpec("github:eve/eve#main")).toBe(true);
+    expect(isExplicitPackageInstallSpec("github:engsathiago/eve-agent#main")).toBe(true);
     expect(isExplicitPackageInstallSpec("https://example.com/eve-main.tgz")).toBe(true);
     expect(isExplicitPackageInstallSpec("file:/tmp/eve-main.tgz")).toBe(true);
     expect(isExplicitPackageInstallSpec("/tmp/eve-main.tgz")).toBe(true);
@@ -253,7 +247,9 @@ describe("update global helpers", () => {
     expect(canResolveRegistryVersionForPackageTarget("latest")).toBe(true);
     expect(canResolveRegistryVersionForPackageTarget("2026.3.22")).toBe(true);
     expect(canResolveRegistryVersionForPackageTarget("main")).toBe(false);
-    expect(canResolveRegistryVersionForPackageTarget("github:eve/eve#main")).toBe(false);
+    expect(canResolveRegistryVersionForPackageTarget("github:engsathiago/eve-agent#main")).toBe(
+      false,
+    );
     expect(canResolveRegistryVersionForPackageTarget("/tmp/eve-main.tgz")).toBe(false);
   });
 
@@ -262,10 +258,10 @@ describe("update global helpers", () => {
       const npmRoot = path.join(base, "npm-root");
       const pnpmRoot = path.join(base, "pnpm-root");
       const bunRoot = path.join(base, ".bun", "install", "global", "node_modules");
-      const pkgRoot = path.join(pnpmRoot, "eve");
+      const pkgRoot = path.join(pnpmRoot, "eve-agent");
       await fs.mkdir(pkgRoot, { recursive: true });
-      await fs.mkdir(path.join(npmRoot, "eve"), { recursive: true });
-      await fs.mkdir(path.join(bunRoot, "eve"), { recursive: true });
+      await fs.mkdir(path.join(npmRoot, "eve-agent"), { recursive: true });
+      await fs.mkdir(path.join(bunRoot, "eve-agent"), { recursive: true });
 
       envSnapshot = captureEnv(["BUN_INSTALL"]);
       process.env.BUN_INSTALL = path.join(base, ".bun");
@@ -285,8 +281,8 @@ describe("update global helpers", () => {
       );
       await expect(detectGlobalInstallManagerByPresence(runCommand, 1000)).resolves.toBe("npm");
 
-      await fs.rm(path.join(npmRoot, "eve"), { recursive: true, force: true });
-      await fs.rm(path.join(pnpmRoot, "eve"), { recursive: true, force: true });
+      await fs.rm(path.join(npmRoot, "eve-agent"), { recursive: true, force: true });
+      await fs.rm(path.join(pnpmRoot, "eve-agent"), { recursive: true, force: true });
       await expect(detectGlobalInstallManagerByPresence(runCommand, 1000)).resolves.toBe("bun");
     });
   });
@@ -297,7 +293,7 @@ describe("update global helpers", () => {
         const brewPrefix = path.join(base, "opt", "homebrew");
         const brewBin = path.join(brewPrefix, "bin");
         const brewRoot = path.join(brewPrefix, "lib", "node_modules");
-        const pkgRoot = path.join(brewRoot, "eve");
+        const pkgRoot = path.join(brewRoot, "eve-agent");
         const pathNpmRoot = path.join(base, "nvm", "lib", "node_modules");
         const brewNpm = path.join(brewBin, "npm");
         await fs.mkdir(pkgRoot, { recursive: true });
@@ -341,21 +337,21 @@ describe("update global helpers", () => {
           globalRoot: brewRoot,
           packageRoot: pkgRoot,
         });
-        expect(globalInstallArgs("npm", "eve@latest", pkgRoot)).toEqual([
+        expect(globalInstallArgs("npm", "eve-agent@latest", pkgRoot)).toEqual([
           brewNpm,
           "i",
           "-g",
-          "eve@latest",
+          "eve-agent@latest",
           "--no-fund",
           "--no-audit",
           "--loglevel=error",
           "--min-release-age=0",
         ]);
-        expect(globalInstallFallbackArgs("npm", "eve@latest", pkgRoot)).toEqual([
+        expect(globalInstallFallbackArgs("npm", "eve-agent@latest", pkgRoot)).toEqual([
           brewNpm,
           "i",
           "-g",
-          "eve@latest",
+          "eve-agent@latest",
           "--omit=optional",
           "--no-fund",
           "--no-audit",
@@ -408,7 +404,7 @@ describe("update global helpers", () => {
 
         for (const layout of layouts) {
           const nodeManagedRoot = path.join(layout.prefix, "lib", "node_modules");
-          const pkgRoot = path.join(nodeManagedRoot, "eve");
+          const pkgRoot = path.join(nodeManagedRoot, "eve-agent");
           const nodeManagedNpm = path.join(layout.prefix, "bin", "npm");
           await fs.mkdir(pkgRoot, { recursive: true });
           await fs.mkdir(path.dirname(nodeManagedNpm), { recursive: true });
@@ -432,29 +428,30 @@ describe("update global helpers", () => {
             manager: "npm",
             command: "npm",
           });
-          expect(globalInstallArgs("npm", "eve@latest", pkgRoot), layout.name).toEqual([
+          expect(globalInstallArgs("npm", "eve-agent@latest", pkgRoot), layout.name).toEqual([
             "npm",
             "i",
             "-g",
-            "eve@latest",
+            "eve-agent@latest",
             "--no-fund",
             "--no-audit",
             "--loglevel=error",
             "--min-release-age=0",
           ]);
-          expect(globalInstallFallbackArgs("npm", "eve@latest", pkgRoot), layout.name).toEqual(
-            [
-              "npm",
-              "i",
-              "-g",
-              "eve@latest",
-              "--omit=optional",
-              "--no-fund",
-              "--no-audit",
-              "--loglevel=error",
-              "--min-release-age=0",
-            ],
-          );
+          expect(
+            globalInstallFallbackArgs("npm", "eve-agent@latest", pkgRoot),
+            layout.name,
+          ).toEqual([
+            "npm",
+            "i",
+            "-g",
+            "eve-agent@latest",
+            "--omit=optional",
+            "--no-fund",
+            "--no-audit",
+            "--loglevel=error",
+            "--min-release-age=0",
+          ]);
         }
       });
     });
@@ -463,7 +460,7 @@ describe("update global helpers", () => {
   it("does not infer npm ownership from path shape alone when the owning npm binary is absent", async () => {
     await withTempDir({ prefix: "eve-update-npm-missing-bin-" }, async (base) => {
       const brewRoot = path.join(base, "opt", "homebrew", "lib", "node_modules");
-      const pkgRoot = path.join(brewRoot, "eve");
+      const pkgRoot = path.join(brewRoot, "eve-agent");
       const pathNpmRoot = path.join(base, "nvm", "lib", "node_modules");
       await fs.mkdir(pkgRoot, { recursive: true });
 
@@ -472,11 +469,11 @@ describe("update global helpers", () => {
       await expect(
         detectGlobalInstallManagerForRoot(runCommand, pkgRoot, 1000),
       ).resolves.toBeNull();
-      expect(globalInstallArgs("npm", "eve@latest", pkgRoot)).toEqual([
+      expect(globalInstallArgs("npm", "eve-agent@latest", pkgRoot)).toEqual([
         "npm",
         "i",
         "-g",
-        "eve@latest",
+        "eve-agent@latest",
         "--no-fund",
         "--no-audit",
         "--loglevel=error",
@@ -488,12 +485,12 @@ describe("update global helpers", () => {
   it("honors an explicitly selected direct npm node_modules package root", async () => {
     await withTempDir({ prefix: "eve-update-managed-service-root-" }, async (base) => {
       const managedNpmRoot = path.join(base, ".eve", "npm", "node_modules");
-      const pkgRoot = path.join(managedNpmRoot, "eve");
+      const pkgRoot = path.join(managedNpmRoot, "eve-agent");
       const pathNpmRoot = path.join(base, "shell", "lib", "node_modules");
       const otherPnpmRoot = path.join(base, "pnpm", "global", "5", "node_modules");
       const customNpm = path.join(base, "bin", "npm");
       await fs.mkdir(pkgRoot, { recursive: true });
-      await fs.mkdir(path.join(otherPnpmRoot, "eve"), { recursive: true });
+      await fs.mkdir(path.join(otherPnpmRoot, "eve-agent"), { recursive: true });
 
       const runCommand: CommandRunner = async (argv) => {
         if (argv[0] === "npm" || argv[0] === customNpm) {
@@ -553,7 +550,7 @@ describe("update global helpers", () => {
       envSnapshot = captureEnv(["BUN_INSTALL"]);
       process.env.BUN_INSTALL = path.join(base, ".bun");
       const bunRoot = path.join(process.env.BUN_INSTALL, "install", "global", "node_modules");
-      const pkgRoot = path.join(bunRoot, "eve");
+      const pkgRoot = path.join(bunRoot, "eve-agent");
       const pathNpmRoot = path.join(base, "shell", "lib", "node_modules");
       await fs.mkdir(pkgRoot, { recursive: true });
 
@@ -581,7 +578,7 @@ describe("update global helpers", () => {
       await withTempDir({ prefix: "eve-update-win32-npm-prefix-" }, async (base) => {
         const npmPrefix = path.join(base, "Roaming", "npm");
         const npmRoot = path.join(npmPrefix, "node_modules");
-        const pkgRoot = path.join(npmRoot, "eve");
+        const pkgRoot = path.join(npmRoot, "eve-agent");
         const npmCmd = path.join(npmPrefix, "npm.cmd");
         const pathNpmRoot = path.join(base, "nvm", "node_modules");
         await fs.mkdir(pkgRoot, { recursive: true });
@@ -597,11 +594,11 @@ describe("update global helpers", () => {
           "npm",
         );
         await expect(resolveGlobalRoot("npm", runCommand, 1000, pkgRoot)).resolves.toBe(npmRoot);
-        expect(globalInstallArgs("npm", "eve@latest", pkgRoot)).toEqual([
+        expect(globalInstallArgs("npm", "eve-agent@latest", pkgRoot)).toEqual([
           npmCmd,
           "i",
           "-g",
-          "eve@latest",
+          "eve-agent@latest",
           "--no-fund",
           "--no-audit",
           "--loglevel=error",
@@ -615,7 +612,7 @@ describe("update global helpers", () => {
     await withTempDir({ prefix: "eve-update-pnpm-custom-root-" }, async (base) => {
       const customGlobalDir = path.join(base, "custom-pnpm");
       const customGlobalRoot = path.join(customGlobalDir, "5", "node_modules");
-      const pkgRoot = path.join(customGlobalRoot, "eve");
+      const pkgRoot = path.join(customGlobalRoot, "eve-agent");
       const defaultPnpmRoot = path.join(base, "default-pnpm", "5", "node_modules");
       await fs.mkdir(pkgRoot, { recursive: true });
       await fs.writeFile(
@@ -668,9 +665,9 @@ describe("update global helpers", () => {
         customGlobalDir,
         "5",
         ".pnpm",
-        "eve@file+..+pack+eve-2026.5.6.tgz",
+        "eve-agent@file+..+pack+eve-agent-2026.5.6.tgz",
         "node_modules",
-        "eve",
+        "eve-agent",
       );
       const defaultPnpmRoot = path.join(base, "default-pnpm", "5", "node_modules");
       await fs.mkdir(customGlobalRoot, { recursive: true });
@@ -710,7 +707,7 @@ describe("update global helpers", () => {
         manager: "pnpm",
         command: "pnpm",
         globalRoot: customGlobalRoot,
-        packageRoot: path.join(customGlobalRoot, "eve"),
+        packageRoot: path.join(customGlobalRoot, "eve-agent"),
       });
     });
   });
@@ -719,7 +716,7 @@ describe("update global helpers", () => {
     await withTempDir({ prefix: "eve-update-pnpm-shape-only-" }, async (base) => {
       const customGlobalDir = path.join(base, "custom-pnpm");
       const customGlobalRoot = path.join(customGlobalDir, "5", "node_modules");
-      const pkgRoot = path.join(customGlobalRoot, "eve");
+      const pkgRoot = path.join(customGlobalRoot, "eve-agent");
       const defaultPnpmRoot = path.join(base, "default-pnpm", "5", "node_modules");
       await fs.mkdir(pkgRoot, { recursive: true });
       await fs.writeFile(
@@ -752,7 +749,7 @@ describe("update global helpers", () => {
         manager: "pnpm",
         command: "pnpm",
         globalRoot: defaultPnpmRoot,
-        packageRoot: path.join(defaultPnpmRoot, "eve"),
+        packageRoot: path.join(defaultPnpmRoot, "eve-agent"),
       });
     });
   });
@@ -762,72 +759,72 @@ describe("update global helpers", () => {
       manager: "npm",
       command: "npm",
     });
-    expect(globalInstallArgs("npm", "eve@latest")).toEqual([
+    expect(globalInstallArgs("npm", "eve-agent@latest")).toEqual([
       "npm",
       "i",
       "-g",
-      "eve@latest",
+      "eve-agent@latest",
       "--no-fund",
       "--no-audit",
       "--loglevel=error",
       "--min-release-age=0",
     ]);
-    expect(globalInstallArgs("pnpm", "eve@latest")).toEqual([
+    expect(globalInstallArgs("pnpm", "eve-agent@latest")).toEqual([
       "pnpm",
       "add",
       "-g",
-      "eve@latest",
+      "eve-agent@latest",
     ]);
-    expect(globalInstallArgs("pnpm", "github:eve/eve#release/2026.5.12")).toEqual([
+    expect(globalInstallArgs("pnpm", "github:engsathiago/eve-agent#release/2026.5.12")).toEqual([
       "pnpm",
       "add",
       "-g",
-      "--allow-build=eve",
-      "github:eve/eve#release/2026.5.12",
+      "--allow-build=eve-agent",
+      "github:engsathiago/eve-agent#release/2026.5.12",
     ]);
     expect(
-      globalInstallArgs("pnpm", "eve@git+https://github.com/engsathiago/eve-agent.git"),
+      globalInstallArgs("pnpm", "eve-agent@git+https://github.com/engsathiago/eve-agent.git"),
     ).toEqual([
       "pnpm",
       "add",
       "-g",
-      "--allow-build=eve",
-      "eve@git+https://github.com/engsathiago/eve-agent.git",
+      "--allow-build=eve-agent",
+      "eve-agent@git+https://github.com/engsathiago/eve-agent.git",
     ]);
-    expect(globalInstallArgs("bun", "eve@latest")).toEqual([
+    expect(globalInstallArgs("bun", "eve-agent@latest")).toEqual([
       "bun",
       "add",
       "-g",
-      "eve@latest",
+      "eve-agent@latest",
     ]);
 
-    expect(globalInstallFallbackArgs("npm", "eve@latest")).toEqual([
+    expect(globalInstallFallbackArgs("npm", "eve-agent@latest")).toEqual([
       "npm",
       "i",
       "-g",
-      "eve@latest",
+      "eve-agent@latest",
       "--omit=optional",
       "--no-fund",
       "--no-audit",
       "--loglevel=error",
       "--min-release-age=0",
     ]);
-    expect(globalInstallFallbackArgs("pnpm", "eve@latest")).toBeNull();
+    expect(globalInstallFallbackArgs("pnpm", "eve-agent@latest")).toBeNull();
     expect(
-      globalInstallArgs({ manager: "pnpm", command: "/opt/homebrew/bin/pnpm" }, "eve@latest"),
-    ).toEqual(["/opt/homebrew/bin/pnpm", "add", "-g", "eve@latest"]);
-    expect(globalInstallArgs("pnpm", "eve@latest", null, "/opt/pnpm-global")).toEqual([
+      globalInstallArgs({ manager: "pnpm", command: "/opt/homebrew/bin/pnpm" }, "eve-agent@latest"),
+    ).toEqual(["/opt/homebrew/bin/pnpm", "add", "-g", "eve-agent@latest"]);
+    expect(globalInstallArgs("pnpm", "eve-agent@latest", null, "/opt/pnpm-global")).toEqual([
       "pnpm",
       "add",
       "-g",
       "--global-dir",
       "/opt/pnpm-global",
-      "eve@latest",
+      "eve-agent@latest",
     ]);
     expect(
       globalInstallArgs(
         "pnpm",
-        "github:eve/eve#release/2026.5.12",
+        "github:engsathiago/eve-agent#release/2026.5.12",
         null,
         "/opt/pnpm-global",
       ),
@@ -837,31 +834,31 @@ describe("update global helpers", () => {
       "-g",
       "--global-dir",
       "/opt/pnpm-global",
-      "--allow-build=eve",
-      "github:eve/eve#release/2026.5.12",
+      "--allow-build=eve-agent",
+      "github:engsathiago/eve-agent#release/2026.5.12",
     ]);
   });
 
   it("builds npm staged install argv with an explicit prefix", () => {
-    expect(globalInstallArgs("npm", "eve@latest", null, "/tmp/stage")).toEqual([
+    expect(globalInstallArgs("npm", "eve-agent@latest", null, "/tmp/stage")).toEqual([
       "npm",
       "i",
       "-g",
       "--prefix",
       "/tmp/stage",
-      "eve@latest",
+      "eve-agent@latest",
       "--no-fund",
       "--no-audit",
       "--loglevel=error",
       "--min-release-age=0",
     ]);
-    expect(globalInstallFallbackArgs("npm", "eve@latest", null, "/tmp/stage")).toEqual([
+    expect(globalInstallFallbackArgs("npm", "eve-agent@latest", null, "/tmp/stage")).toEqual([
       "npm",
       "i",
       "-g",
       "--prefix",
       "/tmp/stage",
-      "eve@latest",
+      "eve-agent@latest",
       "--omit=optional",
       "--no-fund",
       "--no-audit",
@@ -886,20 +883,20 @@ describe("update global helpers", () => {
 
   it("cleans only renamed package directories", async () => {
     await withTempDir({ prefix: "eve-update-cleanup-" }, async (root) => {
-      await fs.mkdir(path.join(root, ".eve-123"), { recursive: true });
-      await fs.mkdir(path.join(root, ".eve-456"), { recursive: true });
+      await fs.mkdir(path.join(root, ".eve-agent-123"), { recursive: true });
+      await fs.mkdir(path.join(root, ".eve-agent-456"), { recursive: true });
       await fs.writeFile(path.join(root, ".eve-file"), "nope", "utf8");
-      await fs.mkdir(path.join(root, "eve"), { recursive: true });
+      await fs.mkdir(path.join(root, "eve-agent"), { recursive: true });
 
       await expect(
         cleanupGlobalRenameDirs({
           globalRoot: root,
-          packageName: "eve",
+          packageName: "eve-agent",
         }),
       ).resolves.toEqual({
-        removed: [".eve-123", ".eve-456"],
+        removed: [".eve-agent-123", ".eve-agent-456"],
       });
-      const packageDirStat = await fs.stat(path.join(root, "eve"));
+      const packageDirStat = await fs.stat(path.join(root, "eve-agent"));
       const markerFileStat = await fs.stat(path.join(root, ".eve-file"));
       expect(packageDirStat.isDirectory()).toBe(true);
       expect(markerFileStat.isFile()).toBe(true);
@@ -968,7 +965,7 @@ describe("update global helpers", () => {
     await withTempDir({ prefix: "eve-update-global-source-checkout-" }, async (base) => {
       const checkoutRoot = path.join(base, "checkout");
       const globalRoot = path.join(base, "prefix", "lib", "node_modules");
-      const packageRoot = path.join(globalRoot, "eve");
+      const packageRoot = path.join(globalRoot, "eve-agent");
       await fs.mkdir(path.join(checkoutRoot, ".git"), { recursive: true });
       await fs.mkdir(path.join(checkoutRoot, "src"), { recursive: true });
       await fs.mkdir(path.join(checkoutRoot, "extensions"), { recursive: true });
@@ -1006,22 +1003,19 @@ describe("update global helpers", () => {
   });
 
   it("rejects invalid inventory files during global verify", async () => {
-    await withTempDir(
-      { prefix: "eve-update-global-invalid-inventory-" },
-      async (packageRoot) => {
-        await writeGlobalPackageJson(packageRoot, "2026.4.15");
-        await fs.mkdir(path.join(packageRoot, "dist"), { recursive: true });
-        await fs.writeFile(
-          path.join(packageRoot, PACKAGE_DIST_INVENTORY_RELATIVE_PATH),
-          "{not-json}\n",
-          "utf8",
-        );
+    await withTempDir({ prefix: "eve-update-global-invalid-inventory-" }, async (packageRoot) => {
+      await writeGlobalPackageJson(packageRoot, "2026.4.15");
+      await fs.mkdir(path.join(packageRoot, "dist"), { recursive: true });
+      await fs.writeFile(
+        path.join(packageRoot, PACKAGE_DIST_INVENTORY_RELATIVE_PATH),
+        "{not-json}\n",
+        "utf8",
+      );
 
-        await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toContain(
-          `invalid package dist inventory ${PACKAGE_DIST_INVENTORY_RELATIVE_PATH}`,
-        );
-      },
-    );
+      await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toContain(
+        `invalid package dist inventory ${PACKAGE_DIST_INVENTORY_RELATIVE_PATH}`,
+      );
+    });
   });
 
   it("verifies legacy sidecars for installed bundled plugins without inventory", async () => {
@@ -1036,32 +1030,24 @@ describe("update global helpers", () => {
   });
 
   it("still enforces critical sidecars when the inventory omits them", async () => {
-    await withTempDir(
-      { prefix: "eve-update-global-critical-sidecars-" },
-      async (packageRoot) => {
-        await writeGlobalPackageJson(packageRoot, "2026.4.15");
-        await writeBundledPluginPackageJson(packageRoot, "telegram", "@eve/telegram");
-        await writePackageDistInventory(packageRoot);
+    await withTempDir({ prefix: "eve-update-global-critical-sidecars-" }, async (packageRoot) => {
+      await writeGlobalPackageJson(packageRoot, "2026.4.15");
+      await writeBundledPluginPackageJson(packageRoot, "telegram", "@eve/telegram");
+      await writePackageDistInventory(packageRoot);
 
-        await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toContain(
-          `missing bundled runtime sidecar ${TELEGRAM_RUNTIME_API}`,
-        );
-      },
-    );
+      await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toContain(
+        `missing bundled runtime sidecar ${TELEGRAM_RUNTIME_API}`,
+      );
+    });
   });
 
   it("ignores stale metadata for non-packaged private QA plugins during inventory verify", async () => {
-    await withTempDir(
-      { prefix: "eve-update-global-stale-private-qa-" },
-      async (packageRoot) => {
-        await writeGlobalPackageJson(packageRoot, "2026.4.15");
-        await writeBundledPluginPackageJson(packageRoot, "qa-lab", "@eve/qa-lab");
-        await writePackageDistInventory(packageRoot);
+    await withTempDir({ prefix: "eve-update-global-stale-private-qa-" }, async (packageRoot) => {
+      await writeGlobalPackageJson(packageRoot, "2026.4.15");
+      await writeBundledPluginPackageJson(packageRoot, "qa-lab", "@eve/qa-lab");
+      await writePackageDistInventory(packageRoot);
 
-        await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toStrictEqual(
-          [],
-        );
-      },
-    );
+      await expect(collectInstalledGlobalPackageErrors({ packageRoot })).resolves.toStrictEqual([]);
+    });
   });
 });

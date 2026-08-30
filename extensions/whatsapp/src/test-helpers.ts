@@ -653,8 +653,7 @@ vi.mock("./auth-store.runtime.js", () => ({
 
 vi.mock("./session.runtime.js", () => {
   const created = createMockBaileys();
-  (globalThis as Record<PropertyKey, unknown>)[Symbol.for("eve:lastSocket")] =
-    created.lastSocket;
+  (globalThis as Record<PropertyKey, unknown>)[Symbol.for("eve:lastSocket")] = created.lastSocket;
   return {
     ...created.mod,
   };
@@ -684,8 +683,7 @@ function resetMockExport<T extends (...args: never[]) => unknown>(params: {
 
 export function resetBaileysMocks() {
   const recreated = createMockBaileys();
-  (globalThis as Record<PropertyKey, unknown>)[Symbol.for("eve:lastSocket")] =
-    recreated.lastSocket;
+  (globalThis as Record<PropertyKey, unknown>)[Symbol.for("eve:lastSocket")] = recreated.lastSocket;
 
   const makeWASocket = vi.mocked(baileys.makeWASocket);
   const makeWASocketImpl: typeof baileys.makeWASocket = (...args) =>

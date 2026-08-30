@@ -29,7 +29,7 @@ function writeJsonFile(targetPath: string, value: unknown): void {
 
 function writeFakeEVEPackage(root: string): { distRoot: string; loaderModulePath: string } {
   writeJsonFile(path.join(root, "package.json"), {
-    name: "eve",
+    name: "eve-agent",
     type: "module",
     bin: {
       eve: "./eve.mjs",
@@ -237,9 +237,9 @@ describe("installEVEPluginSdkNativeResolver", () => {
 
     expect(installedAliases).toContain("eve-agent/plugin-sdk/channel-outbound");
     const requireFromPlugin = createRequire(externalPluginEntry);
-    expect(fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/channel-outbound"))).toBe(
-      fs.realpathSync(path.join(root, "dist", "plugin-sdk", "channel-outbound.js")),
-    );
+    expect(
+      fs.realpathSync(requireFromPlugin.resolve("eve-agent/plugin-sdk/channel-outbound")),
+    ).toBe(fs.realpathSync(path.join(root, "dist", "plugin-sdk", "channel-outbound.js")));
   });
 
   it("lets built external plugins resolve EVE SDK subpaths with createRequire", () => {
@@ -297,7 +297,7 @@ describe("installEVEPluginSdkNativeResolver", () => {
         '  fs.writeFileSync(targetPath, `${JSON.stringify(value, null, 2)}\\n`, "utf8");',
         "};",
         'writeJson(path.join(root, "package.json"), {',
-        '  name: "eve",',
+        '  name: "eve-agent",',
         '  type: "module",',
         '  bin: { eve: "./eve.mjs" },',
         "  exports: {",

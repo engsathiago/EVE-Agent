@@ -69,9 +69,7 @@ export async function handleToolsInvokeHttpRequest(
   const body = (bodyUnknown ?? {}) as ToolsInvokeInput;
 
   // Resolve message channel/account hints (optional headers) for policy inheritance.
-  const messageChannel = normalizeMessageChannel(
-    getHeader(req, "x-eve-message-channel") ?? "",
-  );
+  const messageChannel = normalizeMessageChannel(getHeader(req, "x-eve-message-channel") ?? "");
   const accountId = normalizeOptionalString(getHeader(req, "x-eve-account-id"));
   const agentTo = normalizeOptionalString(getHeader(req, "x-eve-message-to"));
   const agentThreadId = normalizeOptionalString(getHeader(req, "x-eve-thread-id"));

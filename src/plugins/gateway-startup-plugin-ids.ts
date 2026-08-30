@@ -606,10 +606,7 @@ export type ConfiguredMemoryEmbeddingStartupProviderOwner = {
  * Both candidates are returned so matching covers the direct adapter and the
  * API owner without the runtime adapter registry.
  */
-function resolveMemoryEmbeddingProviderOwnerIds(
-  providerId: string,
-  config: EVEConfig,
-): string[] {
+function resolveMemoryEmbeddingProviderOwnerIds(providerId: string, config: EVEConfig): string[] {
   const ownerIds = [providerId];
   const genericOwnerId = normalizeOptionalLowercaseString(
     resolveConfiguredGenericEmbeddingProviderId(providerId, config),

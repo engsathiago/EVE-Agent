@@ -46,9 +46,7 @@ describe("plugin.approval.request turn-source routing (real gateway)", () => {
     delete process.env.EVE_GATEWAY_TOKEN;
     delete process.env.EVE_GATEWAY_PASSWORD;
 
-    tempHome = await fs.mkdtemp(
-      path.join(os.tmpdir(), "eve-plugin-approval-turn-source-e2e-"),
-    );
+    tempHome = await fs.mkdtemp(path.join(os.tmpdir(), "eve-plugin-approval-turn-source-e2e-"));
     const stateDir = path.join(tempHome, ".eve");
     await fs.mkdir(stateDir, { recursive: true });
     process.env.HOME = tempHome;

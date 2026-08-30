@@ -608,9 +608,7 @@ export class NodeRegistry {
   private allowsLegacyMacRunIdFallback(params: { nodeId: string; connId: string }): boolean {
     const node = this.nodesById.get(params.nodeId);
     return (
-      node?.connId === params.connId &&
-      node.clientId === "eve-macos" &&
-      node.platform === "darwin"
+      node?.connId === params.connId && node.clientId === "eve-macos" && node.platform === "darwin"
     );
   }
 

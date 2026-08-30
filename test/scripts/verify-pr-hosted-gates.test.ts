@@ -291,19 +291,19 @@ describe("verify-pr-hosted-gates", () => {
     expect(
       parseArgs([
         "--repo",
-        "eve/eve",
+        "engsathiago/eve-agent",
         "--sha",
         sha,
         "--output",
         ".local/gates-hosted-checks.json",
       ]),
     ).toEqual({
-      repo: "eve/eve",
+      repo: "engsathiago/eve-agent",
       sha,
       output: ".local/gates-hosted-checks.json",
       changelogOnly: false,
     });
-    expect(() => parseArgs(["--repo", "eve/eve"])).toThrow("Usage:");
+    expect(() => parseArgs(["--repo", "engsathiago/eve-agent"])).toThrow("Usage:");
   });
 
   it("accepts JSON emitted through a colorizing GitHub CLI shim", () => {

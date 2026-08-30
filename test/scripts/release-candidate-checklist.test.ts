@@ -233,10 +233,7 @@ describe("release candidate checklist", () => {
     [{ draft: true }, "must be published"],
     [{ prerelease: true }, "must not be a prerelease"],
     [{ tag_name: "v0.6.4" }, "Windows source release tag mismatch: expected v0.6.3, got v0.6.4"],
-    [
-      { assets: [] },
-      "must contain exactly one required asset EVECompanion-Setup-x64.exe; found 0",
-    ],
+    [{ assets: [] }, "must contain exactly one required asset EVECompanion-Setup-x64.exe; found 0"],
     [
       {
         assets: [
@@ -373,14 +370,14 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/eve/eve/actions/runs", {
+      githubApi("repos/engsathiago/eve-agent/actions/runs", {
         fetchImpl,
         timeoutMs: 1234,
         token: "test-token",
       }),
     ).resolves.toEqual({ workflow_runs: [] });
     expect(fetchImpl).toHaveBeenCalledWith(
-      "https://api.github.com/repos/eve/eve/actions/runs",
+      "https://api.github.com/repos/engsathiago/eve-agent/actions/runs",
       expect.objectContaining({
         signal: expect.any(AbortSignal),
       }),
@@ -396,14 +393,14 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/eve/eve/actions/runs", {
+      githubApi("repos/engsathiago/eve-agent/actions/runs", {
         fetchImpl,
         maxBodyBytes: 64,
         timeoutMs: 1234,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/eve/eve/actions/runs response body exceeded 64 bytes",
+      "GitHub API repos/engsathiago/eve-agent/actions/runs response body exceeded 64 bytes",
     );
   });
 
@@ -415,12 +412,12 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/eve/eve/actions/runs", {
+      githubApi("repos/engsathiago/eve-agent/actions/runs", {
         fetchImpl,
         timeoutMs: 25,
         token: "test-token",
       }),
-    ).rejects.toThrow("GitHub API repos/eve/eve/actions/runs timed out after 25ms");
+    ).rejects.toThrow("GitHub API repos/engsathiago/eve-agent/actions/runs timed out after 25ms");
   });
 
   it("includes the GitHub API path when a request times out", async () => {
@@ -429,13 +426,13 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/eve/eve/actions/runs/123/jobs", {
+      githubApi("repos/engsathiago/eve-agent/actions/runs/123/jobs", {
         fetchImpl,
         timeoutMs: 5,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/eve/eve/actions/runs/123/jobs timed out after 5ms",
+      "GitHub API repos/engsathiago/eve-agent/actions/runs/123/jobs timed out after 5ms",
     );
   });
 });

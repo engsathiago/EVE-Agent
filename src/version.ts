@@ -4,7 +4,7 @@ import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 
 // oxlint-disable-next-line eslint/no-underscore-dangle -- Bundled builds replace this compile-time define identifier.
 declare const __EVE_VERSION__: string | undefined;
-const CORE_PACKAGE_NAME = "eve";
+const CORE_PACKAGE_NAME = "eve-agent";
 
 const PACKAGE_JSON_CANDIDATES = [
   "../package.json",

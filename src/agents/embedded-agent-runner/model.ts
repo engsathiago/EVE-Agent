@@ -3,8 +3,8 @@
  */
 import { finiteSecondsToTimerSafeMilliseconds } from "@eve/normalization-core/number-coercion";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
-import type { ModelCompatConfig, ModelMediaInputConfig } from "../../config/types.models.js";
 import type { EVEConfig } from "../../config/types.eve.js";
+import type { ModelCompatConfig, ModelMediaInputConfig } from "../../config/types.models.js";
 import type { ModelRegistry as CoreModelRegistry } from "../../llm/model-registry.js";
 import type { Api, Model } from "../../llm/types.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";

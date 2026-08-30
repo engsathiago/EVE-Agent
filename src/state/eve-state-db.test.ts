@@ -63,9 +63,7 @@ describe("eve state database", () => {
         VITEST: "true",
         VITEST_WORKER_ID: "7",
       } as NodeJS.ProcessEnv),
-    ).toBe(
-      path.join(os.tmpdir(), "eve-test-state", `${process.pid}-7`, "state", "eve.sqlite"),
-    );
+    ).toBe(path.join(os.tmpdir(), "eve-test-state", `${process.pid}-7`, "state", "eve.sqlite"));
   });
 
   it("creates the shared state schema from the committed SQL shape", () => {
@@ -84,9 +82,7 @@ describe("eve state database", () => {
     const databasePath = path.join(createTempStateDir(), "eve.sqlite");
     fs.writeFileSync(databasePath, "not a sqlite database");
 
-    expect(() => openEVEStateDatabase({ path: databasePath })).toThrow(
-      "file is not a database",
-    );
+    expect(() => openEVEStateDatabase({ path: databasePath })).toThrow("file is not a database");
     expect(listOpenFileDescriptorsForPath(databasePath)).toEqual([]);
   });
 

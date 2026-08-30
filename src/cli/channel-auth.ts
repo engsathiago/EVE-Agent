@@ -136,11 +136,7 @@ async function resolveChannelPluginForMode(
   };
 }
 
-function resolveAccountContext(
-  plugin: ChannelPlugin,
-  opts: ChannelAuthOptions,
-  cfg: EVEConfig,
-) {
+function resolveAccountContext(plugin: ChannelPlugin, opts: ChannelAuthOptions, cfg: EVEConfig) {
   const accountId =
     normalizeOptionalString(opts.account) || resolveChannelDefaultAccountId({ plugin, cfg });
   return { accountId };

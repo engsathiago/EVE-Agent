@@ -97,11 +97,7 @@ function mergeGatewayServiceEnv(
     ...baseEnv,
     ...command.environment,
   };
-  for (const key of [
-    "EVE_LAUNCHD_LABEL",
-    "EVE_SYSTEMD_UNIT",
-    "EVE_WINDOWS_TASK_NAME",
-  ]) {
+  for (const key of ["EVE_LAUNCHD_LABEL", "EVE_SYSTEMD_UNIT", "EVE_WINDOWS_TASK_NAME"]) {
     // Explicit caller env selects the target service identity; installed command
     // env may come from a different profile or stale service file.
     const value = baseEnv[key]?.trim();

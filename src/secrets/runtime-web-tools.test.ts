@@ -145,11 +145,7 @@ function ensureRecord(target: Record<string, unknown>, key: string): Record<stri
   return next;
 }
 
-function setConfiguredProviderKey(
-  configTarget: EVEConfig,
-  pluginId: string,
-  value: unknown,
-): void {
+function setConfiguredProviderKey(configTarget: EVEConfig, pluginId: string, value: unknown): void {
   const plugins = ensureRecord(configTarget as Record<string, unknown>, "plugins");
   const entries = ensureRecord(plugins, "entries");
   const pluginEntry = ensureRecord(entries, pluginId);
@@ -309,10 +305,7 @@ async function runRuntimeWebTools(params: { config: EVEConfig; env?: NodeJS.Proc
   return { metadata, resolvedConfig, context };
 }
 
-function createProviderSecretRefConfig(
-  provider: ProviderUnderTest,
-  envRefId: string,
-): EVEConfig {
+function createProviderSecretRefConfig(provider: ProviderUnderTest, envRefId: string): EVEConfig {
   return asConfig({
     tools: {
       web: {

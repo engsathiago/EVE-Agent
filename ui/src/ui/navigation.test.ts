@@ -32,6 +32,11 @@ describe("iconForTab", () => {
       overview: "barChart",
       activity: "activity",
       workboard: "folder",
+      projects: "folder",
+      studio: "spark",
+      environments: "monitor",
+      integrations: "link",
+      intelligence: "brain",
       channels: "link",
       instances: "radio",
       sessions: "fileText",
@@ -67,7 +72,12 @@ describe("titleForTab", () => {
       chat: "Chat",
       overview: "Overview",
       activity: "Activity",
-      workboard: "Workboard",
+      workboard: "Mission Control",
+      projects: "Projects",
+      studio: "Studio",
+      environments: "Environments",
+      integrations: "Integration Store",
+      intelligence: "Intelligence",
       channels: "Channels",
       instances: "Instances",
       sessions: "Sessions",
@@ -97,7 +107,12 @@ describe("subtitleForTab", () => {
       chat: "Gateway chat for quick interventions.",
       overview: "Status, entry points, health.",
       activity: "Browser-local tool activity summaries.",
-      workboard: "Agent work queue and session handoff.",
+      workboard: "Mission orchestration, agent work queue, dependencies, and session handoff.",
+      projects: "Persistent folders, boards, and work contexts.",
+      studio: "Create, edit, preview, version, and publish artifacts.",
+      environments: "Managed Docker workspaces with quotas and TTLs.",
+      integrations: "Plugins, channels, and MCP servers in one catalog.",
+      intelligence: "Traces, results, flows, evals, routing, workers, and Model Lab.",
       channels: "Channels and settings.",
       instances: "Connected clients and nodes.",
       sessions: "Active sessions and defaults.",
@@ -225,7 +240,13 @@ describe("inferBasePathFromPathname", () => {
 
 describe("TAB_GROUPS", () => {
   it("contains all expected groups", () => {
-    expect(TAB_GROUPS.map((g) => g.label)).toEqual(["chat", "control", "agent", "settings"]);
+    expect(TAB_GROUPS.map((g) => g.label)).toEqual([
+      "chat",
+      "control",
+      "workspace",
+      "agent",
+      "settings",
+    ]);
   });
 
   it("all tabs are unique", () => {

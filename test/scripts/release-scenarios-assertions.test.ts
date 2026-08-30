@@ -347,11 +347,11 @@ describe("release scenario assertions", () => {
 
   it("passes when the installed package version matches the candidate version", () => {
     const root = mkdtempSync(path.join(tmpdir(), "eve-release-scenarios-"));
-    const packageRoot = path.join(root, "eve");
+    const packageRoot = path.join(root, "eve-agent");
 
     try {
       writeJson(path.join(packageRoot, "package.json"), {
-        name: "eve",
+        name: "eve-agent",
         version: "2026.5.26",
       });
 
@@ -371,11 +371,11 @@ describe("release scenario assertions", () => {
 
   it("fails when the global install still points at the baseline version", () => {
     const root = mkdtempSync(path.join(tmpdir(), "eve-release-scenarios-"));
-    const packageRoot = path.join(root, "eve");
+    const packageRoot = path.join(root, "eve-agent");
 
     try {
       writeJson(path.join(packageRoot, "package.json"), {
-        name: "eve",
+        name: "eve-agent",
         version: "2026.5.22",
       });
 

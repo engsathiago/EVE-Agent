@@ -1,11 +1,7 @@
 // Resolves attachment payloads for plugin host hooks.
 import * as fsPromises from "node:fs/promises";
 import { lstat } from "node:fs/promises";
-import {
-  detectMime,
-  FILE_TYPE_SNIFF_MAX_BYTES,
-  normalizeMimeType,
-} from "@eve/media-core/mime";
+import { detectMime, FILE_TYPE_SNIFF_MAX_BYTES, normalizeMimeType } from "@eve/media-core/mime";
 import { normalizeOptionalString } from "@eve/normalization-core/string-coerce";
 import { resolveAgentWorkspaceDir } from "../agents/agent-scope.js";
 import { resolvePathFromInput } from "../agents/path-policy.js";

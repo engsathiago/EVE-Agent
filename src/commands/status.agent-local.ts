@@ -28,9 +28,7 @@ type AgentLocalStatusesResult = {
 };
 
 /** Returns per-agent local workspace, bootstrap, session count, and last activity status. */
-export async function getAgentLocalStatuses(
-  cfg: EVEConfig,
-): Promise<AgentLocalStatusesResult> {
+export async function getAgentLocalStatuses(cfg: EVEConfig): Promise<AgentLocalStatusesResult> {
   const agentList = listGatewayAgentsBasic(cfg);
   const now = Date.now();
 

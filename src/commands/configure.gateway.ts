@@ -1,9 +1,6 @@
 // Configure wizard Gateway port, bind, auth, and Tailscale prompts.
 import { validateIPv4AddressInput } from "@eve/net-policy/ipv4";
-import {
-  normalizeOptionalString,
-  readStringValue,
-} from "@eve/normalization-core/string-coerce";
+import { normalizeOptionalString, readStringValue } from "@eve/normalization-core/string-coerce";
 import { normalizeStringEntries } from "@eve/normalization-core/string-normalization";
 import { note } from "../../packages/terminal-core/src/note.js";
 import { formatPortRangeHint } from "../cli/error-format.js";

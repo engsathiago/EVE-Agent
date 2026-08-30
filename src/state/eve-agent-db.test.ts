@@ -15,10 +15,7 @@ import {
   openEVEAgentDatabase,
   resolveEVEAgentSqlitePath,
 } from "./eve-agent-db.js";
-import {
-  closeEVEStateDatabaseForTest,
-  openEVEStateDatabase,
-} from "./eve-state-db.js";
+import { closeEVEStateDatabaseForTest, openEVEStateDatabase } from "./eve-state-db.js";
 import {
   collectSqliteSchemaShape,
   createSqliteSchemaShapeFromSql,
@@ -359,13 +356,7 @@ describe("eve agent database", () => {
 
   it("refuses to open newer per-agent schema versions", () => {
     const stateDir = createTempStateDir();
-    const databasePath = path.join(
-      stateDir,
-      "agents",
-      "worker-1",
-      "agent",
-      "eve-agent.sqlite",
-    );
+    const databasePath = path.join(stateDir, "agents", "worker-1", "agent", "eve-agent.sqlite");
     fs.mkdirSync(path.dirname(databasePath), { recursive: true });
     const { DatabaseSync } = requireNodeSqlite();
     const db = new DatabaseSync(databasePath);

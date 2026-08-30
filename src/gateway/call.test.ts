@@ -2006,11 +2006,7 @@ describe("callGateway url override auth requirements", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeEach(() => {
-    envSnapshot = captureEnv([
-      "EVE_GATEWAY_TOKEN",
-      "EVE_GATEWAY_PASSWORD",
-      "EVE_GATEWAY_URL",
-    ]);
+    envSnapshot = captureEnv(["EVE_GATEWAY_TOKEN", "EVE_GATEWAY_PASSWORD", "EVE_GATEWAY_URL"]);
     resetGatewayCallMocks();
     delete process.env.EVE_GATEWAY_TOKEN;
     delete process.env.EVE_GATEWAY_PASSWORD;

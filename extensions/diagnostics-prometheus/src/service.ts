@@ -571,11 +571,7 @@ function recordDiagnosticEvent(
         runLabels(evt),
         seconds(evt.durationMs),
       );
-      store.counter(
-        "eve_run_completed_total",
-        "Agent runs completed by outcome.",
-        runLabels(evt),
-      );
+      store.counter("eve_run_completed_total", "Agent runs completed by outcome.", runLabels(evt));
       return;
     case "model.call.completed":
     case "model.call.error":
@@ -867,14 +863,10 @@ function recordDiagnosticEvent(
       );
       return;
     case "diagnostic.memory.pressure":
-      store.counter(
-        "eve_memory_pressure_total",
-        "Memory pressure events by level and reason.",
-        {
-          level: evt.level,
-          reason: evt.reason,
-        },
-      );
+      store.counter("eve_memory_pressure_total", "Memory pressure events by level and reason.", {
+        level: evt.level,
+        reason: evt.reason,
+      });
       return;
     case "diagnostic.liveness.warning":
       store.counter(

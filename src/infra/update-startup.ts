@@ -3,10 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import {
-  asDateTimestampMs,
-  timestampMsToIsoString,
-} from "@eve/normalization-core/number-coercion";
+import { asDateTimestampMs, timestampMsToIsoString } from "@eve/normalization-core/number-coercion";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
 import { formatCliCommand } from "../cli/command-format.js";
 import { resolveStateDir } from "../config/paths.js";
@@ -14,8 +11,8 @@ import type { EVEConfig } from "../config/types.eve.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { VERSION } from "../version.js";
 import { isTruthyEnvValue } from "./env.js";
-import { writeJson } from "./json-files.js";
 import { resolveEVEPackageRoot } from "./eve-root.js";
+import { writeJson } from "./json-files.js";
 import { scheduleGatewaySigusr1Restart } from "./restart.js";
 import { detectRespawnSupervisor, type RespawnSupervisor } from "./supervisor-markers.js";
 import { normalizeUpdateChannel, DEFAULT_PACKAGE_CHANNEL } from "./update-channels.js";

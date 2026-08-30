@@ -29,17 +29,20 @@ function withTarball(
   try {
     const packageRoot = join(root, "package");
     mkdirSync(join(packageRoot, "dist"), { recursive: true });
-    writeFileSync(join(packageRoot, "package.json"), JSON.stringify({ name: "eve", version }));
+    writeFileSync(
+      join(packageRoot, "package.json"),
+      JSON.stringify({ name: "eve-agent", version }),
+    );
     if (options.includeShrinkwrap !== false) {
       writeFileSync(
         join(packageRoot, "npm-shrinkwrap.json"),
         JSON.stringify({
-          name: "eve",
+          name: "eve-agent",
           version,
           lockfileVersion: 3,
           packages: {
             "": {
-              name: "eve",
+              name: "eve-agent",
               version,
             },
           },
@@ -80,9 +83,7 @@ describe("check-eve-package-tarball", () => {
     const result = spawnSync("node", [CHECK_SCRIPT, "--help"], { encoding: "utf8" });
 
     expect(result.status, result.stderr).toBe(0);
-    expect(result.stdout).toContain(
-      "Usage: node scripts/check-eve-package-tarball.mjs <eve.tgz>",
-    );
+    expect(result.stdout).toContain("Usage: node scripts/check-eve-package-tarball.mjs <eve.tgz>");
     expect(result.stderr).toBe("");
   });
 

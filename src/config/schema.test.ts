@@ -702,9 +702,7 @@ describe("config schema", () => {
 
     expect(parsed.security?.installPolicy?.targets).toEqual(["skill", "plugin"]);
     expect(parsed.security?.installPolicy?.exec?.source).toBe("exec");
-    expect(parsed.security?.installPolicy?.exec?.command).toBe(
-      "/usr/local/bin/eve-install-policy",
-    );
+    expect(parsed.security?.installPolicy?.exec?.command).toBe("/usr/local/bin/eve-install-policy");
   });
 
   it("accepts Code Mode config in the runtime zod schema", () => {

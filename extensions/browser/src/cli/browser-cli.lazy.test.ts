@@ -184,14 +184,7 @@ describe("registerBrowserCli lazy browser subcommands", () => {
     const program = new Command();
     program.name("eve");
 
-    registerBrowserCli(program, [
-      "node",
-      "eve",
-      "browser",
-      "--browser-profile",
-      "status",
-      "start",
-    ]);
+    registerBrowserCli(program, ["node", "eve", "browser", "--browser-profile", "status", "start"]);
 
     const browser = program.commands.find((command) => command.name() === "browser");
     expect(browser?.commands.map((command) => command.name())).toContain("start");

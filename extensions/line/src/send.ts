@@ -74,7 +74,7 @@ function normalizeTarget(to: string): string {
   // Reject values that match the LINE id shape but lost their leading capital
   // so the failure is surfaced as a permanent error (recovery moves the entry
   // to failed/ immediately instead of silently retrying 5 times). Short test
-  // fixtures (e.g. "U123") are left alone. eve/eve#81628
+  // fixtures (e.g. "U123") are left alone. engsathiago/eve-agent#81628
   if (normalized.length >= 33 && !/^[CUR]/.test(normalized)) {
     throw new Error(
       `Recipient is not a valid LINE id (case-sensitive; expected leading capital C/U/R): ${normalized.slice(0, 4)}…`,

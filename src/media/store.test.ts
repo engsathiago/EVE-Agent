@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
-import JSZip from "jszip";
 import { importFreshModule } from "eve-agent/plugin-sdk/test-fixtures";
+import JSZip from "jszip";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { createSolidPngBuffer, createTinyJpegBuffer } from "../../test/helpers/image-fixtures.js";
 import { isPathWithinBase } from "../../test/helpers/paths.js";
@@ -928,9 +928,8 @@ describe("media store", () => {
   it("prefers header mime extension when sniffed mime lacks mapping", async () => {
     await withTempStore(async (_store, homeLocal) => {
       vi.doMock("@eve/media-core/mime", async () => {
-        const actual = await vi.importActual<typeof import("@eve/media-core/mime")>(
-          "@eve/media-core/mime",
-        );
+        const actual =
+          await vi.importActual<typeof import("@eve/media-core/mime")>("@eve/media-core/mime");
         return {
           ...actual,
           detectMime: vi.fn(async () => "audio/opus"),

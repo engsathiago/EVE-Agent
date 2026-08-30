@@ -131,18 +131,13 @@ async function yieldTranscriptScan(): Promise<void> {
 }
 
 /** Attach EVE metadata to a transcript message without dropping existing metadata. */
-export function attachEVETranscriptMeta(
-  message: unknown,
-  meta: Record<string, unknown>,
-): unknown {
+export function attachEVETranscriptMeta(message: unknown, meta: Record<string, unknown>): unknown {
   if (!message || typeof message !== "object" || Array.isArray(message)) {
     return message;
   }
   const record = message as Record<string, unknown>;
   const existing =
-    record["__eve"] &&
-    typeof record["__eve"] === "object" &&
-    !Array.isArray(record["__eve"])
+    record["__eve"] && typeof record["__eve"] === "object" && !Array.isArray(record["__eve"])
       ? (record["__eve"] as Record<string, unknown>)
       : {};
   return {

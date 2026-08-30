@@ -49,9 +49,7 @@ export const QA_PROVIDER_SECRET_ENV_VARS = Object.freeze([
   "EVE_QA_CONVEX_SECRET_MAINTAINER",
   "VOYAGE_API_KEY",
 ]);
-export const QA_PROVIDER_SECRET_ENV_KEY_PATTERNS = Object.freeze([
-  /^EVE_LIVE_[A-Z0-9_]+_KEYS?$/u,
-]);
+export const QA_PROVIDER_SECRET_ENV_KEY_PATTERNS = Object.freeze([/^EVE_LIVE_[A-Z0-9_]+_KEYS?$/u]);
 
 const QA_MOCK_BLOCKED_ENV_VARS = Object.freeze([
   ...QA_PROVIDER_SECRET_ENV_VARS,
@@ -205,8 +203,7 @@ export function resolveQaLiveCliAuthEnv(
 }
 
 export function resolveQaLiveProviderConfigPath(env: NodeJS.ProcessEnv = process.env) {
-  const explicit =
-    env[QA_LIVE_PROVIDER_CONFIG_PATH_ENV]?.trim() || env.EVE_CONFIG_PATH?.trim();
+  const explicit = env[QA_LIVE_PROVIDER_CONFIG_PATH_ENV]?.trim() || env.EVE_CONFIG_PATH?.trim();
   return explicit
     ? { path: resolveUserPath(explicit, env), explicit: true }
     : { path: path.join(os.homedir(), ".eve", "eve.json"), explicit: false };

@@ -56,9 +56,7 @@ const { probeVideoDimensions } = vi.hoisted(() => ({
 
 const { loadConfig, resolveStorePath } = vi.hoisted(() => ({
   loadConfig: vi.fn(() => ({})),
-  resolveStorePath: vi.fn(
-    (storePath?: string) => storePath ?? "/tmp/eve-telegram-send-tests.json",
-  ),
+  resolveStorePath: vi.fn((storePath?: string) => storePath ?? "/tmp/eve-telegram-send-tests.json"),
 }));
 
 const { maybePersistResolvedTelegramTarget } = vi.hoisted(() => ({

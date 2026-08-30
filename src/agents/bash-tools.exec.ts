@@ -12,6 +12,7 @@ import {
   normalizeOptionalString,
 } from "@eve/normalization-core/string-coerce";
 import { normalizeChatChannelId } from "../channels/ids.js";
+import { EVE_CLI_ENV_VAR } from "../infra/eve-exec-env.js";
 import {
   type ExecAsk,
   type ExecHost,
@@ -35,7 +36,6 @@ import {
   normalizeHostOverrideEnvVarKey,
   sanitizeHostExecEnvWithDiagnostics,
 } from "../infra/host-env-security.js";
-import { EVE_CLI_ENV_VAR } from "../infra/eve-exec-env.js";
 import {
   getShellPathFromLoginShell,
   resolveShellEnvFallbackTimeoutMs,

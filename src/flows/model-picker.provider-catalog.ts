@@ -9,8 +9,8 @@ import {
   createProviderAuthResolver,
 } from "../agents/models-config.providers.secrets.js";
 import { resolveProviderCatalogPluginIdsForFilter } from "../commands/models/list.provider-catalog.js";
-import type { ModelDefinitionConfig, ModelProviderConfig } from "../config/types.models.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { ModelDefinitionConfig, ModelProviderConfig } from "../config/types.models.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import {

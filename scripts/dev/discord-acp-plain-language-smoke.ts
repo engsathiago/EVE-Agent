@@ -363,8 +363,7 @@ function usage(): string {
 
 function parseArgs(argv = process.argv.slice(2)): Args {
   validateCliArgs(argv);
-  const channelId =
-    resolveArg("--channel", argv) || process.env.EVE_DISCORD_SMOKE_CHANNEL_ID || "";
+  const channelId = resolveArg("--channel", argv) || process.env.EVE_DISCORD_SMOKE_CHANNEL_ID || "";
   const driverModeRaw =
     resolveArg("--driver", argv) || process.env.EVE_DISCORD_SMOKE_DRIVER || "token";
   const driverMode = parseDriverMode(driverModeRaw);
@@ -383,16 +382,11 @@ function parseArgs(argv = process.argv.slice(2)): Args {
     resolveArg("--bot-token-prefix", argv) ||
     process.env.EVE_DISCORD_SMOKE_BOT_TOKEN_PREFIX ||
     "Bot";
-  const targetAgent =
-    resolveArg("--agent", argv) || process.env.EVE_DISCORD_SMOKE_AGENT || "codex";
+  const targetAgent = resolveArg("--agent", argv) || process.env.EVE_DISCORD_SMOKE_AGENT || "codex";
   const mentionUserId =
-    resolveArg("--mention", argv) ||
-    process.env.EVE_DISCORD_SMOKE_MENTION_USER_ID ||
-    undefined;
+    resolveArg("--mention", argv) || process.env.EVE_DISCORD_SMOKE_MENTION_USER_ID || undefined;
   const instruction =
-    resolveArg("--instruction", argv) ||
-    process.env.EVE_DISCORD_SMOKE_INSTRUCTION ||
-    undefined;
+    resolveArg("--instruction", argv) || process.env.EVE_DISCORD_SMOKE_INSTRUCTION || undefined;
   const timeoutMs = parseNumber(
     resolveArg("--timeout-ms", argv) || process.env.EVE_DISCORD_SMOKE_TIMEOUT_MS,
     240_000,
@@ -404,10 +398,7 @@ function parseArgs(argv = process.argv.slice(2)): Args {
     "--poll-ms",
   );
   const stateDir = path.resolve(resolveArg("--state-dir", argv) || resolveStateDir());
-  const eveBin =
-    resolveArg("--eve-bin", argv) ||
-    process.env.EVE_DISCORD_SMOKE_EVE_BIN ||
-    "eve";
+  const eveBin = resolveArg("--eve-bin", argv) || process.env.EVE_DISCORD_SMOKE_EVE_BIN || "eve";
   const json = hasFlag("--json", argv);
 
   if (!channelId) {

@@ -130,9 +130,7 @@ describe("dev tooling safety helpers", () => {
   });
 
   it("redacts home paths and masks opaque ids", () => {
-    expect(redactHomePath("/home/alice/.eve/state.json", "/home/alice")).toBe(
-      "~/.eve/state.json",
-    );
+    expect(redactHomePath("/home/alice/.eve/state.json", "/home/alice")).toBe("~/.eve/state.json");
     expect(maskIdentifier("session-key-abcdef123456")).toBe("sessio...3456");
   });
 });

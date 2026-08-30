@@ -209,11 +209,11 @@ describe("package-eve-for-docker", () => {
       ) => {
         calls.push(`${command}:${args.join(" ")}:${cwd}`);
         expect(options.deferForwardedSignalExit).toBe(true);
-        return "eve-2026.5.28.tgz\n";
+        return "eve-agent-2026.5.28.tgz\n";
       },
     });
 
-    expect(tarball).toBe(path.join("/out", "eve-2026.5.28.tgz"));
+    expect(tarball).toBe(path.join("/out", "eve-agent-2026.5.28.tgz"));
     expect(calls).toEqual([
       "prepare:/repo",
       "npm:pack --silent --ignore-scripts --pack-destination /out:/repo",
@@ -223,9 +223,9 @@ describe("package-eve-for-docker", () => {
 
   it("rejects path-like npm pack stdout before resolving Docker package tarballs", async () => {
     for (const filename of [
-      "../eve-2026.6.17.tgz",
-      "/tmp/eve-2026.6.17.tgz",
-      String.raw`C:\temp\eve-2026.6.17.tgz`,
+      "../eve-agent-2026.6.17.tgz",
+      "/tmp/eve-agent-2026.6.17.tgz",
+      String.raw`C:\temp\eve-agent-2026.6.17.tgz`,
       "eve-nested/evil.tgz",
       String.raw`eve-nested\evil.tgz`,
       "eve-C:evil.tgz",
@@ -258,11 +258,11 @@ describe("package-eve-for-docker", () => {
           prepareChangelog: async () => {},
           restoreChangelog: async () => {},
           runCaptureImpl: async () => {
-            fs.writeFileSync(path.join(outputDir, "eve-2026.6.17.tgz"), "");
+            fs.writeFileSync(path.join(outputDir, "eve-agent-2026.6.17.tgz"), "");
             return "npm notice\n";
           },
         }),
-      ).resolves.toBe(path.join(outputDir, "eve-2026.6.17.tgz"));
+      ).resolves.toBe(path.join(outputDir, "eve-agent-2026.6.17.tgz"));
     } finally {
       fs.rmSync(outputDir, { recursive: true, force: true });
     }
@@ -271,21 +271,21 @@ describe("package-eve-for-docker", () => {
   it("ignores stale package tarballs before fallback scanning npm output", async () => {
     const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "eve-docker-pack-stale-"));
     try {
-      fs.writeFileSync(path.join(outputDir, "eve-9999.1.1.tgz"), "stale");
+      fs.writeFileSync(path.join(outputDir, "eve-agent-9999.1.1.tgz"), "stale");
 
       await expect(
         packEVEPackageForDocker("/repo", outputDir, {
           prepareChangelog: async () => {},
           restoreChangelog: async () => {},
           runCaptureImpl: async () => {
-            fs.writeFileSync(path.join(outputDir, "eve-2026.6.17.tgz"), "current");
+            fs.writeFileSync(path.join(outputDir, "eve-agent-2026.6.17.tgz"), "current");
             return "npm notice\n";
           },
         }),
-      ).resolves.toBe(path.join(outputDir, "eve-2026.6.17.tgz"));
+      ).resolves.toBe(path.join(outputDir, "eve-agent-2026.6.17.tgz"));
 
-      expect(fs.existsSync(path.join(outputDir, "eve-9999.1.1.tgz"))).toBe(false);
-      expect(fs.readFileSync(path.join(outputDir, "eve-2026.6.17.tgz"), "utf8")).toBe(
+      expect(fs.existsSync(path.join(outputDir, "eve-agent-9999.1.1.tgz"))).toBe(false);
+      expect(fs.readFileSync(path.join(outputDir, "eve-agent-2026.6.17.tgz"), "utf8")).toBe(
         "current",
       );
     } finally {

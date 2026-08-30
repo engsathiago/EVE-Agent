@@ -1,7 +1,7 @@
 /** Materializes configured MCP catalog entries into agent tools and runtime helpers. */
 import crypto from "node:crypto";
-import type { CallToolResult, ContentBlock } from "@modelcontextprotocol/sdk/types.js";
 import { normalizeLowercaseStringOrEmpty } from "@eve/normalization-core/string-coerce";
+import type { CallToolResult, ContentBlock } from "@modelcontextprotocol/sdk/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
 import { logWarn } from "../logger.js";
 import { setPluginToolMeta, type PluginToolMcpMeta } from "../plugins/tools.js";

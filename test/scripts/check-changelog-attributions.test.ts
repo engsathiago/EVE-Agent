@@ -110,9 +110,7 @@ describe("check-changelog-attributions", () => {
   });
 
   it("checks every thanked handle on a changelog line", () => {
-    expect(
-      findForbiddenChangelogThanks("- Mixed credit (#123). Thanks @eve and @alice."),
-    ).toEqual([
+    expect(findForbiddenChangelogThanks("- Mixed credit (#123). Thanks @eve and @alice.")).toEqual([
       {
         line: 1,
         handle: "eve",

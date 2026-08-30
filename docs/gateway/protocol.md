@@ -546,6 +546,13 @@ terminal summary, and sanitized error text. `agentId` identifies the agent
 executing the task; `sessionKey` and `ownerKey` preserve requester and control
 context.
 
+The additive `agent` request field `inheritedToolAllow` accepts a non-empty
+array only for subagent session keys. The Gateway stores the normalized list on
+the child session, where the runtime intersects it with the tools already
+allowed by the agent profile. It is a narrowing contract for internal worker
+runtimes, not a permission-granting surface, and requests for non-subagent
+sessions are rejected.
+
 ### Operator helper methods
 
 - Operators may call `commands.list` (`operator.read`) to fetch the runtime

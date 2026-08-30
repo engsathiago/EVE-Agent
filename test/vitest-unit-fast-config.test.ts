@@ -1,6 +1,7 @@
 // Vitest unit-fast config tests validate fast unit test project setup.
 import { beforeAll, describe, expect, it } from "vitest";
 import { spawnNodeEvalSync } from "../src/test-utils/node-process.js";
+import { normalizeConfigPath } from "./helpers/vitest-config-paths.js";
 import { createCommandsLightVitestConfig } from "./vitest/vitest.commands-light.config.ts";
 import { createPluginSdkLightVitestConfig } from "./vitest/vitest.plugin-sdk-light.config.ts";
 import { createUnitFastFakeTimersVitestConfig } from "./vitest/vitest.unit-fast-fake-timers.config.ts";
@@ -101,11 +102,11 @@ describe("unit-fast vitest lane", () => {
     expect(numericOutputLines.at(-1)).toBeLessThan(20);
   });
 
-  it("runs cache-friendly tests without the reset-heavy runner or runtime setup", () => {
+  it("runs cache-friendly tests with per-file cleanup and without runtime setup", () => {
     const testConfig = requireTestConfig(unitFastConfig);
 
     expect(testConfig.isolate).toBe(false);
-    expect(testConfig.runner).toBeUndefined();
+    expect(normalizeConfigPath(testConfig.runner)).toBe("test/non-isolated-runner.ts");
     expect(testConfig.setupFiles).toStrictEqual([]);
     expect(testConfig.include).toContain(
       "src/agents/agent-tools.deferred-followup-guidance.test.ts",

@@ -4,8 +4,8 @@
 import { normalizeProviderId } from "@eve/model-catalog-core/provider-id";
 import { normalizeOptionalLowercaseString } from "@eve/normalization-core/string-coerce";
 import { uniqueStrings } from "@eve/normalization-core/string-normalization";
-import type { CliBackendConfig } from "../config/types.js";
 import type { EVEConfig } from "../config/types.eve.js";
+import type { CliBackendConfig } from "../config/types.js";
 import type { ContextEngineHostCapability } from "../context-engine/types.js";
 import { resolveRuntimeCliBackends } from "../plugins/cli-backends.runtime.js";
 import {

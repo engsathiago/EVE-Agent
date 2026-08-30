@@ -137,7 +137,7 @@ Replace `youruser` with the account you created, and the IP with your VM's IP.
 Inside the VM:
 
 ```bash
-npm install -g eve@latest
+npm install -g eve-agent@latest
 eve onboard --install-daemon
 ```
 
@@ -260,11 +260,11 @@ For true always-on, consider a dedicated Mac mini or a small VPS. See [VPS hosti
 
 ## Troubleshooting
 
-| Problem                  | Solution                                                                           |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| Can't SSH into VM        | Check "Remote Login" is enabled in VM's System Settings                            |
+| Problem                  | Solution                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| Can't SSH into VM        | Check "Remote Login" is enabled in VM's System Settings                       |
 | VM IP not showing        | Wait for VM to fully boot, run `lume get eve` again                           |
-| Lume command not found   | Add `~/.local/bin` to your PATH                                                    |
+| Lume command not found   | Add `~/.local/bin` to your PATH                                               |
 | WhatsApp QR not scanning | Ensure you're logged into the VM (not host) when running `eve channels login` |
 
 ---

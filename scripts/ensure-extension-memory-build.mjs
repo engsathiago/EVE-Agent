@@ -32,11 +32,7 @@ function positiveEnvInt(name, env, fallback) {
  * Resolves the extension memory build timeout from environment.
  */
 export function resolveExtensionMemoryBuildTimeoutMs(env = process.env) {
-  return positiveEnvInt(
-    "EVE_EXTENSION_MEMORY_BUILD_TIMEOUT_MS",
-    env,
-    DEFAULT_BUILD_TIMEOUT_MS,
-  );
+  return positiveEnvInt("EVE_EXTENSION_MEMORY_BUILD_TIMEOUT_MS", env, DEFAULT_BUILD_TIMEOUT_MS);
 }
 
 function collectExpectedExtensionMemoryEntryIds(rootDir, env) {
