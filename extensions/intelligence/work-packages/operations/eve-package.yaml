@@ -1,0 +1,4 @@
+name: operations
+version: 1.0.0
+description: VPS operations with diagnosis, execution, verification, and recovery.
+recommendedSkills: [docker-management]

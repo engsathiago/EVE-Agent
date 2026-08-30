@@ -1,0 +1,28 @@
+{
+  "name": "@eve/intelligence",
+  "version": "2026.6.8",
+  "private": true,
+  "description": "EVE operational intelligence, durable workflows, results, experiments, and workers",
+  "type": "module",
+  "dependencies": {
+    "typebox": "1.1.39",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@eve/plugin-sdk": "workspace:*",
+    "eve-agent": "workspace:*"
+  },
+  "peerDependencies": {
+    "eve-agent": ">=2026.6.8"
+  },
+  "peerDependenciesMeta": {
+    "eve-agent": {
+      "optional": true
+    }
+  },
+  "eve": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

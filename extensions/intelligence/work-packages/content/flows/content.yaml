@@ -1,0 +1,13 @@
+name: content-production
+steps:
+  - id: brief
+    type: eve
+    prompt: "Create a content brief, promise, and structure for: {{input.topic}}"
+  - id: draft
+    type: eve
+    needs: [brief]
+    prompt: "Produce the complete content following: {{steps.brief.output.response}}"
+  - id: quality
+    type: eve
+    needs: [draft]
+    prompt: "Review clarity, accuracy, tone, and calls to action; deliver the final version: {{steps.draft.output.response}}"

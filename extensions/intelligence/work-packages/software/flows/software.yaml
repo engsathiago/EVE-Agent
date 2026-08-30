@@ -1,0 +1,17 @@
+name: validated-software-delivery
+steps:
+  - id: analyze
+    type: eve
+    prompt: "Analyze the project and plan the change: {{input.task}}"
+  - id: implement
+    type: eve
+    needs: [analyze]
+    prompt: "Implement the complete plan while preserving existing work: {{steps.analyze.output.response}}"
+  - id: test
+    type: eve
+    needs: [implement]
+    prompt: "Run proportional tests, investigate failures, and repair regressions. Prior result: {{steps.implement.output.response}}"
+  - id: review
+    type: eve
+    needs: [test]
+    prompt: "Review the delivery, verify evidence, and report remaining risks: {{steps.test.output.response}}"

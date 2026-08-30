@@ -1,0 +1,13 @@
+name: verified-vps-operation
+steps:
+  - id: diagnose
+    type: eve
+    prompt: "Diagnose the environment and record its current state for: {{input.objective}}"
+  - id: execute
+    type: eve
+    needs: [diagnose]
+    prompt: "Execute the objective with appropriate backup and verification: {{steps.diagnose.output.response}}"
+  - id: validate
+    type: eve
+    needs: [execute]
+    prompt: "Validate services, logs, and final behavior; repair any regression: {{steps.execute.output.response}}"

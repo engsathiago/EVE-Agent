@@ -1,0 +1,17 @@
+name: complete-support-case
+steps:
+  - id: triage
+    type: eve
+    prompt: "Classify urgency, impact, and missing information for: {{input.message}}"
+  - id: investigate
+    type: eve
+    needs: [triage]
+    prompt: "Investigate the likely cause and collect evidence: {{steps.triage.output.response}}"
+  - id: respond
+    type: eve
+    needs: [investigate]
+    prompt: "Write a clear response with resolution, limitations, and next step: {{steps.investigate.output.response}}"
+  - id: follow-up
+    type: wait
+    needs: [respond]
+    message: Wait for confirmation from the person receiving support.

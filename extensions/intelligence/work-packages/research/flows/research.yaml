@@ -1,0 +1,17 @@
+name: deep-research
+steps:
+  - id: plan
+    type: eve
+    prompt: "Create a focused research plan about: {{input.topic}}"
+  - id: research
+    type: eve
+    needs: [plan]
+    prompt: "Execute the research, compare sources, and record evidence: {{steps.plan.output.response}}"
+  - id: review
+    type: wait
+    needs: [research]
+    message: Review the evidence before generating the report.
+  - id: report
+    type: eve
+    needs: [review]
+    prompt: "Produce the final report with sources, uncertainties, and conclusion: {{steps.research.output.response}}"

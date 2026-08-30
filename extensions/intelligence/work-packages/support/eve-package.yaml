@@ -1,0 +1,4 @@
+name: support
+version: 1.0.0
+description: Support triage, investigation, response, and follow-up.
+recommendedSkills: [one-three-one-rule]

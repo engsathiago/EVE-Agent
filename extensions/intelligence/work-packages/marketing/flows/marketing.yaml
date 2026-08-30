@@ -1,0 +1,17 @@
+name: marketing-campaign
+steps:
+  - id: brief
+    type: eve
+    prompt: "Define audience, objective, offer, and metrics for: {{input.campaign}}"
+  - id: concepts
+    type: eve
+    needs: [brief]
+    prompt: "Create three distinct campaign concepts from: {{steps.brief.output.response}}"
+  - id: review
+    type: wait
+    needs: [concepts]
+    message: Choose or adjust the concept before production.
+  - id: produce
+    type: eve
+    needs: [review]
+    prompt: "Produce the final campaign package using the decision {{steps.review.output.value}} and concepts {{steps.concepts.output.response}}"

@@ -1,0 +1,4 @@
+name: software
+version: 1.0.0
+description: Software delivery with analysis, implementation, tests, and review.
+recommendedSkills: [agent-evaluation]
