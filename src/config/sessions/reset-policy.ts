@@ -85,7 +85,7 @@ export function evaluateSessionFreshness(params: {
   policy: SessionResetPolicy;
 }): SessionFreshness {
   const updatedAt = resolveTimestamp(params.updatedAt, params.now) ?? 0;
-  if (updatedAt === 0) {
+  if (updatedAt === 0 && params.policy.mode === "none") {
     return { fresh: false };
   }
   if (params.policy.mode === "none") {
