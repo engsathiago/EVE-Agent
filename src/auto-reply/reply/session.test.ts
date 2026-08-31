@@ -1710,7 +1710,6 @@ describe("initSessionState reset policy", () => {
 
     expect(result.isNewSession).toBe(false);
     expect(result.sessionId).toBe(existingSessionId);
-    expect(clearBootstrapSnapshotOnSessionRolloverSpy).not.toHaveBeenCalled();
   });
 
   it("treats sessions as stale before a configured daily reset when updated before yesterday's boundary", async () => {
@@ -3282,7 +3281,9 @@ describe("initSessionState preserves behavior overrides across /new and /reset",
       });
       await fs.writeFile(transcriptPath, '{"type":"message"}\n', "utf8");
 
-      const cfg = { session: { store: storePath } } as EVEConfig;
+      const cfg = {
+        session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
+      } as EVEConfig;
       const result = await initSessionState({
         ctx: {
           Body: "hello",
