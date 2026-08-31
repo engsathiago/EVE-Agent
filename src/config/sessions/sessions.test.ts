@@ -137,17 +137,54 @@ describe("resolveSessionResetPolicy", () => {
         resetType: "group",
       });
 
-      expect(groupPolicy.mode).toBe("daily");
+      expect(groupPolicy.mode).toBe("none");
     });
   });
 
-  it("defaults to daily resets at 4am local time", () => {
+  it("keeps unconfigured sessions across day boundaries", () => {
     const policy = resolveSessionResetPolicy({
       resetType: "direct",
     });
 
-    expect(policy.mode).toBe("daily");
+    expect(policy.mode).toBe("none");
     expect(policy.atHour).toBe(4);
+
+    const freshness = evaluateSessionFreshness({
+      updatedAt: new Date(2026, 3, 1, 12, 0, 0, 0).getTime(),
+      now: new Date(2026, 3, 25, 12, 0, 0, 0).getTime(),
+      policy,
+    });
+
+    expect(freshness).toEqual({ fresh: true });
+  });
+
+  it("keeps a daily reset for partially configured legacy reset blocks", () => {
+    const policy = resolveSessionResetPolicy({
+      sessionCfg: { reset: { atHour: 6 } },
+      resetType: "direct",
+    });
+
+    expect(policy.mode).toBe("daily");
+    expect(policy.atHour).toBe(6);
+  });
+
+  it("lets an explicit no-reset policy override legacy idleMinutes", () => {
+    const policy = resolveSessionResetPolicy({
+      sessionCfg: { reset: { mode: "none" }, idleMinutes: 30 },
+      resetType: "direct",
+    });
+
+    expect(policy.mode).toBe("none");
+  });
+
+  it("treats an uninitialized session record as stale even when resets are disabled", () => {
+    const freshness = evaluateSessionFreshness({
+      updatedAt: 0,
+      now: 60 * 60 * 1_000,
+      policy: { mode: "none", atHour: 4 },
+    });
+
+    expect(freshness).toEqual({ fresh: false });
   });
 
   it("treats idleMinutes=0 as never expiring by inactivity", () => {

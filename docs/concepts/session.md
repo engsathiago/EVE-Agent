@@ -64,13 +64,17 @@ Verify your setup with `eve security audit`.
 
 ## Session lifecycle
 
-Sessions are reused until they expire:
+Sessions continue by default, including across gateway restarts, idle periods, and
+day boundaries:
 
-- **Daily reset** (default) -- new session at 4:00 AM local time on the gateway
-  host. Daily freshness is based on when the current `sessionId` started, not
-  on later metadata writes.
-- **Idle reset** (optional) -- new session after a period of inactivity. Set
-  `session.reset.idleMinutes`. Idle freshness is based on the last real
+- **No automatic reset** (default) -- EVE keeps the current `sessionId` until
+  you explicitly reset it or configure a reset policy.
+- **Daily reset** (optional) -- a new session at a chosen local hour on the
+  gateway host. Daily freshness is based on when the current `sessionId`
+  started, not on later metadata writes.
+- **Idle reset** (optional) -- a new session after a period of inactivity. Set
+  `session.reset.mode` to `"idle"` and choose `session.reset.idleMinutes`.
+  Idle freshness is based on the last real
   user/channel interaction, so heartbeat, cron, and exec system events do not
   keep the session alive.
 - **Manual reset** -- type `/new` or `/reset` in chat. `/new <model>` also
@@ -83,9 +87,9 @@ rolls the session, queued system-event notices for the old session are
 discarded so stale background updates are not prepended to the first prompt in
 the new session.
 
-Sessions with an active provider-owned CLI session are not cut by the implicit
-daily default. Use `/reset` or configure `session.reset` explicitly when those
-sessions should expire on a timer.
+To configure automatic resets, set `session.reset.mode` to `"daily"` or
+`"idle"`. Set `"none"` explicitly only when you want the configuration to
+document the default continuity behavior.
 
 ## Where state lives
 

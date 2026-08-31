@@ -151,9 +151,7 @@ Example:
     scope: "per-sender",
     resetTriggers: ["/new", "/reset"],
     reset: {
-      mode: "daily",
-      atHour: 4,
-      idleMinutes: 10080,
+      mode: "none", // default; use daily or idle to opt into automatic expiry
     },
   },
 }

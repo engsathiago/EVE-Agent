@@ -1230,15 +1230,21 @@ lives on the [First-run FAQ](/help/faq-first-run).
   </Accordion>
 
   <Accordion title="Do sessions reset automatically if I never send /new?">
-    Sessions can expire after `session.idleMinutes`, but this is **disabled by default** (default **0**).
-    Set it to a positive value to enable idle expiry. When enabled, the **next**
-    message after the idle period starts a fresh session id for that chat key.
-    This does not delete transcripts - it just starts a new session.
+    No. EVE preserves sessions across gateway restarts, idle periods, and day
+    boundaries by default. `/new` and `/reset` start a fresh session without
+    deleting the existing transcript.
+
+    To opt into automatic expiry, configure `session.reset` with `daily` or
+    `idle` mode. The following example starts a fresh session after four hours
+    without an interaction:
 
     ```json5
     {
       session: {
-        idleMinutes: 240,
+        reset: {
+          mode: "idle",
+          idleMinutes: 240,
+        },
       },
     }
     ```

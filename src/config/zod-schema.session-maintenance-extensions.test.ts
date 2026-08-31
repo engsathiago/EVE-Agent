@@ -3,6 +3,14 @@ import { describe, expect, it } from "vitest";
 import { SessionSchema } from "./zod-schema.session.js";
 
 describe("SessionSchema maintenance extensions", () => {
+  it("accepts an explicit no-reset session policy", () => {
+    expect(
+      SessionSchema.parse({
+        reset: { mode: "none" },
+      }),
+    ).toMatchObject({ reset: { mode: "none" } });
+  });
+
   it("accepts session write-lock acquire timeout", () => {
     const result = SessionSchema.safeParse({
       writeLock: {

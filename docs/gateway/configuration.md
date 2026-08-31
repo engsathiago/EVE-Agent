@@ -299,9 +299,7 @@ candidate contains redacted secret placeholders such as `***`.
           maxAgeHours: 0,
         },
         reset: {
-          mode: "daily",
-          atHour: 4,
-          idleMinutes: 120,
+          mode: "none", // default; use daily or idle to opt into automatic expiry
         },
       },
     }

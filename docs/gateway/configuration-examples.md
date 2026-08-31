@@ -156,9 +156,7 @@ Save to `~/.eve/eve.json` and you can DM the bot from that number.
     scope: "per-sender",
     dmScope: "per-channel-peer", // recommended for multi-user inboxes
     reset: {
-      mode: "daily",
-      atHour: 4,
-      idleMinutes: 60,
+      mode: "none", // default; use daily or idle to opt into automatic expiry
     },
     resetByChannel: {
       discord: { mode: "idle", idleMinutes: 10080 },

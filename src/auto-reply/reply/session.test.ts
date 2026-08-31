@@ -937,7 +937,7 @@ describe("initSessionState RawBody", () => {
     const storePath = path.join(root, "sessions.json");
     const sessionKey = "agent:main:discord:channel:daily-rollover";
     const existingSessionId = "session-before-daily-reset";
-    // Stale under the default daily reset (atHour 4): started ~48h ago so
+    // Stale under the configured daily reset (atHour 4): started ~48h ago so
     // sessionStartedAt < today's reset boundary.
     const staleStartedAt = Date.now() - 48 * 60 * 60 * 1000;
 
@@ -956,7 +956,7 @@ describe("initSessionState RawBody", () => {
     });
 
     const cfg = {
-      session: { store: storePath },
+      session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
     } as EVEConfig;
 
     const result = await initSessionState({
@@ -998,7 +998,7 @@ describe("initSessionState RawBody", () => {
     const storePath = path.join(root, "sessions.json");
     const sessionKey = "agent:main:discord:channel:daily-rollover-behavior";
     const existingSessionId = "session-before-daily-reset-behavior";
-    // Stale under the default daily reset (atHour 4): started ~48h ago.
+    // Stale under the configured daily reset (atHour 4): started ~48h ago.
     const staleStartedAt = Date.now() - 48 * 60 * 60 * 1000;
 
     await writeSessionStoreFast(storePath, {
@@ -1018,7 +1018,7 @@ describe("initSessionState RawBody", () => {
     });
 
     const cfg = {
-      session: { store: storePath },
+      session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
     } as EVEConfig;
 
     const result = await initSessionState({
@@ -1085,7 +1085,7 @@ describe("initSessionState RawBody", () => {
     });
 
     const cfg = {
-      session: { store: storePath },
+      session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
     } as EVEConfig;
 
     const result = await initSessionState({
@@ -1135,7 +1135,7 @@ describe("initSessionState RawBody", () => {
     });
 
     const cfg = {
-      session: { store: storePath },
+      session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
     } as EVEConfig;
 
     const result = await initSessionState({
@@ -1688,7 +1688,7 @@ describe("initSessionState reset policy", () => {
     vi.useRealTimers();
   });
 
-  it("defaults to daily reset at 4am local time", async () => {
+  it("keeps sessions by default after the daily boundary", async () => {
     vi.setSystemTime(new Date(2026, 0, 18, 5, 0, 0));
     const root = await makeCaseDir("eve-reset-daily-");
     const storePath = path.join(root, "sessions.json");
@@ -1701,11 +1701,6 @@ describe("initSessionState reset policy", () => {
         updatedAt: new Date(2026, 0, 18, 3, 0, 0).getTime(),
       },
     });
-    enqueueSystemEvent("stale daily rollover event", { sessionKey });
-    enqueueSystemEvent("stale daily rollover session-id event", {
-      sessionKey: existingSessionId,
-    });
-
     const cfg = { session: { store: storePath } } as EVEConfig;
     const result = await initSessionState({
       ctx: { Body: "hello", SessionKey: sessionKey },
@@ -1713,24 +1708,12 @@ describe("initSessionState reset policy", () => {
       commandAuthorized: true,
     });
 
-    expect(result.isNewSession).toBe(true);
-    expect(result.sessionId).not.toBe(existingSessionId);
-    expect(clearBootstrapSnapshotOnSessionRolloverSpy).toHaveBeenCalledWith({
-      sessionKey,
-      previousSessionId: existingSessionId,
-    });
-    await expect(
-      drainFormattedSystemEvents({
-        cfg,
-        sessionKey,
-        isMainSession: false,
-        isNewSession: true,
-      }),
-    ).resolves.toBeUndefined();
-    expect(peekSystemEvents(existingSessionId)).toStrictEqual([]);
+    expect(result.isNewSession).toBe(false);
+    expect(result.sessionId).toBe(existingSessionId);
+    expect(clearBootstrapSnapshotOnSessionRolloverSpy).not.toHaveBeenCalled();
   });
 
-  it("treats sessions as stale before the daily reset when updated before yesterday's boundary", async () => {
+  it("treats sessions as stale before a configured daily reset when updated before yesterday's boundary", async () => {
     vi.setSystemTime(new Date(2026, 0, 18, 3, 0, 0));
     const root = await makeCaseDir("eve-reset-daily-edge-");
     const storePath = path.join(root, "sessions.json");
@@ -1744,7 +1727,9 @@ describe("initSessionState reset policy", () => {
       },
     });
 
-    const cfg = { session: { store: storePath } } as EVEConfig;
+    const cfg = {
+      session: { store: storePath, reset: { mode: "daily", atHour: 4 } },
+    } as EVEConfig;
     const result = await initSessionState({
       ctx: { Body: "hello", SessionKey: sessionKey },
       cfg,
@@ -2226,7 +2211,7 @@ describe("initSessionState reset policy", () => {
     expect(result.sessionId).toBe(existingSessionId);
   });
 
-  it("defaults to daily resets when only resetByType is configured", async () => {
+  it("keeps sessions when resetByType has no policy for their type", async () => {
     vi.setSystemTime(new Date(2026, 0, 18, 5, 0, 0));
     const root = await makeCaseDir("eve-reset-type-default-");
     const storePath = path.join(root, "sessions.json");
@@ -2252,8 +2237,8 @@ describe("initSessionState reset policy", () => {
       commandAuthorized: true,
     });
 
-    expect(result.isNewSession).toBe(true);
-    expect(result.sessionId).not.toBe(existingSessionId);
+    expect(result.isNewSession).toBe(false);
+    expect(result.sessionId).toBe(existingSessionId);
   });
 
   it("keeps legacy idleMinutes behavior without reset config", async () => {
